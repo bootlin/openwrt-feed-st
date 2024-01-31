@@ -1,0 +1,83 @@
+From b8081ab6e6e803535ebabb96114c8e25f9766b5d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 9 Jul 2021 10:30:54 +0200
+Subject: [PATCH 145/529] phy: stm32-usbphyc: add wakeup interrupt management
+ per port
+
+When a usbphyc phy is used by USBH controller, the wakeup signal is mapped
+on EXTI for platform wakeup on STM32MP13.
+
+The purpose of this patch is to get the optional wakeup interrupt per port
+and enable the irq wake when phy is powered on, and disable the irq wake
+in case the phy is powered off.
+
+In case there is a device plugged on USBH, and wakeup is enabled, the phy
+won't be powered off, so the wakeup interrupt will remain enabled.
+
+Change-Id: I05a7d498b4245f68d011d5dcdd8ac8d03c06d9d9
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/213952
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/phy/st/phy-stm32-usbphyc.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+--- a/drivers/phy/st/phy-stm32-usbphyc.c
++++ b/drivers/phy/st/phy-stm32-usbphyc.c
+@@ -12,6 +12,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/of_irq.h>
+ #include <linux/of_platform.h>
+ #include <linux/phy/phy.h>
+ #include <linux/reset.h>
+@@ -136,6 +137,7 @@ struct stm32_usbphyc_phy {
+ 	struct phy *phy;
+ 	struct stm32_usbphyc *usbphyc;
+ 	struct regulator *vbus;
++	int wakeirq;
+ 	u32 index;
+ 	bool active;
+ 	u32 tune;
+@@ -376,6 +378,12 @@ static int stm32_usbphyc_phy_exit(struct
+ static int stm32_usbphyc_phy_power_on(struct phy *phy)
+ {
+ 	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
++	struct stm32_usbphyc *usbphyc = usbphyc_phy->usbphyc;
++
++	if (usbphyc_phy->wakeirq > 0)
++		if (enable_irq_wake(usbphyc_phy->wakeirq))
++			dev_warn(usbphyc->dev,
++				 "Wake irq for phy%d not enabled\n", usbphyc_phy->index);
+ 
+ 	if (usbphyc_phy->vbus)
+ 		return regulator_enable(usbphyc_phy->vbus);
+@@ -386,6 +394,12 @@ static int stm32_usbphyc_phy_power_on(st
+ static int stm32_usbphyc_phy_power_off(struct phy *phy)
+ {
+ 	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
++	struct stm32_usbphyc *usbphyc = usbphyc_phy->usbphyc;
++
++	if (usbphyc_phy->wakeirq > 0)
++		if (disable_irq_wake(usbphyc_phy->wakeirq))
++			dev_warn(usbphyc->dev,
++				 "Wake irq for phy%d not disabled\n", usbphyc_phy->index);
+ 
+ 	if (usbphyc_phy->vbus)
+ 		return regulator_disable(usbphyc_phy->vbus);
+@@ -732,6 +746,12 @@ static int stm32_usbphyc_probe(struct pl
+ 			usbphyc->phys[port]->vbus = NULL;
+ 		}
+ 
++		/* Get optional wakeup interrupt */
++		ret = of_irq_get(child, 0);
++		if (ret == -EPROBE_DEFER)
++			goto put_child;
++		usbphyc->phys[port]->wakeirq = ret;
++
+ 		/* Configure phy tuning */
+ 		stm32_usbphyc_phy_tuning(usbphyc, child, index);
+ 

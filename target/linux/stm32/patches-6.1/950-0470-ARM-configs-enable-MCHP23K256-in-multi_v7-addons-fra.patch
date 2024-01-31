@@ -1,0 +1,31 @@
+From 8259ea1177e10990c62402f1af7d816b3b693973 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 24 Mar 2023 19:06:24 +0100
+Subject: [PATCH 470/529] ARM: configs: enable MCHP23K256 in multi_v7 addons
+ fragment
+
+Add compilation of the MCHP23K256 driver as a module within the addons
+fragment.
+This driver is used for the SPI SRAM test.
+
+Change-Id: Ic1928a18d76204d67ea8c245b9a2251f26ada314
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/297460
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -43,6 +43,7 @@ CONFIG_LEGACY_PTY_COUNT=8
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_MCPM=y
+ CONFIG_MEMCG=y
++CONFIG_MTD_MCHP23K256=m
+ CONFIG_MTD_SPI_NAND=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2

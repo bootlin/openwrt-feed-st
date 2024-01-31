@@ -1,0 +1,40 @@
+From 4a2d3d2a7dfb6479e6bbcbaaa8524dc5e66beb1c Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Thu, 6 Apr 2023 16:15:31 +0200
+Subject: [PATCH 504/529] ARM: dts: stm32: define a 128MB CMA area on
+ stm32mp157c-ev1-scmi
+
+Grow the CMA size to 128MB. The Continuous Memory Allocator allows to
+create large chunks of continuous physical memory addresses. This
+could be typically the reserved memory for the GPU.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I02d5a36036000f6bd7e071612f58de94932cd1f3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299471
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157c-ev1-scmi.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157c-ev1-scmi.dtsi
++++ b/arch/arm/boot/dts/stm32mp157c-ev1-scmi.dtsi
+@@ -10,6 +10,15 @@
+ 			reg = <0xfe000000 0x2000000>;
+ 			no-map;
+ 		};
++
++		/* global autoconfigured region for contiguous allocations */
++		linux,cma {
++			compatible = "shared-dma-pool";
++			reusable;
++			size = <0x8000000>;
++			alignment = <0x2000>;
++			linux,cma-default;
++		};
+ 	};
+ };
+ 

@@ -1,0 +1,44 @@
+From c4079a150a052844b4d8d088fb5e32859708ccd6 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Tue, 9 May 2023 17:45:14 +0200
+Subject: [PATCH 519/529] ARM: dts: stm32: Add an interrupts in brcmf node to
+ improve WLAN throughput
+
+Add Interrupt WL_HOST_WAKE to avoid polling during transfer.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I5a60efefb491566a9196d7c53cf054f69d52d9a5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304973
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157c-dk2.dts | 3 +++
+ arch/arm/boot/dts/stm32mp157f-dk2.dts | 3 +++
+ 2 files changed, 6 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+@@ -139,6 +139,9 @@
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpiod>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
++		interrupt-names = "host-wake";
+ 	};
+ };
+ 
+--- a/arch/arm/boot/dts/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157f-dk2.dts
+@@ -138,6 +138,9 @@
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpiod>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
++		interrupt-names = "host-wake";
+ 	};
+ };
+ 

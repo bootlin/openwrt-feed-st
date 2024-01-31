@@ -1,0 +1,57 @@
+From 9f7fb127ec44da085313ccb2203cdc95b78d2f8c Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 18 Aug 2022 15:02:26 +0200
+Subject: [PATCH 062/529] irqchip/stm32-exti: Forward ack, set_type and
+ set_wake to parent
+
+Propagate ack, set_type and set_wake to the parent irqchip.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I5d3006f59d5cf79dafa17311b9046da8c86ff91e
+---
+ drivers/irqchip/irq-stm32-exti.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -590,6 +590,9 @@ unspinlock:
+ unlock:
+ 	raw_spin_unlock(&chip_data->rlock);
+ 
++	if (d->parent_data->chip)
++		irq_chip_set_type_parent(d, type);
++
+ 	return err;
+ }
+ 
+@@ -607,6 +610,9 @@ static int stm32_exti_h_set_wake(struct
+ 
+ 	raw_spin_unlock(&chip_data->rlock);
+ 
++	if (d->parent_data->chip)
++		irq_chip_set_wake_parent(d, on);
++
+ 	return 0;
+ }
+ 
+@@ -619,6 +625,12 @@ static int stm32_exti_h_set_affinity(str
+ 	return IRQ_SET_MASK_OK_DONE;
+ }
+ 
++static void stm32_exti_h_ack(struct irq_data *d)
++{
++	if (d->parent_data->chip)
++		irq_chip_ack_parent(d);
++}
++
+ static int __maybe_unused stm32_exti_h_suspend(void)
+ {
+ 	struct stm32_exti_chip_data *chip_data;
+@@ -680,6 +692,7 @@ static int stm32_exti_h_retrigger(struct
+ static struct irq_chip stm32_exti_h_chip = {
+ 	.name			= "stm32-exti-h",
+ 	.irq_eoi		= stm32_exti_h_eoi,
++	.irq_ack		= stm32_exti_h_ack,
+ 	.irq_mask		= stm32_exti_h_mask,
+ 	.irq_unmask		= stm32_exti_h_unmask,
+ 	.irq_request_resources	= irq_chip_request_resources_parent,

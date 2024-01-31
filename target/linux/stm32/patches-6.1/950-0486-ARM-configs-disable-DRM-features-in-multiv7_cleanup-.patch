@@ -1,0 +1,29 @@
+From bacf8aa595854a7ffa3f289610eb9a2ae2fe5da5 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 13 Mar 2023 15:27:38 +0100
+Subject: [PATCH 486/529] ARM: configs: disable DRM features in multiv7_cleanup
+ fragment
+
+Remove fbdev emulation & loading edid firmware.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I1736dc600d4ab1ac1873d84bde2692b64db452f8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/295128
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -48,6 +48,8 @@
+ # CONFIG_CHROME_PLATFORMS is not set
+ # CONFIG_CXD2880_SPI_DRV is not set
+ # CONFIG_DETECT_HUNG_TASK is not set
++# CONFIG_DRM_FBDEV_EMULATION is not set
++# CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
+ # CONFIG_DVB_A8293 is not set
+ # CONFIG_DVB_AF9013 is not set
+ # CONFIG_DVB_AF9033 is not set

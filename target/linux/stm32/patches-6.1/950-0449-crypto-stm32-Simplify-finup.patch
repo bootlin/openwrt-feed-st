@@ -1,0 +1,105 @@
+From 08788c74200148f039ef5fea651615f71bf6aded Mon Sep 17 00:00:00 2001
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Date: Sat, 11 Mar 2023 17:09:15 +0800
+Subject: [PATCH 449/529] crypto: stm32 - Simplify finup
+
+The current finup code is unnecessarily convoluted.  There is no
+need to call update and final separately as update already does
+all the necessary work on its own.
+
+Simplify this by utilising the HASH_FLAGS_FINUP bit in rctx to
+indicate only finup and use the HASH_FLAGS_FINAL bit instead to
+signify processing common to both final and finup.
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/crypto/stm32/stm32-hash.c | 39 +++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
+
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -417,7 +417,7 @@ static int stm32_hash_update_cpu(struct
+ 
+ 	dev_dbg(hdev->dev, "%s flags %lx\n", __func__, rctx->flags);
+ 
+-	final = (rctx->flags & HASH_FLAGS_FINUP);
++	final = rctx->flags & HASH_FLAGS_FINAL;
+ 
+ 	while ((rctx->total >= rctx->buflen) ||
+ 	       (rctx->bufcnt + rctx->total >= rctx->buflen)) {
+@@ -761,6 +761,11 @@ static int stm32_hash_init(struct ahash_
+ 
+ static int stm32_hash_update_req(struct stm32_hash_dev *hdev)
+ {
++	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
++
++	if (!(rctx->flags & HASH_FLAGS_CPU))
++		return stm32_hash_dma_send(hdev);
++
+ 	return stm32_hash_update_cpu(hdev);
+ }
+ 
+@@ -768,17 +773,14 @@ static int stm32_hash_final_req(struct s
+ {
+ 	struct ahash_request *req = hdev->req;
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
+-	int err;
+ 	int buflen = rctx->bufcnt;
+ 
+-	rctx->bufcnt = 0;
++	if (rctx->flags & HASH_FLAGS_FINUP)
++		return stm32_hash_update_req(hdev);
+ 
+-	if (!(rctx->flags & HASH_FLAGS_CPU))
+-		err = stm32_hash_dma_send(hdev);
+-	else
+-		err = stm32_hash_xmit_cpu(hdev, rctx->buffer, buflen, 1);
++	rctx->bufcnt = 0;
+ 
+-	return err;
++	return stm32_hash_xmit_cpu(hdev, rctx->buffer, buflen, 1);
+ }
+ 
+ static void stm32_hash_emptymsg_fallback(struct ahash_request *req)
+@@ -1000,7 +1002,7 @@ static int stm32_hash_final(struct ahash
+ {
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
+ 
+-	rctx->flags |= HASH_FLAGS_FINUP;
++	rctx->flags |= HASH_FLAGS_FINAL;
+ 
+ 	return stm32_hash_enqueue(req, HASH_OP_FINAL);
+ }
+@@ -1008,22 +1010,19 @@ static int stm32_hash_final(struct ahash
+ static int stm32_hash_finup(struct ahash_request *req)
+ {
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
+-	int err1, err2;
++
++	if (!req->nbytes)
++		goto out;
+ 
+ 	rctx->flags |= HASH_FLAGS_FINUP;
+ 
+ 	err1 = stm32_hash_update(req);
++	rctx->total = req->nbytes;
++	rctx->sg = req->src;
++	rctx->offset = 0;
+ 
+-	if (err1 == -EINPROGRESS || err1 == -EBUSY)
+-		return err1;
+-
+-	/*
+-	 * final() has to be always called to cleanup resources
+-	 * even if update() failed, except EINPROGRESS
+-	 */
+-	err2 = stm32_hash_final(req);
+-
+-	return err1 ?: err2;
++out:
++	return stm32_hash_final(req);
+ }
+ 
+ static int stm32_hash_digest(struct ahash_request *req)

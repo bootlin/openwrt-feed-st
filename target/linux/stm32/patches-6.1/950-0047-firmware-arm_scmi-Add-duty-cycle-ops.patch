@@ -1,0 +1,94 @@
+From a8534c12dd55701f690b72580b7fd2d7fcf5d99e Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Tue, 7 Sep 2021 10:48:03 +0200
+Subject: [PATCH 047/529] firmware: arm_scmi: Add duty cycle ops
+
+Some non secure driver need duty cycle value of a SCMI clock.
+
+Change-Id: Icb137008c468f7235952167cfd79b91dcd726463
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/234115
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/firmware/arm_scmi/clock.c | 35 +++++++++++++++++++++++++++++++
+ include/linux/scmi_protocol.h     |  2 ++
+ 2 files changed, 37 insertions(+)
+
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -21,6 +21,7 @@ enum scmi_clock_protocol_cmd {
+ 	CLOCK_NAME_GET = 0x8,
+ 	CLOCK_RATE_NOTIFY = 0x9,
+ 	CLOCK_RATE_CHANGE_REQUESTED_NOTIFY = 0xA,
++	CLOCK_DUTY_CYCLE_GET = 0xB,
+ };
+ 
+ struct scmi_msg_resp_clock_protocol_attributes {
+@@ -65,6 +66,11 @@ struct scmi_msg_resp_clock_describe_rate
+ })
+ };
+ 
++struct scmi_msg_resp_get_duty_cyle {
++	__le32 num;
++	__le32 den;
++};
++
+ struct scmi_clock_set_rate {
+ 	__le32 flags;
+ #define CLOCK_SET_ASYNC		BIT(0)
+@@ -325,6 +331,34 @@ scmi_clock_describe_rates_get(const stru
+ }
+ 
+ static int
++scmi_clock_get_duty_cycle(const struct scmi_protocol_handle *ph,
++			  u32 clk_id, int *num, int *den)
++{
++	int ret;
++	struct scmi_xfer *t;
++	struct scmi_msg_resp_get_duty_cyle *resp;
++
++	ret = ph->xops->xfer_get_init(ph, CLOCK_DUTY_CYCLE_GET,
++				      sizeof(__le32), sizeof(u64), &t);
++	if (ret)
++		return ret;
++
++	resp = t->rx.buf;
++
++	put_unaligned_le32(clk_id, t->tx.buf);
++
++	ret = ph->xops->do_xfer(ph, t);
++	if (!ret) {
++		*num = resp->num;
++		*den = resp->den;
++	}
++
++	ph->xops->xfer_put(ph, t);
++
++	return ret;
++}
++
++static int
+ scmi_clock_rate_get(const struct scmi_protocol_handle *ph,
+ 		    u32 clk_id, u64 *value)
+ {
+@@ -472,6 +506,7 @@ static const struct scmi_clk_proto_ops c
+ 	.disable = scmi_clock_disable,
+ 	.enable_atomic = scmi_clock_enable_atomic,
+ 	.disable_atomic = scmi_clock_disable_atomic,
++	.get_duty_cycle = scmi_clock_get_duty_cycle,
+ };
+ 
+ static int scmi_clk_rate_notify(const struct scmi_protocol_handle *ph,
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -95,6 +95,8 @@ struct scmi_clk_proto_ops {
+ 	int (*enable_atomic)(const struct scmi_protocol_handle *ph, u32 clk_id);
+ 	int (*disable_atomic)(const struct scmi_protocol_handle *ph,
+ 			      u32 clk_id);
++	int (*get_duty_cycle)(const struct scmi_protocol_handle *ph,
++			      u32 clk_id, int *num, int *den);
+ };
+ 
+ /**

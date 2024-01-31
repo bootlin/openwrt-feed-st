@@ -1,0 +1,79 @@
+From 48c6c718e5238a113428fcfb874cd1b452f9729c Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 24 Jun 2021 09:28:57 +0200
+Subject: [PATCH 113/529] serial: stm32: modify parameter and rename
+ stm32_usart_rx_dma_enabled
+
+Rename stm32_usart_rx_dma_enabled to stm32_usart_rx_dma_started in order
+to match with stm32_usart_tx_dma_started.
+
+Modify argument of stm32_usart_rx_dma_started from uart_port structure to
+stm32_port structure to match with stm32_usart_tx_dma_started.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -309,9 +309,9 @@ static int stm32_usart_init_rs485(struct
+ 	return uart_get_rs485_mode(port);
+ }
+ 
+-static bool stm32_usart_rx_dma_enabled(struct uart_port *port)
++static bool stm32_usart_rx_dma_started(struct stm32_port *stm32_port)
+ {
+-	struct stm32_port *stm32_port = to_stm32_port(port);
++	struct uart_port *port = &stm32_port->port;
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+ 
+ 	if (!stm32_port->rx_ch)
+@@ -330,7 +330,7 @@ static bool stm32_usart_pending_rx_pio(s
+ 	/* Get pending characters in RDR or FIFO */
+ 	if (*sr & USART_SR_RXNE) {
+ 		/* Get all pending characters from the RDR or the FIFO when using interrupts */
+-		if (!stm32_usart_rx_dma_enabled(port))
++		if (!stm32_usart_rx_dma_started(stm32_port))
+ 			return true;
+ 
+ 		/* Handle only RX data errors when using DMA */
+@@ -476,7 +476,7 @@ static unsigned int stm32_usart_receive_
+ 	u32 sr;
+ 	unsigned int size = 0;
+ 
+-	if (stm32_usart_rx_dma_enabled(port) || force_dma_flush) {
++	if (stm32_usart_rx_dma_started(stm32_port) || force_dma_flush) {
+ 		rx_dma_status = dmaengine_tx_status(stm32_port->rx_ch,
+ 						    stm32_port->rx_ch->cookie,
+ 						    &stm32_port->rx_dma_state);
+@@ -812,8 +812,8 @@ static irqreturn_t stm32_usart_interrupt
+ 	 * line has been masked by HW and rx data are stacking in FIFO.
+ 	 */
+ 	if (!stm32_port->throttled) {
+-		if (((sr & USART_SR_RXNE) && !stm32_usart_rx_dma_enabled(port)) ||
+-		    ((sr & USART_SR_ERR_MASK) && stm32_usart_rx_dma_enabled(port))) {
++		if (((sr & USART_SR_RXNE) && !stm32_usart_rx_dma_started(stm32_port)) ||
++		    ((sr & USART_SR_ERR_MASK) && stm32_usart_rx_dma_started(stm32_port))) {
+ 			spin_lock(&port->lock);
+ 			size = stm32_usart_receive_chars(port, false);
+ 			uart_unlock_and_check_sysrq(port);
+@@ -829,7 +829,7 @@ static irqreturn_t stm32_usart_interrupt
+ 	}
+ 
+ 	/* Receiver timeout irq for DMA RX */
+-	if (stm32_usart_rx_dma_enabled(port) && !stm32_port->throttled) {
++	if (stm32_usart_rx_dma_started(stm32_port) && !stm32_port->throttled) {
+ 		spin_lock(&port->lock);
+ 		size = stm32_usart_receive_chars(port, false);
+ 		uart_unlock_and_check_sysrq(port);
+@@ -929,7 +929,7 @@ static void stm32_usart_throttle(struct
+ 	 * Disable DMA request line if enabled, so the RX data gets queued into the FIFO.
+ 	 * Hardware flow control is triggered when RX FIFO is full.
+ 	 */
+-	if (stm32_usart_rx_dma_enabled(port))
++	if (stm32_usart_rx_dma_started(stm32_port))
+ 		stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAR);
+ 
+ 	stm32_usart_clr_bits(port, ofs->cr1, stm32_port->cr1_irq);

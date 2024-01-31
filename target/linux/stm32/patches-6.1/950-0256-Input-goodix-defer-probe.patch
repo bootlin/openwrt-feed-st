@@ -1,0 +1,78 @@
+From e09ade755010d555f7caf1276fcde3b97c5db51d Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 21 Jan 2020 10:00:49 +0100
+Subject: [PATCH 256/529] Input: goodix - defer probe
+
+Touchscreen probe must be deferred if it's been done before
+probe of panel.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I9f5498dc8ed14c9442897fa8e69f9fb05bd5190c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/155551
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228185
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ drivers/input/touchscreen/goodix.c | 34 ++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
+
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -1317,10 +1317,33 @@ static int goodix_ts_probe(struct i2c_cl
+ 	const char *cfg_name;
+ 	struct mipi_dsi_device *panel;
+ 	struct device_node *np;
++	struct device_link *dlink;
+ 	int error;
+ 
+ 	dev_dbg(&client->dev, "I2C Address: 0x%02x\n", client->addr);
+ 
++	np = of_parse_phandle(client->dev.of_node, "panel", 0);
++	if (np) {
++		panel = of_find_mipi_dsi_device_by_node(np);
++		of_node_put(np);
++		if (!panel)
++			return -EPROBE_DEFER;
++
++		dlink = device_link_add(&client->dev, &panel->dev, DL_FLAG_AUTOREMOVE_CONSUMER);
++
++		if (IS_ERR(dlink)) {
++			error = PTR_ERR(dlink);
++			dev_err(&client->dev,
++				"Failed to add link to device %d\n", error);
++			return error;
++		}
++
++		if (dlink && dlink->status != DL_STATE_CONSUMER_PROBE)
++			return -EPROBE_DEFER;
++
++		put_device(&panel->dev);
++	}
++
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "I2C check functionality failed.\n");
+ 		return -ENXIO;
+@@ -1421,17 +1444,6 @@ reset:
+ 			return error;
+ 	}
+ 
+-	np = of_parse_phandle(client->dev.of_node, "panel", 0);
+-	if (np) {
+-		panel = of_find_mipi_dsi_device_by_node(np);
+-		of_node_put(np);
+-		if (!panel)
+-			return -ENOENT;
+-		device_link_add(&client->dev, &panel->dev, DL_FLAG_STATELESS |
+-				DL_FLAG_AUTOREMOVE_SUPPLIER);
+-		put_device(&panel->dev);
+-	}
+-
+ 	return 0;
+ }
+ 

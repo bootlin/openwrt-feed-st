@@ -1,0 +1,76 @@
+From 93f52a4db92ec697f8fe1f72af981d2482474193 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 14 Oct 2022 16:15:08 +0200
+Subject: [PATCH 178/529] ARM: dts: stm32: enable USB OTG in dual role mode on
+ stm32mp135f-dk
+
+The USB OTG controller provides the USB data available on stm32mp135f-dk,
+on the Type-C connector. Data role is determined by "usb-role-switch".
+
+A STM32G0 provides the USB Type-C and Power Delivery connectivity.
+It controls dual role power and dual role data through UCSI protocol over
+I2C. It's wired on I2C1, with an interrupt pin on PI2 GPIO.
+Its firmware maybe updated over I2C, so use the optional firmware-name
+to enable firmware update.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+(cherry picked from commit 4f532403b1e5b379e4027448da715567a2b3ff57)
+Change-Id: Icc3bc6cafecb9d3866870ed517de2cf162f82081
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279517
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 34 ++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -101,6 +101,28 @@
+ 		#interrupt-cells = <2>;
+ 		microchip,irq-mirror;
+ 	};
++
++	typec@53 {
++		compatible = "st,stm32g0-typec";
++		reg = <0x53>;
++		/* Alert pin on PI2 */
++		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
++		interrupt-parent = <&gpioi>;
++		/* Internal pull-up on PI2 */
++		pinctrl-names = "default";
++		pinctrl-0 = <&stm32g0_intn_pins_a>;
++		firmware-name = "stm32g0-ucsi.mp135f-dk.fw";
++		connector {
++			compatible = "usb-c-connector";
++			label = "USB-C";
++
++			port {
++				con_usb_c_g0_ep: endpoint {
++					remote-endpoint = <&usbotg_hs_ep>;
++				};
++			};
++		};
++	};
+ };
+ 
+ &i2c5 {
+@@ -232,6 +254,18 @@
+ 	};
+ };
+ 
++&usbotg_hs {
++	phys = <&usbphyc_port1 0>;
++	phy-names = "usb2-phy";
++	usb-role-switch;
++	status = "okay";
++	port {
++		usbotg_hs_ep: endpoint {
++			remote-endpoint = <&con_usb_c_g0_ep>;
++		};
++	};
++};
++
+ &usbphyc {
+ 	status = "okay";
+ };

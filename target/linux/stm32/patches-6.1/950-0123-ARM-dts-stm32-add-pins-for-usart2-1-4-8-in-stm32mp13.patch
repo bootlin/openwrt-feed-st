@@ -1,0 +1,155 @@
+From ed8fb9bfc3d5a70a48bcc94e019309226086d9f7 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 29 Nov 2022 14:33:06 +0100
+Subject: [PATCH 123/529] ARM: dts: stm32: add pins for usart2/1/4/8 in
+ stm32mp13-pinctrl
+
+Add pins for uart4, uart8, usart1 and usart2 in stm32mp13-pinctrl.dtsi
+Theses pins have three states: default, sleep and idle.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Id7a7207c429c23a1b56e9644e854154d55391a33
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278165
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp13-pinctrl.dtsi | 129 +++++++++++++++++++++++
+ 1 file changed, 129 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
+@@ -184,4 +184,133 @@
+ 			bias-disable;
+ 		};
+ 	};
++
++	uart4_idle_pins_a: uart4-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('D', 6, ANALOG)>; /* UART4_TX */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('D', 8, AF8)>; /* UART4_RX */
++			bias-disable;
++		};
++	};
++
++	uart4_sleep_pins_a: uart4-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 6, ANALOG)>, /* UART4_TX */
++				 <STM32_PINMUX('D', 8, ANALOG)>; /* UART4_RX */
++		};
++	};
++
++	uart8_pins_a: uart8-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 1, AF8)>; /* UART8_TX */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('F', 9, AF8)>; /* UART8_RX */
++			bias-pull-up;
++		};
++	};
++
++	uart8_idle_pins_a: uart8-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 1, ANALOG)>; /* UART8_TX */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('F', 9, AF8)>; /* UART8_RX */
++			bias-pull-up;
++		};
++	};
++
++	uart8_sleep_pins_a: uart8-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 1, ANALOG)>, /* UART8_TX */
++				 <STM32_PINMUX('F', 9, ANALOG)>; /* UART8_RX */
++		};
++	};
++
++	usart1_pins_a: usart1-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('C', 0, AF7)>, /* USART1_TX */
++				 <STM32_PINMUX('C', 2, AF7)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('B', 0, AF4)>, /* USART1_RX */
++				 <STM32_PINMUX('A', 7, AF7)>; /* USART1_CTS_NSS */
++			bias-pull-up;
++		};
++	};
++
++	usart1_idle_pins_a: usart1-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('C', 0, ANALOG)>, /* USART1_TX */
++				 <STM32_PINMUX('A', 7, ANALOG)>; /* USART1_CTS_NSS */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('C', 2, AF7)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('B', 0, AF4)>; /* USART1_RX */
++			bias-pull-up;
++		};
++	};
++
++	usart1_sleep_pins_a: usart1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 0, ANALOG)>, /* USART1_TX */
++				 <STM32_PINMUX('C', 2, ANALOG)>, /* USART1_RTS */
++				 <STM32_PINMUX('A', 7, ANALOG)>, /* USART1_CTS_NSS */
++				 <STM32_PINMUX('B', 0, ANALOG)>; /* USART1_RX */
++		};
++	};
++
++	usart2_pins_a: usart2-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('H', 12, AF1)>, /* USART2_TX */
++				 <STM32_PINMUX('D', 4, AF3)>; /* USART2_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('D', 15, AF1)>, /* USART2_RX */
++				 <STM32_PINMUX('E', 11, AF2)>; /* USART2_CTS_NSS */
++			bias-disable;
++		};
++	};
++
++	usart2_idle_pins_a: usart2-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('H', 12, ANALOG)>, /* USART2_TX */
++				 <STM32_PINMUX('E', 11, ANALOG)>; /* USART2_CTS_NSS */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('D', 4, AF3)>; /* USART2_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('D', 15, AF1)>; /* USART2_RX */
++			bias-disable;
++		};
++	};
++
++	usart2_sleep_pins_a: usart2-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('H', 12, ANALOG)>, /* USART2_TX */
++				 <STM32_PINMUX('D', 4, ANALOG)>, /* USART2_RTS */
++				 <STM32_PINMUX('D', 15, ANALOG)>, /* USART2_RX */
++				 <STM32_PINMUX('E', 11, ANALOG)>; /* USART2_CTS_NSS */
++		};
++	};
+ };

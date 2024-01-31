@@ -1,0 +1,44 @@
+From 7df6286669b318a96a990fda9fc9d945fe40c1b5 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 14 Oct 2022 16:15:06 +0200
+Subject: [PATCH 176/529] ARM: dts: stm32: enable USB Host EHCI on
+ stm32mp135f-dk
+
+USBH Host EHCI controller manages the USB High-Speed hub controller IC
+offering Type-A CN5 & CN6 connectors available on stm32mp135f-dk.
+USB Host OHCI controller doesn't need to be enabled as Full-Speed and
+Low-Speed traffic will be managed by the hub.
+This USB2514B onboard hub is supplied by a 3v3 PMIC regulator.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+(cherry picked from commit c4e7254cf6dce9db7a635f8e79c8399f60e37ff7)
+Change-Id: I7ba4c81cc0ec6bb3e865d64911e877aedb9a81b5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279515
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -219,6 +219,19 @@
+ 	status = "okay";
+ };
+ 
++&usbh_ehci {
++	phys = <&usbphyc_port0>;
++	status = "okay";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	/* onboard HUB */
++	hub@1 {
++		compatible = "usb424,2514";
++		reg = <1>;
++		vdd-supply = <&scmi_v3v3_sw>;
++	};
++};
++
+ &usbphyc {
+ 	status = "okay";
+ };

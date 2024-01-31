@@ -1,0 +1,32 @@
+From 1dbb450ca8e79036733b2bbcbe5e9e5169a4eecf Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@st.com>
+Date: Wed, 30 Oct 2019 14:18:31 +0100
+Subject: [PATCH 283/529] ARM: configs: disable MTD_SPI_NOR_USE_4K_SECTORS on
+ fragment-02-multiv7_addons
+
+This allows to avoid to limit the erase block size to 4K.
+
+Change-Id: Ie72de83fa386bf4f0670f0dab0cde6dc6da0358d
+Signed-off-by: Patrice Chotard <patrice.chotard@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228030
+Tested-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280188
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -65,6 +65,7 @@
+ # CONFIG_KEXEC is not set
+ # CONFIG_LOCKUP_DETECTOR is not set
+ # CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
++# CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
+ # CONFIG_PCI is not set
+ # CONFIG_PCI_DOMAINS_GENERIC is not set
+ # CONFIG_PCI_SYSCALL is not set

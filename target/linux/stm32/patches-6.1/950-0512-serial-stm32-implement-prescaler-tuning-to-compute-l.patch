@@ -1,0 +1,163 @@
+From e9f4294385283b79d1825d870b3e99dad0817d50 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 7 Apr 2023 14:57:06 +0200
+Subject: [PATCH 512/529] serial: stm32: implement prescaler tuning to compute
+ low baudrate
+
+In the case where USART input clock is high and baud rate is low, BRR value
+is not enough to get correct baud rate. So here we use USART prescaler to
+divide usart input clock to get the correct baud rate.
+
+PRESC register is only available since stm32h7 so stm32f4 & f7 should deal
+without it.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Id578db6393b2792e0ee91b9ba8adbddb6051fa1a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302287
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 68 ++++++++++++++++++++++----------
+ drivers/tty/serial/stm32-usart.h |  6 +++
+ 2 files changed, 53 insertions(+), 21 deletions(-)
+
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -51,6 +51,7 @@ static struct stm32_usart_info __maybe_u
+ 		.rtor	= UNDEF_REG,
+ 		.rqr	= UNDEF_REG,
+ 		.icr	= UNDEF_REG,
++		.presc	= UNDEF_REG,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 13,
+@@ -72,6 +73,7 @@ static struct stm32_usart_info __maybe_u
+ 		.icr	= 0x20,
+ 		.rdr	= 0x24,
+ 		.tdr	= 0x28,
++		.presc	= UNDEF_REG,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 0,
+@@ -94,6 +96,7 @@ static struct stm32_usart_info __maybe_u
+ 		.icr	= 0x20,
+ 		.rdr	= 0x24,
+ 		.tdr	= 0x28,
++		.presc	= 0x2c,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 0,
+@@ -1350,17 +1353,19 @@ static void stm32_usart_set_termios(stru
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+ 	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
+ 	struct serial_rs485 *rs485conf = &port->rs485;
+-	unsigned int baud, bits;
++	unsigned int baud, bits, uart_clk, uart_clk_pres;
+ 	u32 usartdiv, mantissa, fraction, oversampling;
+ 	tcflag_t cflag = termios->c_cflag;
+-	u32 cr1, cr2, cr3, isr;
++	u32 cr1, cr2, cr3, isr, brr, presc;
+ 	unsigned long flags;
+ 	int ret;
+ 
+ 	if (!stm32_port->hw_flow_control)
+ 		cflag &= ~CRTSCTS;
+ 
+-	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk / 8);
++	uart_clk = clk_get_rate(stm32_port->clk);
++
++	baud = uart_get_baud_rate(port, termios, old, 0, uart_clk / 8);
+ 
+ 	spin_lock_irqsave(&port->lock, flags);
+ 
+@@ -1462,27 +1467,48 @@ static void stm32_usart_set_termios(stru
+ 		cr3 |= USART_CR3_CTSE | USART_CR3_RTSE;
+ 	}
+ 
+-	usartdiv = DIV_ROUND_CLOSEST(port->uartclk, baud);
++	for (presc = 0; presc <= USART_PRESC_MAX; presc++) {
++		uart_clk_pres = DIV_ROUND_CLOSEST(uart_clk, STM32_USART_PRESC_VAL[presc]);
++		usartdiv = DIV_ROUND_CLOSEST(uart_clk_pres, baud);
+ 
+-	/*
+-	 * The USART supports 16 or 8 times oversampling.
+-	 * By default we prefer 16 times oversampling, so that the receiver
+-	 * has a better tolerance to clock deviations.
+-	 * 8 times oversampling is only used to achieve higher speeds.
+-	 */
+-	if (usartdiv < 16) {
+-		oversampling = 8;
+-		cr1 |= USART_CR1_OVER8;
+-		stm32_usart_set_bits(port, ofs->cr1, USART_CR1_OVER8);
+-	} else {
+-		oversampling = 16;
+-		cr1 &= ~USART_CR1_OVER8;
+-		stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_OVER8);
++		/*
++		 * The USART supports 16 or 8 times oversampling.
++		 * By default we prefer 16 times oversampling, so that the receiver
++		 * has a better tolerance to clock deviations.
++		 * 8 times oversampling is only used to achieve higher speeds.
++		 */
++		if (usartdiv < 16) {
++			oversampling = 8;
++			cr1 |= USART_CR1_OVER8;
++			stm32_usart_set_bits(port, ofs->cr1, USART_CR1_OVER8);
++		} else {
++			oversampling = 16;
++			cr1 &= ~USART_CR1_OVER8;
++			stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_OVER8);
++		}
++
++		mantissa = (usartdiv / oversampling) << USART_BRR_DIV_M_SHIFT;
++		fraction = usartdiv % oversampling;
++		brr = mantissa | fraction;
++
++		if (FIELD_FIT(USART_BRR_MASK, brr)) {
++			if (ofs->presc != UNDEF_REG) {
++				port->uartclk = uart_clk_pres;
++				writel_relaxed(presc, port->membase + ofs->presc);
++			} else if (presc) {
++				/* We need a prescaler but we don't have it (STM32F4, STM32F7) */
++				dev_err(port->dev,
++					"unable to set baudrate, input clock is too high");
++			}
++			break;
++		} else if (presc == USART_PRESC_MAX) {
++			/* Even with prescaler and brr at max value we can't set baudrate */
++			dev_err(port->dev, "unable to set baudrate, input clock is too high");
++			break;
++		}
+ 	}
+ 
+-	mantissa = (usartdiv / oversampling) << USART_BRR_DIV_M_SHIFT;
+-	fraction = usartdiv % oversampling;
+-	writel_relaxed(mantissa | fraction, port->membase + ofs->brr);
++	writel_relaxed(brr, port->membase + ofs->brr);
+ 
+ 	uart_update_timeout(port, cflag, baud);
+ 
+--- a/drivers/tty/serial/stm32-usart.h
++++ b/drivers/tty/serial/stm32-usart.h
+@@ -20,6 +20,7 @@ struct stm32_usart_offsets {
+ 	u8 icr;
+ 	u8 rdr;
+ 	u8 tdr;
++	u8 presc;
+ };
+ 
+ struct stm32_backup_regs {
+@@ -188,6 +189,11 @@ struct stm32_usart_info {
+ #define USART_ICR_CMCF		BIT(17)		/* F7 */
+ #define USART_ICR_WUCF		BIT(20)		/* H7 */
+ 
++/* USART_PRESC */
++#define USART_PRESC		GENMASK(3, 0)	/* H7 */
++#define USART_PRESC_MAX		0b1011
++static const unsigned int STM32_USART_PRESC_VAL[] = {1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256};
++
+ #define STM32_SERIAL_NAME "ttySTM"
+ #define STM32_MAX_PORTS 8
+ 

@@ -1,0 +1,104 @@
+From 7b126a083f759cfa23a2b47f55a3b90047050a2f Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 10 Feb 2023 14:31:54 +0100
+Subject: [PATCH 425/529] usb: dwc2: platform: add support for utmi optional
+ clock
+
+Add support for the utmi clock. It's needed on STM32MP15, when using
+the integrated full-speed PHY. This clock is an output of USBPHYC, but
+HS USBPHYC is not attached as PHY in this case: Full-Speed PHY is directly
+managed in dwc2 glue, through GGPIO register. Typical DT when using FS PHY
+&usbotg_hs {
+	compatible = "st,stm32mp15-fsotg", "snps,dwc2";
+	pinctrl-names = "default";
+	pinctrl-0 = <&usbotg_hs_pins_a &usbotg_fs_dp_dm_pins_a>;
+	vbus-supply = <&vbus_otg>;
+	status = "okay";
+};
+
+In this configuration, USBPHYC clock output must be defined, so it can
+be properly enabled as a clock provider:
+	clocks = <&rcc USBO_K>, <&usbphyc>;
+	clock-names = "otg", "utmi_clk";
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ie3906b18e156b9aafadee8a5bfd6fd2a51336b91
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291411
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/usb/dwc2/core.h     |  2 ++
+ drivers/usb/dwc2/platform.c | 20 +++++++++++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -1003,6 +1003,7 @@ struct dwc2_hregs_backup {
+  * @ctrl_out_desc:	EP0 OUT data phase desc chain pointer
+  * @irq:		Interrupt request line number
+  * @clk:		Pointer to otg clock
++ * @utmi_clk:		Pointer to utmi_clk clock
+  * @reset:		Pointer to dwc2 reset controller
+  * @reset_ecc:          Pointer to dwc2 optional reset controller in Stratix10.
+  * @regset:		A pointer to a struct debugfs_regset32, which contains
+@@ -1065,6 +1066,7 @@ struct dwc2_hsotg {
+ 	void *priv;
+ 	int     irq;
+ 	struct clk *clk;
++	struct clk *utmi_clk;
+ 	struct reset_control *reset;
+ 	struct reset_control *reset_ecc;
+ 
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -101,10 +101,16 @@ static int __dwc2_lowlevel_hw_enable(str
+ 	if (ret)
+ 		return ret;
+ 
++	if (hsotg->utmi_clk) {
++		ret = clk_prepare_enable(hsotg->utmi_clk);
++		if (ret)
++			goto err_dis_reg;
++	}
++
+ 	if (hsotg->clk) {
+ 		ret = clk_prepare_enable(hsotg->clk);
+ 		if (ret)
+-			goto err_dis_reg;
++			goto err_dis_utmi_clk;
+ 	}
+ 
+ 	if (hsotg->uphy) {
+@@ -129,6 +135,10 @@ err_dis_clk:
+ 	if (hsotg->clk)
+ 		clk_disable_unprepare(hsotg->clk);
+ 
++err_dis_utmi_clk:
++	if (hsotg->utmi_clk)
++		clk_disable_unprepare(hsotg->utmi_clk);
++
+ err_dis_reg:
+ 	regulator_bulk_disable(ARRAY_SIZE(hsotg->supplies), hsotg->supplies);
+ 
+@@ -171,6 +181,9 @@ static int __dwc2_lowlevel_hw_disable(st
+ 	if (hsotg->clk)
+ 		clk_disable_unprepare(hsotg->clk);
+ 
++	if (hsotg->utmi_clk)
++		clk_disable_unprepare(hsotg->utmi_clk);
++
+ 	return regulator_bulk_disable(ARRAY_SIZE(hsotg->supplies), hsotg->supplies);
+ }
+ 
+@@ -260,6 +273,11 @@ static int dwc2_lowlevel_hw_init(struct
+ 	if (IS_ERR(hsotg->clk))
+ 		return dev_err_probe(hsotg->dev, PTR_ERR(hsotg->clk), "cannot get otg clock\n");
+ 
++	hsotg->utmi_clk = devm_clk_get_optional(hsotg->dev, "utmi");
++	if (IS_ERR(hsotg->utmi_clk))
++		return dev_err_probe(hsotg->dev, PTR_ERR(hsotg->utmi_clk),
++				     "cannot get utmi clock\n");
++
+ 	/* Regulators */
+ 	for (i = 0; i < ARRAY_SIZE(hsotg->supplies); i++)
+ 		hsotg->supplies[i].supply = dwc2_hsotg_supply_names[i];

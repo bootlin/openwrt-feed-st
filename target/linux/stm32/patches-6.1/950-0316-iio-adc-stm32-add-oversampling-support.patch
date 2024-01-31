@@ -1,0 +1,380 @@
+From f3e96f40f68e9f360f5248e31425047af4524c59 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 21 Oct 2022 14:44:40 +0200
+Subject: [PATCH 316/529] iio: adc: stm32: add oversampling support
+
+Add oversampling support for STM32H7, STM32MP15 & STM32MP13.
+STM32F4 ADC has no oversampling feature.
+
+The current support of the oversampling feature aims at increasing
+the data SNR, without changing the data resolution.
+As the oversampling by itself increases data resolution,
+a right shift is applied to keep initial resolution.
+Only the oversampling ratio corresponding to a power of two are
+supported here, to get a direct link between right shift and
+oversampling ratio. (2exp(n) ratio <=> n right shift)
+
+The oversampling ratio is shared by all channels, whatever channel type.
+(e.g. single ended or differential).
+
+Oversampling can be configured using IIO ABI:
+- in_voltage_oversampling_ratio_available
+- in_voltage_oversampling_ratio
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I3e03f1b732e1446824bb2fb062114d1e308d43af
+---
+ drivers/iio/adc/stm32-adc-core.h |  16 ++++
+ drivers/iio/adc/stm32-adc.c      | 144 +++++++++++++++++++++++++++++++
+ 2 files changed, 160 insertions(+)
+
+--- a/drivers/iio/adc/stm32-adc-core.h
++++ b/drivers/iio/adc/stm32-adc-core.h
+@@ -91,6 +91,7 @@
+ #define STM32H7_ADC_IER			0x04
+ #define STM32H7_ADC_CR			0x08
+ #define STM32H7_ADC_CFGR		0x0C
++#define STM32H7_ADC_CFGR2		0x10
+ #define STM32H7_ADC_SMPR1		0x14
+ #define STM32H7_ADC_SMPR2		0x18
+ #define STM32H7_ADC_PCSEL		0x1C
+@@ -160,6 +161,14 @@
+ #define STM32H7_DMNGT_SHIFT		0
+ #define STM32H7_DMNGT_MASK		GENMASK(1, 0)
+ 
++/* STM32H7_ADC_CFGR2 bit fields */
++#define STM32H7_OVSR_SHIFT		16 /* Correspond to OSVR field in datasheet */
++#define STM32H7_OVSR_MASK		GENMASK(25, 16)
++#define STM32H7_OVSR_BITS		10
++#define STM32H7_OVSS_SHIFT		5
++#define STM32H7_OVSS_MASK		GENMASK(8, 5)
++#define STM32H7_ROVSE			BIT(0)
++
+ enum stm32h7_adc_dmngt {
+ 	STM32H7_DMNGT_DR_ONLY,		/* Regular data in DR only */
+ 	STM32H7_DMNGT_DMA_ONESHOT,	/* DMA one shot mode */
+@@ -226,6 +235,13 @@ enum stm32h7_adc_dmngt {
+ #define STM32MP13_RES_SHIFT		3
+ #define STM32MP13_RES_MASK		GENMASK(4, 3)
+ 
++/* STM32MP13_ADC_CFGR2 bit fields */
++#define STM32MP13_OVSR_SHIFT		2
++#define STM32MP13_OVSR_MASK		GENMASK(4, 2)
++#define STM32MP13_OVSR_BITS		3
++#define STM32MP13_OVSS_SHIFT		5
++#define STM32MP13_OVSS_MASK		GENMASK(8, 5)
++
+ /* STM32MP13_ADC_DIFSEL - bit fields */
+ #define STM32MP13_DIFSEL_MASK		GENMASK(18, 0)
+ 
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -6,6 +6,7 @@
+  * Author: Fabrice Gasnier <fabrice.gasnier@st.com>.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+@@ -13,6 +14,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/iio/iio.h>
+ #include <linux/iio/buffer.h>
++#include <linux/iio/sysfs.h>
+ #include <linux/iio/timer/stm32-lptim-trigger.h>
+ #include <linux/iio/timer/stm32-timer-trigger.h>
+ #include <linux/iio/trigger.h>
+@@ -27,6 +29,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/property.h>
++#include <linux/util_macros.h>
+ 
+ #include "stm32-adc-core.h"
+ 
+@@ -202,11 +205,13 @@ struct stm32_adc;
+  * @has_boostmode:	boost mode support flag
+  * @has_linearcal:	linear calibration support flag
+  * @has_presel:		channel preselection support flag
++ * @has_oversampling:	oversampling support flag
+  * @prepare:		optional prepare routine (power-up, enable)
+  * @start_conv:		routine to start conversions
+  * @stop_conv:		routine to stop conversions
+  * @unprepare:		optional unprepare routine (disable, power-down)
+  * @irq_clear:		routine to clear irqs
++ * @set_ovs:		routine to set oversampling configuration
+  * @smp_cycles:		programmable sampling time (ADC clock cycles)
+  * @ts_int_ch:		pointer to array of internal channels minimum sampling time in ns
+  */
+@@ -219,11 +224,13 @@ struct stm32_adc_cfg {
+ 	bool has_boostmode;
+ 	bool has_linearcal;
+ 	bool has_presel;
++	bool has_oversampling;
+ 	int (*prepare)(struct iio_dev *);
+ 	void (*start_conv)(struct iio_dev *, bool dma);
+ 	void (*stop_conv)(struct iio_dev *);
+ 	void (*unprepare)(struct iio_dev *);
+ 	void (*irq_clear)(struct iio_dev *indio_dev, u32 msk);
++	void (*set_ovs)(struct iio_dev *indio_dev, u32 ovs_idx);
+ 	const unsigned int *smp_cycles;
+ 	const unsigned int *ts_int_ch;
+ };
+@@ -255,6 +262,7 @@ struct stm32_adc_cfg {
+  * @num_diff:		number of differential channels
+  * @int_ch:		internal channel indexes array
+  * @nsmps:		number of channels with optional sample time
++ * @ovs_idx:		current oversampling ratio index (in oversampling array)
+  */
+ struct stm32_adc {
+ 	struct stm32_adc_common	*common;
+@@ -282,6 +290,7 @@ struct stm32_adc {
+ 	u32			num_diff;
+ 	int			int_ch[STM32_ADC_INT_CH_NB];
+ 	int			nsmps;
++	int			ovs_idx;
+ };
+ 
+ struct stm32_adc_diff_channel {
+@@ -293,12 +302,24 @@ struct stm32_adc_diff_channel {
+  * struct stm32_adc_info - stm32 ADC, per instance config data
+  * @max_channels:	Number of channels
+  * @resolutions:	available resolutions
++ * @oversampling:	available oversampling ratios
+  * @num_res:		number of available resolutions
++ * @num_ovs:		number of available oversampling ratios
+  */
+ struct stm32_adc_info {
+ 	int max_channels;
+ 	const unsigned int *resolutions;
++	const unsigned int *oversampling;
+ 	const unsigned int num_res;
++	const unsigned int num_ovs;
++};
++
++static const unsigned int stm32h7_adc_oversampling_avail[] = {
++1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
++};
++
++static const unsigned int stm32mp13_adc_oversampling_avail[] = {
++1, 2, 4, 8, 16, 32, 64, 128, 256
+ };
+ 
+ static const unsigned int stm32f4_adc_resolutions[] = {
+@@ -322,14 +343,18 @@ static const unsigned int stm32h7_adc_re
+ static const struct stm32_adc_info stm32h7_adc_info = {
+ 	.max_channels = STM32_ADC_CH_MAX,
+ 	.resolutions = stm32h7_adc_resolutions,
++	.oversampling = stm32h7_adc_oversampling_avail,
+ 	.num_res = ARRAY_SIZE(stm32h7_adc_resolutions),
++	.num_ovs = ARRAY_SIZE(stm32h7_adc_oversampling_avail),
+ };
+ 
+ /* stm32mp13 can have up to 19 channels */
+ static const struct stm32_adc_info stm32mp13_adc_info = {
+ 	.max_channels = 19,
+ 	.resolutions = stm32f4_adc_resolutions,
++	.oversampling = stm32mp13_adc_oversampling_avail,
+ 	.num_res = ARRAY_SIZE(stm32f4_adc_resolutions),
++	.num_ovs = ARRAY_SIZE(stm32mp13_adc_oversampling_avail),
+ };
+ 
+ /*
+@@ -889,6 +914,44 @@ static void stm32mp13_adc_start_conv(str
+ 	stm32_adc_set_bits(adc, STM32H7_ADC_CR, STM32H7_ADSTART);
+ }
+ 
++static void stm32h7_adc_set_ovs(struct iio_dev *indio_dev, u32 ovs_idx)
++{
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	u32 ovsr_bits, bits, msk = STM32H7_ROVSE;
++
++	msk |= STM32H7_OVSR_MASK | STM32H7_OVSS_MASK;
++	stm32_adc_clr_bits(adc, STM32H7_ADC_CFGR2, msk);
++
++	if (!ovs_idx)
++		return;
++
++	bits = STM32H7_ROVSE;
++	ovsr_bits = (1 << ovs_idx) - 1;
++	bits |= ovsr_bits << STM32H7_OVSR_SHIFT;
++	bits |= ovs_idx << STM32H7_OVSS_SHIFT;
++
++	stm32_adc_set_bits(adc, STM32H7_ADC_CFGR2, bits & msk);
++}
++
++static void stm32mp13_adc_set_ovs(struct iio_dev *indio_dev, u32 ovs_idx)
++{
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	u32 bits, msk = STM32H7_ROVSE;
++
++	msk |= STM32MP13_OVSR_MASK | STM32MP13_OVSS_MASK;
++	stm32_adc_clr_bits(adc, STM32H7_ADC_CFGR2, msk);
++
++	if (!ovs_idx)
++		return;
++
++	bits = STM32H7_ROVSE;
++	if (ovs_idx - 1)
++		bits |= (ovs_idx - 1) << STM32MP13_OVSR_SHIFT;
++	bits |= ovs_idx << STM32MP13_OVSS_SHIFT;
++
++	stm32_adc_set_bits(adc, STM32H7_ADC_CFGR2, bits & msk);
++}
++
+ static int stm32h7_adc_exit_pwr_down(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_adc *adc = iio_priv(indio_dev);
+@@ -1461,6 +1524,71 @@ static int stm32_adc_single_conv(struct
+ 	return ret;
+ }
+ 
++static int stm32_adc_write_raw(struct iio_dev *indio_dev, struct iio_chan_spec const *chan,
++			       int val, int val2, long mask)
++{
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	struct device *dev = indio_dev->dev.parent;
++	int nb = adc->cfg->adc_info->num_ovs;
++	u32 idx;
++	int ret;
++
++	switch (mask) {
++	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
++		ret = iio_device_claim_direct_mode(indio_dev);
++		if (ret)
++			return ret;
++
++		if (val2) {
++			ret = -EINVAL;
++			goto err;
++		}
++
++		for (idx = 0; idx < nb; idx++)
++			if (adc->cfg->adc_info->oversampling[idx] == val)
++				break;
++
++		if (idx >= nb) {
++			ret = -EINVAL;
++			goto err;
++		}
++
++		ret = pm_runtime_resume_and_get(dev);
++		if (ret < 0)
++			goto err;
++
++		adc->cfg->set_ovs(indio_dev, idx);
++
++		pm_runtime_mark_last_busy(dev);
++		pm_runtime_put_autosuspend(dev);
++
++		adc->ovs_idx = idx;
++
++err:
++		iio_device_release_direct_mode(indio_dev);
++
++		return ret;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int stm32_adc_read_avail(struct iio_dev *indio_dev, struct iio_chan_spec const *chan,
++				const int **vals, int *type, int *length, long m)
++{
++	struct stm32_adc *adc = iio_priv(indio_dev);
++
++	switch (m) {
++	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
++		*type = IIO_VAL_INT;
++		*length = adc->cfg->adc_info->num_ovs;
++		*vals = adc->cfg->adc_info->oversampling;
++		return IIO_AVAIL_LIST;
++	default:
++		return -EINVAL;
++	}
++}
++
+ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
+ 			      struct iio_chan_spec const *chan,
+ 			      int *val, int *val2, long mask)
+@@ -1503,6 +1631,10 @@ static int stm32_adc_read_raw(struct iio
+ 			*val = 0;
+ 		return IIO_VAL_INT;
+ 
++	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
++		*val = adc->cfg->adc_info->oversampling[adc->ovs_idx];
++		return IIO_VAL_INT;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1679,6 +1811,8 @@ static int stm32_adc_debugfs_reg_access(
+ 
+ static const struct iio_info stm32_adc_iio_info = {
+ 	.read_raw = stm32_adc_read_raw,
++	.write_raw = stm32_adc_write_raw,
++	.read_avail = stm32_adc_read_avail,
+ 	.validate_trigger = stm32_adc_validate_trigger,
+ 	.hwfifo_set_watermark = stm32_adc_set_watermark,
+ 	.update_scan_mode = stm32_adc_update_scan_mode,
+@@ -1972,6 +2106,10 @@ static void stm32_adc_chan_init_one(stru
+ 		chan->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
+ 	chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |
+ 					 BIT(IIO_CHAN_INFO_OFFSET);
++	if (adc->cfg->has_oversampling) {
++		chan->info_mask_shared_by_all |= BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO);
++		chan->info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO);
++	}
+ 	chan->scan_type.sign = 'u';
+ 	chan->scan_type.realbits = adc->cfg->adc_info->resolutions[adc->res];
+ 	chan->scan_type.storagebits = 16;
+@@ -2601,6 +2739,7 @@ static const struct stm32_adc_cfg stm32h
+ 	.has_boostmode = true,
+ 	.has_linearcal = true,
+ 	.has_presel = true,
++	.has_oversampling = true,
+ 	.start_conv = stm32h7_adc_start_conv,
+ 	.stop_conv = stm32h7_adc_stop_conv,
+ 	.prepare = stm32h7_adc_prepare,
+@@ -2608,6 +2747,7 @@ static const struct stm32_adc_cfg stm32h
+ 	.smp_cycles = stm32h7_adc_smp_cycles,
+ 	.irq_clear = stm32h7_adc_irq_clear,
+ 	.ts_int_ch = stm32_adc_min_ts_h7,
++	.set_ovs = stm32h7_adc_set_ovs,
+ };
+ 
+ const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800 };
+@@ -2621,6 +2761,7 @@ static const struct stm32_adc_cfg stm32m
+ 	.has_boostmode = true,
+ 	.has_linearcal = true,
+ 	.has_presel = true,
++	.has_oversampling = true,
+ 	.start_conv = stm32h7_adc_start_conv,
+ 	.stop_conv = stm32h7_adc_stop_conv,
+ 	.prepare = stm32h7_adc_prepare,
+@@ -2628,6 +2769,7 @@ static const struct stm32_adc_cfg stm32m
+ 	.smp_cycles = stm32h7_adc_smp_cycles,
+ 	.irq_clear = stm32h7_adc_irq_clear,
+ 	.ts_int_ch = stm32_adc_min_ts_mp1,
++	.set_ovs = stm32h7_adc_set_ovs,
+ };
+ 
+ const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800 };
+@@ -2637,6 +2779,7 @@ static const struct stm32_adc_cfg stm32m
+ 	.regs = &stm32mp13_adc_regspec,
+ 	.adc_info = &stm32mp13_adc_info,
+ 	.trigs = stm32h7_adc_trigs,
++	.has_oversampling = true,
+ 	.start_conv = stm32mp13_adc_start_conv,
+ 	.stop_conv = stm32h7_adc_stop_conv,
+ 	.prepare = stm32h7_adc_prepare,
+@@ -2644,6 +2787,7 @@ static const struct stm32_adc_cfg stm32m
+ 	.smp_cycles = stm32mp13_adc_smp_cycles,
+ 	.irq_clear = stm32h7_adc_irq_clear,
+ 	.ts_int_ch = stm32_adc_min_ts_mp13,
++	.set_ovs = stm32mp13_adc_set_ovs,
+ };
+ 
+ static const struct of_device_id stm32_adc_of_match[] = {

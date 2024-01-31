@@ -1,0 +1,29 @@
+From 75c2f97e6bdd1dff7c8541c9a2ccec82bd54585b Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 10 Nov 2021 16:18:54 +0100
+Subject: [PATCH 235/529] dt-bindings: mfd: document power-domains property for
+ stm32 lptimer
+
+Add power-domains to STM32 low power timer bindings.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I0ff82a04e55eddbaf5ac1b47554d49aaac6db345
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/227552
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -44,6 +44,9 @@ properties:
+ 
+   wakeup-source: true
+ 
++  power-domains:
++    maxItems: 1
++
+   pwm:
+     type: object
+     additionalProperties: false

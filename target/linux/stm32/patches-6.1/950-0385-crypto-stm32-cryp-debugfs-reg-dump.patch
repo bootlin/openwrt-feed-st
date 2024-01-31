@@ -1,0 +1,104 @@
+From f951e2988b16a5182001e31955159e8da60bbb93 Mon Sep 17 00:00:00 2001
+From: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+Date: Wed, 9 Mar 2022 10:21:08 +0100
+Subject: [PATCH 385/529] crypto: stm32/cryp - debugfs reg dump
+
+Add debugfs entry to be able to dump status, control and DMA registers in
+STM32 CRYP IP.
+
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@foss.st.com>
+Change-Id: I140c361f767e3ecb0c8ac47858a9c122662bd455
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/245562
+Tested-by: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+Reviewed-by: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 40 +++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/debugfs.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
+@@ -62,6 +63,21 @@
+ #define CRYP_CSGCMCCM0R         0x00000050
+ #define CRYP_CSGCM0R            0x00000070
+ 
++static const struct debugfs_reg32 stm32_cryp_regs[] = {
++	{
++		.name = "cr",
++		.offset = CRYP_CR
++	},
++	{
++		.name = "sr",
++		.offset = CRYP_SR
++	},
++	{
++		.name = "dmacr",
++		.offset = CRYP_DMACR
++	}
++};
++
+ /* Registers values */
+ #define CR_DEC_NOT_ENC          0x00000004
+ #define CR_TDES_ECB             0x00000000
+@@ -132,6 +148,7 @@ struct stm32_cryp {
+ 	u32                     irq_status;
+ 	const struct stm32_cryp_caps *caps;
+ 	struct stm32_cryp_ctx   *ctx;
++	struct dentry           *dbgdir;
+ 
+ 	struct crypto_engine    *engine;
+ 
+@@ -1739,6 +1756,25 @@ static const struct of_device_id stm32_d
+ };
+ MODULE_DEVICE_TABLE(of, stm32_dt_ids);
+ 
++static void cryp_debugfs(struct stm32_cryp *cryp)
++{
++	struct debugfs_regset32 *regset;
++
++	cryp->dbgdir = debugfs_create_dir("stm32_cryp", NULL);
++	if (IS_ERR_OR_NULL(cryp->dbgdir))
++		return;
++
++	regset = devm_kzalloc(cryp->dev, sizeof(*regset), GFP_KERNEL);
++	if (!regset)
++		return;
++
++	regset->regs = stm32_cryp_regs;
++	regset->nregs = ARRAY_SIZE(stm32_cryp_regs);
++	regset->base = cryp->regs;
++
++	debugfs_create_regset32("regset", 0444, cryp->dbgdir, regset);
++}
++
+ static int stm32_cryp_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -1833,6 +1869,7 @@ static int stm32_cryp_probe(struct platf
+ 	if (ret)
+ 		goto err_aead_algs;
+ 
++	cryp_debugfs(cryp);
+ 	dev_info(dev, "Initialized\n");
+ 
+ 	pm_runtime_put_sync(dev);
+@@ -1869,6 +1906,9 @@ static int stm32_cryp_remove(struct plat
+ 	if (ret < 0)
+ 		return ret;
+ 
++	debugfs_remove_recursive(cryp->dbgdir);
++	cryp->dbgdir = NULL;
++
+ 	crypto_unregister_aeads(aead_algs, ARRAY_SIZE(aead_algs));
+ 	crypto_unregister_skciphers(crypto_algs, ARRAY_SIZE(crypto_algs));
+ 

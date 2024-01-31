@@ -1,0 +1,46 @@
+From b48958b14eee22321b74671981b689b570e3100e Mon Sep 17 00:00:00 2001
+From: Erwan Le Ray <erwan.leray@foss.st.com>
+Date: Thu, 6 May 2021 15:58:57 +0200
+Subject: [PATCH 105/529] dt-bindings: rs485: add support of delays in
+ nanoseconds
+
+Add rs485-rts-delay-ns (in nanoseconds) property.
+This extends the range of delay values for user to microseconds and
+nanoseconds.
+
+The code defines the rs485 delay in milliseconds.
+With fast data rates (1 Mbps or more), 1 ms become quite long. Users need
+to be able to set shorter delays than 1 ms in order not to slow down the
+channel unnecessarily. This enables faster communication channels without
+changing the baudrate.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+---
+ .../devicetree/bindings/serial/rs485.yaml        | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+--- a/Documentation/devicetree/bindings/serial/rs485.yaml
++++ b/Documentation/devicetree/bindings/serial/rs485.yaml
+@@ -29,6 +29,22 @@ properties:
+           default: 0
+           maximum: 100
+ 
++  rs485-rts-delay-ns:
++    description: prop-encoded-array <a b>
++    maxItems: 1
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    items:
++      items:
++        - description: Delay between rts signal and beginning of data sent in
++            nanoseconds. It corresponds to the delay before sending data.
++          default: 0
++          maximum: 1000
++        - description: Delay between end of data sent and rts signal in nanoseconds.
++            It corresponds to the delay after sending data and actual release
++            of the line.
++          default: 0
++          maximum: 1000
++
+   rs485-rts-active-low:
+     description: drive RTS low when sending (default is high).
+     $ref: /schemas/types.yaml#/definitions/flag

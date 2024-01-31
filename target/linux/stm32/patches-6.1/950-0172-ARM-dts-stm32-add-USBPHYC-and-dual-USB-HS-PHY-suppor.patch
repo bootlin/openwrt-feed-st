@@ -1,0 +1,51 @@
+From 35853c61ca1a55df175f4d726cd44269ff13970d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 14 Oct 2022 16:15:01 +0200
+Subject: [PATCH 172/529] ARM: dts: stm32: add USBPHYC and dual USB HS PHY
+ support on stm32mp131
+
+This patch adds support for USBPHYC and its two USB HS PHY on stm32mp131.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+(cherry picked from commit f54271ff0c694876ed34081f562579b5c25aad88)
+Change-Id: Iead25d55f7f4237d5f1a8b7e6378fddbf04f225d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279511
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -588,6 +588,29 @@
+ 			status = "disabled";
+ 		};
+ 
++		usbphyc: usbphyc@5a006000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			#clock-cells = <0>;
++			compatible = "st,stm32mp1-usbphyc";
++			reg = <0x5a006000 0x1000>;
++			clocks = <&rcc USBPHY_K>;
++			resets = <&rcc USBPHY_R>;
++			vdda1v1-supply = <&scmi_reg11>;
++			vdda1v8-supply = <&scmi_reg18>;
++			status = "disabled";
++
++			usbphyc_port0: usb-phy@0 {
++				#phy-cells = <0>;
++				reg = <0>;
++			};
++
++			usbphyc_port1: usb-phy@1 {
++				#phy-cells = <1>;
++				reg = <1>;
++			};
++		};
++
+ 		ddrperfm: perf@5a007000 {
+ 			compatible = "st,stm32-ddr-pmu";
+ 			reg = <0x5a007000 0x400>;

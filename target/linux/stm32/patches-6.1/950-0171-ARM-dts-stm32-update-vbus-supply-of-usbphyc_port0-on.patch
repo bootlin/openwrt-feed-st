@@ -1,0 +1,74 @@
+From cd6688681b5acf9164fce24c5ac75945c6abc5e4 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Mon, 28 Nov 2022 16:21:01 +0100
+Subject: [PATCH 171/529] ARM: dts: stm32: update vbus-supply of usbphyc_port0
+ on stm32mp157x ev1
+
+phy-stm32-usbphyc bindings uses a connector node with vbus-supply
+property. This is used when JP7 jumper is plugged on pins 2-3 :
+- Vbus supplied by VBUS_SW - PMIC switch, booster output
+
+Change-Id: I701ff0183c5216502cd267ea152cfe9860b53f39
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279510
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-ev1.dts | 4 ++++
+ arch/arm/boot/dts/stm32mp157c-ev1.dts | 4 ++++
+ arch/arm/boot/dts/stm32mp157d-ev1.dts | 4 ++++
+ arch/arm/boot/dts/stm32mp157f-ev1.dts | 4 ++++
+ 4 files changed, 16 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
+@@ -393,6 +393,10 @@
+ 	st,tune-squelch-level = <3>;
+ 	st,tune-hs-rx-offset = <2>;
+ 	st,no-lsfs-sc;
++	connector {
++		compatible = "usb-a-connector";
++		vbus-supply = <&vbus_sw>;
++	};
+ };
+ 
+ &usbphyc_port1 {
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -401,6 +401,10 @@
+ 	st,tune-squelch-level = <3>;
+ 	st,tune-hs-rx-offset = <2>;
+ 	st,no-lsfs-sc;
++	connector {
++		compatible = "usb-a-connector";
++		vbus-supply = <&vbus_sw>;
++	};
+ };
+ 
+ &usbphyc_port1 {
+--- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+@@ -393,6 +393,10 @@
+ 	st,tune-squelch-level = <3>;
+ 	st,tune-hs-rx-offset = <2>;
+ 	st,no-lsfs-sc;
++	connector {
++		compatible = "usb-a-connector";
++		vbus-supply = <&vbus_sw>;
++	};
+ };
+ 
+ &usbphyc_port1 {
+--- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+@@ -393,6 +393,10 @@
+ 	st,tune-squelch-level = <3>;
+ 	st,tune-hs-rx-offset = <2>;
+ 	st,no-lsfs-sc;
++	connector {
++		compatible = "usb-a-connector";
++		vbus-supply = <&vbus_sw>;
++	};
+ };
+ 
+ &usbphyc_port1 {

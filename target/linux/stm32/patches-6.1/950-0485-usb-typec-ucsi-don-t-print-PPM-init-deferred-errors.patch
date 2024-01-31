@@ -1,0 +1,48 @@
+From 4fd440b4dbfe6d35b23d1e6dc26793272afa8de4 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Wed, 12 Apr 2023 17:58:42 +0200
+Subject: [PATCH 485/529] usb: typec: ucsi: don't print PPM init deferred
+ errors
+
+ucsi_init() may be deferred as usb_role_sw may be deferred in
+ucsi_register_port(). This results in several PPM init failed (-517)
+messages maybe printed several times upon boot, like on stm32mp135f-dk
+board, until the role_switch driver gets probed.
+
+[   19.880945] dwc2 49000000.usb: supply vusb_d not found, using dummy regulator
+[   19.887136] dwc2 49000000.usb: supply vusb_a not found, using dummy regulator
+[   19.975432] ucsi-stm32g0-i2c 0-0053: PPM init failed (-517)
+[   20.155746] dwc2 49000000.usb: EPs: 9, dedicated fifos, 952 entries in SPRAM
+[   20.175429] ucsi-stm32g0-i2c 0-0053: PPM init failed (-517)
+[   20.184242] dwc2 49000000.usb: DWC OTG Controller
+
+Adopt dev_err_probe() instead of dev_err(), to only print other errors.
+Also print an error in case the wait count has expired.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I04bcbec3618229f92bab6c046b6e98dc1f8c64fd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/300541
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/usb/typec/ucsi/ucsi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -1317,11 +1317,13 @@ static void ucsi_init_work(struct work_s
+ 
+ 	ret = ucsi_init(ucsi);
+ 	if (ret)
+-		dev_err(ucsi->dev, "PPM init failed (%d)\n", ret);
++		dev_err_probe(ucsi->dev, ret, "PPM init failed\n");
+ 
+ 	if (ret == -EPROBE_DEFER) {
+-		if (ucsi->work_count++ > UCSI_ROLE_SWITCH_WAIT_COUNT)
++		if (ucsi->work_count++ > UCSI_ROLE_SWITCH_WAIT_COUNT) {
++			dev_err(ucsi->dev, "PPM init failed, stop trying\n");
+ 			return;
++		}
+ 
+ 		queue_delayed_work(system_long_wq, &ucsi->work,
+ 				   UCSI_ROLE_SWITCH_INTERVAL);

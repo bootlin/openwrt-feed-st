@@ -1,0 +1,36 @@
+From edcecc6c8557b9a6ee5f2beaef1aed144be03777 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 11 Oct 2021 11:31:40 +0200
+Subject: [PATCH 253/529] drm/panel: otm8009a: reset the panel during the probe
+
+Due to a common reset gpio between touchscreen and panel, it's not possible
+to let the panel is reset during the probe.
+To avoid visual artifacts a reset of panel is enough.
+
+NOT_UPSTREAMABLE issue link to disco hardware implementation.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: Ib7cdb5bac4832072e0f1b93c1ae9d882895ab25f
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228181
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
++++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+@@ -452,6 +452,14 @@ static int otm8009a_probe(struct mipi_ds
+ 		return ret;
+ 	}
+ 
++	/* Reset the panel to avoid visual artifacts */
++	if (ctx->reset_gpio) {
++		gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++		msleep(20);
++		gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++	}
++
+ 	ctx->supply = devm_regulator_get(dev, "power");
+ 	if (IS_ERR(ctx->supply)) {
+ 		ret = PTR_ERR(ctx->supply);

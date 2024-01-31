@@ -1,0 +1,34 @@
+From cafe9a87c231b1ef6e84235dddb22e9bbac9cdb6 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 6 Dec 2022 15:24:31 +0100
+Subject: [PATCH 228/529] ARM: dts: stm32: add sleep pins for spi1 in
+ stm32mp15-pinctrl
+
+Add sleep pins for spi1 in stm32mp15-pinctrl.dtsi
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Icb00a2c8b7af3179a16eceaa1690054d4f06fdf8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279423
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -2548,4 +2548,12 @@
+ 			bias-disable;
+ 		};
+ 	};
++
++	spi1_sleep_pins_a: spi1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 0, ANALOG)>, /* SPI1_SCK */
++				 <STM32_PINMUX('Z', 1, ANALOG)>, /* SPI1_MISO */
++				 <STM32_PINMUX('Z', 2, ANALOG)>; /* SPI1_MOSI */
++		};
++	};
+ };

@@ -1,0 +1,56 @@
+From 7f0386c23d406f7b3fad6094e0ee51c26885881c Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Mon, 13 Feb 2023 17:56:32 +0100
+Subject: [PATCH 423/529] usb: dwc2: improve error handling in
+ __dwc2_lowlevel_hw_enable
+
+Add error handling in __dwc2_lowlevel_hw_enable() that may leave the
+clocks and regulators enabled upon error.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ie460dbb1005804fd3d6033f4f56d2d5767acd00e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291409
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/usb/dwc2/platform.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -104,7 +104,7 @@ static int __dwc2_lowlevel_hw_enable(str
+ 	if (hsotg->clk) {
+ 		ret = clk_prepare_enable(hsotg->clk);
+ 		if (ret)
+-			return ret;
++			goto err_dis_reg;
+ 	}
+ 
+ 	if (hsotg->uphy) {
+@@ -113,10 +113,25 @@ static int __dwc2_lowlevel_hw_enable(str
+ 		ret = hsotg->plat->phy_init(pdev, hsotg->plat->phy_type);
+ 	} else {
+ 		ret = phy_init(hsotg->phy);
+-		if (ret == 0)
++		if (ret == 0) {
+ 			ret = phy_power_on(hsotg->phy);
++			if (ret)
++				phy_exit(hsotg->phy);
++		}
+ 	}
+ 
++	if (ret)
++		goto err_dis_clk;
++
++	return 0;
++
++err_dis_clk:
++	if (hsotg->clk)
++		clk_disable_unprepare(hsotg->clk);
++
++err_dis_reg:
++	regulator_bulk_disable(ARRAY_SIZE(hsotg->supplies), hsotg->supplies);
++
+ 	return ret;
+ }
+ 

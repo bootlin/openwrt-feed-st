@@ -1,0 +1,51 @@
+From 79864907a59b62c73a2cb96d625c6c342e271879 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 18 Nov 2021 18:15:41 +0100
+Subject: [PATCH 157/529] usb: dwc2: hcd: disable interrupts upon suspend to
+ avoid interrupt storm
+
+On stm32mp15, upon resume from low power (stop) mode, a port interrupt
+storm is seen, far before the resume occurs:
+- before the hardware is accessible
+- before dwc2_hcd_resume() and dwc2_enable_global_interrupts() calls.
+To avoid this, disable the global interrupts in dwc2_hcd_suspend, that are
+later restored upon resume. Enabling interrupts is now done when the HW is
+accessible.
+
+Fixes: ef5e0eec4764 ("usb: dwc2: Add clock gating exiting flow by system resume")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I6bdfd13c1a8919005e11c0217619ea8890fb2944
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229467
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/hcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4374,6 +4374,7 @@ static int _dwc2_hcd_suspend(struct usb_
+ 		 * clock gating is used to save power.
+ 		 */
+ 		if (!hsotg->params.no_clock_gating) {
++			dwc2_disable_global_interrupts(hsotg);
+ 			dwc2_host_enter_clock_gating(hsotg);
+ 
+ 			/* After entering suspend, hardware is not accessible */
+@@ -4466,7 +4467,6 @@ static int _dwc2_hcd_resume(struct usb_h
+ 		 * the global interrupts are disabled.
+ 		 */
+ 		dwc2_core_init(hsotg, false);
+-		dwc2_enable_global_interrupts(hsotg);
+ 		dwc2_hcd_reinit(hsotg);
+ 		spin_lock_irqsave(&hsotg->lock, flags);
+ 
+@@ -4475,6 +4475,8 @@ static int _dwc2_hcd_resume(struct usb_h
+ 		 * since an interrupt may rise.
+ 		 */
+ 		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
++		dwc2_enable_global_interrupts(hsotg);
++
+ 		break;
+ 	default:
+ 		hsotg->lx_state = DWC2_L0;

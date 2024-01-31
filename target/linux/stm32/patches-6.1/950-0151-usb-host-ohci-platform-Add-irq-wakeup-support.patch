@@ -1,0 +1,80 @@
+From 68e47379ceea232e32579a0445a55d424c113a76 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 7 Jul 2021 15:37:22 +0200
+Subject: [PATCH 151/529] usb: host: ohci-platform: Add irq wakeup support
+
+OHCI controller could be used as a wakeup source.
+
+device_wakeup_enable systematically returns -EINVAL due to the fact that
+hcd->self.controller->power.can_wakeup is not initialized.
+Check the device tree property wakeup-source, to know if the controller is
+wakeup capable and set wakeup capable accordingly.
+
+The controller will be able to wakeup the system only if a usb device with
+wakeup enabled is plugged so, that's why we check both device_may_wakeup
+or device_wakeup_path in suspend. If the conditions are met to wakeup the
+system, then, enable the wake irq, otherwise let the system going into
+deeper low power state.
+
+Reverse things back on resume.
+
+Change-Id: Ibaebc265b1efb934b195b57d0d0c501ab029ac04
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/213950
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/host/ohci-platform.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/host/ohci-platform.c
++++ b/drivers/usb/host/ohci-platform.c
+@@ -215,7 +215,8 @@ static int ohci_platform_probe(struct pl
+ 	if (err)
+ 		goto err_power;
+ 
+-	device_wakeup_enable(hcd->self.controller);
++	if (of_property_read_bool(dev->dev.of_node, "wakeup-source"))
++		device_set_wakeup_capable(hcd->self.controller, true);
+ 
+ 	platform_set_drvdata(dev, hcd);
+ 
+@@ -246,6 +247,9 @@ static int ohci_platform_remove(struct p
+ 	struct ohci_platform_priv *priv = hcd_to_ohci_priv(hcd);
+ 	int clk;
+ 
++	if (of_property_read_bool(dev->dev.of_node, "wakeup-source"))
++		device_set_wakeup_capable(hcd->self.controller, false);
++
+ 	pm_runtime_get_sync(&dev->dev);
+ 	usb_remove_hcd(hcd);
+ 
+@@ -274,7 +278,7 @@ static int ohci_platform_suspend(struct
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct usb_ohci_pdata *pdata = dev->platform_data;
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	bool do_wakeup = device_may_wakeup(dev);
++	bool do_wakeup = device_may_wakeup(dev) || device_wakeup_path(dev);
+ 	int ret;
+ 
+ 	ret = ohci_suspend(hcd, do_wakeup);
+@@ -284,6 +288,9 @@ static int ohci_platform_suspend(struct
+ 	if (pdata->power_suspend)
+ 		pdata->power_suspend(pdev);
+ 
++	if (do_wakeup)
++		enable_irq_wake(hcd->irq);
++
+ 	return ret;
+ }
+ 
+@@ -293,6 +300,9 @@ static int ohci_platform_resume_common(s
+ 	struct usb_ohci_pdata *pdata = dev_get_platdata(dev);
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 
++	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++		disable_irq_wake(hcd->irq);
++
+ 	if (pdata->power_on) {
+ 		int err = pdata->power_on(pdev);
+ 		if (err < 0)

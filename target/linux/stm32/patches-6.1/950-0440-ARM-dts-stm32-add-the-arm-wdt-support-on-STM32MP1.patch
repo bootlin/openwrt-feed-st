@@ -1,0 +1,50 @@
+From 532986745752e3ab97305ddb0ee7b7c1cfb1d008 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Tue, 11 Apr 2023 00:10:47 +0200
+Subject: [PATCH 440/529] ARM: dts: stm32: add the arm-wdt support on STM32MP1
+
+Add the support for arm-wdt for STM32MP13 and STM32MP15.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: If2e3f30caed2ea4589ff947be223c5e332687aaf
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299847
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 6 ++++++
+ arch/arm/boot/dts/stm32mp151.dtsi | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -44,6 +44,12 @@
+ 		interrupt-parent = <&intc>;
+ 	};
+ 
++	arm_wdt: watchdog {
++		compatible = "arm,smc-wdt";
++		arm,smc-id = <0xb200005a>;
++		status = "disabled";
++	};
++
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -48,6 +48,12 @@
+ 		interrupt-parent = <&intc>;
+ 	};
+ 
++	arm_wdt: watchdog {
++		compatible = "arm,smc-wdt";
++		arm,smc-id = <0xb200005a>;
++		status = "disabled";
++	};
++
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";

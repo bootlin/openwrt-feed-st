@@ -1,0 +1,76 @@
+From 6d91fc55b64e7b5344f6900476da66b5e2528f3e Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Wed, 26 Oct 2022 15:13:43 +0200
+Subject: [PATCH 128/529] ARM: dts: stm32: add power-domains in stm32mp15x uart
+ nodes
+
+On stm32mp15 soc, add UART devices to "pd_core" power domain.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ie1b5cf90285d4c348e9362c53a0986f64a1a08a3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278407
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -488,6 +488,7 @@
+ 			interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART2_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 43 0x400 0x15>,
+ 			       <&dmamux1 44 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -500,6 +501,7 @@
+ 			interrupts-extended = <&exti 28 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART3_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 45 0x400 0x15>,
+ 			       <&dmamux1 46 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -525,6 +527,7 @@
+ 			interrupts-extended = <&exti 31 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART5_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 65 0x400 0x15>,
+ 			       <&dmamux1 66 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -634,6 +637,7 @@
+ 			interrupts-extended = <&exti 32 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART7_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 79 0x400 0x15>,
+ 			       <&dmamux1 80 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -646,6 +650,7 @@
+ 			interrupts-extended = <&exti 33 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART8_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 81 0x400 0x15>,
+ 			       <&dmamux1 82 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -740,6 +745,7 @@
+ 			interrupts-extended = <&exti 29 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART6_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 71 0x400 0x15>,
+ 			       <&dmamux1 72 0x400 0x11>;
+ 			dma-names = "rx", "tx";
+@@ -1665,6 +1671,7 @@
+ 			interrupts-extended = <&exti 26 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART1_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			status = "disabled";
+ 		};
+ 

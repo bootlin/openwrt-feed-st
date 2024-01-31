@@ -1,0 +1,32 @@
+From 3a428ecfd3d2164e3a2cab947476f9247c62ed4e Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 15 Dec 2022 14:53:05 +0100
+Subject: [PATCH 307/529] ARM: configs: enable RPMSG modules in multi_v7 addons
+ fragment
+
+This patch adds fragments for following generic drivers:
+- RPMSG virtio transport
+- RPMSG TTY service
+- RPMSG CHAR service
+- RPMSG CTRL service
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283867
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Id4cc49660fb9e5fe70c9eb105df1b145ed08ae9d
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -44,6 +44,10 @@ CONFIG_PREEMPT_COUNT=y
+ CONFIG_PROFILING=y
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_REGULATOR_PROTECTION_CONSUMER=y
++CONFIG_RPMSG_CHAR=m
++CONFIG_RPMSG_CTRL=m
++CONFIG_RPMSG_TTY=m
++CONFIG_RPMSG_VIRTIO=y
+ CONFIG_SCHED_MC=y
+ CONFIG_SENSORS_IIO_HWMON=y
+ CONFIG_SERIAL_NONSTANDARD=y

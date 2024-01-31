@@ -1,0 +1,25 @@
+From 5a5e92c32c88e5a8c8ae90d909f8efdac2a6f5e6 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Mon, 15 Nov 2021 17:03:04 +0100
+Subject: [PATCH 337/529] ARM: multi_v7_defconfig: enable STM32 DCMIPP media
+ support
+
+Enables support of STM32 DCMIPP V4L2 media driver.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Change-Id: Id15279ae14c8294cf0771c03ea345eb65b373a2b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/282541
+---
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -665,6 +665,7 @@ CONFIG_V4L_MEM2MEM_DRIVERS=y
+ CONFIG_VIDEO_ASPEED=m
+ CONFIG_VIDEO_ATMEL_ISC=m
+ CONFIG_VIDEO_ATMEL_XISC=m
++CONFIG_VIDEO_STM32_DCMIPP=m
+ CONFIG_VIDEO_ATMEL_ISI=m
+ CONFIG_VIDEO_MICROCHIP_CSI2DC=m
+ CONFIG_VIDEO_MMP_CAMERA=m

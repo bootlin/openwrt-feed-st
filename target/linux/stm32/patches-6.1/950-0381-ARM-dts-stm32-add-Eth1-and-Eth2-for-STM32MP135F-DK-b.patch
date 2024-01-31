@@ -1,0 +1,87 @@
+From 9d7353970f97879ef6ec724daac47c1c6e317ada Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 11 Jan 2023 14:00:27 +0100
+Subject: [PATCH 381/529] ARM: dts: stm32: add Eth1 and Eth2 for STM32MP135F-DK
+ board
+
+Add dual Ethernet:
+-Eth1: RMII with crystal
+-Eth2: RMII without crystal
+
+With ETH1, we can performed WoL from PHY instead of GMAC point of view.
+(in this case IRQ for WoL is managed as wakeup pin and configured
+in OS secure)
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Ica1c03890b3331e318b8c6a83ada0499a22032a9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/284373
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 48 ++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -20,6 +20,8 @@
+ 	compatible = "st,stm32mp135f-dk", "st,stm32mp135";
+ 
+ 	aliases {
++		ethernet0 = &eth1;
++		ethernet1 = &eth2;
+ 		serial0 = &uart4;
+ 		serial1 = &usart1;
+ 		serial2 = &uart8;
+@@ -200,6 +202,52 @@
+ 	status = "okay";
+ };
+ 
++&eth1 {
++	status = "okay";
++	pinctrl-0 = <&eth1_rmii_pins_a>;
++	pinctrl-1 = <&eth1_rmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
++	phy-mode = "rmii";
++	max-speed = <100>;
++	phy-handle = <&phy0_eth1>;
++
++	mdio1 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy0_eth1: ethernet-phy@0 {
++			compatible = "ethernet-phy-id0007.c131";
++			reset-gpios =  <&mcp23017 9 GPIO_ACTIVE_LOW>;
++			reg = <0>;
++			wakeup-source;
++		};
++	};
++};
++
++&eth2 {
++	status = "okay";
++	pinctrl-0 = <&eth2_rmii_pins_a>;
++	pinctrl-1 = <&eth2_rmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
++	phy-mode = "rmii";
++	max-speed = <100>;
++	phy-handle = <&phy0_eth2>;
++	st,ext-phyclk;
++	phy-supply = <&scmi_v3v3_sw>;
++
++	mdio1 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++		phy0_eth2: ethernet-phy@0 {
++			compatible = "ethernet-phy-id0007.c131";
++			reset-gpios = <&mcp23017 10 GPIO_ACTIVE_LOW>;
++			reg = <0>;
++		};
++	};
++};
++
+ &i2c1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c1_pins_a>;

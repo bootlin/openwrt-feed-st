@@ -1,0 +1,28 @@
+From be9e3257b8e1bda7c23b8dcf79dc93f5f4ca6fa1 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 19 Jan 2023 15:48:51 +0100
+Subject: [PATCH 403/529] ARM: configs: enable MTD_SPI_NAND in multi_v7 addons
+ fragment
+
+This patch enables SPI_NAND support
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I705e2bc2ac40015285169b4f0dc479ed11fbf3d9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/285891
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -31,6 +31,7 @@ CONFIG_LEGACY_PTY_COUNT=8
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_MCPM=y
+ CONFIG_MEMCG=y
++CONFIG_MTD_SPI_NAND=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
+ CONFIG_NVMEM_STM32_ROMEM=y

@@ -1,0 +1,26 @@
+From df5e9b04bb5d90ae42f40f7f44e8d7138f782a8f Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 27 Sep 2021 15:09:23 +0200
+Subject: [PATCH 051/529] dt-bindings: nvmem: add new stm32mp13 compatible for
+ stm32-romem
+
+Add a new compatible for stm32mp13 support.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ifc1812116ff63f5501f3edd155d3cf5c0ecc846c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/266098
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
+@@ -22,6 +22,7 @@ properties:
+   compatible:
+     enum:
+       - st,stm32f4-otp
++      - st,stm32mp13-bsec
+       - st,stm32mp15-bsec
+ 
+   reg:

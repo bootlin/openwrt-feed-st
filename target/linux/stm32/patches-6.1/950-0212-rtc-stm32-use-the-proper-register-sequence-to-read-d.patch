@@ -1,0 +1,36 @@
+From 1fded090d5bab659998faa371917dbf709d5b81c Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 12 Jul 2021 16:57:27 +0200
+Subject: [PATCH 212/529] rtc: stm32: use the proper register sequence to read
+ date/time
+
+Date and time are read from two separate RTC registers.
+To ensure consistency between the two registers, reading the time
+register locks the values in the shadow date register until the
+date register is read.
+Thus, the whole date/time read requires reading the time register
+first, followed by reading the date register.
+If the reads are done in reversed order, the shadow date register
+will remain locked until a future read operation. The future read
+will read the former date value that could be already invalid.
+
+Fix the read order of date/time registers in stm32_rtc_valid_alrm()
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ibb45f965c455481b47e401cf01c58ac165c66ff0
+---
+ drivers/rtc/rtc-stm32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -430,8 +430,8 @@ static int stm32_rtc_valid_alrm(struct s
+ {
+ 	const struct stm32_rtc_registers *regs = &rtc->data->regs;
+ 	int cur_day, cur_mon, cur_year, cur_hour, cur_min, cur_sec;
+-	unsigned int dr = readl_relaxed(rtc->base + regs->dr);
+ 	unsigned int tr = readl_relaxed(rtc->base + regs->tr);
++	unsigned int dr = readl_relaxed(rtc->base + regs->dr);
+ 
+ 	cur_day = (dr & STM32_RTC_DR_DATE) >> STM32_RTC_DR_DATE_SHIFT;
+ 	cur_mon = (dr & STM32_RTC_DR_MONTH) >> STM32_RTC_DR_MONTH_SHIFT;

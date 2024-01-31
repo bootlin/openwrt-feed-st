@@ -1,0 +1,35 @@
+From 9182e5d29dc93a8d87055e99a6736f5720ed654e Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Tue, 17 Jan 2023 14:40:59 +0100
+Subject: [PATCH 397/529] ARM: dts: stm32: add RNG node for stm32mp13
+
+Adds RNG node in stm32mp13 SoC device tree file.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Idc3ccde79360c4c8e6e3d53bc9dd877400c7a463
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/285421
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -1382,6 +1382,14 @@
+ 			status = "disabled";
+ 		};
+ 
++		rng: rng@54004000 {
++			compatible = "st,stm32mp13-rng";
++			reg = <0x54004000 0x400>;
++			clocks = <&rcc RNG1_K>;
++			resets = <&rcc RNG1_R>;
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;

@@ -1,0 +1,30 @@
+From b6205649d7f95a6f481847fa9845134d5441d7ec Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 15 Nov 2022 11:13:11 +0100
+Subject: [PATCH 093/529] ARM: dts: stm32: add uart4 power domain on stm32mp151
+
+Add power domain description for STM32 UART4 wake-up on STM32MP151.
+UART4 is able to wake-up from LP-Stop mode, so it uses pd_core domain.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I23531a3284674ca7f977df34fc76c2d8a5ed70c0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228683
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/276994
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -512,6 +512,7 @@
+ 			interrupts-extended = <&exti 30 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART4_K>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			dmas = <&dmamux1 63 0x400 0x15>,
+ 			       <&dmamux1 64 0x400 0x11>;
+ 			dma-names = "rx", "tx";

@@ -1,0 +1,30 @@
+From cc546334f86ca3f0dab87ca15a4b907cc1075f31 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@st.com>
+Date: Thu, 19 Dec 2019 08:54:22 +0100
+Subject: [PATCH 099/529] regulator: stm32-pwr: don't print an error on probe
+ deferral
+
+Change stm32-pwr driver to not print a error message when device
+probe operation is deferred.
+
+Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Change-Id: I471fd97856a113a513dbd96f5dbebca77365c848
+---
+ drivers/regulator/stm32-pwr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/drivers/regulator/stm32-pwr.c
++++ b/drivers/regulator/stm32-pwr.c
+@@ -164,7 +164,8 @@ static int is_stm32_soc_secured(struct p
+ 
+ 	syscon = syscon_regmap_lookup_by_phandle(np, "st,tzcr");
+ 	if (IS_ERR(syscon)) {
+-		dev_err(&pdev->dev, "tzcr syscon required !\n");
++		if (PTR_ERR(syscon) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "tzcr syscon required\n");
+ 		return PTR_ERR(syscon);
+ 	}
+ 

@@ -1,0 +1,89 @@
+From 8e1a602758f9ddf4e6b7e7073a44416a049dc709 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 7 Nov 2022 14:25:58 +0100
+Subject: [PATCH 197/529] ARM: dts: stm32: add sai support to stm32mp13x soc
+ family
+
+Add SAI1 and SAI2 support to STM32MP13x SoC family.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I79af484702fa4108c106e6013f82d33638e92e6d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278995
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 63 +++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -335,6 +335,69 @@
+ 			status = "disabled";
+ 		};
+ 
++		sai1: sai@4400a000 {
++			compatible = "st,stm32h7-sai";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x4400a000 0x400>;
++			reg = <0x4400a000 0x4>, <0x4400a3f0 0x10>;
++			interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
++			resets = <&rcc SAI1_R>;
++			status = "disabled";
++
++			sai1a: audio-controller@4400a004 {
++				#sound-dai-cells = <0>;
++
++				compatible = "st,stm32-sai-sub-a";
++				reg = <0x4 0x20>;
++				clocks = <&rcc SAI1_K>;
++				clock-names = "sai_ck";
++				dmas = <&dmamux1 87 0x400 0x01>;
++				status = "disabled";
++			};
++
++			sai1b: audio-controller@4400a024 {
++				#sound-dai-cells = <0>;
++				compatible = "st,stm32-sai-sub-b";
++				reg = <0x24 0x20>;
++				clocks = <&rcc SAI1_K>;
++				clock-names = "sai_ck";
++				dmas = <&dmamux1 88 0x400 0x01>;
++				status = "disabled";
++			};
++		};
++
++		sai2: sai@4400b000 {
++			compatible = "st,stm32h7-sai";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x4400b000 0x400>;
++			reg = <0x4400b000 0x4>, <0x4400b3f0 0x10>;
++			interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
++			resets = <&rcc SAI2_R>;
++			status = "disabled";
++
++			sai2a: audio-controller@4400b004 {
++				#sound-dai-cells = <0>;
++				compatible = "st,stm32-sai-sub-a";
++				reg = <0x4 0x20>;
++				clocks = <&rcc SAI2_K>;
++				clock-names = "sai_ck";
++				dmas = <&dmamux1 89 0x400 0x01>;
++				status = "disabled";
++			};
++
++			sai2b: audio-controller@4400b024 {
++				#sound-dai-cells = <0>;
++				compatible = "st,stm32-sai-sub-b";
++				reg = <0x24 0x20>;
++				clocks = <&rcc SAI2_K>;
++				clock-names = "sai_ck";
++				dmas = <&dmamux1 90 0x400 0x01>;
++				status = "disabled";
++			};
++		};
++
+ 		dma1: dma-controller@48000000 {
+ 			compatible = "st,stm32-dma";
+ 			reg = <0x48000000 0x400>;

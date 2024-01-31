@@ -1,0 +1,39 @@
+From 8685415b61bf9fdbed57668ddb7577afe7dfc12b Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@linaro.org>
+Date: Fri, 13 Jan 2023 18:54:15 +0100
+Subject: [PATCH 432/529] firmware: arm_scmi: optee: use optee system
+ invocation
+
+Changes SCMI optee transport to call tee_client_system_session()
+to request optee driver to provision an entry context in OP-TEE
+for processing OP-TEE messages. This prevents possible deadlock
+in case OP-TEE threads are all consumed while these may be waiting
+for a clock or regulator to be enable which SCMI OP-TEE service which
+requires a free thread context to execute.
+
+Change-Id: Ia192f258da8b099a3fe59483cbcc0770a85da11e
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/294895
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ drivers/firmware/arm_scmi/optee.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/firmware/arm_scmi/optee.c
++++ b/drivers/firmware/arm_scmi/optee.c
+@@ -440,6 +440,10 @@ static int scmi_optee_chan_setup(struct
+ 	if (ret)
+ 		goto err_free_shm;
+ 
++	ret = tee_client_system_session(scmi_optee_private->tee_ctx, channel->tee_session);
++	if (ret)
++		dev_warn(dev, "Could not switch to system session, do best effort\n");
++
+ 	ret = get_channel(channel);
+ 	if (ret)
+ 		goto err_close_sess;

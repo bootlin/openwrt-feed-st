@@ -1,0 +1,39 @@
+From b554c2cdc7aeff0d0f273dc2c30194a09af3a6a4 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Mon, 11 Jan 2021 14:59:37 +0100
+Subject: [PATCH 143/529] ARM: dts: stm32: add Hardware debug port (HDP) on
+ stm32mp13
+
+The Hardware Debug Port allows the observation of internal signals.
+By using multiplexers, up to 16 signals for each of 8-bit output
+can be observed.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I5b80a29c7919160bd2e036d6fd24f140bbb49fca
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279365
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -534,6 +534,14 @@
+ 			clocks = <&rcc SYSCFG>;
+ 		};
+ 
++		hdp: hdp@5002a000 {
++			compatible = "st,stm32mp1-hdp";
++			reg = <0x5002a000 0x400>;
++			clocks = <&rcc HDP>;
++			clock-names = "hdp";
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;

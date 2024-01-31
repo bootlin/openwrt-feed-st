@@ -1,0 +1,64 @@
+From 8b8d739f3ad56bddc718222682190c2df7de3ed9 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 12 Dec 2022 08:52:56 +0100
+Subject: [PATCH 274/529] ARM: dts: stm32: add goodix touchscreen on
+ stm32mp135f-dk
+
+Add goodix touchscreen node.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Change-Id: Ib740907468d5404001183bc12e60ada5be2be751
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228339
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280104
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp13-pinctrl.dtsi |  7 +++++++
+ arch/arm/boot/dts/stm32mp135f-dk.dts     | 15 +++++++++++++++
+ 2 files changed, 22 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
+@@ -45,6 +45,13 @@
+ 		};
+ 	};
+ 
++	goodix_pins_a: goodix-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 5, GPIO)>;
++			bias-pull-down;
++		};
++	};
++
+ 	i2c1_pins_a: i2c1-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -179,6 +179,21 @@
+ 	/* spare dmas for other usage */
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
++
++	goodix: goodix-ts@5d {
++		compatible = "goodix,gt911";
++		reg = <0x5d>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&goodix_pins_a>;
++		interrupt-parent = <&gpiof>;
++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
++		reset-gpios = <&gpioh 2 GPIO_ACTIVE_LOW>;
++		AVDD28-supply = <&scmi_v3v3_sw>;
++		VDDIO-supply = <&scmi_v3v3_sw>;
++		touchscreen-size-x = <480>;
++		touchscreen-size-y = <272>;
++		status = "okay" ;
++	};
+ };
+ 
+ &iwdg2 {

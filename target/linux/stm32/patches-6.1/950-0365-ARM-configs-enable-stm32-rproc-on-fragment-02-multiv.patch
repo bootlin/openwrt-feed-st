@@ -1,0 +1,36 @@
+From 9522c3c1bae59babe6d1fc289c70774d5e549d71 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 18 Nov 2020 11:17:23 +0100
+Subject: [PATCH 365/529] ARM: configs: enable stm32 rproc on
+ fragment-02-multiv7_addons
+
+Enable STM32 remoteproc.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ie48a30c493a8ca9abcb8381aa7e26e649b8b5e09
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283851
+
+# Conflicts:
+#	arch/arm/configs/fragment-02-multiv7_addons.config
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -44,6 +44,7 @@ CONFIG_PREEMPT_COUNT=y
+ CONFIG_PROFILING=y
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_REGULATOR_PROTECTION_CONSUMER=y
++CONFIG_REMOTEPROC=y
+ CONFIG_RPMSG_CHAR=m
+ CONFIG_RPMSG_CTRL=m
+ CONFIG_RPMSG_TTY=m
+@@ -55,6 +56,7 @@ CONFIG_SENSORS_IIO_HWMON=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+ CONFIG_STM32_IPCC=y
++CONFIG_STM32_RPROC=y
+ CONFIG_TEE=y
+ CONFIG_THERMAL=y
+ CONFIG_TMPFS=y

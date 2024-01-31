@@ -1,0 +1,64 @@
+From f644e594fc0422448cbc036d7193a55858fac73a Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 15 Dec 2022 16:13:54 +0100
+Subject: [PATCH 359/529] ARM: dts: stm32: include M4 system resources for
+ stm32mp15 edx board
+
+NOT UPSTREAMABLE
+
+Let stm32mp157x-ed1 boards include the M4 system resources dtsi file.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ia067342c2a26b57186eb21c8ef80d889e4414f40
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283829
+---
+ arch/arm/boot/dts/stm32mp157a-ed1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157c-ed1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157d-ed1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157f-ed1.dts | 2 ++
+ 4 files changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-ed1.dts
+@@ -9,6 +9,8 @@
+ #include "stm32mp15xa.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxaa-pinctrl.dtsi"
++#include "stm32mp15-m4-srm.dtsi"
++#include "stm32mp15-m4-srm-pinctrl.dtsi"
+ #include "stm32mp157a-ed1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>
+--- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
+@@ -9,6 +9,8 @@
+ #include "stm32mp15xc.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxaa-pinctrl.dtsi"
++#include "stm32mp15-m4-srm.dtsi"
++#include "stm32mp15-m4-srm-pinctrl.dtsi"
+ #include "stm32mp157c-ed1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>
+--- a/arch/arm/boot/dts/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-ed1.dts
+@@ -9,6 +9,8 @@
+ #include "stm32mp15xd.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxaa-pinctrl.dtsi"
++#include "stm32mp15-m4-srm.dtsi"
++#include "stm32mp15-m4-srm-pinctrl.dtsi"
+ #include "stm32mp157a-ed1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>
+--- a/arch/arm/boot/dts/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ed1.dts
+@@ -9,6 +9,8 @@
+ #include "stm32mp15xf.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxaa-pinctrl.dtsi"
++#include "stm32mp15-m4-srm.dtsi"
++#include "stm32mp15-m4-srm-pinctrl.dtsi"
+ #include "stm32mp157c-ed1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>

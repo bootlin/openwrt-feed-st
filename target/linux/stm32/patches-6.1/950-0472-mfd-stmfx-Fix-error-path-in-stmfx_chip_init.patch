@@ -1,0 +1,31 @@
+From 2a415dccb4312f3e95fb78c60c27758bf02f761c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 16 Mar 2023 13:49:18 +0100
+Subject: [PATCH 472/529] mfd: stmfx: Fix error path in stmfx_chip_init
+
+In error path, disable vdd regulator if it exists, but don't overload ret.
+Because if regulator_disable() is successful, stmfx_chip_init will exit
+successfully while chip init failed.
+
+Fixes: 06252ade9156 ("mfd: Add ST Multi-Function eXpander (STMFX) core driver")
+Change-Id: I41cb8a354686c29e6e0b27efd73bfd5b3809dc1b
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/295941
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+---
+ drivers/mfd/stmfx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -495,7 +495,7 @@ static int stmfx_suspend(struct device *
+ 	disable_irq(stmfx->irq);
+ 
+ 	if (stmfx->vdd)
+-		return regulator_disable(stmfx->vdd);
++		regulator_disable(stmfx->vdd);
+ 
+ 	return 0;
+ }

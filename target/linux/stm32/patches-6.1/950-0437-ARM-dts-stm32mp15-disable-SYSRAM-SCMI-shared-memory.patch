@@ -1,0 +1,56 @@
+From c8d15b2a796b43a805c64ccd27576811923687ed Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Mon, 3 Apr 2023 12:46:11 +0200
+Subject: [PATCH 437/529] ARM: dts: stm32mp15: disable SYSRAM SCMI shared
+ memory
+
+Changes scmi node to not use a statically defined sram shared memory
+buffer. This change makes SCMI OP-TEE transport to use shared memory
+allocated used OP-TEE generic shared memory resources.
+
+Removes the sram definition in the DTSI files since no more used.
+
+Change-Id: Ifae8dd1fd5b830ff3186a2b4df0ecf3dfc8fdb18
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/298718
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm/boot/dts/stm32mp15-scmi.dtsi | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+--- a/arch/arm/boot/dts/stm32mp15-scmi.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-scmi.dtsi
+@@ -16,7 +16,6 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			linaro,optee-channel-id = <0>;
+-			shmem = <&scmi_shm>;
+ 
+ 			scmi_clk: protocol@14 {
+ 				reg = <0x14>;
+@@ -29,21 +28,6 @@
+ 			};
+ 		};
+ 	};
+-
+-	soc {
+-		scmi_sram: sram@2ffff000 {
+-			compatible = "mmio-sram";
+-			reg = <0x2ffff000 0x1000>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges = <0 0x2ffff000 0x1000>;
+-
+-			scmi_shm: scmi-sram@0 {
+-				compatible = "arm,scmi-shmem";
+-				reg = <0 0x80>;
+-			};
+-		};
+-	};
+ };
+ 
+ /delete-node/ &clk_hse;

@@ -1,0 +1,60 @@
+From d1b193ea2ca5e3bd837289f1a245ac0b0e0d0564 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 16 Nov 2021 17:04:33 +0100
+Subject: [PATCH 277/529] ARM: dts: stm32: add simple-framebuffer on stm32mp157
+ DK2 boards
+
+Add node to support the simple-frambuffer. By default, the node must be
+disabled.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I355d59f55ea526c21ba2eb819cc03ff4c809525b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228343
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280108
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157c-dk2.dts | 9 +++++++++
+ arch/arm/boot/dts/stm32mp157f-dk2.dts | 9 +++++++++
+ 2 files changed, 18 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+@@ -24,7 +24,16 @@
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ };
+ 
+--- a/arch/arm/boot/dts/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157f-dk2.dts
+@@ -24,7 +24,16 @@
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ };
+ 

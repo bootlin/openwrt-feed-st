@@ -1,0 +1,40 @@
+From 0dd88e37b624846e483ace86ea249ca61d322c98 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 7 Dec 2022 17:12:38 +0100
+Subject: [PATCH 198/529] ARM: dts: stm32: add spdifrx support to stm32mp13x
+ soc family
+
+Add S/PDIFRX support to STM32MP13x SoC family.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ia0f949daa7da826827276b7488db5856e0604ce8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278996
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -190,6 +190,19 @@
+ 			status = "disabled";
+ 		};
+ 
++		spdifrx: audio-controller@4000d000 {
++			compatible = "st,stm32h7-spdifrx";
++			#sound-dai-cells = <0>;
++			reg = <0x4000d000 0x400>;
++			clocks = <&rcc SPDIF_K>;
++			clock-names = "kclk";
++			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&dmamux1 93 0x400 0x01>,
++			       <&dmamux1 94 0x400 0x01>;
++			dma-names = "rx", "rx-ctrl";
++			status = "disabled";
++		};
++
+ 		usart3: serial@4000f000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x4000f000 0x400>;

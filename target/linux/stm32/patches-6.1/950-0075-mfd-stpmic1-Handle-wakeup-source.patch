@@ -1,0 +1,35 @@
+From bc4a16e73d004c1ff76fd6feba86b6499cd9f53e Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Mon, 26 Aug 2019 17:19:27 +0200
+Subject: [PATCH 075/529] mfd: stpmic1: Handle wakeup source
+
+STPMIC1 is be able wakeup the system from suspend.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I2727b36cad9f0fa5142ba9ba3619872d1585d5ff
+---
+ drivers/mfd/stpmic1.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/drivers/mfd/stpmic1.c
++++ b/drivers/mfd/stpmic1.c
+@@ -170,6 +170,9 @@ static int stpmic1_suspend(struct device
+ 
+ 	disable_irq(pmic_dev->irq);
+ 
++	if (device_may_wakeup(dev))
++		enable_irq_wake(pmic_dev->irq);
++
+ 	return 0;
+ }
+ 
+@@ -183,6 +186,9 @@ static int stpmic1_resume(struct device
+ 	if (ret)
+ 		return ret;
+ 
++	if (device_may_wakeup(dev))
++		disable_irq_wake(pmic_dev->irq);
++
+ 	enable_irq(pmic_dev->irq);
+ 
+ 	return 0;

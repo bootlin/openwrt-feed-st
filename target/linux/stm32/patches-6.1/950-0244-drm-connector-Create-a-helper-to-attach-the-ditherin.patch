@@ -1,0 +1,157 @@
+From 23e27c7dba2cc40b4f83485d6a535f54d2b2cf59 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 21 Apr 2022 09:12:54 +0200
+Subject: [PATCH 244/529] drm/connector: Create a helper to attach the
+ dithering property
+
+Add an optional property to control the dithering.
+
+Change-Id: Ie8b3412e5a1284f1d2672578e5e394e9f61d4bae
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/249126
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+---
+ drivers/gpu/drm/drm_atomic_uapi.c |  4 ++
+ drivers/gpu/drm/drm_connector.c   | 62 +++++++++++++++++++++++++++++++
+ include/drm/drm_connector.h       | 14 +++++++
+ 3 files changed, 80 insertions(+)
+
+--- a/drivers/gpu/drm/drm_atomic_uapi.c
++++ b/drivers/gpu/drm/drm_atomic_uapi.c
+@@ -737,6 +737,8 @@ static int drm_atomic_connector_set_prop
+ 		state->content_type = val;
+ 	} else if (property == connector->scaling_mode_property) {
+ 		state->scaling_mode = val;
++	} else if (property == connector->dithering_property) {
++		state->dithering = val;
+ 	} else if (property == config->content_protection_property) {
+ 		if (val == DRM_MODE_CONTENT_PROTECTION_ENABLED) {
+ 			drm_dbg_kms(dev, "only drivers can set CP Enabled\n");
+@@ -828,6 +830,8 @@ drm_atomic_connector_get_property(struct
+ 		*val = state->colorspace;
+ 	} else if (property == connector->scaling_mode_property) {
+ 		*val = state->scaling_mode;
++	} else if (property == connector->dithering_property) {
++		*val = state->dithering;
+ 	} else if (property == config->hdr_output_metadata_property) {
+ 		*val = state->hdr_output_metadata ?
+ 			state->hdr_output_metadata->base.id : 0;
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -947,6 +947,12 @@ static const struct drm_prop_enum_list d
+ 	{ DRM_MODE_SCALE_ASPECT, "Full aspect" },
+ };
+ 
++static const struct drm_prop_enum_list drm_dithering_enum_list[] = {
++	{ DRM_MODE_DITHERING_OFF, "Off" },
++	{ DRM_MODE_DITHERING_ON, "On" },
++	{ DRM_MODE_DITHERING_AUTO, "Automatic" },
++};
++
+ static const struct drm_prop_enum_list drm_aspect_ratio_enum_list[] = {
+ 	{ DRM_MODE_PICTURE_ASPECT_NONE, "Automatic" },
+ 	{ DRM_MODE_PICTURE_ASPECT_4_3, "4:3" },
+@@ -1920,6 +1926,62 @@ int drm_connector_attach_scaling_mode_pr
+ EXPORT_SYMBOL(drm_connector_attach_scaling_mode_property);
+ 
+ /**
++ * drm_connector_attach_dithering_property - attach atomic dithering property
++ * @connector: connector to attach dithering property on.
++ * @dithering_mask: or'ed mask of BIT(%DRM_MODE_DITHERING_\*).
++ *
++ * This is used to add support for dithering to atomic drivers.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
++ */
++int drm_connector_attach_dithering_property(struct drm_connector *connector,
++					    u32 dithering_mask)
++{
++	struct drm_device *dev = connector->dev;
++	struct drm_property *dithering_property;
++	int i;
++	const unsigned int valid_dithering_mask =
++		(1U << ARRAY_SIZE(drm_dithering_enum_list)) - 1;
++
++	if (WARN_ON(hweight32(dithering_mask) < 2 ||
++		    dithering_mask & ~valid_dithering_mask))
++		return -EINVAL;
++
++	dithering_property =
++		drm_property_create(dev, DRM_MODE_PROP_ENUM, "dithering",
++				    hweight32(dithering_mask));
++
++	if (!dithering_property)
++		return -ENOMEM;
++
++	for (i = 0; i < ARRAY_SIZE(drm_dithering_enum_list); i++) {
++		int ret;
++
++		if (!(BIT(i) & dithering_mask))
++			continue;
++
++		ret = drm_property_add_enum(dithering_property,
++					    drm_dithering_enum_list[i].type,
++					    drm_dithering_enum_list[i].name);
++
++		if (ret) {
++			drm_property_destroy(dev, dithering_property);
++
++			return ret;
++		}
++	}
++
++	drm_object_attach_property(&connector->base,
++				   dithering_property, 0);
++
++	connector->dithering_property = dithering_property;
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_connector_attach_dithering_property);
++
++/**
+  * drm_mode_create_aspect_ratio_property - create aspect ratio property
+  * @dev: DRM device
+  *
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -816,6 +816,12 @@ struct drm_connector_state {
+ 	unsigned int scaling_mode;
+ 
+ 	/**
++	 * @dithering: Connector property to control the
++	 * dithering.
++	 */
++	unsigned int dithering;
++
++	/**
+ 	 * @content_protection: Connector property to request content
+ 	 * protection. This is most commonly used for HDCP.
+ 	 */
+@@ -1464,6 +1470,12 @@ struct drm_connector {
+ 	struct drm_property *scaling_mode_property;
+ 
+ 	/**
++	 * @dithering_property: Optional atomic property to control the
++	 * dithering.
++	 */
++	struct drm_property *dithering_property;
++
++	/**
+ 	 * @vrr_capable_property: Optional property to help userspace
+ 	 * query hardware support for variable refresh rate on a connector.
+ 	 * connector. Drivers can add the property to a connector by
+@@ -1811,6 +1823,8 @@ int drm_mode_create_scaling_mode_propert
+ int drm_connector_attach_content_type_property(struct drm_connector *dev);
+ int drm_connector_attach_scaling_mode_property(struct drm_connector *connector,
+ 					       u32 scaling_mode_mask);
++int drm_connector_attach_dithering_property(struct drm_connector *connector,
++					    u32 dithering_mask);
+ int drm_connector_attach_vrr_capable_property(
+ 		struct drm_connector *connector);
+ int drm_connector_attach_colorspace_property(struct drm_connector *connector);

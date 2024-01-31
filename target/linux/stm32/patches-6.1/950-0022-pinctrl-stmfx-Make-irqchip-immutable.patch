@@ -1,0 +1,50 @@
+From cd2cfdb29d40e925af23aef357a95f2f63c61c9c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 2 Nov 2022 16:58:07 +0100
+Subject: [PATCH 022/529] pinctrl: stmfx: Make irqchip immutable
+
+This makes the STMFX pinctrl/gpio irqchip immutable, to fix the warning
+"(stmfx-gpio): not an immutable chip, please consider fixing it!"
+introduced by commit 6c846d026d49 ("gpio: Don't fiddle with irqchips marked
+as immutable").
+
+Change-Id: If3f2f8c6ea6fff2521915381383251e3e8c214de
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/273983
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+---
+ drivers/pinctrl/pinctrl-stmfx.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- a/drivers/pinctrl/pinctrl-stmfx.c
++++ b/drivers/pinctrl/pinctrl-stmfx.c
+@@ -425,6 +425,7 @@ static void stmfx_pinctrl_irq_mask(struc
+ 	u32 mask = get_mask(data->hwirq);
+ 
+ 	pctl->irq_gpi_src[reg] &= ~mask;
++	gpiochip_disable_irq(gpio_chip, data->hwirq);
+ }
+ 
+ static void stmfx_pinctrl_irq_unmask(struct irq_data *data)
+@@ -434,6 +435,7 @@ static void stmfx_pinctrl_irq_unmask(str
+ 	u32 reg = get_reg(data->hwirq);
+ 	u32 mask = get_mask(data->hwirq);
+ 
++	gpiochip_enable_irq(gpio_chip, data->hwirq);
+ 	pctl->irq_gpi_src[reg] |= mask;
+ }
+ 
+@@ -684,9 +686,10 @@ static int stmfx_pinctrl_probe(struct pl
+ 	pctl->irq_chip.irq_bus_sync_unlock = stmfx_pinctrl_irq_bus_sync_unlock;
+ 	pctl->irq_chip.irq_request_resources = stmfx_gpio_irq_request_resources;
+ 	pctl->irq_chip.irq_release_resources = stmfx_gpio_irq_release_resources;
++	pctl->irq_chip.flags = IRQCHIP_IMMUTABLE;
+ 
+ 	girq = &pctl->gpio_chip.irq;
+-	girq->chip = &pctl->irq_chip;
++	gpio_irq_chip_set_chip(girq, &pctl->irq_chip);
+ 	/* This will let us handle the parent IRQ in the driver */
+ 	girq->parent_handler = NULL;
+ 	girq->num_parents = 0;

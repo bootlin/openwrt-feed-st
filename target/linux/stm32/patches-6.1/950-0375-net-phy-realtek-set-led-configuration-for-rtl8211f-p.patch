@@ -1,0 +1,31 @@
+From 190c1c29908889fcd443a2db56d7871a776edcc9 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Tue, 18 Feb 2020 15:49:40 +0100
+Subject: [PATCH 375/529] net: phy: realtek: set led configuration for rtl8211f
+ phy
+
+Initialize LCR (LED Control Register) to configure green LED for Link,
+yellow LED for Active
+
+Change-Id: I94f14d57fa60d7067a86b8ba5d093e1c918b7b7b
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/187613
+---
+ drivers/net/phy/realtek.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -351,6 +351,11 @@ static int rtl8211f_config_init(struct p
+ 	u16 val_txdly, val_rxdly;
+ 	int ret;
+ 
++	/* Set green LED for Link, yellow LED for Active */
++	phy_write(phydev, RTL821x_PAGE_SELECT, 0xd04);
++	phy_write(phydev, 0x10, 0x617f);
++	phy_write(phydev, RTL821x_PAGE_SELECT, 0x0);
++
+ 	ret = phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1,
+ 				       RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_XTAL_OFF,
+ 				       priv->phycr1);

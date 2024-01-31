@@ -1,0 +1,77 @@
+From 0d7ca55c7559bb87bf71a8d57636c922c46ec09d Mon Sep 17 00:00:00 2001
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 25 Jan 2023 01:23:06 +0100
+Subject: [PATCH 458/529] dt-bindings: crypto: Let STM32 define Ux500 HASH
+
+This adds device tree bindings for the Ux500 HASH block
+as a compatible in the STM32 HASH bindings.
+
+The Ux500 HASH binding has been used for ages in the kernel
+device tree for Ux500 but was never documented, so fill in
+the gap by making it a sibling of the STM32 HASH block,
+which is what it is.
+
+The relationship to the existing STM32 HASH block is pretty
+obvious when looking at the register map, and I have written
+patches to reuse the STM32 HASH driver on the Ux500.
+
+The main difference from the outside is that the Ux500 HASH
+lacks the interrupt line, so some special if-clauses are
+needed to accomodate this in the binding.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ .../bindings/crypto/st,stm32-hash.yaml        | 23 ++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -6,12 +6,18 @@ $schema: http://devicetree.org/meta-sche
+ 
+ title: STMicroelectronics STM32 HASH bindings
+ 
++description: The STM32 HASH block is built on the HASH block found in
++  the STn8820 SoC introduced in 2007, and subsequently used in the U8500
++  SoC in 2010.
++
+ maintainers:
+   - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+     enum:
++      - st,stn8820-hash
++      - stericsson,ux500-hash
+       - st,stm32f456-hash
+       - st,stm32f756-hash
+ 
+@@ -41,11 +47,26 @@ properties:
+     maximum: 2
+     default: 0
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+   - clocks
+-  - interrupts
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          items:
++            const: stericsson,ux500-hash
++    then:
++      properties:
++        interrupts: false
++    else:
++      required:
++        - interrupts
+ 
+ additionalProperties: false
+ 

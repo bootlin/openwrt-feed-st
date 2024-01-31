@@ -1,0 +1,40 @@
+From 341536dcb1af63b1f30166b5be2e20ca446379a7 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Mon, 9 Jan 2023 10:03:59 +0100
+Subject: [PATCH 422/529] remoteproc: TEE: use tee_shm_register_kernel_buf help
+
+It is now possible to register kernel buffer in TEE.
+Suppress the extra copy by directly register the FW image as shared
+memory with the secure context.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ic4d2cb33cd75ee25616902673f9fa1464fc55ae5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/285917
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/tee_remoteproc.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+--- a/drivers/remoteproc/tee_remoteproc.c
++++ b/drivers/remoteproc/tee_remoteproc.c
+@@ -105,16 +105,7 @@ int tee_rproc_load_fw(struct tee_rproc *
+ 	struct tee_shm *fw_shm;
+ 	int ret;
+ 
+-	/*
+-	 * useless copy waiting that tee_shm_register and tee well support
+-	 * kernel buffers registration
+-	 */
+-
+-	fw_shm = tee_shm_alloc_kernel_buf(pvt_data.ctx, fw->size);
+-	if (IS_ERR(fw_shm))
+-		return PTR_ERR(fw_shm);
+-
+-	memcpy(tee_shm_get_va(fw_shm, 0), fw->data, fw->size);
++	fw_shm = tee_shm_register_kernel_buf(pvt_data.ctx, (void *)fw->data, fw->size);
+ 
+ 	prepare_args(trproc, TA_RPROC_FW_CMD_LOAD_FW, &arg, param, 1);
+ 

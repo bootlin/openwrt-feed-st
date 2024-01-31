@@ -1,0 +1,37 @@
+From fac880687ec0ecf94fcdf7e2faeb2b242c3fff4c Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 2 Aug 2021 12:53:35 +0200
+Subject: [PATCH 209/529] rtc: stm32: protect rtc from high speed clocks
+
+Add a condition to handle source clock speed over RTC prescaler
+capabilities to have 1Hz clock.
+
+Fix bug in "need accuracy" prescaler calculations.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I58873fb2fa9d76dcf2680d43c0a3b62ea472eb07
+---
+ drivers/rtc/rtc-stm32.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -641,11 +641,16 @@ static int stm32_rtc_init(struct platfor
+ 	pred_a_max = STM32_RTC_PRER_PRED_A >> STM32_RTC_PRER_PRED_A_SHIFT;
+ 	pred_s_max = STM32_RTC_PRER_PRED_S >> STM32_RTC_PRER_PRED_S_SHIFT;
+ 
++	if (rate > (pred_a_max + 1) * (pred_s_max + 1)) {
++		dev_err(&pdev->dev, "rtc_ck rate is too high: %dHz\n", rate);
++		return -EINVAL;
++	}
++
+ 	if (rtc->data->need_accuracy) {
+ 		for (pred_a = 0; pred_a <= pred_a_max; pred_a++) {
+ 			pred_s = (rate / (pred_a + 1)) - 1;
+ 
+-			if (((pred_s + 1) * (pred_a + 1)) == rate)
++			if (pred_s <= pred_s_max && ((pred_s + 1) * (pred_a + 1)) == rate)
+ 				break;
+ 		}
+ 	} else {

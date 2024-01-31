@@ -1,0 +1,63 @@
+From 1cb003f76e56b70b13e4c092acf6280d7754d398 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Fri, 10 Feb 2023 09:15:36 +0100
+Subject: [PATCH 409/529] net: stmmac: resume phy separately before calling
+ stmmac_hw_setup()
+
+TEMPORARY PATCH (upstream ongoing, owner told me than V3/4 will be pushed:
+https://lore.kernel.org/netdev/20230201103837.3258752-2-xiaoning.wang@nxp.com/)
+
+On some platforms, mac cannot work after resumed from the suspend with WoL
+enabled.
+
+We found the stmmac_hw_setup() when system resumes will called after the
+stmmac_mac_link_up(). So the correct values set in stmmac_mac_link_up()
+are overwritten by stmmac_core_init() in phylink_resume().
+
+So call the new added function in phylink to resume phy fristly.
+Then can call the stmmac_hw_setup() before calling phy_resume().
+
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+Change-Id: I26ca044522a6f9e5ed14683e7c4b3169803228bb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/290432
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -7591,16 +7591,8 @@ int stmmac_resume(struct device *dev)
+ 	}
+ 
+ 	rtnl_lock();
+-	if (device_may_wakeup(priv->device) && priv->plat->pmt) {
+-		phylink_resume(priv->phylink);
+-	} else {
+-		phylink_resume(priv->phylink);
+-		if (device_may_wakeup(priv->device))
+-			phylink_speed_up(priv->phylink);
+-	}
+-	rtnl_unlock();
++	phylink_phy_resume(priv->phylink);
+ 
+-	rtnl_lock();
+ 	mutex_lock(&priv->lock);
+ 
+ 	stmmac_reset_queues_param(priv);
+@@ -7618,6 +7610,11 @@ int stmmac_resume(struct device *dev)
+ 	stmmac_enable_all_dma_irq(priv);
+ 
+ 	mutex_unlock(&priv->lock);
++
++	phylink_resume(priv->phylink);
++	if (device_may_wakeup(priv->device) && !priv->plat->pmt)
++		phylink_speed_up(priv->phylink);
++
+ 	rtnl_unlock();
+ 
+ 	netif_device_attach(ndev);

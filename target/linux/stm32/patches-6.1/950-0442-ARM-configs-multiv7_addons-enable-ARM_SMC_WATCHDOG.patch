@@ -1,0 +1,29 @@
+From a5c48fbf1572885a80b5f8e97fb9ee0469c009ab Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Tue, 11 Apr 2023 00:25:40 +0200
+Subject: [PATCH 442/529] ARM: configs: multiv7_addons: enable ARM_SMC_WATCHDOG
+
+This patch enables the ARM_SMC_WATCHDOG support.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: Icf6eee99960f0a635a1378b532afd582ec8b6c4d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299849
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -3,6 +3,7 @@ CONFIG_AEABI=y
+ CONFIG_ARM_CPUIDLE=n
+ CONFIG_ARM_SCMI_PROTOCOL=y
+ CONFIG_ARM_SMC_MBOX=y
++CONFIG_ARM_SMC_WATCHDOG=y
+ CONFIG_ARM_STM32_CPUIDLE=y
+ CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CAN_M_CAN=y

@@ -1,0 +1,26 @@
+From d34a2cb32ebd210aa424daeff07d687ac38893f8 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Wed, 5 Oct 2022 14:33:36 +0200
+Subject: [PATCH 020/529] ARM: configs: reduce number of legacy pty in
+ multiv7_addons fragment
+
+Reduce numer of legacy pty from 256 to 8.
+The goal is to reduce the traces in log_buf.
+
+Change-Id: Ied10d8a7e35d64782003c24081067f061a4b34fa
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -15,6 +15,7 @@ CONFIG_HIGHMEM=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_KEYS=y
++CONFIG_LEGACY_PTY_COUNT=8
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_MCPM=y
+ CONFIG_MEMCG=y

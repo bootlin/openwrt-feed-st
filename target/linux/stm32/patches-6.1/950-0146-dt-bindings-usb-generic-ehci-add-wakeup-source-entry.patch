@@ -1,0 +1,32 @@
+From 8f0b4c1e0ab1c9d3f0e5299e0365dc5f259096b5 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Wed, 4 Mar 2020 09:16:16 +0100
+Subject: [PATCH 146/529] dt-bindings: usb: generic-ehci: add wakeup-source
+ entry
+
+Add wakeup-source entry to indicate this device has wakeup capabilities.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Change-Id: Id5d86b1ca9f7eedb7747d6b11870d78570e1759f
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/159917
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+@@ -146,6 +146,11 @@ properties:
+       - host
+       - otg
+ 
++  wakeup-source:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Indicate this device has wakeup capabilities.
++
+ required:
+   - compatible
+   - reg

@@ -1,0 +1,63 @@
+From e0330d6ee0b4761a4ba08e723a8bde8a364fdc54 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@st.com>
+Date: Tue, 18 Feb 2020 15:58:57 +0100
+Subject: [PATCH 030/529] clk: don't prepare_enable/disable_unprepare an
+ unregistered old_parent clk
+
+In case old_parent clock is being unregistered, its ops are set to
+clk_nodrv_ops, which return -ENXIO. So clk prepare_count and enable_count
+are not updated.
+In case the old_parent clock had children, clk_core_set_parent_nolock is
+called. But if the child clock has CLK_OPS_PARENT_ENABLE flag set, a
+"<clock> already disabled" warning will raise.
+Because __clk_set_parent_before will try to
+prepare_enable the old_parent clk (but -ENXIO), and __clk_set_parent_after
+will try to disable_unprepare the old_parent clk (but enable_count is
+already =0 so clock framework complains.
+
+This patch checks if old_parent ops are not clk_nodrv_ops, which means the
+clock is being unregistered, before prepare_enable old_parent clock in
+__clk_set_parent_before, and before disable_unprepare old_parent clock in
+__clk_set_parent_after.
+
+Change-Id: I306cfb74538a083a88c1c309af029d3d11af69d3
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/158526
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/clk/clk.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -1935,6 +1935,7 @@ static void clk_reparent(struct clk_core
+ 	core->parent = new_parent;
+ }
+ 
++static const struct clk_ops clk_nodrv_ops;
+ static struct clk_core *__clk_set_parent_before(struct clk_core *core,
+ 					   struct clk_core *parent)
+ {
+@@ -1963,7 +1964,8 @@ static struct clk_core *__clk_set_parent
+ 
+ 	/* enable old_parent & parent if CLK_OPS_PARENT_ENABLE is set */
+ 	if (core->flags & CLK_OPS_PARENT_ENABLE) {
+-		clk_core_prepare_enable(old_parent);
++		if (old_parent && old_parent->ops != &clk_nodrv_ops)
++			clk_core_prepare_enable(old_parent);
+ 		clk_core_prepare_enable(parent);
+ 	}
+ 
+@@ -1997,7 +1999,8 @@ static void __clk_set_parent_after(struc
+ 	/* re-balance ref counting if CLK_OPS_PARENT_ENABLE is set */
+ 	if (core->flags & CLK_OPS_PARENT_ENABLE) {
+ 		clk_core_disable_unprepare(parent);
+-		clk_core_disable_unprepare(old_parent);
++		if (old_parent && old_parent->ops != &clk_nodrv_ops)
++			clk_core_disable_unprepare(old_parent);
+ 	}
+ }
+ 

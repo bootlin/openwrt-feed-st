@@ -1,0 +1,32 @@
+From 0f99277188a1aacddad8ec5c881d3cd9732a4756 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 14 Sep 2022 17:12:59 +0200
+Subject: [PATCH 376/529] net: phy: Deactivate WARN in mdio_bus_phy_resume()
+
+NOT_UPSTREAMABLE only avoid verbose message for valid purpose.
+And found why in some cases this warning is displayed
+(almost 80% of cases)
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I3c6865ebddd2d6954832c352d538e9ea94ad35a0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/266290
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/net/phy/phy_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -325,9 +325,9 @@ static __maybe_unused int mdio_bus_phy_r
+ 	 * that something went wrong and we should most likely be using
+ 	 * MAC managed PM, but we are not.
+ 	 */
+-	WARN_ON(phydev->state != PHY_HALTED && phydev->state != PHY_READY &&
++/*	WARN_ON(phydev->state != PHY_HALTED && phydev->state != PHY_READY &&
+ 		phydev->state != PHY_UP);
+-
++*/
+ 	ret = phy_init_hw(phydev);
+ 	if (ret < 0)
+ 		return ret;

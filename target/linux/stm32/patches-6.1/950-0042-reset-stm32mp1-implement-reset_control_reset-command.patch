@@ -1,0 +1,24 @@
+From 433ae3e30faccdcb1f958d7e2c5dbe0665e68ae1 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Wed, 5 Jan 2022 11:26:21 +0100
+Subject: [PATCH 042/529] reset: stm32mp1: implement reset_control_reset()
+ command.
+
+Add reset timing in match data structure for MP13.
+
+Change-Id: Ie0138deff786900dc97f781a97a1ce8a2ab00399
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp13.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/clk/stm32/clk-stm32mp13.c
++++ b/drivers/clk/stm32/clk-stm32mp13.c
+@@ -1518,6 +1518,7 @@ static const struct stm32_rcc_match_data
+ 	.check_security = &stm32mp13_clock_is_provided_by_secure,
+ 	.maxbinding	= STM32MP1_LAST_CLK,
+ 	.clear_offset	= RCC_CLR_OFFSET,
++	.reset_us	= 2,
+ };
+ 
+ static const struct of_device_id stm32mp13_match_data[] = {

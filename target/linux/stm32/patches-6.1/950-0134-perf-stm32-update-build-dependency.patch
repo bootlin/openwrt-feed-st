@@ -1,0 +1,24 @@
+From dfbfadf405d76d3a6bbed1eb8aa4ffa11268d464 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Wed, 17 Nov 2021 14:47:47 +0100
+Subject: [PATCH 134/529] perf: stm32: update build dependency
+
+Build this driver, not only for STM32MP15, but for all STM32.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: I840d2313b5b27bf45f639e89a3c339b7c731233e
+---
+ drivers/perf/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/perf/Kconfig
++++ b/drivers/perf/Kconfig
+@@ -139,7 +139,7 @@ config QCOM_L3_PMU
+ 
+ config STM32_DDR_PMU
+ 	tristate "STM32 DDR PMU"
+-	depends on MACH_STM32MP157
++	depends on ARCH_STM32
+ 	default m
+ 	help
+ 	  Support for STM32 DDR performance monitor (DDRPERFM).

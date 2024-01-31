@@ -1,0 +1,43 @@
+From 1deff3ec0764adefd4351619675f9c5b1f71714b Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Wed, 26 Aug 2015 19:21:00 +0200
+Subject: [PATCH 421/529] kbuild: Enable DT symbols when CONFIG_OF_OVERLAY is
+ used
+
+This patch is taken from [1], topic/overlays branch.
+U-Boot overlay feature requires the base dtb to be built with symbols.
+So build the dtbs with symbols when overlay support (CONFIG_OF_OVERLAY) is
+enabled.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+Replacement for "ARM: DT: Enable symbols when CONFIG_OF_OVERLAY is
+used".
+
+Change-Id: I2bf3d7f5069af34a9ebd015b73ad52a3442d541a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/292877
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Tested-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ scripts/Makefile.lib | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -379,6 +379,10 @@ cmd_dt_S_dtb=						\
+ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
+ 	$(call if_changed,dt_S_dtb)
+ 
++ifeq ($(CONFIG_OF_OVERLAY),y)
++DTC_FLAGS += -@
++endif
++
+ quiet_cmd_dtc = DTC     $@
+ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
+ 	$(DTC) -o $@ -b 0 \

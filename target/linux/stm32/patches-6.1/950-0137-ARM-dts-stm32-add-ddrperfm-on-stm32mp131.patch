@@ -1,0 +1,35 @@
+From 8102d0a2fb62e688c231ed71a08507bcd352eb04 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@st.com>
+Date: Tue, 26 Jan 2021 14:16:41 +0100
+Subject: [PATCH 137/529] ARM: dts: stm32: add ddrperfm on stm32mp131
+
+The DDRPERFM is the DDR Performance Monitor embedded in STM32MP1 SOC.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: Ib508d2aed36cf9d11097bb9aedd6e028c98dac59
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279011
+Tested-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -580,6 +580,14 @@
+ 			status = "disabled";
+ 		};
+ 
++		ddrperfm: perf@5a007000 {
++			compatible = "st,stm32-ddr-pmu";
++			reg = <0x5a007000 0x400>;
++			clocks = <&rcc DDRPERFM>;
++			resets = <&rcc DDRPERFM_R>;
++			status = "disabled";
++		};
++
+ 		rtc: rtc@5c004000 {
+ 			compatible = "st,stm32mp1-rtc";
+ 			reg = <0x5c004000 0x400>;

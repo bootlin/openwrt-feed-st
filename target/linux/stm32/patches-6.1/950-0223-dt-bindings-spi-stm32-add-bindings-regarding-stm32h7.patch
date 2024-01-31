@@ -1,0 +1,42 @@
+From ec159e6a487f924a0ef908576e1bd5716c2a0795 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 3 Nov 2021 18:00:48 +0100
+Subject: [PATCH 223/529] dt-bindings: spi: stm32: add bindings regarding
+ stm32h7 spi slave
+
+Update the spi-stm32 binding yaml regarding to the SPI slave support.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I813ab95ff0c96fc2abebdf0f76e8fcfc5490e599
+---
+ .../devicetree/bindings/spi/st,stm32-spi.yaml        | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -27,6 +27,7 @@ allOf:
+     then:
+       properties:
+         st,spi-midi-ns: false
++        spi-slave: false
+ 
+ properties:
+   "#address-cells": true
+@@ -62,6 +63,17 @@ properties:
+       - const: rx
+       - const: tx
+ 
++  spi-slave:
++    description:
++      The SPI controller acts as a slave, instead of a master.
++
++  cs-gpios:
++    description:
++      In case of spi-slave not defined, cs-gpios behave as defined in
++      spi-controller.yaml.
++      In case of spi-slave defined, if <0>, indicate that SS should be
++      detected via the dedicated HW pin
++
+ patternProperties:
+   "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-f]+$":
+     type: object

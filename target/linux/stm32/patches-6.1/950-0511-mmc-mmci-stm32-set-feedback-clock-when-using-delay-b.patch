@@ -1,0 +1,75 @@
+From b8e3e6a2bf4bfc37dacb37a74332024b85473d84 Mon Sep 17 00:00:00 2001
+From: Yann Gautier <yann.gautier@foss.st.com>
+Date: Wed, 10 Aug 2022 15:52:13 +0200
+Subject: [PATCH 511/529] mmc: mmci: stm32: set feedback clock when using delay
+ block
+
+The feedback clock is used only for SDR104 & HS200 modes, and when
+delay block is used (frequency is higher than 50 MHz). The tuning
+procedure is then only required for those modes. Skip the procedure
+for other modes.
+The setting of this feedback clock is done just after enabling delay
+block, and before configuring it.
+
+Change-Id: I8e543d462cf6a015eb40c1cc1808168d07f1c5e8
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302658
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/mmc/host/mmci_stm32_sdmmc.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+
+--- a/drivers/mmc/host/mmci_stm32_sdmmc.c
++++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
+@@ -293,18 +293,8 @@ static void mmci_sdmmc_set_clkreg(struct
+ 	clk |= host->clk_reg_add;
+ 	clk |= ddr;
+ 
+-	/*
+-	 * SDMMC_FBCK is selected when an external Delay Block is needed
+-	 * with SDR104 or HS200.
+-	 */
+-	if (host->mmc->ios.timing >= MMC_TIMING_UHS_SDR50) {
++	if (host->mmc->ios.timing >= MMC_TIMING_UHS_SDR50)
+ 		clk |= MCI_STM32_CLK_BUSSPEED;
+-		if (host->mmc->ios.timing == MMC_TIMING_UHS_SDR104 ||
+-		    host->mmc->ios.timing == MMC_TIMING_MMC_HS200) {
+-			clk &= ~MCI_STM32_CLK_SEL_MSK;
+-			clk |= MCI_STM32_CLK_SELFBCK;
+-		}
+-	}
+ 
+ 	mmci_write_clkreg(host, clk);
+ }
+@@ -511,10 +501,27 @@ static int sdmmc_execute_tuning(struct m
+ {
+ 	struct mmci_host *host = mmc_priv(mmc);
+ 	struct sdmmc_dlyb *dlyb = host->variant_priv;
++	u32 clk;
++
++	if ((host->mmc->ios.timing != MMC_TIMING_UHS_SDR104 &&
++	     host->mmc->ios.timing != MMC_TIMING_MMC_HS200) ||
++	    host->mmc->actual_clock <= 50000000)
++		return 0;
+ 
+ 	if (!dlyb || !dlyb->base)
+ 		return -EINVAL;
+ 
++	writel_relaxed(DLYB_CR_DEN, dlyb->base + DLYB_CR);
++
++	/*
++	 * SDMMC_FBCK is selected when an external Delay Block is needed
++	 * with SDR104 or HS200.
++	 */
++	clk = host->clk_reg;
++	clk &= ~MCI_STM32_CLK_SEL_MSK;
++	clk |= MCI_STM32_CLK_SELFBCK;
++	mmci_write_clkreg(host, clk);
++
+ 	if (sdmmc_dlyb_lng_tuning(host))
+ 		return -EINVAL;
+ 

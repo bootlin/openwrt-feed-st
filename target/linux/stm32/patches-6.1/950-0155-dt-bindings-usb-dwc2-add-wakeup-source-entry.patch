@@ -1,0 +1,30 @@
+From b5a3cd887f62614d5f4ecba3cc2ae77eff9e3368 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Wed, 9 Oct 2019 17:45:00 +0200
+Subject: [PATCH 155/529] dt-bindings: usb: dwc2: add wakeup-source entry
+
+Add wakeup-source entry to indicate this device has wakeup capabilities.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Change-Id: I2e71d6dc17cbe851c7961c81fd988c104523992e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/158676
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -165,6 +165,10 @@ properties:
+ 
+   tpl-support: true
+ 
++  wakeup-source:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: If present indicates this device has wakeup capabilities
++
+ dependencies:
+   port: [ usb-role-switch ]
+   role-switch-default-mode: [ usb-role-switch ]

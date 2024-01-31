@@ -1,0 +1,56 @@
+From 001c23d40378ede68a7385ec4c7e3798ac329e1f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>
+Date: Fri, 10 Mar 2023 10:20:53 +0100
+Subject: [PATCH 476/529] spi: stm32: split large transfers based on word size
+ instead of bytes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The TSIZE register in CR2, to which the number of words to transfer
+is written, is only 16 Bit. This limits transfers to 65535 SPI
+_words_ at a time. The existing code uses spi_split_transfers_maxsize
+to limit transfers to 65535 _bytes_ at a time.
+
+This breaks large transfers with bits_per_word > 8, as they are
+split inside of a word boundary by the odd size limit.
+
+Split transfers based on the number of words instead.
+This has the added benefit of not artificially limiting the maximum
+length of bpw > 8 transfers to half or a quarter of the actual limit.
+
+The combination of very large transfers and bits_per_word = 16 is triggered
+e.g. by MIPI DBI displays when updating large parts of the screen.
+
+Signed-off-by: Leonard Göhrs <l.goehrs@pengutronix.de>
+Acked-by: Alain Volmat <alain.volmat@foss.st.com>
+Link: https://lore.kernel.org/r/20230310092053.1006459-2-l.goehrs@pengutronix.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 1e4929112507f145951f4c356161ab80ad9c1f0e)
+Change-Id: I50c4cb8b4ce3e6bb6e6b3a65dd9c0255a7c0500b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/296114
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/spi/spi-stm32.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1036,9 +1036,9 @@ static int stm32_spi_prepare_msg(struct
+ 	if (spi->cfg->set_number_of_data) {
+ 		int ret;
+ 
+-		ret = spi_split_transfers_maxsize(ctrl, msg,
+-						  STM32H7_SPI_TSIZE_MAX,
+-						  GFP_KERNEL | GFP_DMA);
++		ret = spi_split_transfers_maxwords(ctrl, msg,
++						   STM32H7_SPI_TSIZE_MAX,
++						   GFP_KERNEL | GFP_DMA);
+ 		if (ret)
+ 			return ret;
+ 	}

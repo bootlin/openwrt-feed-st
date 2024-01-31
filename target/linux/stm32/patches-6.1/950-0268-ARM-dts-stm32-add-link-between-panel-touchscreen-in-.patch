@@ -1,0 +1,46 @@
+From 7c9f8f09278b4a1f4a4217fd6406de3742b316e4 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 9 Dec 2022 17:34:36 +0100
+Subject: [PATCH 268/529] ARM: dts: stm32: add link between panel & touchscreen
+ in stm32mp157c-dk2 board
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Make sure that panel is suspended after ft6x36 touchscreen and
+resumed before it.
+
+Signed-off-by: Yannick Fertré <yannick.fertre@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/184025
+Change-Id: Iff7ad9028aec980cb41f5fe8a70cda72b32af6a7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228326
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280097
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157c-dk2.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+@@ -52,7 +52,7 @@
+ 		};
+ 	};
+ 
+-	panel@0 {
++	panel_otm8009a: panel-otm8009a@0 {
+ 		compatible = "orisetech,otm8009a";
+ 		reg = <0>;
+ 		reset-gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
+@@ -78,6 +78,7 @@
+ 		touchscreen-size-y = <800>;
+ 		vcc-supply = <&v3v3>;
+ 		iovcc-supply = <&v3v3>;
++		panel = <&panel_otm8009a>;
+ 		status = "okay";
+ 	};
+ };

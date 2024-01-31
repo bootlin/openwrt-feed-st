@@ -1,0 +1,33 @@
+From aa2e5a07fa6795a45a4372f81fb616ac002d4ca7 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 24 Oct 2022 11:04:24 +0200
+Subject: [PATCH 025/529] ARM: dts: stm32: add mcp23017 pinctrl entry for
+ stm32mp13
+
+MCP23017 interrupt line (routed on PG12) requires to be pulled-up.
+
+Change-Id: If5e1cc2b1a110ef4434fe8d09143ed2ef4a9a249
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/190835
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabien DESSENNE <fabien.dessenne@st.com>
+---
+ arch/arm/boot/dts/stm32mp13-pinctrl.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
+@@ -40,6 +40,13 @@
+ 		};
+ 	};
+ 
++	mcp23017_pins_a: mcp23017-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 12, GPIO)>;
++			bias-pull-up;
++		};
++	};
++
+ 	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */

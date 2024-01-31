@@ -1,0 +1,30 @@
+From 5f27a20fb32185f2cc54f612f100fefacefa7035 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 22 Mar 2021 14:38:19 +0100
+Subject: [PATCH 104/529] dt-bindings: serial: add power-domains property
+
+Add "power-domains" property in stm32 serial binding.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Iaba77ca5e53f94e6d27bd0f787217854167028e6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/198568
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -65,6 +65,10 @@ properties:
+   linux,rs485-enabled-at-boot-time: true
+   rs485-rx-during-tx: true
+ 
++  power-domains:
++    $ref: ../power/power-domain.yaml
++    maxItems: 1
++
+   rx-threshold:
+     description:
+       If value is set to 1, RX FIFO threshold is disabled.

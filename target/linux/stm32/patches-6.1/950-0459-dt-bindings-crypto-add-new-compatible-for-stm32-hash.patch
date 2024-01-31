@@ -1,0 +1,28 @@
+From 4f497ca27b9e0675bb80e3173b62f86358606869 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Thu, 2 Sep 2021 18:02:25 +0200
+Subject: [PATCH 459/529] dt-bindings: crypto: add new compatible for
+ stm32-hash
+
+Add a new compatible for stm32mp13 support.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: I452a096b9207cdbce80291d3e7626497453d271f
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299889
+Tested-by: Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
+---
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -20,6 +20,7 @@ properties:
+       - stericsson,ux500-hash
+       - st,stm32f456-hash
+       - st,stm32f756-hash
++      - st,stm32mp13-hash
+ 
+   reg:
+     maxItems: 1

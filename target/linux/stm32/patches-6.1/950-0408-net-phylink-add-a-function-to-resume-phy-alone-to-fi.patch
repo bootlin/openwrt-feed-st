@@ -1,0 +1,103 @@
+From 61eec11de44208b7ecb60a089db6a8cbd7582595 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 8 Feb 2023 08:57:01 +0100
+Subject: [PATCH 408/529] net: phylink: add a function to resume phy alone to
+ fix resume issue with WoL enabled
+
+TEMPORARY PATCH (upstream ongoing, owner told me than V3/4 will be pushed:
+https://lore.kernel.org/netdev/20230201103837.3258752-2-xiaoning.wang@nxp.com/)
+
+On some platforms, mac cannot work after resumed from the suspend with WoL
+enabled.
+
+We found the stmmac_hw_setup() when system resumes will called after the
+stmmac_mac_link_up(). So the correct values set in stmmac_mac_link_up()
+are overwritten by stmmac_core_init() in phylink_resume().
+
+So call the new added function in phylink to resume phy fristly.
+Then can call the stmmac_hw_setup() before calling phy_resume().
+
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+Change-Id: I8b8126611a69dece7e72f968ce48d445bcadfa3e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/290431
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/net/phy/phylink.c | 31 +++++++++++++++++++++++++++++--
+ include/linux/phylink.h   |  1 +
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -85,6 +85,7 @@ struct phylink {
+ 	DECLARE_PHY_INTERFACE_MASK(sfp_interfaces);
+ 	__ETHTOOL_DECLARE_LINK_MODE_MASK(sfp_support);
+ 	u8 sfp_port;
++	bool mac_resume_phy_separately;
+ };
+ 
+ #define phylink_printk(level, pl, fmt, ...) \
+@@ -1516,6 +1517,7 @@ struct phylink *phylink_create(struct ph
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
++	pl->mac_resume_phy_separately = false;
+ 	pl->using_mac_select_pcs = using_mac_select_pcs;
+ 	pl->phy_state.interface = iface;
+ 	pl->link_interface = iface;
+@@ -1967,8 +1969,12 @@ void phylink_start(struct phylink *pl)
+ 
+ 	if (poll)
+ 		mod_timer(&pl->link_poll, jiffies + HZ);
+-	if (pl->phydev)
+-		phy_start(pl->phydev);
++	if (pl->phydev) {
++		if (!pl->mac_resume_phy_separately)
++			phy_start(pl->phydev);
++		else
++			pl->mac_resume_phy_separately = false;
++	}
+ 	if (pl->sfp_bus)
+ 		sfp_upstream_start(pl->sfp_bus);
+ }
+@@ -2053,6 +2059,27 @@ void phylink_suspend(struct phylink *pl,
+ EXPORT_SYMBOL_GPL(phylink_suspend);
+ 
+ /**
++ * phylink_phy_resume() - resume phy alone
++ * @pl: a pointer to a &struct phylink returned from phylink_create()
++ *
++ * In the MAC driver using phylink, if the MAC needs the clock of the phy
++ * when it resumes, can call this function to resume the phy separately.
++ * Then proceed to MAC resume operations.
++ */
++void phylink_phy_resume(struct phylink *pl)
++{
++	ASSERT_RTNL();
++
++	if (!test_bit(PHYLINK_DISABLE_MAC_WOL, &pl->phylink_disable_state)
++	    && pl->phydev) {
++		phy_start(pl->phydev);
++		pl->mac_resume_phy_separately = true;
++	}
++
++}
++EXPORT_SYMBOL_GPL(phylink_phy_resume);
++
++/**
+  * phylink_resume() - handle a network device resume event
+  * @pl: a pointer to a &struct phylink returned from phylink_create()
+  *
+--- a/include/linux/phylink.h
++++ b/include/linux/phylink.h
+@@ -598,6 +598,7 @@ void phylink_stop(struct phylink *);
+ 
+ void phylink_suspend(struct phylink *pl, bool mac_wol);
+ void phylink_resume(struct phylink *pl);
++void phylink_phy_resume(struct phylink *pl);
+ 
+ void phylink_ethtool_get_wol(struct phylink *, struct ethtool_wolinfo *);
+ int phylink_ethtool_set_wol(struct phylink *, struct ethtool_wolinfo *);

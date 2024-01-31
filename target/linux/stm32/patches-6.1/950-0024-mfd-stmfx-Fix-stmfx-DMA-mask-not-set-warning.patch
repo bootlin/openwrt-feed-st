@@ -1,0 +1,34 @@
+From 6d4c945014cbf5f2c354ae833ea33185476e3dcf Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 2 Nov 2022 18:21:29 +0100
+Subject: [PATCH 024/529] mfd: stmfx: Fix stmfx DMA mask not set warning
+
+Since commit 4d8bde883bfb ("OF: Don't set default coherent DMA mask"), the
+warning "stmfx-pinctrl stmfx-pinctrl: DMA mask not set" is raised.
+
+STMFX parent I2C controller uses DMA, while STMFX driver and its children
+do not.
+
+Change-Id: I747f0025c8cf5dd45e0a373075233e6cd111b287
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/273985
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+---
+ drivers/mfd/stmfx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -448,6 +448,10 @@ static int stmfx_probe(struct i2c_client
+ 	if (ret)
+ 		goto err_chip_exit;
+ 
++	/* Parent I2C controller could use DMA, STMFX and child devices do not */
++	dev->coherent_dma_mask = 0;
++	dev->dma_mask = &dev->coherent_dma_mask;
++
+ 	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE,
+ 				   stmfx_cells, ARRAY_SIZE(stmfx_cells), NULL,
+ 				   0, stmfx->irq_domain);

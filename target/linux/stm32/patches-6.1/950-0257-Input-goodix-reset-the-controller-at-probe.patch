@@ -1,0 +1,47 @@
+From 01446754b3f7936a10ec198f998bb76f3b784d51 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 9 Dec 2022 12:17:03 +0100
+Subject: [PATCH 257/529] Input: goodix - reset the controller at probe
+
+Reset the controller during probe even if the gpio interrupt is missing.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: Ice599f4c7aaea14bab042cbe51803aa100d176e9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/211978
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228186
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/input/touchscreen/goodix.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -1391,6 +1391,23 @@ reset:
+ 		error = goodix_reset(ts);
+ 		if (error)
+ 			return error;
++	} else {
++		/* reset the controller */
++		if (ts->gpiod_rst) {
++			error = gpiod_direction_output(ts->gpiod_rst, 1);
++			if (error) {
++				dev_err(&client->dev, "Gpio reset failed.\n");
++				return error;
++			}
++
++			msleep(20);
++
++			error = gpiod_direction_output(ts->gpiod_rst, 0);
++			if (error) {
++				dev_err(&client->dev, "Gpio unreset failed.\n");
++				return error;
++			}
++		}
+ 	}
+ 
+ 	error = goodix_i2c_test(client);

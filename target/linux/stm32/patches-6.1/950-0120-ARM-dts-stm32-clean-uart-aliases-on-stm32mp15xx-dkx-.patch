@@ -1,0 +1,87 @@
+From 539de57aaf3b1de1ebefe9950b2727f3f5d96fec Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 16 Feb 2021 11:19:36 +0100
+Subject: [PATCH 120/529] ARM: dts: stm32: clean uart aliases on
+ stm32mp15xx-dkx boards
+
+Remove duplicates and clean uart aliases.
+Uart aliases and uart pins should be declared and associated to
+uart instance at the same time.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ie58fa96f348c5e183746c9d6cc8d54850eacaee9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/277715
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-dk1.dts  | 3 ---
+ arch/arm/boot/dts/stm32mp157c-dk2.dts  | 3 ---
+ arch/arm/boot/dts/stm32mp157d-dk1.dts  | 3 ---
+ arch/arm/boot/dts/stm32mp157f-dk2.dts  | 3 ---
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 6 ++++++
+ 5 files changed, 6 insertions(+), 12 deletions(-)
+
+--- a/arch/arm/boot/dts/stm32mp157a-dk1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-dk1.dts
+@@ -19,9 +19,6 @@
+ 
+ 	aliases {
+ 		ethernet0 = &ethernet0;
+-		serial0 = &uart4;
+-		serial1 = &usart3;
+-		serial2 = &uart7;
+ 	};
+ 
+ 	chosen {
+--- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+@@ -19,9 +19,6 @@
+ 
+ 	aliases {
+ 		ethernet0 = &ethernet0;
+-		serial0 = &uart4;
+-		serial1 = &usart3;
+-		serial2 = &uart7;
+ 		serial3 = &usart2;
+ 	};
+ 
+--- a/arch/arm/boot/dts/stm32mp157d-dk1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-dk1.dts
+@@ -19,9 +19,6 @@
+ 
+ 	aliases {
+ 		ethernet0 = &ethernet0;
+-		serial0 = &uart4;
+-		serial1 = &usart3;
+-		serial2 = &uart7;
+ 	};
+ 
+ 	chosen {
+--- a/arch/arm/boot/dts/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157f-dk2.dts
+@@ -19,9 +19,6 @@
+ 
+ 	aliases {
+ 		ethernet0 = &ethernet0;
+-		serial0 = &uart4;
+-		serial1 = &usart3;
+-		serial2 = &uart7;
+ 		serial3 = &usart2;
+ 	};
+ 
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -8,6 +8,12 @@
+ #include <dt-bindings/mfd/st,stpmic1.h>
+ 
+ / {
++	aliases {
++		serial0 = &uart4;
++		serial1 = &usart3;
++		serial2 = &uart7;
++	};
++
+ 	memory@c0000000 {
+ 		device_type = "memory";
+ 		reg = <0xc0000000 0x20000000>;

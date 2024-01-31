@@ -1,0 +1,32 @@
+From 27857d471af5a67207fa7ea3a89257788346941c Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Thu, 10 Feb 2022 08:50:31 +0100
+Subject: [PATCH 389/529] ARM: dts: stm32: enable CRC on stm32mp135f-dk
+
+Enable Cyclic redundancy check on stm32mp135f-dk.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: I584361b22d6c9f085ba3d73c9b21debdb0020f12
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/239203
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280772
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -181,6 +181,10 @@
+ 	};
+ };
+ 
++&crc1 {
++	status = "okay";
++};
++
+ &dcmipp {
+ 	status = "okay";
+ 	pinctrl-names = "default", "sleep";

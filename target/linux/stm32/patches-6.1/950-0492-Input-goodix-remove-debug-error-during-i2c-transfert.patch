@@ -1,0 +1,44 @@
+From 45069246df814e3d3cf0e52309acda4914356bc3 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 16 Nov 2021 17:47:09 +0100
+Subject: [PATCH 492/529] Input: goodix - remove debug error during i2c
+ transfert
+
+Due to common reset between panel, some error could be happen
+when the reset line is updated by the panel driver.
+
+DO_NOT_UPSTREAM
+
+Change-Id: I8cb3aecda7a4c7876424b139d71689c3a6f49bd6
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228423
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/297691
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/input/touchscreen/goodix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -259,7 +259,7 @@ static int goodix_ts_read_input_report(s
+ 		error = goodix_i2c_read(ts->client, addr, data,
+ 					header_contact_keycode_size);
+ 		if (error) {
+-			dev_err(&ts->client->dev, "I2C transfer error: %d\n",
++			dev_dbg(&ts->client->dev, "I2C transfer error: %d\n",
+ 					error);
+ 			return error;
+ 		}
+@@ -501,7 +501,7 @@ static irqreturn_t goodix_ts_irq_handler
+ 	goodix_process_events(ts);
+ 
+ 	if (goodix_i2c_write_u8(ts->client, GOODIX_READ_COOR_ADDR, 0) < 0)
+-		dev_err(&ts->client->dev, "I2C write end_cmd error\n");
++		dev_dbg(&ts->client->dev, "I2C write end_cmd error\n");
+ 
+ 	return IRQ_HANDLED;
+ }

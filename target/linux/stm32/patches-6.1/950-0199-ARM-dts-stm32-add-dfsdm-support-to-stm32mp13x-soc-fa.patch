@@ -1,0 +1,57 @@
+From 95f1fe56d9d5575d997df5bf917e085b0ea0a080 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 7 Nov 2022 14:40:25 +0100
+Subject: [PATCH 199/529] ARM: dts: stm32: add dfsdm support to stm32mp13x soc
+ family
+
+Add DFSDM support to STM32MP13x SoC family.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Iaff47d18b81349f1aa358392e578ac4baf407a78
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278997
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -411,6 +411,36 @@
+ 			};
+ 		};
+ 
++		dfsdm: dfsdm@4400d000 {
++			compatible = "st,stm32mp1-dfsdm";
++			reg = <0x4400d000 0x800>;
++			clocks = <&rcc DFSDM_K>;
++			clock-names = "dfsdm";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			dfsdm0: filter@0 {
++				compatible = "st,stm32-dfsdm-adc";
++				#io-channel-cells = <1>;
++				reg = <0>;
++				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dmamux1 101 0x400 0x01>;
++				dma-names = "rx";
++				status = "disabled";
++			};
++
++			dfsdm1: filter@1 {
++				compatible = "st,stm32-dfsdm-adc";
++				#io-channel-cells = <1>;
++				reg = <1>;
++				interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dmamux1 102 0x400 0x01>;
++				dma-names = "rx";
++				status = "disabled";
++			};
++		};
++
+ 		dma1: dma-controller@48000000 {
+ 			compatible = "st,stm32-dma";
+ 			reg = <0x48000000 0x400>;

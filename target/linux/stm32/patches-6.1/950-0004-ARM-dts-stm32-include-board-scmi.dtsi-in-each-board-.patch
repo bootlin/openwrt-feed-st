@@ -1,0 +1,58 @@
+From 65a616b839b98f11ea31dcb4bcdb8ebe11240345 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 3 Oct 2022 14:26:26 +0200
+Subject: [PATCH 004/529] ARM: dts: stm32: include <board>-scmi.dtsi in each
+ <board>.dts
+
+Now that double inclusion is avoided, <board>-scmi.dtsi include can be
+safely added in <board>.dts, to add SCMI support on STM32MP15 boards.
+
+Change-Id: Ifd8d9e88628bb858a596d998b0f68f8a905170d6
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-dk1.dts | 1 +
+ arch/arm/boot/dts/stm32mp157c-dk2.dts | 1 +
+ arch/arm/boot/dts/stm32mp157c-ed1.dts | 1 +
+ arch/arm/boot/dts/stm32mp157c-ev1.dts | 1 +
+ 4 files changed, 4 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157a-dk1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-dk1.dts
+@@ -10,6 +10,7 @@
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxac-pinctrl.dtsi"
+ #include "stm32mp15xx-dkx.dtsi"
++#include "stm32mp157a-dk1-scmi.dtsi"
+ 
+ / {
+ 	model = "STMicroelectronics STM32MP157A-DK1 Discovery Board";
+--- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+@@ -11,6 +11,7 @@
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxac-pinctrl.dtsi"
+ #include "stm32mp15xx-dkx.dtsi"
++#include "stm32mp157c-dk2-scmi.dtsi"
+ 
+ / {
+ 	model = "STMicroelectronics STM32MP157C-DK2 Discovery Board";
+--- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
+@@ -9,6 +9,7 @@
+ #include "stm32mp15xc.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxaa-pinctrl.dtsi"
++#include "stm32mp157c-ed1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>
+ 
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -6,6 +6,7 @@
+ /dts-v1/;
+ 
+ #include "stm32mp157c-ed1.dts"
++#include "stm32mp157c-ev1-scmi.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ 

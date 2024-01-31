@@ -1,0 +1,52 @@
+From de69218c34d182a016c3b7fcc525628b284f09bb Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Thu, 16 Feb 2023 17:43:12 +0100
+Subject: [PATCH 414/529] dt-bindings: mfd: stpmic1 supports dash in node names
+
+Support dash in regulator node names of the stpmic1.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: Ic07f56e1939ab6fb659ab2c4d1a7ec831d34a41d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291501
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ Documentation/devicetree/bindings/mfd/st,stpmic1.yaml | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+--- a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+@@ -95,10 +95,10 @@ properties:
+         - ldo4 for LDO LDO4
+         - ldo5 for LDO LDO5
+         - ldo6 for LDO LDO6
+-        - vref_ddr for LDO Vref DDR
++        - vref_ddr or vref-ddr for LDO Vref DDR
+         - boost for Buck BOOST
+-        - pwr_sw1 for VBUS_OTG switch
+-        - pwr_sw2 for SW_OUT switch
++        - pwr_sw1 or pwr-sw1 for VBUS_OTG switch
++        - pwr_sw2 or pwr-sw2 for SW_OUT switch
+       Switches are fixed voltage regulators with only enable/disable capability.
+ 
+     properties:
+@@ -187,7 +187,7 @@ properties:
+       "^(buck[1-4]|ldo[1-6]|boost|pwr_sw[1-2])-supply$":
+         description: STPMIC1 voltage regulators supplies
+ 
+-      "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])$":
++      "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2]|pwr-sw[1-2])$":
+         $ref: ../regulator/regulator.yaml
+ 
+       "^ldo[1-2,5-6]$":
+@@ -236,7 +236,7 @@ properties:
+ 
+         additionalProperties: false
+ 
+-      "^pwr_sw[1-2]$":
++      "^pwr_sw[1-2]|pwr-sw[1-2]$":
+         type: object
+ 
+         properties:

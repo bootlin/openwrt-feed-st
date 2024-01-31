@@ -1,0 +1,67 @@
+From c5737ad4ca0d7930265f91d2723c0d6110fcc5bc Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 4 Nov 2022 17:37:15 +0100
+Subject: [PATCH 201/529] ARM: dts: stm32: add pins muxing for dfsdm on
+ stm32mp13
+
+These pins are used for DFSDM on STM32MP13x Disco boards expansion
+connector.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ice1981272d7012cd6251d09e2b88357a57320979
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278999
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp13-pinctrl.dtsi | 39 ++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp13-pinctrl.dtsi
+@@ -6,6 +6,45 @@
+ #include <dt-bindings/pinctrl/stm32-pinfunc.h>
+ 
+ &pinctrl {
++	dfsdm_clkout_pins_a: dfsdm-clkout-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 3, AF3)>; /* DFSDM_CKOUT */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++	};
++
++	dfsdm_clkout_sleep_pins_a: dfsdm-clkout-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 3, ANALOG)>; /* DFSDM_CKOUT */
++		};
++	};
++
++	dfsdm_datin1_pins_a: dfsdm-datin1-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 1, AF6)>; /* DFSDM_DATIN1 */
++		};
++	};
++
++	dfsdm_datin1_sleep_pins_a: dfsdm-datin1-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 1, ANALOG)>; /* DFSDM_DATIN1 */
++		};
++	};
++
++	dfsdm_datin3_pins_a: dfsdm-datin3-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 13, AF6)>; /* DFSDM_DATIN3 */
++		};
++	};
++
++	dfsdm_datin3_sleep_pins_a: dfsdm-datin3-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 13, ANALOG)>; /* DFSDM_DATIN3 */
++		};
++	};
++
+ 	i2c1_pins_a: i2c1-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */

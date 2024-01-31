@@ -1,0 +1,51 @@
+From a0cf0a913d34d82dbb6a87e212f5d90b155a0632 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 1 Jun 2021 14:11:12 +0200
+Subject: [PATCH 094/529] ARM: dts: stm32: Add power domains support on
+ stm32mp131
+
+Add power domains supports on stm32mp131.
+pd_core power domain is used to maintain VddCore at nominal voltage.
+pd_core_ret domain is used to maintain VddCore at retention voltage.
+
+Change-Id: I052ab1b42512bf40b8e3b385949052decee120d9
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/210074
+Reviewed-by: MPUOSTL
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/276995
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -100,6 +100,26 @@
+ 		always-on;
+ 	};
+ 
++	pm_domain {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "st,stm32mp157c-pd";
++
++		pd_core_ret: core-ret-power-domain@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++			#power-domain-cells = <0>;
++			label = "CORE-RETENTION";
++
++			pd_core: core-power-domain@2 {
++				reg = <2>;
++				#power-domain-cells = <0>;
++				label = "CORE";
++			};
++		};
++	};
++
+ 	soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;

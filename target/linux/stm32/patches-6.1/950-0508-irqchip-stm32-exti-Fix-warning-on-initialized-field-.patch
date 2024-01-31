@@ -1,0 +1,58 @@
+From 28dc8ab76d9848bf5b243c184ccfe82c31d85044 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 9 May 2023 18:31:59 +0200
+Subject: [PATCH 508/529] irqchip/stm32-exti: Fix warning on initialized field
+ overwritten
+
+While compiling with W=1, both gcc and clang complain about a
+tricky way to initialize an array by filling it with a non-zero
+value and then overrride some of the array elements.
+In this case the override is intentional, so just disable the
+specific warning for only this part of the code.
+
+Note: the flag "-Woverride-init" is recognized by both compilers,
+but the warning msg from clang reports "-Winitializer-overrides".
+The doc of clang clarifies that the two flags are synonyms, so use
+here only the flag name common on both compilers.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I0a299bbbaaaad56a97438f63914b50e9b2b00570
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304988
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -184,6 +184,16 @@ __diag_push();
+ __diag_ignore_all("-Woverride-init",
+ 		  "logic to initialize all and then override some is OK");
+ 
++/*
++ * Use some intentionally tricky logic here to initialize the whole array to
++ * EXTI_INVALID_IRQ, but then override certain fields, requiring us to indicate
++ * that we "know" that there are overrides in this structure, and we'll need to
++ * disable that warning from W=1 builds.
++ */
++__diag_push();
++__diag_ignore_all("-Woverride-init",
++		  "logic to initialize all and then override some is OK");
++
+ static const u8 stm32mp1_desc_irq[] = {
+ 	/* default value */
+ 	[0 ... (STM32MP1_DESC_IRQ_SIZE - 1)] = EXTI_INVALID_IRQ,
+@@ -279,6 +289,8 @@ static const u8 stm32mp13_desc_irq[] = {
+ 
+ __diag_pop();
+ 
++__diag_pop();
++
+ static const struct stm32_exti_drv_data stm32mp1_drv_data = {
+ 	.exti_banks = stm32mp1_exti_banks,
+ 	.bank_nr = ARRAY_SIZE(stm32mp1_exti_banks),

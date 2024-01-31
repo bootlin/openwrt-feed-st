@@ -1,0 +1,39 @@
+From 63b14d9d586eed22ee347f95a51080320b823e25 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 27 Feb 2023 18:59:25 +0100
+Subject: [PATCH 503/529] ARM: dts: add pclk_max_frequency for dcmi/ov5640 in
+ stm32mp157f-ev1
+
+Add the pclk_max_frequency within the ov5640 node to limit
+the pixel clock since the DCMI interface is not capable of
+accepting pixel clock higher than 77MHz.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: Ib09e6c2115e77d3cf5218957a143c0760d3cd752
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299254
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+@@ -189,6 +189,7 @@
+ 			hsync-active = <0>;
+ 			vsync-active = <0>;
+ 			pclk-sample = <1>;
++			pclk-max-frequency = <77000000>;
+ 		};
+ 	};
+ };
+@@ -446,6 +447,7 @@
+ 				hsync-active = <0>;
+ 				vsync-active = <0>;
+ 				pclk-sample = <1>;
++				pclk-max-frequency = <77000000>;
+ 			};
+ 		};
+ 	};

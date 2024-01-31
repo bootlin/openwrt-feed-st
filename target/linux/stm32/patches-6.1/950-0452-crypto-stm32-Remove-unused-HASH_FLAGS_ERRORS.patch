@@ -1,0 +1,41 @@
+From 20fccaa481582ac4bff6cd4638312720d1c122c4 Mon Sep 17 00:00:00 2001
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Date: Sat, 11 Mar 2023 17:09:21 +0800
+Subject: [PATCH 452/529] crypto: stm32 - Remove unused HASH_FLAGS_ERRORS
+
+The bit HASH_FLAGS_ERRORS was never used.  Remove it.
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/crypto/stm32/stm32-hash.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -95,7 +95,6 @@
+ #define HASH_FLAGS_SHA1			BIT(19)
+ #define HASH_FLAGS_SHA224		BIT(20)
+ #define HASH_FLAGS_SHA256		BIT(21)
+-#define HASH_FLAGS_ERRORS		BIT(22)
+ #define HASH_FLAGS_HMAC			BIT(23)
+ 
+ #define HASH_OP_UPDATE			1
+@@ -873,7 +872,6 @@ static int stm32_hash_finish(struct ahas
+ static void stm32_hash_finish_req(struct ahash_request *req, int err)
+ {
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
+-	struct stm32_hash_state *state = &rctx->state;
+ 	struct stm32_hash_dev *hdev = rctx->hdev;
+ 
+ 	if (!err && (HASH_FLAGS_FINAL & hdev->flags)) {
+@@ -884,8 +882,6 @@ static void stm32_hash_finish_req(struct
+ 				 HASH_FLAGS_OUTPUT_READY | HASH_FLAGS_HMAC |
+ 				 HASH_FLAGS_HMAC_INIT | HASH_FLAGS_HMAC_FINAL |
+ 				 HASH_FLAGS_HMAC_KEY);
+-	} else {
+-		state->flags |= HASH_FLAGS_ERRORS;
+ 	}
+ 
+ 	pm_runtime_mark_last_busy(hdev->dev);

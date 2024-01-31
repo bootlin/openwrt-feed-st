@@ -1,0 +1,34 @@
+From 2c18a64cd11d9588b40a45e62be7a700a70e5293 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 9 Jan 2023 14:44:52 +0100
+Subject: [PATCH 471/529] dmaengine: stm32-mdma: abort resume if no ongoing
+ transfer
+
+chan->desc can be null, if transfer is terminated when resume is called,
+leading to a NULL pointer when retrieving the hwdesc.
+To avoid this case, check that chan->desc is not null and channel is
+disabled (transfer previously paused or terminated).
+
+Change-Id: I6b606e812695ba7568628cd4c79008149ba7ed72
+Fixes: a4ffb13c8946 ("dmaengine: Add STM32 MDMA driver")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/298896
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/dma/stm32-mdma.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/dma/stm32-mdma.c
++++ b/drivers/dma/stm32-mdma.c
+@@ -1239,6 +1239,10 @@ static int stm32_mdma_resume(struct dma_
+ 	if (!chan->desc || (stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & STM32_MDMA_CCR_EN))
+ 		return -EPERM;
+ 
++	/* Transfer can be terminated */
++	if (!chan->desc || (stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & STM32_MDMA_CCR_EN))
++		return -EPERM;
++
+ 	hwdesc = chan->desc->node[chan->curr_hwdesc].hwdesc;
+ 
+ 	spin_lock_irqsave(&chan->vchan.lock, flags);

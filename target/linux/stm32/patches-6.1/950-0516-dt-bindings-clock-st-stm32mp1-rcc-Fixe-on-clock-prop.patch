@@ -1,0 +1,66 @@
+From 02fd90372a8abb11b7a001c53744c502a19fff31 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Thu, 26 Jan 2023 17:45:24 +0100
+Subject: [PATCH 516/529] dt-bindings: clock: st,stm32mp1-rcc: Fixe on clock
+ properties
+
+For compatible "st,stm32mp1-rcc-secure", the "ETH_RX_CLK/ETH_REF_CLK"
+can be added to support optional external ethernet RX clock in the DT
+as it is already supported for "st,stm32mp1-rcc".
+
+In case of "st,stm32mp1-rcc" (stm32mp1 clock driver without RCC
+security support hardened), "clocks" and "clock-names" describe
+oscillators; they are optional to be backward compatible, they are required
+only for "st,stm32mp1-rcc-secure".
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I4d8a715e1032cf2d600c185268a46385b1f5d8dc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/287315
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+---
+ .../bindings/clock/st,stm32mp1-rcc.yaml       | 23 +++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+--- a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
++++ b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+@@ -77,7 +77,6 @@ if:
+     compatible:
+       contains:
+         enum:
+-          - st,stm32mp1-rcc-secure
+           - st,stm32mp13-rcc
+ then:
+   properties:
+@@ -99,11 +98,27 @@ else:
+   properties:
+     clocks:
+       description:
+-        Specifies the external RX clock for ethernet MAC.
+-      maxItems: 1
++        Specifies oscillators and the external RX clock for ethernet MAC.
++      maxItems: 6
+ 
+     clock-names:
+-      const: ETH_RX_CLK/ETH_REF_CLK
++      items:
++        - const: hse
++        - const: hsi
++        - const: csi
++        - const: lse
++        - const: lsi
++        - const: ETH_RX_CLK/ETH_REF_CLK
++  if:
++    properties:
++      compatible:
++        contains:
++          enum:
++            - st,stm32mp1-rcc-secure
++  then:
++    required:
++      - clocks
++      - clock-names
+ 
+ additionalProperties: false
+ 

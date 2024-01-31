@@ -1,0 +1,28 @@
+From 49015a8ba35433a2b8ed4d065a4852d18be93979 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 7 Nov 2022 14:02:48 +0100
+Subject: [PATCH 203/529] ARM: configs: enable audio on
+ fragment-02-multiv7_addons
+
+Activate futex to support alsa-utils applications.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ifc7c0f3cdecb0d5eb7b52d135e904d45a42cc588
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279001
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -15,6 +15,7 @@ CONFIG_DEBUG_SECTION_MISMATCH=y
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_FORCE_MAX_ZONEORDER=12
++CONFIG_FUTEX=y
+ CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+ CONFIG_GDB_SCRIPTS=y
+ CONFIG_HIGHMEM=y

@@ -1,0 +1,27 @@
+From d3d1829f87e8c7ba6316aed7751b8fc52ad527bf Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 24 Oct 2022 11:12:22 +0200
+Subject: [PATCH 027/529] ARM: configs: enable MCP23017 IO expander in
+ multiv7_addons fragment
+
+CONFIG_PINCTRL_MCP23S08 enables MCP23017 IO expander support, enable it in
+multiv7 addons fragment as MCP23017 is used on stm32mp135f-dk board.
+
+Change-Id: I949fdecb3cd0e7f3319b0310e2f1bf1a278c3333
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/192079
+Reviewed-by: Fabien DESSENNE <fabien.dessenne@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -23,6 +23,7 @@ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
+ CONFIG_OPTEE=y
+ CONFIG_OVERLAY_FS=y
++CONFIG_PINCTRL_MCP23S08=y
+ CONFIG_POSIX_MQUEUE=y
+ CONFIG_POWER_RESET=y
+ CONFIG_POWER_RESET_SYSCON=y

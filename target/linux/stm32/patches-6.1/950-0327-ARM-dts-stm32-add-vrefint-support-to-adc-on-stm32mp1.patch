@@ -1,0 +1,39 @@
+From b75ab25b3f7b4d0feb1a3b3cd17a47a5109daaec Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 25 Feb 2022 10:16:25 +0100
+Subject: [PATCH 327/529] ARM: dts: stm32: add vrefint support to adc on
+ stm32mp13
+
+Set STM32 ADC1&2 as consumers of BSEC, to retrieve
+vrefint calibration data on STM32MP13x SoCs.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283314
+Change-Id: I1a0556445ef5875be42b53b7223e4cfa3d3d869d
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 2 ++
+ arch/arm/boot/dts/stm32mp133.dtsi | 2 ++
+ 2 files changed, 4 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -847,6 +847,8 @@
+ 				interrupts = <0>;
+ 				dmas = <&dmamux1 10 0x400 0x80000001>;
+ 				dma-names = "rx";
++				nvmem-cells = <&vrefint>;
++				nvmem-cell-names = "vrefint";
+ 				status = "disabled";
+ 
+ 				channel@13 {
+--- a/arch/arm/boot/dts/stm32mp133.dtsi
++++ b/arch/arm/boot/dts/stm32mp133.dtsi
+@@ -56,6 +56,8 @@
+ 				interrupts = <0>;
+ 				dmas = <&dmamux1 9 0x400 0x80000001>;
+ 				dma-names = "rx";
++				nvmem-cells = <&vrefint>;
++				nvmem-cell-names = "vrefint";
+ 				status = "disabled";
+ 
+ 				channel@18 {

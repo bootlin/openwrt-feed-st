@@ -1,0 +1,35 @@
+From 96d1e0aca5f3ef563b7d0d064113faac507e6518 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 2 Mar 2021 18:03:36 +0100
+Subject: [PATCH 481/529] mtd: rawnand: stm32_fmc2: depends on ARCH_STM32
+ instead of MACH_STM32MP157
+
+To be able to compile the driver on all STM32MP SOCs, we move the
+"depends on" on ARCH_STM32.
+
+Change-Id: I61638cf60d534a0c90a498cf8f8b1fd94eb2f662
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/197105
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/297321
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/mtd/nand/raw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -380,7 +380,7 @@ config MTD_NAND_TEGRA
+ 
+ config MTD_NAND_STM32_FMC2
+ 	tristate "Support for NAND controller on STM32MP SoCs"
+-	depends on MACH_STM32MP157 || COMPILE_TEST
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	select MFD_SYSCON
+ 	help
+ 	  Enables support for NAND Flash chips on SoCs containing the FMC2

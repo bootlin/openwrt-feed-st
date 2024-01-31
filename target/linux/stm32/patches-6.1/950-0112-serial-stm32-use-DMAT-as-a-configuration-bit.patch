@@ -1,0 +1,58 @@
+From 9d85f1432053e030950e2399fced58521b1b9c58 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 27 Apr 2021 15:24:01 +0200
+Subject: [PATCH 112/529] serial: stm32: use DMAT as a configuration bit
+
+DMAT is a configuration bit so it should be set at the startup of uart
+port and not when a DMA transfer begins.
+
+This patch move set of DMAT into set_termios and remove DMAT reset except
+in shutdown.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Depends-on: I5fc1dd455d2923a80fc41e5bad3a3de705496c3c
+---
+ drivers/tty/serial/stm32-usart.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -531,10 +531,8 @@ static void stm32_usart_tx_dma_complete(
+ {
+ 	struct uart_port *port = arg;
+ 	struct stm32_port *stm32port = to_stm32_port(port);
+-	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
+ 	unsigned long flags;
+ 
+-	stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAT);
+ 	stm32_usart_tx_dma_terminate(stm32port);
+ 
+ 	/* Let's see if we have pending data to send */
+@@ -624,7 +622,6 @@ static void stm32_usart_transmit_chars_p
+ static void stm32_usart_transmit_chars_dma(struct uart_port *port)
+ {
+ 	struct stm32_port *stm32port = to_stm32_port(port);
+-	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
+ 	struct circ_buf *xmit = &port->state->xmit;
+ 	struct dma_async_tx_descriptor *desc = NULL;
+ 	unsigned int count;
+@@ -689,8 +686,6 @@ static void stm32_usart_transmit_chars_d
+ 	/* Issue pending DMA TX requests */
+ 	dma_async_issue_pending(stm32port->tx_ch);
+ 
+-	stm32_usart_set_bits(port, ofs->cr3, USART_CR3_DMAT);
+-
+ 	xmit->tail = (xmit->tail + count) & (UART_XMIT_SIZE - 1);
+ 	port->icount.tx += count;
+ 	return;
+@@ -1293,6 +1288,9 @@ static void stm32_usart_set_termios(stru
+ 		cr3 |= USART_CR3_DDRE;
+ 	}
+ 
++	if (stm32_port->tx_ch)
++		cr3 |= USART_CR3_DMAT;
++
+ 	if (rs485conf->flags & SER_RS485_ENABLED) {
+ 		stm32_usart_config_reg_rs485(&cr1, &cr3, baud, rs485conf);
+ 		if (rs485conf->flags & SER_RS485_RTS_ON_SEND) {

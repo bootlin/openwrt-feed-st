@@ -1,0 +1,59 @@
+From 84da5aaa2af2dfdfeab3ae03dd1ef4ee07f55e01 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 9 May 2022 13:05:51 +0200
+Subject: [PATCH 317/529] ARM: dts: stm32: add adc internal channels to
+ stm32mp15
+
+Add STM32 ADC2 internal channels VREFINT and VDDCORE to STM32MP15x SoCs.
+VBAT internal channel is not defined by default in SoC DT, and
+has be defined in board DT when needed, instead. This avoids unwanted
+current consumption on battery, when ADC conversions are performed
+on any other channels.
+
+The internal channels are defined in STM32MP15 SoC DT according to
+generic channel bindings. The STM32 driver does not support a mixed use
+of legacy and generic channels. When generic channels are defined,
+legacy channel are ignored. This involves that the board device trees
+using legacy bindings for ADC2, have to be reworked.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283303
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: If6a9c088451d54cfed23f3aa4cffe813c264f99e
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1130,6 +1130,8 @@
+ 			adc1: adc@0 {
+ 				compatible = "st,stm32mp1-adc";
+ 				#io-channel-cells = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
+ 				reg = <0x0>;
+ 				interrupt-parent = <&adc>;
+ 				interrupts = <0>;
+@@ -1141,12 +1143,22 @@
+ 			adc2: adc@100 {
+ 				compatible = "st,stm32mp1-adc";
+ 				#io-channel-cells = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
+ 				reg = <0x100>;
+ 				interrupt-parent = <&adc>;
+ 				interrupts = <1>;
+ 				dmas = <&dmamux1 10 0x400 0x01>;
+ 				dma-names = "rx";
+ 				status = "disabled";
++				channel@13 {
++					reg = <13>;
++					label = "vrefint";
++				};
++				channel@14 {
++					reg = <14>;
++					label = "vddcore";
++				};
+ 			};
+ 		};
+ 

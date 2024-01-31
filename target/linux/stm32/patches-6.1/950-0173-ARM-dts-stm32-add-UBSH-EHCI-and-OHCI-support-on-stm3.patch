@@ -1,0 +1,47 @@
+From eb83b1416d8ae81e0f4666b49bf1bd6feb3b804c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 14 Oct 2022 16:15:02 +0200
+Subject: [PATCH 173/529] ARM: dts: stm32: add UBSH EHCI and OHCI support on
+ stm32mp131
+
+This patch adds USB Host EHCI and OHCI support on stm32mp131.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+(cherry picked from commit 4a47f0f3e936496fcf7961ee99a412b06a97ff33)
+Change-Id: I591a54e4486c7952f77b2c684ebce8b7283a13f7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279512
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -580,6 +580,25 @@
+ 			status = "disabled";
+ 		};
+ 
++		usbh_ohci: usb@5800c000 {
++			compatible = "generic-ohci";
++			reg = <0x5800c000 0x1000>;
++			clocks = <&usbphyc>, <&rcc USBH>;
++			resets = <&rcc USBH_R>;
++			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++			status = "disabled";
++		};
++
++		usbh_ehci: usb@5800d000 {
++			compatible = "generic-ehci";
++			reg = <0x5800d000 0x1000>;
++			clocks = <&usbphyc>, <&rcc USBH>;
++			resets = <&rcc USBH_R>;
++			interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
++			companion = <&usbh_ohci>;
++			status = "disabled";
++		};
++
+ 		iwdg2: watchdog@5a002000 {
+ 			compatible = "st,stm32mp1-iwdg";
+ 			reg = <0x5a002000 0x400>;

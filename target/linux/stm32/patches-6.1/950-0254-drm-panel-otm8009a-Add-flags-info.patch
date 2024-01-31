@@ -1,0 +1,29 @@
+From cc0d8fb35b6a9714218ea6b7c0d3062727d4caa3 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 19 Jan 2021 10:27:16 +0100
+Subject: [PATCH 254/529] drm/panel: otm8009a: Add flags info
+
+Return more info on bus & mode flags.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I4730e2dbf0f5072a8ea769c3ff4f65891555d494
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/191191
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228182
+---
+ drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
++++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+@@ -380,6 +380,8 @@ static int otm8009a_get_modes(struct drm
+ 
+ 	connector->display_info.width_mm = mode->width_mm;
+ 	connector->display_info.height_mm = mode->height_mm;
++	connector->display_info.bus_flags = DRM_BUS_FLAG_DE_HIGH |
++					    DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE;
+ 
+ 	return num_modes;
+ }

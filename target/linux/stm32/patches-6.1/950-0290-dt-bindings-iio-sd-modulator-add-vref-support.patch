@@ -1,0 +1,25 @@
+From 25a88b4212033fbd883efce56294a3f91d95739e Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Thu, 24 Sep 2020 15:07:51 +0200
+Subject: [PATCH 290/529] dt-bindings: iio: sd modulator: add vref support
+
+Add vref supply support to sigma delta modulator.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Change-Id: Ia98c5dea428654f3685c53a9c307992485a3b2d1
+---
+ .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml     | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+@@ -21,6 +21,9 @@ properties:
+   '#io-channel-cells':
+     const: 0
+ 
++  vref-supply:
++    description: Phandle to the vref input analog reference voltage.
++
+ required:
+   - compatible
+   - '#io-channel-cells'

@@ -1,0 +1,33 @@
+From d4ea6b6ec7bd8e382adfdbc219c5bc2c2903dc4e Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Tue, 21 Sep 2021 17:13:36 +0200
+Subject: [PATCH 037/529] clk: stm32mp1: set CLK_SET_PARENT flag to MPU clock
+
+This flag is need to perform DVFS on MPU.
+
+Change-Id: I2a0d3ef35e0b8b3615f3369c95318a13310e0444
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+---
+ drivers/clk/clk-stm32mp1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/clk/clk-stm32mp1.c
++++ b/drivers/clk/clk-stm32mp1.c
+@@ -1897,7 +1897,7 @@ static const struct clock_config stm32mp
+ 	PLL(PLL4, "pll4", ref4_parents, 0, RCC_PLL4CR, RCC_RCK4SELR),
+ 
+ 	/* ODF */
+-	COMPOSITE(PLL1_P, "pll1_p", PARENT("pll1"), 0,
++	COMPOSITE(PLL1_P, "pll1_p", PARENT("pll1"), CLK_SET_RATE_PARENT,
+ 		  _GATE(RCC_PLL1CR, 4, 0),
+ 		  _NO_MUX,
+ 		  _DIV(RCC_PLL1CFGR2, 0, 7, 0, NULL)),
+@@ -1952,7 +1952,7 @@ static const struct clock_config stm32mp
+ 	    RCC_CPERCKSELR, 0, 2, 0),
+ 
+ 	MUX(CK_MPU, "ck_mpu", cpu_src, CLK_OPS_PARENT_ENABLE |
+-	     CLK_IS_CRITICAL, RCC_MPCKSELR, 0, 2, 0),
++	    CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, RCC_MPCKSELR, 0, 2, 0),
+ 
+ 	COMPOSITE(CK_AXI, "ck_axi", axi_src, CLK_IS_CRITICAL |
+ 		   CLK_OPS_PARENT_ENABLE,

@@ -1,0 +1,32 @@
+From 8e42ee3be3be83477cb6e319ad0d6e7910b087b0 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 17 Feb 2023 10:56:15 +0100
+Subject: [PATCH 415/529] ARM: configs: disable RNDIS support in
+ fragment-01-multiv7_cleanup
+
+Remove support for RNDIS, as stated in [1] "The Microsoft RNDIS protocol
+is, as designed, insecure and vulnerable"
+
+[1] https://lkml.org/lkml/2022/11/23/728
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ibf6ed74661d7880f83c29ae60dc8d4c2c7420fc7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291495
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -252,7 +252,9 @@
+ # CONFIG_SOC_TI is not set
+ # CONFIG_STAGING is not set
+ # CONFIG_SUNXI_SRAM is not set
++# CONFIG_USB_CONFIGFS_RNDIS is not set
+ # CONFIG_USB_DWC3 is not set
++# CONFIG_USB_ETH_RNDIS is not set
+ # CONFIG_USB_LAN78XX is not set
+ # CONFIG_USB_MUSB_HDRC is not set
+ # CONFIG_VIRTIO_CONSOLE is not set

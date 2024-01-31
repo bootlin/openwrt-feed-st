@@ -1,0 +1,100 @@
+From 18be4ec83c81e22e89ef68b7acd5559f46645cf5 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 11 Jan 2023 11:37:36 +0100
+Subject: [PATCH 379/529] ARM: dts: stm32: add eth1 and eth2 support on
+ stm32mp13
+
+Both instances ethernet based on GMAC SNPS IP on stm32mp13,
+Ethernet1 is on RMII mode with quartz
+Ethernet2 is on RMII mode without quartz
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Icae1649557820ef81a2e2478fe52baf725b5bd71
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/284371
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 31 +++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/stm32mp133.dtsi | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -1458,6 +1458,37 @@
+ 			status = "disabled";
+ 		};
+ 
++		eth1: eth1@5800a000 {
++			compatible = "snps,dwmac-4.20a", "st,stm32mp13-dwmac";
++			reg = <0x5800a000 0x2000>;
++			reg-names = "stmmaceth";
++			interrupts-extended = <&intc GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
++					      <&exti 68 1>;
++			interrupt-names = "macirq", "eth_wake_irq";
++			clock-names = "stmmaceth",
++				      "mac-clk-tx",
++				      "mac-clk-rx",
++				      "ethstp",
++				      "eth-ck";
++			clocks = <&rcc ETH1MAC>,
++				 <&rcc ETH1TX>,
++				 <&rcc ETH1RX>,
++				 <&rcc ETH1STP>,
++				 <&rcc ETH1CK_K>;
++			st,syscon = <&syscfg 0x4 0xff0000>;
++			snps,mixed-burst;
++			snps,pbl = <2>;
++			snps,axi-config = <&stmmac_axi_config_1>;
++			snps,tso;
++			status = "disabled";
++
++			stmmac_axi_config_1: stmmac-axi-config {
++				snps,wr_osr_lmt = <0x7>;
++				snps,rd_osr_lmt = <0x7>;
++				snps,blen = <0 0 0 0 16 8 4>;
++			};
++		};
++
+ 		usbh_ohci: usb@5800c000 {
+ 			compatible = "generic-ohci";
+ 			reg = <0x5800c000 0x1000>;
+--- a/arch/arm/boot/dts/stm32mp133.dtsi
++++ b/arch/arm/boot/dts/stm32mp133.dtsi
+@@ -66,5 +66,35 @@
+ 				};
+ 			};
+ 		};
++
++		eth2: eth2@5800e000 {
++			compatible = "snps,dwmac-4.20a", "st,stm32mp13-dwmac";
++			reg = <0x5800e000 0x2000>;
++			reg-names = "stmmaceth";
++			interrupts-extended = <&intc GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq";
++			clock-names = "stmmaceth",
++				      "mac-clk-tx",
++				      "mac-clk-rx",
++				      "ethstp",
++				      "eth-ck";
++			clocks = <&rcc ETH2MAC>,
++				 <&rcc ETH2TX>,
++				 <&rcc ETH2RX>,
++				 <&rcc ETH2STP>,
++				 <&rcc ETH2CK_K>;
++			st,syscon = <&syscfg 0x4 0xff000000>;
++			snps,mixed-burst;
++			snps,pbl = <2>;
++			snps,axi-config = <&stmmac_axi_config_2>;
++			snps,tso;
++			status = "disabled";
++
++			stmmac_axi_config_2: stmmac-axi-config {
++				snps,wr_osr_lmt = <0x7>;
++				snps,rd_osr_lmt = <0x7>;
++				snps,blen = <0 0 0 0 16 8 4>;
++			};
++		};
+ 	};
+ };

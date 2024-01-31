@@ -1,0 +1,25 @@
+From 86e09345470a30d208e63af15c6744965572993d Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 12 Dec 2022 12:05:00 +0100
+Subject: [PATCH 265/529] dt-bindings: display: simple: Add Rocktech RK043FN48H
+
+Add Rocktech RK043FN48H (480x272) TFT-LCD panel
+to the list of compatibles.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I8a63629c6255652b5e45b3c90bdb73a76c2f849a
+---
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -274,6 +274,8 @@ properties:
+       - qiaodian,qd43003c0-40
+         # Shenzhen QiShenglong Industrialist Co., Ltd. Gopher 2b 4.3" 480(RGB)x272 TFT LCD panel
+       - qishenglong,gopher2b-lcd
++        # Rocktech Display Ltd. RK043FN48H TFT 480x272
++      - rocktech,rk043fn48h"
+         # Rocktech Displays Ltd. RK101II01D-CT 10.1" TFT 1280x800
+       - rocktech,rk101ii01d-ct
+         # Rocktech Display Ltd. RK070ER9427 800(RGB)x480 TFT LCD panel

@@ -1,0 +1,36 @@
+From fc84cbe487af220eb3f1d10889734b67af3393ad Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 8 Dec 2022 14:07:59 +0100
+Subject: [PATCH 280/529] ARM: configs: multi_v7_addons: add touchscreen for
+ stm32mp1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add touchscreen (goodix & edt_ft5x06) to multi_v7 addons
+fragment file.
+
+Signed-off-by: Yannick Fertré <yannick.fertre@st.com>
+Change-Id: Icb8d37b187ec8a3c4a6be8f8cb1d37af9b471c45
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280094
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -48,6 +48,8 @@ CONFIG_SRAM=y
+ CONFIG_TEE=y
+ CONFIG_THERMAL=y
+ CONFIG_TMPFS=y
++CONFIG_TOUCHSCREEN_EDT_FT5X06=y
++CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_TYPEC_UCSI=m
+ CONFIG_UCSI_STM32G0=m
+ CONFIG_USB_ONBOARD_HUB=y

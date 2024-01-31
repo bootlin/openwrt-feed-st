@@ -1,0 +1,36 @@
+From 645e132aff1b94cea0405533685542a33dd154f4 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 10 Feb 2023 14:20:50 +0100
+Subject: [PATCH 424/529] dt-bindings: usb: dwc2: add utmi optional clock
+
+utmi clock is typically provided by PHY output. Add this optional clock,
+as the core could use other clocks depending on the SoC where it's used.
+This is needed on stm32mp15, when using the integrated full-speed PHY.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I7f0dc54b23b38d60bcddac87eff279a3e1da99d8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291410
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -72,11 +72,14 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
+ 
+   clock-names:
+     items:
+       - const: otg
++      - const: utmi
++    minItems: 1
+ 
+   disable-over-current:
+     type: boolean

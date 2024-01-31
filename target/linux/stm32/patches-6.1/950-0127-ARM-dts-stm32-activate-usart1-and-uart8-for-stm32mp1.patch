@@ -1,0 +1,33 @@
+From 308adc14ab8e2bad0635e0d44938d877fb7c4a2f Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Wed, 26 Oct 2022 18:36:21 +0200
+Subject: [PATCH 127/529] ARM: dts: stm32: activate usart1 and uart8 for
+ stm32mp135f-dk a7-examples
+
+Activate usart1 and uart8 (available on GPIO expansion connector)
+for stm32mp135f-dk a7-examples.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I77fcbc9e869f187807106222b8668face9e05c18
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/277728
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk-a7-examples.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk-a7-examples.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk-a7-examples.dts
+@@ -12,3 +12,11 @@
+ 	model = "STMicroelectronics STM32MP135F-DK configured to run Linux A7 examples";
+ 	compatible = "st,stm32mp135f-dk-a7-examples", "st,stm32mp135f-dk", "st,stm32mp135";
+ };
++
++&uart8 {
++	status = "okay";
++};
++
++&usart1 {
++	status = "okay";
++};

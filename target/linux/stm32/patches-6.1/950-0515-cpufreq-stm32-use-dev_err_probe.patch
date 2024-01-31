@@ -1,0 +1,45 @@
+From fd0d8e49b13971d98dc6c6df310360cee9ef1084 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Tue, 4 Apr 2023 14:31:36 +0200
+Subject: [PATCH 515/529] cpufreq: stm32: use dev_err_probe()
+
+Changes stm32-cpufreq driver to use dev_err_probe() where probe
+may fail for deferral purpose. This change prevents error level trace
+like the below:
+
+[    0.845104] stm32-cpufreq stm32-cpufreq: Failed to get chip info: -517
+
+Change-Id: Ibdf20e4f69918dfbd5f306fc431829c0fae9a70c
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/298840
+Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/cpufreq/stm32-cpufreq.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+--- a/drivers/cpufreq/stm32-cpufreq.c
++++ b/drivers/cpufreq/stm32-cpufreq.c
+@@ -41,7 +41,7 @@ static int stm32_cpufreq_probe(struct pl
+ 	/* Get chip info */
+ 	ret = nvmem_cell_read_u8(cpu_dev, "part_number", &part_number);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Failed to get chip info: %d\n", ret);
++		dev_err_probe(&pdev->dev, ret, "Failed to get chip info: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -54,9 +54,7 @@ static int stm32_cpufreq_probe(struct pl
+ 	priv->token = dev_pm_opp_set_supported_hw(cpu_dev, &supported_hw, 1);
+ 	if (priv->token < 0) {
+ 		ret = priv->token;
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Failed to set supported opp: %d\n",
+-				ret);
++		dev_err_probe(&pdev->dev, ret, "Failed to set supported opp: %d\n", ret);
+ 		return ret;
+ 	}
+ 

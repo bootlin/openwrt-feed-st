@@ -1,0 +1,54 @@
+From 29facb97953d5570720d9d0d42e6e20ab4f9f8ba Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 29 Nov 2022 18:20:32 +0100
+Subject: [PATCH 477/529] ARM: dts: stm32: add pins for usart1 in
+ stm32mp15-pinctrl
+
+Add pins for usart1 in smart card mode in stm32mp15-pinctrl.dtsi
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I782bf6d5f931af6d41fe5685935a3f42bf03e345
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278361
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/297632
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 27 ++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -2602,4 +2602,31 @@
+ 				 <STM32_PINMUX('Z', 2, ANALOG)>; /* SPI1_MOSI */
+ 		};
+ 	};
++
++	usart1_pins_a: usart1-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('Z', 6, AF4)>; /* USART1_CK */
++			drive-push-pull;
++			bias-disable;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('Z', 7, AF7)>; /* USART1_TX_RX */
++			drive-open-drain;
++			bias-disable;
++		};
++	};
++
++	usart1_idle_pins_a: usart1-idle-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 7, ANALOG)>, /* USART1_TX_RX */
++				 <STM32_PINMUX('Z', 6, ANALOG)>; /* USART1_CK */
++		};
++	};
++
++	usart1_sleep_pins_a: usart1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 7, ANALOG)>, /* USART1_TX_RX */
++				 <STM32_PINMUX('Z', 6, ANALOG)>; /* USART1_CK */
++		};
++	};
+ };

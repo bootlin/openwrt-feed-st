@@ -1,0 +1,121 @@
+From c0a6e425b131e52fd3eeed9b584d50ab970cd355 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 9 Jan 2023 10:54:11 +0100
+Subject: [PATCH 325/529] ARM: dts: stm32: add adc support to stm32mp13
+
+Add ADC1 and ADC2 support to STM32MP13 SoC family.
+
+The STM32MP131 provides only ADC2, while other STM32MP13 SoCs provide
+both ADC1 and ADC2.
+
+Internal channels support limitations:
+- VREFINT internal channel requires calibration data from OTP memory.
+  The nvmem properties used to access OTP are not defined for time being,
+  as OTP support is not yet enabled.
+
+- VBAT internal channel is not defined by default in SoC DT, and
+  has be defined in board DT when needed, instead. This avoids unwanted
+  current consumption on battery, when ADC conversions are performed
+  on any other channels.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283311
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I28944ab088408382de98afcd66662882a39d2200
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 43 +++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/stm32mp133.dtsi | 31 ++++++++++++++++++++++
+ 2 files changed, 74 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -825,6 +825,49 @@
+ 			dma-channels = <16>;
+ 		};
+ 
++		adc_2: adc@48004000 {
++			compatible = "st,stm32mp13-adc-core";
++			reg = <0x48004000 0x400>;
++			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&rcc ADC2>, <&rcc ADC2_K>;
++			clock-names = "bus", "adc";
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			adc2: adc@0 {
++				compatible = "st,stm32mp13-adc";
++				#io-channel-cells = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x0>;
++				interrupt-parent = <&adc_2>;
++				interrupts = <0>;
++				dmas = <&dmamux1 10 0x400 0x80000001>;
++				dma-names = "rx";
++				status = "disabled";
++
++				channel@13 {
++					reg = <13>;
++					label = "vrefint";
++				};
++				channel@14 {
++					reg = <14>;
++					label = "vddcore";
++				};
++				channel@16 {
++					reg = <16>;
++					label = "vddcpu";
++				};
++				channel@17 {
++					reg = <17>;
++					label = "vddq_ddr";
++				};
++			};
++		};
++
+ 		i2s4: audio-controller@4c002000 {
+ 			compatible = "st,stm32h7-i2s";
+ 			#sound-dai-cells = <0>;
+--- a/arch/arm/boot/dts/stm32mp133.dtsi
++++ b/arch/arm/boot/dts/stm32mp133.dtsi
+@@ -33,5 +33,36 @@
+ 			bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
+ 			status = "disabled";
+ 		};
++
++		adc_1: adc@48003000 {
++			compatible = "st,stm32mp13-adc-core";
++			reg = <0x48003000 0x400>;
++			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&rcc ADC1>, <&rcc ADC1_K>;
++			clock-names = "bus", "adc";
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			adc1: adc@0 {
++				compatible = "st,stm32mp13-adc";
++				#io-channel-cells = <1>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0x0>;
++				interrupt-parent = <&adc_1>;
++				interrupts = <0>;
++				dmas = <&dmamux1 9 0x400 0x80000001>;
++				dma-names = "rx";
++				status = "disabled";
++
++				channel@18 {
++					reg = <18>;
++					label = "vrefint";
++				};
++			};
++		};
+ 	};
+ };

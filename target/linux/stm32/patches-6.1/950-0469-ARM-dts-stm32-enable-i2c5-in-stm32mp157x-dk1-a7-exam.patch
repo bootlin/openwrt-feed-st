@@ -1,0 +1,46 @@
+From 352f6d17746b46d4ff73dfd9640c25fcde5742ec Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 24 Mar 2023 18:40:32 +0100
+Subject: [PATCH 469/529] ARM: dts: stm32: enable i2c5 in
+ stm32mp157x-dk1-a7-examples
+
+Enable the i2c5 in dk1 a7 examples.
+
+Change-Id: Id38d83807f389b58ec34bbe68be91c3ed1ad9117
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/297458
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-dk1-a7-examples.dts | 4 ++++
+ arch/arm/boot/dts/stm32mp157d-dk1-a7-examples.dts | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157a-dk1-a7-examples.dts
++++ b/arch/arm/boot/dts/stm32mp157a-dk1-a7-examples.dts
+@@ -13,6 +13,10 @@
+ 	compatible = "st,stm32mp157a-dk1-a7-examples", "st,stm32mp157a-dk1", "st,stm32mp157";
+ };
+ 
++&i2c5 {
++	status = "okay";
++};
++
+ &uart7 {
+ 	status = "okay";
+ };
+--- a/arch/arm/boot/dts/stm32mp157d-dk1-a7-examples.dts
++++ b/arch/arm/boot/dts/stm32mp157d-dk1-a7-examples.dts
+@@ -13,6 +13,10 @@
+ 	compatible = "st,stm32mp157d-dk1-a7-examples", "st,stm32mp157d-dk1", "st,stm32mp157";
+ };
+ 
++&i2c5 {
++	status = "okay";
++};
++
+ &uart7 {
+ 	status = "okay";
+ };

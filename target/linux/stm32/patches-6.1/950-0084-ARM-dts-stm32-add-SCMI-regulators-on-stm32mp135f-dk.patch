@@ -1,0 +1,95 @@
+From f9b0ac9669d1fe798ed26dbfb625260af6420d5b Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 9 Nov 2022 17:33:31 +0100
+Subject: [PATCH 084/529] ARM: dts: stm32: add SCMI regulators on
+ stm32mp135f-dk
+
+Add scmi regulators on stm32mp135f-dk.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I614ccf68534721260e9aec491f9e9a53f0206776
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/275800
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 46 +++++++++++++++++++++++++---
+ 1 file changed, 41 insertions(+), 5 deletions(-)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -9,6 +9,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/leds/common.h>
++#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
+ #include "stm32mp135.dtsi"
+ #include "stm32mp13xf.dtsi"
+ #include "stm32mp13-pinctrl.dtsi"
+@@ -59,11 +60,11 @@
+ 		};
+ 	};
+ 
+-	vdd_sd: vdd-sd {
++	v3v3_ao: v3v3-ao {
+ 		compatible = "regulator-fixed";
+-		regulator-name = "vdd_sd";
+-		regulator-min-microvolt = <2900000>;
+-		regulator-max-microvolt = <2900000>;
++		regulator-name = "v3v3_ao";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
+ 		regulator-always-on;
+ 	};
+ };
+@@ -117,6 +118,41 @@
+ 	status = "okay";
+ };
+ 
++&scmi_regu {
++	scmi_vddcpu: voltd-vddcpu {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK1>;
++		regulator-name = "vddcpu";
++	};
++	scmi_vdd: voltd-vdd {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK3>;
++		regulator-name = "vdd";
++	};
++	scmi_vddcore: voltd-vddcore {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK4>;
++		regulator-name = "vddcore";
++	};
++	scmi_vdd_adc: voltd-vdd-adc {
++		reg = <VOLTD_SCMI_STPMIC1_LDO1>;
++		regulator-name = "vdd_adc";
++	};
++	scmi_vdd_usb: voltd-vdd-usb {
++		reg = <VOLTD_SCMI_STPMIC1_LDO4>;
++		regulator-name = "vdd_usb";
++	};
++	scmi_vdd_sd: voltd-vdd-sd {
++		reg = <VOLTD_SCMI_STPMIC1_LDO5>;
++		regulator-name = "vdd_sd";
++	};
++	scmi_v1v8_periph: voltd-v1v8-periph {
++		reg = <VOLTD_SCMI_STPMIC1_LDO6>;
++		regulator-name = "v1v8_periph";
++	};
++	scmi_v3v3_sw: voltd-v3v3-sw {
++		reg = <VOLTD_SCMI_STPMIC1_PWR_SW2>;
++		regulator-name = "v3v3_sw";
++	};
++};
++
+ &sdmmc1 {
+ 	pinctrl-names = "default", "opendrain", "sleep";
+ 	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_clk_pins_a>;
+@@ -126,7 +162,7 @@
+ 	disable-wp;
+ 	st,neg-edge;
+ 	bus-width = <4>;
+-	vmmc-supply = <&vdd_sd>;
++	vmmc-supply = <&scmi_vdd_sd>;
+ 	status = "okay";
+ };
+ 

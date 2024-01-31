@@ -1,0 +1,41 @@
+From f5a1da215698993df7b30846d80caa9816d3c4aa Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 31 Jan 2020 16:26:38 +0100
+Subject: [PATCH 119/529] ARM: dts: stm32: fix slew-rate of USART2 on
+ stm32mp15xx-dkx
+
+On stm32mp15xx-dkx boards:
+- Fix slew-rate of USART 2 to 0 like other USARTs, because frequency of
+USART pins doesn't exceed 10Mhz.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I7af6286bb26dc3a650252217bf603e5120845d55
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/277716
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -2178,7 +2178,7 @@
+ 				 <STM32_PINMUX('D', 4, AF7)>; /* USART2_RTS */
+ 			bias-disable;
+ 			drive-push-pull;
+-			slew-rate = <3>;
++			slew-rate = <0>;
+ 		};
+ 		pins2 {
+ 			pinmux = <STM32_PINMUX('D', 6, AF7)>, /* USART2_RX */
+@@ -2196,7 +2196,7 @@
+ 			pinmux = <STM32_PINMUX('D', 4, AF7)>; /* USART2_RTS */
+ 			bias-disable;
+ 			drive-push-pull;
+-			slew-rate = <3>;
++			slew-rate = <0>;
+ 		};
+ 		pins3 {
+ 			pinmux = <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */

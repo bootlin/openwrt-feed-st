@@ -1,0 +1,83 @@
+From cc544603998a80f6f1d049addcc28046d89929c4 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 6 Mar 2023 18:39:50 +0100
+Subject: [PATCH 500/529] media: stm32: dcmi: perform dmaengine_slave_config at
+ probe
+
+Perform the dma channel configuration at probe time right after
+the channel allocation since this is fixed for the whole lifetime
+of the driver.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I62a42ff572fff431ef5cbdac5f3b6a2e617b5670
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299126
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmi.c | 33 +++++++++-----------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
+
+--- a/drivers/media/platform/st/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
+@@ -301,24 +301,6 @@ static void dcmi_dma_callback(void *para
+ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
+ 			  struct dcmi_buf *buf)
+ {
+-	struct dma_slave_config config;
+-	int ret;
+-
+-	memset(&config, 0, sizeof(config));
+-
+-	config.src_addr = (dma_addr_t)dcmi->res->start + DCMI_DR;
+-	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	config.dst_maxburst = 4;
+-
+-	/* Configure DMA channel */
+-	ret = dmaengine_slave_config(dcmi->dma_chan, &config);
+-	if (ret < 0) {
+-		dev_err(dcmi->dev, "%s: DMA channel config failed (%d)\n",
+-			__func__, ret);
+-		return ret;
+-	}
+-
+ 	/* Push current DMA transaction in the pending queue */
+ 	dcmi->dma_cookie = dmaengine_submit(buf->dma_desc);
+ 	if (dma_submit_error(dcmi->dma_cookie)) {
+@@ -1948,6 +1930,7 @@ static int dcmi_probe(struct platform_de
+ 	struct vb2_queue *q;
+ 	struct dma_chan *chan;
+ 	struct dma_slave_caps caps;
++	struct dma_slave_config dma_config;
+ 	struct clk *mclk;
+ 	int irq;
+ 	int ret = 0;
+@@ -2029,6 +2012,19 @@ static int dcmi_probe(struct platform_de
+ 	if (!ret && caps.max_sg_burst)
+ 		dcmi->dma_max_burst = caps.max_sg_burst	* DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 
++	memset(&dma_config, 0, sizeof(dma_config));
++
++	dma_config.src_addr = (dma_addr_t)dcmi->res->start + DCMI_DR;
++	dma_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++
++	/* Configure DMA channel */
++	ret = dmaengine_slave_config(chan, &dma_config);
++	if (ret < 0) {
++		dev_err(dcmi->dev, "%s: DMA channel config failed (%d)\n",
++			__func__, ret);
++		goto err_dma_slave_config;
++	}
++
+ 	spin_lock_init(&dcmi->irqlock);
+ 	mutex_init(&dcmi->lock);
+ 	mutex_init(&dcmi->dma_lock);
+@@ -2146,6 +2142,7 @@ err_device_unregister:
+ 	v4l2_device_unregister(&dcmi->v4l2_dev);
+ err_media_device_cleanup:
+ 	media_device_cleanup(&dcmi->mdev);
++err_dma_slave_config:
+ 	dma_release_channel(dcmi->dma_chan);
+ 
+ 	return ret;

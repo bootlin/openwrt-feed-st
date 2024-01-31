@@ -1,0 +1,44 @@
+From 15e1a8d1d7947221ae50e80cf93291dd3315f9d5 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 14 Oct 2022 16:15:03 +0200
+Subject: [PATCH 174/529] ARM: dts: stm32: add USB OTG HS support on stm32mp131
+
+This patch adds USB OTG HS support on stm32mp131.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+(cherry picked from commit 2a46bb66c47ff3ef8e4cfd3936cbabca58a546f6)
+Change-Id: I176a2d88447aec308e8921ca565e17a0ea465e8d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279513
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -349,6 +349,23 @@
+ 			dma-channels = <16>;
+ 		};
+ 
++		usbotg_hs: usb@49000000 {
++			compatible = "st,stm32mp15-hsotg", "snps,dwc2";
++			reg = <0x49000000 0x40000>;
++			clocks = <&rcc USBO_K>;
++			clock-names = "otg";
++			resets = <&rcc USBO_R>;
++			reset-names = "dwc2";
++			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
++			g-rx-fifo-size = <512>;
++			g-np-tx-fifo-size = <32>;
++			g-tx-fifo-size = <256 16 16 16 16 16 16 16>;
++			dr_mode = "otg";
++			otg-rev = <0x200>;
++			usb33d-supply = <&scmi_usb33>;
++			status = "disabled";
++		};
++
+ 		usart1: serial@4c000000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x4c000000 0x400>;

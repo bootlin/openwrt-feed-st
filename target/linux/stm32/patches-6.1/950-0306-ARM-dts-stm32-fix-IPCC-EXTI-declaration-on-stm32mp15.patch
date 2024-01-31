@@ -1,0 +1,27 @@
+From 100164c0abe31df0cdb3d3060d3fd81cf0941952 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 14 Dec 2022 13:57:05 +0100
+Subject: [PATCH 306/529] ARM: dts: stm32: fix IPCC EXTI declaration on
+ stm32mp151
+
+use a IRQ_TYPE flag instead of a numerique value.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283667
+Fixes: 98b83fc3f3fa ("ARM: dts: stm32: Add IPCC wakeup management on stm32mp151")
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Iaf8d6821da03fb63b86efdb3b1ad55b78a126cf8
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1197,7 +1197,7 @@
+ 			reg = <0x4c001000 0x400>;
+ 			st,proc-id = <0>;
+ 			interrupts-extended =
+-				<&exti 61 1>,
++				<&exti 61 IRQ_TYPE_LEVEL_HIGH>,
+ 				<&intc GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "rx", "tx";
+ 			clocks = <&rcc IPCC>;

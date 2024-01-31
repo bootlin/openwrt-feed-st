@@ -1,0 +1,30 @@
+From 764e8bbc7008ae1a23933275c7be3dac27ecda37 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 2 Oct 2020 11:53:47 +0200
+Subject: [PATCH 250/529] drm/panel: rm68200: Avoid printing errors for
+ -EPROBE_DEFER
+
+Don't print error when probe deferred error is returned.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: Iae9cfb912a4ab49b5105562b9f4450ea5b3d03a1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228178
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/panel/panel-raydium-rm68200.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
++++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
+@@ -372,7 +372,8 @@ static int rm68200_probe(struct mipi_dsi
+ 	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(ctx->reset_gpio)) {
+ 		ret = PTR_ERR(ctx->reset_gpio);
+-		dev_err(dev, "cannot get reset GPIO: %d\n", ret);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "cannot get reset GPIO: %d\n", ret);
+ 		return ret;
+ 	}
+ 

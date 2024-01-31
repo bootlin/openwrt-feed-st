@@ -1,0 +1,27 @@
+From 0eb7af130d794a9498d33e4bee2ede34a0c2ba88 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@linaro.org>
+Date: Mon, 21 Feb 2022 18:55:12 +0100
+Subject: [PATCH 370/529] ARM: dts: stm32: define optee interrupt for mp13
+ async notif
+
+Defines the GIC interrupt used by OP-TEE for asynchronous event notification on stm32mp131
+systems.
+
+Change-Id: If22548e4762d69acf5b169b9719b96e8e1cc8902
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280694
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -40,6 +40,8 @@
+ 		optee {
+ 			method = "smc";
+ 			compatible = "linaro,optee-tz";
++			interrupt-parent = <&intc>;
++			interrupts = <GIC_PPI 15 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
+ 		};
+ 
+ 		scmi: scmi {

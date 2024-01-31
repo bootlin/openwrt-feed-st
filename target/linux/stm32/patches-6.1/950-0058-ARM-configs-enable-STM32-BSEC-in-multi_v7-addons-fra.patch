@@ -1,0 +1,29 @@
+From 4ba3dbbc16adb33da6d372a1ac9665314685dac6 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Thu, 14 Oct 2021 11:09:22 +0200
+Subject: [PATCH 058/529] ARM: configs: enable STM32 BSEC in multi_v7 addons
+ fragment
+
+This patch adds fragments for the STM32 BSEC NVMEM driver to multi_v7
+addons, to allow OTP access.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I11d9c1786a4a165946849b12cf56678797e277c4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/272823
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -21,6 +21,7 @@ CONFIG_MCPM=y
+ CONFIG_MEMCG=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
++CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_OPTEE=y
+ CONFIG_OVERLAY_FS=y
+ CONFIG_PINCTRL_MCP23S08=y

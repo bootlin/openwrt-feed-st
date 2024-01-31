@@ -1,0 +1,38 @@
+From 888bcf98bb5b16d7f9281cf5d68f371ffffb0d1e Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Tue, 15 Jan 2019 16:47:22 +0100
+Subject: [PATCH 080/529] power: suspend: remove freeze power state from
+ supported power state list
+
+This patch removes the "freeze" state from the supported power state list.
+This patch is mandatory on STM32MP15 platform as we can't support "freeze"
+power state due to hardware watchdog. Indeed, on STM32MP15 SOC it's
+not possible to stop and reload hardware watchdog through registers access.
+So during the freeze sequence the hardware watchdog is no longer reloaded
+and then platform reboots.
+
+NOT_UPSTREAMABLE
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Reviewed-on: https://gerrit.st.com/116040
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Olivier BIDEAU <olivier.bideau@st.com>
+Change-Id: I2013f5efe6b62c218df7cd1f85502bde57bacb16
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/163210
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+---
+ kernel/power/suspend.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/kernel/power/suspend.c
++++ b/kernel/power/suspend.c
+@@ -34,7 +34,6 @@
+ #include "power.h"
+ 
+ const char * const pm_labels[] = {
+-	[PM_SUSPEND_TO_IDLE] = "freeze",
+ 	[PM_SUSPEND_STANDBY] = "standby",
+ 	[PM_SUSPEND_MEM] = "mem",
+ };

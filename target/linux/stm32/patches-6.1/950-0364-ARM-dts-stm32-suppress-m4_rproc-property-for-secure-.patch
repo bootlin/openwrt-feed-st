@@ -1,0 +1,26 @@
+From b1a59fd1c1c008e4e6a4871150b489ef0ff9675d Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Fri, 13 Nov 2020 16:18:36 +0100
+Subject: [PATCH 364/529] ARM: dts: stm32: suppress m4_rproc property for
+ secure soc check
+
+As hold boot reset is now managed by reset (SCMI or RCC)
+the secured_soc information is no more used.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I3b8a75491d95b88b757769c459648e5d28ee7593
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283826
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -2008,7 +2008,6 @@
+ 			      <0x38000000 0x10000>;
+ 			resets = <&rcc MCU_R>;
+ 			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+-			st,syscfg-tz = <&rcc 0x000 0x1>;
+ 			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
+ 			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+ 			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;

@@ -1,0 +1,78 @@
+From 26075f4b6d771a99414640d150367da7ec844e52 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 7 Dec 2022 10:02:36 +0100
+Subject: [PATCH 236/529] ARM: dts: stm32: enable adc and timers on
+ stm32mp157x-ev1 a7 examples
+
+Enable ADC and timers examples that are normally kept disabled by default
+on STM32MP157c-ev1 and STM32MP157f-ev1 boards.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I9a50805e7ab04651cc448845ce8a711a8f438a24
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/280589
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../boot/dts/stm32mp157c-ev1-a7-examples.dts  | 20 +++++++++++++++++++
+ .../boot/dts/stm32mp157f-ev1-a7-examples.dts  | 20 +++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp157c-ev1-a7-examples.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1-a7-examples.dts
+@@ -30,6 +30,26 @@
+ 	};
+ };
+ 
++&adc {
++	status = "okay";
++};
++
++&dac {
++	status = "okay";
++};
++
++&timers2 {
++	status = "okay";
++};
++
++&timers8 {
++	status = "okay";
++};
++
++&timers12 {
++	status = "okay";
++};
++
+ &usart3 {
+ 	status = "okay";
+ };
+--- a/arch/arm/boot/dts/stm32mp157f-ev1-a7-examples.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1-a7-examples.dts
+@@ -30,6 +30,26 @@
+ 	};
+ };
+ 
++&adc {
++	status = "okay";
++};
++
++&dac {
++	status = "okay";
++};
++
++&timers2 {
++	status = "okay";
++};
++
++&timers8 {
++	status = "okay";
++};
++
++&timers12 {
++	status = "okay";
++};
++
+ &usart3 {
+ 	status = "okay";
+ };

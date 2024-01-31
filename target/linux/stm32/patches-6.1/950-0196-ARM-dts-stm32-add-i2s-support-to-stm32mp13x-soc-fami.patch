@@ -1,0 +1,92 @@
+From b23429afd303cea9109229c56ce8e0ff5a2779a6 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 7 Dec 2022 17:11:19 +0100
+Subject: [PATCH 196/529] ARM: dts: stm32: add i2s support to stm32mp13x soc
+ family
+
+Add I2S1, I2S2, I2S3 & I2S4 support to STM32MP13x SoC family.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I8aed71f69f82bd51f91d732a974282c71233ea9d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278994
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 44 +++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -140,6 +140,17 @@
+ 			};
+ 		};
+ 
++		i2s2: audio-controller@4000b000 {
++			compatible = "st,stm32h7-i2s";
++			#sound-dai-cells = <0>;
++			reg = <0x4000b000 0x400>;
++			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&dmamux1 39 0x400 0x01>,
++			       <&dmamux1 40 0x400 0x01>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		spi2: spi@4000b000 {
+ 			compatible = "st,stm32h7-spi";
+ 			reg = <0x4000b000 0x400>;
+@@ -154,6 +165,17 @@
+ 			status = "disabled";
+ 		};
+ 
++		i2s3: audio-controller@4000c000 {
++			compatible = "st,stm32h7-i2s";
++			#sound-dai-cells = <0>;
++			reg = <0x4000c000 0x400>;
++			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&dmamux1 61 0x400 0x01>,
++			       <&dmamux1 62 0x400 0x01>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		spi3: spi@4000c000 {
+ 			compatible = "st,stm32h7-spi";
+ 			reg = <0x4000c000 0x400>;
+@@ -288,6 +310,17 @@
+ 			status = "disabled";
+ 		};
+ 
++		i2s1: audio-controller@44004000 {
++			compatible = "st,stm32h7-i2s";
++			#sound-dai-cells = <0>;
++			reg = <0x44004000 0x400>;
++			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&dmamux1 37 0x400 0x01>,
++			       <&dmamux1 38 0x400 0x01>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		spi1: spi@44004000 {
+ 			compatible = "st,stm32h7-spi";
+ 			reg = <0x44004000 0x400>;
+@@ -349,6 +382,17 @@
+ 			dma-channels = <16>;
+ 		};
+ 
++		i2s4: audio-controller@4c002000 {
++			compatible = "st,stm32h7-i2s";
++			#sound-dai-cells = <0>;
++			reg = <0x4c002000 0x400>;
++			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&dmamux1 83 0x400 0x01>,
++			       <&dmamux1 84 0x400 0x01>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		usbotg_hs: usb@49000000 {
+ 			compatible = "st,stm32mp15-hsotg", "snps,dwc2";
+ 			reg = <0x49000000 0x40000>;

@@ -1,0 +1,50 @@
+From 17917ad2d8f0355ffdf5d7f9153ffdac8ffb999b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 21 Mar 2023 11:29:47 +0100
+Subject: [PATCH 489/529] drm/stm: ltdc: check crtc state
+
+If fbdev is used, it is necessary to check the state of the crtc
+after a system suspend to restore the display.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I8a58649b1a67897acd2728aa2589e6b285396805
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/296617
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -1067,6 +1067,20 @@ static void ltdc_crtc_atomic_flush(struc
+ 	}
+ }
+ 
++static int ltdc_crtc_atomic_check(struct drm_crtc *crtc,
++				  struct drm_atomic_state *state)
++{
++	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
++
++	DRM_DEBUG_ATOMIC("\n");
++
++	/* force a full mode set if active state changed */
++	if (crtc_state->active_changed)
++		crtc_state->mode_changed = true;
++
++	return 0;
++}
++
+ static bool ltdc_crtc_get_scanout_position(struct drm_crtc *crtc,
+ 					   bool in_vblank_irq,
+ 					   int *vpos, int *hpos,
+@@ -1127,6 +1141,7 @@ static const struct drm_crtc_helper_func
+ 	.atomic_flush = ltdc_crtc_atomic_flush,
+ 	.atomic_enable = ltdc_crtc_atomic_enable,
+ 	.atomic_disable = ltdc_crtc_atomic_disable,
++	.atomic_check = ltdc_crtc_atomic_check,
+ 	.get_scanout_position = ltdc_crtc_get_scanout_position,
+ };
+ 

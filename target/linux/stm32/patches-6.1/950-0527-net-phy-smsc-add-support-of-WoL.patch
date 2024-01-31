@@ -1,0 +1,224 @@
+From e9146aff64d8cbdff6eba7a5d592425967d4ddb4 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 23 Feb 2022 13:02:23 +0100
+Subject: [PATCH 527/529] net: phy: smsc: add support of WoL
+
+The device support PHY layer WoL event detection of Magic Packet.
+The WoL detection is configured to assert nPME pin
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I1315d961a7af8a304d674a116f959403cb0e86e7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/309531
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/net/phy/smsc.c  | 87 +++++++++++++++++++++++++++++++++++++++--
+ include/linux/smscphy.h | 20 ++++++++++
+ 2 files changed, 103 insertions(+), 4 deletions(-)
+
+--- a/drivers/net/phy/smsc.c
++++ b/drivers/net/phy/smsc.c
+@@ -44,7 +44,9 @@ static struct smsc_hw_stat smsc_hw_stats
+ };
+ 
+ struct smsc_phy_priv {
++ 	u16 intmask;
+ 	bool energy_enable;
++	bool wakeup_enable;
+ };
+ 
+ static int smsc_phy_ack_interrupt(struct phy_device *phydev)
+@@ -56,6 +58,7 @@ static int smsc_phy_ack_interrupt(struct
+ 
+ static int smsc_phy_config_intr(struct phy_device *phydev)
+ {
++	struct smsc_phy_priv *priv = phydev->priv;
+ 	int rc;
+ 
+ 	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+@@ -63,9 +66,12 @@ static int smsc_phy_config_intr(struct p
+ 		if (rc)
+ 			return rc;
+ 
+-		rc = phy_write(phydev, MII_LAN83C185_IM,
+-			       MII_LAN83C185_ISF_INT_PHYLIB_EVENTS);
++		if (priv->wakeup_enable)
++			priv->intmask |= MII_LAN83C185_ISF_INT8;
++		rc = phy_write(phydev, MII_LAN83C185_IM, priv->intmask);
+ 	} else {
++		priv->intmask = 0;
++
+ 		rc = phy_write(phydev, MII_LAN83C185_IM, 0);
+ 		if (rc)
+ 			return rc;
+@@ -78,6 +84,7 @@ static int smsc_phy_config_intr(struct p
+ 
+ static irqreturn_t smsc_phy_handle_interrupt(struct phy_device *phydev)
+ {
++	struct smsc_phy_priv *priv = phydev->priv;
+ 	int irq_status;
+ 
+ 	irq_status = phy_read(phydev, MII_LAN83C185_ISF);
+@@ -88,7 +95,7 @@ static irqreturn_t smsc_phy_handle_inter
+ 		return IRQ_NONE;
+ 	}
+ 
+-	if (!(irq_status & MII_LAN83C185_ISF_INT_PHYLIB_EVENTS))
++	if (!(irq_status &  priv->intmask))
+ 		return IRQ_NONE;
+ 
+ 	phy_trigger_machine(phydev);
+@@ -96,11 +103,52 @@ static irqreturn_t smsc_phy_handle_inter
+ 	return IRQ_HANDLED;
+ }
+ 
++static int smsc_phy_config_wol(struct phy_device *phydev)
++{
++	int i, wol_ctrl, wol_filter;
++	u16 pwd[3] = {0, 0, 0};
++
++	/* Write @MAC in LAN8742_MMD3_MAC_ADDRA/B/C registers */
++	const u8 *mac_addr = phydev->attached_dev->dev_addr;
++	/* Store the device address for the magic packet */
++	for (i = 0; i < ARRAY_SIZE(pwd); i++)
++		pwd[i] = mac_addr[5 - i * 2] << 8 | mac_addr[5 - (i * 2 + 1)];
++
++	phy_write_mmd(phydev, 3, LAN8742_MMD3_MAC_ADDRA,
++		      pwd[0]);
++
++	phy_write_mmd(phydev, 3, LAN8742_MMD3_MAC_ADDRB,
++		      pwd[1]);
++
++	phy_write_mmd(phydev, 3, LAN8742_MMD3_MAC_ADDRC,
++		      pwd[2]);
++
++	/* Configure WoL */
++	wol_ctrl = phy_read_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_CTRL);
++
++	/* Configure LED2 functions as nPME, WoL Configured, Magic Packet Enable */
++	wol_ctrl |= (LAN8742_MMD3_WUCSR_LED2_AS_NPME | LAN8742_MMD3_WUCSR_WOL | LAN8742_MMD3_WUCSR_MPEN);
++	phy_write_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_CTRL,
++		      wol_ctrl);
++
++	wol_filter = phy_read_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_FILTER);
++
++	/* Configure Filter enabled, Address Match Enable */
++	wol_filter |= (LAN8742_MMD3_WUF_CFGA_FE | LAN8742_MMD3_WUF_CFGA_AME);
++	phy_write_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_FILTER,
++		      wol_filter);
++
++	return 0;
++}
++
+ static int smsc_phy_config_init(struct phy_device *phydev)
+ {
+ 	struct smsc_phy_priv *priv = phydev->priv;
+ 	int rc;
+ 
++	if (priv->wakeup_enable)
++		smsc_phy_config_wol(phydev);
++
+ 	if (!priv->energy_enable || phydev->irq != PHY_POLL)
+ 		return 0;
+ 
+@@ -134,6 +182,17 @@ static int smsc_phy_reset(struct phy_dev
+ 	return genphy_soft_reset(phydev);
+ }
+ 
++static int smsc_phy_suspend(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++
++	/* do not power down PHY when PHY enable power/wakeup */
++	if (!device_may_wakeup(dev))
++		return genphy_suspend(phydev);
++
++	return 0;
++}
++
+ static int lan87xx_config_aneg(struct phy_device *phydev)
+ {
+ 	int rc;
+@@ -237,6 +296,20 @@ static int lan87xx_read_status(struct ph
+ 			return rc;
+ 	}
+ 
++	if (priv->wakeup_enable) {
++		/* Check status of WUCSR bits 7:4 : Perfect DA Frame, Remote Wakeup
++		 * Frame, Magic Packet, Broadcast Frame Received, if one of these bits
++		 * are 1, clearing them*/
++		int wol_ctrl = phy_read_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_CTRL);
++
++		if ((wol_ctrl & (LAN8742_MMD3_WUCSR_PFDA_FR | LAN8742_MMD3_WUCSR_WUFR |
++				 LAN8742_MMD3_WUCSR_MPR | LAN8742_MMD3_WUCSR_BCAST_FR)) > 0) {
++			wol_ctrl |= (LAN8742_MMD3_WUCSR_PFDA_FR | LAN8742_MMD3_WUCSR_WUFR |
++				     LAN8742_MMD3_WUCSR_MPR | LAN8742_MMD3_WUCSR_BCAST_FR);
++			phy_write_mmd(phydev, 3, LAN8742_MMD3_WAKEUP_CTRL,
++				      wol_ctrl);
++		}
++	}
+ 	return err;
+ }
+ 
+@@ -291,10 +364,16 @@ static int smsc_phy_probe(struct phy_dev
+ 		return -ENOMEM;
+ 
+ 	priv->energy_enable = true;
++	priv->wakeup_enable = false;
+ 
+ 	if (of_property_read_bool(of_node, "smsc,disable-energy-detect"))
+ 		priv->energy_enable = false;
+ 
++	if (of_property_read_bool(of_node, "wakeup-source")) {
++		device_set_wakeup_capable(dev, true);
++		priv->wakeup_enable = true;
++	}
++
+ 	phydev->priv = priv;
+ 
+ 	/* Make clk optional to keep DTB backward compatibility. */
+@@ -477,7 +556,7 @@ static struct phy_driver smsc_phy_driver
+ 	.get_strings	= smsc_get_strings,
+ 	.get_stats	= smsc_get_stats,
+ 
+-	.suspend	= genphy_suspend,
++	.suspend	= smsc_phy_suspend,
+ 	.resume		= genphy_resume,
+ } };
+ 
+--- a/include/linux/smscphy.h
++++ b/include/linux/smscphy.h
+@@ -14,6 +14,7 @@
+ #define MII_LAN83C185_ISF_INT5 (1<<5) /* Remote Fault Detected */
+ #define MII_LAN83C185_ISF_INT6 (1<<6) /* Auto-Negotiation complete */
+ #define MII_LAN83C185_ISF_INT7 (1<<7) /* ENERGYON */
++#define MII_LAN83C185_ISF_INT8 (1<<8) /* Wake on LAN */
+ 
+ #define MII_LAN83C185_ISF_INT_ALL (0x0e)
+ 
+@@ -28,4 +29,23 @@
+ #define MII_LAN83C185_MODE_POWERDOWN 0xC0 /* Power Down mode */
+ #define MII_LAN83C185_MODE_ALL       0xE0 /* All capable mode */
+ 
++/* MMD 3 Registers */
++#define	LAN8742_MMD3_WAKEUP_CTRL	(32784)
++#define	LAN8742_MMD3_WUCSR_LED2_AS_NPME BIT(12)
++#define	LAN8742_MMD3_WUCSR_WOL		BIT(8)
++#define	LAN8742_MMD3_WUCSR_PFDA_FR	BIT(7)
++#define	LAN8742_MMD3_WUCSR_WUFR		BIT(6)
++#define	LAN8742_MMD3_WUCSR_MPR		BIT(5)
++#define	LAN8742_MMD3_WUCSR_BCAST_FR	BIT(4)
++#define	LAN8742_MMD3_WUCSR_MPEN		BIT(1)
++
++#define	LAN8742_MMD3_WAKEUP_FILTER	(32785)
++#define	LAN8742_MMD3_WUF_CFGA_FE	BIT(15)
++#define	LAN8742_MMD3_WUF_CFGA_AME	BIT(10)
++
++#define	LAN8742_MMD3_MAC_ADDRA		(32865)
++#define	LAN8742_MMD3_MAC_ADDRB		(32866)
++#define	LAN8742_MMD3_MAC_ADDRC		(32867)
++#define	LAN8742_MMD3_PME_ASSERT_DELAY	(32868)
++
+ #endif /* __LINUX_SMSCPHY_H__ */

@@ -1,0 +1,83 @@
+From dbaa60a969901ed76c354df20b0415d81c8d8384 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 2 Dec 2021 18:34:41 +0100
+Subject: [PATCH 124/529] ARM: dts: stm32: add uart nodes and uart aliases on
+ stm32mp135f-dk
+
+Update device-tree stm32mp135f-dk.dts to add usart1, uart8, usart2
+and uart aliases.
+
+- Usart2 is used to interface a BT device, enable it by default.
+- Usart1 and uart8 are available on expansion connector.
+  They are kept disabled. So, the pins are kept in analog state to
+  lower power consumption by default or can be used as GPIO.
+- Uart4 is used for console.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I241335d88d3dab42f2563f2e8c421faeaef57c46
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/277727
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 42 +++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -20,6 +20,13 @@
+ 
+ 	aliases {
+ 		serial0 = &uart4;
++		serial1 = &usart1;
++		serial2 = &uart8;
++		serial3 = &usart2;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
+ 	};
+ 
+ 	memory@c0000000 {
+@@ -174,7 +181,40 @@
+ };
+ 
+ &uart4 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "sleep", "idle";
+ 	pinctrl-0 = <&uart4_pins_a>;
++	pinctrl-1 = <&uart4_sleep_pins_a>;
++	pinctrl-2 = <&uart4_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "okay";
++};
++
++&uart8 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&uart8_pins_a>;
++	pinctrl-1 = <&uart8_sleep_pins_a>;
++	pinctrl-2 = <&uart8_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "disabled";
++};
++
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	uart-has-rtscts;
++	status = "disabled";
++};
++
++/* Bluetooth */
++&usart2 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart2_pins_a>;
++	pinctrl-1 = <&usart2_sleep_pins_a>;
++	pinctrl-2 = <&usart2_idle_pins_a>;
++	uart-has-rtscts;
+ 	status = "okay";
+ };

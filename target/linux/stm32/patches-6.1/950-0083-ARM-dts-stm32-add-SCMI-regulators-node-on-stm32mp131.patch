@@ -1,0 +1,57 @@
+From db6443b09cbf518b9403dccb53e17bdaee177b71 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 9 Nov 2022 17:33:25 +0100
+Subject: [PATCH 083/529] ARM: dts: stm32: add SCMI regulators node on
+ stm32mp131
+
+Add SCMI regulators node on stm32mp131
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: Ief56b700ab3339813106091455d86903556ffab1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/275799
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -5,6 +5,7 @@
+  */
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/stm32mp13-clks.h>
++#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
+ #include <dt-bindings/reset/stm32mp13-resets.h>
+ 
+ / {
+@@ -51,6 +52,28 @@
+ 				reg = <0x16>;
+ 				#reset-cells = <1>;
+ 			};
++
++			scmi_voltd: protocol@17 {
++				reg = <0x17>;
++
++				scmi_regu: regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					scmi_reg11: voltd-reg11 {
++						reg = <VOLTD_SCMI_REG11>;
++						regulator-name = "reg11";
++					};
++					scmi_reg18: voltd-reg18 {
++						reg = <VOLTD_SCMI_REG18>;
++						regulator-name = "reg18";
++					};
++					scmi_usb33: voltd-usb33 {
++						reg = <VOLTD_SCMI_USB33>;
++						regulator-name = "usb33";
++					};
++				};
++			};
+ 		};
+ 	};
+ 

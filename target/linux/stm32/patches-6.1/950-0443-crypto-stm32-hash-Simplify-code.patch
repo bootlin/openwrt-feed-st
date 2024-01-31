@@ -1,0 +1,29 @@
+From a6afe77fac515ffdffef2417886d1a5678cf0264 Mon Sep 17 00:00:00 2001
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 25 Jan 2023 01:23:07 +0100
+Subject: [PATCH 443/529] crypto: stm32/hash - Simplify code
+
+We are passing (rctx->flags & HASH_FLAGS_FINUP) as indicator
+for the final request but we already know this to be true since
+we are in the (final) arm of an if-statement set from the same
+flag. Just open-code it as true.
+
+Acked-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/crypto/stm32/stm32-hash.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -399,8 +399,7 @@ static int stm32_hash_update_cpu(struct
+ 	if (final) {
+ 		bufcnt = rctx->bufcnt;
+ 		rctx->bufcnt = 0;
+-		err = stm32_hash_xmit_cpu(hdev, rctx->buffer, bufcnt,
+-					  (rctx->flags & HASH_FLAGS_FINUP));
++		err = stm32_hash_xmit_cpu(hdev, rctx->buffer, bufcnt, 1);
+ 	}
+ 
+ 	return err;

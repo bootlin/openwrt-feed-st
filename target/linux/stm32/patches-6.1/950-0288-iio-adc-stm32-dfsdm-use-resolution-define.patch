@@ -1,0 +1,24 @@
+From 0e782c260b98486b974d068ec9c86990840a1943 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 30 Sep 2019 11:13:20 +0200
+Subject: [PATCH 288/529] iio: adc: stm32-dfsdm: use resolution define
+
+Use resolution define instead of hard coded value.
+
+Change-Id: I91921af18371cc330c6513955db6d2e1971f6672
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ drivers/iio/adc/stm32-dfsdm-adc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/iio/adc/stm32-dfsdm-adc.c
++++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+@@ -1393,7 +1393,7 @@ static int stm32_dfsdm_adc_chan_init_one
+ 		ch->scan_type.shift = 8;
+ 	}
+ 	ch->scan_type.sign = 's';
+-	ch->scan_type.realbits = 24;
++	ch->scan_type.realbits = DFSDM_DATA_RES;
+ 	ch->scan_type.storagebits = 32;
+ 
+ 	return stm32_dfsdm_chan_configure(adc->dfsdm,

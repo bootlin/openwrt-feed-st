@@ -1,0 +1,44 @@
+From 813cd65375dff4ba61984d69449577815ce41537 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Tue, 23 Nov 2021 10:05:29 +0100
+Subject: [PATCH 161/529] usb: dwc2: hcd: fix remote wakeup signaling in
+ runtime PM resume
+
+An endless "loop" is seen with PM runtime auto suspend (wakeup event),
+then resume is seen in dwc2 hcd, but no real wakeup event is seen.
+This happens upon/after an unplug/disconnect of a device.
+_dwc2_hcd_suspend/resume are called several times at this point.
+Then, the sequence seen repeatedly basically is:
+- usb_runtime_suspend ... hcd_bus_suspend _dwc2_hcd_suspend
+- usb_runtime_suspend ... get hub_status_data (result is != 0) due to
+  port_suspend_change is already 1
+- usb_runtime_suspend ... hcd_bus_resume set port_suspend_change to 1.
+Enabling debug shows "suspend raced with wakeup event" log continuously,
+until a new device is plugged in, or the dwc2 is switched to device mode.
+
+port_suspend_change flag is already handled for remote wakeup at other
+places in the driver. It shouldn't be set unconditionally in bus resume
+routine. So remove it from the bus resume routine.
+
+Fixes: c74c26f6e398 ("usb: dwc2: Fix partial power down exiting by system resume")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I9dee7df836a19db79f41e379292bb6b4c9234d8b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229471
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/hcd.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4481,9 +4481,6 @@ static int _dwc2_hcd_resume(struct usb_h
+ 		goto unlock;
+ 	}
+ 
+-	/* Change Root port status, as port status change occurred after resume.*/
+-	hsotg->flags.b.port_suspend_change = 1;
+-
+ 	/*
+ 	 * Enable power if not already done.
+ 	 * This must not be spinlocked since duration

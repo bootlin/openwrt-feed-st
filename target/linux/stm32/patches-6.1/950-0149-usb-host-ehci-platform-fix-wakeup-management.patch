@@ -1,0 +1,69 @@
+From a765911f27aefc92d181d81296bcce5b1c07d66c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@st.com>
+Date: Mon, 30 Nov 2020 18:07:09 +0100
+Subject: [PATCH 149/529] usb: host: ehci-platform: fix wakeup management
+
+device_wakeup_enable systematically returns -EINVAL due to the fact that
+hcd->self.controller->power.can_wakeup is not initialized.
+Check the device tree property wakeup-source, to know if the controller is
+wakeup capable and set wakeup capable accordingly.
+
+The controller will be able to wakeup the system only if a usb device with
+wakeup enabled is plugged so, that's why we check both device_may_wakeup
+or device_wakeup_path in suspend. If the conditions are met to wakeup the
+system, then, enable the wake irq, otherwise let the system going into
+deeper low power state.
+
+Reverse things back on resume.
+
+Change-Id: Id63d8b698a7df7fdae2010a5cd276506ed4c3a63
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/187911
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ drivers/usb/host/ehci-platform.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -375,7 +375,9 @@ static int ehci_platform_probe(struct pl
+ 	if (err)
+ 		goto err_power;
+ 
+-	device_wakeup_enable(hcd->self.controller);
++	if (of_property_read_bool(dev->dev.of_node, "wakeup-source"))
++		device_set_wakeup_capable(hcd->self.controller, true);
++
+ 	device_enable_async_suspend(hcd->self.controller);
+ 	platform_set_drvdata(dev, hcd);
+ 
+@@ -411,6 +413,9 @@ static int ehci_platform_remove(struct p
+ 	if (priv->quirk_poll)
+ 		quirk_poll_end(priv);
+ 
++	if (of_property_read_bool(dev->dev.of_node, "wakeup-source"))
++		device_set_wakeup_capable(hcd->self.controller, false);
++
+ 	usb_remove_hcd(hcd);
+ 
+ 	if (pdata->power_off)
+@@ -435,7 +440,7 @@ static int __maybe_unused ehci_platform_
+ 	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct ehci_platform_priv *priv = hcd_to_ehci_priv(hcd);
+-	bool do_wakeup = device_may_wakeup(dev);
++	bool do_wakeup = device_may_wakeup(dev) || device_wakeup_path(dev);
+ 	int ret;
+ 
+ 	if (priv->quirk_poll)
+@@ -448,7 +453,7 @@ static int __maybe_unused ehci_platform_
+ 	if (pdata->power_suspend)
+ 		pdata->power_suspend(pdev);
+ 
+-	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++	if (do_wakeup)
+ 		enable_irq_wake(hcd->irq);
+ 
+ 	return ret;

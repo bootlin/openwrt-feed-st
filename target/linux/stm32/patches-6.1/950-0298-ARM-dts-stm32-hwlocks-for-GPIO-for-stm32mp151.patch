@@ -1,0 +1,33 @@
+From 99c98953e7d2d6a7416d556e4ea7f900b22285d6 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Mon, 14 Sep 2020 17:04:39 +0200
+Subject: [PATCH 298/529] ARM: dts: stm32: hwlocks for GPIO for stm32mp151
+
+Declare a shared hwlock to be used by all gpio / pin controllers.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/282564
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I646a517cc5c1667c4ff5e5263b5fb5175f37fdff
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1825,6 +1825,7 @@
+ 			ranges = <0 0x50002000 0xa400>;
+ 			interrupt-parent = <&exti>;
+ 			st,syscfg = <&exti 0x60 0xff>;
++			hwlocks = <&hsem 0 1>;
+ 			pins-are-numbered;
+ 
+ 			gpioa: gpio@50002000 {
+@@ -1957,6 +1958,7 @@
+ 			pins-are-numbered;
+ 			interrupt-parent = <&exti>;
+ 			st,syscfg = <&exti 0x60 0xff>;
++			hwlocks = <&hsem 0 1>;
+ 
+ 			gpioz: gpio@54004000 {
+ 				gpio-controller;

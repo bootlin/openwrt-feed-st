@@ -1,0 +1,60 @@
+From 28c6da82eac267fe330a2bf4d5308692a6ee0887 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 4 Nov 2022 17:29:13 +0100
+Subject: [PATCH 191/529] ARM: dts: stm32: add dfsdm pins to stm32mp157c
+
+Add STM32 DFSDM pins to stm32mp157c.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I698da7f16a095936051c6672c33853d85ba1b944
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278989
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 34 ++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -188,6 +188,40 @@
+ 		};
+ 	};
+ 
++	dfsdm_clkout_pins_a: dfsdm-clkout-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 13, AF3)>; /* DFSDM_CKOUT */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++	};
++	dfsdm_clkout_sleep_pins_a: dfsdm-clkout-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 13, ANALOG)>; /* DFSDM_CKOUT */
++		};
++	};
++	dfsdm_data1_pins_a: dfsdm-data1-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 3, AF3)>; /* DFSDM_DATA1 */
++		};
++	};
++	dfsdm_data1_sleep_pins_a: dfsdm-data1-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 3, ANALOG)>; /* DFSDM_DATA1 */
++		};
++	};
++	dfsdm_data3_pins_a: dfsdm-data3-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 13, AF6)>; /* DFSDM_DATA3 */
++		};
++	};
++	dfsdm_data3_sleep_pins_a: dfsdm-data3-sleep-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 13, ANALOG)>; /* DFSDM_DATA3 */
++		};
++	};
++
+ 	ethernet0_rgmii_pins_a: rgmii-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */

@@ -1,0 +1,47 @@
+From fb0739061aabdd14f12041b04bf16e1cce212cc6 Mon Sep 17 00:00:00 2001
+From: Herbert Xu <herbert@gondor.apana.org.au>
+Date: Tue, 28 Mar 2023 11:57:09 +0800
+Subject: [PATCH 457/529] crypto: hash - Remove maximum statesize limit
+
+Remove the HASH_MAX_STATESIZE limit now that it is unused.
+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ crypto/ahash.c        | 1 -
+ crypto/shash.c        | 3 +--
+ include/crypto/hash.h | 2 --
+ 3 files changed, 1 insertion(+), 5 deletions(-)
+
+--- a/crypto/ahash.c
++++ b/crypto/ahash.c
+@@ -570,7 +570,6 @@ static int ahash_prepare_alg(struct ahas
+ 	struct crypto_alg *base = &alg->halg.base;
+ 
+ 	if (alg->halg.digestsize > HASH_MAX_DIGESTSIZE ||
+-	    alg->halg.statesize > HASH_MAX_STATESIZE ||
+ 	    alg->halg.statesize == 0)
+ 		return -EINVAL;
+ 
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -532,8 +532,7 @@ static int shash_prepare_alg(struct shas
+ 	struct crypto_alg *base = &alg->base;
+ 
+ 	if (alg->digestsize > HASH_MAX_DIGESTSIZE ||
+-	    alg->descsize > HASH_MAX_DESCSIZE ||
+-	    alg->statesize > HASH_MAX_STATESIZE)
++	    alg->descsize > HASH_MAX_DESCSIZE)
+ 		return -EINVAL;
+ 
+ 	if ((alg->export && !alg->import) || (alg->import && !alg->export))
+--- a/include/crypto/hash.h
++++ b/include/crypto/hash.h
+@@ -160,8 +160,6 @@ struct shash_desc {
+  */
+ #define HASH_MAX_DESCSIZE	(sizeof(struct shash_desc) + 360)
+ 
+-#define HASH_MAX_STATESIZE	512
+-
+ #define SHASH_DESC_ON_STACK(shash, ctx)					     \
+ 	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
+ 		__aligned(__alignof__(struct shash_desc));		     \

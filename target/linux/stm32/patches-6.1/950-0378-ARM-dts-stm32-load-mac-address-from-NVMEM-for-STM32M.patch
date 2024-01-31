@@ -1,0 +1,53 @@
+From 72c078df682f4fa2aa0d32616bc3826af5051b4b Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Mon, 6 Apr 2020 10:42:05 +0200
+Subject: [PATCH 378/529] ARM: dts: stm32: load mac address from NVMEM for
+ STM32MP15 boards
+
+It is usefull to read the OTP value with NVMEM if the MAC address
+is not provided in the device tree by the BootLoader
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I8cdf073e0c58f79c1b0e51e50b23128ed1d16ef7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229826
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/284370
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi      | 3 +++
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 3 +++
+ 2 files changed, 6 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1812,6 +1812,9 @@
+ 			ts_cal2: calib@5e {
+ 				reg = <0x5e 0x2>;
+ 			};
++			ethernet_mac_address: mac@e4 {
++				reg = <0xe4 0x6>;
++			};
+ 		};
+ 
+ 		i2c6: i2c@5c009000 {
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -11,6 +11,7 @@
+ 
+ / {
+ 	aliases {
++		ethernet0 = &ethernet0;
+ 		serial0 = &uart4;
+ 		serial1 = &usart3;
+ 		serial2 = &uart7;
+@@ -173,6 +174,8 @@
+ 	phy-mode = "rgmii-id";
+ 	max-speed = <1000>;
+ 	phy-handle = <&phy0>;
++	nvmem-cells = <&ethernet_mac_address>;
++	nvmem-cell-names = "mac-address";
+ 
+ 	mdio {
+ 		#address-cells = <1>;

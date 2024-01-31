@@ -1,0 +1,49 @@
+From fa72a554ef4c5727cbda7019a83f76c9e0a0394c Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 10 Feb 2023 14:36:28 +0100
+Subject: [PATCH 426/529] ARM: dts: stm32: add USB OTG UTMI clock on stm32mp151
+
+It's needed on STM32MP15, when using the integrated full-speed PHY. This
+clock is an output of USBPHYC, and the HS USBPHYC is not attached as PHY
+in this case (managed directly by dwc2 ggpio glue):
+
+    &usbotg_hs {
+    	compatible = "st,stm32mp15-fsotg", "snps,dwc2";
+    	pinctrl-names = "default";
+    	pinctrl-0 = <&usbotg_hs_pins_a &usbotg_fs_dp_dm_pins_a>;
+    	vbus-supply = <&vbus_otg>;
+    	status = "okay";
+    };
+
+USBPHYC clock output must be used, so it can be properly enabled as a
+clock provider.
+
+Without this, currently, when the dualport High-Speed USBPHYC isn't
+requested by either USBH or OTG, it remains uninitialized when probing
+OTG: OTG configured with full-speed PHY isn't properly clocked, resulting
+in error log like:
+[    2.383138] dwc2 49000000.usb-otg: dwc2_core_reset: HANG! Soft Reset
+timeout GRSTCTL_CSFTRST.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ida0687352af3989ba1ef54db5f658373e361accc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/291412
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1197,8 +1197,8 @@
+ 		usbotg_hs: usb-otg@49000000 {
+ 			compatible = "st,stm32mp15-hsotg", "snps,dwc2";
+ 			reg = <0x49000000 0x10000>;
+-			clocks = <&rcc USBO_K>;
+-			clock-names = "otg";
++			clocks = <&rcc USBO_K>, <&usbphyc>;
++			clock-names = "otg", "utmi";
+ 			resets = <&rcc USBO_R>;
+ 			reset-names = "dwc2";
+ 			interrupts-extended = <&exti 44 IRQ_TYPE_LEVEL_HIGH>;

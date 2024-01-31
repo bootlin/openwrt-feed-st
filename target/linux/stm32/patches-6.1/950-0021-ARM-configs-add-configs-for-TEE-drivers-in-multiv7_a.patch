@@ -1,0 +1,33 @@
+From 38e807bc9c08188b525b9108959cfed0e41e5ab5 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Mon, 14 Dec 2020 16:11:13 +0100
+Subject: [PATCH 021/529] ARM: configs: add configs for TEE drivers in
+ multiv7_addons fragment
+
+This patch enables the TEE drivers support.
+
+Change-Id: Ie1fee99e537687a13dc31c330247920aa4c2d051
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -21,6 +21,7 @@ CONFIG_MCPM=y
+ CONFIG_MEMCG=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
++CONFIG_OPTEE=y
+ CONFIG_OVERLAY_FS=y
+ CONFIG_POSIX_MQUEUE=y
+ CONFIG_POWER_RESET=y
+@@ -32,6 +33,7 @@ CONFIG_SCHED_MC=y
+ CONFIG_SENSORS_IIO_HWMON=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
++CONFIG_TEE=y
+ CONFIG_THERMAL=y
+ CONFIG_TMPFS=y
+ CONFIG_USELIB=y

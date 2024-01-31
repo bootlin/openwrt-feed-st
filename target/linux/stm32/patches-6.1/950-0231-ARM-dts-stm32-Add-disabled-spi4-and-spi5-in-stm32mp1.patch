@@ -1,0 +1,42 @@
+From acde8f5ce6b8f5b7ab72e0a4e94d6088a85d6a5c Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 13 Oct 2021 16:26:30 +0200
+Subject: [PATCH 231/529] ARM: dts: stm32: Add disabled spi4 and spi5 in
+ stm32mp15xx-dkx
+
+Add disabled spi4 and spi5 nodes within stm32mp15xx-dkx.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: Ib3fa3c8f2eaa74053d80544119934c486e625504
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/279352
+Tested-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -564,6 +564,20 @@
+ 	status = "disabled";
+ };
+ 
++&spi4 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi4_pins_b>;
++	pinctrl-1 = <&spi4_sleep_pins_b>;
++	status = "disabled";
++};
++
++&spi5 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi5_pins_a>;
++	pinctrl-1 = <&spi5_sleep_pins_a>;
++	status = "disabled";
++};
++
+ &timers1 {
+ 	/* spare dmas for other usage */
+ 	/delete-property/dmas;

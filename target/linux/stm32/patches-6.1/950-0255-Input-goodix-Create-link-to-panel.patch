@@ -1,0 +1,61 @@
+From a6c09c6feb9ea8500ece53a626e95ee33c487826 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 13 Sep 2019 15:24:41 +0200
+Subject: [PATCH 255/529] Input: goodix - Create link to panel
+
+Add a call to device_links_add() to create link
+with panel at probe time in order to make sure
+that panel is suspended after touchscreen and
+resumed before it.
+
+Change-Id: I4dc653903d5a29a085989c762642742928bb68ce
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/152599
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228184
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ drivers/input/touchscreen/goodix.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -16,6 +16,7 @@
+ #include <linux/firmware.h>
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <drm/drm_mipi_dsi.h>
+ #include <linux/irq.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_data/x86/soc.h>
+@@ -1314,6 +1315,8 @@ static int goodix_ts_probe(struct i2c_cl
+ {
+ 	struct goodix_ts_data *ts;
+ 	const char *cfg_name;
++	struct mipi_dsi_device *panel;
++	struct device_node *np;
+ 	int error;
+ 
+ 	dev_dbg(&client->dev, "I2C Address: 0x%02x\n", client->addr);
+@@ -1418,6 +1421,17 @@ reset:
+ 			return error;
+ 	}
+ 
++	np = of_parse_phandle(client->dev.of_node, "panel", 0);
++	if (np) {
++		panel = of_find_mipi_dsi_device_by_node(np);
++		of_node_put(np);
++		if (!panel)
++			return -ENOENT;
++		device_link_add(&client->dev, &panel->dev, DL_FLAG_STATELESS |
++				DL_FLAG_AUTOREMOVE_SUPPLIER);
++		put_device(&panel->dev);
++	}
++
+ 	return 0;
+ }
+ 
