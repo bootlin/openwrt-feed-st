@@ -56,4 +56,6 @@ ifeq ($(SUBTARGET),stm32mp1)
 		    stm32mp135f-dk
 endif
 
+include demo.mk
+
 $(eval $(call BuildImage))
