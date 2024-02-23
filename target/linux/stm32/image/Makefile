@@ -6,6 +6,8 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
+WIFI_PACKAGES := kmod-brcmfmac cypress-firmware-43430-sdio kmod-mac80211 wpad-basic-mbedtls
+
 define Build/boot-img-ext4
 	rm -fR $@.boot
 	mkdir -p $@.boot
@@ -38,7 +40,7 @@ define Device/Default
   KERNEL_NAME := zImage
   KERNEL_IMG := zImage
   ENV_SIZE := 0x200000
-  DEVICE_PACKAGES := kmod-brcmfmac cypress-firmware-43430-sdio
+  DEVICE_PACKAGES := $(WIFI_PACKAGES)
 endef
 
 define Device/stm32mp157f-dk2
