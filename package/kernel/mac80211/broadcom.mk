@@ -436,6 +436,7 @@ define KernelPackage/brcmfmac/config
 		default y if TARGET_imx_cortexa7
 		default y if TARGET_rockchip
 		default y if TARGET_sunxi
+		default y if TARGET_stm32
 		default n
 		help
 		  Enable support for cards attached to an SDIO bus.
