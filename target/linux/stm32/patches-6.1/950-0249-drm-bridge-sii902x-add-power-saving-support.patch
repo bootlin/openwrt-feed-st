@@ -27,7 +27,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  #include <linux/regmap.h>
  #include <linux/regulator/consumer.h>
  #include <linux/clk.h>
-@@ -1050,8 +1051,9 @@ static int sii902x_init(struct sii902x *
+@@ -1049,8 +1050,9 @@ static int sii902x_init(struct sii902x *
  	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
  
  	if (sii902x->i2c->irq > 0) {
@@ -39,8 +39,8 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  
  		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
  						sii902x_interrupt,
-@@ -1176,6 +1178,65 @@ static void sii902x_remove(struct i2c_cl
- 			       sii902x->supplies);
+@@ -1174,6 +1176,65 @@ static void sii902x_remove(struct i2c_cl
+ 		platform_device_unregister(sii902x->audio.pdev);
  }
  
 +static int sii902x_pm_suspend(struct device *dev)
@@ -105,7 +105,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  static const struct of_device_id sii902x_dt_ids[] = {
  	{ .compatible = "sil,sii9022", },
  	{ }
-@@ -1194,6 +1255,7 @@ static struct i2c_driver sii902x_driver
+@@ -1192,6 +1253,7 @@ static struct i2c_driver sii902x_driver
  	.driver = {
  		.name = "sii902x",
  		.of_match_table = sii902x_dt_ids,

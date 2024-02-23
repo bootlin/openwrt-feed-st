@@ -32,7 +32,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
 
 --- a/drivers/net/phy/phylink.c
 +++ b/drivers/net/phy/phylink.c
-@@ -85,6 +85,7 @@ struct phylink {
+@@ -86,6 +86,7 @@ struct phylink {
  	DECLARE_PHY_INTERFACE_MASK(sfp_interfaces);
  	__ETHTOOL_DECLARE_LINK_MODE_MASK(sfp_support);
  	u8 sfp_port;
@@ -40,7 +40,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  };
  
  #define phylink_printk(level, pl, fmt, ...) \
-@@ -1516,6 +1517,7 @@ struct phylink *phylink_create(struct ph
+@@ -1602,6 +1603,7 @@ struct phylink *phylink_create(struct ph
  		return ERR_PTR(-EINVAL);
  	}
  
@@ -48,7 +48,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  	pl->using_mac_select_pcs = using_mac_select_pcs;
  	pl->phy_state.interface = iface;
  	pl->link_interface = iface;
-@@ -1967,8 +1969,12 @@ void phylink_start(struct phylink *pl)
+@@ -2052,8 +2054,12 @@ void phylink_start(struct phylink *pl)
  
  	if (poll)
  		mod_timer(&pl->link_poll, jiffies + HZ);
@@ -63,7 +63,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  	if (pl->sfp_bus)
  		sfp_upstream_start(pl->sfp_bus);
  }
-@@ -2053,6 +2059,27 @@ void phylink_suspend(struct phylink *pl,
+@@ -2138,6 +2144,27 @@ void phylink_suspend(struct phylink *pl,
  EXPORT_SYMBOL_GPL(phylink_suspend);
  
  /**
@@ -93,7 +93,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
   *
 --- a/include/linux/phylink.h
 +++ b/include/linux/phylink.h
-@@ -598,6 +598,7 @@ void phylink_stop(struct phylink *);
+@@ -697,6 +697,7 @@ void phylink_stop(struct phylink *);
  
  void phylink_suspend(struct phylink *pl, bool mac_wol);
  void phylink_resume(struct phylink *pl);

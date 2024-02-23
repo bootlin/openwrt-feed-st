@@ -37,7 +37,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  struct sii902x {
  	struct i2c_client *i2c;
  	struct regmap *regmap;
-@@ -1003,6 +1008,13 @@ static int sii902x_init(struct sii902x *
+@@ -1002,6 +1007,13 @@ static int sii902x_init(struct sii902x *
  {
  	struct device *dev = &sii902x->i2c->dev;
  	unsigned int status = 0;
@@ -51,7 +51,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  	u8 chipid[4];
  	int ret;
  
-@@ -1025,6 +1037,14 @@ static int sii902x_init(struct sii902x *
+@@ -1024,6 +1036,14 @@ static int sii902x_init(struct sii902x *
  		return -EINVAL;
  	}
  

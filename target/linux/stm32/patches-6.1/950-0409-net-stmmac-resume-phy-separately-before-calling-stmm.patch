@@ -31,7 +31,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
 
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7591,16 +7591,8 @@ int stmmac_resume(struct device *dev)
+@@ -7594,16 +7594,8 @@ int stmmac_resume(struct device *dev)
  	}
  
  	rtnl_lock();
@@ -49,7 +49,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  	mutex_lock(&priv->lock);
  
  	stmmac_reset_queues_param(priv);
-@@ -7618,6 +7610,11 @@ int stmmac_resume(struct device *dev)
+@@ -7621,6 +7613,11 @@ int stmmac_resume(struct device *dev)
  	stmmac_enable_all_dma_irq(priv);
  
  	mutex_unlock(&priv->lock);

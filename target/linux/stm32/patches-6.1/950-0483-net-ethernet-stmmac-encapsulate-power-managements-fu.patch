@@ -20,7 +20,7 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
 
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-@@ -500,10 +500,10 @@ static int stm32_dwmac_resume(struct dev
+@@ -568,10 +568,10 @@ static int stm32_dwmac_resume(struct dev
  
  	return ret;
  }
@@ -32,7 +32,7 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  
  static struct stm32_ops stm32mcu_dwmac_data = {
  	.set_mode = stm32mcu_set_mode,
-@@ -533,7 +533,9 @@ static struct platform_driver stm32_dwma
+@@ -632,7 +632,9 @@ static struct platform_driver stm32_dwma
  	.remove = stm32_dwmac_remove,
  	.driver = {
  		.name           = "stm32-dwmac",

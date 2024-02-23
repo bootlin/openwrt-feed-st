@@ -11,10 +11,8 @@ Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 231 +++++++++++++-----
  1 file changed, 165 insertions(+), 66 deletions(-)
 
-Index: linux-6.1.74/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-===================================================================
---- linux-6.1.74.orig/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-+++ linux-6.1.74/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -15,6 +15,7 @@
  #include <linux/of_net.h>
  #include <linux/phy.h>

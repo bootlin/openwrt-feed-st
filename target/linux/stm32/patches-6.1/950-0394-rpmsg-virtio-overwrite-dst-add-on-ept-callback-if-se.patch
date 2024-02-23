@@ -31,7 +31,7 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
 
 --- a/drivers/rpmsg/virtio_rpmsg_bus.c
 +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -708,6 +708,7 @@ static ssize_t virtio_rpmsg_get_mtu(stru
+@@ -709,6 +709,7 @@ static ssize_t virtio_rpmsg_get_mtu(stru
  static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
  			     struct rpmsg_hdr *msg, unsigned int len)
  {
@@ -39,7 +39,7 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  	struct rpmsg_endpoint *ept;
  	struct scatterlist sg;
  	bool little_endian = virtio_is_little_endian(vrp->vdev);
-@@ -740,12 +741,22 @@ static int rpmsg_recv_single(struct virt
+@@ -741,12 +742,22 @@ static int rpmsg_recv_single(struct virt
  	ept = idr_find(&vrp->endpoints, __rpmsg32_to_cpu(little_endian, msg->dst));
  
  	/* let's make sure no one deallocates ept while we use it */

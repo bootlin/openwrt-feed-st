@@ -17,7 +17,7 @@ Change-Id: I8a6248ede128ea70b8d9204d8ae383888e419c8b
 
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
-@@ -2076,6 +2076,16 @@ config MFD_STPMIC1
+@@ -2077,6 +2077,16 @@ config MFD_STPMIC1
  	  To compile this driver as a module, choose M here: the
  	  module will be called stpmic1.
  

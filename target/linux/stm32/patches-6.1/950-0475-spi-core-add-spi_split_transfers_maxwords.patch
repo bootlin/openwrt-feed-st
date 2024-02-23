@@ -33,7 +33,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -3602,6 +3602,55 @@ int spi_split_transfers_maxsize(struct s
+@@ -3606,6 +3606,55 @@ int spi_split_transfers_maxsize(struct s
  }
  EXPORT_SYMBOL_GPL(spi_split_transfers_maxsize);
  

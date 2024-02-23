@@ -18,9 +18,9 @@ Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
 --- a/drivers/tty/serial/serial_core.c
 +++ b/drivers/tty/serial/serial_core.c
-@@ -3420,6 +3420,16 @@ int uart_get_rs485_mode(struct uart_port
- 	u32 rs485_delay[2];
- 	int ret;
+@@ -3431,6 +3431,16 @@ int uart_get_rs485_mode(struct uart_port
+ 	if (!(port->rs485_supported.flags & SER_RS485_ENABLED))
+ 		return 0;
  
 +	ret = device_property_read_u32_array(dev, "rs485-rts-delay-ns",
 +					     rs485_delay, 2);
