@@ -8,3 +8,5 @@ ARCH:=arm
 CPU_TYPE:=cortex-a7
 CPU_SUBTYPE=neon-vfpv4
 KERNEL_IMAGES:=zImage
+
+DEFAULT_PACKAGES += kmod-button-hotplug
