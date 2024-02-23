@@ -25,6 +25,13 @@ define Package/cypress-nvram-4339-sdio
   CONFLICTS:=brcmfmac-nvram-4339-sdio
 endef
 
+# Cypress 43430 SDIO NVRAM
+define Package/cypress-nvram-43430-sdio
+  $(Package/cypress-nvram-default)
+  TITLE:=BCM43430 SDIO NVRAM
+  CONFLICTS:=brcmfmac-nvram-43430-sdio
+endef
+
 define Package/cypress-nvram-4339-sdio/install
 	$(INSTALL_DIR) $(1)/lib/firmware/brcm
 	$(INSTALL_DATA) \
@@ -35,4 +42,15 @@ define Package/cypress-nvram-4339-sdio/install
 		$(1)/lib/firmware/brcm/brcmfmac4339-sdio.technexion,imx7d-pico-pi.txt
 endef
 
+define Package/cypress-nvram-43430-sdio/install
+	$(INSTALL_DIR) $(1)/lib/firmware/brcm
+	$(INSTALL_DATA) \
+		./files/brcmfmac43430-sdio.stm32mp1.txt \
+		$(1)/lib/firmware/brcm/
+	$(LN) \
+		brcmfmac43430-sdio.stm32mp1.txt \
+		$(1)/lib/firmware/brcm/brcmfmac43430-sdio.txt
+endef
+
 $(eval $(call BuildPackage,cypress-nvram-4339-sdio))
+$(eval $(call BuildPackage,cypress-nvram-43430-sdio))
