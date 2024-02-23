@@ -38,6 +38,7 @@ define Device/Default
   KERNEL_NAME := zImage
   KERNEL_IMG := zImage
   ENV_SIZE := 0x200000
+  DEVICE_PACKAGES := kmod-brcmfmac cypress-firmware-43430-sdio
 endef
 
 define Device/stm32mp157f-dk2
