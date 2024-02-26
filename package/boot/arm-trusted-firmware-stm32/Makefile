@@ -22,7 +22,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Trusted-Firmware-A/Default
   BUILD_TARGET:=stm32
-  BUILD_DEVICES:=$(1)
+  BUILD_DEVICES:=$(1) $(1)-demo
   DEPENDS:=+u-boot-$(1) +optee-os-$(1)
   TFA_IMAGE:=*.stm32
 endef
