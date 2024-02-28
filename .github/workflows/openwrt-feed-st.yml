@@ -1,0 +1,44 @@
+on: workflow_dispatch
+jobs:
+  build-all:
+    runs-on: ubuntu-22.04
+    env:
+      openwrt_version: 68968fc981
+    strategy:
+      matrix:
+        devices: [ stm32mp157f-dk2, stm32mp135f-dk, stm32mp157f-dk2-demo, stm32mp135f-dk-demo ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: openwrt/openwrt
+          ref: master
+          path: openwrt
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pyelftools python3-cryptography python3-setuptools python3-pil python3-dev
+          sudo apt install -y device-tree-compiler swig
+      - name: Add ST feed
+        run: echo src-git st https://github.com/bootlin/openwrt-feed-st.git >> openwrt/feeds.conf.default
+      - name: Update feeds
+        run: cd openwrt; ./scripts/feeds update -a
+      - name: Install stm32 target
+        run: cd openwrt; ./scripts/feeds install stm32
+      - name: Install all other feeds
+        run: cd openwrt; ./scripts/feeds install -a -f
+      - name: Install ptgen patch
+        run: |
+          mkdir -p openwrt/tools/firmware-utils/patches/
+          cp openwrt/feeds/st/patches/0001-ptgen-fix-limitation-for-active-partition-in-GPT.patch openwrt/tools/firmware-utils/patches/
+      - name: Configure
+        run: |
+          printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_stm32mp1=y\\nCONFIG_TARGET_stm32_stm32mp1_DEVICE_${{ matrix.devices }}=y\\n" > openwrt/.config
+          make -C openwrt defconfig
+      - name: Build
+        id: build
+        run: make -j4 -C openwrt || make -C openwrt -j1 V=s
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
+          path: openwrt/bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
