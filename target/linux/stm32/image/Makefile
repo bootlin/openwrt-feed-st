@@ -40,7 +40,7 @@ define Device/Default
   KERNEL_NAME := zImage
   KERNEL_IMG := zImage
   ENV_SIZE := 0x200000
-  DEVICE_PACKAGES := $(WIFI_PACKAGES)
+  DEVICE_PACKAGES := $(WIFI_PACKAGES) -mtd
 endef
 
 define Device/stm32mp157f-dk2
