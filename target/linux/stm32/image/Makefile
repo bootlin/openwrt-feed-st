@@ -34,8 +34,9 @@ endef
 define Device/Default
   PROFILES := Default
   DEVICE_VENDOR := STMicroelectronics
-  IMAGES := factory.img.gz
+  IMAGES := factory.img.gz sysupgrade.img.gz
   IMAGE/factory.img.gz := boot-img-ext4 | sdcard-img | gzip
+  IMAGE/sysupgrade.img.gz := boot-img-ext4 | sdcard-img | gzip | append-metadata
   KERNEL := kernel-bin
   KERNEL_NAME := zImage
   KERNEL_IMG := zImage
@@ -46,12 +47,14 @@ endef
 define Device/stm32mp157f-dk2
   DEVICE_MODEL := STM32MP157F-DK2
   DEVICE_DTS := stm32mp157f-dk2
+  SUPPORTED_DEVICES := st,stm32mp157f-dk2
 endef
 
 define Device/stm32mp135f-dk
   DEVICE_MODEL := STM32MP135F-DK
   DEVICE_DTS := stm32mp135f-dk
-  endef
+  SUPPORTED_DEVICES := st,stm32mp135f-dk
+endef
 
 ifeq ($(SUBTARGET),stm32mp1)
   TARGET_DEVICES += \
