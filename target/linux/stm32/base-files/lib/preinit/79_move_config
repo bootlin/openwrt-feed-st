@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+move_config() {
+	. /lib/upgrade/common.sh
+	. /lib/upgrade/platform.sh
+
+	if export_bootdevice && export_partdevice partdev 5; then
+		mount -t ext4 -o rw,noatime "/dev/$partdev" /mnt
+		if [ -f "/mnt/$BACKUP_FILE" ]; then
+			mv -f "/mnt/$BACKUP_FILE" /
+		fi
+		umount /mnt
+	fi
+}
+
+boot_hook_add preinit_mount_root move_config
