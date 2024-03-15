@@ -3,7 +3,7 @@ jobs:
   build-all:
     runs-on: ubuntu-22.04
     env:
-      openwrt_version: 68968fc981
+      openwrt_version: 904aa43865
     strategy:
       matrix:
         devices: [ stm32mp157f-dk2, stm32mp135f-dk, stm32mp157f-dk2-demo, stm32mp135f-dk-demo ]
