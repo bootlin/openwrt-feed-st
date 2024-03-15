@@ -22,7 +22,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
 
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
-@@ -1407,6 +1407,9 @@ reset:
+@@ -1408,6 +1408,9 @@ reset:
  				dev_err(&client->dev, "Gpio unreset failed.\n");
  				return error;
  			}

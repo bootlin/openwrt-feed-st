@@ -30,7 +30,7 @@ Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
 
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -12866,6 +12866,15 @@ T:	git git://linuxtv.org/media_tree.git
+@@ -12873,6 +12873,15 @@ T:	git git://linuxtv.org/media_tree.git
  F:	Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
  F:	drivers/media/platform/st/stm32/stm32-dcmi.c
  

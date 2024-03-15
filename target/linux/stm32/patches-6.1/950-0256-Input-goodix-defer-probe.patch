@@ -24,7 +24,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
 
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
-@@ -1317,10 +1317,33 @@ static int goodix_ts_probe(struct i2c_cl
+@@ -1318,10 +1318,33 @@ static int goodix_ts_probe(struct i2c_cl
  	const char *cfg_name;
  	struct mipi_dsi_device *panel;
  	struct device_node *np;
@@ -58,7 +58,7 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
  		dev_err(&client->dev, "I2C check functionality failed.\n");
  		return -ENXIO;
-@@ -1421,17 +1444,6 @@ reset:
+@@ -1422,17 +1445,6 @@ reset:
  			return error;
  	}
  

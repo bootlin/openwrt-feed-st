@@ -91,7 +91,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  	dev_dbg(&ts->client->dev, "Config sent successfully.");
  
  	/* Let the firmware reconfigure itself, so sleep for 10ms */
-@@ -1098,8 +1092,10 @@ static int goodix_read_version(struct go
+@@ -1099,8 +1093,10 @@ static int goodix_read_version(struct go
  	char id_str[GOODIX_ID_MAX_LEN + 1];
  
  	error = goodix_i2c_read(ts->client, GOODIX_REG_ID, buf, sizeof(buf));
@@ -103,7 +103,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  
  	memcpy(id_str, buf, GOODIX_ID_MAX_LEN);
  	id_str[GOODIX_ID_MAX_LEN] = 0;
-@@ -1125,10 +1121,13 @@ static int goodix_i2c_test(struct i2c_cl
+@@ -1126,10 +1122,13 @@ static int goodix_i2c_test(struct i2c_cl
  	u8 test;
  
  	while (retry++ < 2) {
@@ -118,7 +118,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  		msleep(20);
  	}
  
-@@ -1430,8 +1429,10 @@ reset:
+@@ -1431,8 +1430,10 @@ reset:
  		return error;
  
  	error = goodix_read_version(ts);
@@ -130,7 +130,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  
  	ts->chip = goodix_get_chip_data(ts->id);
  
-@@ -1508,6 +1509,7 @@ static int __maybe_unused goodix_suspend
+@@ -1509,6 +1510,7 @@ static int __maybe_unused goodix_suspend
  	error = goodix_i2c_write_u8(ts->client, GOODIX_REG_COMMAND,
  				    GOODIX_CMD_SCREEN_OFF);
  	if (error) {
@@ -138,7 +138,7 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  		goodix_irq_direction_input(ts);
  		goodix_request_irq(ts);
  		return -EAGAIN;
-@@ -1550,7 +1552,10 @@ static int __maybe_unused goodix_resume(
+@@ -1551,7 +1553,10 @@ static int __maybe_unused goodix_resume(
  
  	error = goodix_i2c_read(ts->client, ts->chip->config_addr,
  				&config_ver, 1);
