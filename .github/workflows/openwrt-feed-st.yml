@@ -37,8 +37,13 @@ jobs:
       - name: Build
         id: build
         run: make -j4 -C openwrt || make -C openwrt -j1 V=s
-      - name: 'Upload Artifact'
+      - name: 'Archive factory image'
         uses: actions/upload-artifact@v4
         with:
           name: openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
           path: openwrt/bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
+      - name: 'Archive sysupgrade image'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-sysupgrade.img.gz
+          path: openwrt/bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-sysupgrade.img.gz
