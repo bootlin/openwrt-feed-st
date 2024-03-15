@@ -9,4 +9,4 @@ CPU_TYPE:=cortex-a7
 CPU_SUBTYPE=neon-vfpv4
 KERNEL_IMAGES:=zImage
 
-DEFAULT_PACKAGES += blockdev kmod-button-hotplug
+DEFAULT_PACKAGES += blockdev kmod-gpio-button-hotplug
