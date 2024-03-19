@@ -19,6 +19,7 @@ platforms.
 
 |Supported features|STM32MP157F-DK2|STM32MP135F-DK|
 |------------------|---------------|--------------|
+|Sysupgrade|yes|yes|
 |Ethernet|yes|yes|
 |Watchdog|yes|yes|
 |RTC|yes|yes|
@@ -26,6 +27,22 @@ platforms.
 |LED|yes|yes|
 |Button|no|yes (USER2)|
 |Wifi|yes|yes|
+|USB Type-A|yes|yes|
+
+## BSP
+
+This feed is based on the `STPM32MP1 BSP v5.0`.
+
+|Components|Version|
+|----------|-------|
+|TF-A|v2.8-stm32mp-r1|
+|U-Boot|v2022.10-stm32mp-r1|
+|OPTEE|3.19.0-stm32mp-r1|
+|Linux|OpenWRT kernel + v6.1-stm32mp-r1|
+
+For the kernel, the patches from the v6.1-stm32mp branch until the tag
+v6.1-stm32mp-r1 were added.  
+They are available in `target/linux/stm32/patches-6.1/`.  
 
 ## Getting started
 
@@ -164,3 +181,72 @@ in order to prevent unauthorized SSH logins.
 --------------------------------------------------
 root@OpenWrt:/#
 ```
+
+## Additional informations
+
+This chapter contains some informations which are specific to the stm32 target.
+For the generic informations, please refer to the [Official OpenWRT
+documentation](https://openwrt.org/docs/guide-user/start).
+
+### Ethernet
+
+The configuration of Ethernet interfaces is the default OpenWRT configuration:
+
+- `STM32MP157F-DK2`: `lan` interface
+- `STM32MP135F-DK`: `lan` interface (`ETH1`) and `wan` interface (`ETH2`)
+
+The `lan` interface is configured with a static ip address 192.168.1.1 and a
+dhcp server is running.  
+The `wan` interface is in dhcp mode.  
+By default the management protocols are only accessible from the lan interface.
+
+### System upgrade
+
+For a system upgrade, an upgrade image shall be used (image labelled
+...-sysupgrade.img.gz).
+
+The demo and non-demo profiles are compatible, it means you can update a
+`STM32MP135F-DK` profile with a `STM32MP135F-DK-DEMO` image (vice versa) for
+example.
+
+By default, the sysupgrade mechanism updates the partitions one by one. If the
+partition table is different (for example the rootfs partition is 10MiB bigger),
+the full image is written.
+
+The U-Boot environment variables are always preserved during an upgrade.  
+To erase the environment variables, flash the factory image on the SDCard or
+use the `env erase` command from U-Boot.
+
+Useful link: [Upgrading OpenWrt firmware using LuCI and CLI](https://openwrt.org/docs/guide-user/installation/generic.sysupgrade)
+
+### Button
+
+The kernel module `gpio-button-hotplug` is used to support buttons.  
+The `STM32MP135F-DK` has one supported button: `USR2` (key `BTN_1`).
+
+To easily test the button:
+
+```
+mkdir -p /etc/hotplug.d/button
+
+cat << "EOF" > /etc/hotplug.d/button/buttons
+logger "the button was ${BUTTON} and the action was ${ACTION}"
+EOF
+
+root@OpenWrt:/# logread -f
+Fri Mar 15 14:28:09 2024 user.notice root: the button was BTN_1 and the action was pressed
+Fri Mar 15 14:28:09 2024 user.notice root: the button was BTN_1 and the action was released
+```
+Useful link: [Attach functions to a push button](https://openwrt.org/docs/guide-user/hardware/hardware.button)
+
+### LED
+
+One LED is defined and labelled `blue:heartbeat` (`LD8` for `STM32MP157F-DK2` and
+`LD3` for `STM32MP135F-DK`). By default it is configured to use the heartbeat
+trigger.
+
+Useful link: [LED Configuration](https://openwrt.org/docs/guide-user/base-system/led_configuration)
+
+### USB
+
+Only mass storage are supported on the USB Type-A by default.
