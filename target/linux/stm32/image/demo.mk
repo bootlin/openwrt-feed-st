@@ -3,7 +3,8 @@
 # Copyright (C) 2024 Bootlin
 #
 
-LUCI := uhttpd luci luci-ssl luci-theme-openwrt-2020
+LUCI := uhttpd luci luci-ssl luci-theme-openwrt-2020 \
+	luci-app-ledtrig-usbport
 
 define Device/Demo
   DEVICE_VARIANT := (demo)
