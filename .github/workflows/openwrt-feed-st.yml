@@ -3,7 +3,7 @@ jobs:
   build-all:
     runs-on: ubuntu-22.04
     env:
-      openwrt_version: 904aa43865
+      openwrt_version: 46efc77502
     strategy:
       matrix:
         devices: [ stm32mp157f-dk2, stm32mp135f-dk, stm32mp157f-dk2-demo, stm32mp135f-dk-demo ]
@@ -26,10 +26,6 @@ jobs:
         run: cd openwrt; ./scripts/feeds install stm32
       - name: Install all other feeds
         run: cd openwrt; ./scripts/feeds install -a -f
-      - name: Install ptgen patch
-        run: |
-          mkdir -p openwrt/tools/firmware-utils/patches/
-          cp openwrt/feeds/st/patches/0001-ptgen-fix-limitation-for-active-partition-in-GPT.patch openwrt/tools/firmware-utils/patches/
       - name: Configure
         run: |
           printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_stm32mp1=y\\nCONFIG_TARGET_stm32_stm32mp1_DEVICE_${{ matrix.devices }}=y\\n" > openwrt/.config
