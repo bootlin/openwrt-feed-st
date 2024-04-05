@@ -56,12 +56,12 @@ And you need to install a set of packages as described in the
 ### Getting the code
 
 The feed is designed to work with the `master` branch of OpenWRT (last tested
-commit is [904aa43865](https://github.com/openwrt/openwrt/commit/904aa43865)).
+commit is [46efc77502](https://github.com/openwrt/openwrt/commit/46efc77502)).
 
 ```bash
 $ git clone -b master https://git.openwrt.org/openwrt/openwrt.git
 $ cd openwrt
-$ git checkout 904aa43865
+$ git checkout 46efc77502
 ```
 
 Next step is to add the [STMicroelectronics](https://www.st.com) feed in the
@@ -101,16 +101,6 @@ $ ./scripts/feeds install -a -f
 ```
 (Some overriding warnings can occur, if you used `-f` please ignore them).
 
-### Install ptgen patch
-
-We need to apply a patch on the host tool `firmware-utils` to be able to build
-bootable images.
-
-```bash
-$ mkdir tools/firmware-utils/patches/
-$ cp feeds/st/patches/0001-ptgen-fix-limitation-for-active-partition-in-GPT.patch \
-     tools/firmware-utils/patches/
-```
 ### Configure and build
 
 Run `make menuconfig`
