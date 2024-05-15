@@ -28,14 +28,14 @@ Change-Id: I6dec7a51b622b44964f45c403648626efb1f1aba
 +			 "Warning: remote fw is still running with possible side effect!!!\n");
 +}
 +
- static int __maybe_unused stm32_rproc_suspend(struct device *dev)
+ static int stm32_rproc_suspend(struct device *dev)
  {
  	struct rproc *rproc = dev_get_drvdata(dev);
-@@ -906,6 +915,7 @@ static SIMPLE_DEV_PM_OPS(stm32_rproc_pm_
+@@ -906,6 +915,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_rp
  static struct platform_driver stm32_rproc_driver = {
  	.probe = stm32_rproc_probe,
  	.remove = stm32_rproc_remove,
 +	.shutdown = stm32_rproc_shutdown,
  	.driver = {
  		.name = "stm32-rproc",
- 		.pm = &stm32_rproc_pm_ops,
+ 		.pm = pm_ptr(&stm32_rproc_pm_ops),

@@ -125,7 +125,7 @@ Change-Id: Ifa4f6c0d2ab9a40e22f8fd79e3737653e47f59cf
  		return;
  	}
  
-@@ -873,11 +883,16 @@ static void stm32_usart_disable_ms(struc
+@@ -881,11 +891,16 @@ static void stm32_usart_disable_ms(struc
  static void stm32_usart_stop_tx(struct uart_port *port)
  {
  	struct stm32_port *stm32_port = to_stm32_port(port);
@@ -145,7 +145,7 @@ Change-Id: Ifa4f6c0d2ab9a40e22f8fd79e3737653e47f59cf
  
  	stm32_usart_rs485_rts_disable(port);
  }
-@@ -901,12 +916,9 @@ static void stm32_usart_start_tx(struct
+@@ -909,12 +924,9 @@ static void stm32_usart_start_tx(struct
  static void stm32_usart_flush_buffer(struct uart_port *port)
  {
  	struct stm32_port *stm32_port = to_stm32_port(port);
@@ -159,7 +159,7 @@ Change-Id: Ifa4f6c0d2ab9a40e22f8fd79e3737653e47f59cf
  }
  
  /* Throttle the remote when input buffer is about to overflow. */
-@@ -1065,12 +1077,12 @@ static void stm32_usart_shutdown(struct
+@@ -1074,12 +1086,12 @@ static void stm32_usart_shutdown(struct
  	u32 val, isr;
  	int ret;
  

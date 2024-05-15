@@ -24,7 +24,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4263,9 +4263,11 @@ static int _dwc2_hcd_start(struct usb_hc
+@@ -4271,9 +4271,11 @@ static int _dwc2_hcd_start(struct usb_hc
  		return 0;	/* why 0 ?? */
  	}
  

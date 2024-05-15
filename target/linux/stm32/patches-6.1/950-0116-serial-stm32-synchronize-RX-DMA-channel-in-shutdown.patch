@@ -20,7 +20,7 @@ Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
 
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -1146,8 +1146,10 @@ static void stm32_usart_shutdown(struct
+@@ -1155,8 +1155,10 @@ static void stm32_usart_shutdown(struct
  		dev_err(port->dev, "Transmission is not complete\n");
  
  	/* Disable RX DMA. */

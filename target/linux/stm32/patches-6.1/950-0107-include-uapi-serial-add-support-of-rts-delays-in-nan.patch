@@ -22,7 +22,7 @@ Change-Id: I72cdf03197b7c3abfc1f2fa0c03e91b665461be1
 
 --- a/drivers/tty/serial/serial_core.c
 +++ b/drivers/tty/serial/serial_core.c
-@@ -3484,10 +3484,10 @@ EXPORT_SYMBOL_GPL(uart_get_rs485_mode);
+@@ -3496,10 +3496,10 @@ EXPORT_SYMBOL_GPL(uart_get_rs485_mode);
  
  /* Compile-time assertions for serial_rs485 layout */
  static_assert(offsetof(struct serial_rs485, padding) ==

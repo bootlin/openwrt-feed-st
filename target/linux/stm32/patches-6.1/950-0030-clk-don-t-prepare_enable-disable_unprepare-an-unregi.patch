@@ -33,7 +33,7 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
 
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -1935,6 +1935,7 @@ static void clk_reparent(struct clk_core
+@@ -2028,6 +2028,7 @@ static void clk_reparent(struct clk_core
  	core->parent = new_parent;
  }
  
@@ -41,7 +41,7 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  static struct clk_core *__clk_set_parent_before(struct clk_core *core,
  					   struct clk_core *parent)
  {
-@@ -1963,7 +1964,8 @@ static struct clk_core *__clk_set_parent
+@@ -2056,7 +2057,8 @@ static struct clk_core *__clk_set_parent
  
  	/* enable old_parent & parent if CLK_OPS_PARENT_ENABLE is set */
  	if (core->flags & CLK_OPS_PARENT_ENABLE) {
@@ -51,7 +51,7 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  		clk_core_prepare_enable(parent);
  	}
  
-@@ -1997,7 +1999,8 @@ static void __clk_set_parent_after(struc
+@@ -2090,7 +2092,8 @@ static void __clk_set_parent_after(struc
  	/* re-balance ref counting if CLK_OPS_PARENT_ENABLE is set */
  	if (core->flags & CLK_OPS_PARENT_ENABLE) {
  		clk_core_disable_unprepare(parent);

@@ -168,7 +168,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  static void stm32_usart_tx_interrupt_disable(struct uart_port *port)
  {
  	struct stm32_port *stm32_port = to_stm32_port(port);
-@@ -947,11 +1019,10 @@ static void stm32_usart_throttle(struct
+@@ -955,11 +1027,10 @@ static void stm32_usart_throttle(struct
  	spin_lock_irqsave(&port->lock, flags);
  
  	/*
@@ -182,7 +182,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  
  	stm32_usart_clr_bits(port, ofs->cr1, stm32_port->cr1_irq);
  	if (stm32_port->cr3_irq)
-@@ -973,14 +1044,15 @@ static void stm32_usart_unthrottle(struc
+@@ -981,14 +1052,15 @@ static void stm32_usart_unthrottle(struc
  	if (stm32_port->cr3_irq)
  		stm32_usart_set_bits(port, ofs->cr3, stm32_port->cr3_irq);
  
@@ -201,7 +201,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  	spin_unlock_irqrestore(&port->lock, flags);
  }
  
-@@ -991,8 +1063,7 @@ static void stm32_usart_stop_rx(struct u
+@@ -999,8 +1071,7 @@ static void stm32_usart_stop_rx(struct u
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  
  	/* Disable DMA request line. */
@@ -211,7 +211,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  
  	stm32_usart_clr_bits(port, ofs->cr1, stm32_port->cr1_irq);
  	if (stm32_port->cr3_irq)
-@@ -1004,64 +1075,6 @@ static void stm32_usart_break_ctl(struct
+@@ -1012,64 +1083,6 @@ static void stm32_usart_break_ctl(struct
  {
  }
  
@@ -276,7 +276,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  static int stm32_usart_startup(struct uart_port *port)
  {
  	struct stm32_port *stm32_port = to_stm32_port(port);
-@@ -1087,7 +1100,7 @@ static int stm32_usart_startup(struct ua
+@@ -1096,7 +1109,7 @@ static int stm32_usart_startup(struct ua
  		writel_relaxed(USART_RQR_RXFRQ, port->membase + ofs->rqr);
  
  	if (stm32_port->rx_ch) {
@@ -285,7 +285,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  		if (ret) {
  			free_irq(port->irq, port);
  			return ret;
-@@ -1831,11 +1844,6 @@ static int stm32_usart_serial_remove(str
+@@ -1840,11 +1853,6 @@ static int stm32_usart_serial_remove(str
  	pm_runtime_put_noidle(&pdev->dev);
  
  	stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_PEIE);
@@ -297,7 +297,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  
  	if (stm32_port->tx_ch) {
  		stm32_usart_of_dma_tx_remove(stm32_port, pdev);
-@@ -1847,7 +1855,12 @@ static int stm32_usart_serial_remove(str
+@@ -1856,7 +1864,12 @@ static int stm32_usart_serial_remove(str
  		dma_release_channel(stm32_port->rx_ch);
  	}
  
@@ -311,7 +311,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  
  	if (stm32_port->wakeup_src) {
  		dev_pm_clear_wake_irq(&pdev->dev);
-@@ -2019,7 +2032,7 @@ static int __maybe_unused stm32_usart_se
+@@ -2028,7 +2041,7 @@ static int __maybe_unused stm32_usart_se
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  	struct tty_port *tport = &port->state->port;
  	int ret;
@@ -320,7 +320,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  	unsigned long flags;
  
  	if (!stm32_port->wakeup_src || !tty_port_initialized(tport))
-@@ -2041,10 +2054,9 @@ static int __maybe_unused stm32_usart_se
+@@ -2050,10 +2063,9 @@ static int __maybe_unused stm32_usart_se
  		 */
  		if (stm32_port->rx_ch) {
  			spin_lock_irqsave(&port->lock, flags);
@@ -333,7 +333,7 @@ Change-Id: I196346cb0b9c5dadccba056e6c8cb742d75c31f8
  			stm32_usart_rx_dma_terminate(stm32_port);
  			uart_unlock_and_check_sysrq_irqrestore(port, flags);
  			if (size)
-@@ -2055,7 +2067,7 @@ static int __maybe_unused stm32_usart_se
+@@ -2064,7 +2076,7 @@ static int __maybe_unused stm32_usart_se
  		stm32_usart_receive_chars(port, false);
  	} else {
  		if (stm32_port->rx_ch) {

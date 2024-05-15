@@ -48,7 +48,7 @@ Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
  		rx_dma_status = dmaengine_tx_status(stm32_port->rx_ch,
  						    stm32_port->rx_ch->cookie,
  						    &stm32_port->rx_dma_state);
-@@ -812,8 +812,8 @@ static irqreturn_t stm32_usart_interrupt
+@@ -817,8 +817,8 @@ static irqreturn_t stm32_usart_interrupt
  	 * line has been masked by HW and rx data are stacking in FIFO.
  	 */
  	if (!stm32_port->throttled) {
@@ -59,7 +59,7 @@ Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
  			spin_lock(&port->lock);
  			size = stm32_usart_receive_chars(port, false);
  			uart_unlock_and_check_sysrq(port);
-@@ -829,7 +829,7 @@ static irqreturn_t stm32_usart_interrupt
+@@ -836,7 +836,7 @@ static irqreturn_t stm32_usart_interrupt
  	}
  
  	/* Receiver timeout irq for DMA RX */
@@ -68,7 +68,7 @@ Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
  		spin_lock(&port->lock);
  		size = stm32_usart_receive_chars(port, false);
  		uart_unlock_and_check_sysrq(port);
-@@ -929,7 +929,7 @@ static void stm32_usart_throttle(struct
+@@ -937,7 +937,7 @@ static void stm32_usart_throttle(struct
  	 * Disable DMA request line if enabled, so the RX data gets queued into the FIFO.
  	 * Hardware flow control is triggered when RX FIFO is full.
  	 */

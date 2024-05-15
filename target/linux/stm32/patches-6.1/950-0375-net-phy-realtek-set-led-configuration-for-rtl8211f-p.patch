@@ -17,7 +17,7 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/187613
 
 --- a/drivers/net/phy/realtek.c
 +++ b/drivers/net/phy/realtek.c
-@@ -351,6 +351,11 @@ static int rtl8211f_config_init(struct p
+@@ -352,6 +352,11 @@ static int rtl8211f_config_init(struct p
  	u16 val_txdly, val_rxdly;
  	int ret;
  

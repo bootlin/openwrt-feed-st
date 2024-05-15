@@ -20,7 +20,7 @@ Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
 
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -3718,6 +3718,7 @@ static int dwc2_hcd_hub_control(struct d
+@@ -3724,6 +3724,7 @@ static int dwc2_hcd_hub_control(struct d
  			hprt0 &= ~HPRT0_TSTCTL_MASK;
  			hprt0 |= (windex >> 8) << HPRT0_TSTCTL_SHIFT;
  			dwc2_writel(hsotg, hprt0, HPRT0);

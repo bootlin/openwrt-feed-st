@@ -32,7 +32,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4481,9 +4481,6 @@ static int _dwc2_hcd_resume(struct usb_h
+@@ -4489,9 +4489,6 @@ static int _dwc2_hcd_resume(struct usb_h
  		goto unlock;
  	}
  

@@ -20,7 +20,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4419,20 +4419,20 @@ static int _dwc2_hcd_resume(struct usb_h
+@@ -4427,20 +4427,20 @@ static int _dwc2_hcd_resume(struct usb_h
  	if (hsotg->lx_state != DWC2_L2)
  		goto unlock;
  

@@ -18,7 +18,7 @@ Change-Id: Ic76c96968eb4f1aa056683c0c5ddd870870a0028
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -335,6 +335,7 @@ config STM32_RPROC
- 	depends on ARCH_STM32
+ 	depends on ARCH_STM32 || COMPILE_TEST
  	depends on REMOTEPROC
  	select MAILBOX
 +	select TEE_REMOTEPROC

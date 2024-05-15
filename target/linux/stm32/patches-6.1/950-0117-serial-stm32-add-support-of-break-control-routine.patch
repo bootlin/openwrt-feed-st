@@ -18,7 +18,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -1070,9 +1070,20 @@ static void stm32_usart_stop_rx(struct u
+@@ -1078,9 +1078,20 @@ static void stm32_usart_stop_rx(struct u
  		stm32_usart_clr_bits(port, ofs->cr3, stm32_port->cr3_irq);
  }
  

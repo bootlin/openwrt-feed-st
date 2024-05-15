@@ -33,7 +33,7 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
 
 --- a/drivers/usb/dwc2/core.h
 +++ b/drivers/usb/dwc2/core.h
-@@ -1003,6 +1003,7 @@ struct dwc2_hregs_backup {
+@@ -1015,6 +1015,7 @@ struct dwc2_hregs_backup {
   * @ctrl_out_desc:	EP0 OUT data phase desc chain pointer
   * @irq:		Interrupt request line number
   * @clk:		Pointer to otg clock
@@ -41,7 +41,7 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
   * @reset:		Pointer to dwc2 reset controller
   * @reset_ecc:          Pointer to dwc2 optional reset controller in Stratix10.
   * @regset:		A pointer to a struct debugfs_regset32, which contains
-@@ -1065,6 +1066,7 @@ struct dwc2_hsotg {
+@@ -1077,6 +1078,7 @@ struct dwc2_hsotg {
  	void *priv;
  	int     irq;
  	struct clk *clk;

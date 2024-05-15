@@ -176,7 +176,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  		return;
  	}
  
-@@ -878,16 +904,11 @@ static void stm32_usart_disable_ms(struc
+@@ -886,16 +912,11 @@ static void stm32_usart_disable_ms(struc
  static void stm32_usart_stop_tx(struct uart_port *port)
  {
  	struct stm32_port *stm32_port = to_stm32_port(port);
@@ -196,7 +196,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  
  	stm32_usart_rs485_rts_disable(port);
  }
-@@ -988,8 +1009,22 @@ static int stm32_usart_start_rx_dma_cycl
+@@ -996,8 +1017,22 @@ static int stm32_usart_start_rx_dma_cycl
  	struct stm32_port *stm32_port = to_stm32_port(port);
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  	struct dma_async_tx_descriptor *desc;
@@ -219,7 +219,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  	stm32_port->last_res = RX_BUF_L;
  	/* Prepare a DMA cyclic transaction */
  	desc = dmaengine_prep_dma_cyclic(stm32_port->rx_ch,
-@@ -999,6 +1034,7 @@ static int stm32_usart_start_rx_dma_cycl
+@@ -1007,6 +1042,7 @@ static int stm32_usart_start_rx_dma_cycl
  					 DMA_PREP_INTERRUPT);
  	if (!desc) {
  		dev_err(port->dev, "rx dma prep cyclic failed\n");
@@ -227,7 +227,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  		return -ENODEV;
  	}
  
-@@ -1009,6 +1045,7 @@ static int stm32_usart_start_rx_dma_cycl
+@@ -1017,6 +1053,7 @@ static int stm32_usart_start_rx_dma_cycl
  	ret = dma_submit_error(dmaengine_submit(desc));
  	if (ret) {
  		dmaengine_terminate_sync(stm32_port->rx_ch);
@@ -235,7 +235,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  		return ret;
  	}
  
-@@ -1097,7 +1134,7 @@ static void stm32_usart_shutdown(struct
+@@ -1106,7 +1143,7 @@ static void stm32_usart_shutdown(struct
  
  	/* Disable RX DMA. */
  	if (stm32_port->rx_ch)
@@ -244,7 +244,7 @@ Change-Id: I7af0f87c6b2e07cfbcc6af614cda6049e2f6eab1
  
  	/* flush RX & TX FIFO */
  	if (ofs->rqr != UNDEF_REG)
-@@ -2008,7 +2045,7 @@ static int __maybe_unused stm32_usart_se
+@@ -2017,7 +2054,7 @@ static int __maybe_unused stm32_usart_se
  			stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAR);
  			/* Poll data from DMA RX buffer if any */
  			size = stm32_usart_receive_chars(port, true);

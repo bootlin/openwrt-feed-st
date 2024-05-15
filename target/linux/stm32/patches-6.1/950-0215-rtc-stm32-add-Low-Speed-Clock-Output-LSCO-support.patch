@@ -18,7 +18,7 @@ Change-Id: Idec2d79f47a9942af01ce3377f851169064fb9c2
 
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
-@@ -1896,6 +1896,7 @@ config RTC_DRV_R7301
+@@ -1897,6 +1897,7 @@ config RTC_DRV_R7301
  config RTC_DRV_STM32
  	tristate "STM32 RTC"
  	select REGMAP_MMIO

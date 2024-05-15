@@ -49,7 +49,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  	},
  	.cfg = {
  		.uart_enable_bit = 0,
-@@ -1350,17 +1353,19 @@ static void stm32_usart_set_termios(stru
+@@ -1359,17 +1362,19 @@ static void stm32_usart_set_termios(stru
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
  	struct serial_rs485 *rs485conf = &port->rs485;
@@ -72,7 +72,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  
  	spin_lock_irqsave(&port->lock, flags);
  
-@@ -1462,27 +1467,48 @@ static void stm32_usart_set_termios(stru
+@@ -1471,27 +1476,48 @@ static void stm32_usart_set_termios(stru
  		cr3 |= USART_CR3_CTSE | USART_CR3_RTSE;
  	}
  

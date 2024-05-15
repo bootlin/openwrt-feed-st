@@ -46,7 +46,7 @@ Depends-on: I5fc1dd455d2923a80fc41e5bad3a3de705496c3c
  	xmit->tail = (xmit->tail + count) & (UART_XMIT_SIZE - 1);
  	port->icount.tx += count;
  	return;
-@@ -1293,6 +1288,9 @@ static void stm32_usart_set_termios(stru
+@@ -1302,6 +1297,9 @@ static void stm32_usart_set_termios(stru
  		cr3 |= USART_CR3_DDRE;
  	}
  

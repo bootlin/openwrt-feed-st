@@ -215,20 +215,21 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  	while (!uart_circ_empty(xmit)) {
  		/* Check that TDR is empty before filling FIFO */
  		if (!(readl_relaxed(port->membase + ofs->isr) & USART_SR_TXE))
-@@ -881,9 +1039,11 @@ static irqreturn_t stm32_usart_interrupt
+@@ -881,10 +1039,12 @@ static irqreturn_t stm32_usart_interrupt
  	struct stm32_port *stm32_port = to_stm32_port(port);
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  	u32 sr;
 +	u32 cr3;
  	unsigned int size;
+ 	irqreturn_t ret = IRQ_NONE;
  
  	sr = readl_relaxed(port->membase + ofs->isr);
 +	cr3 = readl_relaxed(port->membase + ofs->cr3);
  
  	if (!stm32_port->hw_flow_control &&
  	    port->rs485.flags & SER_RS485_ENABLED &&
-@@ -905,18 +1065,28 @@ static irqreturn_t stm32_usart_interrupt
- 			pm_wakeup_event(tport->tty->dev, 0);
+@@ -910,19 +1070,29 @@ static irqreturn_t stm32_usart_interrupt
+ 		ret = IRQ_HANDLED;
  	}
  
 -	/*
@@ -243,6 +244,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 -			uart_unlock_and_check_sysrq(port);
 -			if (size)
 -				tty_flip_buffer_push(tport);
+-			ret = IRQ_HANDLED;
 +	/* Don't process rx in iso7816 mode while tx is in progress */
 +	if (stm32_usart_iso7816_enabled(stm32_port) && (cr3 & USART_CR3_TCBGTIE)) {
 +		if ((sr & USART_SR_TCBGT) && ofs->icr != UNDEF_REG) {
@@ -264,11 +266,12 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 +				uart_unlock_and_check_sysrq(port);
 +				if (size)
 +					tty_flip_buffer_push(tport);
++				ret = IRQ_HANDLED;
 +			}
  		}
  	}
  
-@@ -1558,6 +1728,7 @@ static int stm32_usart_init_port(struct
+@@ -1567,6 +1737,7 @@ static int stm32_usart_init_port(struct
  	port->irq = irq;
  	port->rs485_config = stm32_usart_config_rs485;
  	port->rs485_supported = stm32_rs485_supported;

@@ -98,7 +98,7 @@ Change-Id: I2c37bac444c8583e6d137a7e3468061a77dc9c80
  
  		if (rs485conf->flags & SER_RS485_RTS_ON_SEND)
  			cr3 &= ~USART_CR3_DEP;
-@@ -1258,10 +1270,7 @@ static void stm32_usart_set_termios(stru
+@@ -1267,10 +1279,7 @@ static void stm32_usart_set_termios(stru
  	}
  
  	if (rs485conf->flags & SER_RS485_ENABLED) {

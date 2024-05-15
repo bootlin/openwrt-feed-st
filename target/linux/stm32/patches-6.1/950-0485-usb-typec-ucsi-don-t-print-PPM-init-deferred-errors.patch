@@ -30,7 +30,7 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
 
 --- a/drivers/usb/typec/ucsi/ucsi.c
 +++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -1319,11 +1319,13 @@ static void ucsi_init_work(struct work_s
+@@ -1357,11 +1357,13 @@ static void ucsi_init_work(struct work_s
  
  	ret = ucsi_init(ucsi);
  	if (ret)

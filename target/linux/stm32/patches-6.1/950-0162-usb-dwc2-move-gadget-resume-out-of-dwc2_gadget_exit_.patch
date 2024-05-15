@@ -21,7 +21,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/usb/dwc2/core_intr.c
 +++ b/drivers/usb/dwc2/core_intr.c
-@@ -403,13 +403,14 @@ static void dwc2_handle_wakeup_detected_
+@@ -425,7 +425,6 @@ static void dwc2_handle_wakeup_detected_
  				if (ret)
  					dev_err(hsotg->dev,
  						"exit partial_power_down failed\n");
@@ -29,8 +29,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  			}
  
  			/* Exit gadget mode clock gating. */
- 			if (hsotg->params.power_down ==
- 			    DWC2_POWER_DOWN_PARAM_NONE && hsotg->bus_suspended)
+@@ -433,6 +432,8 @@ static void dwc2_handle_wakeup_detected_
+ 			    DWC2_POWER_DOWN_PARAM_NONE && hsotg->bus_suspended &&
+ 			    !hsotg->params.no_clock_gating)
  				dwc2_gadget_exit_clock_gating(hsotg, 0);
 +
 +			call_gadget(hsotg, resume);
@@ -39,7 +40,7 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  			hsotg->lx_state = DWC2_L0;
 --- a/drivers/usb/dwc2/gadget.c
 +++ b/drivers/usb/dwc2/gadget.c
-@@ -5671,7 +5671,6 @@ void dwc2_gadget_exit_clock_gating(struc
+@@ -5681,7 +5681,6 @@ void dwc2_gadget_exit_clock_gating(struc
  	}
  
  	/* Change to L0 state */
