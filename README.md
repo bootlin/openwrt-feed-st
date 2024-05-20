@@ -56,12 +56,12 @@ And you need to install a set of packages as described in the
 ### Getting the code
 
 The feed is designed to work with the `master` branch of OpenWRT (last tested
-commit is [46efc77502](https://github.com/openwrt/openwrt/commit/46efc77502)).
+commit is [cffd3ad8d7](https://github.com/openwrt/openwrt/commit/cffd3ad8d7)).
 
 ```bash
 $ git clone -b master https://git.openwrt.org/openwrt/openwrt.git
 $ cd openwrt
-$ git checkout 46efc77502
+$ git checkout cffd3ad8d7
 ```
 
 Next step is to add the [STMicroelectronics](https://www.st.com) feed in the
