@@ -1,0 +1,9 @@
+# Copyright (C) 2024 Bootlin
+
+. /lib/functions/system.sh
+
+switch_to_inband_interrupt_for_wifi_sdio() {
+	sed -i -E -e 's/^muxenab=0x10/#muxenab=0x10/' /lib/firmware/brcm/brcmfmac43430-sdio.txt
+}
+
+boot_hook_add preinit_mount_root switch_to_inband_interrupt_for_wifi_sdio
