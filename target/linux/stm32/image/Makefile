@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
-WIFI_PACKAGES := kmod-brcmfmac cypress-firmware-43430-sdio cypress-nvram-43430-sdio kmod-mac80211 wpad-basic-mbedtls
-USB_PACKAGES := kmod-usb2 kmod-usb-storage kmod-usb-ledtrig-usbport
+WIFI_PACKAGES := kmod-brcmfmac murata-firmware-43430-sdio murata-nvram-43430-sdio kmod-mac80211 wpad-basic-mbedtls
+USB_PACKAGES := kmod-usb2 kmod-usb-storage kmod-usb-ledtrig-usbport stress-ng iperf3
 
 define Build/boot-img-ext4
 	rm -fR $@.boot
