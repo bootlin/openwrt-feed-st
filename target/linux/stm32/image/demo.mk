@@ -6,9 +6,11 @@
 LUCI := uhttpd luci luci-ssl luci-theme-openwrt-2020 \
 	luci-app-ledtrig-usbport
 
+TESTS := stress-ng iperf3
+
 define Device/Demo
   DEVICE_VARIANT := (demo)
-  DEVICE_PACKAGES += $(LUCI)
+  DEVICE_PACKAGES += $(LUCI) $(TESTS)
 endef
 
 define Device/stm32mp157f-dk2-demo
