@@ -244,3 +244,4 @@ Only mass storage are supported on the USB Type-A by default.
 ## Going further
 
 * [Using the STM32 Cube Programmer](docs/stm32cubeprogrammer.md)
+* [Benchmarking](docs/benchmarking.md)
