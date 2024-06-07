@@ -3,7 +3,7 @@ jobs:
   build-all:
     runs-on: ubuntu-22.04
     env:
-      openwrt_version: cffd3ad8d7
+      openwrt_version: cffd3ad8d7cad2214d44695ad4f2405ea53a26c7
     strategy:
       matrix:
         devices: [ stm32mp157f-dk2, stm32mp135f-dk, stm32mp157f-dk2-demo, stm32mp135f-dk-demo ]
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: openwrt/openwrt
-          ref: master
+          ref: ${{ env.openwrt_version }}
           path: openwrt
       - name: Install dependencies
         run: |
