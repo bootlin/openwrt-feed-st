@@ -94,7 +94,7 @@ define Build/Compile/Optee-os
 		CROSS_COMPILE_core="$(TARGET_CROSS)" \
 		CROSS_COMPILE_ta_arm64="$(TARGET_CROSS)" \
 		CROSS_COMPILE_ta_arm32="$(TARGET_CROSS)" \
-		CFG_ARM32_core=y \
+		$(if $(CONFIG_ARCH_64BIT), CFG_ARM64_core=y CFG_USER_TA_TARGETS=ta_arm64, CFG_ARM32_core=y) \
 		PLATFORM="$(PLAT)" \
 		PLATFORM_FLAVOR="$(call qstrip,$(PLAT_FLAVOR))" \
 		$(OPTEE_MAKE_FLAGS)

@@ -7,13 +7,13 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_VERSION:=3.19.0-stm32mp-r1
+PKG_VERSION:=3.19.0-stm32mp-r2
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/STMicroelectronics/optee_os.git
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_MIRROR_HASH:=36a4843391a452075d6a690ad253ad887aa523c2705e1d438cf41e8821ee9439
+PKG_MIRROR_HASH:=b34bfab9c3ab38cac2a3228223461709705e168e44d2f7c6a316558b31092134
 PKG_MAINTAINER:=Thomas Richard <thomas.richard@bootlin.com>
 
 OPTEE_USE_INTREE_DTC:=1
@@ -29,7 +29,11 @@ endef
 define Optee-os/stm32mp1
   BUILD_SUBTARGET:=stm32mp1
   PLAT:=stm32mp1
-  OPTEE_MAKE_FLAGS += CFG_ARM32_core=y
+endef
+
+define Optee-os/stm32mp2
+  BUILD_SUBTARGET:=stm32mp2
+  PLAT:=stm32mp2
 endef
 
 define Optee-os/stm32mp157f-dk2
@@ -45,9 +49,17 @@ define Optee-os/stm32mp135f-dk
   PLAT_FLAVOR:=135F_DK
 endef
 
+define Optee-os/stm32mp257f-ev1
+  $(call Optee-os/stm32mp2)
+  NAME:=STM32MP257F-EV1
+  OPTEE_MAKE_FLAGS += CFG_EMBED_DTB_SOURCE_FILE=stm32mp257f-ev1.dts \
+		      CFG_SCMI_SCPFW=y
+endef
+
 OPTEE_TARGETS := \
 	stm32mp157f-dk2 \
-	stm32mp135f-dk
+	stm32mp135f-dk \
+	stm32mp257f-ev1
 
 define Package/optee-os/install/default
 endef
