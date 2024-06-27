@@ -7,13 +7,13 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_VERSION:=2.8-stm32mp-r1
+PKG_VERSION:=2.8-stm32mp-r2
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/STMicroelectronics/arm-trusted-firmware.git
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
-PKG_MIRROR_HASH:=b6bdb40f761f6216eb6c0a8563c580f6b1ae7261b1d771bc940abcfe169b856b
+PKG_MIRROR_HASH:=1c21821c6a608f181b5b57cb8142f4b170e8be83708f450038f28ee1257852cd
 
 PKG_MAINTAINER:=Thomas Richard <thomas.richard@bootlin.com>
 
@@ -24,12 +24,24 @@ define Trusted-Firmware-A/Default
   BUILD_TARGET:=stm32
   BUILD_DEVICES:=$(1) $(1)-demo
   DEPENDS:=+u-boot-$(1) +optee-os-$(1)
-  TFA_IMAGE:=*.stm32
+  TFA_IMAGE:=*.stm32 *.bin
 endef
 
 define Trusted-Firmware-A/stm32mp1
   BUILD_SUBTARGET:=stm32mp1
   PLAT:=stm32mp1
+  MAKE_ARGS += BL32_EXTRA2=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pageable_v2.bin \
+	       STM32MP_USB_PROGRAMMER=1 \
+	       STM32MP1_OPTEE_IN_SYSRAM=1 \
+	       ARM_ARCH_MAJOR=7
+endef
+
+define Trusted-Firmware-A/stm32mp2
+  BUILD_SUBTARGET:=stm32mp2
+  PLAT:=stm32mp2
+  METADATA:=1
+  MAKE_ARGS = STM32MP_DDR4_TYPE=1 \
+	      ARM_ARCH_MAJOR=8
 endef
 
 define Trusted-Firmware-A/stm32mp157f-dk2
@@ -44,21 +56,28 @@ define Trusted-Firmware-A/stm32mp135f-dk
   DTB_FILE_NAME=stm32mp135f-dk.dtb
 endef
 
+define Trusted-Firmware-A/stm32mp257f-ev1
+  $(call Trusted-Firmware-A/stm32mp2)
+  NAME:=STM32MP257F-EV1
+  DTB_FILE_NAME:=stm32mp257f-ev1.dtb
+endef
+
 TFA_TARGETS := \
 	       stm32mp157f-dk2 \
-	       stm32mp135f-dk
+	       stm32mp135f-dk \
+	       stm32mp257f-ev1
 
 TFA_MAKE_FLAGS += \
-		ARCH=aarch32 \
-		STM32MP_SDMMC=1 STM32MP_USB_PROGRAMMER=1 STM32MP1_OPTEE_IN_SYSRAM=1 DTB_FILE_NAME=$(DTB_FILE_NAME) \
-		AARCH32_SP=optee BL32=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-header_v2.bin \
+		$(if $(CONFIG_aarch64), ARCH=aarch64 SPD=opteed, ARCH=aarch32 AARCH32_SP=optee) \
+		BL32=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-header_v2.bin \
 		BL32_EXTRA1=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pager_v2.bin \
-		BL32_EXTRA2=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pageable_v2.bin \
-		STM32MP1_OPTEE_IN_SYSRAM=1 \
 		BL33=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.bin \
 		BL33_CFG=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.dtb \
-		TARGET_BOARD= ARM_ARCH_MAJOR=7 \
-		all fip \
+		DTB$(if $(findstring stm32mp2, $(CONFIG_TARGET_SUBTARGET)),_FIDTB)_FILE_NAME=$(DTB_FILE_NAME) \
+		STM32MP_SDMMC=1 \
+		TARGET_BOARD="" \
+		$(MAKE_ARGS) \
+		all fip
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
@@ -67,7 +86,6 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/build/$(PLAT)/release/fip.bin \
 		$(STAGING_DIR_IMAGE)/fip-$(BUILD_VARIANT).bin
 endef
-
 
 define Package/trusted-firmare-a/install/default
 endef
