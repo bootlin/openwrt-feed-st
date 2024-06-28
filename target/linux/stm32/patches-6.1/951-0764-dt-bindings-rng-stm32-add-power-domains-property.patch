@@ -1,0 +1,39 @@
+From f59133ea4f4b6a9ab8d8152df8e177c8c78efb3c Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 14:10:48 +0100
+Subject: [PATCH 0764/1141] dt-bindings: rng: stm32: add 'power-domains'
+ property
+
+STM32 RNG may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 RNG.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ie4cc0077c1eb5475b71bff742ed9eae9c056f503
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347865
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 301d2f588a05..721199fca435 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -29,6 +29,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   clock-error-detect:
+     type: boolean
+     description: If set enable the clock detection management
+-- 
+2.39.2
+

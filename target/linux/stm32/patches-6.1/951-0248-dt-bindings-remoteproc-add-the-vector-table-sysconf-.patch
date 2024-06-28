@@ -1,0 +1,49 @@
+From 076c5676eff0ed62daf0cf2b2ed2f813ad5f4fbe Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Tue, 4 Oct 2022 17:50:27 +0200
+Subject: [PATCH 0248/1141] dt-bindings: remoteproc: add the vector table
+ sysconf registers
+
+Add the definition of the st,syscfg-nsvtor pointing to the
+register which store the non secure vector table pointer
+(the trustzone is not enable).
+
+Information is needed on the stm32mp257 SoC when the firmware is
+loaded by the linux remoteproc driver. Else, by default, the
+boot address is the MCU RETRAM base address.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I46d06735fca279f9dc607cda2ee0b12af4efde2d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/269210
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml    | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index 57e02b51443f..af8944977f58 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -102,6 +102,14 @@ properties:
+           - description: The offset of the power setting register
+           - description: The field mask of the PDDS selection
+ 
++  st,syscfg-nsvtor:
++    $ref: "/schemas/types.yaml#/definitions/phandle-array"
++    description: |
++      Reference to the system configuration register which stores the remote processor
++      non-secure vector table pointer.
++      address, used to boot it.
++    maxItems: 1
++
+   st,syscfg-m4-state:
+     $ref: "/schemas/types.yaml#/definitions/phandle-array"
+     description: |
+-- 
+2.39.2
+

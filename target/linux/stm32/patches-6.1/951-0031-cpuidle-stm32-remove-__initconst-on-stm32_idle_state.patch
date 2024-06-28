@@ -1,0 +1,49 @@
+From b3464dcb76176a9284c524219ae7444a177cf399 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 20 Sep 2023 14:35:18 +0200
+Subject: [PATCH 0031/1141] cpuidle: stm32: remove __initconst on
+ stm32_idle_state_match
+
+Adrian reported a compiler warning when using
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y that looks like this
+
+WARNING: modpost: vmlinux.o(.exit.text+0x1b24): Section mismatch in reference from the function stm32_cpuidle_driver_exit() to the (unknown reference) .init.data:(unknown)
+| The function __exit stm32_cpuidle_driver_exit() references
+| a (unknown reference) __initdata (unknown).
+| This is often seen when error handling in the exit function
+| uses functionality in the init path.
+| The fix is often to remove the __initdata annotation of
+| (unknown) so it may be used outside an init section.
+|
+| ERROR: modpost: Section mismatches detected.
+
+This error occurs because stm32_idle_state_match[] with tag __initconst
+is used in function with the __init tag: stm32_cpuidle_probe(),
+so the tag must be removed.
+
+Signed-off-by: Adrian DC <radian.dc@gmail.com>
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I58c3dfde4ccb4e292777fd91ad3703a2d7349be3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/328634
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/cpuidle/cpuidle-stm32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/cpuidle/cpuidle-stm32.c b/drivers/cpuidle/cpuidle-stm32.c
+index d3413386cc7f..91f89af76a8b 100644
+--- a/drivers/cpuidle/cpuidle-stm32.c
++++ b/drivers/cpuidle/cpuidle-stm32.c
+@@ -74,7 +74,7 @@ static int stm32_enter_idle(struct cpuidle_device *dev,
+ 	return index;
+ }
+ 
+-static const struct of_device_id stm32_idle_state_match[] __initconst = {
++static const struct of_device_id stm32_idle_state_match[] = {
+ 	{ .compatible = "arm,idle-state",
+ 	  .data = stm32_enter_idle },
+ 	{ },
+-- 
+2.39.2
+

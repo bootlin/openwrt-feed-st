@@ -1,0 +1,60 @@
+From 96bc5daf3fa38b4555a4af6ce20fbaa46bfdad36 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Thu, 20 Jul 2023 16:58:39 +0530
+Subject: [PATCH 0454/1141] usb: dwc3: stm32mp2: Force Reset DWC3 ctrl needed
+ for SS operation
+
+To operate dwc3 in usb2speed with only usb2phy, glue logic provides
+usb2only settings in syscfg, it is observed that once usb2only is set
+dwc3 ctrl needs to be reset before configuring it for usb3speed (i.e.
+usb2only is unset). This use-case occurs incase some bootloader
+configures dwc3 for usb2only and later Linux driver unsets the usb2only
+setting to configure it for SS operation
+
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I7947fbc3ff1a793ba1973d8d38481b6b5bf53238
+---
+ drivers/usb/dwc3/dwc3-stm32.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-stm32.c b/drivers/usb/dwc3/dwc3-stm32.c
+index 923d5cb8ede1..6861e13f0c17 100644
+--- a/drivers/usb/dwc3/dwc3-stm32.c
++++ b/drivers/usb/dwc3/dwc3-stm32.c
+@@ -103,6 +103,7 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+ 	struct regmap *regmap;
+ 	int ret, irq;
+ 	bool wakeup_source;
++	struct reset_control *reset;
+ 
+ 	dwc3_data = devm_kzalloc(dev, sizeof(*dwc3_data), GFP_KERNEL);
+ 	if (!dwc3_data)
+@@ -136,6 +137,25 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+ 	if (!child)
+ 		return dev_err_probe(dev, -ENODEV, "failed to find dwc3 core node\n");
+ 
++	/*
++	 * Reset DWC3 IP required to clear the usb2only settings inside the ctrl
++	 * since if any other module (loaded before linux) uses dwc3 in usb2only mode
++	 * then there is an issue inside ctrl unless reset is asserted. Dwc3 core
++	 * deasserts the reset line during probe which is not enough since if reset
++	 * is already deasserted by some bootloader module then no reset is performed
++	 * on dwc3 ctrl, hence here we forcefully assert the ctrl reset line
++	 */
++	reset = of_reset_control_array_get_exclusive(child);
++	if (IS_ERR(reset))
++		return dev_err_probe(dev, PTR_ERR(reset), "failed to get reset handle\n");
++
++	ret = reset_control_assert(reset);
++	reset_control_put(reset);
++	if (ret) {
++		dev_err(dev, "failed to assert reset (%d)\n", ret);
++		return ret;
++	}
++
+ 	/* check if usb3-phy present, means NO usb2only mode */
+ 	dwc3_data->usb2only_conf = true;
+ 	if (of_count_phandle_with_args(child, "usb-phy", NULL) == 2) {
+-- 
+2.39.2
+

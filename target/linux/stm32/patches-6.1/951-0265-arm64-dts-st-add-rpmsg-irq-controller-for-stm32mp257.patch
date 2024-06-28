@@ -1,0 +1,44 @@
+From 80a96766b019f635b9c9b2203048c361bc60232a Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Tue, 28 Feb 2023 18:25:33 +0100
+Subject: [PATCH 0265/1141] arm64: dts: st: add rpmsg irq controller for
+ stm32mp257f-ev
+
+Add rpmsg IRQ controller support for communication with the Cortex-M33
+Linux drivers can register generic interrupt to receive signals from the
+remote processor.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ic344d45743644768728607efe46d6d8c3812b924
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310434
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+index 0eef86003ff8..ac481a699db4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+@@ -165,6 +165,15 @@ &m33_rproc {
+ 	status = "okay";
+ };
+ 
++&mlahb {
++	intc_rpmsg: interrupt-controller@0 {
++		compatible = "rpmsg,intc";
++		reg = <0 0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++	};
++};
++
+ &pcie_rc {
+ 	pinctrl-names = "default", "init";
+ 	pinctrl-0 = <&pcie_pins_a>;
+-- 
+2.39.2
+

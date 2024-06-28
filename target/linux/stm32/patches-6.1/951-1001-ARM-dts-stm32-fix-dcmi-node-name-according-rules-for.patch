@@ -1,0 +1,76 @@
+From 8b9e43b58200e773d3f0a995ac45295e84bb075b Mon Sep 17 00:00:00 2001
+From: Eric Fourmont <eric.fourmont-ext@st.com>
+Date: Thu, 4 Apr 2024 10:37:45 +0200
+Subject: [PATCH 1001/1141] ARM: dts: stm32: fix dcmi node name according rules
+ for mp157x-ev1 board
+
+Use "-" instead of "_"
+
+Link: https://www.kernel.org/doc/html/latest/devicetree/bindings/dts-coding-style.html
+
+Signed-off-by: Eric Fourmont <eric.fourmont-ext@st.com>
+Change-Id: I5fb929e519d1880e2c69258ebbdaf792866523dd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371233
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-ev1.dts | 2 +-
+ arch/arm/boot/dts/stm32mp157c-ev1.dts | 2 +-
+ arch/arm/boot/dts/stm32mp157d-ev1.dts | 2 +-
+ arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp157a-ev1.dts b/arch/arm/boot/dts/stm32mp157a-ev1.dts
+index c4f46cae4d13..96aeb870405d 100644
+--- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
+@@ -670,7 +670,7 @@ &spi1 {
+ };
+ 
+ &sram4 {
+-	dcmi_pool: dcmi_pool@0 {
++	dcmi_pool: dcmi-pool@0 {
+ 		reg = <0x0 0x8000>;
+ 		pool;
+ 	};
+diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+index bc48a07ba59e..bbbc2eba4fdd 100644
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -673,7 +673,7 @@ &spi1 {
+ };
+ 
+ &sram4 {
+-	dcmi_pool: dcmi_pool@0 {
++	dcmi_pool: dcmi-pool@0 {
+ 		reg = <0x0 0x8000>;
+ 		pool;
+ 	};
+diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+index ee8f8fd91d93..5094c59fe0de 100644
+--- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+@@ -670,7 +670,7 @@ &spi1 {
+ };
+ 
+ &sram4 {
+-	dcmi_pool: dcmi_pool@0 {
++	dcmi_pool: dcmi-pool@0 {
+ 		reg = <0x0 0x8000>;
+ 		pool;
+ 	};
+diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+index b521a44b6cab..9c2fa3b73c8f 100644
+--- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+@@ -674,7 +674,7 @@ &spi1 {
+ };
+ 
+ &sram4 {
+-	dcmi_pool: dcmi_pool@0 {
++	dcmi_pool: dcmi-pool@0 {
+ 		reg = <0x0 0x8000>;
+ 		pool;
+ 	};
+-- 
+2.39.2
+

@@ -1,0 +1,93 @@
+From 3cbdbefb15dff231c8c4aeea9f58341a1fa6953f Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 2 Apr 2024 13:43:18 +0200
+Subject: [PATCH 1060/1141] drm/stm: ltdc: Check the security of layer 2.
+
+If layer 2 is secure then its registers are not accessible
+(reduce mapping of ltdc registers to common registers and
+layers 0 and 1 registers).
+Do not expose this layer to the user (do not create a plan)
+
+Change-Id: I4072ce15a4f74341d2dba035d7841cd4b5195351
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370819
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 54d24b8154f1..63777b838977 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -42,6 +42,10 @@
+ #include <drm/drm_simple_kms_helper.h>
+ #include <drm/drm_vblank.h>
+ 
++/* Temporary (wait to firewall interface) */
++#include <dt-bindings/bus/stm32mp25_sys_bus.h>
++#include "../../../bus/stm32_sys_bus.h"
++
+ #include <video/videomode.h>
+ 
+ #include "ltdc.h"
+@@ -499,7 +503,7 @@ static const u64 ltdc_format_modifiers[] = {
+ 	DRM_FORMAT_MOD_INVALID
+ };
+ 
+-static const struct regmap_config stm32_ltdc_regmap_cfg = {
++static struct regmap_config stm32_ltdc_regmap_cfg = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = sizeof(u32),
+@@ -2207,8 +2211,10 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+ static int ltdc_get_caps(struct drm_device *ddev)
+ {
+ 	struct ltdc_device *ldev = ddev->dev_private;
++	struct device *dev = ddev->dev;
+ 	u32 bus_width_log2, lcr, gc2r, lxc1r;
+ 	const struct ltdc_plat_data *pdata = of_device_get_match_data(ddev->dev);
++	int ret;
+ 
+ 	/*
+ 	 * at least 1 layer must be managed & the number of layers
+@@ -2218,6 +2224,17 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 
+ 	ldev->caps.nb_layers = clamp((int)lcr, 1, LTDC_MAX_LAYER);
+ 
++	/*
++	 * Check the security of layer 2.
++	 * Do not expose this layer to the user (do not create a plan)
++	 * if this one is reserved for secure application.
++	 */
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc")) {
++		ret = stm32_rifsc_check_access_by_id(STM32MP25_RIFSC_LTDC_L2_ID);
++		if (ret)
++			ldev->caps.nb_layers--;
++	}
++
+ 	/* set data bus width */
+ 	regmap_read(ldev->regmap, LTDC_GC2R, &gc2r);
+ 	bus_width_log2 = (gc2r & GC2R_BW) >> 4;
+@@ -2436,6 +2453,17 @@ int ltdc_load(struct drm_device *ddev)
+ 		goto err;
+ 	}
+ 
++	/*
++	 * Check the security of layer 2.
++	 * If layer 2 is secure then its registers are not accessible
++	 * (reduce mapping of ltdc registers to common registers and layers 0 and 1 registers).
++	 */
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc")) {
++		ret = stm32_rifsc_check_access_by_id(STM32MP25_RIFSC_LTDC_L2_ID);
++		if (ret)
++			stm32_ltdc_regmap_cfg.max_register = 0x300;
++	}
++
+ 	ldev->regmap = devm_regmap_init_mmio(&pdev->dev, ldev->regs, &stm32_ltdc_regmap_cfg);
+ 	if (IS_ERR(ldev->regmap)) {
+ 		DRM_ERROR("Unable to regmap ltdc registers\n");
+-- 
+2.39.2
+

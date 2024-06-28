@@ -1,0 +1,50 @@
+From b9d136e69ed005ce80e0ba3b843b471be4716cc2 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Fri, 6 Oct 2023 14:38:31 +0200
+Subject: [PATCH 0562/1141] arm64: dts: st: change address of intc_rpmsg and
+ i2c_rpmsg on stm32mp257f-ev1
+
+Shift the address of the nodes to be able to set the m33 node to the
+address 0 on the mlhab bus.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ie9ea809728cc3327f90c4db09f11bf6befea2b94
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/332085
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 9471ad13aa7e..1c25e958d46f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -479,16 +479,16 @@ &m_can3 {
+ };
+ 
+ &mlahb {
+-	intc_rpmsg: interrupt-controller@0 {
++	intc_rpmsg: interrupt-controller@1 {
+ 		compatible = "rpmsg,intc";
+-		reg = <0 0>;
++		reg = <1 0>;
+ 		#interrupt-cells = <1>;
+ 		interrupt-controller;
+ 	};
+ 
+-	i2c_rpmsg: i2c@1 {
++	i2c_rpmsg: i2c@2 {
+ 		compatible = "rpmsg,i2c-controller";
+-		reg = <1 0>;
++		reg = <2 0>;
+ 		rpmsg,dev-id = "rpmsg_i2c";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-- 
+2.39.2
+

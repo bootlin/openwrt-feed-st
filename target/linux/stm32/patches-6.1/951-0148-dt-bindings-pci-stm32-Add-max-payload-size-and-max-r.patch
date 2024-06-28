@@ -1,0 +1,36 @@
+From d64f091abb906f9a47e9381ca5bbc34da072ca50 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Mon, 28 Nov 2022 13:57:03 +0100
+Subject: [PATCH 0148/1141] dt-bindings: pci: stm32: Add max-payload-size and
+ max-readreq-size optional bindings
+
+Allow to change max-payload-size default (128B) and max-readreq-size
+default (512B)
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I699c04556218a4c3065826950a6ee6e795f26710
+---
+ .../devicetree/bindings/pci/st,stm32-pcie-host.yaml        | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+index 9cc8849d2966..27ae4f808014 100644
+--- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
++++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+@@ -59,6 +59,13 @@ properties:
+     enum: [1, 2]
+     default: 2
+ 
++  max-payload-size:
++    description: Maximum TLP Payload size to use in device control
++      register.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [128, 256]
++    default: 128
++
+   msi-parent:
+     maxItems: 1
+ 
+-- 
+2.39.2
+

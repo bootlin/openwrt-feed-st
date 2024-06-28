@@ -1,0 +1,64 @@
+From 907c08dcb5b089573a642293c58e2f9fc3eeeafa Mon Sep 17 00:00:00 2001
+From: Yann Gautier <yann.gautier@foss.st.com>
+Date: Wed, 26 Jan 2022 18:05:57 +0100
+Subject: [PATCH 0053/1141] mmc: mmci: stm32: manage block gap hardware flow
+ control
+
+In stm32 sdmmc variant revision v3.0, a block gap hardware flow control
+should be used with bus speed modes SDR104 and HS200.
+It is enabled by writing a non-null value to the new added register
+MMCI_STM32_FIFOTHRR.
+The threshold will be 2^(N-1) bytes, so we can use the ffs() function to
+compute the value N to be written to the register. The threshold used
+should be the data block size, but must not be bigger than the FIFO size.
+
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Change-Id: I99b5da872ae27b0d004359d11403d09f23593801
+---
+ drivers/mmc/host/mmci.h             |  5 +++++
+ drivers/mmc/host/mmci_stm32_sdmmc.c | 13 +++++++++++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
+index b0de8262a4bc..dec5e3e8b4a5 100644
+--- a/drivers/mmc/host/mmci.h
++++ b/drivers/mmc/host/mmci.h
+@@ -218,6 +218,11 @@
+ #define MCI_STM32_BUSYD0ENDMASK	BIT(21)
+ 
+ #define MMCIMASK1		0x040
++
++/* STM32 sdmmc data FIFO threshold register */
++#define MMCI_STM32_FIFOTHRR	0x044
++#define MMCI_STM32_THR_MASK	GENMASK(3, 0)
++
+ #define MMCIFIFOCNT		0x048
+ #define MMCIFIFO		0x080 /* to 0x0bc */
+ 
+diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
+index 4fc63e569bca..6b53fa916688 100644
+--- a/drivers/mmc/host/mmci_stm32_sdmmc.c
++++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
+@@ -384,6 +384,19 @@ static u32 sdmmc_get_dctrl_cfg(struct mmci_host *host)
+ 
+ 	datactrl = mmci_dctrl_blksz(host);
+ 
++	if (host->hw_revision >= 3) {
++		u32 thr = 0;
++
++		if (host->mmc->ios.timing == MMC_TIMING_UHS_SDR104 ||
++		    host->mmc->ios.timing == MMC_TIMING_MMC_HS200) {
++			thr = ffs(min_t(unsigned int, host->data->blksz,
++					host->variant->fifosize));
++			thr = min_t(u32, thr, MMCI_STM32_THR_MASK);
++		}
++
++		writel_relaxed(thr, host->base + MMCI_STM32_FIFOTHRR);
++	}
++
+ 	if (host->mmc->card && mmc_card_sdio(host->mmc->card) &&
+ 	    host->data->blocks == 1)
+ 		datactrl |= MCI_DPSM_STM32_MODE_SDIO;
+-- 
+2.39.2
+

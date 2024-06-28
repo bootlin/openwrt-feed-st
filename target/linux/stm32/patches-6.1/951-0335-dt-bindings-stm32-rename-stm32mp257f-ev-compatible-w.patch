@@ -1,0 +1,35 @@
+From e0b02b43fbfca46b98575c938eab922449b6226a Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 29 Mar 2024 10:39:10 +0100
+Subject: [PATCH 0335/1141] dt-bindings: stm32: rename stm32mp257f-ev
+ compatible with stm32mp257f-ev1
+
+fixup! dt-bindings: stm32: document stm32mp257f-ev board
+
+Official board name is stm32mp257f-ev1.
+
+Change-Id: If28aad1c1538095dfd6134a6dae742dee6ad99c3
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/312286
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index 666caa187272..23c9bf185050 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -160,7 +160,7 @@ properties:
+       - items:
+           - enum:
+               - st,stm32mp257f-dk
+-              - st,stm32mp257f-ev
++              - st,stm32mp257f-ev1
+           - const: st,stm32mp257
+ 
+ additionalProperties: true
+-- 
+2.39.2
+

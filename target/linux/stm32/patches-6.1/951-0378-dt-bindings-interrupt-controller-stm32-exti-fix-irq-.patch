@@ -1,0 +1,49 @@
+From 0b16e27b5e691759c4ced9a17598e10598fed59d Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 15 Jun 2023 10:04:44 +0200
+Subject: [PATCH 0378/1141] dt-bindings: interrupt-controller: stm32-exti: fix
+ irq nexus child node
+
+Fix 'make dt_binding_check' that shows some errors due to missing GIC
+header:
+
+Error: Documentation/devicetree/bindings/interrupt-controller/
+ st,stm32-exti.example.dts:44.32-33 syntax error
+FATAL ERROR: Unable to parse input tree
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ia1a2ceea24c9d18273ab7ef91d949185e2ee2296
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/312989
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ .../bindings/interrupt-controller/st,stm32-exti.yaml           | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+index 76ff10e4a9b6..93a0cf78741a 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+@@ -107,7 +107,9 @@ examples:
+         reg = <0x5000d000 0x400>;
+     };
+ 
++  - |
+     //Example 2
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
+     exti2: interrupt-controller@5000d000 {
+         compatible = "st,stm32mp1-exti", "syscon";
+         interrupt-controller;
+@@ -125,6 +127,7 @@ examples:
+         };
+     };
+ 
++  - |
+     //Example 3
+     exti3: interrupt-controller@40013c00 {
+         compatible = "st,stm32-exti";
+-- 
+2.39.2
+

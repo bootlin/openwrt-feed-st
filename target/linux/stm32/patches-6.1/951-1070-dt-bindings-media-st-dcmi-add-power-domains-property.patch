@@ -1,0 +1,43 @@
+From e601896bdfa08d053c8fe976dac57721632ad5cb Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 18 Dec 2023 19:59:32 +0100
+Subject: [PATCH 1070/1141] dt-bindings: media: st: dcmi: add 'power-domains'
+ property
+
+STM32 DCMI may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 DCMI.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I4068bf9dc160132bc90ce3ca20d7e4e3d6247735
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347869
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 97885c5bfb22..65bf12010350 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -39,6 +39,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   sram:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+-- 
+2.39.2
+

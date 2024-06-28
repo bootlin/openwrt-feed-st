@@ -1,0 +1,36 @@
+From 538479ac1d3fd71b83980cff936054665df40d3b Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 5 Feb 2024 17:01:49 +0100
+Subject: [PATCH 0978/1141] serial: stm32: fix smart-card protocol
+
+Assemble sr and cr3 declaration to clean this part before the next patch.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I2360438561d42a60083364d9edb7cb3560224b71
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357406
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 59fc41eeffff..54d8a8081f0d 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1041,8 +1041,7 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+ 	struct tty_port *tport = &port->state->port;
+ 	struct stm32_port *stm32_port = to_stm32_port(port);
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+-	u32 sr;
+-	u32 cr3;
++	u32 sr, cr3;
+ 	unsigned int size;
+ 
+ 	sr = readl_relaxed(port->membase + ofs->isr);
+-- 
+2.39.2
+

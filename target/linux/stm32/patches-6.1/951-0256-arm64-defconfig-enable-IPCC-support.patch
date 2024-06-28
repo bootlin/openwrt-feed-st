@@ -1,0 +1,33 @@
+From dfc35be5fc73d264dfdffc779405b7f0ef5d394d Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 21 Apr 2021 13:19:43 +0200
+Subject: [PATCH 0256/1141] arm64: defconfig: enable IPCC support
+
+Enable IPCC support on 64 bits platform.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: I43f4f1207449f669d6be5d01f619aeced94f09e1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310425
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 9c8c50e0d165..b415c1a23ef8 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -47,6 +47,7 @@ CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_DMA3=y
+ CONFIG_STM32_FMC2_EBI=y
+ CONFIG_STM32_HYPERBUS=y
++CONFIG_STM32_IPCC=y
+ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_MDF_ADC=m
+ CONFIG_STM32_MDF_CORE=m
+-- 
+2.39.2
+

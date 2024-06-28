@@ -1,0 +1,48 @@
+From 5003da3a4bef124a302dc228ca20c1ce2b7fb4c7 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Wed, 1 Mar 2023 17:23:12 +0100
+Subject: [PATCH 0171/1141] arm64: dts: st: add usart6 on stm32mp257f-ev board
+
+Add node for USART6 on stm32mp257f-ev board.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I5a78101bf5c7197efc7c67e7da24dbc8c2a13441
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302862
+Tested-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+index 4666569a7301..1d5c5338e6d9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+@@ -24,6 +24,7 @@ aliases {
+ 		ethernet0 = &eth2;
+ 		ethernet1 = &eth1;
+ 		serial0 = &usart2;
++		serial1 = &usart6;
+ 	};
+ 
+ 	chosen {
+@@ -229,6 +230,15 @@ &usart2 {
+ 	status = "okay";
+ };
+ 
++&usart6 {
++	pinctrl-names = "default", "idle", "sleep";
++	pinctrl-0 = <&usart6_pins_a>;
++	pinctrl-1 = <&usart6_idle_pins_a>;
++	pinctrl-2 = <&usart6_sleep_pins_a>;
++	uart-has-rtscts;
++	status = "disabled";
++};
++
+ &usb2_phy1 {
+ 	status = "okay";
+ };
+-- 
+2.39.2
+

@@ -1,0 +1,47 @@
+From 1c3a2c5b0d1532b8a44a0363f8c4a83f6449e4c2 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 2 Oct 2023 15:56:23 +0200
+Subject: [PATCH 0683/1141] arm64: dts: st: add disabled i2c8 node for
+ stm32mp257f-ev1
+
+Add a disabled i2c8 node with properly measured rise/fall timing and
+bus frequency of 400KHz.
+
+Change-Id: I6d39411c61fe24e36907380e6e2cff0f2b54642d
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/343264
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index dcc70b2ca8de..1640ffc40cad 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -347,6 +347,19 @@ ili2511: ili2511@41 {
+ 	};
+ };
+ 
++&i2c8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c8_pins_a>;
++	pinctrl-1 = <&i2c8_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <57>;
++	i2c-scl-falling-time-ns = <7>;
++	clock-frequency = <400000>;
++	status = "disabled";
++	/* spare dmas for other usage */
++	/delete-property/dmas;
++	/delete-property/dma-names;
++};
++
+ &i2s2 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2s2_pins_a>;
+-- 
+2.39.2
+

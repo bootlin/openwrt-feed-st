@@ -1,0 +1,52 @@
+From 7b7f22ef8c6a90ee71096f3d50079f88a30f043c Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 12 Jan 2022 13:21:55 +0100
+Subject: [PATCH 0145/1141] arm64: defconfig: add STMMAC Ethernet config for
+ STM32MP25
+
+Add also net configs used to perform QBV/Qav tests
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I1506a6f6bb1e662ab68c8793755853feba6c7adc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/235348
+Tested-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304912
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ .../arm64/configs/fragment-02-defconfig-addons.config | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 0c58367cfe94..0b4502d70afd 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -2,13 +2,24 @@
+ CONFIG_ARCH_STM32=y
+ CONFIG_ARM_SCMI_CPUFREQ=y
+ CONFIG_ARM_SMC_WATCHDOG=y
++CONFIG_DWMAC_GENERIC=y
++CONFIG_DWMAC_STM32=y
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_I2C_STM32F7=y
++CONFIG_NET_ACT_POLICE=m
++CONFIG_NET_ACT_SKBEDIT=m
++CONFIG_NET_ACT_VLAN=m
++CONFIG_NET_CLS_U32=m
++CONFIG_NET_SCH_MULTIQ=m
++CONFIG_NET_SCH_PRIO=m
++CONFIG_NET_SCH_SKBPRIO=m
+ CONFIG_PHY_STM32_USB2PHY=y
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_RTC_DRV_STM32=y
+ CONFIG_SERIAL_STM32=y
+ CONFIG_SERIAL_STM32_CONSOLE=y
+ CONFIG_STM32_DMA3=y
++CONFIG_STMMAC_ETH=y
++CONFIG_STMMAC_PLATFORM=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+-- 
+2.39.2
+

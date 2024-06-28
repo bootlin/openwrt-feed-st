@@ -1,0 +1,33 @@
+From f1153bac3eb368b9409d7411f2ae906a0fe2a561 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Wed, 14 Feb 2024 17:55:19 +0100
+Subject: [PATCH 0932/1141] dt-bindings: phy: stm32-combophy: add
+ 'st,limit_mrrs' property
+
+Limit the Maximum Read Request Size on downstream devices to the minimum
+possible value between 128B and 256B.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I6cbdf7d896e4177029b724570a395e7f0ed434c8
+---
+ Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+index c45cebf88932..f482ec49ed0b 100644
+--- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
++++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+@@ -102,6 +102,10 @@ then:
+   required:
+      - wake-gpios
+ 
++  st,limit_mrrs:
++    type: boolean
++    description: If present limit downstream MRRS to 256B
++
+ required:
+   - st,syscfg
+   - interrupt-map
+-- 
+2.39.2
+

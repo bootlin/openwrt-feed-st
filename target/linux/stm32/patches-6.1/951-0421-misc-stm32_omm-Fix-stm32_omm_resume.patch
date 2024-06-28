@@ -1,0 +1,64 @@
+From 07b31840f7368d6df90735808abfbb1adf27d8bd Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 27 Jun 2023 15:56:05 +0200
+Subject: [PATCH 0421/1141] misc: stm32_omm: Fix stm32_omm_resume()
+
+In case there is only one child (for example one HyperFlash), OMM is
+not configured (stm32_omm_configure() is not executed) and so omm->cr
+is not initialized.
+
+So in stm32_omm_resume(), OMM CR register must be restored only
+in case omm->cr has been initialized.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I6ad2ce6eb61ba3337680611ed26949d6a4e44ad2
+---
+ drivers/misc/stm32_omm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
+index 215d6835960b..c63f5390a33d 100644
+--- a/drivers/misc/stm32_omm.c
++++ b/drivers/misc/stm32_omm.c
+@@ -35,6 +35,7 @@ struct stm32_omm {
+ 	void __iomem *io_base;
+ 	u32 cr;
+ 	u8 nb_child;
++	bool restore_cr;
+ };
+ 
+ static int stm32_omm_set_amcr(struct device *dev, bool set)
+@@ -206,6 +207,7 @@ static int stm32_omm_configure(struct platform_device *pdev)
+ 		omm->cr |= CR_CSSEL_OVR_EN;
+ 	}
+ 
++	omm->restore_cr = true;
+ 	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
+ 
+ 	ret = stm32_omm_set_amcr(dev, true);
+@@ -279,8 +281,6 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 	if (!omm)
+ 		return -ENOMEM;
+ 
+-	omm->nb_child = 0;
+-
+ 	omm->io_base = devm_platform_ioremap_resource_byname(pdev, "omm");
+ 	if (IS_ERR(omm->io_base))
+ 		return PTR_ERR(omm->io_base);
+@@ -398,8 +398,12 @@ static int __maybe_unused stm32_omm_resume(struct device *dev)
+ {
+ 	struct stm32_omm *omm = dev_get_drvdata(dev);
+ 
+-	clk_prepare_enable(omm->clk);
+ 	pinctrl_pm_select_default_state(dev);
++
++	if (!omm->restore_cr)
++		return 0;
++
++	clk_prepare_enable(omm->clk);
+ 	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
+ 	clk_disable_unprepare(omm->clk);
+ 
+-- 
+2.39.2
+

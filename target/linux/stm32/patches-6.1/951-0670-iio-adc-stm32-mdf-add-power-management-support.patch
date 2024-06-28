@@ -1,0 +1,266 @@
+From da2554cd57eff3709421ff3eed8d1681664ff871 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 12 Oct 2023 17:51:42 +0200
+Subject: [PATCH 0670/1141] iio: adc: stm32-mdf: add power management support
+
+Add MDF power management support.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I125f0d5a4e46874f557a1f8f98537cbe38c346cc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/334774
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/stm32-mdf-adc.c    | 24 ++++++++++++----
+ drivers/iio/adc/stm32-mdf-core.c   | 44 ++++++++++++++++++++++--------
+ drivers/iio/adc/stm32-mdf-serial.c | 40 ++++++++++++++++++++-------
+ drivers/iio/adc/stm32-mdf.h        |  2 ++
+ 4 files changed, 82 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index e5e26b611084..39a4e8541d45 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -263,10 +263,12 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = sizeof(u32),
+-	.max_register = MDF_SIDR_REG,
++	.max_register = MDF_DLTDR_REG,
+ 	.readable_reg = stm32_mdf_readable_reg,
+ 	.volatile_reg = stm32_mdf_volatile_reg,
+ 	.writeable_reg = stm32_mdf_writeable_reg,
++	.num_reg_defaults_raw = MDF_DLTDR_REG / sizeof(u32) + 1,
++	.cache_type = REGCACHE_FLAT,
+ 	.fast_io = true,
+ };
+ 
+@@ -1338,21 +1340,31 @@ static int stm32_mdf_adc_remove(struct platform_device *pdev)
+ static int stm32_mdf_adc_suspend(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	int ret = 0;
+ 
+ 	if (iio_buffer_enabled(indio_dev))
+-		stm32_mdf_predisable(indio_dev);
++		ret = stm32_mdf_predisable(indio_dev);
+ 
+-	return 0;
++	regcache_cache_only(adc->regmap, true);
++	regcache_mark_dirty(adc->regmap);
++
++	return ret;
+ }
+ 
+ static int stm32_mdf_adc_resume(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	int ret;
+ 
+-	if (iio_buffer_enabled(indio_dev))
+-		stm32_mdf_postenable(indio_dev);
++	regcache_cache_only(adc->regmap, false);
++	ret = regcache_sync(adc->regmap);
+ 
+-	return 0;
++	if (!ret && iio_buffer_enabled(indio_dev))
++		ret = stm32_mdf_postenable(indio_dev);
++
++	return ret;
+ }
+ 
+ static SIMPLE_DEV_PM_OPS(stm32_mdf_adc_pm_ops, stm32_mdf_adc_suspend, stm32_mdf_adc_resume);
+diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
+index 8918ac7730dc..559b1efc3ad7 100644
+--- a/drivers/iio/adc/stm32-mdf-core.c
++++ b/drivers/iio/adc/stm32-mdf-core.c
+@@ -39,12 +39,12 @@ static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
+ 
+ static bool stm32_mdf_volatile_reg(struct device *dev, unsigned int reg)
+ {
+-	switch (reg) {
+-	case MDF_CKGCR_REG:
+-		return true;
+-	default:
+-		return false;
+-	}
++	/*
++	 * In MDF_CKGCR_REG register only CKGACTIVE bit is volatile. MDF_CKGCR_REG is not marked
++	 * as volatible to ease the suspend/resume case, and benefit from the regcache API.
++	 * Access to CKGACTIVE bit is managed specifically instead.
++	 */
++	return false;
+ }
+ 
+ static bool stm32_mdf_writeable_reg(struct device *dev, unsigned int reg)
+@@ -66,7 +66,9 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+ 	.readable_reg = stm32_mdf_readable_reg,
+ 	.volatile_reg = stm32_mdf_volatile_reg,
+ 	.writeable_reg = stm32_mdf_writeable_reg,
++	.num_reg_defaults_raw = MDF_SIDR_REG / sizeof(u32) + 1,
+ 	.fast_io = true,
++	.cache_type = REGCACHE_FLAT,
+ };
+ 
+ /*
+@@ -117,8 +119,10 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+ 		if (ret < 0)
+ 			goto pm_put;
+ 
+-		/* Check clock status */
++		/* Check clock status. Bypass cache to access volatile CKGACTIVE active bit */
++		regcache_cache_bypass(priv->regmap, true);
+ 		regmap_read(priv->regmap, MDF_CKGCR_REG, &val);
++		regcache_cache_bypass(priv->regmap, false);
+ 		if (!(val & MDF_CKG_ACTIVE)) {
+ 			ret = -EINVAL;
+ 			dev_err(dev, "MDF clock not active\n");
+@@ -142,7 +146,10 @@ int stm32_mdf_trigger(struct stm32_mdf *mdf)
+ 	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
+ 	int ret;
+ 
++	/* Bypass cache to ensure TRGO bit is actually set on each write access */
++	regcache_cache_bypass(priv->regmap, true);
+ 	ret = regmap_set_bits(priv->regmap, MDF_GCR_REG, MDF_GCR_TRGO);
++	regcache_cache_bypass(priv->regmap, false);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -572,19 +579,32 @@ static int stm32_mdf_core_resume(struct device *dev)
+ 	int ret;
+ 
+ 	ret = pinctrl_pm_select_default_state(dev);
+-	if (ret)
++	if (ret) {
++		dev_err(dev, "Failed to set pins default state: %d\n", ret);
+ 		return ret;
++	}
+ 
+ 	ret = clk_prepare(priv->kclk);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		dev_err(dev, "Failed to prepare kernel clock: %d\n", ret);
++		goto err_clk;
++	}
+ 
+ 	regcache_cache_only(priv->regmap, false);
+ 	ret = regcache_sync(priv->regmap);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		dev_err(dev, "Failed to sync cache: %d\n", ret);
++		goto err_cache;
++	}
+ 
+ 	return pm_runtime_force_resume(dev);
++
++err_cache:
++	clk_unprepare(priv->kclk);
++err_clk:
++	pinctrl_pm_select_sleep_state(dev);
++
++	return ret;
+ }
+ 
+ static int stm32_mdf_core_runtime_suspend(struct device *dev)
+diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
+index 027494b11859..0118409083dd 100644
+--- a/drivers/iio/adc/stm32-mdf-serial.c
++++ b/drivers/iio/adc/stm32-mdf-serial.c
+@@ -36,12 +36,35 @@ static const struct stm32_mdf_sf_mode stm32_mdf_mode[STM32_MDF_MODE_NB] = {
+ 	{ "manchester_f", STM32_MDF_MODE_MANCHESTER_F },
+ };
+ 
++static bool stm32_mdf_sitf_readable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MDF_SITFCR_REG:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool stm32_mdf_sitf_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MDF_SITFCR_REG:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static const struct regmap_config stm32_sitf_regmap_cfg = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 	.reg_stride = sizeof(u32),
+ 	.max_register = MDF_SITFCR_REG,
++	.readable_reg = stm32_mdf_sitf_readable_reg,
++	.writeable_reg = stm32_mdf_sitf_writeable_reg,
+ 	.fast_io = true,
++	/* Do not use regcache as it does not support single register map */
+ };
+ 
+ int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf)
+@@ -231,25 +254,22 @@ static int stm32_mdf_sitf_remove(struct platform_device *pdev)
+ static int stm32_mdf_sitf_suspend(struct device *dev)
+ {
+ 	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pinctrl_pm_select_sleep_state(dev);
+ 
+-	regcache_cache_only(sitf->regmap, true);
+-	regcache_mark_dirty(sitf->regmap);
++	regmap_read(sitf->regmap, MDF_SITFCR_REG, &sitf->sitfcr);
+ 
+-	return pinctrl_pm_select_sleep_state(dev);
++	return ret;
+ }
+ 
+ static int stm32_mdf_sitf_resume(struct device *dev)
+ {
+ 	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
+-	int ret;
+-
+-	ret = pinctrl_pm_select_default_state(dev);
+-	if (ret)
+-		return ret;
+ 
+-	regcache_cache_only(sitf->regmap, false);
++	regmap_write(sitf->regmap, MDF_SITFCR_REG, sitf->sitfcr);
+ 
+-	return regcache_sync(sitf->regmap);
++	return pinctrl_pm_select_default_state(dev);
+ }
+ 
+ static int stm32_mdf_sitf_runtime_suspend(struct device *dev)
+diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
+index 6405d8a194d1..a5b96516502e 100644
+--- a/drivers/iio/adc/stm32-mdf.h
++++ b/drivers/iio/adc/stm32-mdf.h
+@@ -265,6 +265,7 @@ enum stm32_sitf_mode {
+  * @scksrc: sitf clock source
+  * @id: serial interface index
+  * @mode: sitf mode
++ * @sitfcr: sitf configuration register backup
+  */
+ struct stm32_mdf_sitf {
+ 	struct list_head entry;
+@@ -279,6 +280,7 @@ struct stm32_mdf_sitf {
+ 	unsigned int scksrc;
+ 	u32 id;
+ 	u32 mode;
++	u32 sitfcr;
+ };
+ 
+ /*
+-- 
+2.39.2
+

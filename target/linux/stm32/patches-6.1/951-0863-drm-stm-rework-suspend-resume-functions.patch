@@ -1,0 +1,89 @@
+From 4ebaf8d79c12ed68d85c994ece910e4d7f87ec27 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 19 Jan 2024 11:35:40 +0100
+Subject: [PATCH 0863/1141] drm/stm: rework suspend/resume functions
+
+Suspend/resume functions don't have to depend on drm device.
+
+Change-Id: I2811ff1bfdb8dbf838cab971e77ff9ee5aeaac9b
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352882
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/drv.c  | 6 ++++--
+ drivers/gpu/drm/stm/ltdc.c | 8 +++-----
+ drivers/gpu/drm/stm/ltdc.h | 4 ++--
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index 0a09a85ac9d6..5d4dd8d5ea97 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -156,9 +156,10 @@ static __maybe_unused int drv_resume(struct device *dev)
+ static __maybe_unused int drv_runtime_suspend(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
++	struct ltdc_device *ldev = ddev->dev_private;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+-	ltdc_suspend(ddev);
++	ltdc_suspend(ldev);
+ 
+ 	return 0;
+ }
+@@ -166,9 +167,10 @@ static __maybe_unused int drv_runtime_suspend(struct device *dev)
+ static __maybe_unused int drv_runtime_resume(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
++	struct ltdc_device *ldev = ddev->dev_private;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+-	return ltdc_resume(ddev);
++	return ltdc_resume(ldev);
+ }
+ 
+ static const struct dev_pm_ops drv_pm_ops = {
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 174beb4bb940..699e1fb4e4fa 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -2207,19 +2207,17 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 	return 0;
+ }
+ 
+-void ltdc_suspend(struct drm_device *ddev)
++void ltdc_suspend(struct ltdc_device *ldev)
+ {
+-	struct ltdc_device *ldev = ddev->dev_private;
+-
+ 	DRM_DEBUG_DRIVER("\n");
++
+ 	clk_disable_unprepare(ldev->pixel_clk);
+ 	if (ldev->bus_clk)
+ 		clk_disable_unprepare(ldev->bus_clk);
+ }
+ 
+-int ltdc_resume(struct drm_device *ddev)
++int ltdc_resume(struct ltdc_device *ldev)
+ {
+-	struct ltdc_device *ldev = ddev->dev_private;
+ 	int ret;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 8f5c0514eef3..3f6ec497d94d 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -67,7 +67,7 @@ struct ltdc_device {
+ 
+ int ltdc_load(struct drm_device *ddev);
+ void ltdc_unload(struct drm_device *ddev);
+-void ltdc_suspend(struct drm_device *ddev);
+-int ltdc_resume(struct drm_device *ddev);
++void ltdc_suspend(struct ltdc_device *ldev);
++int ltdc_resume(struct ltdc_device *ldev);
+ 
+ #endif
+-- 
+2.39.2
+

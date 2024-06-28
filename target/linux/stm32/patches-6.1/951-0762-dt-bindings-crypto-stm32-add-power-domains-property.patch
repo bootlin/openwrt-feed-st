@@ -1,0 +1,39 @@
+From 339d052f9ec08654dcbbdc53b93da4c93c7f09cb Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 18 Dec 2023 20:01:33 +0100
+Subject: [PATCH 0762/1141] dt-bindings: crypto: stm32: add 'power-domains'
+ property
+
+STM32 CRC may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 CRC.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I5a1f22b6dc805389d686192bb488a325228cec0b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347863
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+index b72e4858f9aa..993e90a51a6a 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+@@ -19,6 +19,9 @@ properties:
+   clocks:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+-- 
+2.39.2
+

@@ -1,0 +1,35 @@
+From 0ba22491227fe54d2f26b1a577548ee274f0d4b7 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Wed, 24 May 2023 10:45:49 +0200
+Subject: [PATCH 0330/1141] arm64: defconfig: enable STM32MP25 hardware video
+ codecs support
+
+Enable STM32MP25 variant of CONFIG_VIDEO_HANTRO in fragment-02-defconfig-addons.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I2f31a859b9ba61628c94ef0e30bcb221176c0acb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/309855
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 407ed2d79df3..438b48154be7 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -89,6 +89,8 @@ CONFIG_UBIFS_FS=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+ CONFIG_VIDEOMODE_HELPERS=y
++CONFIG_VIDEO_HANTRO=m
++CONFIG_VIDEO_HANTRO_STM32MP25=y
+ CONFIG_VIDEO_IMX335=m
+ CONFIG_VIDEO_STM32_CSI2HOST=m
+ CONFIG_VIDEO_STM32_DCMI=m
+-- 
+2.39.2
+

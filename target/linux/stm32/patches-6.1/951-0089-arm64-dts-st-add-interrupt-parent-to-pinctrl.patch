@@ -1,0 +1,49 @@
+From 459645765521ce01d4ab54e0ed7c5e9c293f0441 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 14 Apr 2022 17:06:12 +0200
+Subject: [PATCH 0089/1141] arm64: dts: st: add interrupt parent to pinctrl
+
+Add exti1 as interrupt parent for the two pin controllers.
+Add the additional required property st,syscfg.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia728317b948da7dcb3c140d3e6faa2ae6b96c1b4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/249401
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Fabien DESSENNE <fabien.dessenne@foss.st.com>
+Tested-by: Antonio Maria BORNEO <antonio.borneo@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/300590
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 018c7298de12..a4f23ca70378 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -283,6 +283,8 @@ pinctrl: pinctrl@44240000 {
+ 			#size-cells = <1>;
+ 			compatible = "st,stm32mp257-pinctrl";
+ 			ranges = <0 0x44240000 0xa0400>;
++			interrupt-parent = <&exti1>;
++			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioa: gpio@44240000 {
+@@ -412,6 +414,8 @@ pinctrl_z: pinctrl@46200000 {
+ 			#size-cells = <1>;
+ 			compatible = "st,stm32mp257-z-pinctrl";
+ 			ranges = <0 0x46200000 0x400>;
++			interrupt-parent = <&exti1>;
++			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioz: gpio@46200000 {
+-- 
+2.39.2
+

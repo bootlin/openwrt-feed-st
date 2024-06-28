@@ -1,0 +1,68 @@
+From 56675150717f5c41da1560bcf41229dbc2bc7866 Mon Sep 17 00:00:00 2001
+From: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Date: Tue, 4 Apr 2023 22:17:15 +0300
+Subject: [PATCH 0117/1141] checkpatch: introduce proper bindings license check
+
+All headers from 'include/dt-bindings/' must be verified by checkpatch
+together with Documentation bindings, because all of them are part of the
+whole DT bindings system.
+
+The requirement is dual licensed and matching patterns:
+* Schemas:
+    /GPL-2\.0(?:-only)? OR BSD-2-Clause/
+* Headers:
+    /GPL-2\.0(?:-only)? OR \S+/
+
+Above patterns suggested by Rob at:
+https://lore.kernel.org/all/CAL_Jsq+-YJsBO+LuPJ=ZQ=eb-monrwzuCppvReH+af7hYZzNaQ@mail.gmail.com
+
+The issue was found during patch review:
+https://lore.kernel.org/all/20230313201259.19998-4-ddrokosov@sberdevices.ru/
+
+Link: https://lkml.kernel.org/r/20230404191715.7319-1-ddrokosov@sberdevices.ru
+Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Change-Id: Ib1c839a02102bc54d8b986cf9d46f680f8721534
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305374
+Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ scripts/checkpatch.pl | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index ecf4250b0d2d..acacba8c6129 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3693,7 +3693,7 @@ sub process {
+ 						     "'$spdx_license' is not supported in LICENSES/...\n" . $herecurr);
+ 					}
+ 					if ($realfile =~ m@^Documentation/devicetree/bindings/@ &&
+-					    not $spdx_license =~ /GPL-2\.0.*BSD-2-Clause/) {
++					    $spdx_license !~ /GPL-2\.0(?:-only)? OR BSD-2-Clause/) {
+ 						my $msg_level = \&WARN;
+ 						$msg_level = \&CHK if ($file);
+ 						if (&{$msg_level}("SPDX_LICENSE_TAG",
+@@ -3703,6 +3703,11 @@ sub process {
+ 							$fixed[$fixlinenr] =~ s/SPDX-License-Identifier: .*/SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)/;
+ 						}
+ 					}
++					if ($realfile =~ m@^include/dt-bindings/@ &&
++					    $spdx_license !~ /GPL-2\.0(?:-only)? OR \S+/) {
++						WARN("SPDX_LICENSE_TAG",
++						     "DT binding headers should be licensed (GPL-2.0-only OR .*)\n" . $herecurr);
++					}
+ 				}
+ 			}
+ 		}
+-- 
+2.39.2
+

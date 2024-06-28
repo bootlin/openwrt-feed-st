@@ -1,0 +1,50 @@
+From cb62def80dd66474a5fd3e933c4d929ff9fb3bee Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 2 Dec 2023 16:33:30 +0100
+Subject: [PATCH 0801/1141] media: dcmipp: isp: correct pad number in
+ v4l2_subdev_get_try_format calls
+
+Use proper pad number in v4l2_subdev_get_try_format in order to access
+to the right pad number of the subdev.
+
+Change-Id: I1c8f5fefed9e819ce1ba8e14ed5c2c8650da5c72
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344609
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index 39ebdd3fff7d..85972feafef9 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -564,11 +564,11 @@ static int dcmipp_isp_get_fmt(struct v4l2_subdev *sd,
+ 
+ 	if (IS_SINK(fmt->pad))
+ 		fmt->format = fmt->which == V4L2_SUBDEV_FORMAT_TRY ?
+-			      *v4l2_subdev_get_try_format(sd, state, 0) :
++			      *v4l2_subdev_get_try_format(sd, state, fmt->pad) :
+ 			      isp->sink_fmt;
+ 	else
+ 		fmt->format = fmt->which == V4L2_SUBDEV_FORMAT_TRY ?
+-			      *v4l2_subdev_get_try_format(sd, state, 0) :
++			      *v4l2_subdev_get_try_format(sd, state, fmt->pad) :
+ 			      isp->src_fmt;
+ 
+ 	mutex_unlock(&isp->lock);
+@@ -598,7 +598,7 @@ static int dcmipp_isp_set_fmt(struct v4l2_subdev *sd,
+ 			pad_fmt = &isp->src_fmt;
+ 
+ 	} else {
+-		pad_fmt = v4l2_subdev_get_try_format(sd, state, 0);
++		pad_fmt = v4l2_subdev_get_try_format(sd, state, fmt->pad);
+ 	}
+ 
+ 	dcmipp_isp_adjust_fmt(&fmt->format, fmt->pad);
+-- 
+2.39.2
+

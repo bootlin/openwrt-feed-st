@@ -1,0 +1,36 @@
+From b9b0d25877e6ccd44a10d1846b6731dc395517dd Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Wed, 26 Apr 2023 17:12:34 +0200
+Subject: [PATCH 0388/1141] arm64: dts: st: add PCIe AER interrupts on
+ stm32mp251
+
+MSI AER interrupts are handled by the GIC
+Provide here the irq number to be used by the portdrv
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I52dd028d648ea73291b43d34b1a86ca5070be6c1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/309514
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index c3904e3ce9d9..f44ff0bfea72 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1980,6 +1980,8 @@ pcie_rc: pcie@48400000 {
+ 						<0 0 0 2 &intc 0 0 GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>,
+ 						<0 0 0 3 &intc 0 0 GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>,
+ 						<0 0 0 4 &intc 0 0 GIC_SPI 267 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_HIGH>;
++				interrupt-names = "aer_msi";
+ 				#address-cells = <3>;
+ 				#size-cells = <2>;
+ 				ranges = <0x01000000 0 0x10010000 0x10010000 0 0x10000>,
+-- 
+2.39.2
+

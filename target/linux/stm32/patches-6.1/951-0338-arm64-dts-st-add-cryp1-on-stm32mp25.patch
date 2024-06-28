@@ -1,0 +1,74 @@
+From 9bb1eb3e8b1ea6e68187fe164fc54dd3a7b3d0c9 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Thu, 8 Jun 2023 11:34:02 +0200
+Subject: [PATCH 0338/1141] arm64: dts: st: add cryp1 on stm32mp25
+
+Add cryp1 node for stm32mp25xc and stm32mp25xf with DMA support.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: Ic66fcf22f24764ea81c44d4fca04d70658a55c1e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/311578
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp25xc.dtsi | 16 ++++++++++++----
+ arch/arm64/boot/dts/st/stm32mp25xf.dtsi | 16 ++++++++++++----
+ 2 files changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+index 952764af6dd2..88c262b8a29d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+@@ -5,9 +5,17 @@
+  */
+ #include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ 
+-/ {
+-	soc {
+-		rifsc: rifsc@42080000 {
+-		};
++&rifsc {
++	cryp1: crypto@42030000 {
++		compatible = "st,stm32mp1-cryp";
++		reg = <0x42030000 0x1000>;
++		interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc CK_BUS_CRYP1>;
++		resets = <&rcc CRYP1_R>;
++		dmas = <&hpdma 4 0x40 0x3021 0x0>,
++		       <&hpdma 5 0x43 0x3012 0x0>;
++		dma-names = "in", "out";
++		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
++		status = "disabled";
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+index 952764af6dd2..88c262b8a29d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+@@ -5,9 +5,17 @@
+  */
+ #include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ 
+-/ {
+-	soc {
+-		rifsc: rifsc@42080000 {
+-		};
++&rifsc {
++	cryp1: crypto@42030000 {
++		compatible = "st,stm32mp1-cryp";
++		reg = <0x42030000 0x1000>;
++		interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc CK_BUS_CRYP1>;
++		resets = <&rcc CRYP1_R>;
++		dmas = <&hpdma 4 0x40 0x3021 0x0>,
++		       <&hpdma 5 0x43 0x3012 0x0>;
++		dma-names = "in", "out";
++		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
++		status = "disabled";
+ 	};
+ };
+-- 
+2.39.2
+

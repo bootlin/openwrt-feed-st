@@ -1,0 +1,54 @@
+From e1a703cd4b6d4c244735178083a20f4c79f87bb0 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 5 Oct 2023 19:44:52 +0200
+Subject: [PATCH 0606/1141] mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order
+ from BFPT
+
+Parse BFPT in order to retrieve the byte order in 8D-8D-8D mode.
+
+Change-Id: I0d9ff66c8f12bedf16ee38c6b1a399b482973bd6
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/333812
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/mtd/spi-nor/sfdp.c | 4 ++++
+ drivers/mtd/spi-nor/sfdp.h | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 78110387be0b..846b34e63870 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -635,6 +635,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	/* Byte order in 8D-8D-8D mode */
++	if (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_BYTE_ORDER_SWAPPED)
++		nor->flags |= SNOR_F_DTR_SWAB16;
++
+ 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+ }
+ 
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index bbf80d2990ab..b39f101b1b17 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -97,6 +97,7 @@ struct sfdp_bfpt {
+ #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
+ #define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
+ #define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
++#define BFPT_DWORD18_BYTE_ORDER_SWAPPED		BIT(31) /* Byte order of 16-bit words in 8D-8D-8D */
+ 
+ struct sfdp_parameter_header {
+ 	u8		id_lsb;
+-- 
+2.39.2
+

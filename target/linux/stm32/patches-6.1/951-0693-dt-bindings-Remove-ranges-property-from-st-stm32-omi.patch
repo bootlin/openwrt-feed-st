@@ -1,0 +1,35 @@
+From 970538d78ded2d57e69d22badf1679fa7de2facc Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 21 Nov 2023 17:50:57 +0100
+Subject: [PATCH 0693/1141] dt-bindings: Remove ranges property from
+ st,stm32-omi.yaml
+
+Remove ranges property from st,stm32-omi.yaml
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I2f210d9823b3a1d63dc6937bdf5e4e1343e0816e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/341300
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml    | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+index 110b670578b3..154bb144884f 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+@@ -74,8 +74,6 @@ properties:
+     description: |
+       Phandle to the rifsc device to check access right.
+ 
+-  ranges: true
+-
+   power-domains:
+     maxItems: 1
+ 
+-- 
+2.39.2
+

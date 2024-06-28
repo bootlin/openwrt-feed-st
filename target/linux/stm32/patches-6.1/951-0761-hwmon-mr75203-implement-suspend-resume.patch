@@ -1,0 +1,86 @@
+From 3bcf5d238b50598f577844e2bb6a176297429a93 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 28 Nov 2023 17:08:28 +0100
+Subject: [PATCH 0761/1141] hwmon: (mr75203) implement suspend resume
+
+Implement PM suspend resume.
+On STM32MP25, the power supply of the PVT is powered off.
+
+Change-Id: I11aac055652c4f105bcd29fde40dc3c886f9aca4
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/342606
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/hwmon/mr75203.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
+index 394a4c7e46ab..7d079b546183 100644
+--- a/drivers/hwmon/mr75203.c
++++ b/drivers/hwmon/mr75203.c
+@@ -763,6 +763,41 @@ static int pvt_set_temp_coeff(struct device *dev, struct pvt_device *pvt)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int mr75203_suspend(struct device *dev)
++{
++	struct pvt_device *pvt = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(pvt->clk);
++
++	return 0;
++}
++
++static int mr75203_resume(struct device *dev)
++{
++	struct pvt_device *pvt = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(pvt->clk);
++	if (ret) {
++		dev_err(dev, "failed to enable clock: %d\n", ret);
++		return ret;
++	}
++
++	ret = pvt_init(pvt);
++	if (ret) {
++		dev_err(dev, "failed to init pvt: %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops mr75203_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(mr75203_suspend, mr75203_resume)
++};
++
+ static int mr75203_probe(struct platform_device *pdev)
+ {
+ 	u32 ts_num, vm_num, pd_num, ch_num, val, index, i;
+@@ -906,6 +941,8 @@ static int mr75203_probe(struct platform_device *pdev)
+ 							 &pvt_chip_info,
+ 							 NULL);
+ 
++	platform_set_drvdata(pdev, pvt);
++
+ 	return PTR_ERR_OR_ZERO(hwmon_dev);
+ }
+ 
+@@ -919,6 +956,7 @@ static struct platform_driver moortec_pvt_driver = {
+ 	.driver = {
+ 		.name = "moortec-pvt",
+ 		.of_match_table = moortec_pvt_of_match,
++		.pm = &mr75203_pm_ops,
+ 	},
+ 	.probe = mr75203_probe,
+ };
+-- 
+2.39.2
+

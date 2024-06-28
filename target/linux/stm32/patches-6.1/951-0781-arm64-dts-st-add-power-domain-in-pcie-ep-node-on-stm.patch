@@ -1,0 +1,33 @@
+From eb998d99b536cc2f7f1cea082e177a2d67c7e948 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 19:39:51 +0100
+Subject: [PATCH 0781/1141] arm64: dts: st: add power domain in pcie-ep node on
+ stm32mp251
+
+Add power domain in PCIE-EP nodes for STM32MP251 device tree.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ife64e3d8a5f41c408cb9580a4e0d16e1a0bf2495
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347937
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 6adfb41a1b28..27b55a1fa310 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2299,6 +2299,7 @@ pcie_ep: pcie-ep@48400000 {
+ 				phys = <&combophy PHY_TYPE_PCIE>;
+ 				phy-names = "pcie-phy";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_PCIE_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.39.2
+

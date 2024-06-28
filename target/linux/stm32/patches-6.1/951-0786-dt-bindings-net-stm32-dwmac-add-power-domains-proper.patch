@@ -1,0 +1,40 @@
+From 9b22d14826f0d4287025bd7dd1d05f7c1409ea5f Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 14:21:00 +0100
+Subject: [PATCH 0786/1141] dt-bindings: net: stm32-dwmac: add 'power-domains'
+ property
+
+STM32 DWMAC may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 DWMAC.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I9046dd3704c2fd63b5af6b83e3e9ab7219955881
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347860
+Reviewed-by: Christophe ROULLIER <christophe.roullier@st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@st.com>
+Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index f39c01711bf8..48481ab22e88 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -72,6 +72,9 @@ properties:
+         - eth-ck
+         - ptp_ref
+ 
++  power-domains:
++    maxItems: 1
++
+   st,syscon:
+     $ref: "/schemas/types.yaml#/definitions/phandle-array"
+     items:
+-- 
+2.39.2
+

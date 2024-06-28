@@ -1,0 +1,52 @@
+From 2d138dfc72103d69658b7f3d66b1213676285481 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 4 Dec 2023 14:25:40 +0100
+Subject: [PATCH 0811/1141] media: dcmipp: pixelproc: add event ops
+
+DCMIPP Pixelproc subdev exposes ctrls and as such should implement
+the event subscribe / unsubscribe ops.
+
+Change-Id: I96973b93e2713ee7d6f7c2687167a53ee0be8fbe
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344620
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c      | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 88d79c9323c7..71e9fcf403bc 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -16,6 +16,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/v4l2-mediabus.h>
+ #include <media/v4l2-ctrls.h>
++#include <media/v4l2-event.h>
+ #include <media/v4l2-rect.h>
+ #include <media/v4l2-subdev.h>
+ 
+@@ -759,11 +760,17 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 	return ret;
+ }
+ 
++static const struct v4l2_subdev_core_ops dcmipp_pixelproc_core_ops = {
++	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
++	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
++};
++
+ static const struct v4l2_subdev_video_ops dcmipp_pixelproc_video_ops = {
+ 	.s_stream = dcmipp_pixelproc_s_stream,
+ };
+ 
+ static const struct v4l2_subdev_ops dcmipp_pixelproc_ops = {
++	.core = &dcmipp_pixelproc_core_ops,
+ 	.pad = &dcmipp_pixelproc_pad_ops,
+ 	.video = &dcmipp_pixelproc_video_ops,
+ };
+-- 
+2.39.2
+

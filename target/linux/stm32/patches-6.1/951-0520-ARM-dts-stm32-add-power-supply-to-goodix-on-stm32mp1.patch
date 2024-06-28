@@ -1,0 +1,75 @@
+From 28ffc0fb3479e0dadb6d496f188fad937c9137a2 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 8 Sep 2023 14:41:52 +0200
+Subject: [PATCH 0520/1141] ARM: dts: stm32: add power-supply to goodix on
+ stm32mp15 eval boards
+
+Add missing fields of touchscreen goodix (power-supply).
+
+Change-Id: I24ce7d153fe08f2f4f18f849d25183e981c3773e
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/326629
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp157a-ev1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157c-ev1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157d-ev1.dts | 2 ++
+ arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 ++
+ 4 files changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/stm32mp157a-ev1.dts b/arch/arm/boot/dts/stm32mp157a-ev1.dts
+index 4564d837f324..c4f46cae4d13 100644
+--- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
+@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+ 		panel = <&panel_dsi>;
+ 		pinctrl-0 = <&goodix_pins>;
+ 		pinctrl-names = "default";
++		AVDD28-supply = <&v3v3>;
++		VDDIO-supply = <&v3v3>;
+ 		status = "okay";
+ 
+ 		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+index f8fa8b3caf9b..4f16f8f359a5 100644
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+ 		panel = <&panel_dsi>;
+ 		pinctrl-0 = <&goodix_pins>;
+ 		pinctrl-names = "default";
++		AVDD28-supply = <&v3v3>;
++		VDDIO-supply = <&v3v3>;
+ 		status = "okay";
+ 
+ 		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+index e0338e6fd51e..ee8f8fd91d93 100644
+--- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+ 		panel = <&panel_dsi>;
+ 		pinctrl-0 = <&goodix_pins>;
+ 		pinctrl-names = "default";
++		AVDD28-supply = <&v3v3>;
++		VDDIO-supply = <&v3v3>;
+ 		status = "okay";
+ 
+ 		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+index bf58f5098c07..61a52c4d7b83 100644
+--- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+@@ -496,6 +496,8 @@ gt9147: goodix-ts@5d {
+ 		panel = <&panel_dsi>;
+ 		pinctrl-0 = <&goodix_pins>;
+ 		pinctrl-names = "default";
++		AVDD28-supply = <&v3v3>;
++		VDDIO-supply = <&v3v3>;
+ 		status = "okay";
+ 
+ 		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
+-- 
+2.39.2
+

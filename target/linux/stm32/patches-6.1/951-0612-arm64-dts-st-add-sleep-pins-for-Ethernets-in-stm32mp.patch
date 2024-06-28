@@ -1,0 +1,58 @@
+From 1adc817e693c52c805a6d507f2ed2eb5e6ac7bfa Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 15 Nov 2023 18:15:02 +0100
+Subject: [PATCH 0612/1141] arm64: dts: st: add sleep pins for Ethernets in
+ stm32mp257f-ev1
+
+Add analog gpio pin configuration ("sleep") to manage power mode on
+stm32mp25.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: Ia3faf53d08c12b92f54fa04aa2b7004811963b44
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/340109
+Reviewed-by: Christophe ROULLIER <christophe.roullier@st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index ea250e47dae6..2253dc6df091 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -209,7 +209,8 @@ dsi_out1: endpoint {
+ &eth1 {
+ 	status = "okay";
+ 	pinctrl-0 = <&eth1_mdio_pins_a>;
+-	pinctrl-names = "default";
++	pinctrl-1 = <&eth1_mdio_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
+ 	phy-mode = "rgmii";
+ 	max-speed = <1000>;
+ 	st,eth-clk-sel;
+@@ -246,7 +247,8 @@ phy2_eth1: ethernet-phy@5 {
+ &eth2 {
+ 	status = "okay";
+ 	pinctrl-0 = <&eth2_rgmii_pins_a>;
+-	pinctrl-names = "default";
++	pinctrl-1 = <&eth2_rgmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
+ 	phy-mode = "rgmii-id";
+ 	max-speed = <1000>;
+ 	phy-handle = <&phy1_eth2>;
+@@ -614,7 +616,8 @@ &spi8 {
+ &switch0 {
+ 	status = "okay";
+ 	pinctrl-0 = <&eth1_rgmii_pins_a>, <&eth3_rgmii_pins_a>;
+-	pinctrl-names = "default";
++	pinctrl-1 = <&eth1_rgmii_sleep_pins_a>, <&eth3_rgmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
+ 	phy-mode = "rgmii";
+ 	st,ethsw-internal-125;
+ };
+-- 
+2.39.2
+

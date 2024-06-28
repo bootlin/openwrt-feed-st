@@ -1,0 +1,90 @@
+From 37a378d7c56f045fd7feefa449ceb2dd029afa49 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 25 Jan 2023 09:39:54 +0100
+Subject: [PATCH 0252/1141] dt-bindings: i2c: Document the RPMsg I2C controller
+
+Document the RPMsg I2C controller bindings.
+
+Signed-off-by: Maxime MERE <maxime.mere@st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I6ff6d59375c660c6b2ef06a7786628763929231b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/286886
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ .../devicetree/bindings/i2c/i2c-rpmsg.yaml    | 46 +++++++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ 2 files changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml b/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
+new file mode 100644
+index 000000000000..b6074416d29b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
++# Copyright (c) 2023 STMicroelectronics.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/i2c/i2c-rpmsg.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: RPMsg I2C Adapter
++
++maintainers:
++  - Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
++
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
++description:
++  RPMsg I2C adapter for I2C protocol support over RPMsg
++
++properties:
++  compatible:
++    const: rpmsg,i2c-controller
++
++  rpmsg,dev-id:
++    description:
++      Id name of the rpmsg_i2c device instance
++
++required:
++  - compatible
++  - dev-id
++
++examples:
++  - |
++    rpmsg_i2c: i2c@0 {
++        compatible = "rpmsg,i2c-controller";
++        reg = <0 0>;
++        rpmsg,dev-id = "rpmsg_i2c";
++        status = "okay";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        light-sensor@20 {
++            compatible = "dynaimage,al3320a";
++            reg = <0x20>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index bf5cde9703d9..a23441d7e7f4 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1095,6 +1095,8 @@ patternProperties:
+     description: Shenzhen Roofull Technology Co, Ltd
+   "^roseapplepi,.*":
+     description: RoseapplePi.org
++  "^rpmsg,.*":
++    description: remote processor messaging Device Specification
+   "^samsung,.*":
+     description: Samsung Semiconductor
+   "^samtec,.*":
+-- 
+2.39.2
+

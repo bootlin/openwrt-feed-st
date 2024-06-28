@@ -1,0 +1,47 @@
+From 38669718a4b2129e4fc8eade6feb2d4adcd2b7dd Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Wed, 1 Dec 2021 17:39:03 +0100
+Subject: [PATCH 0261/1141] arm64: dts: st: add IPCC1 node on stm32mp251
+
+Define the IPCC1 node to support the IPCC mailbox for communication
+between the Cortex-A35 and Cortex-M33
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: I37a83656e0783965289f3a155b91879a9448a306
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/230821
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310430
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 30a9a1f0a788..ef5cb70e3da7 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -284,6 +284,18 @@ hpdma3: dma-controller@40420000 {
+ 			st,axi-max-burst-len = <16>;
+ 		};
+ 
++		ipcc1: mailbox@40490000 {
++			compatible = "st,stm32mp1-ipcc";
++			#mbox-cells = <1>;
++			reg = <0x40490000 0x400>;
++			st,proc-id = <0>;
++			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "rx", "tx";
++			clocks = <&scmi_clk CK_BUS_IPCC1>;
++			status = "disabled";
++		};
++
+ 		ommanager: ommanager@40500000 {
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+-- 
+2.39.2
+

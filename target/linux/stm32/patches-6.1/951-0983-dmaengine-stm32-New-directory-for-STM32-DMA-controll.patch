@@ -1,0 +1,193 @@
+From 66cfdb2bb1f7e3b70edddfea714fd721a75d1569 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 15:19:33 +0100
+Subject: [PATCH 0983/1141] dmaengine: stm32: New directory for STM32 DMA
+ controllers drivers
+
+Gather the STM32 DMA controllers under drivers/dma/stm32/
+
+Change-Id: I447184345f696b41636e159eaaeaa11c9b607899
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358976
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/dma/Kconfig                    | 34 ++---------------------
+ drivers/dma/Makefile                   |  4 +--
+ drivers/dma/stm32/Kconfig              | 37 ++++++++++++++++++++++++++
+ drivers/dma/stm32/Makefile             |  4 +++
+ drivers/dma/{ => stm32}/stm32-dma.c    |  2 +-
+ drivers/dma/{ => stm32}/stm32-dmamux.c |  0
+ drivers/dma/{ => stm32}/stm32-mdma.c   |  2 +-
+ 7 files changed, 46 insertions(+), 37 deletions(-)
+ create mode 100644 drivers/dma/stm32/Kconfig
+ create mode 100644 drivers/dma/stm32/Makefile
+ rename drivers/dma/{ => stm32}/stm32-dma.c (99%)
+ rename drivers/dma/{ => stm32}/stm32-dmamux.c (100%)
+ rename drivers/dma/{ => stm32}/stm32-mdma.c (99%)
+
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index 81de833ccd04..f3209c19c667 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -579,38 +579,6 @@ config ST_FDMA
+ 	  Say Y here if you have such a chipset.
+ 	  If unsure, say N.
+ 
+-config STM32_DMA
+-	bool "STMicroelectronics STM32 DMA support"
+-	depends on ARCH_STM32 || COMPILE_TEST
+-	select DMA_ENGINE
+-	select DMA_VIRTUAL_CHANNELS
+-	help
+-	  Enable support for the on-chip DMA controller on STMicroelectronics
+-	  STM32 MCUs.
+-	  If you have a board based on such a MCU and wish to use DMA say Y
+-	  here.
+-
+-config STM32_DMAMUX
+-	bool "STMicroelectronics STM32 dma multiplexer support"
+-	depends on STM32_DMA || COMPILE_TEST
+-	help
+-	  Enable support for the on-chip DMA multiplexer on STMicroelectronics
+-	  STM32 MCUs.
+-	  If you have a board based on such a MCU and wish to use DMAMUX say Y
+-	  here.
+-
+-config STM32_MDMA
+-	bool "STMicroelectronics STM32 master dma support"
+-	depends on ARCH_STM32 || COMPILE_TEST
+-	depends on OF
+-	select DMA_ENGINE
+-	select DMA_VIRTUAL_CHANNELS
+-	help
+-	  Enable support for the on-chip MDMA controller on STMicroelectronics
+-	  STM32 platforms.
+-	  If you have a board based on STM32 SoC and wish to use the master DMA
+-	  say Y here.
+-
+ config SPRD_DMA
+ 	tristate "Spreadtrum DMA support"
+ 	depends on ARCH_SPRD || COMPILE_TEST
+@@ -780,6 +748,8 @@ source "drivers/dma/fsl-dpaa2-qdma/Kconfig"
+ 
+ source "drivers/dma/lgm/Kconfig"
+ 
++source "drivers/dma/stm32/Kconfig"
++
+ # clients
+ comment "DMA Clients"
+ 	depends on DMA_ENGINE
+diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+index 10f7d4241001..14e7e49f3fb4 100644
+--- a/drivers/dma/Makefile
++++ b/drivers/dma/Makefile
+@@ -67,9 +67,6 @@ obj-$(CONFIG_PXA_DMA) += pxa_dma.o
+ obj-$(CONFIG_RENESAS_DMA) += sh/
+ obj-$(CONFIG_SF_PDMA) += sf-pdma/
+ obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
+-obj-$(CONFIG_STM32_DMA) += stm32-dma.o
+-obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
+-obj-$(CONFIG_STM32_MDMA) += stm32-mdma.o
+ obj-$(CONFIG_SPRD_DMA) += sprd-dma.o
+ obj-$(CONFIG_S3C24XX_DMAC) += s3c24xx-dma.o
+ obj-$(CONFIG_TXX9_DMAC) += txx9dmac.o
+@@ -86,5 +83,6 @@ obj-$(CONFIG_INTEL_LDMA) += lgm/
+ 
+ obj-y += mediatek/
+ obj-y += qcom/
++obj-y += stm32/
+ obj-y += ti/
+ obj-y += xilinx/
+diff --git a/drivers/dma/stm32/Kconfig b/drivers/dma/stm32/Kconfig
+new file mode 100644
+index 000000000000..b72ae1a4502f
+--- /dev/null
++++ b/drivers/dma/stm32/Kconfig
+@@ -0,0 +1,37 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# STM32 DMA controllers drivers
++#
++if ARCH_STM32 || COMPILE_TEST
++
++config STM32_DMA
++	bool "STMicroelectronics STM32 DMA support"
++	select DMA_ENGINE
++	select DMA_VIRTUAL_CHANNELS
++	help
++	  Enable support for the on-chip DMA controller on STMicroelectronics
++	  STM32 platforms.
++	  If you have a board based on STM32 SoC with such DMA controller
++	  and want to use DMA say Y here.
++
++config STM32_DMAMUX
++	bool "STMicroelectronics STM32 DMA multiplexer support"
++	depends on STM32_DMA
++	help
++	  Enable support for the on-chip DMA multiplexer on STMicroelectronics
++	  STM32 platforms.
++	  If you have a board based on STM32 SoC with such DMA multiplexer
++	  and want to use DMAMUX say Y here.
++
++config STM32_MDMA
++	bool "STMicroelectronics STM32 master DMA support"
++	depends on OF
++	select DMA_ENGINE
++	select DMA_VIRTUAL_CHANNELS
++	help
++	  Enable support for the on-chip MDMA controller on STMicroelectronics
++	  STM32 platforms.
++	  If you have a board based on STM32 SoC with such DMA controller
++	  and want to use MDMA say Y here.
++
++endif
+diff --git a/drivers/dma/stm32/Makefile b/drivers/dma/stm32/Makefile
+new file mode 100644
+index 000000000000..663a3896a881
+--- /dev/null
++++ b/drivers/dma/stm32/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_STM32_DMA) += stm32-dma.o
++obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
++obj-$(CONFIG_STM32_MDMA) += stm32-mdma.o
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32/stm32-dma.c
+similarity index 99%
+rename from drivers/dma/stm32-dma.c
+rename to drivers/dma/stm32/stm32-dma.c
+index 7abcd7f2848e..c2a8e07807d5 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32/stm32-dma.c
+@@ -29,7 +29,7 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ 
+-#include "virt-dma.h"
++#include "../virt-dma.h"
+ 
+ #define STM32_DMA_LISR			0x0000 /* DMA Low Int Status Reg */
+ #define STM32_DMA_HISR			0x0004 /* DMA High Int Status Reg */
+diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32/stm32-dmamux.c
+similarity index 100%
+rename from drivers/dma/stm32-dmamux.c
+rename to drivers/dma/stm32/stm32-dmamux.c
+diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32/stm32-mdma.c
+similarity index 99%
+rename from drivers/dma/stm32-mdma.c
+rename to drivers/dma/stm32/stm32-mdma.c
+index 65ef1f5ca6b8..b5a1a4479478 100644
+--- a/drivers/dma/stm32-mdma.c
++++ b/drivers/dma/stm32/stm32-mdma.c
+@@ -31,7 +31,7 @@
+ #include <linux/reset.h>
+ #include <linux/slab.h>
+ 
+-#include "virt-dma.h"
++#include "../virt-dma.h"
+ 
+ #define STM32_MDMA_GISR0		0x0000 /* MDMA Int Status Reg 1 */
+ 
+-- 
+2.39.2
+

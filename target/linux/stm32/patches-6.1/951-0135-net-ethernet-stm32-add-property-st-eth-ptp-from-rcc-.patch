@@ -1,0 +1,79 @@
+From 2d088b52bc1ddc1094c010fc753b1fc39d84b70b Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Mon, 21 Nov 2022 16:59:54 +0100
+Subject: [PATCH 0135/1141] net: ethernet: stm32: add property
+ st,eth-ptp-from-rcc for stm32mp25x platform
+
+Add property "st,eth-ptp-from-rcc" to manage if PTP clock used is from
+RCC (if property selected) or if ETHSW (switch)
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Ia05d689e1ec20725b223225fb1061c0044bfedd2
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/276781
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 5 +++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c      | 8 ++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index 5c93167b3b41..f39c01711bf8 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -93,6 +93,11 @@ properties:
+       select RCC clock instead of ETH_REF_CLK.
+     type: boolean
+ 
++  st,eth-ptp-from-rcc:
++    description:
++      set this property when PTP (IEEE1588) clock selection is from RCC,
++      by default ETHSW ptp ref clock is used
++    type: boolean
+ required:
+   - compatible
+   - clocks
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index f1064593d8ff..ba4cb4ccdac2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -53,6 +53,7 @@
+ /* STM32MP2 register definitions */
+ #define SYSCFG_MP2_ETH_MASK		GENMASK(31, 0)
+ 
++#define SYSCFG_ETHCR_ETH_PTP_CLK_SEL	BIT(2)
+ #define SYSCFG_ETHCR_ETH_CLK_SEL	BIT(1)
+ #define SYSCFG_ETHCR_ETH_REF_CLK_SEL	BIT(0)
+ 
+@@ -94,6 +95,7 @@ struct stm32_dwmac {
+ 	int ext_phyclk;
+ 	int enable_eth_ck;
+ 	int eth_clk_sel_reg;
++	int eth_ptp_sel_reg;
+ 	int eth_ref_clk_sel_reg;
+ 	u32 mode_reg;		 /* MAC glue-logic mode register */
+ 	u32 mode_mask;
+@@ -305,6 +307,9 @@ static int stm32mp2_set_mode(struct plat_stmmacenet_data *plat_dat)
+ 		return -EINVAL;
+ 	}
+ 
++	if (dwmac->eth_ptp_sel_reg)
++		val |= SYSCFG_ETHCR_ETH_PTP_CLK_SEL;
++
+ 	/* Update ETHCR (set register) */
+ 	return regmap_update_bits(dwmac->regmap, reg,
+ 				  dwmac->ops->syscfg_eth_mask, val);
+@@ -407,6 +412,9 @@ static int stm32mp1_parse_data(struct stm32_dwmac *dwmac,
+ 	/* Ethernet PHY have no crystal */
+ 	dwmac->ext_phyclk = of_property_read_bool(np, "st,ext-phyclk");
+ 
++	/* PTP (IEEE1588) clock selection */
++	dwmac->eth_ptp_sel_reg = of_property_read_bool(np, "st,eth-ptp-from-rcc");
++
+ 	/* Gigabit Ethernet 125MHz clock selection. */
+ 	dwmac->eth_clk_sel_reg = of_property_read_bool(np, "st,eth-clk-sel");
+ 
+-- 
+2.39.2
+

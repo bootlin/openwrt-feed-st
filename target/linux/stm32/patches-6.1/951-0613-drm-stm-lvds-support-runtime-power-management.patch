@@ -1,0 +1,250 @@
+From c10a3399eb01bf66aca6ab60bb0c8dada8269208 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Fri, 28 Jul 2023 15:53:42 +0200
+Subject: [PATCH 0613/1141] drm/stm: lvds: support runtime power management
+
+This patch enables runtime power management (runtime PM) support for
+LVDS driver. pm_runtime_get_sync() and pm_runtime_put_sync() are added
+for register access.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I74d5a6943b90011afde05811416936994b15a42c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/320748
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/lvds.c | 119 ++++++++++++++++++++++---------------
+ 1 file changed, 70 insertions(+), 49 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
+index 344a28623b84..a58f8c4aa870 100644
+--- a/drivers/gpu/drm/stm/lvds.c
++++ b/drivers/gpu/drm/stm/lvds.c
+@@ -19,6 +19,7 @@
+ #include <linux/media-bus-format.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ 
+ /* LVDS Host registers */
+@@ -570,15 +571,10 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+ 	struct lvds_phy_info *phy;
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(lvds->pclk);
+-	if (ret) {
+-		DRM_ERROR("Failed to enable lvds peripheral clk\n");
+-		return ret;
+-	}
+ 
+-	ret = clk_prepare_enable(lvds->pllref_clk);
+-	if (ret) {
+-		DRM_ERROR("Failed to enable lvds reference clk\n");
++	ret = pm_runtime_get_sync(lvds->dev);
++	if (ret < 0) {
++		DRM_ERROR("Failed to set mode, cannot get sync\n");
+ 		return ret;
+ 	}
+ 
+@@ -634,8 +630,7 @@ static void lvds_pixel_clk_disable(struct clk_hw *hw)
+ 		lvds_clear(lvds, lvds->phy_slave->base + lvds->phy_slave->ofs.PxGCR,
+ 			   PHY_GCR_DIV_RSTN | PHY_GCR_RSTZ);
+ 
+-	clk_disable_unprepare(lvds->pllref_clk);
+-	clk_disable_unprepare(lvds->pclk);
++	pm_runtime_put(lvds->dev);
+ }
+ 
+ static unsigned long lvds_pixel_clk_recalc_rate(struct clk_hw *hw,
+@@ -1027,9 +1022,9 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+ 	struct drm_crtc *crtc;
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(lvds->pclk);
+-	if (ret) {
+-		DRM_ERROR("Failed to enable lvds peripheral clk\n");
++	ret = pm_runtime_get_sync(lvds->dev);
++	if (ret < 0) {
++		DRM_ERROR("Failed to set mode, cannot get sync\n");
+ 		return;
+ 	}
+ 
+@@ -1061,8 +1056,7 @@ static void lvds_atomic_disable(struct drm_bridge *bridge,
+ 	 * Do NOT uncomment this line
+ 	 */
+ 	//lvds_clear(lvds, lvds->phy_master->base + lvds->phy_master->ofs.PxPLLCR1, PLL_EN);
+-
+-	clk_disable_unprepare(lvds->pclk);
++	pm_runtime_put(lvds->dev);
+ }
+ 
+ static bool lvds_mode_fixup(struct drm_bridge *bridge,
+@@ -1124,24 +1118,11 @@ static int lvds_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	lvds->pclk = devm_clk_get(lvds->dev, "pclk");
+-	if (IS_ERR(lvds->pclk)) {
+-		ret = PTR_ERR(lvds->pclk);
+-		DRM_ERROR("Unable to get peripheral clock: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = clk_prepare_enable(lvds->pclk);
+-	if (ret) {
+-		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
+-		return ret;
+-	}
+-
+ 	rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+ 	if (IS_ERR(rstc)) {
+ 		ret = PTR_ERR(rstc);
+-		goto err_lvds_probe;
++		return ret;
+ 	}
+ 
+ 	reset_control_assert(rstc);
+@@ -1200,48 +1181,46 @@ static int lvds_probe(struct platform_device *pdev)
+ 		}
+ 		break;
+ 	default:
+-		goto err_lvds_probe;
++		return -EINVAL;
+ 	}
+ 	of_node_put(port1);
+ 	of_node_put(port2);
+ 
++	lvds->pclk = devm_clk_get(lvds->dev, "pclk");
++	if (IS_ERR(lvds->pclk)) {
++		ret = PTR_ERR(lvds->pclk);
++		DRM_ERROR("Unable to get peripheral clock: %d\n", ret);
++		return ret;
++	}
++
+ 	lvds->pllref_clk = devm_clk_get(lvds->dev, "ref");
+ 	if (IS_ERR(lvds->pllref_clk)) {
+ 		ret = PTR_ERR(lvds->pllref_clk);
+ 		DRM_ERROR("Unable to get reference clock: %d\n", ret);
+-		goto err_lvds_probe;
+-	}
+-
+-	ret = lvds_pixel_clk_register(lvds);
+-	if (ret) {
+-		DRM_ERROR("Failed to register LVDS pixel clock: %d\n", ret);
+-		goto err_lvds_probe;
++		return ret;
+ 	}
+ 
+ 	lvds->pixel_clk = devm_clk_get(lvds->dev, "pixclk");
+ 	if (IS_ERR(lvds->pixel_clk)) {
+ 		ret = PTR_ERR(lvds->pixel_clk);
+ 		DRM_ERROR("Unable to get pix clock: %d\n", ret);
+-		goto err_lvds_clk_parent;
++		return ret;
++	}
++
++	ret = lvds_pixel_clk_register(lvds);
++	if (ret) {
++		DRM_ERROR("Failed to register LVDS pixel clock: %d\n", ret);
++		return ret;
+ 	}
+ 
+ 	lvds->lvds_bridge.funcs = &lvds_bridge_funcs;
+ 	lvds->lvds_bridge.of_node = dev->of_node;
+ 
++	pm_runtime_enable(lvds->dev);
+ 	drm_bridge_add(&lvds->lvds_bridge);
+-
+ 	platform_set_drvdata(pdev, lvds);
+ 
+-	clk_disable_unprepare(lvds->pclk);
+-
+ 	return 0;
+-
+-err_lvds_clk_parent:
+-	lvds_pixel_clk_unregister(lvds);
+-err_lvds_probe:
+-	clk_disable_unprepare(lvds->pclk);
+-
+-	return ret;
+ }
+ 
+ static int lvds_remove(struct platform_device *pdev)
+@@ -1249,6 +1228,7 @@ static int lvds_remove(struct platform_device *pdev)
+ 	struct stm_lvds *lvds = platform_get_drvdata(pdev);
+ 
+ 	lvds_pixel_clk_unregister(lvds);
++	pm_runtime_disable(&pdev->dev);
+ 
+ 	/* Unregister LVDS bridge */
+ 	drm_bridge_remove(&lvds->lvds_bridge);
+@@ -1256,6 +1236,42 @@ static int lvds_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused lvds_runtime_suspend(struct device *dev)
++{
++	struct stm_lvds *lvds = dev_get_drvdata(dev);
++
++	DRM_DEBUG_DRIVER("\n");
++
++	clk_disable_unprepare(lvds->pllref_clk);
++	clk_disable_unprepare(lvds->pclk);
++
++	return 0;
++}
++
++static int __maybe_unused lvds_runtime_resume(struct device *dev)
++{
++	struct stm_lvds *lvds = dev_get_drvdata(dev);
++	int ret;
++
++	DRM_DEBUG_DRIVER("\n");
++
++	ret = clk_prepare_enable(lvds->pclk);
++	if (ret)
++		goto err;
++
++	ret = clk_prepare_enable(lvds->pllref_clk);
++	if (ret)
++		goto err_pclk;
++
++	return 0;
++err_pclk:
++	clk_disable_unprepare(lvds->pclk);
++err:
++	DRM_ERROR("Failed to resume lvds: %d\n", ret);
++
++	return ret;
++}
++
+ static const struct of_device_id lvds_dt_ids[] = {
+ 	{
+ 		.compatible = "st,stm32-lvds",
+@@ -1266,6 +1282,11 @@ static const struct of_device_id lvds_dt_ids[] = {
+ 
+ MODULE_DEVICE_TABLE(of, lvds_dt_ids);
+ 
++static const struct dev_pm_ops lvds_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(lvds_runtime_suspend, lvds_runtime_resume, NULL)
++};
++
+ static struct platform_driver lvds_platform_driver = {
+ 	.probe	  = lvds_probe,
+ 	.remove	 = lvds_remove,
+@@ -1273,7 +1294,7 @@ static struct platform_driver lvds_platform_driver = {
+ 		.name   = "stm32-display-lvds",
+ 		.owner  = THIS_MODULE,
+ 		.of_match_table = lvds_dt_ids,
+-/*    TODO ?    .pm = &lvds_pm_ops,*/
++		.pm = &lvds_pm_ops,
+ 	},
+ };
+ 
+-- 
+2.39.2
+

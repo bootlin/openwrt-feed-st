@@ -1,0 +1,37 @@
+From 58681d7f92eae391e803e8e4f9cf858da678657a Mon Sep 17 00:00:00 2001
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Date: Wed, 23 Aug 2023 19:40:09 +0200
+Subject: [PATCH 0694/1141] media: verisilicon Correct a typo in
+ H1_REG_ENC_CTRL2_DEBLOCKING_FILTER_MODE
+
+Correct a typo in H1_REG_ENC_CTRL2_DEBLOCKING_FILTER_MODE.
+
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Change-Id: I3bab3f4138915ce6d207deef3748172a67308f76
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344684
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/verisilicon/hantro_h1_regs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+index 7f08d5426bd5..72458de5e55b 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
++++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+@@ -65,7 +65,7 @@
+ #define    H1_REG_ENC_CTRL1_INTRA_PRED_MODE(x)		((x) << 16)
+ #define    H1_REG_ENC_CTRL1_FRAME_NUM(x)		((x))
+ #define H1_REG_ENC_CTRL2				0x048
+-#define    H1_REG_ENC_CTRL2_DEBLOCKING_FILETER_MODE(x)	((x) << 30)
++#define    H1_REG_ENC_CTRL2_DEBLOCKING_FILTER_MODE(x)	((x) << 30)
+ #define    H1_REG_ENC_CTRL2_H264_SLICE_SIZE(x)		((x) << 23)
+ #define    H1_REG_ENC_CTRL2_DISABLE_QUARTER_PIXMV	BIT(22)
+ #define    H1_REG_ENC_CTRL2_TRANS8X8_MODE_EN		BIT(21)
+-- 
+2.39.2
+

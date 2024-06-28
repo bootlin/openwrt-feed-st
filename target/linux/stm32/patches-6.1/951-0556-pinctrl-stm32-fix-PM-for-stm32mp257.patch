@@ -1,0 +1,38 @@
+From 69efc514d78b2d47f12f669dd0cc1a1a103b8ae5 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 28 Sep 2023 10:29:53 +0200
+Subject: [PATCH 0556/1141] pinctrl: stm32: fix PM for stm32mp257
+
+The driver for stm32mp257 was missing the suspend callback in
+struct dev_pm_ops.
+
+Add the callback, reusing the existing stm32_pinctrl_suspend()
+function.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I10f07c2fa21908f88c5d448461b7fdd37b215084
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/330115
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32mp257.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+index 9b8828090214..6709bddd9718 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+@@ -2570,7 +2570,7 @@ static const struct of_device_id stm32mp257_pctrl_match[] = {
+ MODULE_DEVICE_TABLE(of, stm32mp257_pctrl_match);
+ 
+ static const struct dev_pm_ops stm32_pinctrl_dev_pm_ops = {
+-	 SET_LATE_SYSTEM_SLEEP_PM_OPS(NULL, stm32_pinctrl_resume)
++	 SET_LATE_SYSTEM_SLEEP_PM_OPS(stm32_pinctrl_suspend, stm32_pinctrl_resume)
+ };
+ 
+ static struct platform_driver stm32mp257_pinctrl_driver = {
+-- 
+2.39.2
+

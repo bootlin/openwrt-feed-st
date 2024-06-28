@@ -1,0 +1,31 @@
+From 6153e00948ca713e723a392d9d79a00ab407a491 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Tue, 30 Jul 2019 16:28:30 +0200
+Subject: [PATCH 0042/1141] dt-bindings: stm32: add st,stm32mp257 compatible to
+ the stm32 family
+
+Add st,stm32mp257 compatible to the stm32 family.
+
+Change-Id: I8efeb16e6fa0dd197f482c1f3d98033fca4b532a
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index 18dd36cec849..b819f517b29b 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -157,6 +157,9 @@ properties:
+           - const: seeed,stm32mp157c-odyssey-som
+           - const: st,stm32mp157
+ 
++      - items:
++          - const: st,stm32mp257
++
+ additionalProperties: true
+ 
+ ...
+-- 
+2.39.2
+

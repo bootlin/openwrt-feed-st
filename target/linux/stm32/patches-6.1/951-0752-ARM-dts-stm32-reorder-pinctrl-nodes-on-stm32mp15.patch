@@ -1,0 +1,361 @@
+From 8e81e3c73408b5bb9ef51ebce4100c9027e7c7c7 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 18 Dec 2023 16:44:13 +0100
+Subject: [PATCH 0752/1141] ARM: dts: stm32: reorder pinctrl nodes on stm32mp15
+
+The driver pinctrl is already able to properly manage all the
+dependencies. There is no need to hack the probing order through
+special nodes order in DT.
+
+Reorder the pinctrl DT nodes based on the device address.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I12091a51654d1932b7043478bdb88d8c79b59afc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347761
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 310 +++++++++++++++---------------
+ 1 file changed, 153 insertions(+), 157 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index 030f1400b5db..58139f82deaf 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -239,6 +239,137 @@ pwr_irq: pwr@50001020 {
+ 					 <&gpioc 1 GPIO_ACTIVE_HIGH>;
+ 		};
+ 
++		pinctrl: pinctrl@50002000 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "st,stm32mp157-pinctrl";
++			ranges = <0 0x50002000 0xa400>;
++			interrupt-parent = <&exti>;
++			hwlocks = <&hsem 0 1>;
++			pins-are-numbered;
++
++			gpioa: gpio@50002000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x0 0x400>;
++				clocks = <&rcc GPIOA>;
++				st,bank-name = "GPIOA";
++				status = "disabled";
++			};
++
++			gpiob: gpio@50003000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x1000 0x400>;
++				clocks = <&rcc GPIOB>;
++				st,bank-name = "GPIOB";
++				status = "disabled";
++			};
++
++			gpioc: gpio@50004000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x2000 0x400>;
++				clocks = <&rcc GPIOC>;
++				st,bank-name = "GPIOC";
++				status = "disabled";
++			};
++
++			gpiod: gpio@50005000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x3000 0x400>;
++				clocks = <&rcc GPIOD>;
++				st,bank-name = "GPIOD";
++				status = "disabled";
++			};
++
++			gpioe: gpio@50006000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x4000 0x400>;
++				clocks = <&rcc GPIOE>;
++				st,bank-name = "GPIOE";
++				status = "disabled";
++			};
++
++			gpiof: gpio@50007000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x5000 0x400>;
++				clocks = <&rcc GPIOF>;
++				st,bank-name = "GPIOF";
++				status = "disabled";
++			};
++
++			gpiog: gpio@50008000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x6000 0x400>;
++				clocks = <&rcc GPIOG>;
++				st,bank-name = "GPIOG";
++				status = "disabled";
++			};
++
++			gpioh: gpio@50009000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x7000 0x400>;
++				clocks = <&rcc GPIOH>;
++				st,bank-name = "GPIOH";
++				status = "disabled";
++			};
++
++			gpioi: gpio@5000a000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x8000 0x400>;
++				clocks = <&rcc GPIOI>;
++				st,bank-name = "GPIOI";
++				status = "disabled";
++			};
++
++			gpioj: gpio@5000b000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0x9000 0x400>;
++				clocks = <&rcc GPIOJ>;
++				st,bank-name = "GPIOJ";
++				status = "disabled";
++			};
++
++			gpiok: gpio@5000c000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0xa000 0x400>;
++				clocks = <&rcc GPIOK>;
++				st,bank-name = "GPIOK";
++				status = "disabled";
++			};
++		};
++
+ 		exti: interrupt-controller@5000d000 {
+ 			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+@@ -331,6 +462,28 @@ hdp: hdp@5002a000 {
+ 			status = "disabled";
+ 		};
+ 
++		pinctrl_z: pinctrl@54004000 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "st,stm32mp157-z-pinctrl";
++			ranges = <0 0x54004000 0x400>;
++			pins-are-numbered;
++			interrupt-parent = <&exti>;
++			hwlocks = <&hsem 0 1>;
++
++			gpioz: gpio@54004000 {
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++				reg = <0 0x400>;
++				clocks = <&rcc GPIOZ>;
++				st,bank-name = "GPIOZ";
++				st,bank-ioport = <11>;
++				status = "disabled";
++			};
++		};
++
+ 		mdma1: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;
+@@ -2087,163 +2240,6 @@ reboot_mode: reboot-mode {
+ 				mode-romcode_serial = <0xff>;
+ 			};
+ 		};
+-
+-		/*
+-		 * Break node order to solve dependency probe issue between
+-		 * pinctrl and exti.
+-		 */
+-		pinctrl: pinctrl@50002000 {
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			compatible = "st,stm32mp157-pinctrl";
+-			ranges = <0 0x50002000 0xa400>;
+-			interrupt-parent = <&exti>;
+-			hwlocks = <&hsem 0 1>;
+-			pins-are-numbered;
+-
+-			gpioa: gpio@50002000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x0 0x400>;
+-				clocks = <&rcc GPIOA>;
+-				st,bank-name = "GPIOA";
+-				status = "disabled";
+-			};
+-
+-			gpiob: gpio@50003000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x1000 0x400>;
+-				clocks = <&rcc GPIOB>;
+-				st,bank-name = "GPIOB";
+-				status = "disabled";
+-			};
+-
+-			gpioc: gpio@50004000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x2000 0x400>;
+-				clocks = <&rcc GPIOC>;
+-				st,bank-name = "GPIOC";
+-				status = "disabled";
+-			};
+-
+-			gpiod: gpio@50005000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x3000 0x400>;
+-				clocks = <&rcc GPIOD>;
+-				st,bank-name = "GPIOD";
+-				status = "disabled";
+-			};
+-
+-			gpioe: gpio@50006000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x4000 0x400>;
+-				clocks = <&rcc GPIOE>;
+-				st,bank-name = "GPIOE";
+-				status = "disabled";
+-			};
+-
+-			gpiof: gpio@50007000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x5000 0x400>;
+-				clocks = <&rcc GPIOF>;
+-				st,bank-name = "GPIOF";
+-				status = "disabled";
+-			};
+-
+-			gpiog: gpio@50008000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x6000 0x400>;
+-				clocks = <&rcc GPIOG>;
+-				st,bank-name = "GPIOG";
+-				status = "disabled";
+-			};
+-
+-			gpioh: gpio@50009000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x7000 0x400>;
+-				clocks = <&rcc GPIOH>;
+-				st,bank-name = "GPIOH";
+-				status = "disabled";
+-			};
+-
+-			gpioi: gpio@5000a000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x8000 0x400>;
+-				clocks = <&rcc GPIOI>;
+-				st,bank-name = "GPIOI";
+-				status = "disabled";
+-			};
+-
+-			gpioj: gpio@5000b000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0x9000 0x400>;
+-				clocks = <&rcc GPIOJ>;
+-				st,bank-name = "GPIOJ";
+-				status = "disabled";
+-			};
+-
+-			gpiok: gpio@5000c000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0xa000 0x400>;
+-				clocks = <&rcc GPIOK>;
+-				st,bank-name = "GPIOK";
+-				status = "disabled";
+-			};
+-		};
+-
+-		pinctrl_z: pinctrl@54004000 {
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			compatible = "st,stm32mp157-z-pinctrl";
+-			ranges = <0 0x54004000 0x400>;
+-			pins-are-numbered;
+-			interrupt-parent = <&exti>;
+-			hwlocks = <&hsem 0 1>;
+-
+-			gpioz: gpio@54004000 {
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				interrupt-controller;
+-				#interrupt-cells = <2>;
+-				reg = <0 0x400>;
+-				clocks = <&rcc GPIOZ>;
+-				st,bank-name = "GPIOZ";
+-				st,bank-ioport = <11>;
+-				status = "disabled";
+-			};
+-		};
+ 	};
+ 
+ 	mlahb: ahb {
+-- 
+2.39.2
+

@@ -1,0 +1,53 @@
+From 82d30b6f5c4adec34c04c11567dc7797367a299b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 9 Dec 2021 13:28:44 +0100
+Subject: [PATCH 0292/1141] media: stm32: dcmipp: enable parallel links with
+ parallel mode
+
+In order to have both CSI and Parallel input of the DCMIPP,
+the links going to the entry of the DCMIPP are disabled by default
+and enabled only when the corresponding mode is found within the
+fwnode in the DT.
+
+Change-Id: I9a396356a21f4627d093ea368e128e38281f75f2
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/232087
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-core.c     | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 6d46861cdc58..c963f38c3958 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -447,6 +447,7 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ 	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
+ 	struct device_node *_np = dcmipp->dev->of_node;//FIXME _np/_ep...
+ 	struct device_node *_ep;
++	struct media_link *link;
+ 	u32 flags = MEDIA_LNK_FL_ENABLED;
+ 
+ 	dev_dbg(dcmipp->dev, "Subdev \"%s\" bound\n", subdev->name);
+@@ -506,6 +507,17 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ 			dev_dbg(dcmipp->dev, "DCMIPP is now linked to \"%s\"\n",
+ 				subdev->name);
+ 
++		/* Enable all links from the parallel subdev */
++		list_for_each_entry(link, &sink->ent->links, list) {
++			/* Only enable link starting from the parallel subdev */
++			if (link->source->entity == sink->ent &&
++			    !(link->flags & MEDIA_LNK_FL_IMMUTABLE)) {
++				ret = media_entity_setup_link(link, MEDIA_LNK_FL_ENABLED);
++				if (ret)
++					dev_err(dcmipp->dev, "Failed to setup link (%d)\n", ret);
++			}
++		}
++
+ 		/* Use the parallel interface */
+ 		reg_write(dcmipp, DCMIPP_CMCR, 0);
+ 
+-- 
+2.39.2
+

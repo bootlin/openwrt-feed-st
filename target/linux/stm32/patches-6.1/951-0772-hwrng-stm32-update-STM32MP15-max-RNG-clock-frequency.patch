@@ -1,0 +1,37 @@
+From 2b963fd236ddce9aefdbf989dd447f502dbfdca8 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 22 Jan 2024 10:52:41 +0100
+Subject: [PATCH 0772/1141] hwrng: stm32 - update STM32MP15 max RNG clock
+ frequency
+
+RNG max clock frequency can be updated to 48MHz according to latest
+tests.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I04c4242e051fe60bf2ff8edfdbff523743ff4298
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/353189
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/char/hw_random/stm32-rng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index 074e410c64f2..acbf6c29bfa5 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -526,7 +526,7 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+ 
+ static const struct stm32_rng_data stm32_rng_data = {
+ 	.has_cond_reset = false,
+-	.max_clock_rate = 3000000,
++	.max_clock_rate = 48000000,
+ 	.nb_clock = 1,
+ };
+ 
+-- 
+2.39.2
+

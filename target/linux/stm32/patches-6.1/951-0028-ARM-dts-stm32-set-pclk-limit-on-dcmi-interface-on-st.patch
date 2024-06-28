@@ -1,0 +1,45 @@
+From 47937a24f0ed893d100fe94a566c6bd83dd78de5 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 7 Sep 2023 14:10:34 +0200
+Subject: [PATCH 0028/1141] ARM: dts: stm32: set pclk limit on dcmi interface
+ on stm32mp157d-ev1
+
+Add the property pclk-max-frequency in the dcmi / ov5640 nodes
+in stm32mp157d-ev1 in order to ensure that sensor pixel clock
+does not exceed the capabilities of the dcmi.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I94e401727d0e6b5b2e3271233b4a8be4b61c4719
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/327623
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ arch/arm/boot/dts/stm32mp157d-ev1.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+index 59607bdac82d..e0338e6fd51e 100644
+--- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
+@@ -197,6 +197,7 @@ dcmi_0: endpoint {
+ 			hsync-active = <0>;
+ 			vsync-active = <0>;
+ 			pclk-sample = <1>;
++			pclk-max-frequency = <77000000>;
+ 		};
+ 	};
+ };
+@@ -456,6 +457,7 @@ ov5640_0: endpoint {
+ 				hsync-active = <0>;
+ 				vsync-active = <0>;
+ 				pclk-sample = <1>;
++				pclk-max-frequency = <77000000>;
+ 			};
+ 		};
+ 	};
+-- 
+2.39.2
+

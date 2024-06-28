@@ -1,0 +1,82 @@
+From e74266af15356018318f8527d4e96e5e0fe43e4a Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 22 Apr 2024 09:02:27 +0200
+Subject: [PATCH 1118/1141] drm/stm: ltdc: remove active spin lock
+
+Fields vblank_active & crc_active are well protected by upper calling
+functions (ie: drm_vblank_disable_and_save) with a spin_lock.
+The mutex act_lock is unnecessary.
+
+Change-Id: I0d1cfbeec14fee83c67edd89ba02007ee16c2ab0
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375363
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 9 ---------
+ drivers/gpu/drm/stm/ltdc.h | 1 -
+ 2 files changed, 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 63777b838977..140ff16d40bd 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -1275,9 +1275,7 @@ static int ltdc_crtc_enable_vblank(struct drm_crtc *crtc)
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+ 	if (state->enable) {
+-		mutex_lock(&ldev->act_lock);
+ 		ldev->vblank_active = true;
+-		mutex_unlock(&ldev->act_lock);
+ 		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ 	} else
+ 		return -EPERM;
+@@ -1291,9 +1289,7 @@ static void ltdc_crtc_disable_vblank(struct drm_crtc *crtc)
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+-	mutex_lock(&ldev->act_lock);
+ 	ldev->vblank_active = false;
+-	mutex_unlock(&ldev->act_lock);
+ 
+ 	if (!ldev->vblank_active && !ldev->crc_active)
+ 		regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
+@@ -1312,15 +1308,11 @@ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
+ 	ldev = crtc_to_ltdc(crtc);
+ 
+ 	if (source && strcmp(source, "auto") == 0) {
+-		mutex_lock(&ldev->act_lock);
+ 		ldev->crc_active = true;
+-		mutex_unlock(&ldev->act_lock);
+ 		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ 		ret = regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
+ 	} else if (!source) {
+-		mutex_lock(&ldev->act_lock);
+ 		ldev->crc_active = false;
+-		mutex_unlock(&ldev->act_lock);
+ 		if (!ldev->vblank_active && !ldev->crc_active)
+ 			regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ 		ret = regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
+@@ -2430,7 +2422,6 @@ int ltdc_load(struct drm_device *ddev)
+ 	rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+ 	mutex_init(&ldev->err_lock);
+-	mutex_init(&ldev->act_lock);
+ 
+ 	def_value = device_property_read_bool(dev, "default-on");
+ 
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 5913eb2e2fb3..b8883ff995f5 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -54,7 +54,6 @@ struct ltdc_device {
+ 	struct clk *ltdc_clk;	/* kernel clock */
+ 	struct clk *lvds_clk;	/* lvds clock */
+ 	struct mutex err_lock;	/* protecting error_status */
+-	struct mutex act_lock;	/* protecting active status */
+ 	struct ltdc_caps caps;
+ 	u32 irq_status;
+ 	u32 fifo_err;		/* fifo underrun error counter */
+-- 
+2.39.2
+

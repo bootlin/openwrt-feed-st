@@ -1,0 +1,87 @@
+From a5d4bb654de45fcd2008e6a8170ae02d056341dc Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 2 Mar 2023 15:28:38 +0100
+Subject: [PATCH 1106/1141] arm64: dts: st: enable CoreSight on stm32mp257f-ev1
+ board
+
+Enable CoreSight on stm32mp257f-ev1 board.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia358b4fc9aa40debc51ff569bda82e332fa79f61
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/353648
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 56 ++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index b13d4f273109..19393d47aa20 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -185,6 +185,62 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
++&cs_cpu_debug0 {
++	status = "okay";
++};
++
++&cs_cpu_debug1 {
++	status = "okay";
++};
++
++&cs_cti0 {
++	status = "okay";
++};
++
++&cs_cti1 {
++	status = "okay";
++};
++
++&cs_cti_cpu0 {
++	status = "okay";
++};
++
++&cs_cti_cpu1 {
++	status = "okay";
++};
++
++&cs_etf {
++	status = "okay";
++};
++
++&cs_etm0 {
++	status = "okay";
++};
++
++&cs_etm1 {
++	status = "okay";
++};
++
++&cs_etr {
++	status = "okay";
++};
++
++&cs_funnel {
++	status = "okay";
++};
++
++&cs_replicator {
++	status = "okay";
++};
++
++&cs_stm {
++	status = "okay";
++};
++
++&cs_tpiu {
++	status = "okay";
++};
++
+ &csi2host {
+ 	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_v1v8>;
+-- 
+2.39.2
+

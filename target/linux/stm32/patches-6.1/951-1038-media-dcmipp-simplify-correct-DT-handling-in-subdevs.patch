@@ -1,0 +1,358 @@
+From b8f4823f85a3be8da66dbc45de9c34a4663cdfb9 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 23 Mar 2024 22:54:08 +0100
+Subject: [PATCH 1038/1141] media: dcmipp: simplify / correct DT handling in
+ subdevs
+
+Following the full CSI/DT support introduced within the input subdev,
+remove few remaining DT related bits within the byteproc/isp subdevs.
+Since the isp subdev now only needs to know if a format is supported,
+simplify even more by removing the whole isp_pix_map structure, and
+now simply keep a unsigned int table of supported MEDIA_BUS_FMT.
+
+Change-Id: I20f849aa6bb09479aa2b9fe112fd18a226d2f347
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369271
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   |  50 ++++---
+ .../st/stm32/stm32-dcmipp/dcmipp-input.c      |  10 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 136 ++++++++----------
+ 3 files changed, 86 insertions(+), 110 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index 861b74c4fff0..d2507f327ec7 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -52,39 +52,37 @@
+ struct dcmipp_byteproc_pix_map {
+ 	unsigned int code;
+ 	unsigned int bpp;
+-	unsigned int dt;
+ };
+ 
+-#define PIXMAP_MBUS_BPP(mbus, byteperpixel, data_type)	\
++#define PIXMAP_MBUS_BPP(mbus, byteperpixel)	\
+ 		{						\
+ 			.code = MEDIA_BUS_FMT_##mbus,		\
+ 			.bpp = byteperpixel,	\
+-			.dt = data_type,	\
+ 		}
+ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+-	PIXMAP_MBUS_BPP(RGB565_2X8_LE, 2, MIPI_CSI2_DT_RGB565),
+-	PIXMAP_MBUS_BPP(YUYV8_2X8, 2, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS_BPP(YVYU8_2X8, 2, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS_BPP(UYVY8_2X8, 2, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS_BPP(VYUY8_2X8, 2, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS_BPP(Y8_1X8, 1, 0x00), /* TODO - DT value to be fixed */
+-	PIXMAP_MBUS_BPP(SBGGR8_1X8, 1, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS_BPP(SRGGB8_1X8, 1, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS_BPP(SBGGR10_1X10, 2, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS_BPP(SGBRG10_1X10, 2, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS_BPP(SGRBG10_1X10, 2, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS_BPP(SRGGB10_1X10, 2, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS_BPP(SBGGR12_1X12, 2, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS_BPP(SGBRG12_1X12, 2, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS_BPP(SGRBG12_1X12, 2, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS_BPP(SRGGB12_1X12, 2, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS_BPP(SBGGR14_1X14, 2, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS_BPP(SGBRG14_1X14, 2, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS_BPP(SGRBG14_1X14, 2, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS_BPP(SRGGB14_1X14, 2, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS_BPP(JPEG_1X8, 1, 0x00), /* TODO - DT value to be fixed */
++	PIXMAP_MBUS_BPP(RGB565_2X8_LE, 2),
++	PIXMAP_MBUS_BPP(YUYV8_2X8, 2),
++	PIXMAP_MBUS_BPP(YVYU8_2X8, 2),
++	PIXMAP_MBUS_BPP(UYVY8_2X8, 2),
++	PIXMAP_MBUS_BPP(VYUY8_2X8, 2),
++	PIXMAP_MBUS_BPP(Y8_1X8, 1),
++	PIXMAP_MBUS_BPP(SBGGR8_1X8, 1),
++	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1),
++	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1),
++	PIXMAP_MBUS_BPP(SRGGB8_1X8, 1),
++	PIXMAP_MBUS_BPP(SBGGR10_1X10, 2),
++	PIXMAP_MBUS_BPP(SGBRG10_1X10, 2),
++	PIXMAP_MBUS_BPP(SGRBG10_1X10, 2),
++	PIXMAP_MBUS_BPP(SRGGB10_1X10, 2),
++	PIXMAP_MBUS_BPP(SBGGR12_1X12, 2),
++	PIXMAP_MBUS_BPP(SGBRG12_1X12, 2),
++	PIXMAP_MBUS_BPP(SGRBG12_1X12, 2),
++	PIXMAP_MBUS_BPP(SRGGB12_1X12, 2),
++	PIXMAP_MBUS_BPP(SBGGR14_1X14, 2),
++	PIXMAP_MBUS_BPP(SGBRG14_1X14, 2),
++	PIXMAP_MBUS_BPP(SGRBG14_1X14, 2),
++	PIXMAP_MBUS_BPP(SRGGB14_1X14, 2),
++	PIXMAP_MBUS_BPP(JPEG_1X8, 1),
+ };
+ 
+ static const struct dcmipp_byteproc_pix_map *dcmipp_byteproc_pix_map_by_code(u32 code)
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+index 5ddd6ab8a7c3..61e56d72f4bf 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+@@ -99,7 +99,7 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(YVYU8_2X8, YVYU8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(VYUY8_2X8, VYUY8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
+ 	/* GREY */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(Y8_1X8, Y8_1X8, G8, 0, 0), /* TODO - DT value */
++	PIXMAP_SINK_SRC_PRCR_SWAP(Y8_1X8, Y8_1X8, G8, 0, MIPI_CSI2_DT_RAW8),
+ 	/* Raw Bayer */
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR8_1X8, SBGGR8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG8_1X8, SGBRG8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
+@@ -118,7 +118,7 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG14_1X14, SGRBG14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
+ 	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB14_1X14, SRGGB14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
+ 	/* JPEG */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(JPEG_1X8, JPEG_1X8, BYTE_STREAM, 0, 0), /* TODO - DT value */
++	PIXMAP_SINK_SRC_PRCR_SWAP(JPEG_1X8, JPEG_1X8, BYTE_STREAM, 0, 0),
+ };
+ 
+ /*
+@@ -431,11 +431,7 @@ static int dcmipp_inp_configure_csi(struct dcmipp_inp_device *par, int enable)
+ 	reg_clear(par, DCMIPP_P0FSCR,
+ 		  DCMIPP_P0FSCR_DTMODE_MASK | DCMIPP_P0FSCR_DTIDA_MASK);
+ 
+-	/* In case of JPEG we don't know the DT so we allow all data */
+-	/*
+-	 * TODO - check instead dt == 0 for the time being to allow other
+-	 * unknown data-type
+-	 */
++	/* If DT is unknown (such as for JPEG) we allow all data */
+ 	if (!vpix->dt)
+ 		reg_set(par, DCMIPP_P0FSCR,
+ 			DCMIPP_P0FSCR_DTMODE_ALLDT << DCMIPP_P0FSCR_DTMODE_SHIFT);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index dfea34512714..2234b7513ad5 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -75,58 +75,48 @@
+ #define ISP_MEDIA_BUS_SINK_FMT_DEFAULT MEDIA_BUS_FMT_RGB565_2X8_LE
+ #define ISP_MEDIA_BUS_SRC_FMT_DEFAULT MEDIA_BUS_FMT_RGB888_1X24
+ 
+-struct dcmipp_isp_pix_map {
+-	unsigned int code;
+-	unsigned int dt;
+-};
+-
+-#define PIXMAP_MBUS(mbus, datatype) \
+-		{						\
+-			.code = MEDIA_BUS_FMT_##mbus,		\
+-			.dt = datatype,		\
+-		}
+-static const struct dcmipp_isp_pix_map dcmipp_isp_sink_pix_map_list[] = {
++static const unsigned int dcmipp_isp_sink_pix_map_list[] = {
+ 	/* RGB565 */
+-	PIXMAP_MBUS(RGB565_2X8_LE, MIPI_CSI2_DT_RGB565),
++	MEDIA_BUS_FMT_RGB565_2X8_LE,
+ 	/* YUV422 */
+-	PIXMAP_MBUS(YUYV8_2X8, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS(UYVY8_2X8, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS(YVYU8_2X8, MIPI_CSI2_DT_YUV422_8B),
+-	PIXMAP_MBUS(VYUY8_2X8, MIPI_CSI2_DT_YUV422_8B),
++	MEDIA_BUS_FMT_YUYV8_2X8,
++	MEDIA_BUS_FMT_UYVY8_2X8,
++	MEDIA_BUS_FMT_YVYU8_2X8,
++	MEDIA_BUS_FMT_VYUY8_2X8,
+ 	/* GREY */
+-	PIXMAP_MBUS(Y8_1X8, 0x00), /* TODO - DT value to be fixed */
++	MEDIA_BUS_FMT_Y8_1X8,
+ 	/* Raw Bayer */
+ 	/* Raw 8 */
+-	PIXMAP_MBUS(SBGGR8_1X8, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS(SGBRG8_1X8, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS(SGRBG8_1X8, MIPI_CSI2_DT_RAW8),
+-	PIXMAP_MBUS(SRGGB8_1X8, MIPI_CSI2_DT_RAW8),
++	MEDIA_BUS_FMT_SBGGR8_1X8,
++	MEDIA_BUS_FMT_SGBRG8_1X8,
++	MEDIA_BUS_FMT_SGRBG8_1X8,
++	MEDIA_BUS_FMT_SRGGB8_1X8,
+ 	/* Raw 10 */
+-	PIXMAP_MBUS(SBGGR10_1X10, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS(SGBRG10_1X10, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS(SGRBG10_1X10, MIPI_CSI2_DT_RAW10),
+-	PIXMAP_MBUS(SRGGB10_1X10, MIPI_CSI2_DT_RAW10),
++	MEDIA_BUS_FMT_SBGGR10_1X10,
++	MEDIA_BUS_FMT_SGBRG10_1X10,
++	MEDIA_BUS_FMT_SGRBG10_1X10,
++	MEDIA_BUS_FMT_SRGGB10_1X10,
+ 	/* Raw 12 */
+-	PIXMAP_MBUS(SBGGR12_1X12, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS(SGBRG12_1X12, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS(SGRBG12_1X12, MIPI_CSI2_DT_RAW12),
+-	PIXMAP_MBUS(SRGGB12_1X12, MIPI_CSI2_DT_RAW12),
++	MEDIA_BUS_FMT_SBGGR12_1X12,
++	MEDIA_BUS_FMT_SGBRG12_1X12,
++	MEDIA_BUS_FMT_SGRBG12_1X12,
++	MEDIA_BUS_FMT_SRGGB12_1X12,
+ 	/* Raw 14 */
+-	PIXMAP_MBUS(SBGGR14_1X14, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS(SGBRG14_1X14, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS(SGRBG14_1X14, MIPI_CSI2_DT_RAW14),
+-	PIXMAP_MBUS(SRGGB14_1X14, MIPI_CSI2_DT_RAW14),
++	MEDIA_BUS_FMT_SBGGR14_1X14,
++	MEDIA_BUS_FMT_SGBRG14_1X14,
++	MEDIA_BUS_FMT_SGRBG14_1X14,
++	MEDIA_BUS_FMT_SRGGB14_1X14,
+ };
+ 
+-static const struct dcmipp_isp_pix_map dcmipp_isp_src_pix_map_list[] = {
+-	PIXMAP_MBUS(RGB888_1X24, 0),
+-	PIXMAP_MBUS(YUV8_1X24, 0),
++static const unsigned int dcmipp_isp_src_pix_map_list[] = {
++	MEDIA_BUS_FMT_RGB888_1X24,
++	MEDIA_BUS_FMT_YUV8_1X24,
+ };
+ 
+-static const struct dcmipp_isp_pix_map *
++static unsigned int
+ dcmipp_isp_pix_map_by_index(unsigned int i, unsigned int pad)
+ {
+-	const struct dcmipp_isp_pix_map *l;
++	const unsigned int *l;
+ 	unsigned int size;
+ 
+ 	if (IS_SRC(pad)) {
+@@ -138,15 +128,15 @@ dcmipp_isp_pix_map_by_index(unsigned int i, unsigned int pad)
+ 	}
+ 
+ 	if (i >= size)
+-		return NULL;
++		return 0;
+ 
+-	return &l[i];
++	return l[i];
+ }
+ 
+-static const struct dcmipp_isp_pix_map *
++static unsigned int
+ dcmipp_isp_pix_map_by_code(u32 code, unsigned int pad)
+ {
+-	const struct dcmipp_isp_pix_map *l;
++	const unsigned int *l;
+ 	unsigned int size;
+ 	unsigned int i;
+ 
+@@ -159,11 +149,11 @@ dcmipp_isp_pix_map_by_code(u32 code, unsigned int pad)
+ 	}
+ 
+ 	for (i = 0; i < size; i++) {
+-		if (l[i].code == code)
+-			return &l[i];
++		if (l[i] == code)
++			return code;
+ 	}
+ 
+-	return NULL;
++	return 0;
+ }
+ 
+ struct dcmipp_isp_device {
+@@ -208,11 +198,8 @@ static inline unsigned int dcmipp_isp_compute_decimation(unsigned int orig,
+ 
+ static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+ {
+-	const struct dcmipp_isp_pix_map *vpix;
+-
+ 	/* Only accept code in the pix map table */
+-	vpix = dcmipp_isp_pix_map_by_code(fmt->code, pad);
+-	if (!vpix)
++	if (!dcmipp_isp_pix_map_by_code(fmt->code, pad))
+ 		fmt->code = IS_SRC(pad) ? ISP_MEDIA_BUS_SRC_FMT_DEFAULT :
+ 					  ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
+ 
+@@ -248,13 +235,13 @@ static int dcmipp_isp_enum_mbus_code(struct v4l2_subdev *sd,
+ 				     struct v4l2_subdev_state *state,
+ 				     struct v4l2_subdev_mbus_code_enum *code)
+ {
+-	const struct dcmipp_isp_pix_map *vpix;
++	unsigned int pix_code;
+ 
+-	vpix = dcmipp_isp_pix_map_by_index(code->index, code->pad);
+-	if (!vpix)
++	pix_code = dcmipp_isp_pix_map_by_index(code->index, code->pad);
++	if (!pix_code)
+ 		return -EINVAL;
+ 
+-	code->code = vpix->code;
++	code->code = pix_code;
+ 
+ 	return 0;
+ }
+@@ -263,14 +250,11 @@ static int dcmipp_isp_enum_frame_size(struct v4l2_subdev *sd,
+ 				      struct v4l2_subdev_state *state,
+ 				      struct v4l2_subdev_frame_size_enum *fse)
+ {
+-	const struct dcmipp_isp_pix_map *vpix;
+-
+ 	if (fse->index)
+ 		return -EINVAL;
+ 
+ 	/* Only accept code in the pix map table */
+-	vpix = dcmipp_isp_pix_map_by_code(fse->code, fse->pad);
+-	if (!vpix)
++	if (!dcmipp_isp_pix_map_by_code(fse->code, fse->pad))
+ 		return -EINVAL;
+ 
+ 	fse->min_width = DCMIPP_FRAME_MIN_WIDTH;
+@@ -551,35 +535,33 @@ static const struct v4l2_subdev_pad_ops dcmipp_isp_pad_ops = {
+ 
+ static void dcmipp_isp_config_demosaicing(struct dcmipp_isp_device *isp)
+ {
+-	const struct dcmipp_isp_pix_map *vpix =
+-		dcmipp_isp_pix_map_by_code(isp->sink_fmt.code, 0);
+-	unsigned int val = 0;
++	unsigned int pix_code = isp->sink_fmt.code, val = 0;
+ 
+ 	/* Disable demosaicing */
+ 	reg_clear(isp, DCMIPP_P1DMCR, DCMIPP_P1DMCR_ENABLE | DCMIPP_P1DMCR_TYPE_MASK);
+ 
+-	if (vpix->code >= 0x3000 && vpix->code < 0x4000) {
++	if (pix_code >= 0x3000 && pix_code < 0x4000) {
+ 		dev_dbg(isp->dev, "Input is RawBayer, enable Demosaicing\n");
+ 
+-		if (vpix->code == MEDIA_BUS_FMT_SBGGR8_1X8 ||
+-		    vpix->code == MEDIA_BUS_FMT_SBGGR10_1X10 ||
+-		    vpix->code == MEDIA_BUS_FMT_SBGGR12_1X12 ||
+-		    vpix->code == MEDIA_BUS_FMT_SBGGR14_1X14)
++		if (pix_code == MEDIA_BUS_FMT_SBGGR8_1X8 ||
++		    pix_code == MEDIA_BUS_FMT_SBGGR10_1X10 ||
++		    pix_code == MEDIA_BUS_FMT_SBGGR12_1X12 ||
++		    pix_code == MEDIA_BUS_FMT_SBGGR14_1X14)
+ 			val = DCMIPP_P1DMCR_TYPE_BGGR << DCMIPP_P1DMCR_TYPE_SHIFT;
+-		else if (vpix->code == MEDIA_BUS_FMT_SGBRG8_1X8 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGBRG10_1X10 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGBRG12_1X12 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGBRG14_1X14)
++		else if (pix_code == MEDIA_BUS_FMT_SGBRG8_1X8 ||
++			 pix_code == MEDIA_BUS_FMT_SGBRG10_1X10 ||
++			 pix_code == MEDIA_BUS_FMT_SGBRG12_1X12 ||
++			 pix_code == MEDIA_BUS_FMT_SGBRG14_1X14)
+ 			val = DCMIPP_P1DMCR_TYPE_GBRG << DCMIPP_P1DMCR_TYPE_SHIFT;
+-		else if (vpix->code == MEDIA_BUS_FMT_SGRBG8_1X8 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGRBG10_1X10 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGRBG12_1X12 ||
+-			 vpix->code == MEDIA_BUS_FMT_SGRBG14_1X14)
++		else if (pix_code == MEDIA_BUS_FMT_SGRBG8_1X8 ||
++			 pix_code == MEDIA_BUS_FMT_SGRBG10_1X10 ||
++			 pix_code == MEDIA_BUS_FMT_SGRBG12_1X12 ||
++			 pix_code == MEDIA_BUS_FMT_SGRBG14_1X14)
+ 			val = DCMIPP_P1DMCR_TYPE_GRBG << DCMIPP_P1DMCR_TYPE_SHIFT;
+-		else if (vpix->code == MEDIA_BUS_FMT_SRGGB8_1X8 ||
+-			 vpix->code == MEDIA_BUS_FMT_SRGGB10_1X10 ||
+-			 vpix->code == MEDIA_BUS_FMT_SRGGB12_1X12 ||
+-			 vpix->code == MEDIA_BUS_FMT_SRGGB14_1X14)
++		else if (pix_code == MEDIA_BUS_FMT_SRGGB8_1X8 ||
++			 pix_code == MEDIA_BUS_FMT_SRGGB10_1X10 ||
++			 pix_code == MEDIA_BUS_FMT_SRGGB12_1X12 ||
++			 pix_code == MEDIA_BUS_FMT_SRGGB14_1X14)
+ 			val = DCMIPP_P1DMCR_TYPE_RGGB << DCMIPP_P1DMCR_TYPE_SHIFT;
+ 
+ 		val |= DCMIPP_P1DMCR_ENABLE;
+-- 
+2.39.2
+

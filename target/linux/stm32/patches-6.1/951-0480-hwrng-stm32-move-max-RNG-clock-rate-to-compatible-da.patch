@@ -1,0 +1,71 @@
+From 63c02ef765eee628259e7d9dfe7c6455281d6c7d Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:37 +0200
+Subject: [PATCH 0480/1141] hwrng: stm32 - move max RNG clock rate to
+ compatible data
+
+The max_clock_rate should be moved to compatible data to adapt the
+constraint to the different platforms.
+
+STM32MP13 constraint is updated to 48MHz as it has been NIST-certified
+this way.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I472ac68a8d3670fe1a7c082036011b53bb9a9b47
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/322331
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/char/hw_random/stm32-rng.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index bed28707d5d9..a14685cf7fe4 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -44,11 +44,10 @@
+ 
+ #define RNG_HTCR	0x10
+ 
+-#define RNG_MAX_NOISE_CLK_FREQ	3000000
+-
+ #define RNG_NB_RECOVER_TRIES	3
+ 
+ struct stm32_rng_data {
++	uint	max_clock_rate;
+ 	u32	cr;
+ 	u32	nscr;
+ 	u32	htcr;
+@@ -267,7 +266,7 @@ static uint stm32_rng_clock_freq_restrain(struct hwrng *rng)
+ 	 * No need to handle the case when clock-div > 0xF as it is physically
+ 	 * impossible
+ 	 */
+-	while ((clock_rate >> clock_div) > RNG_MAX_NOISE_CLK_FREQ)
++	while ((clock_rate >> clock_div) > priv->data->max_clock_rate)
+ 		clock_div++;
+ 
+ 	pr_debug("RNG clk rate : %lu\n", clk_get_rate(priv->clk) >> clock_div);
+@@ -479,6 +478,7 @@ static const struct dev_pm_ops stm32_rng_pm_ops = {
+ 
+ static const struct stm32_rng_data stm32mp13_rng_data = {
+ 	.has_cond_reset = true,
++	.max_clock_rate = 48000000,
+ 	.cr = 0x00F00D00,
+ 	.nscr = 0x2B5BB,
+ 	.htcr = 0x969D,
+@@ -486,6 +486,7 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+ 
+ static const struct stm32_rng_data stm32_rng_data = {
+ 	.has_cond_reset = false,
++	.max_clock_rate = 3000000,
+ };
+ 
+ static const struct of_device_id stm32_rng_match[] = {
+-- 
+2.39.2
+

@@ -1,0 +1,2233 @@
+From 85b0901e6bc4c140a52625fd3964704e34752783 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 10 Mar 2023 18:12:46 +0100
+Subject: [PATCH 0498/1141] iio: adc: stm32-mdf: add some audio features to mdf
+
+This patch adds the following audio feature support to STM32 MDF:
+- Rework serial interface management
+- Auto-scaling
+- Synchronous mode
+- Interleaved channel
+- Microphone delay
+- Reset handling
+- Power management
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ie78964ac55356e78f0810269203bde99140ce399
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/314752
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/iio/adc/Makefile           |   1 +
+ drivers/iio/adc/stm32-mdf-adc.c    | 710 ++++++++++++++++++++++++-----
+ drivers/iio/adc/stm32-mdf-core.c   | 519 +++++++++------------
+ drivers/iio/adc/stm32-mdf-serial.c | 290 ++++++++++++
+ drivers/iio/adc/stm32-mdf.h        |  47 +-
+ sound/soc/stm/stm32_amdf.c         |   2 +-
+ 6 files changed, 1153 insertions(+), 416 deletions(-)
+ create mode 100644 drivers/iio/adc/stm32-mdf-serial.c
+
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index e60f5590b924..f46b3baece7a 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -96,6 +96,7 @@ obj-$(CONFIG_STM32_ADC) += stm32-adc.o
+ obj-$(CONFIG_STM32_DFSDM_CORE) += stm32-dfsdm-core.o
+ obj-$(CONFIG_STM32_DFSDM_ADC) += stm32-dfsdm-adc.o
+ obj-$(CONFIG_STM32_MDF_CORE) += stm32-mdf-core.o
++obj-$(CONFIG_STM32_MDF_CORE) += stm32-mdf-serial.o
+ obj-$(CONFIG_STM32_MDF_ADC) += stm32-mdf-adc.o
+ obj-$(CONFIG_STMPE_ADC) += stmpe-adc.o
+ obj-$(CONFIG_TI_ADC081C) += ti-adc081c.o
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index bae784624d65..b97e7405d09c 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -2,8 +2,7 @@
+ /*
+  * This file is part of STM32 MDF driver
+  *
+- * Copyright (C) 2023, STMicroelectronics.
+- * Author: Olivier Moysan <olivier.moysan@foss.st.com>.
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
+  */
+ 
+ #include <linux/clk.h>
+@@ -30,17 +29,52 @@
+ #define MDF_DMA_BUFFER_SIZE (4 * PAGE_SIZE)
+ #define STM32_MDF_ITF_MAX 8
+ #define STM32_MDF_DATA_RES 24
++#define STM32_MDF_HPF_BYPASS -1
+ 
+ struct stm32_mdf_dev_data {
+ 	int type;
+ 	int (*init)(struct device *dev, struct iio_dev *indio_dev);
+ };
+ 
++/*
++ * struct stm32_mdf_adc - STM32 MDF ADC private data
++ * @entry: pointer to serial interfaces list
++ * @dev: pointer to filter device
++ * @mdf: pointer to mdf common data
++ * @regmap: regmap pointer for register read/write
++ * @node: pointer to filter node
++ * @dma_chan: filter dma channel pointer
++ * @dev_data: mdf device data pointer
++ * @sitf: pointer to serial interface feeding the filter
++ * @dma_buf: physical dma address
++ * @phys_addr: mdf physical address
++ * @cb: iio consumer callback function pointer
++ * @cb_priv: pointer to consumer private structure
++ * @sck_freq: serial interface frequency
++ * @sample_freq: audio sampling frequency
++ * @fl_id: filter index
++ * @decim_ratio: total decimation ratio
++ * @decim_cic: CIC filter decimation ratio
++ * @bufi: dma buffer current position
++ * @buf_sz: dma buffer size
++ * @cicmode: cic filter order
++ * @hpf_cutoff: high pass filter cut-off frequency
++ * @sync: syncchronous mode
++ * @delay: microphone delay
++ * @rx_buf: dma buffer pointer
++ * @rsflt_bypass: reshape filter bypass flag
++ * @trigger: TRGO trigger flag
++ * @interleaved: interleave flag
++ */
+ struct stm32_mdf_adc {
++	struct list_head entry;
++	struct device *dev;
+ 	struct stm32_mdf *mdf;
+ 	struct regmap *regmap;
++	struct fwnode_handle *node;
+ 	struct dma_chan *dma_chan;
+ 	const struct stm32_mdf_dev_data *dev_data;
++	struct stm32_mdf_sitf *sitf;
+ 	dma_addr_t dma_buf;
+ 	phys_addr_t phys_addr;
+ 	int (*cb)(const void *data, size_t size, void *cb_priv);
+@@ -48,17 +82,28 @@ struct stm32_mdf_adc {
+ 	unsigned long sck_freq;
+ 	unsigned long sample_freq;
+ 	unsigned int fl_id;
+-	unsigned int sitf_id;
+ 	unsigned int decim_ratio;
+ 	unsigned int decim_cic;
+-	unsigned int decim_rsflt;
+ 	unsigned int bufi;
+ 	unsigned int buf_sz;
+ 	u32 cicmode;
+-	u32 datsrc;
+-	u32 bsmx;
++	u32 hpf_cutoff;
++	u32 sync;
++	u32 delay;
+ 	u8 *rx_buf;
+ 	bool rsflt_bypass;
++	bool trigger;
++	bool interleaved;
++};
++
++struct stm32_mdf_scales {
++	unsigned int scale;
++	int gain;
++};
++
++struct stm32_mdf_log10 {
++	unsigned int raw;
++	unsigned int log;
+ };
+ 
+ enum sd_converter_type {
+@@ -74,6 +119,88 @@ enum stm32_data_src_type {
+ 	STM32_MDF_DATSRC_NB,
+ };
+ 
++enum stm32_acq_mode {
++	STM32_MDF_ACQ_MODE_ASYNC_CONT,
++	STM32_MDF_ACQ_MODE_ASYNC_SINGLE_SHOT,
++	STM32_MDF_ACQ_MODE_SYNC_CONT,
++	STM32_MDF_ACQ_MODE_WINDOW_CONT,
++	STM32_MDF_ACQ_MODE_SYNC_SNAPSHOT,
++	STM32_MDF_ACQ_MODE_NB,
++};
++
++enum stm32_trig_src {
++	STM32_MDF_TRGSRC_TRGO,
++	STM32_MDF_TRGSRC_NB,
++};
++
++static const unsigned int stm32_mdf_hpf_cutoff_ratio[] = {
++	625, 1250, 2500, 9500
++};
++
++/*
++ * The CIC output data resolution cannot exceed 26 bits.
++ * Output data resolution: D = N * ln(D) / ln(2) + 1 (for serial interface data),
++ * where N is filter order and D the CIC decimation factor.
++ * Following table gives the maximum decimation ratio for filter order [0..5].
++ */
++static const unsigned int stm32_mdf_cic_max_decim_sitf[] = {
++512, 512, 512, 322, 76, 32
++};
++
++/* Gain (dB) x 10 according to scale value in hex */
++static const struct stm32_mdf_scales stm32_mdf_scale_table[] = {
++	{0x20, -482},
++	{0x21, -446},
++	{0x22, -421},
++	{0x23, -386},
++	{0x24, -361},
++	{0x25, -326},
++	{0x26, -301},
++	{0x27, -266},
++	{0x28, -241},
++	{0x29, -206},
++	{0x2A, -181},
++	{0x2B, -145},
++	{0x2C, -120},
++	{0x2D, -85},
++	{0x2E, -60},
++	{0x2F, -25},
++	{0x00, 0},
++	{0x01, 35},
++	{0x02, 60},
++	{0x03, 95},
++	{0x04, 120},
++	{0x05, 156},
++	{0x06, 181},
++	{0x07, 216},
++	{0x08, 241},
++	{0x09, 276},
++	{0x0A, 301},
++	{0x0B, 336},
++	{0x0C, 361},
++	{0x0D, 396},
++	{0x0E, 421},
++	{0x0F, 457},
++	{0x10, 482},
++	{0x11, 517},
++	{0x12, 542},
++	{0x13, 577},
++	{0x14, 602},
++	{0x15, 637},
++	{0x16, 662},
++	{0x17, 697},
++	{0x18, 722},
++};
++
++/* Prime number 1000 x log10 table */
++static const struct stm32_mdf_log10 stm32_mdf_log_table[] = {
++	{2, 301}, {3, 477}, {5, 699}, {7, 845}, {11, 1041}, {13, 1114}, {17, 1230}, {19, 1279},
++	{23, 1362}, {29, 1462}, {31, 1491}, {37, 1568}, {41, 1613}, {43, 1633}, {47, 1672},
++	{53, 1724}, {59, 1771}, {61, 1785}, {67, 1826}, {71, 1851}, {73, 1863}, {79, 1898},
++	{83, 1919}, {89, 1949}, {97, 1987}, {101, 2004}, {103, 2013}, {107, 2029}, {109, 2037},
++	{113, 2053}, {127, 2104}
++};
++
+ static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -143,44 +270,104 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+ 	.fast_io = true,
+ };
+ 
+-static int stm32_mdf_filter_configure(struct stm32_mdf_adc *adc)
++static struct stm32_mdf_adc *stm32_mdf_get_filter_by_id(struct stm32_mdf *mdf, unsigned int fl_id)
+ {
+-	return 0;
++	struct stm32_mdf_adc *adc;
++
++	/* Look for filter data from filter id */
++	list_for_each_entry(adc, &mdf->filter_list, entry)
++		if (adc->fl_id == fl_id)
++			return adc;
++
++	return NULL;
++}
++
++static struct stm32_mdf_adc *stm32_mdf_get_filter_by_handle(struct stm32_mdf *mdf,
++							    struct fwnode_handle *node)
++{
++	struct stm32_mdf_adc *adc;
++
++	/* Look for filter data from filter node handle */
++	list_for_each_entry(adc, &mdf->filter_list, entry) {
++		if (adc->node == node)
++			return adc;
++	}
++	return NULL;
+ }
+ 
+ static int stm32_mdf_start_filter(struct stm32_mdf_adc *adc)
+ {
++	struct stm32_mdf_adc *adc_inter;
++	struct stm32_mdf *mdf = adc->mdf;
++	u32 val;
++
++	regmap_read(adc->regmap, MDF_DFLTCR_REG, &val);
++	if (val & MDF_DFLTCR_ACTIVE) {
++		dev_err(adc->dev, "Filter [%d] is already running\n", adc->fl_id);
++		return -EBUSY;
++	}
++
++	if (!adc->fl_id && adc->mdf->nb_interleave) {
++		list_for_each_entry(adc_inter, &mdf->filter_list, entry) {
++			if (!adc_inter->interleaved)
++				continue;
++
++			regmap_read(adc_inter->regmap, MDF_DFLTCR_REG, &val);
++			if (val & MDF_DFLTCR_ACTIVE) {
++				dev_err(adc_inter->dev, "Filter [%d] is already running\n",
++					adc_inter->fl_id);
++				return -EBUSY;
++			}
++
++			regmap_set_bits(adc_inter->regmap, MDF_DFLTCR_REG, MDF_DFLTCR_DFLTEN);
++		}
++	}
++
+ 	return regmap_set_bits(adc->regmap, MDF_DFLTCR_REG, MDF_DFLTCR_DFLTEN);
+ }
+ 
+ static void stm32_mdf_stop_filter(struct stm32_mdf_adc *adc)
+ {
++	struct stm32_mdf_adc *adc_inter;
++	struct stm32_mdf *mdf = adc->mdf;
++
++	if (!adc->fl_id && mdf->nb_interleave) {
++		list_for_each_entry(adc_inter, &mdf->filter_list, entry) {
++			if (!adc_inter->interleaved)
++				continue;
++
++			regmap_clear_bits(adc_inter->regmap, MDF_DFLTCR_REG, MDF_DFLTCR_DFLTEN);
++		}
++	}
++
+ 	regmap_clear_bits(adc->regmap, MDF_DFLTCR_REG, MDF_DFLTCR_DFLTEN);
+ }
+ 
+ static int stm32_mdf_start_conv(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+-	struct stm32_mdf *mdf = adc->mdf;
+-	struct stm32_mdf_sitf *sitf = &mdf->sitf[adc->sitf_id];
+ 	int ret;
+ 
+-	ret = stm32_mdf_start_sitf(sitf);
++	ret = stm32_mdf_sitf_start(adc->sitf);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = stm32_mdf_filter_configure(adc);
+-	if (ret < 0)
+-		goto stop_sitf;
+-
+ 	ret = stm32_mdf_start_filter(adc);
+ 	if (ret < 0)
+ 		goto stop_sitf;
+ 
++	if (adc->trigger) {
++		ret = stm32_mdf_trigger(adc->mdf);
++		if (ret < 0)
++			goto stop_filter;
++	}
++
+ 	return 0;
+ 
++stop_filter:
++	stm32_mdf_stop_filter(adc);
+ stop_sitf:
+-	stm32_mdf_stop_sitf(sitf);
++	stm32_mdf_sitf_stop(adc->sitf);
+ 
+ 	return ret;
+ }
+@@ -188,12 +375,10 @@ static int stm32_mdf_start_conv(struct iio_dev *indio_dev)
+ static void stm32_mdf_stop_conv(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+-	struct stm32_mdf *mdf = adc->mdf;
+-	struct stm32_mdf_sitf *sitf = &mdf->sitf[adc->sitf_id];
+ 
+ 	stm32_mdf_stop_filter(adc);
+ 
+-	stm32_mdf_stop_sitf(sitf);
++	stm32_mdf_sitf_stop(adc->sitf);
+ }
+ 
+ static unsigned int stm32_mdf_adc_dma_residue(struct stm32_mdf_adc *adc)
+@@ -307,7 +492,6 @@ static void stm32_mdf_adc_dma_stop(struct iio_dev *indio_dev)
+ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+-	struct stm32_mdf *mdf = adc->mdf;
+ 	int ret;
+ 
+ 	/* Reset adc buffer index */
+@@ -318,10 +502,10 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+ 		return ret;
+ 
+ 	/* Enable CCKx clock if configured as output */
+-	ret = clk_prepare_enable(mdf->sitf[adc->sitf_id].sck);
++	ret = clk_prepare_enable(adc->sitf->sck);
+ 	if (ret < 0) {
+ 		dev_err(&indio_dev->dev, "Failed to enable clock %s\n",
+-			__clk_get_name(mdf->sitf[adc->sitf_id].sck));
++			__clk_get_name(adc->sitf->sck));
+ 		goto err_stop_mdf;
+ 	}
+ 
+@@ -348,7 +532,7 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+ err_stop_dma:
+ 	stm32_mdf_adc_dma_stop(indio_dev);
+ err_stop_clk:
+-	clk_disable_unprepare(mdf->sitf[adc->sitf_id].sck);
++	clk_disable_unprepare(adc->sitf->sck);
+ err_stop_mdf:
+ 	stm32_mdf_stop_mdf(adc->mdf);
+ 
+@@ -358,7 +542,6 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+ static int stm32_mdf_predisable(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+-	struct stm32_mdf *mdf = adc->mdf;
+ 
+ 	stm32_mdf_stop_conv(indio_dev);
+ 
+@@ -368,7 +551,7 @@ static int stm32_mdf_predisable(struct iio_dev *indio_dev)
+ 			  MDF_DFLTIER_DOVRIE_MASK | MDF_DFLTIER_SATIE_MASK);
+ 
+ 	/* Disable CCKx clock if configured as output */
+-	clk_disable_unprepare(mdf->sitf[adc->sitf_id].sck);
++	clk_disable_unprepare(adc->sitf->sck);
+ 
+ 	stm32_mdf_stop_mdf(adc->mdf);
+ 
+@@ -446,7 +629,6 @@ static int stm32_mdf_audio_init(struct device *dev, struct iio_dev *indio_dev)
+ 	}
+ 	ch->info_mask_separate = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+ 
+-	/* TODO: manage interleave */
+ 	indio_dev->num_channels = 1;
+ 	indio_dev->channels = ch;
+ 
+@@ -459,75 +641,199 @@ static int stm32_mdf_audio_init(struct device *dev, struct iio_dev *indio_dev)
+ 	return 0;
+ }
+ 
+-static int stm32_mdf_compute_flt_decim(struct iio_dev *indio_dev, unsigned int decim)
++static int stm32_mdf_compute_scale(struct device *dev, unsigned int decim,
++				   unsigned int order, unsigned int data_size)
+ {
+-	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	unsigned long max = ARRAY_SIZE(stm32_mdf_log_table);
++	unsigned int prime_factors[16];
++	unsigned int num, div, logd;
++	int i, j, scale;
++
++	/* Decompose decimation ratio D, as prime number factors, to compute log10(D) */
++	j = 0;
++	num = decim;
++	while (num > 1) {
++		i = 0;
++		while (i < max) {
++			div = stm32_mdf_log_table[i].raw;
++			if (!(num % div)) {
++				prime_factors[j] = stm32_mdf_log_table[i].log;
++				num = num / div;
++				j++;
++				break;
++			}
++			i++;
++		}
++		if (i == max) {
++			dev_warn(dev, "Failed to set scale. Output signal may saturate.\n");
++			return 0;
++		}
++	}
++
++	for (i = 0; i < j; i++)
++		logd += prime_factors[i];
++
++	/* scale = 20 * ((DS - 1) * log10(2) - NF * log10(D)) */
++	scale = 20 * ((data_size - 1) * stm32_mdf_log_table[0].log - order * logd);
++
++	return scale;
++}
++
++static int stm32_mdf_config_filter(struct iio_dev *indio_dev, unsigned int decim)
++{
++	struct stm32_mdf_adc *adc = iio_priv(indio_dev), *adc_inter;
++	struct stm32_mdf *mdf = adc->mdf;
++	struct device *dev = &indio_dev->dev;
+ 	unsigned int decim_cic, decim_rsflt = 1;
+-	u32 val;
+-	int ret;
++	unsigned int data_size = STM32_MDF_DATA_RES, order = adc->cicmode;
++	int i, log, ret, scale, max_scale;
+ 
+-	decim_rsflt = 1;
+ 	if (!adc->rsflt_bypass) {
+-		regmap_read(adc->regmap, MDF_DFLTRSFR_REG, &val);
+-		if (!(val & MDF_DFLTRSFR_RSFLTD))
+-			decim_rsflt = 4;
++		decim_rsflt = 4;
++		data_size -= 2;
++
++		/* Check if total decimation factor is a multiple of reshape filter decimation */
++		if (decim % decim_rsflt) {
++			dev_err(dev, "Total decimation factor [%d] not multiple of [%d]\n",
++				decim, decim_rsflt);
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	decim_cic = DIV_ROUND_CLOSEST(decim, decim_rsflt);
+-	if (decim % decim_rsflt) {
+-		dev_err(&indio_dev->dev, "Wrong decimation factor for CIC filter\n");
++	if (decim_cic < MDF_DFLTCICR_MCICD_MIN ||
++	    decim_cic > stm32_mdf_cic_max_decim_sitf[order]) {
++		dev_err(dev, "Decimation factor [%d] out of range for CIC filter order [%d]\n",
++			decim_cic, adc->cicmode);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (decim_cic < MDF_DFLTCICR_MCICD_MIN ||
+-	    decim_cic > MDF_DFLTCICR_MCICD_MAX) {
+-		dev_err(&indio_dev->dev,
+-			"Decimation factor [%d] out of range for CIC filter\n", decim_cic);
+-		return -EINVAL;
++	/*
++	 * Compute scaling:
++	 * max scale = 20 * log10( 2 exp DS / D exp NF )
++	 * - DS = max data size at scale output (RSFLT on: DS = 22 / RSFLT off: DS = 24)
++	 * - NF = Main CIC filter order
++	 */
++	if (is_power_of_2(decim_cic)) {
++		/*
++		 * Decimation ratio is a power of 2: D = 2 exp n
++		 * max scale = 20 * (DS - n * NF) * log10(2)
++		 */
++		log = stm32_mdf_log_table[0].log;
++
++		/* Compute max scale (dB) * 1000 */
++		max_scale = (20 * (data_size - 1 - (order * (fls(decim_cic) - 1))) * log);
++	} else {
++		/*
++		 * Decimation ratio is not a power of 2
++		 * max scale = 20 * ((DS - 1) * log10(2) - NF * log10(D))
++		 */
++		max_scale = stm32_mdf_compute_scale(dev, decim_cic, order, data_size);
+ 	}
+ 
+-	ret = regmap_update_bits(adc->regmap, MDF_DFLTCICR_REG,
+-				 MDF_DFLTCICR_MCICD_MASK,
+-				 MDF_DFLTCICR_MCICD(decim_cic));
+-	if (ret)
+-		return ret;
++	dev_dbg(dev, "Filter order [%d], decimation [%d], data size [%d], max scale [%d]\n",
++		order, decim_cic, data_size, max_scale / 1000);
+ 
+ 	/*
+-	 * TODO: manage scaling depending on decim & filter conf
+-	 * Also expose control to adjust scaling ?
+-	 * Fixed scaling for time being set according to settings #8 in reference manual
++	 * Find scale register setting.
++	 * Limit max_scale accuracy to first decimal for comparison with scale table values.
+ 	 */
++	max_scale = DIV_ROUND_CLOSEST(max_scale, 100);
++	i = ARRAY_SIZE(stm32_mdf_scale_table) - 1;
++	while (i > 0) {
++		if (stm32_mdf_scale_table[i].gain < max_scale)
++			break;
++		i--;
++	};
++	scale = stm32_mdf_scale_table[i].scale;
++	adc->decim_cic = decim_cic;
++
++	dev_dbg(dev, "Set scale to [%d] dB: [0x%x]\n", stm32_mdf_scale_table[i].gain / 10, scale);
++
++	/* Configure CICR */
+ 	ret = regmap_update_bits(adc->regmap, MDF_DFLTCICR_REG,
+-				 MDF_DFLTCICR_SCALE_MASK,
+-				 MDF_DFLTCICR_SCALE(0x27));
++				 MDF_DFLTCICR_MCICD_MASK | MDF_DFLTCICR_SCALE_MASK,
++				 MDF_DFLTCICR_MCICD(decim_cic - 1) | MDF_DFLTCICR_SCALE(scale));
++	if (ret)
++		return ret;
+ 
+-	adc->decim_cic = decim_cic;
++	/* If not filter 0, no need to check interleave. leave now */
++	if (adc->fl_id)
++		return 0;
++
++	/* Apply conf to interleaved filters if any */
++	for (i = 1; i < mdf->nb_interleave; i++) {
++		adc_inter = stm32_mdf_get_filter_by_id(mdf, i);
++		if (!adc_inter) {
++			dev_err(dev, "Filter [%d] not registered\n", i);
++			return -EINVAL;
++		}
++
++		ret = regmap_update_bits(adc_inter->regmap, MDF_DFLTCICR_REG,
++					 MDF_DFLTCICR_MCICD_MASK | MDF_DFLTCICR_SCALE_MASK,
++					 MDF_DFLTCICR_MCICD(decim_cic - 1) |
++					 MDF_DFLTCICR_SCALE(scale));
++		if (ret)
++			return ret;
++	}
+ 
+ 	return 0;
+ }
+ 
++static int stm32_mdf_check_clock_config(struct stm32_mdf_adc *adc, unsigned long sck_freq)
++{
++	unsigned int ratio;
++	unsigned int decim_ratio;
++
++	ratio = DIV_ROUND_CLOSEST(adc->mdf->fproc, sck_freq);
++	decim_ratio = DIV_ROUND_CLOSEST(24, adc->decim_cic);
++
++	if ((adc->sitf->mode == STM32_MDF_MODE_SPI && ratio <= 4) ||
++	    (adc->sitf->mode == STM32_MDF_MODE_LF_SPI && ratio <= 2))
++		goto err;
++
++	if (adc->rsflt_bypass && ratio <= decim_ratio)
++		goto err;
++
++	return 0;
++
++err:
++	dev_err(adc->dev, "Wrong Fproc/Fsck ratio [%d] for sitf mode [%d] with RSFLT [%s]\n",
++		ratio, adc->sitf->mode, adc->rsflt_bypass ? "off" : "on");
++
++	return -EINVAL;
++}
++
+ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev,
+ 				 unsigned long sample_freq)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+-	struct stm32_mdf *mdf = adc->mdf;
+ 	unsigned int decim_ratio;
+-	unsigned long sck_freq;
++	unsigned long delta, delta_ppm, sck_freq;
+ 	int ret;
+ 
+-	sck_freq = clk_get_rate(mdf->sitf[adc->sitf_id].sck);
++	sck_freq = clk_get_rate(adc->sitf->sck);
+ 	if (!sck_freq) {
+ 		dev_err(&indio_dev->dev, "Unexpected serial clock frequency: 0Hz\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	decim_ratio = DIV_ROUND_CLOSEST(sck_freq, sample_freq);
+-	if (sck_freq % sample_freq)
+-		dev_dbg(&indio_dev->dev,
+-			"Rate not accurate. requested (%lu), actual (%lu)\n",
+-			sample_freq, sck_freq / decim_ratio);
+ 
+-	ret = stm32_mdf_compute_flt_decim(indio_dev, decim_ratio);
++	delta = abs(sck_freq - (decim_ratio * sample_freq));
++	delta_ppm = (1000000 * delta) / sck_freq;
++	if (delta_ppm > 1000)
++		dev_warn(&indio_dev->dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
++			 delta_ppm, sck_freq / decim_ratio, sample_freq);
++	else if (delta)
++		dev_dbg(&indio_dev->dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
++			delta_ppm, sck_freq / decim_ratio, sample_freq);
++
++	ret = stm32_mdf_config_filter(indio_dev, decim_ratio);
++	if (ret < 0)
++		return ret;
++
++	ret = stm32_mdf_check_clock_config(adc, sck_freq);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -628,6 +934,9 @@ static irqreturn_t stm32_mdf_irq(int irq, void *arg)
+ 	if (flags & MDF_DFLTISR_SATF_MASK) {
+ 		dev_warn(&indio_dev->dev, "Saturation detected\n");
+ 		regmap_set_bits(regmap, MDF_DFLTISR_REG, MDF_DFLTISR_SATF_MASK);
++
++		/* Notify only once */
++		regmap_clear_bits(adc->regmap, MDF_DFLTIER_REG, MDF_DFLTIER_SATIE_MASK);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+@@ -700,19 +1009,31 @@ static const struct of_device_id stm32_mdf_adc_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, stm32_mdf_adc_match);
+ 
+-static int stm32_mdf_adc_parse_of(struct platform_device *pdev, struct stm32_mdf_adc *adc)
++static int stm32_mdf_get_sitf(struct device *dev, struct stm32_mdf_adc *adc,
++			      struct fwnode_handle *sitf_node)
+ {
+-	struct device *dev = &pdev->dev;
+-	int ret, nb_streams, nb_itf;
+-	u32 sitfs[STM32_MDF_ITF_MAX], streams[STM32_MDF_ITF_MAX];
+-	u32 val, idx, dfltcicr_msk, dfltcicr;
++	struct stm32_mdf_sitf *sitf;
+ 
+-	ret = device_property_read_u32(dev, "reg", &idx);
+-	if (ret) {
+-		dev_err(dev, "Could not get filter index: %d\n", ret);
+-		return ret;
++	/* Look for sitf interface from node handle */
++	list_for_each_entry(sitf, &adc->mdf->sitf_list, entry) {
++		if (sitf->node == sitf_node) {
++			adc->sitf = sitf;
++			break;
++		}
+ 	}
+-	adc->fl_id = (idx >> 7) - 1;
++
++	if (!adc->sitf) {
++		dev_dbg(dev, "Serial interface not registered\n");
++		return -EPROBE_DEFER;
++	}
++
++	return 0;
++}
++
++static int stm32_mdf_get_filter_config(struct device *dev, struct stm32_mdf_adc *adc)
++{
++	int i, ret;
++	u32 val;
+ 
+ 	ret = device_property_read_u32(dev, "st,cic-mode", &val);
+ 	if (ret) {
+@@ -720,58 +1041,200 @@ static int stm32_mdf_adc_parse_of(struct platform_device *pdev, struct stm32_mdf
+ 		return ret;
+ 	}
+ 	adc->cicmode = val;
+-	dfltcicr_msk = MDF_SITFCR_SITFMOD_MASK;
+-	dfltcicr = MDF_SITFCR_SITFMOD(val);
+ 
+-	nb_streams = device_property_count_u32(dev, "st,sitf-streams");
+-	if (!nb_streams || nb_streams > adc->mdf->nbf) {
+-		dev_err(dev, "Bad number of streams: %d\n", nb_streams);
+-		return -EINVAL;
++	adc->rsflt_bypass = device_property_present(dev, "st,rs-filter-bypass");
++
++	adc->hpf_cutoff = STM32_MDF_HPF_BYPASS;
++	if (device_property_present(dev, "st,hpf-filter-cutoff-bp")) {
++		ret = device_property_read_u32(dev, "st,hpf-filter-cutoff-bp", &val);
++		if (ret) {
++			dev_err(dev, "Could not read HPF cut-off frequency: %d\n", ret);
++			return ret;
++		}
++
++		for (i = 0; i < ARRAY_SIZE(stm32_mdf_hpf_cutoff_ratio); i++) {
++			if (stm32_mdf_hpf_cutoff_ratio[i] == val) {
++				adc->hpf_cutoff = i;
++				break;
++			}
++		}
++
++		if (adc->hpf_cutoff == STM32_MDF_HPF_BYPASS) {
++			dev_err(dev, "Unknwon HPF cut-off frequency ratio: %d\n", val);
++			return -EINVAL;
++		}
+ 	}
+ 
+-	ret = device_property_read_u32_array(dev, "st,sitf-streams", streams, nb_streams);
+-	if (ret < 0) {
+-		dev_err(dev, "Could not get streams indexes: %d\n", ret);
++	dev_dbg(dev, "Filter [%d] config: rsflt [%s], hpf [%s]\n", adc->fl_id,
++		adc->rsflt_bypass ? "off" : "on",
++		adc->hpf_cutoff == STM32_MDF_HPF_BYPASS ? "off" : "on");
++
++	return 0;
++}
++
++static int stm32_mdf_adc_parse_of(struct platform_device *pdev, struct stm32_mdf_adc *adc)
++{
++	struct device *dev = &pdev->dev;
++	struct stm32_mdf_adc *adc0, *adcm;
++	struct fwnode_handle *sitf_node;
++	struct fwnode_handle *filt_node;
++	struct fwnode_reference_args args;
++	int i, ret, stream;
++	u32 datsrc, bsmx;
++	u32 idx, cicr_msk, cicr, rsfr, rsfr_msk, val;
++
++	ret = device_property_read_u32(dev, "reg", &idx);
++	if (ret) {
++		dev_err(dev, "Could not get filter index: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	nb_itf = device_property_count_u32(dev, "st,sitf-indexes");
+-	if (!nb_itf || nb_itf > adc->mdf->nbf) {
+-		dev_err(dev, "Bad number of serial interfaces: %d\n", nb_itf);
++	if ((idx - 4) % 0x80) {
++		dev_err(dev, "Unexpected reg property value [%x]\n", idx);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (nb_itf != nb_streams) {
+-		dev_err(dev, "Stream number [%d] do not match interface number [%d]\n",
+-			nb_streams, nb_itf);
++	adc->fl_id = (idx >> 7) - 1;
++	if (adc->fl_id >= adc->mdf->nbf) {
++		dev_err(dev, "Wrong filter index [%d]\n", adc->fl_id);
+ 		return -EINVAL;
+ 	}
++	adc->node = dev_fwnode(dev);
+ 
+-	ret = device_property_read_u32_array(dev, "st,sitf-indexes", sitfs, nb_itf);
+-	if (ret < 0) {
+-		dev_err(dev, "Could not get serial interface indexes: %d\n", ret);
+-		return ret;
+-	};
++	if (device_property_present(&pdev->dev, "st,sync")) {
++		filt_node = fwnode_find_reference(dev_fwnode(dev), "st,sync", 0);
++		if (IS_ERR(filt_node)) {
++			dev_err(dev, "Failed to get filter sync handle %ld\n", PTR_ERR(filt_node));
++			return PTR_ERR(filt_node);
++		}
+ 
+-	/* Only support BSMX filter source right now */
+-	adc->datsrc = STM32_MDF_DATSRC_BSMX;
+-	dfltcicr_msk |= MDF_SITFCR_SCKSRC_MASK;
+-	dfltcicr |= MDF_SITFCR_SCKSRC(adc->datsrc);
++		adcm = stm32_mdf_get_filter_by_handle(adc->mdf, filt_node);
++		if (!adcm)
++			return dev_err_probe(dev, -EPROBE_DEFER, "Failed to get filter synchro\n");
++
++		/* Syncho master filter is the TRGO trigger source */
++		adcm->trigger = true;
++
++		/* Configure synchro master filter */
++		ret = regmap_update_bits(adcm->regmap, MDF_DFLTCR_REG,
++					 MDF_DFLTCR_ACQMOD_MASK | MDF_DFLTCR_TRGSRC_MASK,
++					 MDF_DFLTCR_ACQMOD(STM32_MDF_ACQ_MODE_SYNC_CONT) |
++					 MDF_DFLTCR_TRGSRC(STM32_MDF_TRGSRC_TRGO));
++		if (ret)
++			return ret;
+ 
+-	/* TODO: read sitfs array from DT to support interleave mode */
+-	if (!adc->mdf->sitf[sitfs[0]].registered) {
+-		dev_err(dev, "Interface [%d] not registered\n", sitfs[0]);
++		adc->sync = STM32_MDF_ACQ_MODE_SYNC_CONT;
++	}
++
++	if (device_property_present(&pdev->dev, "st,delay")) {
++		ret = device_property_read_u32(dev, "st,delay", &val);
++		if (ret) {
++			dev_err(dev, "Could not get filter delay: %d\n", ret);
++			return ret;
++		}
++		adc->delay = val;
++	}
++
++	/*
++	 * If nb_interleave is set to "n" not null, the filters in range [1..n] share their
++	 * configuration with filter 0. In this case copy config from filter 0,
++	 * instead of parsing DT.
++	 */
++	if (adc->fl_id && adc->fl_id < adc->mdf->nb_interleave) {
++		/* Check if filter is in interleave filter list */
++		for (i = 0; i < adc->mdf->nb_interleave; i++) {
++			if (adc->mdf->fh_interleave[i] == adc->node) {
++				adc->interleaved = true;
++				break;
++			}
++		}
++
++		if (!adc->interleaved) {
++			dev_err(dev, "Filter [%d] not in interleave property\n", adc->fl_id);
++			return -EINVAL;
++		}
++
++		/* For interleaved channels, copy filter config from filter 0 */
++		adc0 = stm32_mdf_get_filter_by_id(adc->mdf, 0);
++		if (!adc0)
++			return -EPROBE_DEFER;
++
++		adc->cicmode = adc0->cicmode;
++		adc->rsflt_bypass = adc0->rsflt_bypass;
++		adc->hpf_cutoff = adc0->hpf_cutoff;
++	} else {
++		ret = stm32_mdf_get_filter_config(dev, adc);
++		if (ret)
++			return ret;
++
++		/* Filter 0 is the TRGO trigger source in interleave mode */
++		if (!adc->fl_id && adc->mdf->nb_interleave)
++			adc->trigger = true;
++	}
++
++	/* Retrieve serial interface */
++	ret = fwnode_property_get_reference_args(dev_fwnode(dev), "st,sitf", NULL, 1, 0, &args);
++	if (ret) {
++		dev_err(dev, "Serial interface node not found: %d\n", ret);
++		return ret;
++	}
++	sitf_node = args.fwnode;
++
++	/* Get stream index */
++	if (args.nargs != 1) {
++		dev_err(dev, "Failed to get stream index in st,sitf property\n");
+ 		return -EINVAL;
+ 	}
+-	adc->bsmx = sitfs[0] * 2 + streams[0];
+-	adc->sitf_id = sitfs[0];
++	stream = args.args[0];
++
++	/* Retrieve sitf data from sitf node phanle */
++	ret = stm32_mdf_get_sitf(dev, adc, sitf_node);
++	if (ret)
++		return ret;
++
++	bsmx = adc->sitf->id * 2 + stream;
+ 
+-	/* Configure DFLTCICR */
+-	regmap_update_bits(adc->regmap, MDF_DFLTCICR_REG, dfltcicr_msk, dfltcicr);
++	dev_dbg(dev, "Digital filter [%d] linked to sitf [%d]\n",
++		adc->fl_id, adc->sitf->id);
++
++	/* Only support BSMX filter source right now */
++	datsrc = STM32_MDF_DATSRC_BSMX;
++
++	list_add(&adc->entry, &adc->mdf->filter_list);
++
++	/* Configure CICR */
++	cicr_msk = MDF_DFLTCICR_CICMOD_MASK | MDF_SITFCR_SCKSRC_MASK;
++	cicr = MDF_SITFCR_SCKSRC(datsrc) | MDF_DFLTCICR_CICMOD(adc->cicmode);
++
++	regmap_update_bits(adc->regmap, MDF_DFLTCICR_REG, cicr_msk, cicr);
++
++	/*
++	 * Set sync continuous acquisition mode & TRGO trigger source for:
++	 * - Interleave mode
++	 * - Synchronuous continuous mode
++	 */
++	if (adc->fl_id < adc->mdf->nb_interleave || adc->sync == STM32_MDF_ACQ_MODE_SYNC_CONT)
++		regmap_update_bits(adc->regmap, MDF_DFLTCR_REG,
++				   MDF_DFLTCR_ACQMOD_MASK | MDF_DFLTCR_TRGSRC_MASK,
++				   MDF_DFLTCR_ACQMOD(STM32_MDF_ACQ_MODE_SYNC_CONT) |
++				   MDF_DFLTCR_TRGSRC(STM32_MDF_TRGSRC_TRGO));
++
++	/* Configure RSFR */
++	if (adc->hpf_cutoff == STM32_MDF_HPF_BYPASS)
++		rsfr = MDF_DFLTRSFR_HPFBYP;
++	else
++		rsfr = MDF_DFLTRSFR_HPFC(adc->hpf_cutoff);
++	rsfr |= adc->rsflt_bypass ? MDF_DFLTRSFR_RSFLTBYP : 0;
++	rsfr_msk = MDF_DFLTRSFR_RSFLTBYP | MDF_DFLTRSFR_HPFBYP | MDF_DFLTRSFR_HPFC_MASK;
++
++	regmap_update_bits(adc->regmap, MDF_DFLTRSFR_REG, rsfr_msk, rsfr);
++
++	/* Configure delay */
++	regmap_update_bits(adc->regmap, MDF_DLYCR_REG, MDF_DLYCR_SKPDLY_MASK, adc->delay);
+ 
+ 	/* Configure BSMXCR */
+ 	regmap_update_bits(adc->regmap, MDF_BSMXCR_REG,
+-			   MDF_BSMXCR_BSSEL_MASK, MDF_BSMXCR_BSSEL(adc->bsmx));
++			   MDF_BSMXCR_BSSEL_MASK, MDF_BSMXCR_BSSEL(bsmx));
+ 
+ 	return 0;
+ }
+@@ -797,7 +1260,7 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+ 	adc = iio_priv(iio);
+ 	adc->mdf = dev_get_drvdata(dev->parent);
+ 
+-	platform_set_drvdata(pdev, adc);
++	platform_set_drvdata(pdev, iio);
+ 
+ 	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base))
+@@ -814,7 +1277,7 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+-		return dev_err_probe(dev, irq, "Failed to get kernel clock\n");
++		return dev_err_probe(dev, irq, "Failed to get IRQ\n");
+ 
+ 	ret = devm_request_irq(dev, irq, stm32_mdf_irq, 0, pdev->name, iio);
+ 	if (ret < 0) {
+@@ -826,21 +1289,24 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+ 		iio->info = &stm32_mdf_info_audio;
+ 	iio->name = dev_name(&pdev->dev);
+ 
++	adc->dev = dev;
+ 	adc->dev_data = dev_data;
+ 	ret = dev_data->init(dev, iio);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = iio_device_register(iio);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to register IIO device: %d\n", ret);
+-		goto err_cleanup;
++	if (!adc->interleaved) {
++		ret = iio_device_register(iio);
++		if (ret < 0) {
++			dev_err(dev, "Failed to register IIO device: %d\n", ret);
++			goto err_cleanup;
++		}
+ 	}
+ 
+ 	if (dev_data->type == STM32_MDF_AUDIO) {
+ 		ret = of_platform_populate(node, NULL, NULL, dev);
+ 		if (ret < 0) {
+-			return dev_err_probe(dev, ret, "Failed to find an audio DAI\n");
++			dev_err_probe(dev, ret, "Failed to find an audio DAI\n");
+ 			goto err_unregister;
+ 		}
+ 	}
+@@ -862,16 +1328,40 @@ static int stm32_mdf_adc_remove(struct platform_device *pdev)
+ 
+ 	if (adc->dev_data->type == STM32_MDF_AUDIO)
+ 		of_platform_depopulate(&pdev->dev);
+-	iio_device_unregister(indio_dev);
++	if (!adc->interleaved)
++		iio_device_unregister(indio_dev);
+ 	stm32_mdf_dma_release(indio_dev);
+ 
+ 	return 0;
+ }
+ 
++static int stm32_mdf_adc_suspend(struct device *dev)
++{
++	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++
++	if (iio_buffer_enabled(indio_dev))
++		stm32_mdf_predisable(indio_dev);
++
++	return 0;
++}
++
++static int stm32_mdf_adc_resume(struct device *dev)
++{
++	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++
++	if (iio_buffer_enabled(indio_dev))
++		stm32_mdf_postenable(indio_dev);
++
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(stm32_mdf_adc_pm_ops, stm32_mdf_adc_suspend, stm32_mdf_adc_resume);
++
+ static struct platform_driver stm32_mdf_adc_driver = {
+ 	.driver = {
+ 		.name = "stm32-mdf-adc",
+ 		.of_match_table = stm32_mdf_adc_match,
++		.pm = &stm32_mdf_adc_pm_ops,
+ 	},
+ 	.probe = stm32_mdf_adc_probe,
+ 	.remove = stm32_mdf_adc_remove,
+diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
+index 79ff45b14cc9..2efb636e6d61 100644
+--- a/drivers/iio/adc/stm32-mdf-core.c
++++ b/drivers/iio/adc/stm32-mdf-core.c
+@@ -2,7 +2,7 @@
+ /*
+  * This file is part of STM32 MDF driver
+  *
+- * Copyright (C) 2023, STMicroelectronics.
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
+  * Author: Olivier Moysan <olivier.moysan@foss.st.com>.
+  */
+ 
+@@ -10,15 +10,17 @@
+ #include <linux/clk-provider.h>
+ #include <linux/device.h>
+ #include <linux/gcd.h>
++#include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ 
+ #include "stm32-mdf.h"
+ 
+-#define STM32_MDF_MODE_SZ 12
+-
+ static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -73,7 +75,6 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+  * @div: serial clock divider data
+  * @gate: serial clock gating data
+  * @id: serial clock provider id (0 for cck0 & 1 for cck1)
+- * @lock: lock to manage common divider
+  */
+ struct stm32_mdf_sck_prov {
+ 	struct clk_hw *hw;
+@@ -81,7 +82,6 @@ struct stm32_mdf_sck_prov {
+ 	struct clk_divider div;
+ 	struct clk_gate gate;
+ 	unsigned int id;
+-	spinlock_t lock; /* Manage common divider concurrent accesses */
+ };
+ 
+ /*
+@@ -94,6 +94,7 @@ struct stm32_mdf_sck_prov {
+  * @base: mdf registers base cpu address
+  * @phys_base: mdf registers base physical address
+  * @n_active_ch: number of active channels
++ * @lock: lock to manage clock provider
+  * @cck_freq: output cck clocks frequencies array
+  * @procdiv: processing divider (common divider)
+  * @cckdiv: cck divider (cck0 & cck1 common divider)
+@@ -107,88 +108,21 @@ struct stm32_mdf_priv {
+ 	void __iomem *base;
+ 	phys_addr_t phys_base;
+ 	atomic_t n_active_ch;
+-	unsigned long cck_freq[2];
++	spinlock_t lock; /* Manage clock provider race conditions */
++	unsigned long cck_freq;
+ 	u32 procdiv;
+ 	u32 cckdiv;
+ };
+ 
+ #define gate_to_sck_prov(p) container_of(p, struct stm32_mdf_sck_prov, gate)
+ #define div_to_sck_prov(p) container_of(p, struct stm32_mdf_sck_prov, div)
+-
+-enum {
+-	STM32_MDF_MODE_SPI,
+-	STM32_MDF_MODE_SPI_LF,
+-	STM32_MDF_MODE_MANCHESTER_R,
+-	STM32_MDF_MODE_MANCHESTER_F,
+-	STM32_MDF_MODE_NB,
+-};
+-
+-enum {
+-	STM32_MDF_SCKSRC_CCK0,
+-	STM32_MDF_SCKSRC_CCK1,
+-	STM32_MDF_SCKSRC_CLK,
+-	STM32_MDF_SCKSRC_NONE,
+-};
+-
+-#define STM32_MDF_MAX_CCK STM32_MDF_SCKSRC_CLK
+-
+-struct stm32_mdf_sf_mode {
+-	const char *name;
+-	u32 idx;
+-};
+-
+-static const struct stm32_mdf_sf_mode stm32_mdf_mode[STM32_MDF_MODE_NB] = {
+-	{ "spi", STM32_MDF_MODE_SPI },
+-	{ "spi_lf", STM32_MDF_MODE_SPI_LF },
+-	{ "manchester_r", STM32_MDF_MODE_MANCHESTER_R },
+-	{ "manchester_f", STM32_MDF_MODE_MANCHESTER_F },
+-};
++#define STM32_MDF_MAX_CCK 2
+ 
+ static inline struct stm32_mdf_priv *to_stm32_mdf_priv(struct stm32_mdf *mdf)
+ {
+ 	return container_of(mdf, struct stm32_mdf_priv, mdf);
+ }
+ 
+-static int stm32_mdf_sitf_readl(struct stm32_mdf_sitf *sitf, u32 reg)
+-{
+-	int ret;
+-
+-	ret = clk_enable(sitf->kclk);
+-	if (ret < 0)
+-		return ret;
+-
+-	readl_relaxed(sitf->base + reg);
+-
+-	clk_disable(sitf->kclk);
+-
+-	return 0;
+-}
+-
+-static int stm32_mdf_sitf_writel(struct stm32_mdf_sitf *sitf, u32 reg, u32 val)
+-{
+-	int ret;
+-
+-	ret = clk_enable(sitf->kclk);
+-	if (ret < 0)
+-		return ret;
+-
+-	writel_relaxed(val, sitf->base + reg);
+-
+-	clk_disable(sitf->kclk);
+-
+-	return 0;
+-}
+-
+-static int stm32_mdf_sitf_clr_bits(struct stm32_mdf_sitf *sitf, u32 reg, u32 bits)
+-{
+-	return stm32_mdf_sitf_writel(sitf, reg, stm32_mdf_sitf_readl(sitf, reg) & ~bits);
+-}
+-
+-static int stm32_mdf_sitf_set_bits(struct stm32_mdf_sitf *sitf, u32 reg, u32 bits)
+-{
+-	return stm32_mdf_sitf_writel(sitf, reg, stm32_mdf_sitf_readl(sitf, reg) | bits);
+-}
+-
+ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+ {
+ 	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
+@@ -197,24 +131,28 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+ 	u32 val;
+ 
+ 	if (atomic_inc_return(&priv->n_active_ch) == 1) {
++		ret = pm_runtime_resume_and_get(dev);
++		if (ret < 0)
++			goto err;
++
+ 		/* Enable PROCDIV and CCKDIV clock dividers */
+ 		ret = regmap_set_bits(priv->regmap, MDF_CKGCR_REG, MDF_CKG_CKGDEN);
+ 		if (ret < 0)
+-			goto err;
++			goto pm_put;
+ 
+ 		/* Check clock status */
+ 		regmap_read(priv->regmap, MDF_CKGCR_REG, &val);
+ 		if (!(val & MDF_CKG_ACTIVE)) {
+ 			ret = -EINVAL;
+ 			dev_err(dev, "MDF clock not active\n");
+-			goto err;
++			goto pm_put;
+ 		}
+-
+-		/* TODO: Manage syncronous mode with TRGO trigger. UC with several filters */
+ 	}
+ 
+ 	return 0;
+ 
++pm_put:
++	pm_runtime_put_sync(dev);
+ err:
+ 	atomic_dec(&priv->n_active_ch);
+ 
+@@ -222,56 +160,33 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+ }
+ EXPORT_SYMBOL_GPL(stm32_mdf_start_mdf);
+ 
+-int stm32_mdf_stop_mdf(struct stm32_mdf *mdf)
++int stm32_mdf_trigger(struct stm32_mdf *mdf)
+ {
+ 	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
+ 	int ret;
+ 
+-	if (atomic_dec_and_test(&priv->n_active_ch)) {
+-		ret = regmap_clear_bits(priv->regmap, MDF_CKGCR_REG, MDF_CKG_CKGDEN);
+-		if (ret < 0)
+-			return ret;
+-	}
++	ret = regmap_set_bits(priv->regmap, MDF_GCR_REG, MDF_GCR_TRGO);
++	if (ret < 0)
++		return ret;
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(stm32_mdf_stop_mdf);
++EXPORT_SYMBOL_GPL(stm32_mdf_trigger);
+ 
+-int stm32_mdf_start_sitf(struct stm32_mdf_sitf *sitf)
+-{
+-	int ret;
+-
+-	spin_lock(&sitf->lock);
+-
+-	ret = stm32_mdf_sitf_set_bits(sitf, MDF_SITFCR_REG, MDF_SITFCR_SITFEN);
+-	if (ret)
+-		goto err;
+-
+-	sitf->refcnt++;
+-
+-err:
+-	spin_unlock(&sitf->lock);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(stm32_mdf_start_sitf);
+-
+-int stm32_mdf_stop_sitf(struct stm32_mdf_sitf *sitf)
++int stm32_mdf_stop_mdf(struct stm32_mdf *mdf)
+ {
++	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
+ 	int ret = 0;
+ 
+-	spin_lock(&sitf->lock);
+-
+-	sitf->refcnt--;
+-
+-	if (!sitf->refcnt)
+-		ret = stm32_mdf_sitf_clr_bits(sitf, MDF_SITFCR_REG, MDF_SITFCR_SITFEN);
++	if (atomic_dec_and_test(&priv->n_active_ch)) {
++		ret = regmap_clear_bits(priv->regmap, MDF_CKGCR_REG, MDF_CKG_CKGDEN);
+ 
+-	spin_unlock(&sitf->lock);
++		pm_runtime_put_sync(&priv->pdev->dev);
++	}
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(stm32_mdf_stop_sitf);
++EXPORT_SYMBOL_GPL(stm32_mdf_stop_mdf);
+ 
+ static int stm32_mdf_clk_gate_endisable(struct clk_hw *hw, int enable)
+ {
+@@ -344,30 +259,35 @@ static long stm32_mdf_cck_divider_round_rate(struct clk_hw *hw, unsigned long ra
+ 	struct stm32_mdf_sck_prov *prov = div_to_sck_prov(div);
+ 	struct stm32_mdf_priv *priv = prov->data;
+ 	struct device *dev = &priv->pdev->dev;
+-	unsigned long ratio, delta;
++	unsigned long ratio, delta, delta_ppm;
+ 	u32 cckdiv, procdiv;
++	int ret;
++
++	/* Protect CCK0/1 shared dividers against concurrent accesses */
++	spin_lock(&priv->lock);
+ 
+-	/* Compute procdiv / cckdiv if not already set */
+-	/* TODO: manage race conditions and concurrency on procdiv configuration for cck0/1 */
++	/*
++	 * Compute procdiv / cckdiv if not already set.
++	 * Done only once as CCK0 and CCK1 share the same frequency.
++	 */
+ 	if (!priv->procdiv || !priv->cckdiv) {
+ 		ratio = DIV_ROUND_CLOSEST(*parent_rate, rate);
+ 		if (!ratio) {
+ 			dev_err(dev, "CCK frequency above kernel frequency\n");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err;
+ 		}
+ 
+ 		delta = abs(*parent_rate - (ratio * rate));
+-		if (delta) {
+-			/* Warn if frequency deviation is higher than 1% */
+-			if (delta / *parent_rate > 1)
+-				dev_warn(dev, "CCK clock frequency not accurate\n");
+-				/*
+-				 * TODO: If rate is not a multiple of freq,
+-				 * try to change parent rate ?
+-				 */
+-			else
+-				dev_dbg(dev, "CCK clock frequency not accurate\n");
+-		}
++
++		delta_ppm = (1000000 * delta) / *parent_rate;
++		if (delta_ppm > 1000)
++			/* Warn if frequency deviation is higher than 1000 ppm */
++			dev_warn(dev, "CCK clock deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
++				 delta_ppm, *parent_rate / ratio, rate);
++		else if (delta)
++			dev_dbg(dev, "CCK clock frequency not accurate: [%lu] ppm deviation\n",
++				delta_ppm);
+ 
+ 		/*
+ 		 * The total divider ratio must be split between proc divider and
+@@ -380,16 +300,26 @@ static long stm32_mdf_cck_divider_round_rate(struct clk_hw *hw, unsigned long ra
+ 		if (procdiv > MDF_PROCDIV_MAX) {
+ 			dev_err(dev, "Proc divider out of range: %d > %d\n",
+ 				procdiv, MDF_PROCDIV_MAX);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err;
+ 		}
+ 
+ 		priv->procdiv = procdiv;
+ 		priv->cckdiv = cckdiv;
++
++		priv->mdf.fproc = DIV_ROUND_CLOSEST(*parent_rate, procdiv);
+ 	} else {
+ 		ratio = priv->procdiv * priv->cckdiv;
+ 	}
+ 
++	spin_unlock(&priv->lock);
++
+ 	return DIV_ROUND_CLOSEST_ULL((u64)*parent_rate, ratio);
++
++err:
++	spin_unlock(&priv->lock);
++
++	return ret;
+ };
+ 
+ static const struct clk_ops cck_gate_ops = {
+@@ -416,32 +346,38 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+ 	struct clk_gate *gate;
+ 	struct clk_divider *div;
+ 	const char *clk_name;
+-	const __be32 *p;
+ 	u32 ckgcr = 0;
+-	int index;
++	int index = 0, ret, clk_id;
+ 
+ 	clk_data = devm_kzalloc(dev, struct_size(clk_data, hws, STM32_MDF_MAX_CCK), GFP_KERNEL);
+ 	if (!clk_data)
+ 		return -ENOMEM;
+ 
+-	of_property_for_each_u32 (node, "clock-indices", prop, p, index) {
+-		of_property_read_string_index(node, "clock-output-names", index, &clk_name);
++	spin_lock_init(&priv->lock);
+ 
++	of_property_for_each_string(node, "clock-output-names", prop, clk_name) {
+ 		if (index >= STM32_MDF_MAX_CCK) {
+ 			dev_err(dev, "Too many cck providers defined\n");
+ 			return -EINVAL;
+ 		}
+ 
++		if (!strncmp(clk_name, "cck0", 4)) {
++			clk_id = 0;
++		} else if (!strncmp(clk_name, "cck1", 4)) {
++			clk_id = 1;
++		} else {
++			dev_err(dev, "Unexpected cck clock provider name [%s]\n", clk_name);
++			return -EINVAL;
++		}
++
+ 		gate = &priv->prov[index].gate;
+ 		gate->reg = priv->base + MDF_CKGCR_REG;
+-		gate->bit_idx = index ? MDF_CKG_CCK1EN : MDF_CKG_CCK0EN;
++		gate->bit_idx = clk_id ? MDF_CKG_CCK1EN : MDF_CKG_CCK0EN;
+ 
+ 		div = &priv->prov[index].div;
+ 		div->reg = priv->base + MDF_CKGCR_REG;
+ 		div->shift = MDF_CKG_CCKDIV_SHIFT;
+ 		div->width = MDF_CKG_CCKDIV_WIDTH;
+-		div->lock = &priv->prov[index].lock;
+-		spin_lock_init(div->lock);
+ 
+ 		priv->prov[index].data = priv;
+ 
+@@ -456,40 +392,49 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+ 
+ 		priv->prov[index].hw = hw;
+ 		clk_data->hws[index] = hw;
+-		clk_data->num++;
+ 
+ 		/* Configure the CCKx clock as output */
+-		ckgcr |= index ? MDF_CKG_CCK1DIR : MDF_CKG_CCK0DIR;
++		ckgcr |= clk_id ? MDF_CKG_CCK1DIR : MDF_CKG_CCK0DIR;
++
++		index++;
+ 	}
+ 
+-	devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
++	/*
++	 * Set num to max number of clock. This allows any clocks indice below maximum
++	 * in of_clk_hw_onecell_get, whatever the actual number of providers.
++	 */
++	clk_data->num = STM32_MDF_MAX_CCK;
++	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
++	if (ret) {
++		dev_err(dev, "Failed to add %s clock provider: %d\n", clk_name, ret);
++		return ret;
++	}
+ 
+ 	/* Configure CKGCR register */
+ 	return regmap_set_bits(priv->regmap, MDF_CKGCR_REG, ckgcr);
+ }
+ 
+-static int stm32_mdf_of_cck_get(struct platform_device *pdev, const char *prop,
+-				unsigned long *cck_freq)
++static int stm32_mdf_of_cck_get(struct platform_device *pdev, struct stm32_mdf_priv *priv)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	u32 freq;
+ 	int ret;
+ 
+-	ret = device_property_read_u32(dev, prop, &freq);
++	ret = device_property_read_u32(dev, "clock-frequency", &freq);
+ 	if (ret < 0) {
+ 		/* If property does not exist return immediately */
+ 		if (ret == -EINVAL)
+ 			return 0;
+ 
+-		dev_err(dev, "Failed to read %s property: %d\n", prop, ret);
++		dev_err(dev, "Failed to read clock-frequency property: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	if (!freq) {
+-		dev_err(dev, "Null frequency not allowed for %s\n", prop);
++		dev_err(dev, "Null frequency not allowed for cck output frequency\n");
+ 		return -EINVAL;
+ 	}
+-	*cck_freq = freq;
++	priv->cck_freq = freq;
+ 
+ 	return 0;
+ }
+@@ -506,11 +451,7 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+ 	priv->kclk = kclk;
+ 
+ 	/* CCK0 and CCK1 clocks are optional. Used only in SPI master modes. */
+-	ret = stm32_mdf_of_cck_get(pdev, "st,cck-freq-hz", &priv->cck_freq[0]);
+-	if (ret)
+-		return ret;
+-
+-	ret = stm32_mdf_of_cck_get(pdev, "st,cck-freq-hz", &priv->cck_freq[1]);
++	ret = stm32_mdf_of_cck_get(pdev, priv);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -518,18 +459,18 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+ 	if (ret)
+ 		return ret;
+ 
+-	if (priv->cck_freq[0]) {
+-		ret = clk_set_rate(priv->prov[0].div.hw.clk, priv->cck_freq[0]);
++	if (priv->cck_freq) {
++		/* Set CCK0 frequency if CCK0 provider exists */
++		ret = clk_set_rate(priv->prov[0].div.hw.clk, priv->cck_freq);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to set cck0 rate: %d\n", ret);
+ 			return ret;
+ 		}
+-	}
+ 
+-	if (priv->cck_freq[1]) {
+-		ret = clk_set_rate(priv->prov[1].div.hw.clk, priv->cck_freq[1]);
++		/* Set CCK1 frequency if CCK1 provider exists */
++		ret = clk_set_rate(priv->prov[1].div.hw.clk, priv->cck_freq);
+ 		if (ret) {
+-			dev_err(dev, "Failed to set cck0 rate: %d\n", ret);
++			dev_err(dev, "Failed to set cck1 rate: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+@@ -537,157 +478,62 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+ 	return 0;
+ }
+ 
+-static int stm32_get_sitf_clk(struct device_node *np, struct stm32_mdf_sitf *sitf)
+-{
+-	struct clk *sck;
+-
+-	sck = of_clk_get(np, 0);
+-	if (IS_ERR(sck)) {
+-		if (PTR_ERR(sck) == -ENOENT)
+-			return 0;
+-		else
+-			return dev_err_probe(sitf->dev, PTR_ERR(sck), "Can't get serial clock\n");
+-	}
+-
+-	if (!strncmp(__clk_get_name(sck), "cck0", 4))
+-		sitf->scksrc = STM32_MDF_SCKSRC_CCK0;
+-	else if (!strncmp(__clk_get_name(sck), "cck1", 4))
+-		sitf->scksrc = STM32_MDF_SCKSRC_CCK1;
+-	else
+-		sitf->scksrc = STM32_MDF_SCKSRC_CLK;
+-
+-	sitf->sck = sck;
+-
+-	return 0;
+-};
+-
+-static int stm32_mdf_core_parse_sitf(struct platform_device *pdev, struct stm32_mdf_priv *priv)
++static int stm32_mdf_core_parse_of(struct platform_device *pdev, struct stm32_mdf_priv *priv)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
+-	struct stm32_mdf *mdf = &priv->mdf;
+-	struct stm32_mdf_sitf *sitf = mdf->sitf;
+-	struct device_node *child;
++	struct reset_control *rst;
+ 	struct device *dev = &pdev->dev;
+-	struct resource res;
+-	void __iomem *base;
+-	const char *str;
+-	int ret, i;
+-	u32 idx, mode, sitfcr;
+-
+-	sitf = devm_kzalloc(&pdev->dev, mdf->nbf * sizeof(*mdf->sitf), GFP_KERNEL);
+-	if (!sitf)
+-		return -ENOMEM;
+-	spin_lock_init(&sitf->lock);
+-	mdf->sitf = sitf;
+-
+-	for (i = 0; i < mdf->nbf; i++) {
+-		sitf[i].dev = dev;
+-		sitf[i].scksrc = STM32_MDF_SCKSRC_NONE;
+-	}
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
++	struct fwnode_handle *handle;
++	struct fwnode_handle **fh;
++	int count, ret, i;
+ 
+-	for_each_available_child_of_node(node, child) {
+-		/* If compatible found, child node is not a sitf node. skip it */
+-		ret = of_property_read_string(child, "compatible", &str);
+-		if (!ret)
+-			continue;
++	if (!node)
++		return -EINVAL;
+ 
+-		ret = of_property_read_u32(child, "reg", &idx);
+-		if (ret) {
+-			dev_err(dev, "Could not get interface index: %d\n", ret);
+-			return ret;
+-		}
+-		idx = (idx >> 7) - 1;
++	rst = devm_reset_control_get_optional_exclusive(&pdev->dev, "mdf");
++	if (IS_ERR(rst))
++		return dev_err_probe(dev, PTR_ERR(rst), "Failed to get reset controller\n");
+ 
+-		of_address_to_resource(child, 0, &res);
+-		if (ret) {
+-			dev_err(dev, "Failed to get resource from address: %d\n", ret);
+-			return ret;
+-		}
++	ret = reset_control_reset(rst);
++	if (ret) {
++		dev_err(&pdev->dev, "reset_control_reset failed %d\n", ret);
++		return ret;
++	}
+ 
+-		base = devm_ioremap_resource(dev, &res);
+-		if (IS_ERR(base)) {
+-			ret = PTR_ERR(base);
+-			dev_err(dev, "Failed to get sitf resource: %d\n", ret);
+-			return ret;
+-		}
+-		sitf[idx].base = base;
++	ret = stm32_mdf_core_parse_clocks(pdev, priv);
++	if (ret < 0)
++		return ret;
+ 
+-		if (idx > priv->mdf.nbf) {
+-			dev_err(dev, "Interface index [%d] exceeds maximum [%d]\n", idx,
+-				priv->mdf.nbf);
++	if (device_property_present(&pdev->dev, "st,interleave")) {
++		count = fwnode_property_count_u32(fwnode, "st,interleave");
++		if (count < 2 || count > priv->mdf.nbf) {
++			dev_err(dev, "Wrong interleave filters number [%d]\n", count);
+ 			return -EINVAL;
+ 		}
+ 
+-		/* Get SITF mode */
+-		ret = of_property_read_string(child, "st,sitf-mode", &str);
+-		if (ret) {
+-			/* skip if mode is not defined */
+-			if (ret == -EINVAL)
+-				continue;
+-
+-			dev_err(dev, "Could not get interface mode: %d\n", ret);
+-			return ret;
+-		}
+-
+-		i = 0;
+-		while (i < STM32_MDF_MODE_NB) {
+-			if (!strncmp(stm32_mdf_mode[i].name, str, STM32_MDF_MODE_SZ)) {
+-				mode = stm32_mdf_mode[i].idx;
+-				break;
++		fh = devm_kzalloc(dev, count * sizeof(*fh), GFP_KERNEL);
++		if (!fh)
++			return -ENOMEM;
++		priv->mdf.fh_interleave = fh;
++
++		for (i = 0; i < count; i++) {
++			handle = fwnode_find_reference(fwnode, "st,interleave", i);
++			if (IS_ERR(handle)) {
++				dev_err(dev, "Failed to read filter handle: %ld\n",
++					PTR_ERR(handle));
++				return PTR_ERR(handle);
+ 			}
+-			i++;
+-		}
+-
+-		if (i >= STM32_MDF_MODE_NB) {
+-			dev_err(dev, "Unknown serial interface mode [%s]\n", str);
+-			return -EINVAL;
+-		}
+-
+-		sitf[idx].mode = mode;
+-		sitfcr = MDF_SITFCR_SITFMOD(mode);
+-
+-		/* Optional clocks. Clock not needed in Manchester mode */
+-		ret = stm32_get_sitf_clk(child, &sitf[idx]);
+-		if (ret)
+-			return ret;
+-
+-		if ((mode == STM32_MDF_MODE_SPI || mode == STM32_MDF_MODE_SPI_LF) &&
+-		    sitf[idx].scksrc == STM32_MDF_SCKSRC_NONE) {
+-			dev_err(dev, "Missing clock for serial interface [%d]\n", idx);
+-			return -EINVAL;
++			priv->mdf.fh_interleave[i] = handle;
+ 		}
+ 
+-		sitf[idx].kclk = priv->kclk;
+-		sitf[idx].registered = true;
+-		sitfcr |= MDF_SITFCR_SCKSRC(sitf[idx].scksrc);
++		priv->mdf.nb_interleave = count;
+ 
+-		/* TODO: check clock config & ratio cck/ck_ker versus mode */
+-
+-		/* Configure SITF register */
+-		stm32_mdf_sitf_set_bits(&sitf[idx], MDF_SITFCR_REG, sitfcr);
+-
+-		dev_dbg(dev, "Serial interface [%d] registered\n", idx);
++		/* Configure GCR */
++		ret = regmap_update_bits(priv->regmap, MDF_GCR_REG,
++					 MDF_GCR_ILVNB_MASK, MDF_GCR_ILVNB(count - 1));
+ 	}
+ 
+-	return 0;
+-}
+-
+-static int stm32_mdf_core_parse_of(struct platform_device *pdev, struct stm32_mdf_priv *priv)
+-{
+-	struct device_node *node = pdev->dev.of_node;
+-	int ret;
+-
+-	if (!node)
+-		return -EINVAL;
+-
+-	ret = stm32_mdf_core_parse_clocks(pdev, priv);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = stm32_mdf_core_parse_sitf(pdev, priv);
+-	if (ret < 0)
+-		return ret;
+-
+ 	return ret;
+ }
+ 
+@@ -752,11 +598,98 @@ static int stm32_mdf_core_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	INIT_LIST_HEAD(&priv->mdf.sitf_list);
++	INIT_LIST_HEAD(&priv->mdf.filter_list);
++
+ 	platform_set_drvdata(pdev, priv);
+ 
+-	return devm_of_platform_populate(&pdev->dev);
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
++	ret = of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
++	if (ret)
++		goto pm_put;
++
++	pm_runtime_put(&pdev->dev);
++
++	return 0;
++
++pm_put:
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
++
++	return ret;
++}
++
++static int stm32_mdf_core_remove(struct platform_device *pdev)
++{
++	pm_runtime_get_sync(&pdev->dev);
++	of_platform_depopulate(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
++
++	return 0;
++}
++
++static int stm32_mdf_core_suspend(struct device *dev)
++{
++	struct stm32_mdf *mdf = dev_get_drvdata(dev);
++	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
++	int ret;
++
++	ret = pm_runtime_force_suspend(dev);
++	if (ret)
++		return ret;
++
++	regcache_cache_only(priv->regmap, true);
++	regcache_mark_dirty(priv->regmap);
++
++	/* Balance devm_regmap_init_mmio_clk() clk_prepare() */
++	clk_unprepare(priv->kclk);
++
++	return pinctrl_pm_select_sleep_state(dev);
+ }
+ 
++static int stm32_mdf_core_resume(struct device *dev)
++{
++	struct stm32_mdf *mdf = dev_get_drvdata(dev);
++	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
++	int ret;
++
++	ret = pinctrl_pm_select_default_state(dev);
++	if (ret)
++		return ret;
++
++	ret = clk_prepare(priv->kclk);
++	if (ret)
++		return ret;
++
++	regcache_cache_only(priv->regmap, false);
++	ret = regcache_sync(priv->regmap);
++	if (ret)
++		return ret;
++
++	return pm_runtime_force_resume(dev);
++}
++
++static int stm32_mdf_core_runtime_suspend(struct device *dev)
++{
++	return 0;
++}
++
++static int stm32_mdf_core_runtime_resume(struct device *dev)
++{
++	return 0;
++}
++
++static const struct dev_pm_ops stm32_mdf_core_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_mdf_core_suspend, stm32_mdf_core_resume)
++	SET_RUNTIME_PM_OPS(stm32_mdf_core_runtime_suspend, stm32_mdf_core_runtime_resume, NULL)
++};
++
+ static const struct of_device_id stm32_mdf_of_match[] = {
+ 	{ .compatible = "st,stm32mp25-mdf" },
+ 	{}
+@@ -765,9 +698,11 @@ MODULE_DEVICE_TABLE(of, stm32_mdf_of_match);
+ 
+ static struct platform_driver stm32_mdf_driver = {
+ 	.probe = stm32_mdf_core_probe,
++	.remove = stm32_mdf_core_remove,
+ 	.driver = {
+ 		.name = "stm32-mdf",
+ 		.of_match_table = stm32_mdf_of_match,
++		.pm = &stm32_mdf_core_pm_ops,
+ 	},
+ };
+ 
+diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
+new file mode 100644
+index 000000000000..521c4a16d34f
+--- /dev/null
++++ b/drivers/iio/adc/stm32-mdf-serial.c
+@@ -0,0 +1,290 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * This file is part of STM32 MDF driver
++ *
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
++ */
++
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/regmap.h>
++
++#include "stm32-mdf.h"
++
++#define STM32_MDF_MODE_SZ 12
++
++enum {
++	STM32_MDF_SCKSRC_CCK0,
++	STM32_MDF_SCKSRC_CCK1,
++	STM32_MDF_SCKSRC_CLK,
++	STM32_MDF_SCKSRC_NONE,
++};
++
++struct stm32_mdf_sf_mode {
++	const char *name;
++	u32 mode;
++};
++
++static const struct stm32_mdf_sf_mode stm32_mdf_mode[STM32_MDF_MODE_NB] = {
++	{ "spi", STM32_MDF_MODE_SPI },
++	{ "lf_spi", STM32_MDF_MODE_LF_SPI },
++	{ "manchester_r", STM32_MDF_MODE_MANCHESTER_R },
++	{ "manchester_f", STM32_MDF_MODE_MANCHESTER_F },
++};
++
++static const struct regmap_config stm32_sitf_regmap_cfg = {
++	.reg_bits = 32,
++	.val_bits = 32,
++	.reg_stride = sizeof(u32),
++	.max_register = MDF_SITFCR_REG,
++	.fast_io = true,
++};
++
++int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf)
++{
++	int ret;
++
++	spin_lock(&sitf->lock);
++
++	ret = regmap_set_bits(sitf->regmap, MDF_SITFCR_REG, MDF_SITFCR_SITFEN);
++	if (!ret)
++		sitf->refcnt++;
++
++	spin_unlock(&sitf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(stm32_mdf_sitf_start);
++
++int stm32_mdf_sitf_stop(struct stm32_mdf_sitf *sitf)
++{
++	int ret = 0;
++
++	spin_lock(&sitf->lock);
++
++	if (!sitf->refcnt) {
++		dev_err(sitf->dev, "Unbalanced serial interface stop ?\n");
++		ret = -EPERM;
++		goto out;
++	} else {
++		sitf->refcnt--;
++	}
++
++	if (!sitf->refcnt)
++		ret = regmap_clear_bits(sitf->regmap, MDF_SITFCR_REG, MDF_SITFCR_SITFEN);
++
++out:
++	spin_unlock(&sitf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(stm32_mdf_sitf_stop);
++
++static int stm32_mdf_sitf_get_clk(struct device *dev, struct stm32_mdf_sitf *sitf)
++{
++	struct clk *sck;
++
++	/* Optional clock. Clock not needed in Manchester mode */
++	sck = clk_get_optional(sitf->dev, 0);
++	if (IS_ERR(sck))
++		return dev_err_probe(sitf->dev, PTR_ERR(sck), "Can't get serial clock\n");
++
++	sitf->sck = sck;
++
++	if (sitf->sck) {
++		if (!strncmp(__clk_get_name(sck), "cck0", 4))
++			sitf->scksrc = STM32_MDF_SCKSRC_CCK0;
++		else if (!strncmp(__clk_get_name(sck), "cck1", 4))
++			sitf->scksrc = STM32_MDF_SCKSRC_CCK1;
++		else
++			sitf->scksrc = STM32_MDF_SCKSRC_CLK;
++	}
++
++	return 0;
++};
++
++static int stm32_mdf_sitf_parse(struct platform_device *pdev, struct stm32_mdf_sitf *sitf)
++{
++	struct device *dev = &pdev->dev;
++	const char *str;
++	int ret, i = 0;
++	u32 idx, mode, sitfcr;
++
++	ret = device_property_read_u32(dev, "reg", &idx);
++	if (ret) {
++		dev_err(dev, "Could not get interface index: %d\n", ret);
++		return ret;
++	}
++
++	if (idx % 0x80) {
++		dev_err(dev, "Unexpected reg property value [%x]\n", idx);
++		return -EINVAL;
++	}
++
++	idx = (idx >> 7) - 1;
++	if (idx > sitf->mdf->nbf) {
++		dev_err(dev, "Interface index [%d] exceeds maximum [%d]\n", idx, sitf->mdf->nbf);
++		return -EINVAL;
++	}
++
++	/* Get SITF mode */
++	ret = device_property_read_string(dev, "st,sitf-mode", &str);
++	if (ret) {
++		dev_err(dev, "Could not get interface mode: %d\n", ret);
++		return ret;
++	}
++
++	while (i < STM32_MDF_MODE_NB) {
++		if (!strncmp(stm32_mdf_mode[i].name, str, STM32_MDF_MODE_SZ)) {
++			mode = stm32_mdf_mode[i].mode;
++			break;
++		}
++		i++;
++	}
++
++	if (i >= STM32_MDF_MODE_NB) {
++		dev_err(dev, "Unknown serial interface mode [%s]\n", str);
++		return -EINVAL;
++	}
++
++	sitf->mode = mode;
++	sitfcr = MDF_SITFCR_SITFMOD(mode);
++
++	ret = stm32_mdf_sitf_get_clk(dev, sitf);
++	if (ret)
++		return ret;
++
++	if (mode == STM32_MDF_MODE_SPI && sitf->scksrc == STM32_MDF_SCKSRC_NONE) {
++		dev_err(dev, "Missing clock for serial interface [%d] in SPI mode\n", idx);
++		return -EINVAL;
++	}
++
++	if (mode == STM32_MDF_MODE_LF_SPI && (sitf->scksrc != STM32_MDF_SCKSRC_CCK0 &&
++					      sitf->scksrc != STM32_MDF_SCKSRC_CCK1)) {
++		dev_err(dev, "Missing CCKx clock for serial interface [%d] in LF_SPI mode\n", idx);
++		return -EINVAL;
++	}
++
++	sitf->id = idx;
++	sitf->node = dev_fwnode(dev);
++	spin_lock_init(&sitf->lock);
++
++	sitfcr |= MDF_SITFCR_SCKSRC(sitf->scksrc);
++
++	/* Configure SITF register */
++	regmap_set_bits(sitf->regmap, MDF_SITFCR_REG, sitfcr);
++
++	dev_dbg(dev, "Serial interface [%d] registered\n", idx);
++
++	return 0;
++}
++
++static int stm32_mdf_sitf_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct stm32_mdf_sitf *sitf;
++	struct regmap *regmap;
++	struct resource *res;
++	void __iomem *base;
++	int ret;
++
++	sitf = devm_kzalloc(&pdev->dev, sizeof(*sitf), GFP_KERNEL);
++	if (!sitf)
++		return -ENOMEM;
++	sitf->dev = dev;
++	sitf->mdf = dev_get_drvdata(dev->parent);
++
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	regmap = devm_regmap_init_mmio_clk(dev, "ker_ck", base, &stm32_sitf_regmap_cfg);
++	if (IS_ERR(regmap))
++		return dev_err_probe(dev, PTR_ERR(regmap), "Failed to init regmap\n");
++	sitf->regmap = regmap;
++
++	ret = stm32_mdf_sitf_parse(pdev, sitf);
++	if (ret < 0)
++		return ret;
++
++	list_add(&sitf->entry, &sitf->mdf->sitf_list);
++
++	platform_set_drvdata(pdev, sitf);
++
++	return 0;
++}
++
++static int stm32_mdf_sitf_remove(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
++
++	list_del(&sitf->entry);
++
++	return 0;
++}
++
++static int stm32_mdf_sitf_suspend(struct device *dev)
++{
++	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
++
++	regcache_cache_only(sitf->regmap, true);
++	regcache_mark_dirty(sitf->regmap);
++
++	return pinctrl_pm_select_sleep_state(dev);
++}
++
++static int stm32_mdf_sitf_resume(struct device *dev)
++{
++	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pinctrl_pm_select_default_state(dev);
++	if (ret)
++		return ret;
++
++	regcache_cache_only(sitf->regmap, false);
++
++	return regcache_sync(sitf->regmap);
++}
++
++static int stm32_mdf_sitf_runtime_suspend(struct device *dev)
++{
++	return 0;
++}
++
++static int stm32_mdf_sitf_runtime_resume(struct device *dev)
++{
++	return 0;
++}
++
++static const struct dev_pm_ops stm32_mdf_sitf_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_mdf_sitf_suspend, stm32_mdf_sitf_resume)
++	SET_RUNTIME_PM_OPS(stm32_mdf_sitf_runtime_suspend, stm32_mdf_sitf_runtime_resume, NULL)
++};
++
++static const struct of_device_id stm32_mdf_sitf_of_match[] = {
++	{ .compatible = "st,stm32mp25-sitf-mdf" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, stm32_mdf_sitf_of_match);
++
++static struct platform_driver stm32_mdf_sitf_driver = {
++	.probe = stm32_mdf_sitf_probe,
++	.remove = stm32_mdf_sitf_remove,
++	.driver = {
++		.name = "stm32-mdf-sitf",
++		.of_match_table = stm32_mdf_sitf_of_match,
++		.pm = &stm32_mdf_sitf_pm_ops,
++	},
++};
++
++module_platform_driver(stm32_mdf_sitf_driver);
++
++MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
++MODULE_DESCRIPTION("STMicroelectronics STM32 MDF serial driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
+index 5654bba806bb..ab59286a3dbc 100644
+--- a/drivers/iio/adc/stm32-mdf.h
++++ b/drivers/iio/adc/stm32-mdf.h
+@@ -2,7 +2,7 @@
+ /*
+  * This file is part of STM32 MDF driver
+  *
+- * Copyright (C) 2023, STMicroelectronics.
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
+  * Author: Olivier Moysan <olivier.moysan@foss.st.com>.
+  */
+ 
+@@ -67,7 +67,7 @@
+ #define MDF_SITFCR_SITFEN BIT(0)
+ #define MDF_SITFCR_SCKSRC_MASK GENMASK(2, 1)
+ #define MDF_SITFCR_SCKSRC(v) FIELD_PREP(MDF_SITFCR_SCKSRC_MASK, v)
+-#define MDF_SITFCR_SITFMOD_MASK GENMASK(6, 4)
++#define MDF_SITFCR_SITFMOD_MASK GENMASK(5, 4)
+ #define MDF_SITFCR_SITFMOD(v) FIELD_PREP(MDF_SITFCR_SITFMOD_MASK, v)
+ #define MDF_SITFCR_STH_MASK GENMASK(12, 8)
+ #define MDF_SITFCR_STH(v) FIELD_PREP(MDF_SITFCR_STH_MASK, v)
+@@ -85,7 +85,7 @@
+ #define MDF_DFLTCR_ACQMOD_MASK GENMASK(6, 4)
+ #define MDF_DFLTCR_ACQMOD(v) FIELD_PREP(MDF_DFLTCR_ACQMOD_MASK, v)
+ #define MDF_DFLTCR_TRGSENS BIT(8)
+-#define MDF_DFLTCR_TRGSRC_MASK GENMASK(12, 15)
++#define MDF_DFLTCR_TRGSRC_MASK GENMASK(15, 12)
+ #define MDF_DFLTCR_TRGSRC(v) FIELD_PREP(MDF_DFLTCR_TRGSRC_MASK, v)
+ #define MDF_DFLTCR_SNPSFMT BIT(16)
+ #define MDF_DFLTCR_NBDIS_MASK GENMASK(27, 20)
+@@ -101,8 +101,6 @@
+ #define MDF_DFLTCICR_MCICD_MASK GENMASK(16, 8)
+ #define MDF_DFLTCICR_MCICD(v) FIELD_PREP(MDF_DFLTCICR_MCICD_MASK, v)
+ #define MDF_DFLTCICR_MCICD_MIN 2
+-#define MDF_DFLTCICR_MCICD_MAX                                                 \
+-	(FIELD_GET(MDF_DFLTCICR_MCICD_MASK, MDF_DFLTCICR_MCICD_MASK) + 1)
+ #define MDF_DFLTCICR_SCALE_MASK GENMASK(25, 20)
+ #define MDF_DFLTCICR_SCALE(v) FIELD_PREP(MDF_DFLTCICR_SCALE_MASK, v)
+ 
+@@ -242,42 +240,65 @@
+ 
+ #define STM32MP25_MDF_IPIDR_NUMBER 0x00110032
+ 
++enum stm32_sitf_mode {
++	STM32_MDF_MODE_LF_SPI,
++	STM32_MDF_MODE_SPI,
++	STM32_MDF_MODE_MANCHESTER_R,
++	STM32_MDF_MODE_MANCHESTER_F,
++	STM32_MDF_MODE_NB,
++};
++
+ /*
+  * struct stm32_mdf_sitf - STM32 MDF serial interface data
++ * @entry: serial interface list head
+  * @dev: pointer to parent device
++ * @regmap: regmap for register read/write
++ * @mdf: mdf common data pointer
++ * @node: serial interface node handle
+  * @sck: sitf clock handle
+- * @kclk: mdf kernel clock handle
+  * @base: sitf registers base cpu addr
+  * @lock: sitf state manegement lock
+  * @refcnt: sitf usage reference counter
+  * @scksrc: sitf clock source
++ * @id: serial interface index
+  * @mode: sitf mode
+- * @registered: sitf status
+  */
+ struct stm32_mdf_sitf {
++	struct list_head entry;
+ 	struct device *dev;
++	struct regmap *regmap;
++	struct stm32_mdf *mdf;
++	struct fwnode_handle *node;
+ 	struct clk *sck;
+-	struct clk *kclk;
+ 	void __iomem *base;
+ 	spinlock_t lock; /* Manage race conditions on sitf state */
+ 	unsigned int refcnt;
+ 	unsigned int scksrc;
++	u32 id;
+ 	u32 mode;
+-	bool registered;
+ };
+ 
+ /*
+  * struct stm32_mdf - STM32 MDF driver common data (for all instances)
+- * @sitf: pointer to serial interfaces list
++ * @sitf_list: pointer to serial interfaces list
++ * @filter_list: pointer to filter interfaces list
++ * @fh_interleave: interleaved filter handle list pointer
++ * @fproc: processing clock frequency
+  * @nbf: total number of digital filters
++ * @nb_interleave: number of interleaved filters
+  */
+ struct stm32_mdf {
+-	struct stm32_mdf_sitf *sitf;
++	struct list_head sitf_list;
++	struct list_head filter_list;
++	struct fwnode_handle **fh_interleave;
++	unsigned long fproc;
+ 	unsigned int nbf;
++	unsigned int nb_interleave;
+ };
+ 
+ int stm32_mdf_start_mdf(struct stm32_mdf *mdf);
+ int stm32_mdf_stop_mdf(struct stm32_mdf *mdf);
++int stm32_mdf_trigger(struct stm32_mdf *mdf);
+ 
+-int stm32_mdf_start_sitf(struct stm32_mdf_sitf *sitf);
+-int stm32_mdf_stop_sitf(struct stm32_mdf_sitf *sitf);
++int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf);
++int stm32_mdf_sitf_stop(struct stm32_mdf_sitf *sitf);
+diff --git a/sound/soc/stm/stm32_amdf.c b/sound/soc/stm/stm32_amdf.c
+index 5e1483d566a7..ea94014a65de 100644
+--- a/sound/soc/stm/stm32_amdf.c
++++ b/sound/soc/stm/stm32_amdf.c
+@@ -113,7 +113,7 @@ static const struct snd_soc_dai_ops stm32_amdf_dai_ops = {
+ static const struct snd_soc_dai_driver stm32_amdf_dai = {
+ 	.capture = {
+ 		    .channels_min = 1,
+-		    .channels_max = 1,
++		    .channels_max = 2,
+ 		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 			       SNDRV_PCM_FMTBIT_S32_LE,
+ 		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
+-- 
+2.39.2
+

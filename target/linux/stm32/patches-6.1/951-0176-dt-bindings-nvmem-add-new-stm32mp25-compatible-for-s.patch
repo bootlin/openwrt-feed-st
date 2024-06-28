@@ -1,0 +1,49 @@
+From a212f96eb84a5d07fc97597677bad5227822664a Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 31 Aug 2022 17:02:49 +0200
+Subject: [PATCH 0176/1141] dt-bindings: nvmem: add new stm32mp25 compatible
+ for stm32-romem
+
+Add a new compatible for stm32mp25 support.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/264783
+Change-Id: I1784fc7f33cc928e9007d85354707d6382b48b72
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302167
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ .../devicetree/bindings/nvmem/st,stm32-romem.yaml        | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
+index 16f4cad2fa55..6c0339c9b7b8 100644
+--- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
+@@ -24,6 +24,7 @@ properties:
+       - st,stm32f4-otp
+       - st,stm32mp13-bsec
+       - st,stm32mp15-bsec
++      - st,stm32mp25-bsec
+ 
+   reg:
+     maxItems: 1
+@@ -40,6 +41,14 @@ patternProperties:
+           related area can only be reached by the secure world.
+         type: boolean
+ 
++      st,secure-otp:
++        description: |
++          This property explicits a factory programmed area that only the secure
++          world of the main processor can access.
++          It is needed when the related area must be only not reached by the
++          secure world of the coprocessor, it is not shadowed.
++        type: boolean
++
+ required:
+   - "#address-cells"
+   - "#size-cells"
+-- 
+2.39.2
+

@@ -1,0 +1,146 @@
+From 7c7bb3a219f4897e5d681db76e4b32fead5a70da Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Wed, 23 Aug 2023 15:47:20 +0200
+Subject: [PATCH 0578/1141] arm64: dts: st: populate all timer counter nodes on
+ stm32mp25
+
+Counter driver originally had support limited to quadrature interface and
+simple counter. It has evolved, so add remaining counter nodes in stm32
+timer nodes.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I47a16b27091e8c47ea33208512c520f49c3cbde9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/330632
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 50 ++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a2f19c235b9f..5b75b5b2fc8f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -515,6 +515,11 @@ timers6: timer@40040000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				timer@5 {
+ 					compatible = "st,stm32mp25-timer-trigger";
+ 					reg = <5>;
+@@ -535,6 +540,11 @@ timers7: timer@40050000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				timer@6 {
+ 					compatible = "st,stm32mp25-timer-trigger";
+ 					reg = <6>;
+@@ -555,6 +565,11 @@ timers12: timer@40060000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -581,6 +596,11 @@ timers13: timer@40070000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -607,6 +627,11 @@ timers14: timer@40080000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -993,6 +1018,11 @@ timers10: timer@401c0000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -1019,6 +1049,11 @@ timers11: timer@401d0000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -1174,6 +1209,11 @@ timers15: timer@40250000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -1200,6 +1240,11 @@ timers16: timer@40260000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+@@ -1226,6 +1271,11 @@ timers17: timer@40270000 {
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32mp25-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32mp25-pwm";
+ 					#pwm-cells = <3>;
+-- 
+2.39.2
+

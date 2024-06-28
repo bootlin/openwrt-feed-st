@@ -1,0 +1,168 @@
+From a11c64cc0af1834fbd560b8f69d3bf2591d3e648 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 12 Dec 2023 15:37:08 +0100
+Subject: [PATCH 0980/1141] arm64: dts: st: add usart exti interrupt and wakeup
+ source on stm32mp251
+
+Change interrupts to interrupts-extended using EXTI and enable
+wakeup-source on all usart node of stm32mp251.dtsi.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I100f835b39400aac39239bd22e1309fe0f987d0d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/346074
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 27 +++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 88e82f09252f..baa1c8fd0954 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -839,52 +839,56 @@ spdifrx: audio-controller@400d0000 {
+ 			usart2: serial@400e0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400e0000 0x400>;
+-				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 27 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART2>;
+ 				dmas = <&hpdma 11 0x20 0x10012 0x0>,
+ 				       <&hpdma 12 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART2_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+ 			usart3: serial@400f0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400f0000 0x400>;
+-				interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 28 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART3>;
+ 				dmas = <&hpdma 13 0x20 0x10012 0x0>,
+ 				       <&hpdma 14 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART3_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+ 			uart4: serial@40100000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40100000 0x400>;
+-				interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 30 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART4>;
+ 				dmas = <&hpdma 15 0x20 0x10012 0x0>,
+ 				       <&hpdma 16 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART4_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+ 			uart5: serial@40110000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40110000 0x400>;
+-				interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 31 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART5>;
+ 				dmas = <&hpdma 17 0x20 0x10012 0x0>,
+ 				       <&hpdma 18 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART5_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1179,13 +1183,14 @@ counter {
+ 			usart6: serial@40220000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40220000 0x400>;
+-				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 29 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART6>;
+ 				dmas = <&hpdma 19 0x20 0x10012 0x0>,
+ 				       <&hpdma 20 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART6_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1460,13 +1465,14 @@ sai3b: audio-controller@502b0024 {
+ 			uart9: serial@402c0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x402c0000 0x400>;
+-				interrupts = <GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 34 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART9>;
+ 				dmas = <&hpdma 25 0x20 0x10012 0x0>,
+ 				       <&hpdma 26 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART9_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1507,13 +1513,14 @@ counter {
+ 			usart1: serial@40330000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40330000 0x400>;
+-				interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 26 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART1>;
+ 				dmas = <&hpdma 9 0x20 0x10012 0x0>,
+ 				       <&hpdma 10 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART1_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1589,26 +1596,28 @@ spi7: spi@40360000 {
+ 			uart7: serial@40370000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40370000 0x400>;
+-				interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 32 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART7>;
+ 				dmas = <&hpdma 21 0x20 0x10012 0x0>,
+ 				       <&hpdma 22 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART7_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+ 			uart8: serial@40380000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40380000 0x400>;
+-				interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts-extended = <&exti1 33 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART8>;
+ 				dmas = <&hpdma 23 0x20 0x10012 0x0>,
+ 				       <&hpdma 24 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART8_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.39.2
+

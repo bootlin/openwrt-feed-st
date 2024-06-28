@@ -1,0 +1,49 @@
+From 3831f5976e95021eff7aea787a318f8b8d9539df Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 23 Jan 2024 10:35:26 +0100
+Subject: [PATCH 0837/1141] media: dcmipp: statcap: add bad_pixel_count stat
+ reading
+
+Read the bad pixel count number on each VSYNC and store it
+within the local buffer so that application can read it via
+the struct stm32_dcmipp_stat_buf.
+
+Change-Id: I832f21c2ad09f785bacae9b5ee6df32df929f533
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/353668
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c  | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 5d21e8e41486..ddd5896bfaeb 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -29,6 +29,9 @@
+ 
+ #define DCMIPP_CMSR2_P1VSYNCF BIT(18)
+ 
++#define DCMIPP_P1BPRSR (0x828)
++#define DCMIPP_P1BPRSR_BADCNT_MASK GENMASK(11, 0)
++
+ #define DCMIPP_P1STXCR(a)	(0x850 + ((a) * 0x4))
+ #define DCMIPP_P1STXCR_ENABLE		BIT(0)
+ #define DCMIPP_P1STXCR_BINS_SHIFT	2
+@@ -720,6 +723,10 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 
+ 	spin_lock_irq(&vcap->irqlock);
+ 
++	/* Read the bad pixel count stat and store it locally */
++	vcap->local_buf.bad_pixel_count = reg_read(vcap, DCMIPP_P1BPRSR) &
++						DCMIPP_P1BPRSR_BADCNT_MASK;
++
+ 	/*
+ 	 * This is the core function for statistic extraction, within the
+ 	 * irq thread, on EACH VSYNC we update the shadow registers to
+-- 
+2.39.2
+

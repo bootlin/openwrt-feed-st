@@ -1,0 +1,37 @@
+From 6d508b4bcd2d964fd19cca9d331b1e74ddf0bc70 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 4 May 2023 17:53:05 +0200
+Subject: [PATCH 0289/1141] media: entity: NOT TO BE UPSTREAMED: add
+ stream-count in media-entity struct
+
+Add back the stream_count field of the media_entity struct in order to
+count the number of time an entity has been start streamed.  DCMIPP multi-pipe
+code handling needs to figure out if an entity is already streaming or not
+in order to walk through the pipeline and start or stop each entities.
+
+Change-Id: Ic6134f4b7b28be4f1b41b1b199bf60ae6a206a53
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ include/media/media-entity.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 28c9de8a1f34..11829757dd20 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -345,6 +345,12 @@ struct media_entity {
+ 
+ 	int use_count;
+ 
++	/* Temporarily put back to allow handling the multi-pipe on DCMIPP MP25
++	 * This is being incremented when performing start_streaming in order to
++	 * know if an entity needs to be s_streamed (on or off) or not
++	 */
++	u32 stream_count;
++
+ 	union {
+ 		struct {
+ 			u32 major;
+-- 
+2.39.2
+

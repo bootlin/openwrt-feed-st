@@ -1,0 +1,56 @@
+From b5993109431ae25e679c5b3b316d665a732d0327 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Thu, 21 Mar 2024 08:32:29 +0100
+Subject: [PATCH 1021/1141] arm64: dts: st: set Tx and Rx Qos of Ethernet1 and
+ Ethernet2 on stm32mp25
+
+All QoS IP priorities are managed through SYSCFG_ICNQPCR register.
+Except Ethernet QoS which is managed inside a dedicated
+register (ETH_DMACxRXCR) in Ethernet IP.
+The QoS value is currently 0 (hardware default value),
+which is the problem.
+Bandwidth regulator is enabled. When DDR bandwidth
+reaches a certain level, low QoS priorities have their bandwidth
+even more decreased.
+As ethernet QoS is configured to 0, this is the first one impacted.
+Configure the Ethernet QoS to 7.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I7317dc549ac288fc1131292987fa1555bfde54e7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368139
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 ++
+ arch/arm64/boot/dts/st/stm32mp253.dtsi | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index efffacb3699c..24f674a728aa 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2201,6 +2201,8 @@ eth1: eth1@482c0000 {
+ 				st,syscon = <&syscfg 0x3000 0xffffffff>;
+ 				snps,mixed-burst;
+ 				snps,pbl = <2>;
++				snps,txqos = <7>;
++				snps,rxqos = <7>;
+ 				snps,axi-config = <&stmmac_axi_config_1>;
+ 				snps,tso;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ETH1_ID>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 4ceab91c6089..9bda696af6a6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -95,6 +95,8 @@ eth2: eth2@482d0000 {
+ 				st,syscon = <&syscfg 0x3400 0xffffffff>;
+ 				snps,mixed-burst;
+ 				snps,pbl = <2>;
++				snps,txqos = <7>;
++				snps,rxqos = <7>;
+ 				snps,axi-config = <&stmmac_axi_config_2>;
+ 				snps,tso;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ETH2_ID>;
+-- 
+2.39.2
+

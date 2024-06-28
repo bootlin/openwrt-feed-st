@@ -1,0 +1,64 @@
+From b5ca7487ab705148b422190a46524d240c05e221 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Mon, 18 Mar 2024 17:55:31 +0100
+Subject: [PATCH 1090/1141] watchdog: stm32_iwdg: get hardware version during
+ probe
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Get the hardware version of the IWDG peripheral during probe.
+
+Change-Id: I71a59b1a93bac45f9c9efb46ae7b4f51ae3d9c7c
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367758
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/watchdog/stm32_iwdg.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index 570a71509d2a..6bae2608a1fa 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -27,6 +27,7 @@
+ #define IWDG_RLR	0x08 /* ReLoad Register */
+ #define IWDG_SR		0x0C /* Status Register */
+ #define IWDG_WINR	0x10 /* Windows Register */
++#define IWDG_VERR	0x3F4 /* Version Register */
+ 
+ /* IWDG_KR register bit mask */
+ #define KR_KEY_RELOAD	0xAAAA /* reload counter enable */
+@@ -46,6 +47,9 @@
+ #define SR_PVU	BIT(0) /* Watchdog prescaler value update */
+ #define SR_RVU	BIT(1) /* Watchdog counter reload value update */
+ 
++/* IWDG_VERR register mask */
++#define VERR_MASK	GENMASK(7, 0)
++
+ /* set timeout to 100000 us */
+ #define TIMEOUT_US	100000
+ #define SLEEP_US	1000
+@@ -72,6 +76,7 @@ struct stm32_iwdg {
+ 	struct clk		*clk_lsi;
+ 	struct clk		*clk_pclk;
+ 	unsigned int		rate;
++	unsigned int		hw_version;
+ };
+ 
+ static inline u32 reg_read(void __iomem *base, u32 reg)
+@@ -253,6 +258,8 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+ 	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
+ 				    1000) / wdt->rate;
+ 
++	wdt->hw_version = reg_read(wdt->regs, IWDG_VERR) & VERR_MASK;
++
+ 	watchdog_set_drvdata(wdd, wdt);
+ 	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
+ 	watchdog_init_timeout(wdd, 0, dev);
+-- 
+2.39.2
+

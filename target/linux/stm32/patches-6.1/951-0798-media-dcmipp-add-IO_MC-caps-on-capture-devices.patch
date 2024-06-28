@@ -1,0 +1,51 @@
+From b9ea0c3cbf74c25c2dc234ddc38fe04b23ad2aa2 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 1 Dec 2023 15:56:33 +0100
+Subject: [PATCH 0798/1141] media: dcmipp: add IO_MC caps on capture devices
+
+Devices relying on the media-controller should expose the
+V4L2_CAP_IO_MC flag.  Moreover the V4L2_CAP_READWRITE is
+no more used in favor of other buffer handling methods hence
+remove the flag.
+
+Change-Id: I2724f8d063dbe2a59511fc83d311948ab654bfcc
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344606
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c  | 2 +-
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 62fbadb189c6..0e2bacad6e3e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -1066,7 +1066,7 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	/* Initialize the video_device struct */
+ 	vdev = &vcap->vdev;
+ 	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING |
+-			    V4L2_CAP_READWRITE;
++			    V4L2_CAP_IO_MC;
+ 	vdev->entity.ops = &dcmipp_bytecap_mops;
+ 	vdev->release = dcmipp_bytecap_release;
+ 	vdev->fops = &dcmipp_bytecap_fops;
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index a7537aa6712d..7a1968a0e8d8 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -1233,7 +1233,7 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	/* Initialize the video_device struct */
+ 	vdev = &vcap->vdev;
+ 	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING |
+-			    V4L2_CAP_READWRITE;
++			    V4L2_CAP_IO_MC;
+ 	vdev->entity.ops = &dcmipp_pixelcap_mops;
+ 	vdev->release = dcmipp_pixelcap_release;
+ 	vdev->fops = &dcmipp_pixelcap_fops;
+-- 
+2.39.2
+

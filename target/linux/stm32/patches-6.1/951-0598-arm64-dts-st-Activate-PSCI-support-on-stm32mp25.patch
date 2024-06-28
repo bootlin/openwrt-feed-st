@@ -1,0 +1,102 @@
+From a5de4d3834e211150c974b7bfd761056b54614fc Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 7 Jun 2023 18:20:41 +0200
+Subject: [PATCH 0598/1141] arm64: dts: st: Activate PSCI support on stm32mp25
+
+Add the PSCI idle state associated to the power domains.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I4a8eca2aa809a4ece51393344f709f591f3cc273
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/296783
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 42 ++++++++++++++++++++++++++
+ arch/arm64/boot/dts/st/stm32mp253.dtsi |  1 +
+ 2 files changed, 43 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5b75b5b2fc8f..67f4749bcd69 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -28,6 +28,45 @@ cpu0: cpu@0 {
+ 			power-domains = <&CPU_PD0>;
+ 			power-domain-names = "psci";
+ 		};
++
++		idle-states {
++			entry-method = "psci";
++
++			CPU_PWRDN: cpu-power-down {
++				compatible = "arm,idle-state";
++				arm,psci-suspend-param = <0x00000001>;
++				local-timer-stop;
++				entry-latency-us = <300>;
++				exit-latency-us = <500>;
++				min-residency-us = <1000>;
++			};
++		};
++
++		domain-idle-states {
++			STOP1: domain-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x00000011>;
++				entry-latency-us = <400>;
++				exit-latency-us = <1200>;
++				min-residency-us = <1500>;
++			};
++
++			LP_STOP1: domain-lp-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x0000021>;
++				entry-latency-us = <500>;
++				exit-latency-us = <2000>;
++				min-residency-us = <3000>;
++			};
++
++			LPLV_STOP1: domain-lplv-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x00000211>;
++				entry-latency-us = <500>;
++				exit-latency-us = <3000>;
++				min-residency-us = <4000>;
++			};
++		};
+ 	};
+ 
+ 	arm-pmu {
+@@ -156,16 +195,19 @@ psci {
+ 
+ 		CPU_PD0: power-domain-cpu0 {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&CPU_PWRDN>;
+ 			power-domains = <&CLUSTER_PD>;
+ 		};
+ 
+ 		CLUSTER_PD: power-domain-cluster {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&STOP1>, <&LP_STOP1>;
+ 			power-domains = <&RET_PD>;
+ 		};
+ 
+ 		RET_PD: power-domain-retention {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&LPLV_STOP1>;
+ 		};
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 613e736a0be0..dfa0177c9138 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -28,6 +28,7 @@ arm-pmu {
+ 	psci {
+ 		CPU_PD1: power-domain-cpu1 {
+ 			#power-domain-cells = <0>;
++			domain-idle-states =  <&CPU_PWRDN>;
+ 			power-domains = <&CLUSTER_PD>;
+ 		};
+ 	};
+-- 
+2.39.2
+

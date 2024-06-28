@@ -1,0 +1,763 @@
+From 80ff93423b617fd6d28eb09864e4b06dc8f53cf8 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 7 Jun 2023 17:39:36 +0200
+Subject: [PATCH 0411/1141] ARM: dts: sm32mp25: Add power domain states
+
+Add power domains on STM32MP25x Soc:
+- cpu0/cpu1 for Cortex A35 idle of each core
+- cluster with Stop and LP-Stop modes support when
+  Cortex A35 cluster and each IP assciated to D1 domain are deactviated
+- retention to support the LPLV-Stop modes
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I443a218decda670093bc621165e3052db14d4c02
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/296782
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi  | 91 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/st/stm32mp253.dtsi  | 13 ++++
+ arch/arm64/boot/dts/st/stm32mp255.dtsi  |  2 +
+ arch/arm64/boot/dts/st/stm32mp25xc.dtsi |  1 +
+ arch/arm64/boot/dts/st/stm32mp25xf.dtsi |  1 +
+ 5 files changed, 108 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 87b4bd2d9629..2b3c0a154571 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -25,6 +25,8 @@ cpu0: cpu@0 {
+ 			enable-method = "psci";
+ 			clocks = <&scmi_perf 0>;
+ 			clock-names = "cpu";
++			power-domains = <&CPU_PD0>;
++			power-domain-names = "psci";
+ 		};
+ 	};
+ 
+@@ -143,6 +145,20 @@ v2m0: v2m@48090000 {
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
++
++		CPU_PD0: power-domain-cpu0 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++		};
++
++		CLUSTER_PD: power-domain-cluster {
++			#power-domain-cells = <0>;
++			power-domains = <&RET_PD>;
++		};
++
++		RET_PD: power-domain-retention {
++			#power-domain-cells = <0>;
++		};
+ 	};
+ 
+ 	thermal-zones {
+@@ -232,6 +248,7 @@ hpdma: dma-controller@40400000 {
+ 				     <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&scmi_clk CK_SCMI_HPDMA1>;
++			power-domains = <&RET_PD>;
+ 			#dma-cells = <4>;
+ 			st,axi-max-burst-len = <16>;
+ 		};
+@@ -256,6 +273,7 @@ hpdma2: dma-controller@40410000 {
+ 				     <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&scmi_clk CK_SCMI_HPDMA2>;
++			power-domains = <&RET_PD>;
+ 			#dma-cells = <4>;
+ 			st,axi-max-burst-len = <16>;
+ 		};
+@@ -280,6 +298,7 @@ hpdma3: dma-controller@40420000 {
+ 				     <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&scmi_clk CK_SCMI_HPDMA3>;
++			power-domains = <&RET_PD>;
+ 			#dma-cells = <4>;
+ 			st,axi-max-burst-len = <16>;
+ 		};
+@@ -306,6 +325,7 @@ ommanager: ommanager@40500000 {
+ 			resets = <&rcc OSPIIOM_R>;
+ 			st,syscfg-amcr = <&syscfg 0x2c00 0x7>;
+ 			feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPIM_ID>;
++			power-domains = <&CLUSTER_PD>;
+ 			status = "disabled";
+ 			ranges = <0 0 0x40430000 0x400>,
+ 				 <1 0 0x40440000 0x400>;
+@@ -321,6 +341,7 @@ ospi1: spi@40430000 {
+ 				clocks = <&scmi_clk CK_SCMI_OSPI1>;
+ 				resets = <&scmi_reset RST_SCMI_OSPI1>, <&scmi_reset RST_SCMI_OSPI1DLL>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPI1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -335,6 +356,7 @@ ospi2: spi@40440000 {
+ 				clocks = <&scmi_clk CK_SCMI_OSPI2>;
+ 				resets = <&scmi_reset RST_SCMI_OSPI2>, <&scmi_reset RST_SCMI_OSPI2DLL>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPI2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 		};
+@@ -358,6 +380,7 @@ timers2: timer@40000000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -388,6 +411,7 @@ timers3: timer@40010000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -418,6 +442,7 @@ timers4: timer@40020000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM4_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -448,6 +473,7 @@ timers5: timer@40030000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM5_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -478,6 +504,7 @@ timers6: timer@40040000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM6_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				timer@5 {
+@@ -497,6 +524,7 @@ timers7: timer@40050000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM7_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				timer@6 {
+@@ -516,6 +544,7 @@ timers12: timer@40060000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM12_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -541,6 +570,7 @@ timers13: timer@40070000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM13_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -566,6 +596,7 @@ timers14: timer@40080000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM14_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -591,6 +622,7 @@ lptimer1: timer@40090000 {
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LPTIM1_ID>;
+ 				wakeup-source;
++				power-domains = <&RET_PD>;
+ 				status = "disabled";
+ 
+ 				counter {
+@@ -626,6 +658,7 @@ lptimer2: timer@400a0000 {
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LPTIM2_ID>;
+ 				wakeup-source;
++				power-domains = <&RET_PD>;
+ 				status = "disabled";
+ 
+ 				counter {
+@@ -662,6 +695,7 @@ i2s2: audio-controller@400b0000 {
+ 				dmas = <&hpdma 51 0x43 0x12 0>,
+ 					<&hpdma 52 0x43 0x21 0>;
+ 				dma-names = "rx", "tx";
++				power-domains = <&RET_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -677,6 +711,7 @@ spi2: spi@400b0000 {
+ 				       <&hpdma 52 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -691,6 +726,7 @@ i2s3: audio-controller@400c0000 {
+ 				dmas = <&hpdma 53 0x43 0x12 0>,
+ 					<&hpdma 54 0x43 0x21 0>;
+ 				dma-names = "rx", "tx";
++				power-domains = <&RET_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -706,6 +742,7 @@ spi3: spi@400c0000 {
+ 				       <&hpdma 54 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -732,6 +769,7 @@ usart2: serial@400e0000 {
+ 				       <&hpdma 12 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -744,6 +782,7 @@ usart3: serial@400f0000 {
+ 				       <&hpdma 14 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -756,6 +795,7 @@ uart4: serial@40100000 {
+ 				       <&hpdma 16 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART4_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -768,6 +808,7 @@ uart5: serial@40110000 {
+ 				       <&hpdma 18 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART5_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -784,6 +825,7 @@ i2c1: i2c@40120000 {
+ 				       <&hpdma 28 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -800,6 +842,7 @@ i2c2: i2c@40130000 {
+ 				       <&hpdma 31 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -816,6 +859,7 @@ i2c3: i2c@40140000 {
+ 				       <&hpdma 34 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -832,6 +876,7 @@ i2c4: i2c@40150000 {
+ 				       <&hpdma 37 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C4_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -848,6 +893,7 @@ i2c5: i2c@40160000 {
+ 				       <&hpdma 40 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C5_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -864,6 +910,7 @@ i2c6: i2c@40170000 {
+ 				       <&hpdma 43 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C6_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -880,6 +927,7 @@ i2c7: i2c@40180000 {
+ 				       <&hpdma 46 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C7_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -893,6 +941,7 @@ timers10: timer@401c0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM10_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -918,6 +967,7 @@ timers11: timer@401d0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM11_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -946,6 +996,7 @@ timers1: timer@40200000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -979,6 +1030,7 @@ timers8: timer@40210000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM8_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1008,6 +1060,7 @@ usart6: serial@40220000 {
+ 				       <&hpdma 20 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART6_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1022,6 +1075,7 @@ i2s1: audio-controller@40230000 {
+ 				dmas = <&hpdma 49 0x43 0x12 0>,
+ 					<&hpdma 50 0x43 0x21 0>;
+ 				dma-names = "rx", "tx";
++				power-domains = <&RET_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1037,6 +1091,7 @@ spi1: spi@40230000 {
+ 				       <&hpdma 50 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1052,6 +1107,7 @@ spi4: spi@40240000 {
+ 				       <&hpdma 56 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI4_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1065,6 +1121,7 @@ timers15: timer@40250000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM15_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1090,6 +1147,7 @@ timers16: timer@40260000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM16_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1115,6 +1173,7 @@ timers17: timer@40270000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM17_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1142,6 +1201,7 @@ spi5: spi@40280000 {
+ 				       <&hpdma 58 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI5_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1156,6 +1216,7 @@ sai1: sai@40290000 {
+ 				interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
+ 				resets = <&rcc SAI1_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SAI1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				sai1a: audio-controller@40290004 {
+@@ -1190,6 +1251,7 @@ sai2: sai@402a0000 {
+ 				interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
+ 				resets = <&rcc SAI2_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SAI2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				sai2a: audio-controller@402a0004 {
+@@ -1224,6 +1286,7 @@ sai3: sai@402b0000 {
+ 				interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
+ 				resets = <&rcc SAI3_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SAI3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				sai3a: audio-controller@402b0004 {
+@@ -1256,6 +1319,7 @@ uart9: serial@402c0000 {
+ 				       <&hpdma 26 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART9_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1272,6 +1336,7 @@ timers20: timer@40320000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_TIM20_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1301,6 +1366,7 @@ usart1: serial@40330000 {
+ 				       <&hpdma 10 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USART1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1315,6 +1381,7 @@ sai4: sai@40340000 {
+ 				interrupts = <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
+ 				resets = <&rcc SAI4_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SAI4_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				sai4a: audio-controller@40340004 {
+@@ -1350,6 +1417,7 @@ spi6: spi@40350000 {
+ 				       <&hpdma 60 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI6_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1365,6 +1433,7 @@ spi7: spi@40360000 {
+ 				       <&hpdma 62 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI7_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1377,6 +1446,7 @@ uart7: serial@40370000 {
+ 				       <&hpdma 22 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART7_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1389,6 +1459,7 @@ uart8: serial@40380000 {
+ 				       <&hpdma 24 0x20 0x3021 0x0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_UART8_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1402,6 +1473,7 @@ dcmi: dcmi@404a0000 {
+ 				dmas = <&hpdma 137 0x40 0x00003012 0>;
+ 				dma-names = "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_DCMI_PSSI_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1410,6 +1482,7 @@ crc: crc@404c0000 {
+ 				reg = <0x404c0000 0x400>;
+ 				clocks = <&rcc CK_BUS_CRC>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_CRC_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1425,6 +1498,7 @@ adc_12: adc@404e0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ADC12_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				adc1: adc@0 {
+@@ -1610,6 +1684,7 @@ adc_3: adc@404f0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ADC3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				adc3: adc@0 {
+@@ -1651,6 +1726,7 @@ hash: hash@42010000 {
+ 				dmas = <&hpdma 6 0x40 0x3021 0x0>;
+ 				dma-names = "in";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_HASH_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1660,6 +1736,7 @@ rng: rng@42020000 {
+ 				clocks = <&rcc CK_BUS_RNG>;
+ 				resets = <&rcc RNG_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_RNG_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1675,6 +1752,7 @@ spi8: spi@46020000 {
+ 				       <&hpdma 172 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SPI8_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1691,6 +1769,7 @@ i2c8: i2c@46040000 {
+ 				       <&hpdma 169 0x20 0x00003021 0>;
+ 				dma-names = "rx", "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_I2C8_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1808,6 +1887,7 @@ dsi: dsi@48000000 {
+ 				resets = <&rcc DSI_R>;
+ 				reset-names = "apb";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_DSI_CMN_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1821,6 +1901,7 @@ ltdc: display-controller@48010000 {
+ 				clock-names = "bus", "lcd";
+ 				resets = <&rcc LTDC_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LTDC_CMN_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1845,6 +1926,7 @@ dcmipp: dcmipp@48030000 {
+ 				clocks = <&rcc CK_BUS_DCMIPP>, <&rcc CK_KER_CSI>;
+ 				clock-names = "kclk", "mclk";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_DCMIPP_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1858,6 +1940,7 @@ combophy: phy@480c0000 {
+ 				reset-names = "phy-rst";
+ 				st,syscfg = <&syscfg>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_COMBOPHY_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1873,6 +1956,7 @@ sdmmc1: mmc@48220000 {
+ 				cap-mmc-highspeed;
+ 				max-frequency = <120000000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SDMMC1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1888,6 +1972,7 @@ sdmmc2: mmc@48230000 {
+ 				cap-mmc-highspeed;
+ 				max-frequency = <120000000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SDMMC2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1903,6 +1988,7 @@ sdmmc3: mmc@48240000 {
+ 				cap-mmc-highspeed;
+ 				max-frequency = <120000000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_SDMMC3_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1930,6 +2016,7 @@ eth1: eth1@482c0000 {
+ 				snps,axi-config = <&stmmac_axi_config_1>;
+ 				snps,tso;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ETH1_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 				snps,mtl-rx-config = <&mtl_rx_setup_1>;
+ 				snps,mtl-tx-config = <&mtl_tx_setup_1>;
+@@ -1962,6 +2049,7 @@ usbh: usb@482e0000 {
+ 				#size-cells = <1>;
+ 				ranges = <0x482e0000 0x482e0000 0x20000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USBH_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				usbh_ohci: usb@482e0000 {
+@@ -1993,6 +2081,7 @@ usb3dr: usb@48300000 {
+ 				#size-cells = <1>;
+ 				ranges = <0x48300000 0x48300000 0x100000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USB3DR_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 
+ 				dwc3: usb@48300000 {
+@@ -2040,6 +2129,7 @@ pcie_rc: pcie@48400000 {
+ 
+ 				msi-parent = <&v2m0>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_PCIE_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 		};
+@@ -2403,6 +2493,7 @@ fmc: memory-controller@48200000 {
+ 			#size-cells = <1>;
+ 			clocks = <&scmi_clk CK_SCMI_FMC>;
+ 			resets = <&scmi_reset RST_SCMI_FMC>;
++			power-domains = <&CLUSTER_PD>;
+ 			status = "disabled";
+ 
+ 			nand-controller@4,0 {
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 4cc6e9bb1d1f..e28df8be2eed 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -14,6 +14,8 @@ cpu1: cpu@1 {
+ 			enable-method = "psci";
+ 			clocks = <&scmi_perf 0>;
+ 			clock-names = "cpu";
++			power-domains = <&CPU_PD1>;
++			power-domain-names = "psci";
+ 		};
+ 	};
+ 
+@@ -23,6 +25,13 @@ arm-pmu {
+ 		interrupt-affinity = <&cpu0>, <&cpu1>;
+ 	};
+ 
++	psci {
++		CPU_PD1: power-domain-cpu1 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++		};
++	};
++
+ 	soc@0 {
+ 		rifsc: rifsc@42080000 {
+ 			m_can1: can@402d0000 {
+@@ -36,6 +45,7 @@ m_can1: can@402d0000 {
+ 				clock-names = "hclk", "cclk";
+ 				bosch,mram-cfg = <0x0 0 0 32 0 0 2 2>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_FDCAN_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -50,6 +60,7 @@ m_can3: can@402f0000 {
+ 				clock-names = "hclk", "cclk";
+ 				bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_FDCAN_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -61,6 +72,7 @@ lvds: lvds@48060000 {
+ 				clock-names = "pclk", "ref";
+ 				resets = <&rcc LVDS_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LVDS_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -88,6 +100,7 @@ eth2: eth2@482d0000 {
+ 				snps,axi-config = <&stmmac_axi_config_2>;
+ 				snps,tso;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_ETH2_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 				snps,mtl-rx-config = <&mtl_rx_setup_2>;
+ 				snps,mtl-tx-config = <&mtl_tx_setup_2>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index 92f4549ef4f2..1afcffd195da 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -17,6 +17,7 @@ vdec: vdec@480d0000 {
+ 				clock-names = "vdec-clk";
+ 				clocks = <&rcc CK_BUS_VDEC>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_VDEC_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 			};
+ 			venc: venc@480e0000 {
+ 				compatible = "st,stm32mp25-venc";
+@@ -28,6 +29,7 @@ venc: venc@480e0000 {
+ 				clock-names = "venc-clk";
+ 				clocks = <&rcc CK_BUS_VENC>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_VENC_ID>;
++				power-domains = <&CLUSTER_PD>;
+ 			};
+ 
+ 			gpu: gpu@48280000 {
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+index 88c262b8a29d..c93dc9c6bcb4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+@@ -16,6 +16,7 @@ cryp1: crypto@42030000 {
+ 		       <&hpdma 5 0x43 0x3012 0x0>;
+ 		dma-names = "in", "out";
+ 		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
++		power-domains = <&CLUSTER_PD>;
+ 		status = "disabled";
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+index 88c262b8a29d..c93dc9c6bcb4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+@@ -16,6 +16,7 @@ cryp1: crypto@42030000 {
+ 		       <&hpdma 5 0x43 0x3012 0x0>;
+ 		dma-names = "in", "out";
+ 		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
++		power-domains = <&CLUSTER_PD>;
+ 		status = "disabled";
+ 	};
+ };
+-- 
+2.39.2
+

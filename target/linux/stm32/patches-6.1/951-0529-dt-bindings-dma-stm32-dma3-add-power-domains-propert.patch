@@ -1,0 +1,38 @@
+From 872e362dd0671f96a12093e99ab480d5ab942472 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 21 Sep 2023 18:40:01 +0200
+Subject: [PATCH 0529/1141] dt-bindings: dma: stm32-dma3: add 'power-domains'
+ property
+
+STM32 DMA3 may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 DMA3.
+
+Fix dtbs_check warning:
+arch/arm64/boot/dts/st/stm32mp257f-ev1.dtb: dma-controller@40400000: Unevaluated properties are not allowed ('power-domains' was unexpected)
+        from schema $id: http://devicetree.org/schemas/dma/st,stm32-dma3.yaml#
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I7d0d83d02cf00561116a0ae3e6bce63a9111c9a7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329081
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
+index 9b3600c0da8a..746348b735e9 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
+@@ -103,6 +103,9 @@ properties:
+     minItems: 4
+     maxItems: 16
+ 
++  power-domains:
++    maxItems: 1
++
+   memory-region:
+     description: |
+       Phandle to a /reserved-memory child node assigned to STM32 DMA3 for linked-list items
+-- 
+2.39.2
+

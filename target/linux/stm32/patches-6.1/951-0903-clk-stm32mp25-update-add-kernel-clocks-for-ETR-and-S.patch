@@ -1,0 +1,62 @@
+From 33fc03f8605734537423e0ea353335281935f900 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Mon, 4 Mar 2024 14:36:33 +0100
+Subject: [PATCH 0903/1141] clk: stm32mp25: update add kernel clocks for ETR
+ and STM
+
+This patch adds kernel clocks for ETR and STM.
+It also associates the DBG with the ck_icn_apbdbg clock.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: Ic3c7e315a2118f214eeba4ee1df2d2548239a658
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364336
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 7182f8132093..1277e91f9e51 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -1401,6 +1401,16 @@ static unsigned long clk_summary_div_recalc_rate(struct clk_stm32_clock_data *da
+ 	.div_id		= NO_STM32_DIV,\
+ }
+ 
++#define CS_GATEDIV(_name, _parent, _gate, _div) \
++{\
++	.name		= _name,\
++	.nb_parents	= 1,\
++	.parent_names	= PARENT(_parent),\
++	.gate_id	= _gate,\
++	.mux_id		= NO_STM32_MUX,\
++	.div_id		= _div,\
++}
++
+ static unsigned long clk_summary_clk_recalc_rate(struct clk_stm32_clock_data *data,
+ 						 struct clk_summary *c,
+ 						 unsigned long parent_rate)
+@@ -1763,7 +1773,7 @@ static struct clk_summary stm32mp25_clock_summary[] = {
+ 	CS_DIV("ck_icn_apb2", "ck_icn_ls_mcu", DIV_APB2),
+ 	CS_DIV("ck_icn_apb3", "ck_icn_ls_mcu", DIV_APB3),
+ 	CS_DIV("ck_icn_apb4", "ck_icn_ls_mcu", DIV_APB4),
+-	CS_DIV("ck_icn_apbdbg", "ck_icn_ls_mcu", DIV_APBDBG),
++	CS_GATEDIV("ck_icn_apbdbg", "ck_icn_ls_mcu", GATE_DBG, DIV_APBDBG),
+ 
+ 	CS_STM32_TIMER("ck_timg1", "ck_icn_apb1", RCC_APB1DIVR, RCC_TIMG1PRER),
+ 	CS_STM32_TIMER("ck_timg2", "ck_icn_apb2", RCC_APB2DIVR, RCC_TIMG2PRER),
+@@ -1915,6 +1925,8 @@ static struct clk_summary stm32mp25_clock_summary[] = {
+ 	CS_GATE("ck_icn_p_vdec", "ck_icn_apb4", GATE_VDEC),
+ 	CS_GATE("ck_icn_p_venc", "ck_icn_apb4", GATE_VENC),
+ 	CS_GATE("ck_sys_dbg", "ck_icn_apbdbg", GATE_DBG),
++	CS_GATE("ck_icn_p_stm", "ck_icn_apbdbg", GATE_STM),
++	CS_GATE("ck_icn_p_etr", "ck_icn_apbdbg", GATE_ETR),
+ 	CS_GATE("ck_ker_tim2", "ck_timg1", GATE_TIM2),
+ 	CS_GATE("ck_ker_tim3", "ck_timg1", GATE_TIM3),
+ 	CS_GATE("ck_ker_tim4", "ck_timg1", GATE_TIM4),
+-- 
+2.39.2
+

@@ -1,0 +1,122 @@
+From 51dca64cb6c98fedfc4ee87827f75edf22229bf6 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Tue, 3 Oct 2023 14:38:43 +0200
+Subject: [PATCH 0584/1141] drm/stm: ltdc: handle loopback pixel clock
+
+Loopback pixel clock needs to be handled, when enabling the LTDC. Since
+the common clock framework has no idea of setting parent when an
+encoder is enabled, it must be done manually in the encoder hook.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I24f70581d73ef8c74125cfdd2ffaaed7f57596a6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/331204
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 64 ++++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/stm/ltdc.h |  1 +
+ 2 files changed, 65 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 92c7a0cda4fd..d53652d21ee5 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -2006,10 +2006,57 @@ static void ltdc_encoder_mode_set(struct drm_encoder *encoder,
+ 		pinctrl_pm_select_default_state(ddev->dev);
+ }
+ 
++static enum drm_mode_status ltdc_encoder_mode_valid(struct drm_encoder *encoder,
++						    const struct drm_display_mode *mode)
++{
++	struct drm_device *ddev = encoder->dev;
++	struct ltdc_device *ldev = ddev->dev_private;
++	int ret;
++
++	DRM_DEBUG_DRIVER("\n");
++
++	if (encoder->encoder_type != DRM_MODE_ENCODER_LVDS) {
++		if (ldev->lb_clk) {
++			ret = clk_set_parent(ldev->pixel_clk, ldev->lb_clk);
++			if (ret) {
++				DRM_ERROR("Could not set parent clock: %d\n", ret);
++				return MODE_BAD;
++			}
++		}
++	}
++
++	return MODE_OK;
++}
++
++static bool ltdc_encoder_mode_fixup(struct drm_encoder *encoder,
++				    const struct drm_display_mode *mode,
++				    struct drm_display_mode *adjusted_mode)
++{
++	struct drm_device *ddev = encoder->dev;
++	struct ltdc_device *ldev = ddev->dev_private;
++	int ret;
++
++	DRM_DEBUG_DRIVER("\n");
++
++	if (encoder->encoder_type != DRM_MODE_ENCODER_LVDS) {
++		if (ldev->lb_clk) {
++			ret = clk_set_parent(ldev->pixel_clk, ldev->lb_clk);
++			if (ret) {
++				DRM_ERROR("Could not set parent clock: %d\n", ret);
++				return false;
++			}
++		}
++	}
++
++	return true;
++}
++
+ static const struct drm_encoder_helper_funcs ltdc_encoder_helper_funcs = {
+ 	.disable = ltdc_encoder_disable,
+ 	.enable = ltdc_encoder_enable,
+ 	.mode_set = ltdc_encoder_mode_set,
++	.mode_fixup = ltdc_encoder_mode_fixup,
++	.mode_valid = ltdc_encoder_mode_valid,
+ };
+ 
+ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+@@ -2227,6 +2274,23 @@ int ltdc_load(struct drm_device *ddev)
+ 		ldev->bus_clk = NULL;
+ 	}
+ 
++	ldev->lb_clk = devm_clk_get(dev, "ref");
++	if (IS_ERR(ldev->lb_clk)) {
++		if (PTR_ERR(ldev->pixel_clk) != -EPROBE_DEFER)
++			DRM_DEBUG_DRIVER("Unable to get loopback clock\n");
++		ldev->lb_clk = NULL;
++	}
++
++	/* Set CK_KER_LTDC by default, for now */
++	if (ldev->lb_clk) {
++		if (IS_ERR(ldev->lb_clk))
++			return PTR_ERR(ldev->lb_clk);
++
++		ret = clk_set_parent(ldev->pixel_clk, ldev->lb_clk);
++		if (ret)
++			DRM_ERROR("Could not set parent clock: %d\n", ret);
++	}
++
+ 	if (clk_prepare_enable(ldev->pixel_clk)) {
+ 		DRM_ERROR("Unable to prepare pixel clock\n");
+ 		return -ENODEV;
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 87164010fd13..8f5c0514eef3 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -47,6 +47,7 @@ struct ltdc_device {
+ 	struct regmap *regmap;
+ 	struct clk *pixel_clk;	/* lcd pixel clock */
+ 	struct clk *bus_clk;	/* bus clock */
++	struct clk *lb_clk;	/* loopback clock */
+ 	struct mutex err_lock;	/* protecting error_status */
+ 	struct ltdc_caps caps;
+ 	u32 irq_status;
+-- 
+2.39.2
+

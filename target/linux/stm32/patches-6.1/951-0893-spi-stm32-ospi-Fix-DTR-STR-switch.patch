@@ -1,0 +1,153 @@
+From 4709a73765e0b9733546efa7a8813da16ffea38b Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 23 Feb 2024 09:48:55 +0100
+Subject: [PATCH 0893/1141] spi: stm32-ospi: Fix DTR <=> STR switch
+
+Before entering in suspend, if the memory device is in DTR mode,
+the spi-nor framework switch it back to STR mode.
+In this case, we must restore the STR mode delay block configuration.
+The same after a resume, the framework will request to switch from STR
+to DTR mode.
+
+As currently we don't distinguish the delay block configuration between
+STR and DTR mode, so introduce :
+ _ dlyb_cr_str and dlyb_cr_dtr which save delay block config in both mode.
+ _ dtr_mode which indicates the current flash transfer mode.
+
+Change-Id: Ie5b28aedf8cb272cc10d7fdbf345de4641002b15
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/362936
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/spi/spi-stm32-ospi.c | 57 ++++++++++++++++++++++++++----------
+ 1 file changed, 41 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
+index c2a5829f8732..7b90c31e333a 100644
+--- a/drivers/spi/spi-stm32-ospi.c
++++ b/drivers/spi/spi-stm32-ospi.c
+@@ -13,7 +13,8 @@
+ struct stm32_ospi_flash {
+ 	struct spi_device *spi;
+ 	u32 presc;
+-	u32 dlyb_cr;
++	u32 dlyb_cr_str;
++	u32 dlyb_cr_dtr;
+ 	u32 dcr_reg;
+ 	u64 str_idcode;
+ 	u64 dtr_idcode;
+@@ -21,9 +22,10 @@ struct stm32_ospi_flash {
+ 	bool octal_dtr;
+ 	bool is_str_calibration;
+ 	bool dtr_calibration_done_once;
+-	bool is_calibrated;
+ 	bool sample_later;
++	bool str_sample_later;
+ 	bool is_octal_bus;
++	bool dtr_mode;
+ };
+ 
+ struct stm32_ospi {
+@@ -520,7 +522,7 @@ static int stm32_ospi_str_calibration(struct stm32_ospi *ospi)
+ 		 * Save flash delay block configuration, will be restored
+ 		 * each time this flash is addressed
+ 		 */
+-		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr);
++		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr_str);
+ 
+ 	stm32_omi_dlyb_stop(omi);
+ 	ret = stm32_omi_dlyb_init(omi, false, 0);
+@@ -538,14 +540,14 @@ static int stm32_ospi_str_calibration(struct stm32_ospi *ospi)
+ 		flash->sample_later = false;
+ 		stm32_omi_dlyb_stop(omi);
+ 
+-		ret = stm32_omi_dlyb_set_cr(omi, flash->dlyb_cr);
++		ret = stm32_omi_dlyb_set_cr(omi, flash->dlyb_cr_str);
+ 		if (ret)
+ 			return ret;
+ 	} else {
+-		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr);
++		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr_str);
+ 	}
+ 
+-	flash->is_calibrated = true;
++	flash->str_sample_later = flash->sample_later;
+ 
+ 	return 0;
+ }
+@@ -595,8 +597,8 @@ static int stm32_ospi_dtr_calibration(struct stm32_ospi *ospi)
+ 			/* Stop delay block when configured in lock mode */
+ 			stm32_omi_dlyb_stop(omi);
+ 	} else {
+-		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr);
+-		flash->is_calibrated = true;
++		stm32_omi_dlyb_get_cr(omi, &flash->dlyb_cr_dtr);
++		flash->dtr_calibration_done_once = true;
+ 	}
+ 
+ 	return ret;
+@@ -609,19 +611,15 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+ 	struct stm32_ospi_flash *flash = &ospi->flash[spi->chip_select];
+ 	struct stm32_omi *omi = ospi->omi;
+ 	int ret = 0;
++	bool set_dlyb = false;
+ 
+ 	if (ospi->last_cs != spi->chip_select) {
+ 		ospi->last_cs = spi->chip_select;
+ 
+ 		stm32_omi_dlyb_stop(omi);
+ 		stm32_ospi_set_prescaler(ospi, flash->presc);
+-
+-		if (flash->is_calibrated) {
+-			ret = stm32_omi_dlyb_set_cr(omi, flash->dlyb_cr);
+-			if (ret)
+-				return ret;
+-		}
+-	}
++		set_dlyb = true;
++	};
+ 
+ 	if (op->cmd.dtr && !flash->dtr_calibration_done_once) {
+ 		stm32_omi_dlyb_stop(omi);
+@@ -632,7 +630,34 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+ 		if (ret)
+ 			return ret;
+ 
+-		flash->dtr_calibration_done_once = true;
++		flash->dtr_mode = true;
++	}
++
++	/*
++	 * if flash is switched from DTR to STR or from STR to DTR
++	 * restore the correct calibration value
++	 */
++	if ((flash->dtr_mode && !op->cmd.dtr) ||
++	    (!flash->dtr_mode && op->cmd.dtr)) {
++		flash->dtr_mode = !flash->dtr_mode;
++		stm32_omi_dlyb_stop(omi);
++		set_dlyb = true;
++	}
++
++	/*
++	 * restore DLYB CR register depending on simple or
++	 * double transfer rate
++	 */
++	if (set_dlyb) {
++		if (op->cmd.dtr) {
++			ret = stm32_omi_dlyb_set_cr(omi, flash->dlyb_cr_dtr);
++			flash->sample_later = false;
++			flash->octal_dtr = (op->cmd.nbytes == 2);
++		} else {
++			ret = stm32_omi_dlyb_set_cr(omi, flash->dlyb_cr_str);
++			flash->sample_later = flash->str_sample_later;
++			flash->octal_dtr = false;
++		}
+ 	}
+ 
+ 	return ret;
+-- 
+2.39.2
+

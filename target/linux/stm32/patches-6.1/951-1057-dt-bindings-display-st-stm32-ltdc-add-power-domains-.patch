@@ -1,0 +1,39 @@
+From 5f65a86ef7bdf2db8f21e32604fc362d7400b628 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 14:00:29 +0100
+Subject: [PATCH 1057/1141] dt-bindings: display: st,stm32-ltdc: add
+ 'power-domains' property
+
+STM32 LTDC may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 LTDC.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I1df5ee1af590f0a9427ba8c278d850e6d106287d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347867
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+index 1adf97e32dbc..0229f9cb95ef 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+@@ -35,6 +35,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   port:
+     $ref: /schemas/graph.yaml#/properties/port
+     description: |
+-- 
+2.39.2
+

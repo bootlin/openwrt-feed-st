@@ -1,0 +1,89 @@
+From 0adb7d870ed6648c295f8c306cec0de51f9438cc Mon Sep 17 00:00:00 2001
+From: Yann Gautier <yann.gautier@foss.st.com>
+Date: Fri, 28 Oct 2022 11:26:42 +0200
+Subject: [PATCH 0071/1141] arm64: dts: st: add stm32mp25 sdmmc pins
+ definitions
+
+Add SDMMC1, SDMMC2 and SDMMC3 pins that are used for MMC devices
+on STM32MP257F-EV board.
+
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Change-Id: I46fb14e58b062c6fe085a6195ad7d70d19fec082
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/273272
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index d34a1d5e79c0..66791a974f8f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -6,6 +6,60 @@
+ #include <dt-bindings/pinctrl/stm32-pinfunc.h>
+ 
+ &pinctrl {
++	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
++				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
++				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
++				 <STM32_PINMUX('E', 1, AF10)>, /* SDMMC1_D3 */
++				 <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
++			slew-rate = <2>;
++			drive-push-pull;
++			bias-disable;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('E', 3, AF10)>; /* SDMMC1_CK */
++			slew-rate = <3>;
++			drive-push-pull;
++			bias-disable;
++		};
++	};
++
++	sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
++				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
++				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
++				 <STM32_PINMUX('E', 1, AF10)>; /* SDMMC1_D3 */
++			slew-rate = <2>;
++			drive-push-pull;
++			bias-disable;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('E', 3, AF10)>; /* SDMMC1_CK */
++			slew-rate = <3>;
++			drive-push-pull;
++			bias-disable;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
++			slew-rate = <2>;
++			drive-open-drain;
++			bias-disable;
++		};
++	};
++
++	sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 4, ANALOG)>, /* SDMMC1_D0 */
++				 <STM32_PINMUX('E', 5, ANALOG)>, /* SDMMC1_D1 */
++				 <STM32_PINMUX('E', 0, ANALOG)>, /* SDMMC1_D2 */
++				 <STM32_PINMUX('E', 1, ANALOG)>, /* SDMMC1_D3 */
++				 <STM32_PINMUX('E', 3, ANALOG)>, /* SDMMC1_CK */
++				 <STM32_PINMUX('E', 2, ANALOG)>; /* SDMMC1_CMD */
++		};
++	};
++
+ 	usart2_pins_a: usart2-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('A', 4, AF6)>; /* USART2_TX */
+-- 
+2.39.2
+

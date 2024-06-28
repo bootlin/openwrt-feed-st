@@ -1,0 +1,31 @@
+From ca1f5948ba9e4b2453b5ae8cb9c9ae86f3b7a665 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 25 Apr 2023 12:37:39 +0200
+Subject: [PATCH 0278/1141] arm64: defconfig: disable fbdev emulation
+
+Disable fbdev emulation.
+DRM framework is used by default.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: If8aeb99d90b3b37244bb5d8afa2776065234c60d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305992
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-01-defconfig-cleanup.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+index 9ff3b3194e28..bdaf6e42e1f5 100644
+--- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
++++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+@@ -38,6 +38,7 @@
+ # CONFIG_ARCH_VISCONTI is not set
+ # CONFIG_ARCH_XGENE is not set
+ # CONFIG_ARCH_ZYNQMP is not set
++# CONFIG_DRM_FBDEV_EMULATION is not set
+ # CONFIG_MEDIA_ANALOG_TV_SUPPORT is not set
+ # CONFIG_MEDIA_DIGITAL_TV_SUPPORT is not set
+ # CONFIG_MEDIA_RADIO_SUPPORT is not set
+-- 
+2.39.2
+

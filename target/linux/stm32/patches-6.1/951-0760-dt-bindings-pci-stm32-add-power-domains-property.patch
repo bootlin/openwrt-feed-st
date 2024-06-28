@@ -1,0 +1,39 @@
+From 86ab34c3edf823891a30ddd4c76cde1ee505d6b1 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 14:21:10 +0100
+Subject: [PATCH 0760/1141] dt-bindings: pci: stm32: add 'power-domains'
+ property
+
+STM32 PCIE may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 PCIE.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I49274c0b7fb4ee8230dd4ea83b268790f39feeae
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347856
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+index 57688866f2f5..7aaaef7f4e93 100644
+--- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
++++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+@@ -83,6 +83,9 @@ properties:
+     description: GPIO controlled connection to PERST# signal
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   feature-domains:
+     maxItems: 1
+ 
+-- 
+2.39.2
+

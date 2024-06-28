@@ -1,0 +1,34 @@
+From 98d295bfb3af22d45616e57302bf317e66cef7ee Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 19 Sep 2023 15:47:03 +0200
+Subject: [PATCH 0528/1141] dmaengine: stm32-dma3: adopt reset_control_reset()
+
+reset_control_reset() API automatically apply the right delay between
+assert and deassert.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I37e07ea8ba1cf4bad9d8352a81248e80538307fc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329078
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/dma/stm32-dma3.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
+index 41e1538aae36..c7c775651611 100644
+--- a/drivers/dma/stm32-dma3.c
++++ b/drivers/dma/stm32-dma3.c
+@@ -2161,8 +2161,7 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+ 		if (ret == -EPROBE_DEFER)
+ 			goto err_clk_disable;
+ 	} else {
+-		reset_control_assert(reset);
+-		reset_control_deassert(reset);
++		reset_control_reset(reset);
+ 	}
+ 
+ 	INIT_LIST_HEAD(&dma_dev->channels);
+-- 
+2.39.2
+

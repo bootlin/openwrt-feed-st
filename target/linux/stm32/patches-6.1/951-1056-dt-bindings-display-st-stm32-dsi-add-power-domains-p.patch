@@ -1,0 +1,39 @@
+From 0b7de352a50b0dded04787e098d18f1fd94311e8 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 26 Mar 2024 12:12:24 +0100
+Subject: [PATCH 1056/1141] dt-bindings: display: st,stm32-dsi: add
+ 'power-domains' property
+
+STM32 DSI may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 DSI.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I8219916bc21882dde99321b91daf3abbc5dd2be2
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347866
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/display/st,stm32-dsi.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+index fb52656c947d..c426a8118c7e 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+@@ -43,6 +43,9 @@ properties:
+     items:
+       - const: apb
+ 
++  power-domains:
++    maxItems: 1
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+-- 
+2.39.2
+

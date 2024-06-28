@@ -1,0 +1,54 @@
+From c57c017b8e545a8abff551864e931c509c08e3a1 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 15:19:36 +0100
+Subject: [PATCH 0993/1141] dt-bindings: dma: stm32-dma3: introduce
+ st,axi-max-burst-len property
+
+DMA3 maximum burst length (in unit of beat) may be restricted depending
+on bus interconnect.
+Introduce st,axi-max-burst-len. If used, it will clamp the burst length
+to that value, if not, the maximum burst length value supported by DMA3
+is used.
+
+Change-Id: I5783969b50ee29f232c2a1f958acb30c052b6341
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358986
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml  | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+index 588a4e8ddd52..1ba09cfbd30c 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+@@ -94,6 +94,16 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  st,axi-max-burst-len:
++    description: |
++      Restrict AXI burst length in unit of beat by value specified in this property.
++      The value specified in this property is clamped to the maximum burst length supported by DMA3.
++      If this property is missing, the maximum burst length supported by DMA3 is used.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 256
++    default: 64
++
+ required:
+   - compatible
+   - reg
+@@ -127,6 +137,7 @@ examples:
+                    <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+       clocks = <&rcc CK_BUS_HPDMA1>;
+       #dma-cells = <3>;
++      st,axi-max-burst-len = <16>;
+     };
+ ...
+ 
+-- 
+2.39.2
+

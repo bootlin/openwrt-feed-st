@@ -1,0 +1,173 @@
+From ba93504e92fd6847403de1d5a732257535a3aa85 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 18 Oct 2023 13:32:29 +0200
+Subject: [PATCH 0615/1141] media: stm32: csi2host: support runtime power
+ management
+
+This patch enables runtime power management (runtime PM) support for
+CSI2HOST driver. pm_runtime_get_sync() and pm_runtime_put() are
+added for register access.
+
+Change-Id: Ib3357c9dbc83ac73cfeadf81563d9fba2b481e36
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/334561
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../media/platform/st/stm32/stm32-csi2host.c  | 85 +++++++++++++------
+ 1 file changed, 59 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
+index 7639ef7d05e8..614a2331c89c 100644
+--- a/drivers/media/platform/st/stm32/stm32-csi2host.c
++++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
+@@ -486,28 +486,23 @@ static int csi2host_start(struct csi2host_priv *csi2priv)
+ 		}
+ 	}
+ 
+-	ret = clk_prepare_enable(csi2priv->pclk);
+-	if (ret)
+-		goto error_out;
+-
+-	ret = clk_prepare_enable(csi2priv->txesc);
+-	if (ret)
+-		goto error_disable_pclk;
+-
+-	ret = clk_prepare_enable(csi2priv->csi2phy);
+-	if (ret)
+-		goto error_disable_txesc;
++	ret = pm_runtime_get_sync(csi2priv->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	/* Retrieve CSI2PHY clock rate to compute CCFR value */
+ 	phy_clk_frate = clk_get_rate(csi2priv->csi2phy);
+ 	if (!phy_clk_frate) {
++		pm_runtime_put(csi2priv->dev);
+ 		dev_err(csi2priv->dev, "CSI2PHY clock rate invalid (0)\n");
+-		goto error_disable_txesc;
++		return ret;
+ 	}
+ 
+ 	ret = csi2host_setup_lane_merger(csi2priv);
+-	if (ret)
+-		goto error_disable_csi2phy;
++	if (ret) {
++		pm_runtime_put(csi2priv->dev);
++		return ret;
++	}
+ 
+ 	/* FIXME - how to set the watchdog value .. */
+ 	writel_relaxed(0, csi2priv->base + CSI_WDR);
+@@ -568,15 +563,6 @@ static int csi2host_start(struct csi2host_priv *csi2priv)
+ 	writel_relaxed(0, csi2priv->base + CSI_PMCR);
+ 
+ 	return ret;
+-
+-error_disable_csi2phy:
+-	clk_disable_unprepare(csi2priv->csi2phy);
+-error_disable_txesc:
+-	clk_disable_unprepare(csi2priv->txesc);
+-error_disable_pclk:
+-	clk_disable_unprepare(csi2priv->pclk);
+-error_out:
+-	return ret;
+ }
+ 
+ static void csi2host_stop(struct csi2host_priv *csi2priv)
+@@ -595,9 +581,7 @@ static void csi2host_stop(struct csi2host_priv *csi2priv)
+ 	/* Disable the CSI */
+ 	writel_relaxed(0, csi2priv->base + CSI_CR);
+ 
+-	clk_disable_unprepare(csi2priv->csi2phy);
+-	clk_disable_unprepare(csi2priv->txesc);
+-	clk_disable_unprepare(csi2priv->pclk);
++	pm_runtime_put(csi2priv->dev);
+ }
+ 
+ static int csi2host_start_vc(struct csi2host_priv *csi2priv, uint32_t vc)
+@@ -1114,6 +1098,8 @@ static int csi2host_probe(struct platform_device *pdev)
+ 		goto err_cleanup;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	dev_info(&pdev->dev,
+ 		 "Probed CSI2HOST with %u lanes\n", csi2priv->num_lanes);
+ 
+@@ -1131,15 +1117,61 @@ static int csi2host_remove(struct platform_device *pdev)
+ 
+ 	v4l2_async_unregister_subdev(&csi2priv->subdev);
+ 
++	pm_runtime_disable(&pdev->dev);
++
+ 	return 0;
+ }
+ 
++static int __maybe_unused csi2host_runtime_suspend(struct device *dev)
++{
++	struct csi2host_priv *csi2priv = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(csi2priv->csi2phy);
++	clk_disable_unprepare(csi2priv->txesc);
++	clk_disable_unprepare(csi2priv->pclk);
++
++	return 0;
++}
++
++static int __maybe_unused csi2host_runtime_resume(struct device *dev)
++{
++	struct csi2host_priv *csi2priv = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(csi2priv->pclk);
++	if (ret)
++		goto error_out;
++
++	ret = clk_prepare_enable(csi2priv->txesc);
++	if (ret)
++		goto error_disable_pclk;
++
++	ret = clk_prepare_enable(csi2priv->csi2phy);
++	if (ret)
++		goto error_disable_txesc;
++
++	return 0;
++
++error_disable_txesc:
++	clk_disable_unprepare(csi2priv->txesc);
++error_disable_pclk:
++	clk_disable_unprepare(csi2priv->pclk);
++error_out:
++	dev_err(csi2priv->dev, "Failed to resume: %d\n", ret);
++
++	return ret;
++}
++
+ static const struct of_device_id csi2host_of_table[] = {
+ 	{ .compatible = "st,stm32-csi2host" },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, csi2host_of_table);
+ 
++static const struct dev_pm_ops csi2host_pm_ops = {
++	SET_RUNTIME_PM_OPS(csi2host_runtime_suspend, csi2host_runtime_resume, NULL)
++};
++
+ static struct platform_driver csi2host_driver = {
+ 	.probe	= csi2host_probe,
+ 	.remove	= csi2host_remove,
+@@ -1147,6 +1179,7 @@ static struct platform_driver csi2host_driver = {
+ 	.driver	= {
+ 		.name		= "stm32-csi2host",
+ 		.of_match_table	= csi2host_of_table,
++		.pm		= &csi2host_pm_ops,
+ 	},
+ };
+ module_platform_driver(csi2host_driver);
+-- 
+2.39.2
+

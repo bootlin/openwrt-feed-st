@@ -1,0 +1,34 @@
+From 18e171f05587d07b897274eb93e69055d95d82db Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Fri, 14 Oct 2022 10:42:30 +0200
+Subject: [PATCH 0138/1141] dt-bindings: vendor-prefixes: add ttt
+
+Add TTTech as vendor prefix.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I530a764ce5f41cd323f92a708e4ab45473340e2e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/271270
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 51984990b839..bf5cde9703d9 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1332,6 +1332,8 @@ patternProperties:
+     description: TPO
+   "^tq,.*":
+     description: TQ-Systems GmbH
++  "^ttt,.*":
++    description: TTTech
+   "^traverse,.*":
+     description: Traverse Technologies Australia Pty Ltd
+   "^tronfy,.*":
+-- 
+2.39.2
+

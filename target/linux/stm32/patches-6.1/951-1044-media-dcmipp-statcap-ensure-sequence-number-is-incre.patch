@@ -1,0 +1,44 @@
+From 757298875712eec56712a5a02bfe0acb071d7c97 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 11:23:24 +0100
+Subject: [PATCH 1044/1141] media: dcmipp: statcap: ensure sequence number is
+ incremented
+
+Ensure that the sequence number part of v4l2_buffer is incremented.
+
+Change-Id: I2239e9bd0d035c244bd9657df3c1142dcd9576bf
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369278
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index bdd87f1d4ba9..59231035762a 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -374,8 +374,6 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ 		goto err_media_pipeline_stop;
+ 	}
+ 
+-	/* FIXME - Restart the sequence of statistics capture */
+-
+ 	return 0;
+ 
+ err_media_pipeline_stop:
+@@ -684,7 +682,7 @@ static void dcmipp_statcap_buffer_done(struct dcmipp_statcap_device *vcap)
+ 	/* Send buffer */
+ 	vb2_set_plane_payload(&cur_buf->vb.vb2_buf, 0,
+ 			      sizeof(struct stm32_dcmipp_stat_buf));
+-	cur_buf->vb.sequence = 0;
++	cur_buf->vb.sequence = vcap->sequence++;
+ 	cur_buf->vb.vb2_buf.timestamp = ktime_get_ns();
+ 	vb2_buffer_done(&cur_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+ }
+-- 
+2.39.2
+

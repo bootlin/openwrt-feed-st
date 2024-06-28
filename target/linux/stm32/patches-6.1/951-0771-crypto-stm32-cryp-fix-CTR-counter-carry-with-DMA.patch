@@ -1,0 +1,48 @@
+From 8b7a439fa1e3c3e2a68bfed2b399d4f72e1c199b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Mon, 20 Nov 2023 09:55:48 +0100
+Subject: [PATCH 0771/1141] crypto: stm32/cryp - fix CTR counter carry with DMA
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This patch avoids using DMA when the internal counter is about to
+overflow when ctr(aes) is used. The CTR counter is 32 bits in the CRYP1
+peripheral, while it could be 128 bits in Linux.
+
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Change-Id: Id74744d399184c78d27671c9c700864390d7db8e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352250
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 74fb762af804..50ea93038680 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -1633,6 +1633,17 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+ 	if (!cryp)
+ 		return -ENODEV;
+ 
++	/* Avoid to use DMA if peripheral 32 bit counter is about to overflow with ctr(aes) */
++	if (is_aes(cryp) && is_ctr(cryp)) {
++		u32 iv_overflow[4];
++
++		memcpy(iv_overflow, req->iv, sizeof(__be32) * 4);
++		iv_overflow[3] = 0xffffffff - be32_to_cpu((__be32)iv_overflow[3]);
++
++		if (req->src->length > iv_overflow[3])
++			cryp->flags &= ~FLG_IN_OUT_DMA;
++	}
++
+ 	if (cryp->flags & FLG_IN_OUT_DMA)
+ 		err = stm32_cryp_dma_start(cryp);
+ 	else
+-- 
+2.39.2
+

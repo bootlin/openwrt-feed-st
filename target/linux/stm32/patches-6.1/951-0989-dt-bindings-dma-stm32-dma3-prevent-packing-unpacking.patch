@@ -1,0 +1,49 @@
+From 205f6995d0a59e48b4873405f89bf11886763058 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 15:19:35 +0100
+Subject: [PATCH 0989/1141] dt-bindings: dma: stm32-dma3: prevent
+ packing/unpacking mode
+
+When source data width/burst and destination data width/burst are
+different, data are packed or unpacked in DMA3 channel FIFO, using
+CxTR1.PAM.
+Data are pushed out from DMA3 channel FIFO when the destination burst
+length (= data width * burst) is reached.
+If the transfer is stopped before CxBR1.BNDT = 0, and if some bytes are
+packed/unpacked in the DMA3 channel FIFO, these bytes are lost.
+Indeed, DMA3 channel FIFO has no flush capability, only reset.
+To avoid potential bytes lost, pack/unpack must be prevented by setting
+memory data width/burst equal to peripheral data width/burst.
+Memory accesses will be penalized. But it is the only way to avoid bytes
+lost.
+
+Prevent pack/unpack feature can be activated by setting bit 16 of DMA3
+Transfer requirements bitfield (tr_conf).
+
+Change-Id: I8d1cce16c43998f81d33902254fac5e78851b70c
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358982
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+index 797faf1a1fe8..14d7948c5953 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+@@ -58,6 +58,9 @@ description: |
+         0x2: at LLI level, the transfer complete event is generated at the end of the LLI transfer,
+              including the update of the LLI if any
+         0x3: at channel level, the transfer complete event is generated at the end of the last LLI
++      -bit 16: Prevent packing/unpacking mode
++        0x0: pack/unpack enabled when source data width/burst != destination data width/burst
++        0x1: memory data width/burst forced to peripheral data width/burst to prevent pack/unpack
+ 
+ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+-- 
+2.39.2
+

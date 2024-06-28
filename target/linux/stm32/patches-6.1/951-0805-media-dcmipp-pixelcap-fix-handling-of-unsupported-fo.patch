@@ -1,0 +1,38 @@
+From d4657dc59e99c03b65a47f73ab1f7e011308af18 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 2 Dec 2023 22:18:07 +0100
+Subject: [PATCH 0805/1141] media: dcmipp: pixelcap: fix handling of
+ unsupported format
+
+Correct handling of unsupported format and prevent a NULL ptr deref.
+
+Change-Id: Iffab0ea2842df3363dc06c8a95d812dbbd008769
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344613
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index 6cfc7acc101c..d37104d8ce1e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -394,8 +394,10 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+ 
+ 	/* Don't accept a pixelformat that is not on the table */
+ 	vpix = dcmipp_pixelcap_pix_map_by_pixelformat(format->pixelformat);
+-	if (!vpix)
++	if (!vpix) {
+ 		format->pixelformat = fmt_default.pixelformat;
++		vpix = dcmipp_pixelcap_pix_map_by_pixelformat(format->pixelformat);
++	}
+ 
+ 	/* Semiplanar & planar formats are only supported on main pipe */
+ 	if (vpix->plane_nb > 1 && vcap->pipe_id != 1)
+-- 
+2.39.2
+

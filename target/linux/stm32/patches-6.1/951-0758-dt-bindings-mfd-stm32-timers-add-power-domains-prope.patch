@@ -1,0 +1,39 @@
+From e4faaaa70fb72f7c376cdf7ed9f43475a0aeabac Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 18 Dec 2023 19:32:26 +0100
+Subject: [PATCH 0758/1141] dt-bindings: mfd: stm32-timers: add 'power-domains'
+ property
+
+STM32 timer may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 timer.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I19c6c05195d44148e5a008e23b11df791d149ff1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347852
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index a6d404a7d1c5..aeefc20b13f5 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -38,6 +38,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   dmas:
+     minItems: 1
+     maxItems: 7
+-- 
+2.39.2
+

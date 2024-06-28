@@ -1,0 +1,37 @@
+From e1979a881a818598e06026ba9bf7edc341a2d156 Mon Sep 17 00:00:00 2001
+From: Maxence GUILHIN <maxence.guilhin@st.com>
+Date: Thu, 21 Mar 2024 18:01:48 +0100
+Subject: [PATCH 1048/1141] media: dcmipp: fix pipe 2 gamma address
+
+Fix wrong pipe2 gamma address, to be able to set correctly
+gamma correction on aux post-proc pipeline.
+
+Change-Id: I0442ea30549062ec23f1e0574adb48469f1f65c3
+Signed-off-by: Maxence GUILHIN <maxence.guilhin@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370320
+Tested-by: Alain VOLMAT <alain.volmat@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index f32d7df6b514..2977b6c06fc3 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -84,7 +84,7 @@
+ #define DCMIPP_PxDSSZR_VSIZE_MASK GENMASK(27, 16)
+ 
+ #define DCMIPP_P1GMCR (0x970)
+-#define DCMIPP_P2GMCR (0x970)
++#define DCMIPP_P2GMCR (0xD70)
+ #define DCMIPP_PxGMCR(id) (((id) == 1) ? DCMIPP_P1GMCR :\
+ 			   DCMIPP_P2GMCR)
+ #define DCMIPP_PxGMCR_ENABLE BIT(0)
+-- 
+2.39.2
+

@@ -1,0 +1,39 @@
+From e292208b5d88847510892467702c5caeaac7dab1 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 6 Jun 2023 14:50:02 +0200
+Subject: [PATCH 0334/1141] mmc: mmci: stm32: fix max busy timeout calculation
+
+The way that the timeout is currently calculated could lead
+to a u64 timeout value. this value is then cast in a u32 register
+that leads to mmc erase failed issue with some SD cards.
+
+Change-Id: Iad63f9647f2f24cfbeb3806d94b24d46370c4a66
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/311070
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/mmc/host/mmci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+index 38a30ca56d87..001f0926c29c 100644
+--- a/drivers/mmc/host/mmci.c
++++ b/drivers/mmc/host/mmci.c
+@@ -1776,7 +1776,8 @@ static void mmci_set_max_busy_timeout(struct mmc_host *mmc)
+ 		return;
+ 
+ 	if (host->variant->busy_timeout && mmc->actual_clock)
+-		max_busy_timeout = ~0UL / (mmc->actual_clock / MSEC_PER_SEC);
++		max_busy_timeout = U32_MAX / DIV_ROUND_UP(mmc->actual_clock,
++							  MSEC_PER_SEC);
+ 
+ 	mmc->max_busy_timeout = max_busy_timeout;
+ }
+-- 
+2.39.2
+

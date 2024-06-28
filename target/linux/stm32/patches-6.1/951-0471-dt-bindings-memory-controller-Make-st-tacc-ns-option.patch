@@ -1,0 +1,34 @@
+From 1c6ac19f454d7e2ca019a38e6602cc1d8ed89bc7 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 1 Sep 2023 17:57:52 +0200
+Subject: [PATCH 0471/1141] dt-bindings: memory-controller : Make "st,tacc-ns"
+ optional for stm32-omi
+
+Make "st,tacc-ns" optional in stm32-omi.yaml
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I6e1fc382a507c2d9eb894784afe712aa62c68f3c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325492
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml     | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+index f7107d345138..ab88193ab7f5 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+@@ -137,7 +137,6 @@ patternProperties:
+ 
+           required:
+             - st,max-frequency
+-            - st,tacc-ns
+ 
+ additionalProperties: false
+ 
+-- 
+2.39.2
+

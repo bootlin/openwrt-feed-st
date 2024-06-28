@@ -1,0 +1,41 @@
+From 093329b48904771a7be0e72d9d84dacca9519214 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 17 May 2023 11:34:26 +0200
+Subject: [PATCH 0133/1141] clk: stm32mp2: add set rate support on spi clocks
+
+Flexgen10 (SPI/I2S1) and Flexgen16 (SPI/I2S2&3) PLLs, have been changed
+from PLL4 to PLL7 to support audio sampling rates.
+Add CLK_SET_RATE_PARENT flags on SPI1/2/3 clocks to propagate the set rate
+on the parent clock.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I0559eba4696e0643fe55db9ff18eca24611b912d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/306993
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 385d9f0c2c06..f18a934803cf 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -845,9 +845,9 @@ static CLK_STM32_GATE(ck_icn_p_spi6, "ck_icn_apb2", 0, GATE_SPI6);
+ static CLK_STM32_GATE(ck_icn_p_spi7, "ck_icn_apb2", 0, GATE_SPI7);
+ static CLK_STM32_GATE(ck_icn_p_spi8, "ck_icn_ls_mcu", 0, GATE_SPI8);
+ 
+-static CLK_STM32_GATE(ck_ker_spi1, "ck_flexgen_16", 0, GATE_SPI1);
+-static CLK_STM32_GATE(ck_ker_spi2, "ck_flexgen_10", 0, GATE_SPI2);
+-static CLK_STM32_GATE(ck_ker_spi3, "ck_flexgen_10", 0, GATE_SPI3);
++static CLK_STM32_GATE(ck_ker_spi1, "ck_flexgen_16", CLK_SET_RATE_PARENT, GATE_SPI1);
++static CLK_STM32_GATE(ck_ker_spi2, "ck_flexgen_10", CLK_SET_RATE_PARENT, GATE_SPI2);
++static CLK_STM32_GATE(ck_ker_spi3, "ck_flexgen_10", CLK_SET_RATE_PARENT, GATE_SPI3);
+ static CLK_STM32_GATE(ck_ker_spi4, "ck_flexgen_17", 0, GATE_SPI4);
+ static CLK_STM32_GATE(ck_ker_spi5, "ck_flexgen_17", 0, GATE_SPI5);
+ static CLK_STM32_GATE(ck_ker_spi6, "ck_flexgen_18", 0, GATE_SPI6);
+-- 
+2.39.2
+

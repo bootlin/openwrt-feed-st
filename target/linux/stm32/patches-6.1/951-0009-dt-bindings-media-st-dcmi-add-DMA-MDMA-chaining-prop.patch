@@ -1,0 +1,56 @@
+From 41269a4d4946acaf854677e3e8886bd9c41b6681 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 27 Feb 2023 15:46:00 +0100
+Subject: [PATCH 0009/1141] dt-bindings: media: st: dcmi: add DMA-MDMA chaining
+ properties
+
+Add properties update and new sram property necessary in order
+to enable the DMA-MDMA chaining.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I96b1bbff424aa449f3e6881e334a8693684950a0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/319548
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 9c1262a276b5..781379090f40 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -27,15 +27,27 @@ properties:
+       - const: mclk
+ 
+   dmas:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
+ 
+   dma-names:
+     items:
+       - const: tx
++      - const: mdma-tx
++    minItems: 1
++    maxItems: 2
+ 
+   resets:
+     maxItems: 1
+ 
++  sram:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      phandles to a reserved SRAM region which is used as temporary
++      storage memory between DMA and MDMA engines.
++      The region should be defined as child nodes of the AHB SRAM node
++      as per the generic bindings in Documentation/devicetree/bindings/sram/sram.yaml
++
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+-- 
+2.39.2
+

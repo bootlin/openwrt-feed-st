@@ -1,0 +1,33 @@
+From f0fe4e79dd0e5d687a5d92fd1b0fb936136a984f Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Thu, 1 Sep 2022 11:51:53 +0200
+Subject: [PATCH 0178/1141] arm64: defconfig: enable NVMEM STM32 ROMEM for
+ stm32mp25
+
+Enable the NVMEM driver STM32 ROMEM for STM32MP25x SoCs
+to allow access to OTP provided by OP-TEE BSEC PTA
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I5071bb8c60fb59975321f211f16857fbe631bd36
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/264786
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302169
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index b1dce9359993..d0d46b1517fd 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -13,6 +13,7 @@ CONFIG_NET_CLS_U32=m
+ CONFIG_NET_SCH_MULTIQ=m
+ CONFIG_NET_SCH_PRIO=m
+ CONFIG_NET_SCH_SKBPRIO=m
++CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_PCIE_STM32=y
+ CONFIG_PHY_STM32_COMBOPHY=y
+ CONFIG_PHY_STM32_USB2PHY=y
+-- 
+2.39.2
+

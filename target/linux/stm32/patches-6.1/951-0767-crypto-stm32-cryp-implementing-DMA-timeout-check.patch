@@ -1,0 +1,101 @@
+From ba7a2cdbe3c8eb7d0fc05e34143d45d247c34e5c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Fri, 15 Dec 2023 10:35:10 +0100
+Subject: [PATCH 0767/1141] crypto: stm32/cryp - implementing DMA timeout check
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+In the current driver, there is no security to stop cryp if DMA doesn't
+respond.
+This patch add a completion to return a timeout error if DMA completion
+is too long.
+
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Change-Id: I7f9c9cc670b0d63f777d91aa840207d8fa327b39
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347102
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index d4e62bce024a..92ed1a97c7af 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -186,6 +186,7 @@ struct stm32_cryp {
+ 	size_t                  in_sg_len;
+ 	size_t                  header_sg_len;
+ 	size_t                  out_sg_len;
++	struct completion	dma_completion;
+ 
+ 	struct dma_chan         *dma_lch_in;
+ 	struct dma_chan         *dma_lch_out;
+@@ -761,6 +762,8 @@ static void stm32_cryp_dma_callback(void *param)
+ 	int ret;
+ 	u32 reg;
+ 
++	complete(&cryp->dma_completion); /* completion to indicate no timeout */
++
+ 	dma_sync_sg_for_device(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
+ 	dma_unmap_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
+ 	dma_unmap_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
+@@ -885,6 +888,7 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+ 		return -EINVAL;
+ 	}
+ 
++	reinit_completion(&cryp->dma_completion);
+ 	tx_out->callback = stm32_cryp_dma_callback;
+ 	tx_out->callback_param = cryp;
+ 
+@@ -913,6 +917,12 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+ 	reg = stm32_cryp_read(cryp, CRYP_DMACR);
+ 	stm32_cryp_write(cryp, CRYP_DMACR, reg | DMACR_DOEN | DMACR_DIEN);
+ 
++	if (!wait_for_completion_timeout(&cryp->dma_completion, msecs_to_jiffies(1000))) {
++		dev_err(cryp->dev, "DMA out timed out\n");
++		dmaengine_terminate_sync(cryp->dma_lch_out);
++		return -ETIMEDOUT;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1613,14 +1623,20 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+ 	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(
+ 			crypto_skcipher_reqtfm(req));
+ 	struct stm32_cryp *cryp = ctx->cryp;
++	int err;
+ 
+ 	if (!cryp)
+ 		return -ENODEV;
+ 
+ 	if (cryp->flags & FLG_IN_OUT_DMA)
+-		return stm32_cryp_dma_start(cryp);
++		err = stm32_cryp_dma_start(cryp);
+ 	else
+-		return stm32_cryp_it_start(cryp);
++		err = stm32_cryp_it_start(cryp);
++
++	if (err == -ETIMEDOUT)
++		stm32_cryp_finish_req(cryp, err);
++
++	return err;
+ }
+ 
+ static int stm32_cryp_prepare_aead_req(struct crypto_engine *engine, void *areq)
+@@ -2134,6 +2150,8 @@ static int stm32_cryp_dma_init(struct stm32_cryp *cryp)
+ 		return err;
+ 	}
+ 
++	init_completion(&cryp->dma_completion);
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

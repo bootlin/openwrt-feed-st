@@ -1,0 +1,48 @@
+From 95ae3eacc7f32d71333039219e6d4707e3729ac4 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 14 Aug 2023 11:31:20 +0200
+Subject: [PATCH 0551/1141] arm64: dts: st: add gpios to exti2 interrupt-map
+
+Both exti1 and exti2 can generate interrupts from gpio.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I6517f8696b75a9dcf40de04bf43317841e24538d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329531
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index ca4708a79983..475870094d0f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2421,6 +2421,22 @@ exti-interrupt-map {
+ 				#interrupt-cells = <2>;
+ 				interrupt-map-mask = <0xffffffff 0>;
+ 				interrupt-map =
++					<0  0 &intc 0 0 GIC_SPI 17  IRQ_TYPE_LEVEL_HIGH>,
++					<1  0 &intc 0 0 GIC_SPI 18  IRQ_TYPE_LEVEL_HIGH>,
++					<2  0 &intc 0 0 GIC_SPI 19  IRQ_TYPE_LEVEL_HIGH>,
++					<3  0 &intc 0 0 GIC_SPI 20  IRQ_TYPE_LEVEL_HIGH>,
++					<4  0 &intc 0 0 GIC_SPI 21  IRQ_TYPE_LEVEL_HIGH>,
++					<5  0 &intc 0 0 GIC_SPI 22  IRQ_TYPE_LEVEL_HIGH>,
++					<6  0 &intc 0 0 GIC_SPI 23  IRQ_TYPE_LEVEL_HIGH>,
++					<7  0 &intc 0 0 GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
++					<8  0 &intc 0 0 GIC_SPI 25  IRQ_TYPE_LEVEL_HIGH>,
++					<9  0 &intc 0 0 GIC_SPI 26  IRQ_TYPE_LEVEL_HIGH>,
++					<10 0 &intc 0 0 GIC_SPI 27  IRQ_TYPE_LEVEL_HIGH>,
++					<11 0 &intc 0 0 GIC_SPI 28  IRQ_TYPE_LEVEL_HIGH>,
++					<12 0 &intc 0 0 GIC_SPI 29  IRQ_TYPE_LEVEL_HIGH>,
++					<13 0 &intc 0 0 GIC_SPI 30  IRQ_TYPE_LEVEL_HIGH>,
++					<14 0 &intc 0 0 GIC_SPI 31  IRQ_TYPE_LEVEL_HIGH>,
++					<15 0 &intc 0 0 GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
+ 					<16 0 &intc 0 0 GIC_SPI 12  IRQ_TYPE_LEVEL_HIGH>,
+ 					<17 0 &intc 0 0 GIC_SPI 13  IRQ_TYPE_LEVEL_HIGH>,
+ 					<21 0 &intc 0 0 GIC_SPI 14  IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.39.2
+

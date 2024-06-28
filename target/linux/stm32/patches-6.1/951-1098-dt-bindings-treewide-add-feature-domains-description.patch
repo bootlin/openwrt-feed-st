@@ -1,0 +1,675 @@
+From 3d23128d9c634788e0cf93c0a792e30488f3706d Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 20 Jan 2023 17:54:11 +0100
+Subject: [PATCH 1098/1141] dt-bindings: treewide: add feature-domains
+ description
+
+feature-domains is an optional property that allows a peripheral to
+refer to one or more domain access controller(s).
+
+Description of this property is added to all peripheral binding files of
+the peripheral under the STM32 firewall controller. It allows an accurate
+representation of the hardware, where various peripherals are connected
+to a firewall bus. The firewall can then check the peripheral accesses
+before allowing its device to probe.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I5e5a837d858c97a7b2dc14963f367b019647e8fd
+---
+ Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml  | 5 +++++
+ Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml | 5 +++++
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml | 5 +++++
+ Documentation/devicetree/bindings/display/st,stm32-dsi.yaml | 5 +++++
+ .../devicetree/bindings/display/st,stm32-ltdc.yaml          | 5 +++++
+ .../devicetree/bindings/dma/stm32/st,stm32-dma.yaml         | 5 +++++
+ .../devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml      | 5 +++++
+ .../feature-controllers/feature-domain-controller.yaml      | 3 ++-
+ Documentation/devicetree/bindings/gpu/vivante,gc.yaml       | 5 +++++
+ Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml     | 5 +++++
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml | 5 +++++
+ .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml     | 5 +++++
+ Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml | 5 +++++
+ Documentation/devicetree/bindings/media/st,stm32-cec.yaml   | 5 +++++
+ .../devicetree/bindings/media/st,stm32-csi2host.yaml        | 5 +++++
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml  | 5 +++++
+ .../devicetree/bindings/media/st,stm32-dcmipp.yaml          | 5 +++++
+ .../devicetree/bindings/media/st,stm32mp25-vdec.yaml        | 5 +++++
+ .../devicetree/bindings/media/st,stm32mp25-venc.yaml        | 5 +++++
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml      | 5 +++++
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml | 5 +++++
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml  | 5 +++++
+ Documentation/devicetree/bindings/mmc/arm,pl18x.yaml        | 5 +++++
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml  | 5 +++++
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml      | 6 ++++++
+ .../devicetree/bindings/phy/phy-stm32-usbphyc.yaml          | 5 +++++
+ .../devicetree/bindings/phy/st,stm32-combophy.yaml          | 5 +++++
+ .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml     | 5 +++++
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml     | 5 +++++
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 5 +++++
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml   | 5 +++++
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml   | 5 +++++
+ .../devicetree/bindings/sound/st,stm32-spdifrx.yaml         | 5 +++++
+ Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml    | 5 +++++
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml     | 5 +++++
+ Documentation/devicetree/bindings/usb/dwc2.yaml             | 5 +++++
+ Documentation/devicetree/bindings/usb/stm32,dwc3.yaml       | 5 +++++
+ Documentation/devicetree/bindings/usb/stm32,usbh.yaml       | 5 +++++
+ 38 files changed, 188 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+index 993e90a51a6a..1616f05fb65b 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+@@ -22,6 +22,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+index 59ec8d3b1afc..3f55cf36520b 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+@@ -30,6 +30,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+index 8651f9bb55b6..70f053515194 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -51,6 +51,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+index c426a8118c7e..98f1b5ae98de 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+@@ -46,6 +46,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+index 0229f9cb95ef..db4306e8ce12 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+@@ -47,6 +47,11 @@ properties:
+       - for internal dpi input of the MIPI DSI host controller.
+       Note: These 2 endpoints cannot be activated simultaneously.
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+index 071363d18443..2888b3d1fd37 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+@@ -82,6 +82,11 @@ properties:
+     description: if defined, it indicates that the controller
+       supports memory-to-memory transfer
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+index 88c9e88cf3d5..224e6469c595 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+@@ -28,6 +28,11 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml b/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+index 90a7c38c833c..300565f93ec0 100644
+--- a/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
++++ b/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/feature-controllers/feature-domain-controller.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Generic Domain Controller bindings
++title: Generic Domain Controller
+ 
+ maintainers:
+   - Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+@@ -45,6 +45,7 @@ properties:
+       of a particular provider.
+ 
+   feature-domain-controller:
++    type: boolean
+     description:
+       Indicates that the node is feature-domain-controller provider.
+ 
+diff --git a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+index 93e7244cdc0e..fbe9ef0ee2c5 100644
+--- a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
++++ b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+@@ -49,6 +49,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+index fd8ae5122566..9fd7d1d7571f 100644
+--- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+@@ -127,6 +127,11 @@ properties:
+ 
+   wakeup-source: true
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index f9289ddb3957..70124141b020 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -97,6 +97,11 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ allOf:
+   - if:
+       properties:
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index a47df47ccb50..aced27b50289 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -59,6 +59,11 @@ properties:
+       If not, SPI CLKOUT frequency will not be accurate.
+     maximum: 20000000
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+index 6adeda4087fc..0aeaa3083505 100644
+--- a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+@@ -45,6 +45,11 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ additionalProperties: false
+ 
+ required:
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
+index 77144cc6f7db..0a30de5f7975 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
+@@ -29,6 +29,11 @@ properties:
+       - const: cec
+       - const: hdmi-cec
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
+index 67a4414287f1..6a01554ef4dc 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
+@@ -69,6 +69,11 @@ properties:
+         description:
+           Output port node
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 65bf12010350..60138c2b35f2 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -50,6 +50,11 @@ properties:
+       The region should be defined as child nodes of the AHB SRAM node
+       as per the generic bindings in Documentation/devicetree/bindings/sram/sram.yaml
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+index e5879b5493c0..81e17bcf245a 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+@@ -69,6 +69,11 @@ properties:
+         required:
+           - pclk-sample
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
+index 69a7211fb779..917bbcc57ac8 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
+@@ -39,6 +39,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+index 5832b499be04..13e5df17c050 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+@@ -39,6 +39,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+index 9f99ef4e026f..3125bc1933a0 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+@@ -50,6 +50,11 @@ properties:
+       Reflects the memory layout with four integer values per bank. Format:
+       <bank-number> 0 <address of the bank> <size>
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ patternProperties:
+   "^.*@[0-4],[a-f0-9]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+index e6adc37c59b9..a4a5dc7859d5 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -49,6 +49,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index aeefc20b13f5..3994c8b3b210 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -72,6 +72,11 @@ properties:
+   "#size-cells":
+     const: 0
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+index 189fd452effc..7777680d98d6 100644
+--- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
++++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+@@ -84,6 +84,11 @@ properties:
+           - const: rx
+           - const: tx
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   power-domains: true
+ 
+   resets:
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 26aa0830eea1..71d05cb05dc4 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -118,6 +118,11 @@ properties:
+   phys:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index 48481ab22e88..f3507ee0aab8 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -101,6 +101,12 @@ properties:
+       set this property when PTP (IEEE1588) clock selection is from RCC,
+       by default ETHSW ptp ref clock is used
+     type: boolean
++
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - clocks
+diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+index d6eaf05157b4..b9025deadcce 100644
+--- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+@@ -55,6 +55,11 @@ properties:
+     description: number of clock cells for ck_usbo_48m consumer
+     const: 0
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ #Required child nodes:
+ 
+ patternProperties:
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+index 2ac1d2928fc6..4c80ceb96b9c 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+@@ -63,6 +63,11 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+   st,ssc-on:
+     type: boolean
+     description:
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+index a5a27ee0a9e6..454f56e43582 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+@@ -30,6 +30,11 @@ properties:
+   vdda-supply:
+     description: phandle to the vdda input analog voltage.
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 721199fca435..2b627d74db65 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -36,6 +36,11 @@ properties:
+     type: boolean
+     description: If set enable the clock detection management
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index f1205cbf0f03..f7ed6416bf07 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -81,6 +81,11 @@ properties:
+     enum: [1, 2, 4, 8, 12, 14, 16]
+     default: 8
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ allOf:
+   - $ref: rs485.yaml#
+   - $ref: serial.yaml#
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index 1409bb0658b7..c1d7c83849d8 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -53,6 +53,11 @@ properties:
+     description: Configure the I2S device as MCLK clock provider.
+     const: 0
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+index 79963f6d365c..7c0f61928fb3 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+@@ -51,6 +51,11 @@ properties:
+     minItems: 1
+     maxItems: 3
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+index 837e830c47ac..f802d2b01997 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -47,6 +47,11 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+index 6ec6f556182f..9193db15250f 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+@@ -46,6 +46,11 @@ properties:
+       - const: tx
+       - const: rx
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index e063e62a2d71..be4049a9c314 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -86,6 +86,11 @@ properties:
+       Refer to "dt-bindings/spi/spi-stm32.h" for the supported values.
+       Second parameter is the pattern in case of SPI_SEND_PATTERN mode.
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ patternProperties:
+   "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-f]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index c79f4ce99bfc..ee0eb39075bd 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -172,6 +172,11 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description: If present indicates this device has wakeup capabilities
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ dependencies:
+   port: [ usb-role-switch ]
+   role-switch-default-mode: [ usb-role-switch ]
+diff --git a/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml b/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
+index 360cd4add042..8ad90037c76a 100644
+--- a/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
+@@ -47,6 +47,11 @@ properties:
+     maxItems: 1
+     description: interrupt used for wakeup
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ # Required child node:
+ 
+ patternProperties:
+diff --git a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
+index 92f5f1e91efc..c452f44a3cde 100644
+--- a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
++++ b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
+@@ -40,6 +40,11 @@ properties:
+     maxItems: 1
+     description: interrupt used for wakeup
+ 
++  feature-domains:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      Phandle to the rifsc device to check access right.
++
+ # Required child node:
+ 
+ patternProperties:
+-- 
+2.39.2
+

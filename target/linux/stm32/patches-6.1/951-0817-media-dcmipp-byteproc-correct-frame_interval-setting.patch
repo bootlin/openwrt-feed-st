@@ -1,0 +1,35 @@
+From 1361edf21fa0376a0b7be69a0ade0630ef9e9fdc Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 6 Dec 2023 13:27:27 +0100
+Subject: [PATCH 0817/1141] media: dcmipp: byteproc: correct frame_interval
+ setting
+
+Fix frame_interval setting to properly updating the frame_interval set.
+
+Change-Id: I15c0d1eeb091dc894524ec7492c72a352ead8bbd
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344627
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index feae08de9881..79825976655b 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -662,6 +662,8 @@ static int dcmipp_byteproc_s_frame_interval(struct v4l2_subdev *sd,
+ 				  ratio >= 4 ? 2 :
+ 				  ratio >= 2 ? 1 : 0;
+ 
++		ratio = dcmipp_frates[byteproc->frate];
++
+ 		/* Adjust src frame interval to what hardware can really do */
+ 		byteproc->src_interval.numerator =
+ 			byteproc->sink_interval.numerator * ratio;
+-- 
+2.39.2
+

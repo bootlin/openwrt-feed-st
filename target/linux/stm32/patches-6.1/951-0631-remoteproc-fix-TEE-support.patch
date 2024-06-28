@@ -1,0 +1,38 @@
+From 8086c60ca6d79d8c0574022f3f111d8aab9f1181 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Tue, 14 Nov 2023 15:48:34 +0100
+Subject: [PATCH 0631/1141] remoteproc: fix TEE support
+
+Check if firmware has no resource table (rsc_size = 0)
+then return unsupported operation error.
+
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Change-Id: I400ae4e325ab83e196aab7d3275eb4ea9159ef9a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/341589
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/remoteproc/tee_remoteproc.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
+index 514080fdd38b..239fe0f157cc 100644
+--- a/drivers/remoteproc/tee_remoteproc.c
++++ b/drivers/remoteproc/tee_remoteproc.c
+@@ -162,6 +162,9 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+ 
+ 	rsc_size = param[2].u.value.a;
+ 
++	if (rsc_size == 0)
++		return -EOPNOTSUPP;
++
+ 	/*
+ 	 * Store the resource table address that would be updated by the remote
+ 	 * core and the virtio.
+-- 
+2.39.2
+

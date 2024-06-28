@@ -1,0 +1,70 @@
+From d4110d76e5c971ae04f2c1ceec7a78e364d92c0c Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 24 May 2023 18:58:37 +0200
+Subject: [PATCH 0276/1141] drm/bridge/synopsys: dsi: Parse all dsi node
+
+Scan all DSI subnodes to get a panel or bridge linked to the DSI
+bridge (Panel or bridge index not fix to 1).
+If at least one endpoint is disabled, continue probing, else if at
+least one endpoint returned an error (ie -EPROBE_DEFER) then
+stop probing.
+
+Change-Id: I06808861bbef12e890aa702c320dd67f03c6fb66
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 30 +++++++++++++++----
+ 1 file changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+index 92f125996a5f..6a6d25c41158 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+@@ -315,7 +315,7 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+ 	struct dw_mipi_dsi *dsi = host_to_dsi(host);
+ 	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
+ 	struct drm_bridge *bridge;
+-	int ret;
++	int ret, nb_endpoints, i;
+ 
+ 	if (device->lanes > dsi->plat_data->max_data_lanes) {
+ 		dev_err(dsi->dev, "the number of data lanes(%u) is too many\n",
+@@ -328,13 +328,31 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+ 	dsi->format = device->format;
+ 	dsi->mode_flags = device->mode_flags;
+ 
+-	bridge = devm_drm_of_get_bridge(dsi->dev, dsi->dev->of_node, 1, 0);
+-	if (IS_ERR(bridge))
+-		return PTR_ERR(bridge);
++	nb_endpoints = of_graph_get_endpoint_count(dsi->dev->of_node);
++	if (!nb_endpoints)
++		return -ENODEV;
++
++	for (i = 1; i < nb_endpoints; i ++) {
++		bridge = devm_drm_of_get_bridge(dsi->dev, dsi->dev->of_node, i, 0);
++
++		/*
++		 * If at least one endpoint is -ENODEV, continue probing,
++		 * else if at least one endpoint returned an error
++		 * (ie -EPROBE_DEFER) then stop probing.
++		 */
++		if (IS_ERR(bridge)) {
++			if (PTR_ERR(bridge) == -ENODEV)
++				continue;
++			else
++				return PTR_ERR(bridge);
++		} else {
++			dsi->panel_bridge = bridge;
+ 
+-	dsi->panel_bridge = bridge;
++			drm_bridge_add(&dsi->bridge);
+ 
+-	drm_bridge_add(&dsi->bridge);
++			break;
++		}
++	}
+ 
+ 	if (pdata->host_ops && pdata->host_ops->attach) {
+ 		ret = pdata->host_ops->attach(pdata->priv_data, device);
+-- 
+2.39.2
+

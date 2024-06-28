@@ -1,0 +1,253 @@
+From 794ed0fdd03abb755559895cc7ad9a0902899603 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 18 Dec 2023 16:55:40 +0100
+Subject: [PATCH 0754/1141] arm64: dts: st: reorder pinctrl nodes on stm32mp25
+
+The driver pinctrl is already able to properly manage all the
+dependencies. There is no need to hack the probing order through
+special nodes order in DT.
+
+Reorder the pinctrl DT nodes based on the device address.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I411f71925e855907d62ea21e18cddb8e27ab4642
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347763
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 203 ++++++++++++-------------
+ 1 file changed, 100 insertions(+), 103 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index f9618bf10f7e..6adfb41a1b28 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2474,109 +2474,6 @@ syscfg: syscon@44230000 {
+ 			#clock-cells = <1>;
+ 		};
+ 
+-		tamp: tamp@46010000 {
+-			compatible = "st,stm32mp25-tamp", "syscon", "simple-mfd";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			reg = <0x46010000 0x400>;
+-			ranges;
+-
+-			nvram: nvram@46010100 {
+-				compatible = "st,stm32mp25-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+-				reg = <0x46010100 0x200>;
+-
+-				boot_mode: tamp-bkp@180 {
+-					reg = <0x180 0x4>;
+-				};
+-				rsc_tbl_addr: tamp-bkp@184 {
+-					reg = <0x184 0x4>;
+-				};
+-				rsc_tbl_size: tamp-bkp@188 {
+-					reg = <0x188 0x4>;
+-				};
+-			};
+-
+-			reboot_mode: reboot-mode {
+-				compatible = "nvmem-reboot-mode";
+-				nvmem-cells = <&boot_mode>;
+-				nvmem-cell-names = "reboot-mode";
+-				mode-normal = <0x00>;
+-				mode-fastboot = <0x01>;
+-				mode-recovery = <0x02>;
+-				mode-stm32cubeprogrammer = <0x03>;
+-				mode-ums_mmc0 = <0x10>;
+-				mode-ums_mmc1 = <0x11>;
+-				mode-ums_mmc2 = <0x12>;
+-				mode-romcode_serial = <0xff>;
+-			};
+-		};
+-
+-		exti2: interrupt-controller@46230000 {
+-			compatible = "st,stm32mp1-exti";
+-			interrupt-controller;
+-			#interrupt-cells = <2>;
+-			#address-cells = <0>;
+-			reg = <0x46230000 0x400>;
+-
+-			exti-interrupt-map {
+-				#address-cells = <0>;
+-				#interrupt-cells = <2>;
+-				interrupt-map-mask = <0xffffffff 0>;
+-				interrupt-map =
+-					<0  0 &intc 0 0 GIC_SPI 17  IRQ_TYPE_LEVEL_HIGH>,
+-					<1  0 &intc 0 0 GIC_SPI 18  IRQ_TYPE_LEVEL_HIGH>,
+-					<2  0 &intc 0 0 GIC_SPI 19  IRQ_TYPE_LEVEL_HIGH>,
+-					<3  0 &intc 0 0 GIC_SPI 20  IRQ_TYPE_LEVEL_HIGH>,
+-					<4  0 &intc 0 0 GIC_SPI 21  IRQ_TYPE_LEVEL_HIGH>,
+-					<5  0 &intc 0 0 GIC_SPI 22  IRQ_TYPE_LEVEL_HIGH>,
+-					<6  0 &intc 0 0 GIC_SPI 23  IRQ_TYPE_LEVEL_HIGH>,
+-					<7  0 &intc 0 0 GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
+-					<8  0 &intc 0 0 GIC_SPI 25  IRQ_TYPE_LEVEL_HIGH>,
+-					<9  0 &intc 0 0 GIC_SPI 26  IRQ_TYPE_LEVEL_HIGH>,
+-					<10 0 &intc 0 0 GIC_SPI 27  IRQ_TYPE_LEVEL_HIGH>,
+-					<11 0 &intc 0 0 GIC_SPI 28  IRQ_TYPE_LEVEL_HIGH>,
+-					<12 0 &intc 0 0 GIC_SPI 29  IRQ_TYPE_LEVEL_HIGH>,
+-					<13 0 &intc 0 0 GIC_SPI 30  IRQ_TYPE_LEVEL_HIGH>,
+-					<14 0 &intc 0 0 GIC_SPI 31  IRQ_TYPE_LEVEL_HIGH>,
+-					<15 0 &intc 0 0 GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
+-					<16 0 &intc 0 0 GIC_SPI 12  IRQ_TYPE_LEVEL_HIGH>,
+-					<17 0 &intc 0 0 GIC_SPI 13  IRQ_TYPE_LEVEL_HIGH>,
+-					<21 0 &intc 0 0 GIC_SPI 14  IRQ_TYPE_LEVEL_HIGH>,
+-					<22 0 &intc 0 0 GIC_SPI 15  IRQ_TYPE_LEVEL_HIGH>,
+-					<25 0 &intc 0 0 GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
+-					<26 0 &intc 0 0 GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>,
+-					<27 0 &intc 0 0 GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>,
+-					<29 0 &intc 0 0 GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>,
+-					<30 0 &intc 0 0 GIC_SPI 217 IRQ_TYPE_LEVEL_HIGH>,
+-					<31 0 &intc 0 0 GIC_SPI 218 IRQ_TYPE_LEVEL_HIGH>,
+-					<33 0 &intc 0 0 GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
+-					<34 0 &intc 0 0 GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>,
+-					//	<34 0 &intc 0 0 GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>,
+-					<37 0 &intc 0 0 GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>,
+-					//	<37 0 &intc 0 0 GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>,
+-					<40 0 &intc 0 0 GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>,
+-					<43 0 &intc 0 0 GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
+-					<46 0 &intc 0 0 GIC_SPI 11  IRQ_TYPE_LEVEL_HIGH>,
+-					<48 0 &intc 0 0 GIC_SPI 5   IRQ_TYPE_LEVEL_HIGH>,
+-					<49 0 &intc 0 0 GIC_SPI 4   IRQ_TYPE_LEVEL_HIGH>,
+-					<50 0 &intc 0 0 GIC_SPI 6   IRQ_TYPE_LEVEL_HIGH>,
+-					<51 0 &intc 0 0 GIC_SPI 7   IRQ_TYPE_LEVEL_HIGH>,
+-					<52 0 &intc 0 0 GIC_SPI 2   IRQ_TYPE_LEVEL_HIGH>,
+-					<53 0 &intc 0 0 GIC_SPI 3   IRQ_TYPE_LEVEL_HIGH>,
+-					<61 0 &intc 0 0 GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>,
+-					<62 0 &intc 0 0 GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
+-					<64 0 &intc 0 0 GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
+-					<65 0 &intc 0 0 GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
+-					<66 0 &intc 0 0 GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
+-					<67 0 &intc 0 0 GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
+-					<70 0 &intc 0 0 GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;
+-			};
+-		};
+-
+-		/* Break node order to solve dependency probe issue between pinctrl and exti. */
+-
+ 		pinctrl: pinctrl@44240000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+@@ -2726,6 +2623,45 @@ rtc: rtc@46000000 {
+ 			status = "disabled";
+ 		};
+ 
++		tamp: tamp@46010000 {
++			compatible = "st,stm32mp25-tamp", "syscon", "simple-mfd";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x46010000 0x400>;
++			ranges;
++
++			nvram: nvram@46010100 {
++				compatible = "st,stm32mp25-tamp-nvram";
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = <0x46010100 0x200>;
++
++				boot_mode: tamp-bkp@180 {
++					reg = <0x180 0x4>;
++				};
++				rsc_tbl_addr: tamp-bkp@184 {
++					reg = <0x184 0x4>;
++				};
++				rsc_tbl_size: tamp-bkp@188 {
++					reg = <0x188 0x4>;
++				};
++			};
++
++			reboot_mode: reboot-mode {
++				compatible = "nvmem-reboot-mode";
++				nvmem-cells = <&boot_mode>;
++				nvmem-cell-names = "reboot-mode";
++				mode-normal = <0x00>;
++				mode-fastboot = <0x01>;
++				mode-recovery = <0x02>;
++				mode-stm32cubeprogrammer = <0x03>;
++				mode-ums_mmc0 = <0x10>;
++				mode-ums_mmc1 = <0x11>;
++				mode-ums_mmc2 = <0x12>;
++				mode-romcode_serial = <0xff>;
++			};
++		};
++
+ 		pinctrl_z: pinctrl@46200000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+@@ -2745,7 +2681,68 @@ gpioz: gpio@46200000 {
+ 				st,bank-ioport = <11>;
+ 				status = "disabled";
+ 			};
++		};
++
++		exti2: interrupt-controller@46230000 {
++			compatible = "st,stm32mp1-exti";
++			interrupt-controller;
++			#interrupt-cells = <2>;
++			#address-cells = <0>;
++			reg = <0x46230000 0x400>;
+ 
++			exti-interrupt-map {
++				#address-cells = <0>;
++				#interrupt-cells = <2>;
++				interrupt-map-mask = <0xffffffff 0>;
++				interrupt-map =
++					<0  0 &intc 0 0 GIC_SPI 17  IRQ_TYPE_LEVEL_HIGH>,
++					<1  0 &intc 0 0 GIC_SPI 18  IRQ_TYPE_LEVEL_HIGH>,
++					<2  0 &intc 0 0 GIC_SPI 19  IRQ_TYPE_LEVEL_HIGH>,
++					<3  0 &intc 0 0 GIC_SPI 20  IRQ_TYPE_LEVEL_HIGH>,
++					<4  0 &intc 0 0 GIC_SPI 21  IRQ_TYPE_LEVEL_HIGH>,
++					<5  0 &intc 0 0 GIC_SPI 22  IRQ_TYPE_LEVEL_HIGH>,
++					<6  0 &intc 0 0 GIC_SPI 23  IRQ_TYPE_LEVEL_HIGH>,
++					<7  0 &intc 0 0 GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
++					<8  0 &intc 0 0 GIC_SPI 25  IRQ_TYPE_LEVEL_HIGH>,
++					<9  0 &intc 0 0 GIC_SPI 26  IRQ_TYPE_LEVEL_HIGH>,
++					<10 0 &intc 0 0 GIC_SPI 27  IRQ_TYPE_LEVEL_HIGH>,
++					<11 0 &intc 0 0 GIC_SPI 28  IRQ_TYPE_LEVEL_HIGH>,
++					<12 0 &intc 0 0 GIC_SPI 29  IRQ_TYPE_LEVEL_HIGH>,
++					<13 0 &intc 0 0 GIC_SPI 30  IRQ_TYPE_LEVEL_HIGH>,
++					<14 0 &intc 0 0 GIC_SPI 31  IRQ_TYPE_LEVEL_HIGH>,
++					<15 0 &intc 0 0 GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
++					<16 0 &intc 0 0 GIC_SPI 12  IRQ_TYPE_LEVEL_HIGH>,
++					<17 0 &intc 0 0 GIC_SPI 13  IRQ_TYPE_LEVEL_HIGH>,
++					<21 0 &intc 0 0 GIC_SPI 14  IRQ_TYPE_LEVEL_HIGH>,
++					<22 0 &intc 0 0 GIC_SPI 15  IRQ_TYPE_LEVEL_HIGH>,
++					<25 0 &intc 0 0 GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
++					<26 0 &intc 0 0 GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>,
++					<27 0 &intc 0 0 GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>,
++					<29 0 &intc 0 0 GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>,
++					<30 0 &intc 0 0 GIC_SPI 217 IRQ_TYPE_LEVEL_HIGH>,
++					<31 0 &intc 0 0 GIC_SPI 218 IRQ_TYPE_LEVEL_HIGH>,
++					<33 0 &intc 0 0 GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
++					<34 0 &intc 0 0 GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>,
++					//	<34 0 &intc 0 0 GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>,
++					<37 0 &intc 0 0 GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>,
++					//	<37 0 &intc 0 0 GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>,
++					<40 0 &intc 0 0 GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>,
++					<43 0 &intc 0 0 GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
++					<46 0 &intc 0 0 GIC_SPI 11  IRQ_TYPE_LEVEL_HIGH>,
++					<48 0 &intc 0 0 GIC_SPI 5   IRQ_TYPE_LEVEL_HIGH>,
++					<49 0 &intc 0 0 GIC_SPI 4   IRQ_TYPE_LEVEL_HIGH>,
++					<50 0 &intc 0 0 GIC_SPI 6   IRQ_TYPE_LEVEL_HIGH>,
++					<51 0 &intc 0 0 GIC_SPI 7   IRQ_TYPE_LEVEL_HIGH>,
++					<52 0 &intc 0 0 GIC_SPI 2   IRQ_TYPE_LEVEL_HIGH>,
++					<53 0 &intc 0 0 GIC_SPI 3   IRQ_TYPE_LEVEL_HIGH>,
++					<61 0 &intc 0 0 GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>,
++					<62 0 &intc 0 0 GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
++					<64 0 &intc 0 0 GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
++					<65 0 &intc 0 0 GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
++					<66 0 &intc 0 0 GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
++					<67 0 &intc 0 0 GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
++					<70 0 &intc 0 0 GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;
++			};
+ 		};
+ 
+ 		fmc: memory-controller@48200000 {
+-- 
+2.39.2
+

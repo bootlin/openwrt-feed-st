@@ -1,0 +1,85 @@
+From 0968188bcb04e42a154cb26725fd53776329eba2 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 9 Sep 2022 14:49:20 +0200
+Subject: [PATCH 0185/1141] dt-bindings: mfd: stm32-lptimer: add support for
+ stm32mp25
+
+Add a new stm32mp25 compatible to stm32-lptimer dt-bindings, to support
+STM32MP25 SoC. Some features has been added to the low-power timer like
+new capture compare channels (hence more PWM channels, and PWM input
+capture). Some registers/bits has been revisited to support this.
+So introduce a new compatible to handle this diversity.
+
+Change-Id: I5d26f699825bd26f26215aa2ffed43f3a5a288b0
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/270295
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ .../bindings/mfd/st,stm32-lptimer.yaml        | 20 ++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+index 0dcd4da3621c..e6adc37c59b9 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -21,7 +21,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32-lptimer
++    enum:
++      - st,stm32-lptimer
++      - st,stm32mp25-lptimer
+ 
+   reg:
+     maxItems: 1
+@@ -53,7 +55,9 @@ properties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-pwm-lp
++        enum:
++          - st,stm32-pwm-lp
++          - st,stm32mp25-pwm-lp
+ 
+       "#pwm-cells":
+         const: 3
+@@ -68,7 +72,9 @@ properties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-lptimer-counter
++        enum:
++          - st,stm32-lptimer-counter
++          - st,stm32mp25-lptimer-counter
+ 
+     required:
+       - compatible
+@@ -79,7 +85,9 @@ properties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-lptimer-timer
++        enum:
++          - st,stm32-lptimer-timer
++          - st,stm32mp25-lptimer-timer
+ 
+     required:
+       - compatible
+@@ -91,7 +99,9 @@ patternProperties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-lptimer-trigger
++        enum:
++          - st,stm32-lptimer-trigger
++          - st,stm32mp25-lptimer-trigger
+ 
+       reg:
+         description: Identify trigger hardware block.
+-- 
+2.39.2
+

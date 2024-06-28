@@ -1,0 +1,50 @@
+From 25c93dd12dc400d9c31686113d48100518aa0337 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 18 Jan 2024 21:29:47 +0100
+Subject: [PATCH 0830/1141] media: dcmipp: pixelcap: round-up width for
+ constraint matching
+
+Instead of clamping down the format in order to match maximum size
+and hardware constraints, round-up the width size to the hardware
+constraint in order to avoid losing data.  On the height clamping
+is simply done to the maximum height since there is no specific
+hardware alignment constraint.
+
+Change-Id: I7d7a991d411b0c742a892f096fc5122d98dfd5d5
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352868
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c         | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index f6c892fd74ca..9a338d121f0e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -325,12 +325,13 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+ 	/* Adjust width & height */
+ 	in_w = format->width;
+ 	in_h = format->height;
+-	v4l_bound_align_image(&format->width,
+-			      DCMIPP_FRAME_MIN_WIDTH, DCMIPP_FRAME_MAX_WIDTH,
+-			      hdw_pixel_alignment(format->pixelformat),
+-			      &format->height,
+-			      DCMIPP_FRAME_MIN_HEIGHT, DCMIPP_FRAME_MAX_HEIGHT,
+-			      0, 0);
++	format->width = clamp_t(u32, format->width, DCMIPP_FRAME_MIN_WIDTH,
++				DCMIPP_FRAME_MAX_WIDTH);
++	format->width = round_up(format->width,
++				 1 << hdw_pixel_alignment(format->pixelformat));
++	format->height = clamp_t(u32, format->height,
++				 DCMIPP_FRAME_MIN_HEIGHT,
++				 DCMIPP_FRAME_MAX_HEIGHT);
+ 	if (format->width != in_w || format->height != in_h)
+ 		dev_dbg(vcap->dev,
+ 			"resolution updated: %dx%d -> %dx%d\n",
+-- 
+2.39.2
+

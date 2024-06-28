@@ -1,0 +1,42 @@
+From 1c3ed27151bef56985cbce709d0e790ef5dec14a Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 11:40:54 +0100
+Subject: [PATCH 0652/1141] arm64: dts: st: add i2c8 node for stm32mp257f-dk
+ board
+
+Add i2c8 node for stm32mp257f-dk board.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I859f50f8a13138310de214dba647a3b331479fb6
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 0be9f900b98d..4f30988f19b0 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -107,6 +107,19 @@ &i2c2 {
+ 	/delete-property/dma-names;
+ };
+ 
++&i2c8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c8_pins_a>;
++	pinctrl-1 = <&i2c8_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <185>;
++	i2c-scl-falling-time-ns = <20>;
++	clock-frequency = <100000>;
++	status = "disabled";
++	/* spare dmas for other usage */
++	/delete-property/dmas;
++	/delete-property/dma-names;
++};
++
+ &mlahb {
+ 	intc_rpmsg: interrupt-controller@1 {
+ 		compatible = "rpmsg,intc";
+-- 
+2.39.2
+

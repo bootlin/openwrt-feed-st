@@ -1,0 +1,359 @@
+From 22bc81988f239e474ca93e06b08f2addd6c34a2c Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 6 Feb 2024 14:35:50 +0530
+Subject: [PATCH 0917/1141] phy: stm32: register usb2femtophy as clock provider
+ of ck_usb2phyXXXX_48m clock
+
+usb2femptophy provides a unique clock called ck_usb2phyXXXX_48m.
+XXXX identifier is the SYSCFG USB2PHYxCR register offset for
+the phy instance.
+STM32 USBH ohci-ctrl needs a 48Mhz clock for accessing registers, hence
+this clock is needed during suspend sequence even after ohci-ctrl turns
+off femptophy for data transfers. Femtophy as clock provider to ohci-ctrl
+allows to keep this clock (and hence PLL) ON till ohci driver needs to
+access the ohci registers during suspend sequence.
+
+Change-Id: I821829b005c767003307eac27986e0bcb5976a79
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359869
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/phy/st/Kconfig             |   1 +
+ drivers/phy/st/phy-stm32-usb2phy.c | 248 ++++++++++++++++++++---------
+ 2 files changed, 177 insertions(+), 72 deletions(-)
+
+diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
+index a8c87495036a..3f8169dfcccf 100644
+--- a/drivers/phy/st/Kconfig
++++ b/drivers/phy/st/Kconfig
+@@ -60,6 +60,7 @@ config PHY_STM32_USBPHYC
+ config PHY_STM32_USB2PHY
+ 	tristate "STMicroelectronics STM32 USB2 PHY Controller driver"
+ 	depends on ARCH_STM32 || COMPILE_TEST
++	depends on COMMON_CLK
+ 	select GENERIC_PHY
+ 	help
+ 	  Enable this to support the High-Speed USB2 transceivers that are part
+diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
+index 21ad6ff29286..520ac736553a 100644
+--- a/drivers/phy/st/phy-stm32-usb2phy.c
++++ b/drivers/phy/st/phy-stm32-usb2phy.c
+@@ -7,6 +7,7 @@
+  * Author(s): Pankaj Dev <pankaj.dev@st.com>.
+  */
+ #include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -81,6 +82,8 @@ struct stm32_usb2phy {
+ 	enum phy_mode mode;
+ 	u32 mask_trim1, value_trim1, mask_trim2, value_trim2;
+ 	bool internal_vbus_comp;
++	struct clk_hw clk48_hw;
++	atomic_t en_refcnt;
+ 	const struct stm32mp2_usb2phy_hw_data *hw_data;
+ };
+ 
+@@ -185,6 +188,112 @@ static int stm32_usb2phy_regulators_disable(struct stm32_usb2phy *phy_dev)
+ 	return 0;
+ }
+ 
++static int stm32_usb2phy_enable(struct stm32_usb2phy *phy_dev)
++{
++	int ret;
++	struct device *dev = phy_dev->dev;
++	unsigned long phyref_rate;
++	u32 phyrefsel;
++	const struct stm32mp2_usb2phy_hw_data *phy_data = phy_dev->hw_data;
++
++	/* Check if a phy is already init or clk48 in use */
++	if (atomic_inc_return(&phy_dev->en_refcnt) > 1)
++		return 0;
++
++	phyref_rate = clk_get_rate(phy_dev->phyref);
++
++	ret = stm32_usb2phy_getrefsel(phyref_rate);
++	if (ret < 0) {
++		dev_err(dev, "invalid phyref clk rate: %d\n", ret);
++		return ret;
++	}
++	phyrefsel = (u32)ret;
++	dev_dbg(dev, "phyrefsel value (%d)\n", phyrefsel);
++
++	ret = regmap_update_bits(phy_dev->regmap,
++				 phy_data->cr_offset,
++				 phy_data->phyrefsel_mask << phy_data->phyrefsel_bitpos,
++				 phyrefsel << phy_data->phyrefsel_bitpos);
++	if (ret) {
++		dev_err(dev, "can't set phyrefclksel (%d)\n", ret);
++		return ret;
++	}
++
++	if (phy_dev->mask_trim1) {
++		ret = regmap_update_bits(phy_dev->regmap, phy_dev->hw_data->trim1_offset,
++					 phy_dev->mask_trim1, phy_dev->value_trim1);
++		if (ret) {
++			dev_err(dev, "can't set usb2phytrim1 (%d)\n", ret);
++			return ret;
++		}
++		dev_dbg(dev, "usb2phytrim1 mask = %x value = %x\n", phy_dev->mask_trim1,
++			phy_dev->value_trim1);
++	}
++
++	if (phy_dev->mask_trim2) {
++		ret = regmap_update_bits(phy_dev->regmap, phy_dev->hw_data->trim2_offset,
++					 phy_dev->mask_trim2, phy_dev->value_trim2);
++		if (ret) {
++			dev_err(dev, "can't set usb2phytrim2 (%d)\n", ret);
++			return ret;
++		}
++		dev_dbg(dev, "usb2phytrim2 mask = %x value = %x\n", phy_dev->mask_trim2,
++			phy_dev->value_trim2);
++	}
++
++	ret = stm32_usb2phy_regulators_enable(phy_dev);
++	if (ret) {
++		dev_err(dev, "can't enable regulators (%d)\n", ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(phy_dev->phyref);
++	if (ret) {
++		dev_err(dev, "could not enable optional phyref: %d\n", ret);
++		goto error_regdis;
++	}
++
++	ret = reset_control_deassert(phy_dev->rstc);
++	if (ret) {
++		dev_err(dev, "can't release reset (%d)\n", ret);
++		goto error_clkdis;
++	}
++
++	return 0;
++
++error_clkdis:
++	clk_disable_unprepare(phy_dev->phyref);
++error_regdis:
++	stm32_usb2phy_regulators_disable(phy_dev);
++
++	return ret;
++}
++
++static int stm32_usb2phy_disable(struct stm32_usb2phy *phy_dev)
++{
++	int ret;
++
++	/* Check if a phy is still init or clk48 in use */
++	if (atomic_dec_return(&phy_dev->en_refcnt) > 0)
++		return 0;
++
++	ret = reset_control_assert(phy_dev->rstc);
++	if (ret) {
++		dev_err(phy_dev->dev, "can't force reset (%d)\n", ret);
++		return ret;
++	}
++
++	clk_disable_unprepare(phy_dev->phyref);
++
++	ret = stm32_usb2phy_regulators_disable(phy_dev);
++	if (ret) {
++		dev_err(phy_dev->dev, "can't disable regulators (%d)\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
+ {
+ 	int ret;
+@@ -273,83 +382,25 @@ static int stm32_usb2phy_init(struct phy *phy)
+ 	int ret;
+ 	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
+ 	struct device *dev = &phy->dev;
+-	unsigned long phyref_rate;
+-	u32 phyrefsel;
+-	const struct stm32mp2_usb2phy_hw_data *phy_data = phy_dev->hw_data;
+ 
+-	ret = stm32_usb2phy_regulators_enable(phy_dev);
++	ret = stm32_usb2phy_enable(phy_dev);
+ 	if (ret) {
+ 		dev_err(dev, "can't enable usb2phy (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = clk_prepare_enable(phy_dev->phyref);
+-	if (ret) {
+-		dev_err(dev, "could not enable optional phyref: %d\n", ret);
+-		goto error_regl_dis;
+-	}
+-
+-	phyref_rate = clk_get_rate(phy_dev->phyref);
+-
+-	ret = stm32_usb2phy_getrefsel(phyref_rate);
+-	if (ret < 0) {
+-		dev_err(dev, "invalid phyref clk rate: %d\n", ret);
+-		goto error_clk_dis;
+-	}
+-	phyrefsel = (u32)ret;
+-	dev_dbg(dev, "phyrefsel value (%d)\n", phyrefsel);
+-
+-	ret = regmap_update_bits(phy_dev->regmap,
+-				 phy_data->cr_offset,
+-				 phy_data->phyrefsel_mask << phy_data->phyrefsel_bitpos,
+-				 phyrefsel << phy_data->phyrefsel_bitpos);
+-	if (ret) {
+-		dev_err(dev, "can't set phyrefclksel (%d)\n", ret);
+-		goto error_clk_dis;
+-	}
+-
+-	if (phy_dev->mask_trim1) {
+-		ret = regmap_update_bits(phy_dev->regmap, phy_dev->hw_data->trim1_offset,
+-					 phy_dev->mask_trim1, phy_dev->value_trim1);
+-		if (ret) {
+-			dev_err(dev, "can't set usb2phytrim1 (%d)\n", ret);
+-			return ret;
+-		}
+-		dev_dbg(dev, "usb2phytrim1 mask = %x value = %x\n", phy_dev->mask_trim1,
+-			phy_dev->value_trim1);
+-	}
+-
+-	if (phy_dev->mask_trim2) {
+-		ret = regmap_update_bits(phy_dev->regmap, phy_dev->hw_data->trim2_offset,
+-					 phy_dev->mask_trim2, phy_dev->value_trim2);
+-		if (ret) {
+-			dev_err(dev, "can't set usb2phytrim2 (%d)\n", ret);
+-			return ret;
+-		}
+-		dev_dbg(dev, "usb2phytrim2 mask = %x value = %x\n", phy_dev->mask_trim2,
+-			phy_dev->value_trim2);
+-	}
+-
+-	ret = reset_control_deassert(phy_dev->rstc);
+-	if (ret) {
+-		dev_err(dev, "can't release reset (%d)\n", ret);
+-		goto error_clk_dis;
+-	}
+-
+ 	if (phy_dev->mode != PHY_MODE_INVALID) {
+ 		ret = stm32_usb2phy_set_mode(phy, phy_dev->mode, USB_ROLE_NONE);
+ 		if (ret) {
+ 			dev_err(dev, "can't set phy mode (%d)\n", ret);
+-			goto error_clk_dis;
++			goto error_disable;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-error_clk_dis:
+-	clk_disable_unprepare(phy_dev->phyref);
+-error_regl_dis:
+-	stm32_usb2phy_regulators_disable(phy_dev);
++error_disable:
++	stm32_usb2phy_disable(phy_dev);
+ 
+ 	return ret;
+ }
+@@ -359,17 +410,9 @@ static int stm32_usb2phy_exit(struct phy *phy)
+ 	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
+ 	int ret;
+ 
+-	ret = reset_control_assert(phy_dev->rstc);
++	ret = stm32_usb2phy_disable(phy_dev);
+ 	if (ret) {
+-		dev_err(&phy->dev, "can't force reset (%d)\n", ret);
+-		return ret;
+-	}
+-
+-	clk_disable_unprepare(phy_dev->phyref);
+-
+-	ret = stm32_usb2phy_regulators_disable(phy_dev);
+-	if (ret) {
+-		dev_err(&phy->dev, "can't disable regulators (%d)\n", ret);
++		dev_err(phy_dev->dev, "can't disable usb2 (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -383,6 +426,60 @@ static const struct phy_ops stm32_usb2phy_data = {
+ 	.owner = THIS_MODULE,
+ };
+ 
++static int stm32_usb2phy_clk48_prepare(struct clk_hw *hw)
++{
++	struct stm32_usb2phy *phy_dev = container_of(hw, struct stm32_usb2phy,
++							   clk48_hw);
++
++	return stm32_usb2phy_enable(phy_dev);
++}
++
++static void stm32_usb2phy_clk48_unprepare(struct clk_hw *hw)
++{
++	struct stm32_usb2phy *phy_dev = container_of(hw, struct stm32_usb2phy,
++							   clk48_hw);
++
++	stm32_usb2phy_disable(phy_dev);
++}
++
++static unsigned long stm32_usb2phy_clk48_recalc_rate(struct clk_hw *hw,
++							   unsigned long parent_rate)
++{
++	return 48000000;
++}
++
++static const struct clk_ops stm32_usb2phy_clk48_ops = {
++	.prepare = stm32_usb2phy_clk48_prepare,
++	.unprepare = stm32_usb2phy_clk48_unprepare,
++	.recalc_rate = stm32_usb2phy_clk48_recalc_rate,
++};
++
++static int stm32_usb2phy_clk48_register(struct stm32_usb2phy *phy_dev)
++{
++	struct clk_init_data init = { };
++	int ret = 0;
++	char name[20];
++
++	snprintf(name, sizeof(name), "ck_usb2phy%x_48m", phy_dev->hw_data->cr_offset);
++	init.name = name;
++	init.ops = &stm32_usb2phy_clk48_ops;
++
++	phy_dev->clk48_hw.init = &init;
++
++	ret = devm_clk_hw_register(phy_dev->dev, &phy_dev->clk48_hw);
++	if (ret) {
++		dev_err(phy_dev->dev, "failed to register 48m clk\n");
++		return ret;
++	}
++
++	ret = devm_of_clk_add_hw_provider(phy_dev->dev, of_clk_hw_simple_get, &phy_dev->clk48_hw);
++	if (ret)
++		dev_err(phy_dev->dev, "adding clk provider 48m failed\n");
++
++	return ret;
++}
++
++
+ static int stm32_usb2phy_tuning(struct phy *phy)
+ {
+ 	int ret;
+@@ -624,6 +721,13 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+ 	if (IS_ERR(phy_provider))
+ 		return PTR_ERR(phy_provider);
+ 
++	ret = stm32_usb2phy_clk48_register(phy_dev);
++	if (ret) {
++		dev_err_probe(dev, ret, "failed to register ck_usb2phy%x_48m clock: %d\n",
++			      phy_dev->hw_data->cr_offset, ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

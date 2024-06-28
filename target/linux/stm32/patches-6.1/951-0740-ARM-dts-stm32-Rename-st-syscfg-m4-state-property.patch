@@ -1,0 +1,35 @@
+From a7f8e79dc98a62b8eea109fbfa9caa215bdc48c9 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 3 Jan 2024 09:44:09 +0100
+Subject: [PATCH 0740/1141] ARM: dts: stm32: Rename st,syscfg-m4-state property
+
+Renaname the property to reuse it for the stm32mp2. the new name is
+"st,syscfg-cm-state".
+
+Change-Id: I8e5ed87c1268f7232b66cb5f81a19664a4d65105
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/349031
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index e82266e3e0ad..030f1400b5db 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -2264,7 +2264,7 @@ m4_rproc: m4@10000000 {
+ 			st,syscfg-holdboot = <&rcc 0x10c 0x1>;
+ 			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
+ 			st,syscfg-rsc-tbl = <&tamp 0x144 0xffffffff>;
+-			st,syscfg-m4-state = <&tamp 0x148 0xffffffff>;
++			st,syscfg-cm-state = <&tamp 0x148 0xffffffff>;
+ 			status = "disabled";
+ 
+ 			m4_system_resources {
+-- 
+2.39.2
+

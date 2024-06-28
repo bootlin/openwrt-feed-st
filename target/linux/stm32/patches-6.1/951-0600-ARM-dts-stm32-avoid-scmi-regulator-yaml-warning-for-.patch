@@ -1,0 +1,71 @@
+From fe1486e377269a5972d4d8e2893aa0765cc71e77 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 8 Nov 2023 11:25:31 +0100
+Subject: [PATCH 0600/1141] ARM: dts: stm32: avoid scmi regulator yaml warning
+ for stm32mp135f-dk
+
+Avoid an SCMI YAML code checking error.
+The SCMI YAML oblige the node name to be regulator@xx.
+
+Change-Id: I9a4419d221ce48b2d9d724e95a1c628f6d4a5348
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/338455
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp135f-dk.dts | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp135f-dk.dts b/arch/arm/boot/dts/stm32mp135f-dk.dts
+index db551ee63a34..9d955ec583cf 100644
+--- a/arch/arm/boot/dts/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
+@@ -440,35 +440,35 @@ &rtc {
+ };
+ 
+ &scmi_regu {
+-	scmi_vddcpu: voltd-vddcpu {
++	scmi_vddcpu: regulator@6 {
+ 		reg = <VOLTD_SCMI_STPMIC1_BUCK1>;
+ 		regulator-name = "vddcpu";
+ 	};
+-	scmi_vdd: voltd-vdd {
++	scmi_vdd: regulator@8 {
+ 		reg = <VOLTD_SCMI_STPMIC1_BUCK3>;
+ 		regulator-name = "vdd";
+ 	};
+-	scmi_vddcore: voltd-vddcore {
++	scmi_vddcore: regulator@9 {
+ 		reg = <VOLTD_SCMI_STPMIC1_BUCK4>;
+ 		regulator-name = "vddcore";
+ 	};
+-	scmi_vdd_adc: voltd-vdd-adc {
++	scmi_vdd_adc: regulator@10 {
+ 		reg = <VOLTD_SCMI_STPMIC1_LDO1>;
+ 		regulator-name = "vdd_adc";
+ 	};
+-	scmi_vdd_usb: voltd-vdd-usb {
++	scmi_vdd_usb: regulator@13 {
+ 		reg = <VOLTD_SCMI_STPMIC1_LDO4>;
+ 		regulator-name = "vdd_usb";
+ 	};
+-	scmi_vdd_sd: voltd-vdd-sd {
++	scmi_vdd_sd: regulator@14 {
+ 		reg = <VOLTD_SCMI_STPMIC1_LDO5>;
+ 		regulator-name = "vdd_sd";
+ 	};
+-	scmi_v1v8_periph: voltd-v1v8-periph {
++	scmi_v1v8_periph: regulator@15 {
+ 		reg = <VOLTD_SCMI_STPMIC1_LDO6>;
+ 		regulator-name = "v1v8_periph";
+ 	};
+-	scmi_v3v3_sw: voltd-v3v3-sw {
++	scmi_v3v3_sw: regulator@19 {
+ 		reg = <VOLTD_SCMI_STPMIC1_PWR_SW2>;
+ 		regulator-name = "v3v3_sw";
+ 	};
+-- 
+2.39.2
+

@@ -1,0 +1,63 @@
+From 80bc0a88074c4d4d5e1a33c2159fda9481bd2d21 Mon Sep 17 00:00:00 2001
+From: Yann Gautier <yann.gautier@foss.st.com>
+Date: Wed, 24 May 2023 18:36:48 +0200
+Subject: [PATCH 0332/1141] tee: use %zu to display thread_cnt
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Changing %u to %zu to display warning message avoids this compilation
+warning, as thd->thread_cnt is of type size_t:
+drivers/tee/optee/smc_abi.c: In function ‘call_out_of_thread’:
+./include/linux/kern_levels.h:5:25: warning: format ‘%u’ expects
+ argument of type ‘unsigned int’, but argument 2 has type ‘size_t’
+ {aka ‘long unsigned int’} [-Wformat=]
+    5 | #define KERN_SOH        "\001"     /* ASCII Start Of Header */
+      |                         ^~~~~~
+./include/linux/printk.h:429:25: note: in definition of macro
+ ‘printk_index_wrap’
+  429 |                 _p_func(_fmt, ##__VA_ARGS__);                \
+      |                         ^~~~
+./include/linux/printk.h:510:9: note: in expansion of macro ‘printk’
+  510 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+      |         ^~~~~~
+./include/linux/kern_levels.h:12:25: note: in expansion of macro
+ ‘KERN_SOH’
+   12 | #define KERN_WARNING    KERN_SOH "4"  /* warning conditions */
+      |                         ^~~~~~~~
+./include/linux/printk.h:510:16: note: in expansion of macro
+ ‘KERN_WARNING’
+  510 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+      |                ^~~~~~~~~~~~
+drivers/tee/optee/smc_abi.c:927:17: note: in expansion of macro
+ ‘pr_warn’
+  927 |                 pr_warn("optee: decrement max thread to %u\n",
+ thd->thread_cnt);
+      |                 ^~~~~~~
+
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Change-Id: Id40100a3a81f01b1ecc510a4ef6cd976657d124d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/308279
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ drivers/tee/optee/smc_abi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index 2d2ee43ce97e..e598751ecd42 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -924,7 +924,7 @@ static void call_out_of_thread(struct tee_context *ctx, bool system_call)
+ 		 */
+ 		thd->thread_cnt--;
+ 		thd->thread_free_cnt--;
+-		pr_warn("optee: decrement max thread to %u\n", thd->thread_cnt);
++		pr_warn("optee: decrement max thread to %zu\n", thd->thread_cnt);
+ 
+ 		/*
+ 		 * If no enough thread to satisfy already provisioned system
+-- 
+2.39.2
+

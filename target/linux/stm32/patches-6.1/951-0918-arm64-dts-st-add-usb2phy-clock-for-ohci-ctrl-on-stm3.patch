@@ -1,0 +1,52 @@
+From 66fc5e677d85a235f20bdd98e738cfee1bf03b83 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 6 Feb 2024 14:43:35 +0530
+Subject: [PATCH 0918/1141] arm64: dts: st: add usb2phy clock for ohci-ctrl on
+ stm32mp251
+
+usb2femptophy provides a unique clock called ck_usb2phyXXXX_48m.
+STM32 USBH ohci-ctrl needs a 48Mhz clock for accessing registers.
+
+Change-Id: I80cb4aa4c9af6fc2ad7cd5cddae76c3182564798
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359870
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index e71d1b20f6e1..0b1b8d511c46 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -253,6 +253,7 @@ timer {
+ 	usb2_phy1: usb2-phy1 {
+ 		compatible      = "st,stm32mp25-usb2phy";
+ 		#phy-cells      = <0>;
++		#clock-cells    = <0>;
+ 		st,syscfg       = <&syscfg 0x2400>;
+ 		clocks          = <&rcc CK_KER_USB2PHY1>;
+ 		resets          = <&rcc USB2PHY1_R>;
+@@ -262,6 +263,7 @@ usb2_phy1: usb2-phy1 {
+ 	usb2_phy2: usb2-phy2 {
+ 		compatible      = "st,stm32mp25-usb2phy";
+ 		#phy-cells      = <0>;
++		#clock-cells    = <0>;
+ 		st,syscfg       = <&syscfg 0x2800>;
+ 		clocks          = <&rcc CK_KER_USB2PHY2EN>;
+ 		resets          = <&rcc USB2PHY2_R>;
+@@ -2241,7 +2243,7 @@ usbh: usb@482e0000 {
+ 				usbh_ohci: usb@482e0000 {
+ 					compatible = "generic-ohci";
+ 					reg = <0x482e0000 0x1000>;
+-					clocks = <&rcc CK_BUS_USB2OHCI>;
++					clocks = <&usb2_phy1>, <&rcc CK_BUS_USB2OHCI>;
+ 					resets = <&rcc USB2_R>;
+ 					interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
+ 					phys = <&usb2_phy1>;
+-- 
+2.39.2
+

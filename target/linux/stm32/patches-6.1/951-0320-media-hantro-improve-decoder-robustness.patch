@@ -1,0 +1,91 @@
+From a70c468ec9af271f1d339a66ef4372cecca794b2 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 15 Nov 2022 13:59:01 +0100
+Subject: [PATCH 0320/1141] media: hantro: improve decoder robustness
+
+- remove G1_REG_CONFIG_DEC_TIMEOUT_E
+Disable generation of interrupt in case of hardware timeout (stalled).
+This will raise a "frame timeout error" to client so decoding will stop
+instead of silently trying to recover and output crazy frames
+
+- remove G1_REG_CONFIG_DEC_CLK_GATE_E
+Clock is running for all structures.
+
+- enable G1_REG_CONFIG_DEC_SCMD_DIS
+Disabling of "AXI Single Command Multiple Data"
+
+- enable G1_REG_CONFIG_DEC_ADV_PRE_DIS
+Disabling of advanced PREFETCH mode (advanced reference
+picture reading mode for video)
+
+- enable G1_REG_CONFIG_DEC_2CHAN_DIS
+Disabling of capability to work in 2 AXI channels mode where
+read and write channels run independently.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+---
+ drivers/media/platform/verisilicon/hantro_g1_h264_dec.c | 5 +++--
+ drivers/media/platform/verisilicon/hantro_g1_regs.h     | 1 +
+ drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c  | 6 ++++--
+ 3 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
+index d20ed9af5b47..cc06e36403b5 100644
+--- a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
++++ b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
+@@ -269,14 +269,15 @@ int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+ 	/* Start decoding! */
+ 	vdpu_write_relaxed(vpu,
+ 			   G1_REG_CONFIG_DEC_AXI_RD_ID(0xffu) |
+-			   G1_REG_CONFIG_DEC_TIMEOUT_E |
+ 			   G1_REG_CONFIG_DEC_OUT_ENDIAN |
+ 			   G1_REG_CONFIG_DEC_STRENDIAN_E |
++			   G1_REG_CONFIG_DEC_2CHAN_DIS |
+ 			   G1_REG_CONFIG_DEC_MAX_BURST(vpu->max_burst_length) |
+ 			   G1_REG_CONFIG_DEC_OUTSWAP32_E |
+ 			   G1_REG_CONFIG_DEC_INSWAP32_E |
+ 			   G1_REG_CONFIG_DEC_STRSWAP32_E |
+-			   G1_REG_CONFIG_DEC_CLK_GATE_E,
++			   G1_REG_CONFIG_DEC_SCMD_DIS |
++			   G1_REG_CONFIG_DEC_ADV_PRE_DIS,
+ 			   G1_REG_CONFIG);
+ 	vdpu_write(vpu, G1_REG_INTERRUPT_DEC_E, G1_REG_INTERRUPT);
+ 
+diff --git a/drivers/media/platform/verisilicon/hantro_g1_regs.h b/drivers/media/platform/verisilicon/hantro_g1_regs.h
+index c623b3b0be18..ce2b1b8a3a60 100644
+--- a/drivers/media/platform/verisilicon/hantro_g1_regs.h
++++ b/drivers/media/platform/verisilicon/hantro_g1_regs.h
+@@ -32,6 +32,7 @@
+ #define     G1_REG_CONFIG_DEC_INSWAP32_E		BIT(20)
+ #define     G1_REG_CONFIG_DEC_OUTSWAP32_E		BIT(19)
+ #define     G1_REG_CONFIG_DEC_DATA_DISC_E		BIT(18)
++#define     G1_REG_CONFIG_DEC_2CHAN_DIS			BIT(18)
+ #define     G1_REG_CONFIG_TILED_MODE_MSB		BIT(17)
+ #define     G1_REG_CONFIG_DEC_OUT_TILED_E		BIT(17)
+ #define     G1_REG_CONFIG_DEC_LATENCY(x)		(((x) & 0x3f) << 11)
+diff --git a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
+index 3673cf111e49..a4e66d16ce3c 100644
+--- a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
++++ b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
+@@ -452,14 +452,16 @@ int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+ 
+ 	hantro_vp8_prob_update(ctx, hdr);
+ 
+-	reg = G1_REG_CONFIG_DEC_TIMEOUT_E |
++	reg = G1_REG_CONFIG_DEC_AXI_RD_ID(0xffu) |
+ 	      G1_REG_CONFIG_DEC_STRENDIAN_E |
+ 	      G1_REG_CONFIG_DEC_INSWAP32_E |
+ 	      G1_REG_CONFIG_DEC_STRSWAP32_E |
+ 	      G1_REG_CONFIG_DEC_OUTSWAP32_E |
+-	      G1_REG_CONFIG_DEC_CLK_GATE_E |
+ 	      G1_REG_CONFIG_DEC_IN_ENDIAN |
+ 	      G1_REG_CONFIG_DEC_OUT_ENDIAN |
++	      G1_REG_CONFIG_DEC_2CHAN_DIS |
++	      G1_REG_CONFIG_DEC_SCMD_DIS |
++	      G1_REG_CONFIG_DEC_ADV_PRE_DIS |
+ 	      G1_REG_CONFIG_DEC_MAX_BURST(vpu->max_burst_length);
+ 	vdpu_write_relaxed(vpu, reg, G1_REG_CONFIG);
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,55 @@
+From 24789b0ed8471c1588510132c6112a672f693f2f Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Tue, 8 Aug 2023 16:26:05 +0200
+Subject: [PATCH 0519/1141] arm64: dts: st: add clock consumer in display nodes
+ for stm32mp253
+
+Add a syscfg clk consumer to all display nodes needing it.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I5fb05c7859094ecf4fbf3cd4c6b80c37643584aa
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/322050
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp253.dtsi | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index e28df8be2eed..edb796d54ea0 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -68,8 +68,9 @@ lvds: lvds@48060000 {
+ 				#clock-cells = <0>;
+ 				compatible = "st,stm32-lvds";
+ 				reg = <0x48060000 0x2000>;
+-				clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+-				clock-names = "pclk", "ref";
++				clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>,
++					 <&syscfg 0>;
++				clock-names = "pclk", "ref", "pixclk";
+ 				resets = <&rcc LVDS_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LVDS_ID>;
+ 				power-domains = <&CLUSTER_PD>;
+@@ -129,7 +130,13 @@ mtl_tx_setup_2: tx-queues-config {
+ 	};
+ };
+ 
++&dsi {
++	clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
++		 <&rcc CK_KER_LTDC>, <&syscfg 0>;
++	clock-names = "pclk", "ref", "px_clk", "pixclk";
++};
++
+ &ltdc {
+-	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&lvds 0>;
+-	clock-names = "bus", "lcd", "lvds";
++	clocks = <&rcc CK_BUS_LTDC>, <&syscfg 0>;
++	clock-names = "bus", "lcd";
+ };
+-- 
+2.39.2
+

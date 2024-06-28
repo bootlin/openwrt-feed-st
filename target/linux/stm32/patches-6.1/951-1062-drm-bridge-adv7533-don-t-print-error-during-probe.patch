@@ -1,0 +1,33 @@
+From 42c04931ec92a71a8dab0c9e6bc58e25495ad392 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 21 Mar 2024 16:57:26 +0100
+Subject: [PATCH 1062/1141] drm/bridge: adv7533: don't print error during probe
+
+If the error is a probe deferred then don't error.
+
+Change-Id: Id02262c1c3b466a84911a6f60a888d2970a5ae38
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368423
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/gpu/drm/bridge/adv7511/adv7533.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+index 576de1c19815..0361c850018b 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+@@ -172,7 +172,7 @@ int adv7533_attach_dsi(struct adv7511 *adv)
+ 
+ 	host = of_find_mipi_dsi_host_by_node(adv->host_node);
+ 	if (!host) {
+-		dev_err(dev, "failed to find dsi host\n");
++		dev_dbg(dev, "failed to find dsi host\n");
+ 		return -EPROBE_DEFER;
+ 	}
+ 
+-- 
+2.39.2
+

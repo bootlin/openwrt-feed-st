@@ -1,0 +1,40 @@
+From 7e20e22e934ba64ad23c065e1d6e24aef471a908 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 18:26:39 +0100
+Subject: [PATCH 0647/1141] arm64: dts: st: add rpmsg i2c bus for
+ stm32mp257f-dk board
+
+Add rpmsg i2c bus support for communication with the Cortex-M33.
+Linux drivers can register to this bus to simulate an I2C link over
+rpmsg.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ib66d4ec38df7a571df4e831a75216a06be0dd5b1
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 64e8cf0dc1cc..c39f1a8577a8 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -102,7 +102,14 @@ intc_rpmsg: interrupt-controller@1 {
+ 		interrupt-controller;
+ 	};
+ 
+-
++	i2c_rpmsg: i2c@2 {
++		compatible = "rpmsg,i2c-controller";
++		reg = <2 0>;
++		rpmsg,dev-id = "rpmsg_i2c";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "okay";
++	};
+ };
+ 
+ &rtc {
+-- 
+2.39.2
+

@@ -1,0 +1,47 @@
+From ce15abaf050de84182a4220c20e103390ab03e8b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 22 Apr 2024 17:40:17 +0200
+Subject: [PATCH 1117/1141] media: stm32-dcmipp: STM32 DCMIPP add missing Bayer
+ 10/12/14 formats
+
+Add missing Bayer 10/12/14 formats within the list of formats supported
+by the bytecap video device.
+
+Change-Id: Ibf48ff85616f9378a800c54ce61e422160a67ef7
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375679
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c  | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 360ca37b199f..decc1fcc7793 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -72,6 +72,18 @@ static const struct dcmipp_bytecap_pix_map dcmipp_bytecap_pix_map_list[] = {
+ 	PIXMAP_MBUS_PFMT(SGBRG8_1X8, SGBRG8),
+ 	PIXMAP_MBUS_PFMT(SGRBG8_1X8, SGRBG8),
+ 	PIXMAP_MBUS_PFMT(SRGGB8_1X8, SRGGB8),
++	PIXMAP_MBUS_PFMT(SBGGR10_1X10, SBGGR10),
++	PIXMAP_MBUS_PFMT(SGBRG10_1X10, SGBRG10),
++	PIXMAP_MBUS_PFMT(SGRBG10_1X10, SGRBG10),
++	PIXMAP_MBUS_PFMT(SRGGB10_1X10, SRGGB10),
++	PIXMAP_MBUS_PFMT(SBGGR12_1X12, SBGGR12),
++	PIXMAP_MBUS_PFMT(SGBRG12_1X12, SGBRG12),
++	PIXMAP_MBUS_PFMT(SGRBG12_1X12, SGRBG12),
++	PIXMAP_MBUS_PFMT(SRGGB12_1X12, SRGGB12),
++	PIXMAP_MBUS_PFMT(SBGGR14_1X14, SBGGR14),
++	PIXMAP_MBUS_PFMT(SGBRG14_1X14, SGBRG14),
++	PIXMAP_MBUS_PFMT(SGRBG14_1X14, SGRBG14),
++	PIXMAP_MBUS_PFMT(SRGGB14_1X14, SRGGB14),
+ 	PIXMAP_MBUS_PFMT(JPEG_1X8, JPEG),
+ };
+ 
+-- 
+2.39.2
+

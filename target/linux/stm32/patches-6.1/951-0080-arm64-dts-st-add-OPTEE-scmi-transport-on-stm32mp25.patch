@@ -1,0 +1,51 @@
+From f8f72a1566c2c50261e6632c0f569cd323f32681 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Wed, 7 Oct 2020 15:29:52 +0200
+Subject: [PATCH 0080/1141] arm64: dts: st: add OPTEE scmi transport on
+ stm32mp25
+
+Use the OP-TEE SCMI transport to manage SCMI link.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: Ifc33ec62809fccae05e33d33bbe80b35bda7a3c9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/301077
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 988c9258feb7..58b043f0ae71 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -55,6 +55,25 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+ 		};
+ 	};
+ 
++	firmware {
++		scmi: scmi {
++			compatible = "linaro,scmi-optee";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			linaro,optee-channel-id = <0>;
++
++			scmi_clk: protocol@14 {
++				reg = <0x14>;
++				#clock-cells = <1>;
++			};
++
++			scmi_reset: protocol@16 {
++				reg = <0x16>;
++				#reset-cells = <1>;
++			};
++		};
++	};
++
+ 	intc: interrupt-controller@4ac00000 {
+ 		compatible = "arm,cortex-a7-gic";
+ 		#interrupt-cells = <3>;
+-- 
+2.39.2
+

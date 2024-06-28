@@ -1,0 +1,39 @@
+From e7140025d2025a10a3a533c5cc422d4b3b07c785 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Thu, 11 Apr 2024 17:13:03 +0200
+Subject: [PATCH 1114/1141] remoteproc: tee: fix memory allocation when probing
+ rproc
+
+Memory allocation has to be done for tee_rproc_context.
+
+Change-Id: I98e254dd4251a472de42fb72ded5c6e2ee2fa8e5
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373159
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/tee_remoteproc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
+index b5134ea4dce7..1aeb0df0a851 100644
+--- a/drivers/remoteproc/tee_remoteproc.c
++++ b/drivers/remoteproc/tee_remoteproc.c
+@@ -342,8 +342,8 @@ static int tee_rproc_probe(struct device *dev)
+ 	if (IS_ERR(tee_ctx))
+ 		return PTR_ERR(tee_ctx);
+ 
+-	tee_rproc_ctx = devm_kzalloc(dev, sizeof(*tee_ctx), GFP_KERNEL);
+-	if (!tee_ctx) {
++	tee_rproc_ctx = devm_kzalloc(dev, sizeof(*tee_rproc_ctx), GFP_KERNEL);
++	if (!tee_rproc_ctx) {
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+-- 
+2.39.2
+

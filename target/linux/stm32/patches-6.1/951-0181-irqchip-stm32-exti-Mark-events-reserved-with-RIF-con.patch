@@ -1,0 +1,96 @@
+From 994c87ba447cb098fc5eac7a4a2897741dadedc4 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 10 Feb 2023 12:05:43 +0100
+Subject: [PATCH 0181/1141] irqchip/stm32-exti: Mark events reserved with RIF
+ configuration check
+
+EXTI events availability depends on Resource Isolation Framework
+(RIF) configuration.
+RIF grants access to buses with Compartment ID (CID) filtering,
+secure and privilege level, it also assigns EXTI events to one or
+several processors (CID, Secure, Privilege).
+
+EXTI events used by Linux must be CID-filtered (EnCIDCFGR.CFEN=1)
+and statically assigned to CID1 (EnCIDCFR.CID=CID1).
+EXTI events not filling these conditions are marked as reserved
+and can't be used by Linux.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I41fde898c05f345263b76056f3073f35c8baf0e7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305657
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 40 ++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 4357dccc67bd..45a75e4dbcb6 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -23,9 +23,22 @@
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-#define IRQS_PER_BANK 32
++#define IRQS_PER_BANK			32
+ 
+-#define HWSPNLCK_TIMEOUT	1000 /* usec */
++#define HWSPNLCK_TIMEOUT		1000 /* usec */
++
++#define EXTI_EnCIDCFGR(n)		(0x180 + (n) * 4)
++#define EXTI_HWCFGR1			0x3f0
++
++/* Register: EXTI_EnCIDCFGR(n) */
++#define EXTI_CIDCFGR_CFEN_MASK		BIT(0)
++#define EXTI_CIDCFGR_CID_MASK		GENMASK(6, 4)
++#define EXTI_CIDCFGR_CID_SHIFT		4
++
++/* Register: EXTI_HWCFGR1 */
++#define EXTI_HWCFGR1_CIDWIDTH_MASK	GENMASK(27, 24)
++
++#define EXTI_CID1			1
+ 
+ struct stm32_exti_bank {
+ 	u32 imr_ofst;
+@@ -1014,6 +1027,27 @@ static const struct irq_domain_ops stm32_exti_h_domain_ops = {
+ 	.xlate = irq_domain_xlate_twocell,
+ };
+ 
++static void stm32_exti_check_rif(struct stm32_exti_host_data *host_data)
++{
++	u32 cid, cidcfgr, hwcfgr1;
++	unsigned int bank, i, event;
++
++	/* quit on CID not supported */
++	hwcfgr1 = readl_relaxed(host_data->base + EXTI_HWCFGR1);
++	if ((hwcfgr1 & EXTI_HWCFGR1_CIDWIDTH_MASK) == 0)
++		return;
++
++	for (bank = 0; bank < host_data->drv_data->bank_nr; bank++) {
++		for (i = 0; i < IRQS_PER_BANK; i++) {
++			event = bank * IRQS_PER_BANK + i;
++			cidcfgr = readl_relaxed(host_data->base + EXTI_EnCIDCFGR(event));
++			cid = (cidcfgr & EXTI_CIDCFGR_CID_MASK) >> EXTI_CIDCFGR_CID_SHIFT;
++			if ((cidcfgr & EXTI_CIDCFGR_CFEN_MASK) && cid != EXTI_CID1)
++				host_data->chips_data[bank].event_reserved |= BIT(i);
++		}
++	}
++}
++
+ static void stm32_exti_remove_irq(void *data)
+ {
+ 	struct irq_domain *domain = data;
+@@ -1088,6 +1122,8 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	for (i = 0; i < drv_data->bank_nr; i++)
+ 		stm32_exti_chip_init(host_data, i, np);
+ 
++	stm32_exti_check_rif(host_data);
++
+ 	parent_domain = irq_find_host(of_irq_find_parent(np));
+ 	if (!parent_domain) {
+ 		dev_err(dev, "GIC interrupt-parent not found\n");
+-- 
+2.39.2
+

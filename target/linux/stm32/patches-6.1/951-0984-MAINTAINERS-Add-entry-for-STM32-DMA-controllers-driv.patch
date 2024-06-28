@@ -1,0 +1,42 @@
+From df775fa0ed5f02306fa192904e022862c7c0fccd Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 2 Feb 2024 13:48:40 +0100
+Subject: [PATCH 0984/1141] MAINTAINERS: Add entry for STM32 DMA controllers
+ drivers and documentation
+
+Add an entry to make myself a maintainer of STM32 DMA controllers drivers
+and documentation.
+
+Change-Id: I17f557303a36ed7a5d3b408410fc1da691fe15f9
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358977
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0692d14ccf25..322338f4e3fc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19742,6 +19742,15 @@ F:	Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+ F:	Documentation/devicetree/bindings/sound/st,stm32-*.yaml
+ F:	sound/soc/stm/
+ 
++STM32 DMA DRIVERS
++M:	Amelie Delaunay <amelie.delaunay@foss.st.com>
++L:	dmaengine@vger.kernel.org
++L:	linux-stm32@st-md-mailman.stormreply.com (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/arch/arm/stm32/stm32-dma-mdma-chaining.rst
++F:	Documentation/devicetree/bindings/dma/stm32/
++F:	drivers/dma/stm32/
++
+ STM32 TAMP DRIVERS
+ M:	Siméon Marijon <simeon.marijon@foss.st.com>
+ S:	Maintained
+-- 
+2.39.2
+

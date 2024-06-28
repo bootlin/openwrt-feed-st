@@ -1,0 +1,37 @@
+From 8b726101b62804ab6ab13656e7de55ad256667fe Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 19 Jul 2023 11:34:36 +0200
+Subject: [PATCH 0413/1141] arm64: dts: st: use a 128B fifo dma channel for
+ dcmi in stm32mp251.dtsi
+
+Switch from a 32B to a 128B fifo dma channel for the DCMI for performance
+reason and in order to free a 32B channel for other IPs.
+
+Change-Id: I44a47b715e6732c95deeee63570bdd07a5e0e7d9
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/319030
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 2b3c0a154571..e5d7b72064fe 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1470,7 +1470,7 @@ dcmi: dcmi@404a0000 {
+ 				resets = <&rcc CCI_R>;
+ 				clocks = <&rcc CK_BUS_CCI>;
+ 				clock-names = "mclk";
+-				dmas = <&hpdma 137 0x40 0x00003012 0>;
++				dmas = <&hpdma 137 0x60 0x00003012 0>;
+ 				dma-names = "tx";
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_DCMI_PSSI_ID>;
+ 				power-domains = <&CLUSTER_PD>;
+-- 
+2.39.2
+

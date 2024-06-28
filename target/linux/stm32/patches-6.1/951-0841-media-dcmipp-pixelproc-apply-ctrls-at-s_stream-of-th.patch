@@ -1,0 +1,56 @@
+From 142997ca7767d9bb14c602cfe1028dd6d748ae97 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 25 Jan 2024 17:26:48 +0100
+Subject: [PATCH 0841/1141] media: dcmipp: pixelproc: apply ctrls at s_stream
+ of the subdev
+
+Apply all ctrls of the pixelproc subdev at the time of the s_stream of the
+subdev.  mutex_lock/unlock calls on the s_ctrl are removed since not needed
+for this principe part of the code.  In order to avoid modifying too much
+code, don't change (yet) the area of protection of the mutex within the
+s_stream function.
+
+Change-Id: Ia49a17058bb1891b4bcc9713070e7aa338ff9d3e
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354518
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 75e5ffecfea2..519ea94a06b3 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -268,8 +268,6 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	if (pm_runtime_get_if_in_use(pixelproc->dev) == 0)
+ 		return 0;
+ 
+-	mutex_lock(&pixelproc->lock);
+-
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_PIXELPROC_GAMMA_CORRECTION:
+ 		reg_write(pixelproc, DCMIPP_PxGMCR(pixelproc->pipe_id),
+@@ -277,7 +275,6 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		break;
+ 	}
+ 
+-	mutex_unlock(&pixelproc->lock);
+ 	pm_runtime_put(pixelproc->dev);
+ 
+ 	return ret;
+@@ -878,6 +875,9 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 	reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
+ 
++	/* Apply customized values from user when stream starts. */
++	ret = v4l2_ctrl_handler_setup(pixelproc->sd.ctrl_handler);
++
+ out:
+ 	mutex_unlock(&pixelproc->lock);
+ 
+-- 
+2.39.2
+

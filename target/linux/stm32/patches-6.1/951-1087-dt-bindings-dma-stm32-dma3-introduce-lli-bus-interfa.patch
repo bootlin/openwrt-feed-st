@@ -1,0 +1,44 @@
+From 08fec2afe19f01e872f8390e5a5bd44dc6b300c3 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 27 Mar 2024 14:10:25 +0100
+Subject: [PATCH 1087/1141] dt-bindings: dma: stm32-dma3: introduce
+ lli-bus-interface property
+
+STM32 DMA3 has up to two master ports. It always has a port 0, and could
+have a port 1. Depending on hardware configuration, ports can be AHB or
+AXI. Depending on where linked-list items are allocated, or depending of
+the port 0 usage, the user may want to use the second port if there is one.
+lli-bus-interface property can be set to 0, to select port 0, or set to 1,
+to select port 1. If the property is not defined, port 0 is selected by
+default.
+
+Change-Id: I6b74755c5a2a2251af29916382d8033a4a814750
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370082
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml      | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+index 0309848fa308..813107c1b0a8 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+@@ -91,6 +91,14 @@ properties:
+     minItems: 4
+     maxItems: 16
+ 
++  lli-bus-interface:
++    description: |
++      To select port 1 for fetching linked-list items (LLIs).
++      If not defined, port 0 is used by default.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1]
++    default: 0
++
+   memory-region:
+     description: |
+       Phandle to a /reserved-memory child node assigned to STM32 DMA3 for linked-list items
+-- 
+2.39.2
+

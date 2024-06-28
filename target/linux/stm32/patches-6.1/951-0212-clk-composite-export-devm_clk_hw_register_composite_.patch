@@ -1,0 +1,27 @@
+From 6dc8dfbb8cf930352fa219108ebb67d03e09282a Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 13 Mar 2023 11:33:09 +0100
+Subject: [PATCH 0212/1141] clk: composite: export
+ devm_clk_hw_register_composite_pdata symbol
+
+Export devm_clk_hw_register_composite_pdata() API from clk_provider.h
+to allow its use in modules.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I98bfe1648d80d8461706b3f804fee0b0f4a24d28
+---
+ drivers/clk/clk-composite.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
+index 52d332115643..8e05c0dac896 100644
+--- a/drivers/clk/clk-composite.c
++++ b/drivers/clk/clk-composite.c
+@@ -502,3 +502,4 @@ struct clk_hw *devm_clk_hw_register_composite_pdata(struct device *dev,
+ 						rate_hw, rate_ops, gate_hw,
+ 						gate_ops, flags);
+ }
++EXPORT_SYMBOL_GPL(devm_clk_hw_register_composite_pdata);
+-- 
+2.39.2
+

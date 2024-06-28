@@ -1,0 +1,78 @@
+From 091ded48f60fdeb378d309a3c2138b13f4c314df Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 8 Aug 2023 17:11:17 +0200
+Subject: [PATCH 0426/1141] arm64: dts: st: add ospi1 node in stm32mp25-pinctrl
+
+Add OSPI1 pinctrl nodes needed for SNOR.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I15625abed52428bf081abeae16339f8eeb6a69e7
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index aeb0b7f004b7..8840b05feb7e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -200,6 +200,57 @@ pins {
+ 		};
+ 	};
+ 
++	ospi1_clk_pins_a: ospi1-clk-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <3>;
++		};
++	};
++
++	ospi1_clk_sleep_pins_a: ospi1-clk-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 0, ANALOG)>; /* OSPI1_CLK */
++		};
++	};
++
++	ospi1_cs0_pins_a: ospi1-cs0-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 3, AF10)>; /* OSPI_NCS0 */
++			bias-pull-up;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++	};
++
++	ospi1_cs0_sleep_pins_a: ospi1-cs0-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 3, ANALOG)>; /* OSPI_NCS0 */
++		};
++	};
++
++	ospi1_io03_pins_a: ospi1-io03-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 4, AF10)>, /* OSPI_IO0 */
++				 <STM32_PINMUX('D', 5, AF10)>, /* OSPI_IO1 */
++				 <STM32_PINMUX('D', 6, AF10)>, /* OSPI_IO2 */
++				 <STM32_PINMUX('D', 7, AF10)>; /* OSPI_IO3 */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <1>;
++		};
++	};
++
++	ospi1_io03_sleep_pins_a: ospi1-io03-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 4, ANALOG)>, /* OSPI_IO0 */
++				 <STM32_PINMUX('D', 5, ANALOG)>, /* OSPI_IO1 */
++				 <STM32_PINMUX('D', 6, ANALOG)>, /* OSPI_IO2 */
++				 <STM32_PINMUX('D', 7, ANALOG)>; /* OSPI_IO3 */
++		};
++	};
++
+ 	pcie_pins_a: pcie-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('J', 0, AF4)>;
+-- 
+2.39.2
+

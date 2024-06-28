@@ -1,0 +1,162 @@
+From 081a6901171ca95e44f1b996e4acbc83a309a3ad Mon Sep 17 00:00:00 2001
+From: Alain VOLMAT <alain.volmat@foss.st.com>
+Date: Mon, 29 Nov 2021 14:38:43 +0100
+Subject: [PATCH 0114/1141] arm64: dts: st: add all i2c instances in
+ stm32mp251.dtsi
+
+The stm32mp25 serie embeds 8 instances of i2c controllers.
+
+Signed-off-by: Alain VOLMAT <alain.volmat@foss.st.com>
+Change-Id: Ib268ba0a85093bca501d48c1dba4ea095c3c73bf
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302059
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Valentin CARON <valentin.caron@foss.st.com>
+Reviewed-by: Valentin CARON <valentin.caron@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 128 +++++++++++++++++++++++++
+ 1 file changed, 128 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index b4f13bf63a8d..caf8692b43b8 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -242,6 +242,134 @@ usart2: serial@400e0000 {
+ 				status = "disabled";
+ 			};
+ 
++			i2c1: i2c@40120000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40120000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C1>;
++				resets = <&rcc I2C1_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 27 0x20 0x00003012 0>,
++				       <&hpdma 28 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C1_ID>;
++				status = "disabled";
++			};
++
++			i2c2: i2c@40130000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40130000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C2>;
++				resets = <&rcc I2C2_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 30 0x20 0x00003012 0>,
++				       <&hpdma 31 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C2_ID>;
++				status = "disabled";
++			};
++
++			i2c3: i2c@40140000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40140000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C3>;
++				resets = <&rcc I2C3_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 33 0x20 0x00003012 0>,
++				       <&hpdma 34 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C3_ID>;
++				status = "disabled";
++			};
++
++			i2c4: i2c@40150000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40150000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C4>;
++				resets = <&rcc I2C4_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 36 0x20 0x00003012 0>,
++				       <&hpdma 37 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C4_ID>;
++				status = "disabled";
++			};
++
++			i2c5: i2c@40160000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40160000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C5>;
++				resets = <&rcc I2C5_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 39 0x20 0x00003012 0>,
++				       <&hpdma 40 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C5_ID>;
++				status = "disabled";
++			};
++
++			i2c6: i2c@40170000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40170000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C6>;
++				resets = <&rcc I2C6_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 42 0x20 0x00003012 0>,
++				       <&hpdma 43 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C6_ID>;
++				status = "disabled";
++			};
++
++			i2c7: i2c@40180000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40180000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C7>;
++				resets = <&rcc I2C7_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 45 0x20 0x00003012 0>,
++				       <&hpdma 46 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C7_ID>;
++				status = "disabled";
++			};
++
++			i2c8: i2c@46040000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x46040000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C8>;
++				resets = <&rcc I2C8_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 168 0x20 0x00003012 0>,
++				       <&hpdma 169 0x20 0x00003021 0>;
++				dma-names = "rx", "tx";
++				feature-domains = <&rifsc STM32MP25_RIFSC_I2C8_ID>;
++				status = "disabled";
++			};
++
+ 			sdmmc1: mmc@48220000 {
+ 				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+ 				arm,primecell-periphid = <0x00353180>;
+-- 
+2.39.2
+

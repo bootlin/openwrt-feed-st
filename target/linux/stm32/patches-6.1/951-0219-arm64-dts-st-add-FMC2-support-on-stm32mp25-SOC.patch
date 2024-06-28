@@ -1,0 +1,70 @@
+From 129b2bfeff80686af6d86162e76f87144a95514c Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Fri, 2 Jun 2023 11:29:06 +0200
+Subject: [PATCH 0219/1141] arm64: dts: st: add FMC2 support on stm32mp25 SOC
+
+This patch adds FMC2 support on stm32mp25 SOC.
+
+Change-Id: I805b739e8edf633a8f2a1f234401882ac0729cf1
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310424
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 39 ++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5f90ff4c9a1a..30d819031448 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2194,5 +2194,44 @@ gpioz: gpio@46200000 {
+ 			};
+ 
+ 		};
++
++		fmc: memory-controller@48200000 {
++			compatible = "st,stm32mp25-fmc2-ebi";
++			reg = <0x48200000 0x400>;
++			ranges = <0 0 0x70000000 0x04000000>, /* EBI CS 1 */
++				 <1 0 0x74000000 0x04000000>, /* EBI CS 2 */
++				 <2 0 0x78000000 0x04000000>, /* EBI CS 3 */
++				 <3 0 0x7c000000 0x04000000>, /* EBI CS 4 */
++				 <4 0 0x48810000 0x00001000>; /* NAND */
++			#address-cells = <2>;
++			#size-cells = <1>;
++			clocks = <&scmi_clk CK_SCMI_FMC>;
++			resets = <&scmi_reset RST_SCMI_FMC>;
++			status = "disabled";
++
++			nand-controller@4,0 {
++				compatible = "st,stm32mp25-fmc2-nfc";
++				reg = <4 0x0000 0x10>,
++				      <4 0x0090 0x10>,
++				      <4 0x00a0 0x10>,
++				      <4 0x0400 0x10>,
++				      <4 0x0490 0x10>,
++				      <4 0x04a0 0x10>,
++				      <4 0x0800 0x10>,
++				      <4 0x0890 0x10>,
++				      <4 0x08a0 0x10>,
++				      <4 0x0c00 0x10>,
++				      <4 0x0c90 0x10>,
++				      <4 0x0ca0 0x10>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 0 0x62 0x00003101 0x0>,
++				       <&hpdma 0 0x62 0x00003110 0x0>,
++				       <&hpdma 1 0x22 0x00003113 0x0>;
++				dma-names = "tx", "rx", "ecc";
++				status = "disabled";
++			};
++		};
+ 	};
+ };
+-- 
+2.39.2
+

@@ -1,0 +1,55 @@
+From 13c3d3fbb1f51811b53c82a0d670e0133a228675 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 17:40:06 +0100
+Subject: [PATCH 0640/1141] arm64: dts: st: add Bluetooth support for
+ stm32mp257f-dk board
+
+Add USART6 and Bluetooth nodes for stm32mp257f-dk board.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: If02de3340d8326059ab3a4cedee41c67e54148db
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 6db9c7ded3c3..3dbc91a0ae2b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -23,6 +23,7 @@ / {
+ 	aliases {
+ 		serial0 = &usart2;
+ 		serial1 = &usart6;
++		serial2 = &usart1;
+ 	};
+ 
+ 	chosen {
+@@ -142,6 +143,24 @@ brcmf: bcrmf@1 {
+ 	};
+ };
+ 
++/* Bluetooth */
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	uart-has-rtscts;
++	status = "okay";
++
++	bluetooth {
++		shutdown-gpios = <&gpiog 4 GPIO_ACTIVE_HIGH>;
++		compatible = "brcm,bcm43438-bt";
++		max-speed = <3000000>;
++		vbat-supply = <&scmi_v3v3>;
++		vddio-supply = <&scmi_v3v3>;
++	};
++};
++
+ &usart2 {
+ 	pinctrl-names = "default", "idle", "sleep";
+ 	pinctrl-0 = <&usart2_pins_a>;
+-- 
+2.39.2
+

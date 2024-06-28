@@ -1,0 +1,45 @@
+From fcd7835c80b66ca56831ae8f4604b31d5b355143 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Mon, 22 Aug 2022 10:20:58 +0200
+Subject: [PATCH 0328/1141] arm64: dts: st: add video decoder support to
+ stm32mp255
+
+Add VDEC hardware video decoder support to STM32MP255.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: If9185bda3a060228369271bb40d1461efa41240f
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/309852
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp255.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index 3156df8ce1c5..fb7bf40d999d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -8,6 +8,16 @@
+ / {
+ 	soc@0 {
+ 		rifsc: rifsc@42080000 {
++			vdec: vdec@480d0000 {
++				compatible = "st,stm32mp25-vdec";
++				reg = <0x480d0000 0x3c8>;
++				resets = <&rcc VDEC_R>;
++				interrupt-names = "vdec";
++				interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
++				clock-names = "vdec-clk";
++				clocks = <&rcc CK_BUS_VDEC>;
++				feature-domains = <&rifsc STM32MP25_RIFSC_VDEC_ID>;
++			};
+ 		};
+ 	};
+ };
+-- 
+2.39.2
+

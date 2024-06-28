@@ -1,0 +1,96 @@
+From 76ed3e5758e22bc575ad70eccf4d7d0ff4cb5697 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Fri, 5 Jan 2024 15:12:53 +0100
+Subject: [PATCH 0776/1141] phy: stm32: combophy: add pm runtime support
+
+Add pm runtime support to the stm32-combophy.c driver.
+Use in phy_init/phy_exit pm_runtime_resume_get_sync() and
+pm_runtime_put_sync() from client (USB3/PCIe) for register access
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I3b8072df834b29e78768fc2198f3427fb10c4924
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/349511
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/phy/st/phy-stm32-combophy.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
+index 147860f82d0d..9a4ed78a7190 100644
+--- a/drivers/phy/st/phy-stm32-combophy.c
++++ b/drivers/phy/st/phy-stm32-combophy.c
+@@ -15,6 +15,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/phy/phy.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+ #include <dt-bindings/phy/phy.h>
+@@ -391,6 +392,8 @@ static int stm32_combophy_exit(struct phy *phy)
+ 
+ 	stm32_combophy_disable_clocks(combophy);
+ 
++	pm_runtime_put_sync(combophy->dev);
++
+ 	return 0;
+ }
+ 
+@@ -399,9 +402,16 @@ static int stm32_combophy_init(struct phy *phy)
+ 	struct stm32_combophy *combophy = phy_get_drvdata(phy);
+ 	int ret;
+ 
++	ret = pm_runtime_resume_and_get(combophy->dev);
++	if (ret < 0) {
++		dev_err(combophy->dev, "pm_runtime_resume_and_get failed\n");
++		return ret;
++	}
++
+ 	ret = stm32_combophy_enable_clocks(combophy);
+ 	if (ret) {
+ 		dev_err(combophy->dev, "Clock enable failed %d\n", ret);
++		pm_runtime_put_sync(combophy->dev);
+ 		return ret;
+ 	}
+ 
+@@ -409,12 +419,15 @@ static int stm32_combophy_init(struct phy *phy)
+ 	if (ret) {
+ 		dev_err(combophy->dev, "combophy mode not set\n");
+ 		stm32_combophy_disable_clocks(combophy);
++		pm_runtime_put_sync(combophy->dev);
+ 		return ret;
+ 	}
+ 
+ 	ret = stm32_combophy_pll_init(combophy);
+-	if (ret)
++	if (ret) {
+ 		stm32_combophy_disable_clocks(combophy);
++		pm_runtime_put_sync(combophy->dev);
++	}
+ 
+ 	return ret;
+ }
+@@ -431,6 +444,7 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	struct phy_provider *phy_provider;
++	int ret;
+ 
+ 	combophy = devm_kzalloc(dev, sizeof(*combophy), GFP_KERNEL);
+ 	if (!combophy)
+@@ -474,6 +488,10 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(combophy->phy),
+ 				     "failed to create PCIe/USB3 ComboPHY\n");
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to enable pm runtime\n");
++
+ 	phy_set_drvdata(combophy->phy, combophy);
+ 
+ 	phy_provider = devm_of_phy_provider_register(dev, stm32_combophy_xlate);
+-- 
+2.39.2
+

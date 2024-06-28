@@ -1,0 +1,46 @@
+From cfddeb6505440d137bcecbf4147e23106e769488 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 20 Mar 2024 18:00:00 +0100
+Subject: [PATCH 1054/1141] drm/stm: ltdc: Check panel width
+
+Due to hardware DDR bandwidth limitation when an output rotation is
+required,  the frame width shouldn't exceed 1366 pixels.
+
+Change-Id: I58ecc1759d3d8dc84fcedb0ee3f992dc88f9f6d7
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368187
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 1f003877a234..54d24b8154f1 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -913,6 +913,10 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 			return;
+ 		}
+ 
++		/* The width of the framebuffer must not exceed 1366 pixels */
++		if (mode->vdisplay > 1366)
++			return;
++
+ 		rota0_buf = (u32)ldev->rot_mem->base;
+ 		rota1_buf = (u32)ldev->rot_mem->base + (ldev->rot_mem->size >> 1);
+ 
+@@ -2115,6 +2119,10 @@ static enum drm_mode_status ltdc_encoder_mode_valid(struct drm_encoder *encoder,
+ 		 */
+ 		if (ldev->rot_mem->size < mode->hdisplay * mode->vdisplay * 2 * 3)
+ 			return MODE_MEM;
++
++		/* The width of the framebuffer must not exceed 1366 pixels */
++		if (mode->vdisplay > 1366)
++			return MODE_BAD_WIDTH;
+ 	}
+ 
+ 	/* Filter modes according to the max frequency supported by the pads */
+-- 
+2.39.2
+

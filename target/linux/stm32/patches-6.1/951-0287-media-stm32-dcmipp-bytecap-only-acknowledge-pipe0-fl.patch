@@ -1,0 +1,36 @@
+From 092c268bb22fc3fd14cbc3e1ac40db8606c297d3 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 5 Aug 2022 14:47:36 +0200
+Subject: [PATCH 0287/1141] media: stm32: dcmipp: bytecap: only acknowledge
+ pipe0 flags
+
+bytecap (pipe0) irq handler should only clear flags related
+to the pipe0 otherwise interrupts related to other pipes will
+be lost and not handled by their own interrupt handler.
+
+Change-Id: I0835b20f1db3b47d9c332cda613b12959fe20c78
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/262329
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 1384f5a6e9e5..70d2c2dabbcc 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -947,7 +947,7 @@ static irqreturn_t dcmipp_bytecap_irq_callback(int irq, void *arg)
+ 			container_of(arg, struct dcmipp_bytecap_device, ved);
+ 
+ 	/* Store interrupt status register */
+-	vcap->cmsr2 = reg_read(vcap, DCMIPP_CMSR2);
++	vcap->cmsr2 = reg_read(vcap, DCMIPP_CMSR2) & vcap->cmier;
+ 	vcap->it_count++;
+ 
+ 	/* Clear interrupt */
+-- 
+2.39.2
+

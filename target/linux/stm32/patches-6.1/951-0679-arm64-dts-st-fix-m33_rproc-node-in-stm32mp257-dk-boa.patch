@@ -1,0 +1,43 @@
+From 60670a8eb431920664fda0da13c29bf74ca20b79 Mon Sep 17 00:00:00 2001
+From: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Date: Mon, 11 Dec 2023 18:07:17 +0100
+Subject: [PATCH 0679/1141] arm64: dts: st: fix m33_rproc node in stm32mp257-dk
+ board
+
+Update a35ssc_m33 node name to a35ssc_syscfg.
+
+Change-Id: I7dd7401679113f7ac3439a596cc980fb6bac7670
+Signed-off-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/345673
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 777dce27fd9d..be6d965d0627 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -164,7 +164,7 @@ wifi_pwrseq: wifi-pwrseq {
+ 	};
+ };
+ 
+-&a35ssc_m33 {
++&a35ss_syscfg {
+ 	status = "okay";
+ };
+ 
+@@ -467,7 +467,7 @@ &m33_rproc {
+ 	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
+ 			<&ipc_shmem_1>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
+-	st,syscfg-nsvtor = <&a35ssc_m33 0x8 0xffffff80>;
++	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.2
+

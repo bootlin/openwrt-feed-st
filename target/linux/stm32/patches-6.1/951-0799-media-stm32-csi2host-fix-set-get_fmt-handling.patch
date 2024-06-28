@@ -1,0 +1,57 @@
+From 0e12380822ee1b677768b8361d723954235aa25b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 1 Dec 2023 16:08:10 +0100
+Subject: [PATCH 0799/1141] media: stm32-csi2host: fix set/get_fmt handling
+
+Ensure that format set on sink pad is reported to the source pad
+as well.
+Correct calls of v4l2_subdev_get_try_format with proper pad value.
+
+Change-Id: I46fe50b815637e0f0723e9fcd6d435852dfc1465
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344607
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-csi2host.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
+index 614a2331c89c..5d1a3383bb4b 100644
+--- a/drivers/media/platform/st/stm32/stm32-csi2host.c
++++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
+@@ -761,9 +761,18 @@ static int csi2host_set_pad_format(struct v4l2_subdev *sd,
+ 
+ 	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+ 		csi2priv->mf[format->pad] = format->format;
++		/* Same format is exposed to the source pad as well */
++		if (format->pad == CSI2HOST_PAD_SINK)
++			csi2priv->mf[CSI2HOST_PAD_SOURCE_STREAM0] =
++					format->format;
+ 	} else {
+-		framefmt = v4l2_subdev_get_try_format(sd, state, 0);
++		framefmt = v4l2_subdev_get_try_format(sd, state, format->pad);
+ 		*framefmt = format->format;
++		if (format->pad == CSI2HOST_PAD_SINK) {
++			framefmt = v4l2_subdev_get_try_format(sd, state,
++							      CSI2HOST_PAD_SOURCE_STREAM0);
++			*framefmt = format->format;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -778,7 +787,8 @@ static int csi2host_get_pad_format(struct v4l2_subdev *sd,
+ 	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+ 		format->format = csi2priv->mf[format->pad];
+ 	else
+-		format->format = *v4l2_subdev_get_try_format(sd, state, 0);
++		format->format =
++			*v4l2_subdev_get_try_format(sd, state, format->pad);
+ 
+ 	return 0;
+ }
+-- 
+2.39.2
+

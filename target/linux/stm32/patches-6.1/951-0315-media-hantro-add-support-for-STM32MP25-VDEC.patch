@@ -1,0 +1,195 @@
+From a061e2bedce1878acb52e41b5f9931962ff41c5b Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 9 Aug 2022 11:28:00 +0200
+Subject: [PATCH 0315/1141] media: hantro: add support for STM32MP25 VDEC
+
+Add support for STM32MP25 VDEC video hardware decoder.
+H264/VP8 decoding up to 4080x4080.
+No post-processor support.
+VDEC has its own reset/clock/irq.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I701fa71dbf1d138678e207842b7c822cbda04714
+---
+ drivers/media/platform/verisilicon/Kconfig    | 14 ++-
+ drivers/media/platform/verisilicon/Makefile   |  3 +
+ .../media/platform/verisilicon/hantro_drv.c   |  3 +
+ .../media/platform/verisilicon/hantro_hw.h    |  1 +
+ .../platform/verisilicon/stm32mp25_vdec_hw.c  | 92 +++++++++++++++++++
+ 5 files changed, 110 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c
+
+diff --git a/drivers/media/platform/verisilicon/Kconfig b/drivers/media/platform/verisilicon/Kconfig
+index e65b836b9d78..57f52d715f23 100644
+--- a/drivers/media/platform/verisilicon/Kconfig
++++ b/drivers/media/platform/verisilicon/Kconfig
+@@ -4,7 +4,7 @@ comment "Verisilicon media platform drivers"
+ 
+ config VIDEO_HANTRO
+ 	tristate "Hantro VPU driver"
+-	depends on ARCH_MXC || ARCH_ROCKCHIP || ARCH_AT91 || ARCH_SUNXI || COMPILE_TEST
++	depends on ARCH_MXC || ARCH_ROCKCHIP || ARCH_AT91 || ARCH_SUNXI || ARCH_STM32 || COMPILE_TEST
+ 	depends on V4L_MEM2MEM_DRIVERS
+ 	depends on VIDEO_DEV
+ 	select MEDIA_CONTROLLER
+@@ -16,8 +16,8 @@ config VIDEO_HANTRO
+ 	select V4L2_VP9
+ 	help
+ 	  Support for the Hantro IP based Video Processing Units present on
+-	  Rockchip and NXP i.MX8M SoCs, which accelerate video and image
+-	  encoding and decoding.
++	  Rockchip, NXP i.MX8M and STMicroelectronics STM32MP25 SoCs,
++	  which accelerate video and image encoding and decoding.
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called hantro-vpu.
+ 
+@@ -52,3 +52,11 @@ config VIDEO_HANTRO_SUNXI
+ 	default y
+ 	help
+ 	  Enable support for H6 SoC.
++
++config VIDEO_HANTRO_STM32MP25
++	bool "Hantro STM32MP25 support"
++	depends on VIDEO_HANTRO
++	depends on ARCH_STM32 || COMPILE_TEST
++	default y
++	help
++	  Enable support for STM32MP25 SoCs.
+diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
+index ebd5ede7bef7..167361878f68 100644
+--- a/drivers/media/platform/verisilicon/Makefile
++++ b/drivers/media/platform/verisilicon/Makefile
+@@ -36,3 +36,6 @@ hantro-vpu-$(CONFIG_VIDEO_HANTRO_ROCKCHIP) += \
+ 
+ hantro-vpu-$(CONFIG_VIDEO_HANTRO_SUNXI) += \
+ 		sunxi_vpu_hw.o
++
++hantro-vpu-$(CONFIG_VIDEO_HANTRO_STM32MP25) += \
++		stm32mp25_vdec_hw.o
+diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
+index 69a2442f3122..caa988746969 100644
+--- a/drivers/media/platform/verisilicon/hantro_drv.c
++++ b/drivers/media/platform/verisilicon/hantro_drv.c
+@@ -642,6 +642,9 @@ static const struct of_device_id of_hantro_match[] = {
+ #endif
+ #ifdef CONFIG_VIDEO_HANTRO_SUNXI
+ 	{ .compatible = "allwinner,sun50i-h6-vpu-g2", .data = &sunxi_vpu_variant, },
++#endif
++#ifdef CONFIG_VIDEO_HANTRO_STM32MP25
++	{ .compatible = "st,stm32mp25-vdec", .data = &stm32mp25_vdec_variant, },
+ #endif
+ 	{ /* sentinel */ }
+ };
+diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
+index e83f0c523a30..1bbdc49e5fe0 100644
+--- a/drivers/media/platform/verisilicon/hantro_hw.h
++++ b/drivers/media/platform/verisilicon/hantro_hw.h
+@@ -322,6 +322,7 @@ extern const struct hantro_variant rk3568_vepu_variant;
+ extern const struct hantro_variant rk3568_vpu_variant;
+ extern const struct hantro_variant sama5d4_vdec_variant;
+ extern const struct hantro_variant sunxi_vpu_variant;
++extern const struct hantro_variant stm32mp25_vdec_variant;
+ 
+ extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
+ extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
+diff --git a/drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c b/drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c
+new file mode 100644
+index 000000000000..c9f107bc09db
+--- /dev/null
++++ b/drivers/media/platform/verisilicon/stm32mp25_vdec_hw.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * STM32MP25 VDEC video decoder driver
++ *
++ * Copyright (C) STMicroelectronics SA 2022
++ * Authors: Hugues Fruchet <hugues.fruchet@foss.st.com>
++ *          for STMicroelectronics.
++ *
++ */
++
++#include "hantro.h"
++
++/*
++ * Supported formats.
++ */
++
++static const struct hantro_fmt stm32mp25_vdec_fmts[] = {
++	{
++		.fourcc = V4L2_PIX_FMT_NV12,
++		.codec_mode = HANTRO_MODE_NONE,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 4080,
++			.step_width = MB_DIM,
++			.min_height = 96,
++			.max_height = 4080,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_VP8_FRAME,
++		.codec_mode = HANTRO_MODE_VP8_DEC,
++		.max_depth = 2,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 4080,
++			.step_width = MB_DIM,
++			.min_height = 96,
++			.max_height = 4080,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_H264_SLICE,
++		.codec_mode = HANTRO_MODE_H264_DEC,
++		.max_depth = 2,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 4080,
++			.step_width = MB_DIM,
++			.min_height = 96,
++			.max_height = 4080,
++			.step_height = MB_DIM,
++		},
++	},
++};
++
++/*
++ * Supported codec ops.
++ */
++
++static const struct hantro_codec_ops stm32mp25_vdec_codec_ops[] = {
++	[HANTRO_MODE_VP8_DEC] = {
++		.run = hantro_g1_vp8_dec_run,
++		.reset = hantro_g1_reset,
++		.init = hantro_vp8_dec_init,
++		.exit = hantro_vp8_dec_exit,
++	},
++	[HANTRO_MODE_H264_DEC] = {
++		.run = hantro_g1_h264_dec_run,
++		.reset = hantro_g1_reset,
++		.init = hantro_h264_dec_init,
++		.exit = hantro_h264_dec_exit,
++	},
++};
++
++static const struct hantro_irq stm32mp25_irqs[] = {
++	{ "vdec", hantro_g1_irq },
++};
++
++static const char * const stm32mp25_clk_names[] = { "vdec-clk" };
++
++const struct hantro_variant stm32mp25_vdec_variant = {
++	.dec_fmts = stm32mp25_vdec_fmts,
++	.num_dec_fmts = ARRAY_SIZE(stm32mp25_vdec_fmts),
++	.codec = HANTRO_VP8_DECODER | HANTRO_H264_DECODER,
++	.codec_ops = stm32mp25_vdec_codec_ops,
++	.irqs = stm32mp25_irqs,
++	.num_irqs = ARRAY_SIZE(stm32mp25_irqs),
++	.clk_names = stm32mp25_clk_names,
++	.num_clocks = ARRAY_SIZE(stm32mp25_clk_names),
++};
+-- 
+2.39.2
+

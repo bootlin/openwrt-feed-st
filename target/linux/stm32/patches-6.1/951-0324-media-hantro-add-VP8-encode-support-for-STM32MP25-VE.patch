@@ -1,0 +1,64 @@
+From aece363ddc95aac45c7d5af4a4abd7c8e32a934e Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Thu, 11 May 2023 10:13:16 +0200
+Subject: [PATCH 0324/1141] media: hantro: add VP8 encode support for STM32MP25
+ VENC
+
+Add VP8 stateless support for STM32MP25 VENC video hardware encoder.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: Ie1d959e19bdeff6062cb5fb2a8dca9e2ef215ca6
+---
+ .../platform/verisilicon/stm32mp25_venc_hw.c  | 22 ++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+index 3dc4ada288a7..8ad6e651ee87 100644
+--- a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
++++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+@@ -87,6 +87,19 @@ static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+ 			.step_height = MB_DIM,
+ 		},
+ 	},
++	{
++		.fourcc = V4L2_PIX_FMT_VP8_FRAME,
++		.codec_mode = HANTRO_MODE_VP8_ENC,
++		.max_depth = 2,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 4080,
++			.step_width = MB_DIM,
++			.min_height = 96,
++			.max_height = 4080,
++			.step_height = MB_DIM,
++		},
++	},
+ };
+ 
+ static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
+@@ -123,6 +136,13 @@ static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
+ 		.reset = stm32mp25_venc_reset,
+ 		.done = hantro_h1_jpeg_enc_done,
+ 	},
++	[HANTRO_MODE_VP8_ENC] = {
++		.run = hantro_h1_vp8_enc_run,
++		.reset = stm32mp25_venc_reset,
++		.init = hantro_vp8_enc_init,
++		.done = hantro_h1_vp8_enc_done,
++		.exit = hantro_vp8_enc_exit,
++	},
+ };
+ 
+ /*
+@@ -140,7 +160,7 @@ static const char * const stm32mp25_venc_clk_names[] = {
+ const struct hantro_variant stm32mp25_venc_variant = {
+ 	.enc_fmts = stm32mp25_venc_fmts,
+ 	.num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
+-	.codec = HANTRO_JPEG_ENCODER,
++	.codec = HANTRO_JPEG_ENCODER | HANTRO_VP8_ENCODER,
+ 	.codec_ops = stm32mp25_venc_codec_ops,
+ 	.irqs = stm32mp25_venc_irqs,
+ 	.num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
+-- 
+2.39.2
+

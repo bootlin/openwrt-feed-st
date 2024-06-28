@@ -1,0 +1,45 @@
+From addd2bc627f27d1cf0aaf39364ad4c82ad5443e5 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 5 Jun 2023 22:59:00 +0200
+Subject: [PATCH 0280/1141] arm64: dts: st: add dsi support on stm32mp251
+
+This patch adds support for MIPI-DSI interface on stm32mp251.
+
+Signed-off-by: Philippe Cornu <philippe.cornu@foss.st.com>
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I8d5effde9655c762304be5c90985e1c5991939d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305994
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index c74be4a74f0c..e92cd68e3b60 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1724,6 +1724,18 @@ trigger@4 {
+ 				};
+ 			};
+ 
++			dsi: dsi@48000000 {
++				compatible = "st,stm32-dsi";
++				reg = <0x48000000 0x800>;
++				clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
++					 <&rcc CK_KER_LTDC>;
++				clock-names = "pclk", "ref", "px_clk";
++				resets = <&rcc DSI_R>;
++				reset-names = "apb";
++				feature-domains = <&rifsc STM32MP25_RIFSC_DSI_CMN_ID>;
++				status = "disabled";
++			};
++
+ 			ltdc: display-controller@48010000 {
+ 				compatible = "st,stm32-ltdc";
+ 				reg = <0x48010000 0x400>;
+-- 
+2.39.2
+

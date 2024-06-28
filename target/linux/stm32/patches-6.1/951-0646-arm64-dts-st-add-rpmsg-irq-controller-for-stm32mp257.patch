@@ -1,0 +1,42 @@
+From 369c3ddf6295af522f10a063c9d2e9631167a631 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 18:20:10 +0100
+Subject: [PATCH 0646/1141] arm64: dts: st: add rpmsg irq controller for
+ stm32mp257f-dk board
+
+Add rpmsg IRQ controller support for communication with the Cortex-M33
+Linux drivers can register generic interrupt to receive signals from the
+remote processor.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Id0dc5f8166db1cb154598c2e3f20ffee9db13325
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index cf70290165f8..64e8cf0dc1cc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -94,6 +94,17 @@ phy1_eth1: ethernet-phy@1 {
+ 	};
+ };
+ 
++&mlahb {
++	intc_rpmsg: interrupt-controller@1 {
++		compatible = "rpmsg,intc";
++		reg = <1 0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++	};
++
++
++};
++
+ &rtc {
+ 	st,lsco = <RTC_OUT2_RMP>;
+ 	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
+-- 
+2.39.2
+

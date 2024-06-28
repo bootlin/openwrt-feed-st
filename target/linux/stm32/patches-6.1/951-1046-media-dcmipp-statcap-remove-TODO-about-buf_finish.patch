@@ -1,0 +1,40 @@
+From 6af8d977fad84ee82715adff74c1e2383b8aa8a1 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 12:03:20 +0100
+Subject: [PATCH 1046/1141] media: dcmipp: statcap: remove TODO about
+ buf_finish
+
+Remove the TODO message within buf_finish.  v4l2_buffer information
+(sequence / timestamp) are already filled within the buffer_done
+handling function.
+
+Change-Id: Ic0cf20731d884ebe115223a7049771c9a35fd7d0
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369280
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 52a39de20826..bcfd3eb4c6a2 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -491,11 +491,6 @@ static const struct vb2_ops dcmipp_statcap_qops = {
+ 	.buf_prepare		= dcmipp_statcap_buf_prepare,
+ 	.buf_queue		= dcmipp_statcap_buf_queue,
+ 
+-	/*
+-	 * TODO - could be great to have a buf_finish, be able to tag
+-	 * each buffer getting out
+-	 */
+-	/* .buf_finish		= dcmipp_statcap_buf_finish, */
+ 	.queue_setup		= dcmipp_statcap_queue_setup,
+ 	/*
+ 	 * Since q->lock is set we can use the standard
+-- 
+2.39.2
+

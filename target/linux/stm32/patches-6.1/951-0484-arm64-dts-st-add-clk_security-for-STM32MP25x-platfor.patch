@@ -1,0 +1,45 @@
+From 7c654a4408de4a5b2c5cdf64a2475ddc56f47fde Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:38 +0200
+Subject: [PATCH 0484/1141] arm64: dts: st: add clk_security for STM32MP25x
+ platforms
+
+The secure components of the platform share a secure clock. Implement
+it in the device tree so the secure hardware blocks can refer to it.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Iaf9d31a46f3694601cbc600bd353433e23fff6b4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325026
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 0a606735144c..e53453664384 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -43,6 +43,14 @@ arm_wdt: watchdog {
+ 		status = "disabled";
+ 	};
+ 
++	clocks {
++		clk_rcbsec: clk-rcbsec {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <64000000>;
++		};
++	};
++
+ 	firmware {
+ 		optee {
+ 			compatible = "linaro,optee-tz";
+-- 
+2.39.2
+

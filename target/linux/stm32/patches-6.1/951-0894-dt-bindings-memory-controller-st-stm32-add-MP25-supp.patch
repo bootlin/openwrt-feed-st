@@ -1,0 +1,63 @@
+From 4c9064c9c1acbd5df7f0c176783eaae7cb9d488b Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Mon, 26 Feb 2024 11:14:24 +0100
+Subject: [PATCH 0894/1141] dt-bindings: memory-controller: st,stm32: add MP25
+ support
+
+Add a new compatible string to support MP25 SoC.
+
+On MP1 SoC, RNB signal (NAND controller signal) and NWAIT signal (PSRAM
+controller signal) have been integrated together in the SoC. That means
+that the NAND controller and the PSRAM controller (if the signal is
+used) can not be used at the same time. On MP25 SoC, the 2 signals can
+be used outside the SoC, so there is no more restrictions.
+
+MP1 SoC also embeds revision 1.1 of the FMC2 IP when MP25 SoC embeds
+revision 2.0 of the FMC2 IP.
+
+MP25 SoC is also using PSCI OS-initiated mode, so allow a single
+'power-domains' entry for STM32 FMC2. As MP1 will move on PSCI
+OS-initiated mode, add this property as optional for all FMC2 variants.
+
+Change-Id: Ib3a9ac8dd3ebaa07cf2881be2921519315ec4c29
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Link: https://lore.kernel.org/r/20240226101428.37791-2-christophe.kerello@foss.st.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364510
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml     | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+index 6b516d3895af..9f99ef4e026f 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+@@ -23,7 +23,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32mp1-fmc2-ebi
++    enum:
++      - st,stm32mp1-fmc2-ebi
++      - st,stm32mp25-fmc2-ebi
+ 
+   reg:
+     maxItems: 1
+@@ -34,6 +36,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   "#address-cells":
+     const: 2
+ 
+-- 
+2.39.2
+

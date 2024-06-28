@@ -1,0 +1,55 @@
+From cdfcf9c35c9837f03194eaa7c5b6ad03221eabe2 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Mon, 14 Mar 2022 15:40:26 +0100
+Subject: [PATCH 0152/1141] arm64: dts: st: Add combophy node on stm32mp251
+
+Add support for ComboPHY which is used either by the USB3 and PCIe
+controller.
+USB3 or PCIe mode is done with phy_set_mode().
+PCIe internal reference clock can be generated from the internal clock
+source or optionnaly from an external 100Mhz pad.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Ib965606a5dc847c28b51b15b90db21c2f7f8e957
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/306763
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a229e059cdd2..e20582c579b7 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/clock/stm32mp25-clks.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/regulator/st,stm32mp25-regulator.h>
++#include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/reset/stm32mp25-resets.h>
+ 
+ / {
+@@ -390,6 +391,19 @@ i2c8: i2c@46040000 {
+ 				status = "disabled";
+ 			};
+ 
++			combophy: phy@480c0000 {
++				compatible = "st,stm32mp25-combophy";
++				reg = <0x480c0000 0x1000>;
++				#phy-cells = <1>;
++				clocks = <&rcc CK_BUS_USB3PCIEPHY>, <&rcc CK_KER_USB3PCIEPHY>;
++				clock-names = "apb-clk", "ker-clk";
++				resets = <&rcc USB3PCIEPHY_R>;
++				reset-names = "phy-rst";
++				st,syscfg = <&syscfg>;
++				feature-domains = <&rifsc STM32MP25_RIFSC_COMBOPHY_ID>;
++				status = "disabled";
++			};
++
+ 			sdmmc1: mmc@48220000 {
+ 				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+ 				arm,primecell-periphid = <0x00353180>;
+-- 
+2.39.2
+

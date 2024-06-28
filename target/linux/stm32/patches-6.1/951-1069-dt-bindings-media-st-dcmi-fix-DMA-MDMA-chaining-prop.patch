@@ -1,0 +1,39 @@
+From 7d536d1b99f559b2a5f220ae3834429e421c8997 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 27 Mar 2024 14:38:21 +0100
+Subject: [PATCH 1069/1141] dt-bindings: media: st: dcmi: fix DMA-MDMA chaining
+ properties
+
+Fix dt_binding_check error:
+
+properties:dma-names: {'items': [{'const': 'tx'}, {'const': 'mdma-tx'}],
+           'minItems': 1, 'maxItems': 2} should not be valid under {'required': ['maxItems']}
+hint: "maxItems" is not needed with an "items" list
+from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+
+Change-Id: Icc626b1d8e310c792b1b757d2491b02a962882d7
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369708
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 8d02be87e774..97885c5bfb22 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -35,7 +35,6 @@ properties:
+       - const: tx
+       - const: mdma-tx
+     minItems: 1
+-    maxItems: 2
+ 
+   resets:
+     maxItems: 1
+-- 
+2.39.2
+

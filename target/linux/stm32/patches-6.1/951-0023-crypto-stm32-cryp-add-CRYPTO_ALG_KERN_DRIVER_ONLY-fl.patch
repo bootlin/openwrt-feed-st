@@ -1,0 +1,109 @@
+From 17546ea5ec0a9d0832bd1e3a605270fc60952766 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@st.com>
+Date: Wed, 2 Aug 2023 10:44:28 +0200
+Subject: [PATCH 0023/1141] crypto: stm32/cryp - add
+ CRYPTO_ALG_KERN_DRIVER_ONLY flag
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This flag is needed to make the driver visible from openssl and cryptodev.
+
+Signed-off-by: Maxime Méré <maxime.mere@st.com>
+Change-Id: I8a992d369d58effd62ff0bc1f0c073478e1c34a0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/321083
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 472fcf0cbe96..e9a73146ce06 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -2144,7 +2144,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "ecb(aes)",
+ 	.base.cra_driver_name	= "stm32-ecb-aes",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= AES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2161,7 +2161,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "cbc(aes)",
+ 	.base.cra_driver_name	= "stm32-cbc-aes",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= AES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2179,7 +2179,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "ctr(aes)",
+ 	.base.cra_driver_name	= "stm32-ctr-aes",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= 1,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2197,7 +2197,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "ecb(des)",
+ 	.base.cra_driver_name	= "stm32-ecb-des",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= DES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2214,7 +2214,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "cbc(des)",
+ 	.base.cra_driver_name	= "stm32-cbc-des",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= DES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2232,7 +2232,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "ecb(des3_ede)",
+ 	.base.cra_driver_name	= "stm32-ecb-des3",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= DES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2249,7 +2249,7 @@ static struct skcipher_alg crypto_algs[] = {
+ 	.base.cra_name		= "cbc(des3_ede)",
+ 	.base.cra_driver_name	= "stm32-cbc-des3",
+ 	.base.cra_priority	= 1200,
+-	.base.cra_flags		= CRYPTO_ALG_ASYNC,
++	.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 	.base.cra_blocksize	= DES_BLOCK_SIZE,
+ 	.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
+ 	.base.cra_alignmask	= 0,
+@@ -2279,7 +2279,7 @@ static struct aead_alg aead_algs[] = {
+ 		.cra_name		= "gcm(aes)",
+ 		.cra_driver_name	= "stm32-gcm-aes",
+ 		.cra_priority		= 200,
+-		.cra_flags		= CRYPTO_ALG_ASYNC,
++		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 		.cra_blocksize		= 1,
+ 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
+ 		.cra_alignmask		= 0,
+@@ -2299,7 +2299,7 @@ static struct aead_alg aead_algs[] = {
+ 		.cra_name		= "ccm(aes)",
+ 		.cra_driver_name	= "stm32-ccm-aes",
+ 		.cra_priority		= 200,
+-		.cra_flags		= CRYPTO_ALG_ASYNC,
++		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
+ 		.cra_blocksize		= 1,
+ 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
+ 		.cra_alignmask		= 0,
+-- 
+2.39.2
+

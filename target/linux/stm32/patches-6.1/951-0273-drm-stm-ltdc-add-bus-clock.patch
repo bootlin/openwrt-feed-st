@@ -1,0 +1,105 @@
+From 1c89dd5b7e98eeab57efe1ba5a787268a63c6342 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 4 Jul 2022 12:11:16 +0200
+Subject: [PATCH 0273/1141] drm/stm: ltdc: add bus clock
+
+Bus clock is an optional clock which is not present
+on legacy chipset.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I8ba93a55c735f724f65ef48336c4ae0e78e3a861
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/262859
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 26 ++++++++++++++++++++++++++
+ drivers/gpu/drm/stm/ltdc.h |  1 +
+ 2 files changed, 27 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 884777df4db4..7b9bb560a5a2 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -1940,6 +1940,8 @@ void ltdc_suspend(struct drm_device *ddev)
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 	clk_disable_unprepare(ldev->pixel_clk);
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
+ }
+ 
+ int ltdc_resume(struct drm_device *ddev)
+@@ -1954,6 +1956,12 @@ int ltdc_resume(struct drm_device *ddev)
+ 		DRM_ERROR("failed to enable pixel clock (%d)\n", ret);
+ 		return ret;
+ 	}
++	if (ldev->bus_clk) {
++		if (clk_prepare_enable(ldev->bus_clk)) {
++			DRM_ERROR("Unable to prepare bus clock\n");
++			return -ENODEV;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -1985,11 +1993,25 @@ int ltdc_load(struct drm_device *ddev)
+ 		return PTR_ERR(ldev->pixel_clk);
+ 	}
+ 
++	ldev->bus_clk = devm_clk_get(dev, "bus");
++	if (IS_ERR(ldev->bus_clk)) {
++		if (PTR_ERR(ldev->bus_clk) != -EPROBE_DEFER)
++			DRM_DEBUG_DRIVER("Unable to get bus clock\n");
++		ldev->bus_clk = NULL;
++	}
++
+ 	if (clk_prepare_enable(ldev->pixel_clk)) {
+ 		DRM_ERROR("Unable to prepare pixel clock\n");
+ 		return -ENODEV;
+ 	}
+ 
++	if (ldev->bus_clk) {
++		if (clk_prepare_enable(ldev->bus_clk)) {
++			DRM_ERROR("Unable to prepare bus clock\n");
++			return -ENODEV;
++		}
++	}
++
+ 	/* Get endpoints if any */
+ 	for (i = 0; i < nb_endpoints; i++) {
+ 		ret = drm_of_find_panel_or_bridge(np, 0, i, &panel, &bridge);
+@@ -2107,6 +2129,8 @@ int ltdc_load(struct drm_device *ddev)
+ 	}
+ 
+ 	clk_disable_unprepare(ldev->pixel_clk);
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
+ 
+ 	pinctrl_pm_select_sleep_state(ddev->dev);
+ 
+@@ -2118,6 +2142,8 @@ int ltdc_load(struct drm_device *ddev)
+ 		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
+ 
+ 	clk_disable_unprepare(ldev->pixel_clk);
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 9d488043ffdb..155d8e4a7c6b 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -44,6 +44,7 @@ struct ltdc_device {
+ 	void __iomem *regs;
+ 	struct regmap *regmap;
+ 	struct clk *pixel_clk;	/* lcd pixel clock */
++	struct clk *bus_clk;	/* bus clock */
+ 	struct mutex err_lock;	/* protecting error_status */
+ 	struct ltdc_caps caps;
+ 	u32 irq_status;
+-- 
+2.39.2
+

@@ -1,0 +1,174 @@
+From dddc8f066033801e443450e9f5ed39ca6fd76d7b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 12:00:49 +0100
+Subject: [PATCH 1045/1141] media: dcmipp: simplify release & add missing
+ mutex_destroy
+
+Simplify the release handling since there is no need to rely on
+subdev release mechanism and add missing mutex_destroy during the
+release handling.
+
+Change-Id: I08dac710a9a2a87cb72ef61578c73121cd51b520
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369279
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c     | 17 ++++-------------
+ .../st/stm32/stm32-dcmipp/dcmipp-common.c       |  1 +
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-isp.c | 16 +++-------------
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c    | 16 +++-------------
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c      |  1 +
+ 5 files changed, 12 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index d2507f327ec7..10b68ff923de 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -692,24 +692,14 @@ static const struct v4l2_subdev_ops dcmipp_byteproc_ops = {
+ 	.video = &dcmipp_byteproc_video_ops,
+ };
+ 
+-/* FIXME */
+-static void dcmipp_byteproc_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+-
+-	kfree(byteproc);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_byteproc_int_ops = {
+-	.release = dcmipp_byteproc_release,
+-};
+-
+ void dcmipp_byteproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_byteproc_device *byteproc =
+ 			container_of(ved, struct dcmipp_byteproc_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &byteproc->sd);
++	mutex_destroy(&byteproc->lock);
++	kfree(byteproc);
+ }
+ 
+ struct dcmipp_ent_device *
+@@ -755,10 +745,11 @@ dcmipp_byteproc_ent_init(struct device *dev, const char *entity_name,
+ 				     MEDIA_PAD_FL_SINK,
+ 				     MEDIA_PAD_FL_SOURCE,
+ 				     },
+-				     &dcmipp_byteproc_int_ops,
++				     NULL,
+ 				     &dcmipp_byteproc_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
++		mutex_destroy(&byteproc->lock);
+ 		kfree(byteproc);
+ 		return ERR_PTR(ret);
+ 	}
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+index 9ec6cb1b3ae2..45995563c64b 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+@@ -109,4 +109,5 @@ void dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved, struct v4l2_subdev
+ {
+ 	media_entity_cleanup(ved->ent);
+ 	v4l2_device_unregister_subdev(sd);
++	dcmipp_pads_cleanup(ved->pads);
+ }
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index 2234b7513ad5..96ca41a8d461 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -671,24 +671,14 @@ static const struct v4l2_subdev_ops dcmipp_isp_ops = {
+ 	.video = &dcmipp_isp_video_ops,
+ };
+ 
+-/* FIXME */
+-static void dcmipp_isp_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
+-
+-	kfree(isp);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_isp_int_ops = {
+-	.release = dcmipp_isp_release,
+-};
+-
+ void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_isp_device *isp =
+ 			container_of(ved, struct dcmipp_isp_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &isp->sd);
++	mutex_destroy(&isp->lock);
++	kfree(isp);
+ }
+ 
+ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -727,7 +717,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+ 				     MEDIA_PAD_FL_SINK,
+ 				     MEDIA_PAD_FL_SOURCE,
+ 				     },
+-				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
++				     NULL, &dcmipp_isp_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
+ 		mutex_destroy(&isp->lock);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index b3a16062726d..f32d7df6b514 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -901,24 +901,14 @@ static const struct v4l2_subdev_ops dcmipp_pixelproc_ops = {
+ 	.video = &dcmipp_pixelproc_video_ops,
+ };
+ 
+-/* FIXME */
+-static void dcmipp_pixelproc_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
+-
+-	kfree(pixelproc);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_pixelproc_int_ops = {
+-	.release = dcmipp_pixelproc_release,
+-};
+-
+ void dcmipp_pixelproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc =
+ 			container_of(ved, struct dcmipp_pixelproc_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &pixelproc->sd);
++	mutex_destroy(&pixelproc->lock);
++	kfree(pixelproc);
+ }
+ 
+ static int dcmipp_name_to_pipe_id(const char *name)
+@@ -1004,7 +994,7 @@ dcmipp_pixelproc_ent_init(struct device *dev, const char *entity_name,
+ 				     MEDIA_PAD_FL_SINK,
+ 				     MEDIA_PAD_FL_SOURCE,
+ 				     },
+-				     &dcmipp_pixelproc_int_ops, &dcmipp_pixelproc_ops,
++				     NULL, &dcmipp_pixelproc_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
+ 		mutex_destroy(&pixelproc->lock);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 59231035762a..52a39de20826 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -659,6 +659,7 @@ void dcmipp_statcap_ent_release(struct dcmipp_ent_device *ved)
+ 	struct dcmipp_statcap_device *vcap =
+ 		container_of(ved, struct dcmipp_statcap_device, ved);
+ 
++	mutex_destroy(&vcap->lock);
+ 	media_entity_cleanup(ved->ent);
+ 	vb2_video_unregister_device(&vcap->vdev);
+ }
+-- 
+2.39.2
+

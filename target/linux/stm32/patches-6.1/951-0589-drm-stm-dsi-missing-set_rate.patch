@@ -1,0 +1,36 @@
+From 12ed29593e5eb4a5724f9bf2a1992153993ac1cc Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 5 Oct 2023 16:58:38 +0200
+Subject: [PATCH 0589/1141] drm/stm: dsi: missing set_rate
+
+Need to add a second clk_set_rate of dsi txbyte clock (dummy)
+to get always a call of dw_mipi_dsi_clk_set_rate.
+
+
+Change-Id: I822bc5309c9b2a629b9439b204c37a2528107075
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/332682
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+---
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+index 500de518245e..a0481520626c 100644
+--- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
++++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+@@ -418,6 +418,9 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+ 	dsi_clear(dsi, DSI_PTCR0, PTCR0_TRSEN);
+ 	mdelay(1);
+ 
++	/* dummy set rate ... */
++	clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000);
++
+ 	ret = clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000 / 2);
+ 	if (ret)
+ 		return ret;
+-- 
+2.39.2
+

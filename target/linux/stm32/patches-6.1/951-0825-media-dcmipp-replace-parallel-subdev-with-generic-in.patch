@@ -1,0 +1,747 @@
+From 332b68ffe0de5d62448f01b2bd483c8663c282c9 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 16 Jan 2024 22:28:07 +0100
+Subject: [PATCH 0825/1141] media: dcmipp: replace parallel subdev with generic
+ input subdev
+
+This commit replaces the parallel subdev by a more generic input
+stage subdev dealing with both parallel input type and csi.
+Thanks to that, following controls that were spread within several
+subdevs are now all located within the input subdev:
+  - DCMIPP input selection (INSEL) parallel vs csi
+  - CSI VC/DT control
+
+In order to ease visualisation of modifications, parallel naming is
+still visible in plenty of places within the subdev.
+Renaming of struct and variables input within the subdev is done
+in a separate commit.
+
+With the introduction of this input subdev, links in both CSI and
+parallel modes are similar, streams always going though the input
+subdev which has one source pad for each dcmipp pipes.
+
+Change-Id: I9a9e1b28890b5e4f0ff16f96fc1c5afa32aa5007
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352411
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/Makefile   |   2 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   |  43 ----
+ .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 139 ++---------
+ .../{dcmipp-parallel.c => dcmipp-input.c}     | 231 +++++++++++++++---
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        |  23 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  |  13 -
+ 6 files changed, 219 insertions(+), 232 deletions(-)
+ rename drivers/media/platform/st/stm32/stm32-dcmipp/{dcmipp-parallel.c => dcmipp-input.c} (60%)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
+index 54f45f65cb1b..05ebf0789ad0 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-stm32-dcmipp-y := dcmipp-core.o dcmipp-common.o dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o
++stm32-dcmipp-y := dcmipp-core.o dcmipp-common.o dcmipp-input.o dcmipp-byteproc.o dcmipp-bytecap.o
+ stm32-dcmipp-y += dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o
+ 
+ obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index 765c2a8aaa38..5af583fd6315 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -25,16 +25,6 @@
+ #define DCMIPP_FMT_WIDTH_DEFAULT  640
+ #define DCMIPP_FMT_HEIGHT_DEFAULT 480
+ 
+-#define DCMIPP_CMCR (0x204)
+-#define DCMIPP_CMCR_INSEL BIT(0)
+-
+-#define DCMIPP_P0FSCR (0x404)
+-#define DCMIPP_P0FSCR_DTMODE_MASK GENMASK(17, 16)
+-#define DCMIPP_P0FSCR_DTMODE_SHIFT 16
+-#define DCMIPP_P0FSCR_DTMODE_DTIDA	0x00
+-#define DCMIPP_P0FSCR_DTMODE_ALLDT	0x03
+-#define DCMIPP_P0FSCR_DTIDA_MASK GENMASK(5, 0)
+-#define DCMIPP_P0FSCR_DTIDA_SHIFT 0
+ #define DCMIPP_P0FCTCR (0x500)
+ #define DCMIPP_P0FCTCR_FRATE_MASK GENMASK(1, 0)
+ #define DCMIPP_P0SCSTR (0x504)
+@@ -684,42 +674,9 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 	mutex_lock(&byteproc->lock);
+ 	if (enable) {
+-		const struct dcmipp_byteproc_pix_map *vpix;
+-
+-		/*
+-		 * find output format datatype - this call will always succeed since
+-		 * format code has been sanitized at the set_fmt stage
+-		 */
+-		vpix = dcmipp_byteproc_pix_map_by_code(byteproc->sink_fmt.code);
+-
+-		/*
+-		 * TODO - this should only be done with HW supporting CSI and
+-		 * only when the source is CSI
+-		 */
+-		reg_clear(byteproc, DCMIPP_P0FSCR,
+-			  DCMIPP_P0FSCR_DTMODE_MASK | DCMIPP_P0FSCR_DTIDA_MASK);
+-
+-		if (byteproc->sink_fmt.code == MEDIA_BUS_FMT_JPEG_1X8)
+-			reg_set(byteproc, DCMIPP_P0FSCR,
+-				DCMIPP_P0FSCR_DTMODE_ALLDT << DCMIPP_P0FSCR_DTMODE_SHIFT);
+-		else
+-			reg_set(byteproc, DCMIPP_P0FSCR,
+-				vpix->dt << DCMIPP_P0FSCR_DTIDA_SHIFT |
+-				DCMIPP_P0FSCR_DTMODE_DTIDA);
+-
+ 		dcmipp_byteproc_configure_framerate(byteproc);
+ 
+ 		ret = dcmipp_byteproc_configure_scale_crop(byteproc);
+-
+-		/*
+-		 * In case of the subdev is the last one before the csi bridge
+-		 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
+-		 * in which case we need to enable the CSI input of the DCMIPP
+-		 * TODO: to will have to reworked to avoid duplication between
+-		 * subdeves
+-		 */
+-		if (byteproc->ved.bus_type == V4L2_MBUS_CSI2_DPHY)
+-			reg_write(byteproc, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
+ 	}
+ 	mutex_unlock(&byteproc->lock);
+ 
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 54d2c395a5c7..fed360861a8f 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -102,7 +102,7 @@ struct dcmipp_pipeline_config {
+ 
+ static const struct dcmipp_ent_config stm32mp13_ent_config[] = {
+ 	{
+-		.name = "dcmipp_parallel",
++		.name = "dcmipp_input",
+ 		.init = dcmipp_par_ent_init,
+ 		.release = dcmipp_par_ent_release,
+ 	},
+@@ -118,12 +118,12 @@ static const struct dcmipp_ent_config stm32mp13_ent_config[] = {
+ 	},
+ };
+ 
+-#define ID_PARALLEL 0
++#define ID_INPUT 0
+ #define ID_DUMP_BYTEPROC 1
+ #define ID_DUMP_CAPTURE 2
+ 
+ static const struct dcmipp_ent_link stm32mp13_ent_links[] = {
+-	DCMIPP_ENT_LINK(ID_PARALLEL,      1, ID_DUMP_BYTEPROC, 0,
++	DCMIPP_ENT_LINK(ID_INPUT,	  1, ID_DUMP_BYTEPROC, 0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ 	DCMIPP_ENT_LINK(ID_DUMP_BYTEPROC, 1, ID_DUMP_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+@@ -144,7 +144,7 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ #define	ID_ISP_STAT_CAPTURE 8
+ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 	{
+-		.name = "dcmipp_parallel",
++		.name = "dcmipp_input",
+ 		.init = dcmipp_par_ent_init,
+ 		.release = dcmipp_par_ent_release,
+ 	},
+@@ -191,16 +191,18 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ };
+ 
+ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+-	DCMIPP_ENT_LINK(ID_PARALLEL,      1, ID_DUMP_BYTEPROC, 0, 0),
++	DCMIPP_ENT_LINK(ID_INPUT,	  1, ID_DUMP_BYTEPROC, 0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ 	DCMIPP_ENT_LINK(ID_DUMP_BYTEPROC, 1, ID_DUMP_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+-	DCMIPP_ENT_LINK(ID_PARALLEL,	1, ID_MAIN_ISP,  0, 0),
++	DCMIPP_ENT_LINK(ID_INPUT,	2, ID_MAIN_ISP,  0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ 	DCMIPP_ENT_LINK(ID_MAIN_ISP,	1, ID_MAIN_POSTPROC,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ 	DCMIPP_ENT_LINK(ID_MAIN_ISP,	2, ID_AUX_POSTPROC,  0, 0),
+ 	DCMIPP_ENT_LINK(ID_MAIN_POSTPROC,	1, ID_MAIN_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+-	DCMIPP_ENT_LINK(ID_PARALLEL,	1, ID_AUX_POSTPROC,  0, 0),
++	DCMIPP_ENT_LINK(ID_INPUT,	3, ID_AUX_POSTPROC,  0, 0),
+ 	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ 	DCMIPP_ENT_LINK(ID_MAIN_ISP,	3, ID_ISP_STAT_CAPTURE,  0,
+@@ -388,125 +390,26 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ 	struct dcmipp_device *dcmipp = notifier_to_dcmipp(notifier);
+ 	unsigned int ret;
+ 	int src_pad;
+-	struct dcmipp_ent_device *sink;
+-	struct device_node *np = dcmipp->dev->of_node;
+-	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
+-	struct device_node *_np = dcmipp->dev->of_node;//FIXME _np/_ep...
+-	struct device_node *_ep;
+-	struct media_link *link;
+-	u32 flags = MEDIA_LNK_FL_ENABLED;
+ 
+ 	dev_dbg(dcmipp->dev, "Subdev \"%s\" bound\n", subdev->name);
+ 
+-	/*
+-	 * Link this sub-device to DCMIPP, it could be
+-	 * a parallel camera sensor or a CSI-2 to parallel bridge
+-	 */
+-
++	/* Link this sub-device to DCMIPP input subdev */
+ 	src_pad = media_entity_get_fwnode_pad(&subdev->entity,
+ 					      subdev->fwnode,
+ 					      MEDIA_PAD_FL_SOURCE);
+ 
+-	/* Get bus characteristics from devicetree */
+-	np = of_graph_get_next_endpoint(np, NULL);
+-	if (!np) {
+-		dev_err(dcmipp->dev, "Could not find the endpoint\n");
+-		of_node_put(np);
+-		return -ENODEV;
+-	}
+-
+-	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(np), &ep);
+-	of_node_put(np);
+-	if (ret) {
+-		dev_err(dcmipp->dev, "Could not parse the endpoint\n");
+-		return ret;
+-	}
+-
+-	if ((ep.bus_type == V4L2_MBUS_PARALLEL ||
+-	     ep.bus_type == V4L2_MBUS_BT656) &&
+-	     ep.bus.parallel.bus_width > 0) {
+-		/* Only 8 bits bus width supported with BT656 bus */
+-		if (ep.bus_type == V4L2_MBUS_BT656 &&
+-		    ep.bus.parallel.bus_width != 8) {
+-			dev_err(dcmipp->dev, "BT656 bus conflicts with %u bits bus width (8 bits required)\n",
+-				ep.bus.parallel.bus_width);
+-			return -ENODEV;
+-		}
+-
+-		/*
+-		 * Parallel input device detected
+-		 * Connect it to parallel subdev
+-		 */
+-		sink = dcmipp->entity[ID_PARALLEL];
+-		sink->bus.flags = ep.bus.parallel.flags;
+-		sink->bus.bus_width = ep.bus.parallel.bus_width;
+-		sink->bus.data_shift = ep.bus.parallel.data_shift;
+-		sink->bus_type = ep.bus_type;
+-		ret = media_create_pad_link(&subdev->entity, src_pad,
+-					    sink->ent, 0,
+-					    MEDIA_LNK_FL_IMMUTABLE |
+-					    MEDIA_LNK_FL_ENABLED);
+-		if (ret)
+-			dev_err(dcmipp->dev, "Failed to create media pad link with subdev \"%s\"\n",
+-				subdev->name);
+-		else
+-			dev_dbg(dcmipp->dev, "DCMIPP is now linked to \"%s\"\n",
+-				subdev->name);
+-
+-		/* Enable all links from the parallel subdev */
+-		list_for_each_entry(link, &sink->ent->links, list) {
+-			/* Only enable link starting from the parallel subdev */
+-			if (link->source->entity == sink->ent &&
+-			    !(link->flags & MEDIA_LNK_FL_IMMUTABLE)) {
+-				ret = media_entity_setup_link(link, MEDIA_LNK_FL_ENABLED);
+-				if (ret)
+-					dev_err(dcmipp->dev, "Failed to setup link (%d)\n", ret);
+-			}
+-		}
+-
+-		return 0;
+-	}
+-
+-	/*
+-	 * CSI-2 receiver
+-	 * Connect all of its channels to the DCMIPP pipes
+-	 */
+-	for_each_endpoint_of_node(_np, _ep) {
+-		struct of_endpoint endpoint;
+-		unsigned int sink_ids[3] = {ID_DUMP_BYTEPROC, ID_MAIN_ISP, ID_AUX_POSTPROC};
+-		unsigned int i;
+-
+-		of_graph_parse_endpoint(_ep, &endpoint);
+-		dev_info(dcmipp->dev, "endpoint.port=%d\n", endpoint.port);
+-//FIXME check	if ((src_pad + endpoint.port) > subdev->entity.num_pads)
+-
+-		for (i = 0; i < ARRAY_SIZE(sink_ids); i++) {
+-			sink = dcmipp->entity[sink_ids[i]];
+-			sink->bus_type = V4L2_MBUS_CSI2_DPHY;
+-			ret = media_create_pad_link(&subdev->entity, src_pad + endpoint.port,
+-						    sink->ent, 0,
+-						    flags);
+-			if (ret)
+-				dev_err(dcmipp->dev, "Failed to create link \"%s\":%d -> %d:\"%s\" [%s]\n",
+-					subdev->name, src_pad + endpoint.port,
+-					0, sink->ent->name,
+-					LINK_FLAG_TO_STR(flags));
+-			else
+-				dev_dbg(dcmipp->dev, "Create link \"%s\":%d -> %d:\"%s\" [%s]\n",
+-					subdev->name, src_pad + endpoint.port,
+-					0, sink->ent->name,
+-					LINK_FLAG_TO_STR(flags));
+-		}
+-
+-		/*
+-		 * Enable media link of first port connection by default,
+-		 * Let the other connections disabled, they could be enabled
+-		 * later on using MC
+-		 */
+-		flags = 0;
+-	}
++	ret = media_create_pad_link(&subdev->entity, src_pad,
++				    dcmipp->entity[ID_INPUT]->ent, 0,
++				    MEDIA_LNK_FL_IMMUTABLE |
++				    MEDIA_LNK_FL_ENABLED);
++	if (ret)
++		dev_err(dcmipp->dev, "Failed to create media pad link with subdev \"%s\"\n",
++			subdev->name);
++	else
++		dev_dbg(dcmipp->dev, "DCMIPP is now linked to \"%s\"\n",
++			subdev->name);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct v4l2_async_notifier_operations dcmipp_graph_notify_ops = {
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+similarity index 60%
+rename from drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
+rename to drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+index c8f8ce95b608..89df2a53db40 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+@@ -8,23 +8,30 @@
+  *          for STMicroelectronics.
+  */
+ 
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_graph.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/v4l2-mediabus.h>
+ #include <linux/vmalloc.h>
++#include <media/mipi-csi2.h>
+ #include <media/v4l2-event.h>
+ #include <media/v4l2-subdev.h>
+ 
+ #include "dcmipp-common.h"
+ 
+-#define DCMIPP_PAR_DRV_NAME "dcmipp-parallel"
++#define DCMIPP_INP_DRV_NAME "dcmipp-input"
+ 
+ #define DCMIPP_PRCR (0x104)
+ #define DCMIPP_PRCR_FORMAT_SHIFT 16
+ #define DCMIPP_PRCR_FORMAT_YUV422 0x1E
+ #define DCMIPP_PRCR_FORMAT_RGB565 0x22
+ #define DCMIPP_PRCR_FORMAT_RAW8 0x2A
++#define DCMIPP_PRCR_FORMAT_RAW10 0x2B
++#define DCMIPP_PRCR_FORMAT_RAW12 0x2C
++#define DCMIPP_PRCR_FORMAT_RAW14 0x2D
+ #define DCMIPP_PRCR_FORMAT_G8 0x4A
+ #define DCMIPP_PRCR_FORMAT_BYTE_STREAM 0x5A
+ #define DCMIPP_PRCR_ESS BIT(4)
+@@ -39,6 +46,22 @@
+ #define DCMIPP_PRESUR (0x10c)
+ 
+ #define DCMIPP_CMCR (0x204)
++#define DCMIPP_CMCR_INSEL BIT(0)
++
++#define DCMIPP_P0FSCR (0x404)
++#define DCMIPP_P0FSCR_DTMODE_MASK GENMASK(17, 16)
++#define DCMIPP_P0FSCR_DTMODE_SHIFT 16
++#define DCMIPP_P0FSCR_DTMODE_DTIDA	0x00
++#define DCMIPP_P0FSCR_DTMODE_ALLDT	0x03
++#define DCMIPP_P0FSCR_DTIDA_MASK GENMASK(5, 0)
++#define DCMIPP_P0FSCR_DTIDA_SHIFT 0
++
++#define DCMIPP_P1FSCR (0x804)
++#define DCMIPP_P2FSCR (0xC04)
++#define DCMIPP_PxFSCR_DTIDA_MASK GENMASK(5, 0)
++#define DCMIPP_PxFSCR_DTIDA_SHIFT 0
++#define DCMIPP_PxFSCR(id) (((id) == 1) ? DCMIPP_P1FSCR :\
++			   DCMIPP_P2FSCR)
+ 
+ #define IS_SINK(pad) (!(pad))
+ #define IS_SRC(pad)  ((pad))
+@@ -48,38 +71,54 @@
+ struct dcmipp_par_pix_map {
+ 	unsigned int code_sink;
+ 	unsigned int code_src;
++	/* Parallel related information */
+ 	u8 prcr_format;
+ 	u8 prcr_swapbits;
+ 	u8 prcr_swapcycles;
++	/* CSI related information */
++	unsigned int dt;
+ };
+ 
+-#define PIXMAP_SINK_SRC_PRCR_SWAP(sink, src, prcr, swap)	\
++#define PIXMAP_SINK_SRC_PRCR_SWAP(sink, src, prcr, swap, data_type)	\
+ 		{						\
+ 			.code_sink = MEDIA_BUS_FMT_##sink,		\
+ 			.code_src = MEDIA_BUS_FMT_##src,		\
+ 			.prcr_format = DCMIPP_PRCR_FORMAT_##prcr,	\
+ 			.prcr_swapcycles = swap,		\
++			.dt = data_type,			\
+ 		}
+ static const struct dcmipp_par_pix_map dcmipp_par_pix_map_list[] = {
+ 	/* RGB565 */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_LE, RGB565_2X8_LE, RGB565, 1),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_BE, RGB565_2X8_LE, RGB565, 0),
++	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_LE, RGB565_2X8_LE, RGB565, 1, MIPI_CSI2_DT_RGB565),
++	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_BE, RGB565_2X8_LE, RGB565, 0, MIPI_CSI2_DT_RGB565),
+ 	/* YUV422 */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_2X8, YUYV8_2X8, YUV422, 1),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_2X8, UYVY8_2X8, YUV422, 0),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(UYVY8_2X8, UYVY8_2X8, YUV422, 1),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(UYVY8_2X8, YUYV8_2X8, YUV422, 0),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(YVYU8_2X8, YVYU8_2X8, YUV422, 1),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(VYUY8_2X8, VYUY8_2X8, YUV422, 1),
++	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_2X8, YUYV8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
++	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_2X8, UYVY8_2X8, YUV422, 0, MIPI_CSI2_DT_YUV422_8B),
++	PIXMAP_SINK_SRC_PRCR_SWAP(UYVY8_2X8, UYVY8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
++	PIXMAP_SINK_SRC_PRCR_SWAP(UYVY8_2X8, YUYV8_2X8, YUV422, 0, MIPI_CSI2_DT_YUV422_8B),
++	PIXMAP_SINK_SRC_PRCR_SWAP(YVYU8_2X8, YVYU8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
++	PIXMAP_SINK_SRC_PRCR_SWAP(VYUY8_2X8, VYUY8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
+ 	/* GREY */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(Y8_1X8, Y8_1X8, G8, 0),
++	PIXMAP_SINK_SRC_PRCR_SWAP(Y8_1X8, Y8_1X8, G8, 0, 0), /* TODO - DT value */
+ 	/* Raw Bayer */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR8_1X8, SBGGR8_1X8, RAW8, 0),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG8_1X8, SGBRG8_1X8, RAW8, 0),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG8_1X8, SGRBG8_1X8, RAW8, 0),
+-	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB8_1X8, SRGGB8_1X8, RAW8, 0),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR8_1X8, SBGGR8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG8_1X8, SGBRG8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG8_1X8, SGRBG8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB8_1X8, SRGGB8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR10_1X10, SBGGR10_1X10, RAW10, 0, MIPI_CSI2_DT_RAW10),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG10_1X10, SGBRG10_1X10, RAW10, 0, MIPI_CSI2_DT_RAW10),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG10_1X10, SGRBG10_1X10, RAW10, 0, MIPI_CSI2_DT_RAW10),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB10_1X10, SRGGB10_1X10, RAW10, 0, MIPI_CSI2_DT_RAW10),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR12_1X12, SBGGR12_1X12, RAW12, 0, MIPI_CSI2_DT_RAW12),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG12_1X12, SGBRG12_1X12, RAW12, 0, MIPI_CSI2_DT_RAW12),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG12_1X12, SGRBG12_1X12, RAW12, 0, MIPI_CSI2_DT_RAW12),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB12_1X12, SRGGB12_1X12, RAW12, 0, MIPI_CSI2_DT_RAW12),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR14_1X14, SBGGR14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG14_1X14, SGBRG14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG14_1X14, SGRBG14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
++	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB14_1X14, SRGGB14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
+ 	/* JPEG */
+-	PIXMAP_SINK_SRC_PRCR_SWAP(JPEG_1X8, JPEG_1X8, BYTE_STREAM, 0),
++	PIXMAP_SINK_SRC_PRCR_SWAP(JPEG_1X8, JPEG_1X8, BYTE_STREAM, 0, 0), /* TODO - DT value */
+ };
+ 
+ /*
+@@ -301,11 +340,19 @@ static const struct v4l2_subdev_pad_ops dcmipp_par_pad_ops = {
+ 	.set_fmt		= dcmipp_par_set_fmt,
+ };
+ 
+-static int dcmipp_par_configure(struct dcmipp_par_device *par)
++static int dcmipp_par_configure_parallel(struct dcmipp_par_device *par,
++					 int enable)
+ {
+ 	u32 val = 0;
+ 	const struct dcmipp_par_pix_map *vpix;
+ 
++	if (!enable) {
++		/* Disable parallel interface */
++		reg_clear(par, DCMIPP_PRCR, DCMIPP_PRCR_ENABLE);
++
++		return 0;
++	}
++
+ 	/* Set vertical synchronization polarity */
+ 	if (par->ved.bus.flags & V4L2_MBUS_VSYNC_ACTIVE_HIGH)
+ 		val |= DCMIPP_PRCR_VSPOL;
+@@ -355,6 +402,65 @@ static int dcmipp_par_configure(struct dcmipp_par_device *par)
+ 
+ 	reg_write(par, DCMIPP_PRCR, val);
+ 
++	/* Select the DCMIPP parallel interface */
++	reg_write(par, DCMIPP_CMCR, 0);
++
++	/* Enable parallel interface */
++	reg_set(par, DCMIPP_PRCR, DCMIPP_PRCR_ENABLE);
++
++	return 0;
++}
++
++static int dcmipp_par_configure_csi(struct dcmipp_par_device *par, int enable)
++{
++	const struct dcmipp_par_pix_map *vpix;
++
++	if (!enable)
++		return 0;
++
++	/* Get format information */
++	vpix = dcmipp_par_pix_map_by_code(par->sink_format.code,
++					  par->src_format.code);
++	if (!vpix) {
++		dev_err(par->dev, "Invalid sink/src format configuration\n");
++		return -EINVAL;
++	}
++
++	/* Apply configuration on each input pipe */
++	/* Pipe #0 */
++	reg_clear(par, DCMIPP_P0FSCR,
++		  DCMIPP_P0FSCR_DTMODE_MASK | DCMIPP_P0FSCR_DTIDA_MASK);
++
++	/* In case of JPEG we don't know the DT so we allow all data */
++	/*
++	 * TODO - check instead dt == 0 for the time being to allow other
++	 * unknown data-type
++	 */
++	if (!vpix->dt)
++		reg_set(par, DCMIPP_P0FSCR,
++			DCMIPP_P0FSCR_DTMODE_ALLDT << DCMIPP_P0FSCR_DTMODE_SHIFT);
++	else
++		reg_set(par, DCMIPP_P0FSCR,
++			vpix->dt << DCMIPP_P0FSCR_DTIDA_SHIFT |
++			DCMIPP_P0FSCR_DTMODE_DTIDA);
++
++	if (of_device_is_compatible(par->dev->of_node, "st,stm32mp25-dcmipp")) {
++		/* Pipe #1 */
++		reg_clear(par, DCMIPP_P1FSCR, DCMIPP_PxFSCR_DTIDA_MASK);
++		reg_set(par, DCMIPP_P1FSCR,
++			vpix->dt << DCMIPP_PxFSCR_DTIDA_SHIFT);
++
++		/* Only configure Pipe #2 input if is enabled */
++		if (media_pad_remote_pad_first(&par->ved.pads[3])) {
++			reg_clear(par, DCMIPP_P2FSCR, DCMIPP_PxFSCR_DTIDA_MASK);
++			reg_set(par, DCMIPP_P2FSCR,
++				vpix->dt << DCMIPP_PxFSCR_DTIDA_SHIFT);
++		}
++	}
++
++	/* Select the DCMIPP CSI interface */
++	reg_write(par, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
++
+ 	return 0;
+ }
+ 
+@@ -364,22 +470,20 @@ static int dcmipp_par_s_stream(struct v4l2_subdev *sd, int enable)
+ 				container_of(sd, struct dcmipp_par_device, sd);
+ 	int ret = 0;
+ 
+-	if (enable) {
+-		ret = dcmipp_par_configure(par);
+-		if (ret)
+-			return ret;
+-
+-		/* Select the DCMIPP parallel interface */
+-		reg_write(par, DCMIPP_CMCR, 0);
+-
+-		/* Enable parallel interface */
+-		reg_set(par, DCMIPP_PRCR, DCMIPP_PRCR_ENABLE);
++	if (par->ved.bus_type == V4L2_MBUS_PARALLEL ||
++	    par->ved.bus_type == V4L2_MBUS_BT656) {
++		ret = dcmipp_par_configure_parallel(par, enable);
++	} else if (par->ved.bus_type == V4L2_MBUS_CSI2_DPHY) {
++		ret = dcmipp_par_configure_csi(par, enable);
+ 	} else {
+-		/* Disable parallel interface */
+-		reg_clear(par, DCMIPP_PRCR, DCMIPP_PRCR_ENABLE);
++		dev_err(par->dev, "Invalid bus_type: 0x%x, aborted\n",
++			par->ved.bus_type);
++		return -EINVAL;
+ 	}
+ 
+-	par->streaming = enable;
++	if (!ret)
++		par->streaming = enable;
++
+ 	return ret;
+ }
+ 
+@@ -412,14 +516,69 @@ void dcmipp_par_ent_release(struct dcmipp_ent_device *ved)
+ 	dcmipp_ent_sd_unregister(ved, &par->sd);
+ }
+ 
++static int dcmipp_par_get_input_bus_type(struct dcmipp_par_device *par)
++{
++	struct device_node *np = par->dev->of_node;
++	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
++	int ret;
++
++	/* Get bus characteristics from devicetree */
++	np = of_graph_get_next_endpoint(np, NULL);
++	if (!np) {
++		dev_err(par->dev, "Could not find the endpoint\n");
++		of_node_put(np);
++		return -ENODEV;
++	}
++
++	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(np), &ep);
++	of_node_put(np);
++	if (ret) {
++		dev_err(par->dev, "Could not parse the endpoint\n");
++		return ret;
++	}
++
++	if ((ep.bus_type == V4L2_MBUS_PARALLEL ||
++	     ep.bus_type == V4L2_MBUS_BT656) &&
++	     ep.bus.parallel.bus_width > 0) {
++		/* Only 8 bits bus width supported with BT656 bus */
++		if (ep.bus_type == V4L2_MBUS_BT656 &&
++		    ep.bus.parallel.bus_width != 8) {
++			dev_err(par->dev, "BT656 bus conflicts with %u bits bus width (8 bits required)\n",
++				ep.bus.parallel.bus_width);
++			return -ENODEV;
++		}
++
++		par->ved.bus.flags = ep.bus.parallel.flags;
++		par->ved.bus.bus_width = ep.bus.parallel.bus_width;
++		par->ved.bus.data_shift = ep.bus.parallel.data_shift;
++	}
++
++	dev_dbg(par->dev, "DCMIPP input bus-type is: 0x%x\n", ep.bus_type);
++	par->ved.bus_type = ep.bus_type;
++
++	return 0;
++}
++
++#define DCMIPP_INP_SINK_PAD_NB_MP13	1
++#define DCMIPP_INP_SINK_PAD_NB_MP25	3
+ struct dcmipp_ent_device *dcmipp_par_ent_init(struct device *dev,
+ 					      const char *entity_name,
+ 					      struct v4l2_device *v4l2_dev,
+ 					      void __iomem *regs)
+ {
+ 	struct dcmipp_par_device *par;
++	const unsigned long pads_stm32mp25[DCMIPP_INP_SINK_PAD_NB_MP25 + 1] = {
++		MEDIA_PAD_FL_SINK, MEDIA_PAD_FL_SOURCE,
++		MEDIA_PAD_FL_SOURCE, MEDIA_PAD_FL_SOURCE,
++	};
++	u16 pads_nb = DCMIPP_INP_SINK_PAD_NB_MP25 + 1;
+ 	int ret;
+ 
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp13-dcmipp"))
++		pads_nb = DCMIPP_INP_SINK_PAD_NB_MP13 + 1;
++	else if (of_device_is_compatible(dev->of_node, "st,stm32mp25-dcmipp"))
++		pads_nb = DCMIPP_INP_SINK_PAD_NB_MP25 + 1;
++
+ 	/* Allocate the par struct */
+ 	par = kzalloc(sizeof(*par), GFP_KERNEL);
+ 	if (!par)
+@@ -431,11 +590,8 @@ struct dcmipp_ent_device *dcmipp_par_ent_init(struct device *dev,
+ 	ret = dcmipp_ent_sd_register
+ 		(&par->ved, &par->sd, v4l2_dev,
+ 		 entity_name,
+-		 MEDIA_ENT_F_VID_IF_BRIDGE, 2,
+-		 (const unsigned long[2]) {
+-		  MEDIA_PAD_FL_SINK,
+-		  MEDIA_PAD_FL_SOURCE,
+-		  },
++		 MEDIA_ENT_F_VID_IF_BRIDGE, pads_nb,
++		 pads_stm32mp25,
+ 		 &dcmipp_par_int_ops, &dcmipp_par_ops,
+ 		 NULL, NULL);
+ 	if (ret)
+@@ -443,6 +599,11 @@ struct dcmipp_ent_device *dcmipp_par_ent_init(struct device *dev,
+ 
+ 	par->dev = dev;
+ 
++	/* Retrieve and store the bus-type within the ent structure */
++	ret = dcmipp_par_get_input_bus_type(par);
++	if (ret)
++		goto err_free_hdl;
++
+ 	/* Initialize the frame format */
+ 	par->sink_format = fmt_default;
+ 	par->src_format = fmt_default;
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index c9957555158b..7b63d042d7b6 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -31,13 +31,9 @@
+ 
+ #define DCMIPP_CMSR2_P1VSYNCF BIT(18)
+ 
+-#define DCMIPP_CMCR (0x204)
+-#define DCMIPP_CMCR_INSEL BIT(0)
+-
+ #define DCMIPP_P1FSCR (0x804)
+-#define DCMIPP_P1FSCR_DTIDA_MASK GENMASK(5, 0)
+-#define DCMIPP_P1FSCR_DTIDA_SHIFT 0
+ #define DCMIPP_P1FSCR_PIPEDIFF BIT(18)
++
+ #define DCMIPP_P1SRCR (0x820)
+ #define DCMIPP_P1SRCR_LASTLINE_SHIFT 0
+ #define DCMIPP_P1SRCR_LASTLINE_MASK GENMASK(11, 0)
+@@ -934,17 +930,10 @@ static int dcmipp_isp_colorconv_user(struct dcmipp_isp_device *isp)
+ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
+-	const struct dcmipp_isp_pix_map *vpix =
+-		dcmipp_isp_pix_map_by_code(isp->sink_fmt.code, 0);
+ 	int ret = 0;
+ 
+ 	mutex_lock(&isp->lock);
+ 	if (enable) {
+-		/* Configure CSI DataType */
+-		reg_clear(isp, DCMIPP_P1FSCR, DCMIPP_P1FSCR_DTIDA_MASK);
+-		reg_set(isp, DCMIPP_P1FSCR,
+-			vpix->dt << DCMIPP_P1FSCR_DTIDA_SHIFT);
+-
+ 		/* Check if link between ISP & Pipe2 postproc is enabled */
+ 		if (media_pad_remote_pad_first(&sd->entity.pads[2]))
+ 			reg_clear(isp, DCMIPP_P1FSCR, DCMIPP_P1FSCR_PIPEDIFF);
+@@ -968,16 +957,6 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+ 		ret = dcmipp_isp_colorconv_auto(isp);
+ 		if (ret)
+ 			goto out;
+-
+-		/*
+-		 * In case of the subdev is the last one before the csi bridge
+-		 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
+-		 * in which case we need to enable the CSI input of the DCMIPP
+-		 * TODO: to will have to reworked to avoid duplication between
+-		 * subdeves
+-		 */
+-		if (isp->ved.bus_type == V4L2_MBUS_CSI2_DPHY)
+-			reg_write(isp, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
+ 	}
+ 
+ 	isp->streaming = enable;
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 395e9be53fe0..fa14b5ae730c 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -28,9 +28,6 @@
+ #define DCMIPP_FMT_WIDTH_DEFAULT  640
+ #define DCMIPP_FMT_HEIGHT_DEFAULT 480
+ 
+-#define DCMIPP_CMCR (0x204)
+-#define DCMIPP_CMCR_INSEL BIT(0)
+-
+ #define DCMIPP_P1FCTCR (0x900)
+ #define DCMIPP_P2FCTCR (0xD00)
+ #define DCMIPP_PxFCTCR(id) (((id) == 1) ? DCMIPP_P1FCTCR :\
+@@ -898,16 +895,6 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 	reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
+ 
+-	/*
+-	 * In case of the subdev is the last one before the csi bridge
+-	 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
+-	 * in which case we need to enable the CSI input of the DCMIPP
+-	 * TODO: to will have to reworked to avoid duplication between
+-	 * subdeves
+-	 */
+-	if (pixelproc->ved.bus_type == V4L2_MBUS_CSI2_DPHY)
+-		reg_write(pixelproc, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
+-
+ out:
+ 	mutex_unlock(&pixelproc->lock);
+ 
+-- 
+2.39.2
+

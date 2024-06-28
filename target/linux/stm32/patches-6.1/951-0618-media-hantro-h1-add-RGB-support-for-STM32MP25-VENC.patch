@@ -1,0 +1,126 @@
+From a4a3b6781d85d90f9ad1673b2a2c47e49d837dfd Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Thu, 19 Oct 2023 13:48:37 +0200
+Subject: [PATCH 0618/1141] media: hantro: h1: add RGB support for STM32MP25
+ VENC
+
+Add support of encoding from RGB.
+RGB565 16 bits and RGB888 32bits variants are supported.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I93cbf370e448dea9959446b42040a99e63e62660
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/336821
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../platform/verisilicon/stm32mp25_venc_hw.c  | 91 +++++++++++++++++++
+ 1 file changed, 91 insertions(+)
+
+diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+index b95275d6735b..fd9f76486dfb 100644
+--- a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
++++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
+@@ -86,6 +86,97 @@ static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+ 			.step_height = MB_DIM,
+ 		},
+ 	},
++	{
++		.fourcc = V4L2_PIX_FMT_RGB565,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB565,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_XBGR32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_BGR32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_RGBX32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_BGRX32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_XRGB32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
++	{
++		.fourcc = V4L2_PIX_FMT_RGB32,
++		.codec_mode = HANTRO_MODE_NONE,
++		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_RGB888,
++		.frmsize = {
++			.min_width = 96,
++			.max_width = 8176,
++			.step_width = MB_DIM,
++			.min_height = 32,
++			.max_height = 8176,
++			.step_height = MB_DIM,
++		},
++	},
+ 	{
+ 		.fourcc = V4L2_PIX_FMT_JPEG,
+ 		.codec_mode = HANTRO_MODE_JPEG_ENC,
+-- 
+2.39.2
+

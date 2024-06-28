@@ -1,0 +1,58 @@
+From efdd195cd1127fb56a314a753f784eaa01cc8058 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 8 Jan 2024 12:43:56 +0100
+Subject: [PATCH 0836/1141] media: stm32: dcmipp: add and link the ISP
+ parameter video device
+
+Addition of the ISP parameter video device and link it to one of
+sink pad of the isp subdev.
+
+Change-Id: I03dbac8b739ad9e462d4d7bda167de83f49a2dff
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/353231
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 5ecbef7f8ccb..55df89ba97a0 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -142,6 +142,7 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ #define	ID_AUX_POSTPROC 6
+ #define	ID_AUX_CAPTURE 7
+ #define	ID_ISP_STAT_CAPTURE 8
++#define	ID_ISP_PARAMS_OUTPUT 9
+ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 	{
+ 		.name = "dcmipp_input",
+@@ -188,6 +189,11 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 		.init = dcmipp_statcap_ent_init,
+ 		.release = dcmipp_statcap_ent_release,
+ 	},
++	{
++		.name = "dcmipp_main_isp_params_output",
++		.init = dcmipp_isp_params_ent_init,
++		.release = dcmipp_isp_params_ent_release,
++	},
+ };
+ 
+ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -205,7 +211,9 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+ 	DCMIPP_ENT_LINK(ID_INPUT,	3, ID_AUX_POSTPROC,  0, 0),
+ 	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+-	DCMIPP_ENT_LINK(ID_MAIN_ISP,	2, ID_ISP_STAT_CAPTURE,  0,
++	DCMIPP_ENT_LINK(ID_ISP_PARAMS_OUTPUT,	0, ID_MAIN_ISP,	2,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_MAIN_ISP,	3, ID_ISP_STAT_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ };
+ 
+-- 
+2.39.2
+

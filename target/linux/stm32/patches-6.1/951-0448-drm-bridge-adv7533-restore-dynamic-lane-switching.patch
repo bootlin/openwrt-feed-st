@@ -1,0 +1,100 @@
+From 5db950bc507b405201b22244d0212f8e1a678707 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 16 Aug 2023 17:35:34 +0200
+Subject: [PATCH 0448/1141] drm/bridge: adv7533: restore dynamic lane switching
+
+Dynamic lane switching is necessary to get all resolutions which require
+3 or 4 data lanes.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I4130c9733880ecc889705531479e15f905ec9c9f
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511.h     |  3 +++
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 13 ++++++++++
+ drivers/gpu/drm/bridge/adv7511/adv7533.c     | 25 ++++++++++++++++++++
+ 3 files changed, 41 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511.h b/drivers/gpu/drm/bridge/adv7511/adv7511.h
+index 17445800248d..2d0d2ca51043 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511.h
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511.h
+@@ -404,6 +404,9 @@ void adv7533_dsi_power_on(struct adv7511 *adv);
+ void adv7533_dsi_power_off(struct adv7511 *adv);
+ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
+ 					const struct drm_display_mode *mode);
++bool adv7533_mode_fixup(struct adv7511 *adv,
++			const struct drm_display_mode *mode,
++			struct drm_display_mode *adjusted_mode);
+ int adv7533_patch_registers(struct adv7511 *adv);
+ int adv7533_patch_cec_registers(struct adv7511 *adv);
+ int adv7533_attach_dsi(struct adv7511 *adv);
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index 9f9874acfb2b..a18f4d4d98ee 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -927,6 +927,18 @@ static enum drm_mode_status adv7511_bridge_mode_valid(struct drm_bridge *bridge,
+ 		return adv7511_mode_valid(adv, mode);
+ }
+ 
++static bool adv7511_bridge_mode_fixup(struct drm_bridge *bridge,
++				 const struct drm_display_mode *mode,
++				 struct drm_display_mode *adjusted_mode)
++{
++	struct adv7511 *adv = bridge_to_adv7511(bridge);
++
++	if (adv->type == ADV7533 || adv->type == ADV7535)
++		return adv7533_mode_fixup(adv, mode, adjusted_mode);
++	else
++		return true;
++}
++
+ static int adv7511_bridge_attach(struct drm_bridge *bridge,
+ 				 enum drm_bridge_attach_flags flags)
+ {
+@@ -975,6 +987,7 @@ static const struct drm_bridge_funcs adv7511_bridge_funcs = {
+ 	.disable = adv7511_bridge_disable,
+ 	.mode_set = adv7511_bridge_mode_set,
+ 	.mode_valid = adv7511_bridge_mode_valid,
++	.mode_fixup = adv7511_bridge_mode_fixup,
+ 	.attach = adv7511_bridge_attach,
+ 	.detect = adv7511_bridge_detect,
+ 	.get_edid = adv7511_bridge_get_edid,
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+index b8eeaf4736e7..576de1c19815 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+@@ -120,6 +120,31 @@ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
+ 	return MODE_OK;
+ }
+ 
++bool adv7533_mode_fixup(struct adv7511 *adv,
++			const struct drm_display_mode *mode,
++			struct drm_display_mode *adjusted_mode)
++{
++	struct mipi_dsi_device *dsi = adv->dsi;
++	int lanes, ret;
++
++	if (mode->clock > 80000)
++		lanes = 4;
++	else
++		lanes = 3;
++
++	if (lanes != dsi->lanes) {
++		mipi_dsi_detach(dsi);
++		dsi->lanes = lanes;
++		ret = mipi_dsi_attach(dsi);
++		if (ret) {
++			dev_err(&dsi->dev, "failed to change host lanes\n");
++			return false;
++		}
++	}
++
++	return true;
++}
++
+ int adv7533_patch_registers(struct adv7511 *adv)
+ {
+ 	return regmap_register_patch(adv->regmap,
+-- 
+2.39.2
+

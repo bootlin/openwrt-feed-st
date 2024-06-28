@@ -1,0 +1,54 @@
+From f137b834cce6bbab2edbeccf35501a25a208ec64 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Fri, 19 Jan 2024 09:14:09 +0530
+Subject: [PATCH 0920/1141] arm64: dts: st: Add wakeup source for usbh using
+ exti on stm32mp25
+
+Remote-wakeup capable device connected to USBH can act as a
+source to wakeup system from low-power state on mp25 platform
+Enable exti-intr connected to utmi_suspend_o_n output of USB2H
+as wakeup-source
+
+Change-Id: Ie5f133bd6310bd9a759f9b0b9d3dd718b3fe913d
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352605
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 0b1b8d511c46..05f19148a88c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2238,6 +2238,8 @@ usbh: usb@482e0000 {
+ 				ranges = <0x482e0000 0x482e0000 0x20000>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_USBH_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
++				interrupts-extended = <&exti1 43 IRQ_TYPE_EDGE_RISING>;
+ 				status = "disabled";
+ 
+ 				usbh_ohci: usb@482e0000 {
+@@ -2248,6 +2250,7 @@ usbh_ohci: usb@482e0000 {
+ 					interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
+ 					phys = <&usb2_phy1>;
+ 					phy-names = "usb";
++					wakeup-source;
+ 				};
+ 
+ 				usbh_ehci: usb@482f0000 {
+@@ -2259,6 +2262,7 @@ usbh_ehci: usb@482f0000 {
+ 					companion = <&usbh_ohci>;
+ 					phys = <&usb2_phy1>;
+ 					phy-names = "usb";
++					wakeup-source;
+ 				};
+ 			};
+ 
+-- 
+2.39.2
+

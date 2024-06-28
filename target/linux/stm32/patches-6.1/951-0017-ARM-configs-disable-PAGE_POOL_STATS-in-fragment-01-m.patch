@@ -1,0 +1,36 @@
+From f4f60e53cae8923c31ae26810153cf4db293849a Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 2 Aug 2023 10:27:40 +0200
+Subject: [PATCH 0017/1141] ARM: configs: disable PAGE_POOL_STATS in
+ fragment-01-multiv7_cleanup
+
+Page pool statistics track page allocation and recycling in page pools.
+This option incurs additional CPU cost in allocation and recycle paths and
+additional memory cost to store the statistics.
+
+To avoid this CPU and memory costs, disable it, as statistics are not used.
+
+Change-Id: Iac3e4d24d6c48a0e4c43d093258f8e67a07f6ba8
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/321076
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+index 036bd1bb5eef..04dbdba02cf0 100644
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -228,6 +228,7 @@
+ # CONFIG_MICROCHIP_PHY is not set
+ # CONFIG_MTD_NAND_PL35X is not set
+ # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
++# CONFIG_PAGE_POOL_STATS is not set
+ # CONFIG_PCI is not set
+ # CONFIG_PCI_DOMAINS_GENERIC is not set
+ # CONFIG_PCI_SYSCALL is not set
+-- 
+2.39.2
+

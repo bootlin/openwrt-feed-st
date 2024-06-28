@@ -1,0 +1,64 @@
+From 8fe6c45e70835437d6a674de51b8aa8c32399197 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 4 Jul 2023 17:25:08 +0200
+Subject: [PATCH 0423/1141] memory: stm32-omi: Update pm_runtime management
+
+Due to the following hierarchy :
+
+            __ OSPI driver
+           /
+OMM --> OMI
+           \__ HyperBus driver
+
+pm_runtime is managed at OSPI/HyperBus driver level but
+pm_runtime_suspend/resume callbacks are implemented in OMI driver.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I9dae495d704a5eca875354fe43d351221307230a
+---
+ drivers/memory/stm32-omi.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
+index 931b55e8d268..d8a81765c612 100644
+--- a/drivers/memory/stm32-omi.c
++++ b/drivers/memory/stm32-omi.c
+@@ -603,6 +603,27 @@ static int stm32_omi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused stm32_omi_runtime_suspend(struct device *dev)
++{
++	struct stm32_omi *omi = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(omi->clk);
++
++	return 0;
++}
++
++static int __maybe_unused stm32_omi_runtime_resume(struct device *dev)
++{
++	struct stm32_omi *omi = dev_get_drvdata(dev);
++
++	return clk_prepare_enable(omi->clk);
++}
++
++static const struct dev_pm_ops stm32_omi_pm_ops = {
++	SET_RUNTIME_PM_OPS(stm32_omi_runtime_suspend,
++			   stm32_omi_runtime_resume, NULL)
++};
++
+ static const struct of_device_id stm32_omi_of_match[] = {
+ 	{ .compatible = "st,stm32mp25-omi", },
+ 	{},
+@@ -615,6 +636,7 @@ static struct platform_driver stm32_omi_driver = {
+ 	.driver = {
+ 		.name =	"stm32-omi",
+ 		.of_match_table = stm32_omi_of_match,
++		.pm = &stm32_omi_pm_ops,
+ 	},
+ };
+ module_platform_driver(stm32_omi_driver);
+-- 
+2.39.2
+

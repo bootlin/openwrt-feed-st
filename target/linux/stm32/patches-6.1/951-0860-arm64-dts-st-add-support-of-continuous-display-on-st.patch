@@ -1,0 +1,59 @@
+From 5294844eaab6dd38fca794eea3ddb6077277847b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 26 Jan 2024 11:28:56 +0100
+Subject: [PATCH 0860/1141] arm64: dts: st: add support of continuous display
+ on stm32mp257 EV1 board
+
+Set the backlight & the panel on at probe.
+
+Change-Id: I7b580e89299adf5890fe35104db423b8d3d958d4
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354698
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 6be9fa6d975e..7ba627b7d832 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -35,6 +35,8 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
++			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
++				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -134,7 +136,7 @@ panel_lvds_backlight: panel-lvds-backlight {
+ 		compatible = "gpio-backlight";
+ 		gpios = <&gpioi 5 GPIO_ACTIVE_HIGH>;
+ 		default-on;
+-		default-brightness-level = <0>;
++		default-brightness-level = <1>;
+ 		status = "okay";
+ 	};
+ 
+@@ -407,6 +409,7 @@ &ipcc1 {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	rotation-memory = <&ltdc_sec_rotation>;
+ 	status = "okay";
+ 
+@@ -427,6 +430,7 @@ ltdc_ep1_out: endpoint@1 {
+ };
+ 
+ &lvds {
++	default-on;
+ 	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_v1v8>;
+ 	status = "okay";
+-- 
+2.39.2
+

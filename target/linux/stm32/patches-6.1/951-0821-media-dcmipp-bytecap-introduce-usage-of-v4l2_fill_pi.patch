@@ -1,0 +1,106 @@
+From 49d44ddbcb795f8f5e3487c0887f4b7ff3eb1962 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 12 Jan 2024 16:09:26 +0100
+Subject: [PATCH 0821/1141] media: dcmipp: bytecap: introduce usage of
+ v4l2_fill_pixfmt
+
+Use v4l2_full_pixfmt for processing frame stride and frame size
+instead of manually having our own version.
+
+Change-Id: Ie643ea7d804c74a8d744ebf185e775833fdb7ee4
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/351135
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 58 +++----------------
+ 1 file changed, 9 insertions(+), 49 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index ca22d2f3ddf2..c35fb56aea03 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -166,49 +166,6 @@ static const struct v4l2_pix_format fmt_default = {
+ 	.xfer_func = DCMIPP_XFER_FUNC_DEFAULT,
+ };
+ 
+-static inline int frame_size(u32 width, u32 height, u32 format)
+-{
+-	switch (format) {
+-	case V4L2_PIX_FMT_SBGGR8:
+-	case V4L2_PIX_FMT_SGBRG8:
+-	case V4L2_PIX_FMT_SGRBG8:
+-	case V4L2_PIX_FMT_SRGGB8:
+-	case V4L2_PIX_FMT_GREY:
+-		return (width * height);
+-	case V4L2_PIX_FMT_RGB565:
+-	case V4L2_PIX_FMT_YUYV:
+-	case V4L2_PIX_FMT_YVYU:
+-	case V4L2_PIX_FMT_UYVY:
+-	case V4L2_PIX_FMT_VYUY:
+-		return (width * height * 2);
+-	case V4L2_PIX_FMT_JPEG:
+-		return (width * height);
+-	default:
+-		return 0;
+-	}
+-}
+-
+-static inline int frame_stride(u32 width, u32 format)
+-{
+-	switch (format) {
+-	case V4L2_PIX_FMT_SBGGR8:
+-	case V4L2_PIX_FMT_SGBRG8:
+-	case V4L2_PIX_FMT_SGRBG8:
+-	case V4L2_PIX_FMT_SRGGB8:
+-	case V4L2_PIX_FMT_GREY:
+-	case V4L2_PIX_FMT_JPEG:
+-		return width;
+-	case V4L2_PIX_FMT_RGB565:
+-	case V4L2_PIX_FMT_YUYV:
+-	case V4L2_PIX_FMT_YVYU:
+-	case V4L2_PIX_FMT_UYVY:
+-	case V4L2_PIX_FMT_VYUY:
+-		return (width * 2);
+-	default:
+-		return 0;
+-	}
+-}
+-
+ static inline int hdw_pixel_alignment(u32 format)
+ {
+ 	/* 16 bytes alignment required by hardware */
+@@ -289,8 +246,13 @@ static int dcmipp_bytecap_try_fmt_vid_cap(struct file *file, void *priv,
+ 			"resolution updated: %dx%d -> %dx%d\n",
+ 			in_w, in_h, format->width, format->height);
+ 
+-	format->bytesperline = frame_stride(format->width, format->pixelformat);
+-	format->sizeimage = frame_size(format->width, format->height, format->pixelformat);
++	if (format->pixelformat == V4L2_PIX_FMT_JPEG) {
++		format->bytesperline = format->width;
++		format->sizeimage = format->bytesperline * format->height;
++	} else {
++		v4l2_fill_pixfmt(format, format->pixelformat,
++				 format->width, format->height);
++	}
+ 
+ 	if (format->field == V4L2_FIELD_ANY)
+ 		format->field = fmt_default.field;
+@@ -1043,10 +1005,8 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+ 	/* Set default frame format */
+ 	vcap->format = fmt_default;
+ 	format = &vcap->format;
+-	format->bytesperline = frame_stride(format->width, format->pixelformat);
+-	format->sizeimage = frame_size(format->width,
+-				       format->height,
+-				       format->pixelformat);
++	v4l2_fill_pixfmt(format, format->pixelformat, format->width,
++			 format->height);
+ 
+ 	/* Fill the dcmipp_ent_device struct */
+ 	vcap->ved.ent = &vcap->vdev.entity;
+-- 
+2.39.2
+

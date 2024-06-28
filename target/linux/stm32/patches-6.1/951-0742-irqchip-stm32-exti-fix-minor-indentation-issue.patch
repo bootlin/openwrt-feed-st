@@ -1,0 +1,35 @@
+From 918e0f87969d0a0e009f2544493fb50c5e7a4fd6 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 15 Dec 2023 13:47:09 +0100
+Subject: [PATCH 0742/1141] irqchip/stm32-exti: fix minor indentation issue
+
+Use only TAB for indentation, removing a leading space.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I4ff94b6ce3ead9911a9d8b435b365548d7c73edb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347748
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index d9a9c09ad315..90c236e4af55 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -359,7 +359,7 @@ static void stm32_irq_handler(struct irq_desc *desc)
+ 		while ((pending = stm32_exti_pending(gc))) {
+ 			for_each_set_bit(n, &pending, IRQS_PER_BANK)
+ 				generic_handle_domain_irq(domain, irq_base + n);
+- 		}
++		}
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+-- 
+2.39.2
+

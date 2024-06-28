@@ -1,0 +1,105 @@
+From 66b6c275a29fe075c85b67668e197439e0720fdd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 19 Mar 2024 12:18:38 +0100
+Subject: [PATCH 1091/1141] watchdog: stm32_iwdg: add a mean to get the status
+ of the watchdog
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On stm32mp25x and stm32mp13x platforms, we can read the status of the IWDG
+peripheral with the bit ONF in the status register.
+This improvement comes with the hardware version 3.1.
+Reading the status of older peripheral version is made possible by
+reading the reload status after the read and write of the same value in
+the reload register.
+
+Change-Id: Ia480228ef49e3ea74197bbcce273fbf2128e8504
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367759
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+
+# Conflicts:
+#	drivers/watchdog/stm32_iwdg.c
+---
+ drivers/watchdog/stm32_iwdg.c | 45 +++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index 6bae2608a1fa..2355955916af 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -46,6 +46,10 @@
+ /* IWDG_SR register bit mask */
+ #define SR_PVU	BIT(0) /* Watchdog prescaler value update */
+ #define SR_RVU	BIT(1) /* Watchdog counter reload value update */
++#define SR_ONF	BIT(8) /* Watchdog enable status bit */
++
++/* IWDG Compatibility */
++#define ONF_MIN_VER	0x31
+ 
+ /* IWDG_VERR register mask */
+ #define VERR_MASK	GENMASK(7, 0)
+@@ -204,6 +208,31 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
++static bool stm32_iwdg_is_running(struct stm32_iwdg *wdt)
++{
++	bool running;
++	u32 rlr, sr;
++	int ret;
++
++	if (wdt->hw_version >= ONF_MIN_VER)
++		return (reg_read(wdt->regs, IWDG_SR) & SR_ONF) != 0;
++
++	/*
++	 * Workaround for old versions without IWDG_SR_ONF bit:
++	 * - write in IWDG_RLR_OFFSET
++	 * - wait for sync
++	 * - if sync succeeds, then iwdg is running
++	 */
++	reg_write(wdt->regs, IWDG_KR, KR_KEY_EWA);
++	rlr = reg_read(wdt->regs, IWDG_RLR);
++	reg_write(wdt->regs, IWDG_RLR, rlr);
++	ret = readl_poll_timeout(wdt->regs + IWDG_SR, sr, sr & SR_RVU, SLEEP_US, TIMEOUT_US);
++	running = ret ? false : true;
++	reg_write(wdt->regs, IWDG_KR, KR_KEY_DWA);
++
++	return running;
++}
++
+ static const struct watchdog_info stm32_iwdg_info = {
+ 	.options	= WDIOF_SETTIMEOUT |
+ 			  WDIOF_MAGICCLOSE |
+@@ -264,23 +293,9 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+ 	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
+ 	watchdog_init_timeout(wdd, 0, dev);
+ 
+-	/*
+-	 * In case of CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is set
+-	 * (Means U-Boot/bootloaders leaves the watchdog running)
+-	 * When we get here we should make a decision to prevent
+-	 * any side effects before user space daemon will take care of it.
+-	 * The best option, taking into consideration that there is no
+-	 * way to read values back from hardware, is to enforce watchdog
+-	 * being run with deterministic values.
+-	 */
+-	if (IS_ENABLED(CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED)) {
+-		ret = stm32_iwdg_start(wdd);
+-		if (ret)
+-			return ret;
+-
++	if (IS_ENABLED(CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED) && stm32_iwdg_is_running(wdt))
+ 		/* Make sure the watchdog is serviced */
+ 		set_bit(WDOG_HW_RUNNING, &wdd->status);
+-	}
+ 
+ 	ret = devm_watchdog_register_device(dev, wdd);
+ 	if (ret)
+-- 
+2.39.2
+

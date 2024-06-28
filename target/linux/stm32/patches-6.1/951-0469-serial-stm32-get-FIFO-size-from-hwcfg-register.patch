@@ -1,0 +1,294 @@
+From 868a55646d84f66185d03a86f68edc64835ed610 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 8 Sep 2023 17:42:32 +0200
+Subject: [PATCH 0469/1141] serial: stm32: get FIFO size from hwcfg register
+
+Since STM32MP2, FIFO size could vary regarding the STM32MPxx version.
+So we get this size from "hwcfgr1" register and compute threshold values
+corresponding to the ratio given by reference manual.
+
+As STM32MP1x, STM32MP2x and STM32H7 share the same compatible and STM32H7
+didn't has a register to get FIFO size, we force FIFO size to 16 in case
+of zero reads from register.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I464dbf20c4a9195372e1f73597c90b693bed08bb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/326893
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 158 +++++++++++++++++--------------
+ drivers/tty/serial/stm32-usart.h |   6 +-
+ 2 files changed, 94 insertions(+), 70 deletions(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 47a235cb60ff..59fc41eeffff 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -40,63 +40,64 @@
+ /* Register offsets */
+ static struct stm32_usart_info __maybe_unused stm32f4_info = {
+ 	.ofs = {
+-		.isr	= 0x00,
+-		.rdr	= 0x04,
+-		.tdr	= 0x04,
+-		.brr	= 0x08,
+-		.cr1	= 0x0c,
+-		.cr2	= 0x10,
+-		.cr3	= 0x14,
+-		.gtpr	= 0x18,
+-		.rtor	= UNDEF_REG,
+-		.rqr	= UNDEF_REG,
+-		.icr	= UNDEF_REG,
+-		.presc	= UNDEF_REG,
++		.isr		= 0x00,
++		.rdr		= 0x04,
++		.tdr		= 0x04,
++		.brr		= 0x08,
++		.cr1		= 0x0c,
++		.cr2		= 0x10,
++		.cr3		= 0x14,
++		.gtpr		= 0x18,
++		.rtor		= UNDEF_REG,
++		.rqr		= UNDEF_REG,
++		.icr		= UNDEF_REG,
++		.presc		= UNDEF_REG,
++		.hwcfgr1	= UNDEF_REG,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 13,
+ 		.has_7bits_data = false,
+-		.fifosize = 1,
+ 	}
+ };
+ 
+ static struct stm32_usart_info __maybe_unused stm32f7_info = {
+ 	.ofs = {
+-		.cr1	= 0x00,
+-		.cr2	= 0x04,
+-		.cr3	= 0x08,
+-		.brr	= 0x0c,
+-		.gtpr	= 0x10,
+-		.rtor	= 0x14,
+-		.rqr	= 0x18,
+-		.isr	= 0x1c,
+-		.icr	= 0x20,
+-		.rdr	= 0x24,
+-		.tdr	= 0x28,
+-		.presc	= UNDEF_REG,
++		.cr1		= 0x00,
++		.cr2		= 0x04,
++		.cr3		= 0x08,
++		.brr		= 0x0c,
++		.gtpr		= 0x10,
++		.rtor		= 0x14,
++		.rqr		= 0x18,
++		.isr		= 0x1c,
++		.icr		= 0x20,
++		.rdr		= 0x24,
++		.tdr		= 0x28,
++		.presc		= UNDEF_REG,
++		.hwcfgr1	= UNDEF_REG,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 0,
+ 		.has_7bits_data = true,
+ 		.has_swap = true,
+-		.fifosize = 1,
+ 	}
+ };
+ 
+ static struct stm32_usart_info __maybe_unused stm32h7_info = {
+ 	.ofs = {
+-		.cr1	= 0x00,
+-		.cr2	= 0x04,
+-		.cr3	= 0x08,
+-		.brr	= 0x0c,
+-		.gtpr	= 0x10,
+-		.rtor	= 0x14,
+-		.rqr	= 0x18,
+-		.isr	= 0x1c,
+-		.icr	= 0x20,
+-		.rdr	= 0x24,
+-		.tdr	= 0x28,
+-		.presc	= 0x2c,
++		.cr1		= 0x00,
++		.cr2		= 0x04,
++		.cr3		= 0x08,
++		.brr		= 0x0c,
++		.gtpr		= 0x10,
++		.rtor		= 0x14,
++		.rqr		= 0x18,
++		.isr		= 0x1c,
++		.icr		= 0x20,
++		.rdr		= 0x24,
++		.tdr		= 0x28,
++		.presc		= 0x2c,
++		.hwcfgr1	= 0x3f0,
+ 	},
+ 	.cfg = {
+ 		.uart_enable_bit = 0,
+@@ -104,7 +105,6 @@ static struct stm32_usart_info __maybe_unused stm32h7_info = {
+ 		.has_swap = true,
+ 		.has_wakeup = true,
+ 		.has_fifo = true,
+-		.fifosize = 16,
+ 	}
+ };
+ 
+@@ -1689,37 +1689,57 @@ static const struct uart_ops stm32_uart_ops = {
+ #endif /* CONFIG_CONSOLE_POLL */
+ };
+ 
+-/*
+- * STM32H7 RX & TX FIFO threshold configuration (CR3 RXFTCFG / TXFTCFG)
+- * Note: 1 isn't a valid value in RXFTCFG / TXFTCFG. In this case,
+- * RXNEIE / TXEIE can be used instead of threshold irqs: RXFTIE / TXFTIE.
+- * So, RXFTCFG / TXFTCFG bitfields values are encoded as array index + 1.
+- */
+-static const u32 stm32h7_usart_fifo_thresh_cfg[] = { 1, 2, 4, 8, 12, 14, 16 };
++struct stm32_usart_thresh_ratio {
++	int mul;
++	int div;
++};
++
++static const struct stm32_usart_thresh_ratio stm32h7_usart_fifo_thresh_cfg[] = {
++	{1, 8}, {1, 4}, {1, 2}, {3, 4}, {7, 8}, {1, 1} };
+ 
+-static void stm32_usart_get_ftcfg(struct platform_device *pdev, const char *p,
+-				  int *ftcfg)
++static int stm32_usart_get_thresh_value(u32 fifo_size, int index)
+ {
+-	u32 bytes, i;
++	return fifo_size * stm32h7_usart_fifo_thresh_cfg[index].mul /
++		stm32h7_usart_fifo_thresh_cfg[index].div;
++}
+ 
+-	/* DT option to get RX & TX FIFO threshold (default to 8 bytes) */
++static int stm32_usart_get_ftcfg(struct platform_device *pdev, struct stm32_port *stm32port,
++				 const char *p, int *ftcfg)
++{
++	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
++	u32 bytes, i, cfg8;
++	int fifo_size;
++
++	if (WARN_ON(ofs->hwcfgr1 == UNDEF_REG))
++		return 1;
++
++	cfg8 = FIELD_GET(USART_HWCFCR1_CFG8,
++			 readl_relaxed(stm32port->port.membase + ofs->hwcfgr1));
++
++	/* On STM32H7, hwcfgr is not present, so returned value will be 0 */
++	fifo_size = cfg8 ? 1 << cfg8 : STM32H7_USART_FIFO_SIZE;
++
++	/* DT option to get RX & TX FIFO threshold (default to half fifo size) */
+ 	if (of_property_read_u32(pdev->dev.of_node, p, &bytes))
+-		bytes = 8;
++		bytes = fifo_size / 2;
++
++	if (bytes < stm32_usart_get_thresh_value(fifo_size, 0)) {
++		*ftcfg = -EINVAL;
++		return fifo_size;
++	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg); i++)
+-		if (stm32h7_usart_fifo_thresh_cfg[i] >= bytes)
++	for (i = 0; i < ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg); i++) {
++		if (stm32_usart_get_thresh_value(fifo_size, i) >= bytes)
+ 			break;
++	}
+ 	if (i >= ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg))
+ 		i = ARRAY_SIZE(stm32h7_usart_fifo_thresh_cfg) - 1;
+ 
+-	dev_dbg(&pdev->dev, "%s set to %d bytes\n", p,
+-		stm32h7_usart_fifo_thresh_cfg[i]);
++	dev_dbg(&pdev->dev, "%s set to %d/%d bytes\n", p,
++		stm32_usart_get_thresh_value(fifo_size, i), fifo_size);
+ 
+-	/* Provide FIFO threshold ftcfg (1 is invalid: threshold irq unused) */
+-	if (i)
+-		*ftcfg = i - 1;
+-	else
+-		*ftcfg = -EINVAL;
++	*ftcfg = i;
++	return fifo_size;
+ }
+ 
+ static void stm32_usart_deinit_port(struct stm32_port *stm32port)
+@@ -1749,7 +1769,6 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 	port->flags	= UPF_BOOT_AUTOCONF;
+ 	port->ops	= &stm32_uart_ops;
+ 	port->dev	= &pdev->dev;
+-	port->fifosize	= stm32port->info->cfg.fifosize;
+ 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
+ 	port->irq = irq;
+ 	port->rs485_config = stm32_usart_config_rs485;
+@@ -1766,14 +1785,6 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 	stm32port->swap = stm32port->info->cfg.has_swap &&
+ 		of_property_read_bool(pdev->dev.of_node, "rx-tx-swap");
+ 
+-	stm32port->fifoen = stm32port->info->cfg.has_fifo;
+-	if (stm32port->fifoen) {
+-		stm32_usart_get_ftcfg(pdev, "rx-threshold",
+-				      &stm32port->rxftcfg);
+-		stm32_usart_get_ftcfg(pdev, "tx-threshold",
+-				      &stm32port->txftcfg);
+-	}
+-
+ 	port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(port->membase))
+ 		return PTR_ERR(port->membase);
+@@ -1796,6 +1807,15 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 		goto err_clk;
+ 	}
+ 
++	stm32port->fifoen = stm32port->info->cfg.has_fifo;
++	if (stm32port->fifoen) {
++		stm32_usart_get_ftcfg(pdev, stm32port, "rx-threshold", &stm32port->rxftcfg);
++		port->fifosize = stm32_usart_get_ftcfg(pdev, stm32port, "tx-threshold",
++						       &stm32port->txftcfg);
++	} else {
++		port->fifosize = 1;
++	}
++
+ 	stm32port->gpios = mctrl_gpio_init(&stm32port->port, 0);
+ 	if (IS_ERR(stm32port->gpios)) {
+ 		ret = PTR_ERR(stm32port->gpios);
+diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
+index b8b6dbbacd60..b5a4afac3793 100644
+--- a/drivers/tty/serial/stm32-usart.h
++++ b/drivers/tty/serial/stm32-usart.h
+@@ -21,6 +21,7 @@ struct stm32_usart_offsets {
+ 	u16 rdr;
+ 	u16 tdr;
+ 	u16 presc;
++	u16 hwcfgr1;
+ };
+ 
+ struct stm32_backup_regs {
+@@ -37,7 +38,6 @@ struct stm32_usart_config {
+ 	bool has_swap;
+ 	bool has_wakeup;
+ 	bool has_fifo;
+-	int fifosize;
+ };
+ 
+ struct stm32_usart_info {
+@@ -194,8 +194,12 @@ struct stm32_usart_info {
+ #define USART_PRESC_MAX		0b1011
+ static const unsigned int STM32_USART_PRESC_VAL[] = {1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256};
+ 
++/* USART_HWCFCR1 */
++#define USART_HWCFCR1_CFG8	GENMASK(31, 28)	/* MP1 */
++
+ #define STM32_SERIAL_NAME "ttySTM"
+ #define STM32_MAX_PORTS 9
++#define STM32H7_USART_FIFO_SIZE 16
+ 
+ #define RX_BUF_L 4096		 /* dma rx buffer length     */
+ #define RX_BUF_P (RX_BUF_L / 2)	 /* dma rx buffer period     */
+-- 
+2.39.2
+

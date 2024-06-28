@@ -1,0 +1,89 @@
+From c4b33e1ca10fb5bd1a7f586257c75ef36127e4b1 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 3 May 2023 11:25:44 +0200
+Subject: [PATCH 0091/1141] arm64: dts: st: add scmi regulators on stm32mp25
+
+Add SCMI regulators description on STM32MP25.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I14ca37111be12e01b1f8d56ea4e40978da91215b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304036
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 51 ++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a4f23ca70378..fd008774dc96 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -6,6 +6,7 @@
+ #include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ #include <dt-bindings/clock/stm32mp25-clks.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/regulator/st,stm32mp25-regulator.h>
+ #include <dt-bindings/reset/stm32mp25-resets.h>
+ 
+ / {
+@@ -58,6 +59,56 @@ scmi_reset: protocol@16 {
+ 				reg = <0x16>;
+ 				#reset-cells = <1>;
+ 			};
++
++			scmi_voltd: protocol@17 {
++				reg = <0x17>;
++
++				scmi_regu: regulators {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					scmi_vdd33ucpd: voltd-vdd33ucpd {
++						voltd-name = "vdd33ucpd";
++						reg = <VOLTD_SCMI_UCPD>;
++						regulator-name = "vdd33ucpd";
++					};
++					scmi_vdd33usb: voltd-vdd33usb {
++						voltd-name = "vdd33usb";
++						reg = <VOLTD_SCMI_USB33>;
++						regulator-name = "vdd33usb";
++					};
++					scmi_vdda18adc: voltd-vdda18adc {
++						voltd-name = "vdda18adc";
++						reg = <VOLTD_SCMI_ADC>;
++						regulator-name = "vdda18adc";
++					};
++					scmi_vddgpu: voltd-vddgpu {
++						voltd-name = "vddgpu";
++						reg = <VOLTD_SCMI_GPU>;
++						regulator-name = "vddgpu";
++					};
++					scmi_vddio1: voltd-vddio1 {
++						voltd-name = "vddio1";
++						reg = <VOLTD_SCMI_VDDIO1>;
++						regulator-name = "vddio1";
++					};
++					scmi_vddio2: voltd-vddio2 {
++						voltd-name = "vddio2";
++						reg = <VOLTD_SCMI_VDDIO2>;
++						regulator-name = "vddio2";
++					};
++					scmi_vddio3: voltd-vddio3 {
++						voltd-name = "vddio3";
++						reg = <VOLTD_SCMI_VDDIO3>;
++						regulator-name = "vddio3";
++					};
++					scmi_vddio4: voltd-vddio4 {
++						voltd-name = "vddio4";
++						reg = <VOLTD_SCMI_VDDIO4>;
++						regulator-name = "vddio4";
++					};
++				};
++			};
+ 		};
+ 	};
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,35 @@
+From 59fe94ea20667add5c6df09ddbded5279a602b45 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Thu, 18 Nov 2021 16:22:02 +0100
+Subject: [PATCH 0058/1141] dt-bindings: stm32: document stm32mp257f-ev board
+
+Add new entry for stm32mp257f-ev board.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I01a877d5f78d8bcc9f5049cdb65eb78f8c1fb6e5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228801
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index b819f517b29b..72dd9c421125 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -158,6 +158,8 @@ properties:
+           - const: st,stm32mp157
+ 
+       - items:
++          - enum:
++              - st,stm32mp257f-ev
+           - const: st,stm32mp257
+ 
+ additionalProperties: true
+-- 
+2.39.2
+

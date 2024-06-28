@@ -1,0 +1,37 @@
+From 47f69922e5d753d7d243ee2fb942d9be52e168a9 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 15 Dec 2023 12:03:22 +0100
+Subject: [PATCH 0744/1141] ARM: stm32: use different EXTI driver on ARMv7M and
+ ARMv7A
+
+Build the proper driver by selecting the appropriate config flag.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I00cfe4402e398fa7c50abbda437027e80340f74a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347753
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/mach-stm32/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
+index 98145031586f..41bfcf31f8a7 100644
+--- a/arch/arm/mach-stm32/Kconfig
++++ b/arch/arm/mach-stm32/Kconfig
+@@ -11,7 +11,8 @@ menuconfig ARCH_STM32
+ 	select CLKSRC_STM32
+ 	select PINCTRL
+ 	select RESET_CONTROLLER
+-	select STM32_EXTI
++	select STM32MP_EXTI if ARCH_MULTI_V7
++	select STM32_EXTI if ARM_SINGLE_ARMV7M
+ 	help
+ 	  Support for STMicroelectronics STM32 processors.
+ 
+-- 
+2.39.2
+

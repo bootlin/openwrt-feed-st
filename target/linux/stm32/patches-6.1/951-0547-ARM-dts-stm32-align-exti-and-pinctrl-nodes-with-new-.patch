@@ -1,0 +1,44 @@
+From 2c51e8d62d9a8f02ad58f73a9540c2b0e1590e91 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Wed, 9 Aug 2023 15:51:39 +0200
+Subject: [PATCH 0547/1141] ARM: dts: stm32: align exti and pinctrl nodes with
+ new bindings to stm32mp131
+
+Remove the property "st,syscfg" from pinctrl and the compatible
+"syscon" from EXTI.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I3671d6e7b11116d44fc57506da3b41e6dcd9f1a7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329527
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp131.dtsi | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
+index 9bc052cb5635..604c691719c0 100644
+--- a/arch/arm/boot/dts/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/stm32mp131.dtsi
+@@ -836,7 +836,7 @@ rcc: rcc@50000000 {
+ 		};
+ 
+ 		exti: interrupt-controller@5000d000 {
+-			compatible = "st,stm32mp1-exti", "syscon";
++			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+@@ -1696,7 +1696,6 @@ pinctrl: pinctrl@50002000 {
+ 			compatible = "st,stm32mp135-pinctrl";
+ 			ranges = <0 0x50002000 0x8400>;
+ 			interrupt-parent = <&exti>;
+-			st,syscfg = <&exti 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioa: gpio@50002000 {
+-- 
+2.39.2
+

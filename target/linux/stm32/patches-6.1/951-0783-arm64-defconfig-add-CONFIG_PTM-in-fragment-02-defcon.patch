@@ -1,0 +1,35 @@
+From 9a58bd3a4f4fedb91ef243a2797fd4bc78e335c1 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Tue, 12 Dec 2023 13:12:49 +0100
+Subject: [PATCH 0783/1141] arm64: defconfig: add CONFIG_PTM in
+ fragment-02-defconfig-addons
+
+Enable the option to use PTM with ethernet card.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Reported-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I1995553e1d5eb723d9dd210582e2bc81e69d116f
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/345915
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index f0bdfb958ddd..279734728925 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -62,6 +62,7 @@ CONFIG_PCIE_STM32=y
+ CONFIG_PCIE_STM32_EP=y
+ CONFIG_PHY_STM32_COMBOPHY=y
+ CONFIG_PHY_STM32_USB2PHY=y
++CONFIG_PTM=y
+ CONFIG_PWM_STM32=m
+ CONFIG_PWM_STM32_LP=m
+ CONFIG_REGULATOR_ARM_SCMI=y
+-- 
+2.39.2
+

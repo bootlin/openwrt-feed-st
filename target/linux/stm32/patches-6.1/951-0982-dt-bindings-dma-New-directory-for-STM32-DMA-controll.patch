@@ -1,0 +1,111 @@
+From 1ba0475d3888901a7810e257515605aff8eeb5f2 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 2 Feb 2024 13:47:28 +0100
+Subject: [PATCH 0982/1141] dt-bindings: dma: New directory for STM32 DMA
+ controllers bindings
+
+Gather the STM32 DMA controllers bindings under ./dma/stm32/
+
+Change-Id: I3a68541de0f2c765fa4df1c0ad36062a358b3857
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358975
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ .../devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml   | 6 +++---
+ .../bindings/dma/{ => stm32}/st,stm32-dmamux.yaml           | 6 +++---
+ .../devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml  | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml (95%)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dmamux.yaml (83%)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml (95%)
+
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+similarity index 95%
+rename from Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+index 55faab6a468e..071363d18443 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+@@ -1,10 +1,10 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-dma.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-dma.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: STMicroelectronics STM32 DMA Controller bindings
++title: STMicroelectronics STM32 DMA Controller
+ 
+ description: |
+   The STM32 DMA is a general-purpose direct memory access controller capable of
+@@ -53,7 +53,7 @@ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: "dma-controller.yaml#"
++  - $ref: /schemas/dma/dma-controller.yaml#
+ 
+ properties:
+   "#dma-cells":
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+similarity index 83%
+rename from Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+index 1e1d8549b7ef..88c9e88cf3d5 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+@@ -1,16 +1,16 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-dmamux.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-dmamux.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: STMicroelectronics STM32 DMA MUX (DMA request router) bindings
++title: STMicroelectronics STM32 DMA MUX (DMA request router)
+ 
+ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: "dma-router.yaml#"
++  - $ref: /schemas/dma/dma-router.yaml#
+ 
+ properties:
+   "#dma-cells":
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+similarity index 95%
+rename from Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+index 00cfa3913652..45fe91db11db 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+@@ -1,10 +1,10 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-mdma.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-mdma.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: STMicroelectronics STM32 MDMA Controller bindings
++title: STMicroelectronics STM32 MDMA Controller
+ 
+ description: |
+   The STM32 MDMA is a general-purpose direct memory access controller capable of
+@@ -53,7 +53,7 @@ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: "dma-controller.yaml#"
++  - $ref: /schemas/dma/dma-controller.yaml#
+ 
+ properties:
+   "#dma-cells":
+-- 
+2.39.2
+

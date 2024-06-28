@@ -1,0 +1,250 @@
+From 9f96d1fdda6ac13f98bf87d53c41486fc2538661 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Tue, 6 Sep 2022 11:07:06 +0200
+Subject: [PATCH 0137/1141] ptp: applying clean file-subpatches for second PHC
+ worker clock
+
+Change provided by TTTech to instance a second ptp worker clock.
+
+Signed-off-by: Lukas Hannen <lukas.hannen@tttech-industrial.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: Ief54d7045c425c48ce5a54eb159ee6e4fceeceea
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/271269
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/ptp/ptp_chardev.c        | 23 +++++++++++++++++++++++
+ drivers/ptp/ptp_clock.c          | 20 ++++++++++++++++++++
+ drivers/ptp/ptp_private.h        |  3 +++
+ include/linux/ptp_clock_kernel.h |  5 +++++
+ include/linux/timekeeping.h      |  5 +++++
+ include/uapi/linux/ethtool.h     | 10 +++++++++-
+ include/uapi/linux/ptp_clock.h   | 12 +++++++++++-
+ net/ethtool/common.c             |  4 ++++
+ 8 files changed, 80 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 9311f3d09c8f..421bfac5942e 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -111,6 +111,8 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+ 	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
+ 	struct ptp_sys_offset_extended *extoff = NULL;
+ 	struct ptp_sys_offset_precise precise_offset;
++	struct ptp_ptp_offset_precise ptp_precise_offset;
++	struct device_device_crosststamp devxtstamp;
+ 	struct system_device_crosststamp xtstamp;
+ 	struct ptp_clock_info *ops = ptp->info;
+ 	struct ptp_sys_offset *sysoff = NULL;
+@@ -137,6 +139,7 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+ 		caps.n_pins = ptp->info->n_pins;
+ 		caps.cross_timestamping = ptp->info->getcrosststamp != NULL;
+ 		caps.adjust_phase = ptp->info->adjphase != NULL;
++		caps.peer_cross_timestamping = (ptp->info->getphcxtstamp != NULL) && (ptp->peer);
+ 		if (copy_to_user((void __user *)arg, &caps, sizeof(caps)))
+ 			err = -EFAULT;
+ 		break;
+@@ -321,6 +324,26 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+ 			err = -EFAULT;
+ 		break;
+ 
++	case PTP_PTP_OFFSET_PRECISE:
++		if ((!ptp->info->getphcxtstamp) || (!ptp->peer)) {
++			err = -EOPNOTSUPP;
++			break;
++		}
++		err = ptp->info->getphcxtstamp(ptp->info, ptp->peer->info,
++									   &devxtstamp);
++		if (err)
++			break;
++		ts = ktime_to_timespec64(devxtstamp.device);
++		ptp_precise_offset.device.sec = ts.tv_sec;
++		ptp_precise_offset.device.nsec = ts.tv_nsec;
++		ts = ktime_to_timespec64(devxtstamp.peer_device);
++		ptp_precise_offset.peer.sec = ts.tv_sec;
++		ptp_precise_offset.peer.nsec = ts.tv_nsec;
++		if (copy_to_user((void __user *)arg, &ptp_precise_offset,
++			sizeof(ptp_precise_offset)))
++			err = -EFAULT;
++		break;
++
+ 	case PTP_SYS_OFFSET:
+ 	case PTP_SYS_OFFSET2:
+ 		sysoff = memdup_user((void __user *)arg, sizeof(*sysoff));
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3c3e4fbefeba..8eedaefeae5c 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -226,6 +226,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 
+ 	ptp->clock.ops = ptp_clock_ops;
+ 	ptp->info = info;
++	ptp->peer = NULL;
+ 	ptp->devid = MKDEV(major, index);
+ 	ptp->index = index;
+ 	spin_lock_init(&ptp->tsevq.lock);
+@@ -349,6 +350,25 @@ static int unregister_vclock(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++int ptp_clock_set_peer(struct ptp_clock *ptp, struct ptp_clock *peer)
++{
++	/* remove existing peer assignments */
++	if (ptp && ptp->peer)
++		ptp->peer->peer = NULL;
++	if (peer && peer->peer)
++		peer->peer->peer = NULL;
++
++	/* pair up the two clocks */
++	if (ptp)
++		ptp->peer = peer;
++	if (peer)
++		peer->peer = ptp;
++
++	return 0;
++}
++
++EXPORT_SYMBOL(ptp_clock_set_peer);
++
+ int ptp_clock_unregister(struct ptp_clock *ptp)
+ {
+ 	if (ptp_vclock_in_use(ptp)) {
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index b8d4f61f14be..be4d7033e388 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -27,10 +27,13 @@ struct timestamp_event_queue {
+ 	spinlock_t lock;
+ };
+ 
++struct ptp_clock;
++
+ struct ptp_clock {
+ 	struct posix_clock clock;
+ 	struct device dev;
+ 	struct ptp_clock_info *info;
++	struct ptp_clock *peer;
+ 	dev_t devid;
+ 	int index; /* index into clocks.map */
+ 	struct pps_device *pps_source;
+diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+index 92b44161408e..8ed4796b8d6f 100644
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@ -191,6 +191,9 @@ struct ptp_clock_info {
+ 	int (*verify)(struct ptp_clock_info *ptp, unsigned int pin,
+ 		      enum ptp_pin_function func, unsigned int chan);
+ 	long (*do_aux_work)(struct ptp_clock_info *ptp);
++	int (*getphcxtstamp)(struct ptp_clock_info *ptp,
++						 struct ptp_clock_info *ptp_peer,
++						 struct device_device_crosststamp *cts);
+ };
+ 
+ struct ptp_clock;
+@@ -263,6 +266,8 @@ static inline long scaled_ppm_to_ppb(long ppm)
+ extern struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 					    struct device *parent);
+ 
++extern int ptp_clock_set_peer(struct ptp_clock *ptp, struct ptp_clock *peer);
++
+ /**
+  * ptp_clock_unregister() - unregister a PTP hardware clock driver
+  *
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index fe1e467ba046..f03dfe10b325 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -266,6 +266,11 @@ struct system_device_crosststamp {
+ 	ktime_t sys_monoraw;
+ };
+ 
++struct device_device_crosststamp {
++	ktime_t device;
++	ktime_t peer_device;
++};
++
+ /**
+  * struct system_counterval_t - system counter value with the pointer to the
+  *				corresponding clocksource
+diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+index dc2aa3d75b39..6838a7e193de 100644
+--- a/include/uapi/linux/ethtool.h
++++ b/include/uapi/linux/ethtool.h
+@@ -1415,7 +1415,9 @@ struct ethtool_ts_info {
+ 	__u32	tx_types;
+ 	__u32	tx_reserved[3];
+ 	__u32	rx_filters;
+-	__u32	rx_reserved[3];
++	__s32   phc_index_2nd;
++	__s32   phc_worker;
++	__s32   phc_timestamper;
+ };
+ 
+ /*
+@@ -2153,4 +2155,10 @@ struct ethtool_link_settings {
+ 	 * __u32 map_lp_advertising[link_mode_masks_nwords];
+ 	 */
+ };
++
++struct ethtool_clock {
++	__u32   cmd;
++	__s32   phc_index;
++};
++
+ #endif /* _UAPI_LINUX_ETHTOOL_H */
+diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
+index 1d108d597f66..bc03da16dca5 100644
+--- a/include/uapi/linux/ptp_clock.h
++++ b/include/uapi/linux/ptp_clock.h
+@@ -95,7 +95,9 @@ struct ptp_clock_caps {
+ 	int cross_timestamping;
+ 	/* Whether the clock supports adjust phase */
+ 	int adjust_phase;
+-	int rsv[12];   /* Reserved for future use. */
++	/* Whether the clock supports precise cross timestamps with peer clock */
++	int peer_cross_timestamping;
++	int rsv[11];   /* Reserved for future use. */
+ };
+ 
+ struct ptp_extts_request {
+@@ -104,6 +106,12 @@ struct ptp_extts_request {
+ 	unsigned int rsv[2]; /* Reserved for future use. */
+ };
+ 
++struct ptp_ptp_offset_precise {
++	struct ptp_clock_time device;
++	struct ptp_clock_time peer;
++	unsigned int rsv[4];    /* Reserved for future use. */
++};
++
+ struct ptp_perout_request {
+ 	union {
+ 		/*
+@@ -223,6 +231,8 @@ struct ptp_pin_desc {
+ 	_IOWR(PTP_CLK_MAGIC, 17, struct ptp_sys_offset_precise)
+ #define PTP_SYS_OFFSET_EXTENDED2 \
+ 	_IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
++#define PTP_PTP_OFFSET_PRECISE \
++	_IOWR(PTP_CLK_MAGIC, 19, struct ptp_ptp_offset_precise)
+ 
+ struct ptp_extts_event {
+ 	struct ptp_clock_time t; /* Time event occured. */
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index 566adf85e658..7fca28502f9b 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -547,6 +547,10 @@ int __ethtool_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
+ 
+ 	memset(info, 0, sizeof(*info));
+ 	info->cmd = ETHTOOL_GET_TS_INFO;
++	info->phc_index       = -1;
++	info->phc_index_2nd   = -1;
++	info->phc_worker      = -1;
++	info->phc_timestamper = -1;
+ 
+ 	if (phy_has_tsinfo(phydev))
+ 		return phy_ts_info(phydev, info);
+-- 
+2.39.2
+

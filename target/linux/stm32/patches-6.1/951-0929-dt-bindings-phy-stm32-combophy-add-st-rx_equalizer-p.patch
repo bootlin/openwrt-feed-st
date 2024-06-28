@@ -1,0 +1,41 @@
+From 1579885bc3bfa010a04e833373292569c13a361a Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Tue, 13 Feb 2024 15:17:27 +0100
+Subject: [PATCH 0929/1141] dt-bindings: phy: stm32-combophy: add
+ 'st,rx_equalizer' property
+
+Allow tuning the phy_rx0_eq register to set the internal rx
+equalizer filter value.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I63960755b8626349128f4f6ce349fc4618a069a6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359656
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/phy/st,stm32-combophy.yaml         | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+index 60710e94ef3c..2ac1d2928fc6 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+@@ -69,6 +69,13 @@ properties:
+       A boolean property whose presence indicates that the SSC for common clock
+       needs to be set.
+ 
++  st,rx_equalizer:
++    minimum: 0
++    maximum: 7
++    default: 2
++    description:
++      A 3 bit value describing internal filter settings for the RX equalizer.
++
+   st,output-micro-ohms:
+     minimum: 3999000
+     maximum: 6090000
+-- 
+2.39.2
+

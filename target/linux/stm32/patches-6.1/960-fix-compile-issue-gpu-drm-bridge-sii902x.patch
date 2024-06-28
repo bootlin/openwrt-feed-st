@@ -1,0 +1,22 @@
+Index: linux-6.1.89/drivers/gpu/drm/bridge/sii902x.c
+===================================================================
+--- linux-6.1.89.orig/drivers/gpu/drm/bridge/sii902x.c
++++ linux-6.1.89/drivers/gpu/drm/bridge/sii902x.c
+@@ -1244,7 +1244,7 @@ static int sii902x_pm_resume(struct devi
+ }
+ 
+ static const struct dev_pm_ops sii902x_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(sii902x_pm_suspend, sii902x_pm_resume)
++	SYSTEM_SLEEP_PM_OPS(sii902x_pm_suspend, sii902x_pm_resume)
+ };
+ 
+ static const struct of_device_id sii902x_dt_ids[] = {
+@@ -1265,7 +1265,7 @@ static struct i2c_driver sii902x_driver
+ 	.driver = {
+ 		.name = "sii902x",
+ 		.of_match_table = sii902x_dt_ids,
+-		.pm = &sii902x_pm_ops,
++		.pm = pm_sleep_ptr(&sii902x_pm_ops),
+ 	},
+ 	.id_table = sii902x_i2c_ids,
+ };

@@ -1,0 +1,88 @@
+From ae846a1fce866b7251e10c3c2a6de139065d0007 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Mon, 4 Dec 2023 11:50:46 +0100
+Subject: [PATCH 0726/1141] dt-bindings: remoteproc: st,stm32-rproc: Rework
+ reset declarations
+
+With the introduction of the SCMI (System Control and Management
+Interface), it is now possible to use the SCMI to handle the
+hold boot instead of a dedicated SMC call.
+
+As consequence two configurations are possible:
+- without SCMI server on OP-TEE:
+  use the Linux rcc reset service and use syscon for the MCU hold boot
+- With SCMI server on OP-TEE:
+  use the SCMI reset service for both the MCU reset and the MCU hold boot.
+
+This patch:
+- make optional and deprecated the use of the property st,syscfg-tz
+  which was used to check if the trusted Zone was enable to use scm call,
+  to manage the hold boot. The reset controller phandle is used instead
+  to select the configurations.
+- make st,syscfg-holdboot optional
+- adds properties check on resets definitions.
+- adds an example of the SCMI reset service usage.
+
+Change-Id: Ic102a701f718ebef358e935c0a2b12ff784b63be
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20230512093926.661509-2-arnaud.pouliquen@foss.st.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347942
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ .../bindings/remoteproc/st,stm32-rproc.yaml   | 21 ++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index a7ea628a5047..8b0b3991ec42 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -34,6 +34,7 @@ properties:
+     items:
+       - const: mcu_rst
+       - const: hold_boot
++    minItems: 1
+ 
+   st,syscfg-holdboot:
+     description: remote processor reset hold boot
+@@ -153,6 +154,20 @@ required:
+   - reg
+   - resets
+ 
++allOf:
++  - if:
++      properties:
++        reset-names:
++          not:
++            contains:
++              const: hold_boot
++    then:
++      required:
++        - st,syscfg-holdboot
++    else:
++      properties:
++        st,syscfg-holdboot: false
++
+ additionalProperties: false
+ 
+ examples:
+@@ -166,9 +181,9 @@ examples:
+       reg = <0x10000000 0x40000>,
+             <0x30000000 0x40000>,
+             <0x38000000 0x10000>;
+-      resets = <&scmi_reset RST_SCMI_MCU>,
+-               <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
+-      reset-names = "mcu_rst", "hold_boot";
++      resets = <&scmi_reset RST_SCMI_MCU>;
++      reset-names = "mcu_rst";
++      /* Hold boot managed using system config*/
+       st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+       st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+       st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+-- 
+2.39.2
+

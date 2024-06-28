@@ -1,0 +1,89 @@
+From 64b35edc715be63ca382a7a90d64f90a1a45d4da Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 10 Oct 2023 14:42:46 +0200
+Subject: [PATCH 0609/1141] memory: stm32-omi: multiple fixes added for DTR
+ support
+
+- Add missing registers for DTR support.
+- In case of RX and TX calibration, if timeout occurs, stop the TX
+tap loop, it improves the calibration algorithm (time wins).
+- In case check_transfer API is not able to run on a memory device,
+return -EOPNOTSUPP. That means that the driver should be modified to
+support the memory provider or that you can not use DTR commands
+(spi-rx-bus-width and spi-tx-bus-width can not be set to 8).
+
+Change-Id: Iba97239d416c50cb421610c150b43ce1d6cd3ebc
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/333815
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/memory/stm32-omi.c | 12 ++++++++++++
+ include/memory/stm32-omi.h |  3 +++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
+index d8a81765c612..40aed4de7f02 100644
+--- a/drivers/memory/stm32-omi.c
++++ b/drivers/memory/stm32-omi.c
+@@ -235,6 +235,10 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+ 			ret = omi->check_transfer(omi);
+ 			omi->calibration = false;
+ 			if (ret) {
++				if ((!rx_only && ret == -ETIMEDOUT) ||
++				    ret == -EOPNOTSUPP)
++					break;
++
+ 				rx_len = 0;
+ 			} else {
+ 				rx_len++;
+@@ -245,6 +249,9 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+ 			}
+ 		}
+ 
++		if (ret == -EOPNOTSUPP)
++			break;
++
+ 		rx_tap_w[tx_tap].end = rx_window_end;
+ 		rx_tap_w[tx_tap].length = rx_window_len;
+ 
+@@ -261,6 +268,11 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+ 			tx_tap, rx_tap_w[tx_tap].end, tx_tap, rx_tap_w[tx_tap].length);
+ 	}
+ 
++	if (ret == -EOPNOTSUPP) {
++		dev_err(omi->dev, "Calibration can not be done on this device\n");
++		return ret;
++	}
++
+ 	if (rx_only) {
+ 		if (!rx_window_len) {
+ 			dev_err(omi->dev, "Can't find RX phase settings\n");
+diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
+index 1adac6e94d52..8ebd788e07ad 100644
+--- a/include/memory/stm32-omi.h
++++ b/include/memory/stm32-omi.h
+@@ -57,6 +57,7 @@
+ #define DCR1_DLYBYP		BIT(3)
+ #define DCR1_DEVSIZE_MASK	GENMASK(20, 16)
+ #define DCR1_MTYP_MASK		GENMASK(26, 24)
++#define DCR1_MTYP_MX_MODE	1
+ #define DCR1_MTYP_HP_MEMMODE	4
+ 
+ #define OSPI_DCR2		0x0c
+@@ -82,6 +83,8 @@
+ 
+ #define OSPI_CCR		0x100
+ #define CCR_IMODE_MASK		GENMASK(2, 0)
++#define CCR_IDTR		BIT(3)
++#define CCR_ISIZE_MASK		GENMASK(5, 4)
+ #define CCR_ADMODE_MASK		GENMASK(10, 8)
+ #define CCR_ADMODE_8LINES	4
+ #define CCR_ADDTR		BIT(11)
+-- 
+2.39.2
+

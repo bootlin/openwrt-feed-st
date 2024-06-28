@@ -1,0 +1,35 @@
+From a1abb1acdea84a141418da284fd76a061eb39ab5 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Fri, 10 Nov 2023 15:59:10 +0100
+Subject: [PATCH 0676/1141] clocksource: stm32-lptimer: add stm32mp25 support
+
+Add the support of the new compatible for STM32MP25 SoC in driver, as
+described in Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+and used in arch/arm64/boot/dts/st/stm32mp251.dtsi.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Iab377f0a831531c66bcc72ac9a44c77bba53c1e7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/339114
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/clocksource/timer-stm32-lp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clocksource/timer-stm32-lp.c b/drivers/clocksource/timer-stm32-lp.c
+index 90c10f378df2..41ee2cb4eb09 100644
+--- a/drivers/clocksource/timer-stm32-lp.c
++++ b/drivers/clocksource/timer-stm32-lp.c
+@@ -200,6 +200,7 @@ static int stm32_clkevent_lp_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id stm32_clkevent_lp_of_match[] = {
+ 	{ .compatible = "st,stm32-lptimer-timer", },
++	{ .compatible = "st,stm32mp25-lptimer-timer", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_clkevent_lp_of_match);
+-- 
+2.39.2
+

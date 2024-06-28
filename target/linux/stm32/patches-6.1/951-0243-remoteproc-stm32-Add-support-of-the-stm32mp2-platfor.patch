@@ -1,0 +1,35 @@
+From 07b4de7405a969be1cf791081ea47712d2e1b984 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 6 May 2021 10:34:00 +0200
+Subject: [PATCH 0243/1141] remoteproc: stm32: Add support of the stm32mp2
+ platform
+
+Add the support of the stm32mp2 device.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Ief64e73b33fb4d3677aa35f397192a37a6557b6e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/244377
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 2eb6068e099b..3f38cb7327d0 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -812,7 +812,8 @@ static const struct rproc_ops st_rproc_tee_ops = {
+ };
+ 
+ static const struct of_device_id stm32_rproc_match[] = {
+-	{.compatible = "st,stm32mp1-m4",},
++	{.compatible = "st,stm32mp1-m4"},
++	{.compatible = "st,stm32mp2-m33"},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+-- 
+2.39.2
+

@@ -1,0 +1,40 @@
+From 7f70abb6e151f74ff56456330069c1d238b898bb Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 4 Apr 2024 18:14:23 +0200
+Subject: [PATCH 1101/1141] dt-bindings: stm32: add power domains binding for
+ stm32mp25 platform
+
+Adds power domains binding entries for STM32MP25 SoC family.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I21ec88842b3f47e8e94de41046faa18bbf06105e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371505
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ include/dt-bindings/power/stm32mp25-power-domains.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+ create mode 100644 include/dt-bindings/power/stm32mp25-power-domains.h
+
+diff --git a/include/dt-bindings/power/stm32mp25-power-domains.h b/include/dt-bindings/power/stm32mp25-power-domains.h
+new file mode 100644
+index 000000000000..fe5d9f40cae4
+--- /dev/null
++++ b/include/dt-bindings/power/stm32mp25-power-domains.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * Copyright (C) STMicroelectronics 2024 - All Rights Reserved
++ */
++
++#ifndef _DT_BINDINGS_POWER_STM32MP25_POWER_DOMAINS_H_
++#define _DT_BINDINGS_POWER_STM32MP25_POWER_DOMAINS_H_
++
++#define PD_SCMI_GPU             0
++
++#endif /* _DT_BINDINGS_POWER_STM32MP25_POWER_DOMAINS_H_ */
+-- 
+2.39.2
+

@@ -1,0 +1,43 @@
+From aa1d6ea39a68ac8e75ff4cba99c4c338c305b30a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 20 Mar 2024 19:32:21 +0100
+Subject: [PATCH 1029/1141] media: dcmipp: pixelproc: fix RGB888 mbus format
+ support
+
+Without swap of the R and B component, the format output by the DCMIPP
+when selecting the RGB888 output corresponds to V4L2 BGR888 format
+with data stored in the following order to memory:
+
+Byte0: B
+Byte1: G
+Byte2: R
+
+In order to output RGB888 properly, perform a swap of R and B components.
+
+Change-Id: I48d2a7893b67ece4d30760ec261ca9766c0d62cb
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368124
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 519ea94a06b3..9f243033ce03 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -146,7 +146,7 @@ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_sink_pix_map_list[
+ };
+ 
+ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_src_pix_map_list[] = {
+-	PIXMAP_MBUS_PPCR_SWAPUV(RGB888_1X24, DCMIPP_PxPPCR_FORMAT_RGB888_OR_YUV444_1BUFFER, 0),
++	PIXMAP_MBUS_PPCR_SWAPUV(RGB888_1X24, DCMIPP_PxPPCR_FORMAT_RGB888_OR_YUV444_1BUFFER, 1),
+ 	PIXMAP_MBUS_PPCR_SWAPUV(RGB565_2X8_LE, DCMIPP_PxPPCR_FORMAT_RGB565, 0),
+ 	PIXMAP_MBUS_PPCR_SWAPUV(YUYV8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 0),
+ 	PIXMAP_MBUS_PPCR_SWAPUV(YVYU8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 1),
+-- 
+2.39.2
+

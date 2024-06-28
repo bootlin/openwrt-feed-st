@@ -1,0 +1,60 @@
+From 18d25c0e4bce5e0c3a11e967953de5abdd151e56 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 8 Dec 2023 08:24:13 +0100
+Subject: [PATCH 0852/1141] drm/panel: simple: keep enable the panel after the
+ probe
+
+Keep enable the panel at probe & set delay to 60s
+to keep alive the panel to wait the splash screen.
+
+Change-Id: Ia77ac916574a35471c162f4b31f3830ecfe4318d
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344816
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 094b5217cd8f..ff7c9e56c77b 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -324,6 +324,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+ 	if (!p->prepared)
+ 		return 0;
+ 
++	pm_runtime_set_autosuspend_delay(panel->dev, 1000);
+ 	pm_runtime_mark_last_busy(panel->dev);
+ 	ret = pm_runtime_put_autosuspend(panel->dev);
+ 	if (ret < 0)
+@@ -589,8 +590,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 	if (IS_ERR(panel->supply))
+ 		return PTR_ERR(panel->supply);
+ 
+-	panel->enable_gpio = devm_gpiod_get_optional(dev, "enable",
+-						     GPIOD_OUT_LOW);
++	panel->enable_gpio = devm_gpiod_get_optional(dev, "enable", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(panel->enable_gpio))
+ 		return dev_err_probe(dev, PTR_ERR(panel->enable_gpio),
+ 				     "failed to request GPIO\n");
+@@ -684,11 +684,16 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 	 * fully enabling the panel.
+ 	 */
+ 	pm_runtime_enable(dev);
+-	pm_runtime_set_autosuspend_delay(dev, 1000);
++	/* set delay to 60s to keep alive the panel to wait the splash screen */
++	pm_runtime_set_autosuspend_delay(dev, 60000);
+ 	pm_runtime_use_autosuspend(dev);
+ 
+ 	drm_panel_init(&panel->base, dev, &panel_simple_funcs, connector_type);
+ 
++	pm_runtime_get_sync(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	err = drm_panel_of_backlight(&panel->base);
+ 	if (err) {
+ 		dev_err_probe(dev, err, "Could not find backlight\n");
+-- 
+2.39.2
+

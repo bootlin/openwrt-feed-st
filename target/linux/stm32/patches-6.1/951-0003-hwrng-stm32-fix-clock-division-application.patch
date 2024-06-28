@@ -1,0 +1,53 @@
+From c23365451a09f2a4143bd85a0e6183d32b634de4 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Tue, 4 Jul 2023 11:22:25 +0200
+Subject: [PATCH 0003/1141] hwrng: stm32 - fix clock division application
+
+Fix clock division application that was not shifted, corrupting
+the configuration register.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I0594f5343e9e2ee541951b26b6930e1f11b006b2
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/316193
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Domain-Review: Gatien CHEVALLIER <gatien.chevallier@st.com>
+---
+ drivers/char/hw_random/stm32-rng.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index e0a8025b45db..29c221082588 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -16,11 +16,12 @@
+ #include <linux/reset.h>
+ #include <linux/slab.h>
+ 
+-#define RNG_CR		0x00
+-#define RNG_CR_RNGEN	BIT(2)
+-#define RNG_CR_CED	BIT(5)
+-#define RNG_CR_CONDRST	BIT(30)
+-#define RNG_CR_CONFLOCK	BIT(31)
++#define RNG_CR			0x00
++#define RNG_CR_RNGEN		BIT(2)
++#define RNG_CR_CED		BIT(5)
++#define RNG_CR_CLKDIV_SHIFT	16
++#define RNG_CR_CONDRST		BIT(30)
++#define RNG_CR_CONFLOCK		BIT(31)
+ 
+ #define RNG_SR		0x04
+ #define RNG_SR_SEIS	BIT(6)
+@@ -135,7 +136,8 @@ static int stm32_rng_init(struct hwrng *rng)
+ 		uint clock_div = stm32_rng_clock_freq_restrain(rng);
+ 
+ 		reg &= ~RNG_NIST_CONFIG_MASK;
+-		reg |= RNG_CR_CONDRST | RNG_NIST_CONFIG_B | clock_div;
++		reg |= RNG_CR_CONDRST | RNG_NIST_CONFIG_B |
++		       (clock_div << RNG_CR_CLKDIV_SHIFT);
+ 		writel_relaxed(reg, priv->base + RNG_CR);
+ 		reg &= ~RNG_CR_CONDRST;
+ 		reg |= RNG_CR_CONFLOCK;
+-- 
+2.39.2
+

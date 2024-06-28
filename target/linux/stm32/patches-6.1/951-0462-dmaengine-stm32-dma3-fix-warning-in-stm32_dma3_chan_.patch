@@ -1,0 +1,70 @@
+From 67b3d0fd2ee1e4131ca9e3ee546b680f6ca95b64 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 3 Aug 2023 15:25:54 +0200
+Subject: [PATCH 0462/1141] dmaengine: stm32-dma3: fix warning in
+ stm32_dma3_chan_set_residue function
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Currently, ccr is initialized when asking for channel suspension. But
+channel suspension is done only if channel is active and transfer not
+already paused.
+Theorically, we enter the "Resume current transfer" condition only if we
+succeeded to suspend it previously. But, to avoid the following warning:
+drivers/dma/stm32-dma3.c: In function ‘stm32_dma3_tx_status’:
+  ./include/asm-generic/io.h:375:24: warning: ‘ccr’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+    375 | #define writel_relaxed writel_relaxed
+        |                        ^~~~~~~~~~~~~~
+  drivers/dma/stm32-dma3.c:1211:22: note: ‘ccr’ was declared here
+   1211 |         u32 residue, ccr, csr, cdar, cbr1, cllr, bndt, fifol;
+        |
+and ensure we previously succeeded to suspend, pre-initialize ccr = 0, then
+add (ccr & CCR_SUSP) in the "Resume current transfer" condition.
+
+Fixes: e9773574c30d ("dmaengine: Add STM32 DMA3 support")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: Iaa71855ccb6a0cfa79cc153a2411482fa1696438
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/321399
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/dma/stm32-dma3.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
+index 71eac66fb77f..95a9dfd2d5ff 100644
+--- a/drivers/dma/stm32-dma3.c
++++ b/drivers/dma/stm32-dma3.c
+@@ -1210,7 +1210,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+ 	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(&chan->vchan.chan);
+ 	struct device *dev = chan2dev(chan);
+ 	struct stm32_dma3_hwdesc *hwdesc;
+-	u32 residue, ccr, csr, cdar, cbr1, cllr, bndt, fifol;
++	u32 residue, ccr = 0, csr, cdar, cbr1, cllr, bndt, fifol;
+ 	bool pack_unpack;
+ 	u32 i, _curr_lli;
+ 	int ret;
+@@ -1220,8 +1220,8 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+ 	csr = readl_relaxed(ddata->base + STM32_DMA3_CSR(chan->id));
+ 	if (!(csr & CSR_IDLEF) && chan->dma_status != DMA_PAUSED) {
+ 		/* Suspend current transfer to read registers for a snapshot */
+-		ccr = readl_relaxed(ddata->base + STM32_DMA3_CCR(chan->id));
+-		writel_relaxed(ccr | CCR_SUSP, ddata->base + STM32_DMA3_CCR(chan->id));
++		ccr = readl_relaxed(ddata->base + STM32_DMA3_CCR(chan->id)) | CCR_SUSP;
++		writel_relaxed(ccr, ddata->base + STM32_DMA3_CCR(chan->id));
+ 		ret = readl_relaxed_poll_timeout_atomic(ddata->base + STM32_DMA3_CSR(chan->id), csr,
+ 							csr & CSR_SUSPF, 10, USEC_PER_SEC);
+ 		if (ret < 0) {
+@@ -1245,7 +1245,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+ 	cbr1 = readl_relaxed(ddata->base + STM32_DMA3_CBR1(chan->id));
+ 	cllr = readl_relaxed(ddata->base + STM32_DMA3_CLLR(chan->id));
+ 
+-	if ((csr & CSR_SUSPF) && chan->dma_status != DMA_PAUSED) {
++	if ((csr & CSR_SUSPF) && (ccr & CCR_SUSP) && chan->dma_status != DMA_PAUSED) {
+ 		/* Resume current transfer */
+ 		writel_relaxed(CFCR_SUSPF, ddata->base + STM32_DMA3_CFCR(chan->id));
+ 		writel_relaxed(ccr & ~CCR_SUSP, ddata->base + STM32_DMA3_CCR(chan->id));
+-- 
+2.39.2
+

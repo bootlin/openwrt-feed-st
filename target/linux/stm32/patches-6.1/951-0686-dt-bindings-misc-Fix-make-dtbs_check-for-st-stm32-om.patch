@@ -1,0 +1,79 @@
+From a2c53e47a00083cc1651d64c9e1b51c22a0a515b Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 15:19:01 +0100
+Subject: [PATCH 0686/1141] dt-bindings: misc: Fix make dtbs_check for
+ st,stm32-omi.yaml
+
+make -j 8 ARCH=arm64 dtbs_check DT_SCHEMA_FILES=st,stm32-omi.yaml retuns
+the following :
+
+  LINT    Documentation/devicetree/bindings
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+/local/home/nxp11987/projects/dt-schema/dtschema/schemas/reserved-memory/memory-region.yaml: warning: ignoring duplicate '$id' value 'http://devicetree.org/schemas/reserved-memory/memory-region.yaml#'
+/local/home/nxp11987/projects/dt-schema/dtschema/schemas/reserved-memory/reserved-memory.yaml: warning: ignoring duplicate '$id' value 'http://devicetree.org/schemas/reserved-memory/reserved-memory.yaml#'
+/local/home/nxp11987/projects/dt-schema/dtschema/schemas/reserved-memory/shared-dma-pool.yaml: warning: ignoring duplicate '$id' value 'http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml#'
+  DTC_CHK arch/arm64/boot/dts/st/stm32mp257f-dk.dtb
+  DTC_CHK arch/arm64/boot/dts/st/stm32mp257f-ev1.dtb
+  DTC_CHK arch/arm64/boot/dts/st/stm32mp257f-ev1-revB.dtb
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-dk.dtb: spi@40430000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-dk.dtb: spi@40440000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-ev1-revB.dtb: spi@40430000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-ev1-revB.dtb: spi@40440000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-ev1.dtb: spi@40430000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/stm32mp257f-ev1.dtb: spi@40440000: 'power-domains' does not match any of the regexes: 'flash@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-omi.yaml#
+Looking for device trees into /local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/external-dt/linux
+scripts/Makefile.build:44: /local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/external-dt/linux/Makefile: No such file or directory
+make[1]: *** No rule to make target '/local/home/nxp11987/projects/linux-stm32/MP2/arch/arm64/boot/dts/st/external-dt/linux/Makefile'.  Stop.
+
+Add power-domains in bindings and update exmaples.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ie470188df355110b313a599bce1539ebf379ac27
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/340948
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+index ab88193ab7f5..56142eb5c3a9 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
+@@ -76,6 +76,9 @@ properties:
+ 
+   ranges: true
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+@@ -158,6 +161,7 @@ examples:
+       clocks = <&scmi_clk CK_SCMI_OSPI1>;
+       resets = <&scmi_reset RST_SCMI_OSPI1DLL>, <&scmi_reset RST_SCMI_OSPI1DLL>;
+       feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPI1_ID>;
++      power-domains = <&CLUSTER_PD>;
+ 
+       #address-cells = <1>;
+       #size-cells = <0>;
+@@ -186,6 +190,7 @@ examples:
+       clocks = <&scmi_clk CK_SCMI_OSPI1>;
+       resets = <&scmi_reset RST_SCMI_OSPI1>, <&scmi_reset RST_SCMI_OSPI1DLL>;
+       feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPI1_ID>;
++      power-domains = <&CLUSTER_PD>;
+ 
+       #address-cells = <2>;
+       #size-cells = <1>;
+-- 
+2.39.2
+

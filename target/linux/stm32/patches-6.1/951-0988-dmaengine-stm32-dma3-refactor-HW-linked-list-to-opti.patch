@@ -1,0 +1,118 @@
+From bdf48e35f8f29846a7311a02c4ddfdfd2899f78e Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 15:19:34 +0100
+Subject: [PATCH 0988/1141] dmaengine: stm32-dma3: refactor HW linked-list to
+ optimize memory accesses
+
+Current behavior splits the buffer/sg in n * STM32_DMA3_MAX_BLOCK_SIZE + 1
+for the remainder without optimization.
+
+New behavior splits the buffer/sg in n * STM32_DMA3_MAX_BLOCK_SIZE + 1 for
+(x * chan->max_burst) + 1 for the remainder.
+Depending on channel FIFO size, optimal double-word (word if only 8-byte
+FIFO size) bursts can be programmed before managing the very last remainder
+with lower data width.
+In case of _prep_slave_sg, and depending on the channel Transfer Complete
+event configuration, the user is warned about the refactored linked-list,
+not having the same items count than the initial sg_list. This warning is
+shown only if the configuration is successful.
+
+Change-Id: I6695e30dd54c8d566e0e1664549a8f13129402a2
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358981
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/dma/stm32/stm32-dma3.c | 40 ++++++++++++++++++++++++++++------
+ 1 file changed, 33 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
+index b6e39620982c..c6841e2688d1 100644
+--- a/drivers/dma/stm32/stm32-dma3.c
++++ b/drivers/dma/stm32/stm32-dma3.c
+@@ -1112,6 +1112,25 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+ 	chan->config_set = 0;
+ }
+ 
++static u32 stm32_dma3_get_ll_count(struct stm32_dma3_chan *chan, size_t len)
++{
++	u32 count;
++
++	count = len / STM32_DMA3_MAX_BLOCK_SIZE;
++	len -= (len / STM32_DMA3_MAX_BLOCK_SIZE) * STM32_DMA3_MAX_BLOCK_SIZE;
++
++	if (len >= chan->max_burst) {
++		count += 1; /* len < STM32_DMA3_MAX_BLOCK_SIZE here, so it fits in one item */
++		len -= (len / chan->max_burst) * chan->max_burst;
++	}
++
++	/* Unaligned remainder fits in one extra item */
++	if (len > 0)
++		count += 1;
++
++	return count;
++}
++
+ static void stm32_dma3_init_chan_config_for_memcpy(struct stm32_dma3_chan *chan,
+ 						   dma_addr_t dst, dma_addr_t src)
+ {
+@@ -1147,7 +1166,7 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+ 	size_t next_size, offset;
+ 	u32 count, i, ctr1, ctr2;
+ 
+-	count = DIV_ROUND_UP(len, STM32_DMA3_MAX_BLOCK_SIZE);
++	count = stm32_dma3_get_ll_count(chan, len);
+ 
+ 	swdesc = stm32_dma3_chan_desc_alloc(chan, count);
+ 	if (!swdesc)
+@@ -1163,6 +1182,9 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+ 		remaining = len - offset;
+ 		next_size = min_t(size_t, remaining, STM32_DMA3_MAX_BLOCK_SIZE);
+ 
++		if (next_size < STM32_DMA3_MAX_BLOCK_SIZE && next_size >= chan->max_burst)
++			next_size = chan->max_burst * (remaining / chan->max_burst);
++
+ 		ret = stm32_dma3_chan_prep_hw(chan, DMA_MEM_TO_MEM, &swdesc->ccr, &ctr1, &ctr2,
+ 					      src + offset, dst + offset, next_size);
+ 		if (ret)
+@@ -1201,12 +1223,9 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+ 	u32 i, j, count, ctr1, ctr2;
+ 	int ret;
+ 
+-	count = sg_len;
+-	for_each_sg(sgl, sg, sg_len, i) {
+-		len = sg_dma_len(sg);
+-		if (len > STM32_DMA3_MAX_BLOCK_SIZE)
+-			count += DIV_ROUND_UP(len, STM32_DMA3_MAX_BLOCK_SIZE) - 1;
+-	}
++	count = 0;
++	for_each_sg(sgl, sg, sg_len, i)
++		count += stm32_dma3_get_ll_count(chan, sg_dma_len(sg));
+ 
+ 	swdesc = stm32_dma3_chan_desc_alloc(chan, count);
+ 	if (!swdesc)
+@@ -1223,6 +1242,9 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+ 		do {
+ 			size_t chunk = min_t(size_t, len, STM32_DMA3_MAX_BLOCK_SIZE);
+ 
++			if (chunk < STM32_DMA3_MAX_BLOCK_SIZE && chunk >= chan->max_burst)
++				chunk = chan->max_burst * (len / chan->max_burst);
++
+ 			if (dir == DMA_MEM_TO_DEV) {
+ 				src = sg_addr;
+ 				dst = dev_addr;
+@@ -1255,6 +1277,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+ 		} while (len);
+ 	}
+ 
++	if (count != sg_len && chan->tcem != CTR2_TCEM_CHANNEL)
++		dev_warn(chan2dev(chan), "Linked-list refactored, %d items instead of %d\n",
++			 count, sg_len);
++
+ 	/* Enable Error interrupts */
+ 	swdesc->ccr |= CCR_USEIE | CCR_ULEIE | CCR_DTEIE;
+ 	/* Enable Transfer state interrupts */
+-- 
+2.39.2
+

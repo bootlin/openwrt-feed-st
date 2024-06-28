@@ -1,0 +1,73 @@
+From fb7d468b9cc4e2763eeb845fbcb41c604a648b85 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 26 Jan 2024 10:50:51 +0100
+Subject: [PATCH 0872/1141] drm/stm: ltdc:  add property default-on
+
+Add support of a new property 'default-on' to avoid reset
+of LTDC at probe and keep the pm runtime active.
+
+Change-Id: I2ee6f4eccb14f22f0557db4e5698478c16689b06
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354669
+---
+ drivers/gpu/drm/stm/ltdc.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index e44a3a09ff6b..48b461eb3e98 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -2256,6 +2256,7 @@ int ltdc_load(struct drm_device *ddev)
+ 	int irq, i, nb_endpoints;
+ 	int ret = -ENODEV;
+ 	u32 mbl;
++	bool def_value;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+@@ -2310,10 +2311,18 @@ int ltdc_load(struct drm_device *ddev)
+ 
+ 	mutex_init(&ldev->err_lock);
+ 
+-	if (!IS_ERR(rstc)) {
+-		reset_control_assert(rstc);
+-		usleep_range(10, 20);
+-		reset_control_deassert(rstc);
++	def_value = device_property_read_bool(dev, "default-on");
++
++	/*
++	 * To obtain a continuous display after the probe, the clocks must
++	 * remain activated and reset shouldn't be done
++	 */
++	if (!def_value) {
++		if (!IS_ERR(rstc)) {
++			reset_control_assert(rstc);
++			usleep_range(10, 20);
++			reset_control_deassert(rstc);
++		}
+ 	}
+ 
+ 	ldev->regs = devm_platform_ioremap_resource(pdev, 0);
+@@ -2384,10 +2393,17 @@ int ltdc_load(struct drm_device *ddev)
+ 		goto err;
+ 	}
+ 
+-	pinctrl_pm_select_sleep_state(ddev->dev);
+-
++	pm_runtime_set_active(ddev->dev);
+ 	pm_runtime_enable(ddev->dev);
+ 
++	if (def_value) {
++		/* keep runtime active after the probe */
++		pm_runtime_get_sync(ddev->dev);
++	} else {
++		/* set to sleep state the pinctrl to stop data trasfert */
++		pinctrl_pm_select_sleep_state(ddev->dev);
++	}
++
+ 	/* Get the secure rotation buffer memory resource */
+ 	np = of_parse_phandle(dev->of_node, "rotation-memory", 0);
+ 	if (np)
+-- 
+2.39.2
+

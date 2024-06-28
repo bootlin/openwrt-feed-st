@@ -1,0 +1,36 @@
+From 7084443b1f4255944dc48190b3e95127e692dc2a Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Tue, 20 Sep 2022 10:47:13 +0200
+Subject: [PATCH 1141/1141] counter: stm32-lptimer-cnt: add support for
+ stm32mp25
+
+Add support for STM32MP25 SoC. Use newly introduced compatible to handle
+this new HW variant, even if no major change is expected on the counter
+driver.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I7f7b8a6150ccb9980216dd40d44e8a1ea27d9b20
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384675
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ drivers/counter/stm32-lptimer-cnt.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
+index 8439755559b2..309398118e48 100644
+--- a/drivers/counter/stm32-lptimer-cnt.c
++++ b/drivers/counter/stm32-lptimer-cnt.c
+@@ -502,6 +502,7 @@ static SIMPLE_DEV_PM_OPS(stm32_lptim_cnt_pm_ops, stm32_lptim_cnt_suspend,
+ 
+ static const struct of_device_id stm32_lptim_cnt_of_match[] = {
+ 	{ .compatible = "st,stm32-lptimer-counter", },
++	{ .compatible = "st,stm32mp25-lptimer-counter", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_lptim_cnt_of_match);
+-- 
+2.39.2
+

@@ -1,0 +1,46 @@
+From 6258fc18b3f09c9201c8440598363f75228cfee4 Mon Sep 17 00:00:00 2001
+From: Olivier BIDEAU <olivier.bideau@st.com>
+Date: Wed, 3 Apr 2024 10:53:12 +0200
+Subject: [PATCH 1107/1141] clk: stm32mp2: add a test to verify the existence
+ of a parent clock
+
+Before trying to handle a parent clock, add a test to verify that
+this parent is known by the clock framework.
+
+In case it is not known, no operation shall be performed.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Change-Id: Iff62ba274aac98fe7eb62fac4631bed6ccf53af1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371424
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25-syscfg.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25-syscfg.c b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
+index caa7ea44b732..d004a2ce6059 100644
+--- a/drivers/clk/stm32/clk-stm32mp25-syscfg.c
++++ b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
+@@ -35,9 +35,13 @@ static int clk_regmap_mux_determine_rate(struct clk_hw *hw,
+ #ifdef CONFIG_PM_SLEEP
+ static void clk_regmap_mux_pm_restore(struct clk_hw *hw)
+ {
+-	int index = clk_hw_get_parent_index(hw);
++	struct clk_hw *hwp = clk_hw_get_parent(hw);
++	int index;
+ 
+-	clk_regmap_mux_set_parent(hw, index);
++	if (hwp != NULL) {
++		index = clk_hw_get_parent_index(hw);
++		clk_regmap_mux_set_parent(hw, index);
++	}
+ }
+ #endif
+ 
+-- 
+2.39.2
+

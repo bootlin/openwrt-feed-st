@@ -1,0 +1,47 @@
+From a50e1c101b99d4e587ad32594984f04d54fd90b7 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Mon, 16 Jan 2023 14:52:42 +0100
+Subject: [PATCH 0308/1141] media: i2c: imx335: reinforce reset robustness
+
+Ensure that reset line is disabled when starting reset sequence.
+Increase waiting duration after reset to some ms to ensure that
+all is really reset before starting the i2c init sequence.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I86254bcf674dc6be3a75a69224ff12578091c316
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/285212
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/i2c/imx335.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+index f47bac41fcd7..8ffc29850a6c 100644
+--- a/drivers/media/i2c/imx335.c
++++ b/drivers/media/i2c/imx335.c
+@@ -941,6 +941,7 @@ static int imx335_power_on(struct device *dev)
+ 	struct imx335 *imx335 = to_imx335(sd);
+ 	int ret;
+ 
++	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
+ 	gpiod_set_value_cansleep(imx335->powerdown_gpio, 1);
+ 	/*
+ 	 * Spec says that T-low (timing between power on and rise of reset)
+@@ -955,7 +956,8 @@ static int imx335_power_on(struct device *dev)
+ 		goto error_reset;
+ 	}
+ 
+-	usleep_range(20, 22);
++	/* Ensure that all is stable after reset */
++	usleep_range(5000, 10000);
+ 
+ 	return 0;
+ 
+-- 
+2.39.2
+

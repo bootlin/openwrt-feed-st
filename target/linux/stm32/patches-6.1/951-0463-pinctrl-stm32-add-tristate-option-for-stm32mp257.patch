@@ -1,0 +1,124 @@
+From cfb0b926927d7b7ad1fa5da2ec6050b2ffae73ec Mon Sep 17 00:00:00 2001
+From: Stephane DANIEAU <stephane.danieau@st.com>
+Date: Wed, 7 Jun 2023 16:23:55 +0200
+Subject: [PATCH 0463/1141] pinctrl: stm32: add tristate option for stm32mp257
+
+Add ability to build pinctrl for stm32mp257 as a module.
+
+Signed-off-by: Stephane DANIEAU <stephane.danieau@st.com>
+Change-Id: I0e98e083b14bc95e5653aeea0d0a9adf0e120cbd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/321298
+Tested-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/Kconfig.platforms               |  1 -
+ drivers/pinctrl/stm32/Kconfig              |  6 +++---
+ drivers/pinctrl/stm32/pinctrl-stm32.c      |  6 ++++++
+ drivers/pinctrl/stm32/pinctrl-stm32mp257.c | 11 ++++++-----
+ 4 files changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index bfd0268c9293..b771b692e143 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -286,7 +286,6 @@ config ARCH_STM32
+ 	select PINCTRL
+ 	select RESET_CONTROLLER
+ 	select STM32_EXTI
+-	select PINCTRL_STM32MP257
+ 	select COMMON_CLK_STM32MP257
+ 	select RESET_STM32MP1
+ 	select ARM_SMC_MBOX
+diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
+index 2656d3d3ae40..64af7b1521fb 100644
+--- a/drivers/pinctrl/stm32/Kconfig
++++ b/drivers/pinctrl/stm32/Kconfig
+@@ -2,7 +2,7 @@
+ if ARCH_STM32 || COMPILE_TEST
+ 
+ config PINCTRL_STM32
+-	bool
++	tristate
+ 	depends on OF
+ 	select PINMUX
+ 	select GENERIC_PINCONF
+@@ -53,8 +53,8 @@ config PINCTRL_STM32MP157
+ 	select PINCTRL_STM32
+ 
+ config PINCTRL_STM32MP257
+-	bool "STMicroelectronics STM32MP257 pin control" if COMPILE_TEST && !MACH_STM32MP25
++	tristate "STMicroelectronics STM32MP257 pin control"
+ 	depends on OF && HAS_IOMEM
+-	default MACH_STM32MP25
++	default MACH_STM32MP25 || ARM64
+ 	select PINCTRL_STM32
+ endif
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 5e3e49669728..e9233937a78a 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -1976,6 +1976,7 @@ int stm32_pctl_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(stm32_pctl_probe);
+ 
+ static int __maybe_unused stm32_pinctrl_restore_advcfgr(struct stm32_gpio_bank *bank,
+ 							int offset, u32 bpos)
+@@ -2088,6 +2089,7 @@ int __maybe_unused stm32_pinctrl_suspend(struct device *dev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(stm32_pinctrl_suspend);
+ 
+ int __maybe_unused stm32_pinctrl_resume(struct device *dev)
+ {
+@@ -2103,3 +2105,7 @@ int __maybe_unused stm32_pinctrl_resume(struct device *dev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(stm32_pinctrl_resume);
++
++MODULE_DESCRIPTION("STM32 core pinctrl driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+index d9f99dc3d2cd..9b8828090214 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+@@ -4,6 +4,7 @@
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
+ #include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ 
+@@ -2566,6 +2567,7 @@ static const struct of_device_id stm32mp257_pctrl_match[] = {
+ 	},
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, stm32mp257_pctrl_match);
+ 
+ static const struct dev_pm_ops stm32_pinctrl_dev_pm_ops = {
+ 	 SET_LATE_SYSTEM_SLEEP_PM_OPS(NULL, stm32_pinctrl_resume)
+@@ -2579,9 +2581,8 @@ static struct platform_driver stm32mp257_pinctrl_driver = {
+ 		.pm = &stm32_pinctrl_dev_pm_ops,
+ 	},
+ };
++module_platform_driver(stm32mp257_pinctrl_driver);
+ 
+-static int __init stm32mp257_pinctrl_init(void)
+-{
+-	return platform_driver_register(&stm32mp257_pinctrl_driver);
+-}
+-arch_initcall(stm32mp257_pinctrl_init);
++MODULE_AUTHOR("Alexandre Torgue <alexandre.torgue@foss.st.com>");
++MODULE_DESCRIPTION("STM32MP257 pinctrl driver");
++MODULE_LICENSE("GPL");
+-- 
+2.39.2
+

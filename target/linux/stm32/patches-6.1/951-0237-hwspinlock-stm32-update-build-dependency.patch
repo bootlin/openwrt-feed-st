@@ -1,0 +1,30 @@
+From 41b4d4d2d5dab31aab2e7dcc01b409668f8722b0 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Wed, 17 Nov 2021 14:34:15 +0100
+Subject: [PATCH 0237/1141] hwspinlock: stm32: update build dependency
+
+Align dependency with other stm32mp drivers, which use ARCH_STM32
+not MACH_STM32MP157.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: Ib0e7a834192e366a8f08e4d4d3184c52ebd36131
+---
+ drivers/hwspinlock/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
+index 3874d15b0e9b..c77b5a01ef2c 100644
+--- a/drivers/hwspinlock/Kconfig
++++ b/drivers/hwspinlock/Kconfig
+@@ -38,7 +38,7 @@ config HWSPINLOCK_SPRD
+ 
+ config HWSPINLOCK_STM32
+ 	tristate "STM32 Hardware Spinlock device"
+-	depends on MACH_STM32MP157 || COMPILE_TEST
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	help
+ 	  Say y here to support the STM32 Hardware Spinlock device.
+ 
+-- 
+2.39.2
+

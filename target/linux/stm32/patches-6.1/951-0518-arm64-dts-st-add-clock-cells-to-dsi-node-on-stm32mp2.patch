@@ -1,0 +1,36 @@
+From 51a696a4c8647464f4f17019edfa0e462e0a0ba2 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Mon, 14 Aug 2023 10:59:32 +0200
+Subject: [PATCH 0518/1141] arm64: dts: st: add clock-cells to dsi node on
+ stm32mp251
+
+The DSI feeds a clock to the clk-regmap driver. Make it a simple clock
+provider.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I6a90fdc1ccd444dd365ea44428771691e863d8a5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/322731
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index d5d9082b375e..ffc3f40fdb23 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1963,6 +1963,7 @@ i3c4: i3c@46080000 {
+ 			dsi: dsi@48000000 {
+ 				compatible = "st,stm32-dsi";
+ 				reg = <0x48000000 0x800>;
++				#clock-cells = <0>;
+ 				clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
+ 					 <&rcc CK_KER_LTDC>;
+ 				clock-names = "pclk", "ref", "px_clk";
+-- 
+2.39.2
+

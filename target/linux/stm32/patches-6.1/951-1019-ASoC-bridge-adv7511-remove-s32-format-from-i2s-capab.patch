@@ -1,0 +1,42 @@
+From 7c1b009999e51258a3740e35d2bcc0ee99dbaca2 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 14 Mar 2024 11:30:19 +0100
+Subject: [PATCH 1019/1141] ASoC: bridge: adv7511: remove s32 format from i2s
+ capabilities
+
+The ADV7511 driver does not support S32_LE format.
+The ADV7511 chip allows 24 bits samples max in I2S mode, excepted for
+direct AES3 mode (SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE format).
+However the HDMI codec exposes S32_LE format as supported.
+This generates errors with Pipewire, as Pipewire tries to play 32 bits
+streams on the ADV7535 HDMI audio device.
+Adapt ADV7535 HDMI I2S format list to expose formats actually supported.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ia1fa1eb664841143e88fa851c63e284642e53876
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366950
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+index 28ae81ca3651..ce6eda87bfe0 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+@@ -232,6 +232,9 @@ static const struct hdmi_codec_ops adv7511_codec_ops = {
+ 
+ static const struct hdmi_codec_pdata codec_data = {
+ 	.ops = &adv7511_codec_ops,
++	.i2s_formats = (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |
++			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE),
+ 	.max_i2s_channels = 2,
+ 	.i2s = 1,
+ 	.no_i2s_capture = 1,
+-- 
+2.39.2
+

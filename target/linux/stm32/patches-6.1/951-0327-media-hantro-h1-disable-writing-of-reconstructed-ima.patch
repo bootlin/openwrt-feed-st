@@ -1,0 +1,32 @@
+From 1b9ee6d612e22f030a78fbd5763b84003bd9caa0 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Wed, 17 May 2023 15:35:22 +0200
+Subject: [PATCH 0327/1141] media: hantro: h1: disable writing of reconstructed
+ image
+
+This change is needed to have visually correct P frames.
+This change is not understood and need more investigations:
+- flag is not there in VPU2 regs
+- reading VSI code we should enable writing of reconstructed image
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I4afcb6d780f3e70197133cf8e5a3475870689b9d
+---
+ drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+index dd8a296e6437..12267434c53f 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
++++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+@@ -1475,6 +1475,7 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+ 	/* Start the hardware. */
+ 	reg =     H1_REG_ENC_CTRL_TIMEOUT_EN
+ 		| H1_REG_ENC_CTRL_MV_WRITE //for VEPU_REG_MV_WRITE_EN in VEPU_REG_INTERRUPT
++		| H1_REG_ENC_REC_WRITE_DISABLE//FIXME needed to have visually correct P frames
+ 		| H1_REG_ENC_CTRL_WIDTH(MB_WIDTH(ctx->src_fmt.width))
+ 		| H1_REG_ENC_CTRL_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
+ 		| H1_REG_ENC_CTRL_ENC_MODE_VP8
+-- 
+2.39.2
+

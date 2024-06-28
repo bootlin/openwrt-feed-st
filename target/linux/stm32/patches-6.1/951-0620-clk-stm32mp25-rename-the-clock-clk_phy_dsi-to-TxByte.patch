@@ -1,0 +1,63 @@
+From 3b5a89f5848231801d755f9b1b7dee22bda073d3 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Tue, 31 Oct 2023 14:29:08 +0100
+Subject: [PATCH 0620/1141] clk: stm32mp25: rename the clock clk_phy_dsi to
+ TxByteClk
+
+Rename the clock clk_phy_dsi to TxByteClk to be in accordance
+with the RM documentation.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: Iabc338e2d6d68be662951ca924acf1c1d4a1dbca
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/337078
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 024e746e4448..7182f8132093 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -77,7 +77,7 @@ static const char * const usb3pciphy_src[] = {
+ };
+ 
+ static const char * const dsiblane_src[] = {
+-	"clk_phy_dsi", "ck_ker_ltdc"
++	"txbyteclk", "ck_ker_ltdc"
+ };
+ 
+ static const char * const dsiphy_src[] = {
+@@ -673,7 +673,8 @@ static CLK_STM32_COMPOSITE(clk_lanebyte, dsiblane_src, 0, GATE_DSI, MUX_DSIBLANE
+ static CLK_STM32_GATE(ck_icn_p_lvds, "ck_icn_apb4", 0, GATE_LVDS);
+ 
+ /* DSI PHY */
+-static CLK_STM32_COMPOSITE(ck_ker_dsiphy, dsiphy_src, 0, GATE_DSI, MUX_DSIPHY, NO_STM32_DIV);
++static CLK_STM32_COMPOSITE(clk_phy_dsi, dsiphy_src, 0, GATE_DSI, MUX_DSIPHY, NO_STM32_DIV);
++
+ /* LVDS PHY */
+ static CLK_STM32_COMPOSITE(ck_ker_lvdsphy, lvdsphy_src, 0, GATE_LVDS, MUX_LVDSPHY, NO_STM32_DIV);
+ 
+@@ -1189,7 +1190,7 @@ static const struct clock_config stm32mp25_clock_cfg[] = {
+ 	STM32_COMPOSITE_CFG(CK_KER_USB2PHY2EN, ck_ker_usb2phy2_en, SEC_RIFSC(USBH)),
+ 	STM32_COMPOSITE_CFG(CK_KER_USB3PCIEPHY, ck_ker_usb3pciephy, SEC_RIFSC(USB3DR)),
+ 	STM32_COMPOSITE_CFG(CK_KER_DSIBLANE, clk_lanebyte, SEC_RIFSC(DSI_CMN)),
+-	STM32_COMPOSITE_CFG(CK_KER_DSIPHY, ck_ker_dsiphy, SEC_RIFSC(DSI_CMN)),
++	STM32_COMPOSITE_CFG(CK_KER_DSIPHY, clk_phy_dsi, SEC_RIFSC(DSI_CMN)),
+ 	STM32_COMPOSITE_CFG(CK_KER_LVDSPHY, ck_ker_lvdsphy, SEC_RIFSC(LVDS)),
+ 	STM32_COMPOSITE_CFG(CK_KER_DTS, ck_ker_dts, SEC_RIFSC(DTS)),
+ 	STM32_GATE_CFG(CK_KER_LTDC, ck_ker_ltdc, SEC_RIFSC(LTDC_CMN)),
+@@ -2010,7 +2011,7 @@ static struct clk_summary stm32mp25_clock_summary[] = {
+ 	CS_GATEMUX("ck_ker_usb2phy2_en", usb2phy2_src, GATE_USB2PHY2, MUX_USB2PHY2),
+ 	CS_GATEMUX("ck_ker_usb3pciephy", usb3pciphy_src, GATE_USB3PCIEPHY, MUX_USB3PCIEPHY),
+ 	CS_GATEMUX("clk_lanebyte", dsiblane_src, GATE_DSI, MUX_DSIBLANE),
+-	CS_GATEMUX("ck_ker_dsiphy", dsiphy_src, GATE_DSI, MUX_DSIPHY),
++	CS_GATEMUX("clk_phy_dsi", dsiphy_src, GATE_DSI, MUX_DSIPHY),
+ 	CS_GATEMUX("ck_ker_lvdsphy", lvdsphy_src, GATE_LVDS, MUX_LVDSPHY),
+ 	CS_GATEMUX("ck_ker_dts", dts_src, GATE_DTS, MUX_DTS),
+ 	CS_GATEMUX("ck_rtc", rtc_src, GATE_RTCCK, MUX_RTC),
+-- 
+2.39.2
+

@@ -1,0 +1,35 @@
+From 00e783647c659de856ccebde70c1232176619998 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Wed, 6 Sep 2023 11:17:07 +0200
+Subject: [PATCH 0511/1141] clk: stm32mp2: fix dsi clock name
+
+Reference manual states "clk_phy_dsi" as entry clock for DSI PHY.
+Changes the name to what is expected in the refman.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I5a188f635a0bd269f26a7bdb5ec422ed5ff1f4ac
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/326190
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 2308ba69a7c8..ee601b5020f0 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -77,7 +77,7 @@ static const char * const usb3pciphy_src[] = {
+ };
+ 
+ static const char * const dsiblane_src[] = {
+-	"ck_dsi_phy", "ck_flexgen_27"
++	"clk_phy_dsi", "ck_flexgen_27"
+ };
+ 
+ static const char * const dsiphy_src[] = {
+-- 
+2.39.2
+

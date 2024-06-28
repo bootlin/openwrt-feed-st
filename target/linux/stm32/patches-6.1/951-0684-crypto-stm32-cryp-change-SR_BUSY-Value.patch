@@ -1,0 +1,37 @@
+From eb53d28de97c9e6c76a6882e190faacb9fca6e21 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Mon, 13 Nov 2023 17:48:31 +0100
+Subject: [PATCH 0684/1141] crypto: stm32/cryp - change SR_BUSY Value
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+According to refman, SR_BUSY value is incorrect.
+
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Change-Id: I9a6a10a51f631b3c418f986f189b0a36e51396e9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/339474
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index e9a73146ce06..d7b55445f447 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -114,7 +114,7 @@ static const struct debugfs_reg32 stm32_cryp_regs[] = {
+ 
+ #define SR_IFNF                 BIT(1)
+ #define SR_OFNE                 BIT(2)
+-#define SR_BUSY                 BIT(8)
++#define SR_BUSY                 BIT(4)
+ 
+ #define DMACR_DIEN              BIT(0)
+ #define DMACR_DOEN              BIT(1)
+-- 
+2.39.2
+

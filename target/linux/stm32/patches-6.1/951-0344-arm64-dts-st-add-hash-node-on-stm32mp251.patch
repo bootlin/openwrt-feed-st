@@ -1,0 +1,44 @@
+From 3fbfb8c986ee5d6d912074c0681855f2627abf86 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Tue, 4 Jul 2023 16:55:44 +0200
+Subject: [PATCH 0344/1141] arm64: dts: st: add hash node on stm32mp251
+
+Add node HASH on stm32mp251 with dma support.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: I6726eedf01cbb5883ac13b10fc2435267542970e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310342
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index ae79d5a7edda..4ee579a0eb0b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1600,6 +1600,18 @@ channel@18 {
+ 				};
+ 			};
+ 
++			hash: hash@42010000 {
++				compatible = "st,stm32mp13-hash";
++				reg = <0x42010000 0x400>;
++				interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_HASH>;
++				resets = <&rcc HASH_R>;
++				dmas = <&hpdma 6 0x40 0x3021 0x0>;
++				dma-names = "in";
++				feature-domains = <&rifsc STM32MP25_RIFSC_HASH_ID>;
++				status = "disabled";
++			};
++
+ 			rng: rng@42020000 {
+ 				compatible = "st,stm32mp13-rng";
+ 				reg = <0x42020000 0x400>;
+-- 
+2.39.2
+

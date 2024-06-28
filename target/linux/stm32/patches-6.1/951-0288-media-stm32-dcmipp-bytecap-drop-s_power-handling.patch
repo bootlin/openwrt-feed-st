@@ -1,0 +1,37 @@
+From 8b944b8d8f5f984fd96549ad7f10ab3d3815f8ba Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 29 Nov 2022 09:43:16 +0100
+Subject: [PATCH 0288/1141] media: stm32-dcmipp: bytecap: drop s_power handling
+
+Subdevices power management is handeld by v4l2_pipeline_pm_get/put,
+so drop explicit calls to subdev s_power.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: I5d040f9a3c81fca6f7503f358f53bc7cf51e4735
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278124
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 70d2c2dabbcc..099a3068b699 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -470,9 +470,6 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+ 				__func__, subdev->name,
+ 				state ? "start" : "stop", ret);
+ 
+-			if (!state)
+-				v4l2_subdev_call(subdev, core, s_power, state);
+-
+ 			return ret;
+ 		}
+ 
+-- 
+2.39.2
+

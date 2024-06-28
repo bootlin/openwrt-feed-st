@@ -1,0 +1,33 @@
+From 6e315d0a3ae70d650378f3e464b87ec03cabcea7 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 9 Feb 2024 15:23:02 +0100
+Subject: [PATCH 0943/1141] arm64: dts: st: update dsi node on stm32mp257f-dk
+ board
+
+DSI needs 2 powers supplies VDD & VDDA18.
+
+Change-Id: I02b199efd4a242be6876121eaf12d04990410c56
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358884
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index a559c33529a9..0d8dccc58b04 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -231,7 +231,7 @@ dcmipp_0: endpoint {
+ };
+ 
+ &dsi {
+-	phy-dsi-supply =  <&scmi_vddcore>;
++	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_v1v8>;
+ 	status = "okay";
+ 
+-- 
+2.39.2
+

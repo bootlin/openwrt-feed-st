@@ -1,0 +1,39 @@
+From 6aeb9f186e3dd41eacad8ec60885398013dbbcf4 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 14:13:52 +0100
+Subject: [PATCH 0759/1141] dt-bindings: iio: adc: stm32-adc: add
+ 'power-domains' property
+
+STM32 ADC may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 ADC.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ie23c76b239651beb682e3965935c51d3ecfc40c0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347855
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index 0a165ea39d9c..f9289ddb3957 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -77,6 +77,9 @@ properties:
+       Phandle to the vdd input voltage. It can be used to supply ADC analog
+       input switches on stm32mp1.
+ 
++  power-domains:
++    maxItems: 1
++
+   st,syscfg:
+     description:
+       Phandle to system configuration controller. It can be used to control the
+-- 
+2.39.2
+

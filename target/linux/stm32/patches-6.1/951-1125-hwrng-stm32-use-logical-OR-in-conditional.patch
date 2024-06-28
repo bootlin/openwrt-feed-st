@@ -1,0 +1,40 @@
+From b3b2d206737fe0dbdae661547f694cb652840130 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 29 Apr 2024 10:05:33 +0200
+Subject: [PATCH 1125/1141] hwrng: stm32 - use logical OR in conditional
+
+The conditional is used to check whether err is non-zero OR whether
+reg variable is non-zero after clearing bits from it. This should be
+done using logical OR, not bitwise OR, fix it.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Link: https://lore.kernel.org/linux-arm-kernel/20240419050201.181041-3-marex@denx.de/T/
+Change-Id: I034054cfd53e55dd37a94f8b65bfba74a01acd1e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377065
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/char/hw_random/stm32-rng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index acbf6c29bfa5..56b0819231ce 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -358,7 +358,7 @@ static int stm32_rng_init(struct hwrng *rng)
+ 	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, reg,
+ 						reg & RNG_SR_DRDY,
+ 						10, 100000);
+-	if (err | (reg & ~RNG_SR_DRDY)) {
++	if (err || (reg & ~RNG_SR_DRDY)) {
+ 		if (priv->bus_clk)
+ 			clk_disable_unprepare(priv->bus_clk);
+ 		clk_disable_unprepare(priv->clk);
+-- 
+2.39.2
+

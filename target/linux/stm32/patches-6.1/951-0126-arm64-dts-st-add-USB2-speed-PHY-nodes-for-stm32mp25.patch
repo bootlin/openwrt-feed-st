@@ -1,0 +1,53 @@
+From d3c79c4e3e3702a0fe4bc0b107db5385086207d7 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 19 Apr 2022 12:29:50 +0530
+Subject: [PATCH 0126/1141] arm64: dts: st: add USB2-speed PHY nodes for
+ stm32mp25
+
+USB2 speed FEMTO PHYs one each for USB2-Host Controller and
+USB DWC3 Dual-Role Controller, supporting Low/Full/High-Speed
+
+Change-Id: I44c08b37d2c51e9e6269792b8b2bb2cbaf4a0fc8
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305761
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index caf8692b43b8..7f840c63c1b9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -145,6 +145,26 @@ timer {
+ 		always-on;
+ 	};
+ 
++	usb2_phy1: usb2-phy1 {
++		compatible      = "st,stm32mp25-usb2phy";
++		#phy-cells      = <0>;
++		st,syscfg       = <&syscfg 0x2400>;
++		clocks          = <&rcc CK_KER_USB2PHY1>;
++		resets          = <&rcc USB2PHY1_R>;
++		vdd33-supply    = <&scmi_vdd33usb>;
++		status          = "disabled";
++	};
++
++	usb2_phy2: usb2-phy2 {
++		compatible      = "st,stm32mp25-usb2phy";
++		#phy-cells      = <0>;
++		st,syscfg       = <&syscfg 0x2800>;
++		clocks          = <&rcc CK_KER_USB2PHY2EN>;
++		resets          = <&rcc USB2PHY2_R>;
++		vdd33-supply    = <&scmi_vdd33usb>;
++		status          = "disabled";
++	};
++
+ 	soc@0 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+-- 
+2.39.2
+

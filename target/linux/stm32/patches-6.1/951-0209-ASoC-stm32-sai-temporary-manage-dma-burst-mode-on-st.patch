@@ -1,0 +1,82 @@
+From c023683380c853f7822f2b3010f1bb82747efb70 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 21 Sep 2022 11:47:53 +0200
+Subject: [PATCH 0209/1141] ASoC: stm32: sai: temporary: manage dma burst mode
+ on stm32mp25
+
+The STM32 SAI peripheral does not support the DMA burst mode
+on STM32MP25. Add a field in compatible structure to manage DMA
+burst support capability.
+
+This patch may be changed to removed dma burst mode support
+on SAI for all SoCs. The status of burst mode utility has still
+to be clarified.
+
+Change-Id: I84447e8a4f0a81cdc7163653eca5a12e4f1a8474
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/268575
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ sound/soc/stm/stm32_sai.c     | 7 ++++++-
+ sound/soc/stm/stm32_sai.h     | 2 ++
+ sound/soc/stm/stm32_sai_sub.c | 2 +-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index ddba065ce835..044204068e23 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -42,8 +42,13 @@ static const struct stm32_sai_conf stm32_sai_conf_h7 = {
+ 	.get_sai_ck_parent = stm32_sai_get_parent_clk,
+ };
+ 
+-/* STM32MP25: do not use SAI parent clock handles */
++/*
++ * STM32MP25:
++ * - do not use SAI parent clock source selection
++ * - do not use DMA burst mode
++ */
+ static const struct stm32_sai_conf stm32_sai_conf_mp25 = {
++	.no_dma_burst = true,
+ };
+ 
+ static const struct of_device_id stm32_sai_ids[] = {
+diff --git a/sound/soc/stm/stm32_sai.h b/sound/soc/stm/stm32_sai.h
+index 9f331a49b170..07b71133db2a 100644
+--- a/sound/soc/stm/stm32_sai.h
++++ b/sound/soc/stm/stm32_sai.h
+@@ -272,12 +272,14 @@ struct stm32_sai_data;
+  * @version: SAI version
+  * @fifo_size: SAI fifo size as words number
+  * @has_spdif_pdm: SAI S/PDIF and PDM features support flag
++ * @no_dma_burst: Support only DMA single transfers if set
+  */
+ struct stm32_sai_conf {
+ 	int (*get_sai_ck_parent)(struct stm32_sai_data *sai);
+ 	u32 version;
+ 	u32 fifo_size;
+ 	bool has_spdif_pdm;
++	bool no_dma_burst;
+ };
+ 
+ /**
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index c4402cbb3885..68f326dff898 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1313,7 +1313,7 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	 * constraints).
+ 	 */
+ 	sai->dma_params.maxburst = 4;
+-	if (sai->pdata->conf.fifo_size < 8)
++	if (sai->pdata->conf.fifo_size < 8 || sai->pdata->conf.no_dma_burst)
+ 		sai->dma_params.maxburst = 1;
+ 	/* Buswidth will be set by framework at runtime */
+ 	sai->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_UNDEFINED;
+-- 
+2.39.2
+

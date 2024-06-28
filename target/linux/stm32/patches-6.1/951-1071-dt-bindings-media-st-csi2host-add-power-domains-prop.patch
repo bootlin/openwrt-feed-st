@@ -1,0 +1,41 @@
+From 825ee47854f13b883950779c5c8e661ed856d267 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 27 Mar 2024 14:34:09 +0100
+Subject: [PATCH 1071/1141] dt-bindings: media: st: csi2host: add
+ 'power-domains' property
+
+STM32 CSI2HOST may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 CSI2HOST.
+
+Fix dtbs_check warning:
+ Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Change-Id: Ide57105b490982ea13a41a21faf7f5f05c33a897
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369711
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
+index 0d90c587f4e3..67a4414287f1 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
+@@ -32,6 +32,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+-- 
+2.39.2
+

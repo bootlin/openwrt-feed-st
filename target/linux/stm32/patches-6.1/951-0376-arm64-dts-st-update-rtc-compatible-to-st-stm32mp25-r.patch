@@ -1,0 +1,43 @@
+From 5e8dc7538191be0b87d1d90f3e3e1e5c3ec3af46 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 9 Jun 2023 18:25:23 +0200
+Subject: [PATCH 0376/1141] arm64: dts: st: update rtc compatible to
+ st,stm32mp25-rtc
+
+Introduce new st,stm32mp25-rtc compatible. It is based on st,stm32mp1-rtc.
+
+Difference is that stm32mp25 soc implements a triple protection on RTC
+registers:
+- secure bit based protection
+- privileged context based protection
+- CID filtering based protection
+This driver will now check theses configurations before probing to avoid
+exceptions and fake reads on register.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I2276ecf9d7c0e5d1c0ea29c93ada94ba242239bb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/312303
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5f9c773b4f50..c3904e3ce9d9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2314,7 +2314,7 @@ gpiok: gpio@442e0000 {
+ 		};
+ 
+ 		rtc: rtc@46000000 {
+-			compatible = "st,stm32mp1-rtc";
++			compatible = "st,stm32mp25-rtc";
+ 			reg = <0x46000000 0x400>;
+ 			clocks = <&scmi_clk CK_SCMI_RTC>,
+ 				 <&scmi_clk CK_SCMI_RTCCK>;
+-- 
+2.39.2
+

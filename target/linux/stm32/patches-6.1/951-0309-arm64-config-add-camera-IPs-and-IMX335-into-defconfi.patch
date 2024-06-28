@@ -1,0 +1,35 @@
+From 371b5eb4489c85e76209b3136686663d118d3a1d Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 5 Jun 2023 23:15:23 +0200
+Subject: [PATCH 0309/1141] arm64: config: add camera IPs and IMX335 into
+ defconfig-addons
+
+Add DCMI/CSI2HOST/DCMIPP and IMX335 sensor into defconfig-addons
+
+Change-Id: I16265ab5dbad81ef40424c6abb1923e8ff68434f
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305410
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index bab103f4b86c..407ed2d79df3 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -89,3 +89,7 @@ CONFIG_UBIFS_FS=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+ CONFIG_VIDEOMODE_HELPERS=y
++CONFIG_VIDEO_IMX335=m
++CONFIG_VIDEO_STM32_CSI2HOST=m
++CONFIG_VIDEO_STM32_DCMI=m
++CONFIG_VIDEO_STM32_DCMIPP=m
+-- 
+2.39.2
+

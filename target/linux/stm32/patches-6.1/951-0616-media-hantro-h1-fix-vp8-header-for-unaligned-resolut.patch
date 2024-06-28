@@ -1,0 +1,52 @@
+From 780cd5069bb78bb5da2c0d058757e09632619318 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 29 Aug 2023 17:37:50 +0200
+Subject: [PATCH 0616/1141] media: hantro: h1: fix vp8 header for unaligned
+ resolutions
+
+The encoded input frame resolution was coded in header instead
+of requested resolution. This makes a difference with padded
+input frame because of alignment constraint: in that case extra
+padding must not be displayed.
+Typical case is full HD 1920x1080 resolution coded to 1920x1088.
+
+Fix that by coding in header the unaligned requested resolution,
+this information will then be used by video player to crop decoded
+content to the right visible resolution.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: Ifd240063a47526c2be036a65a041bf3762643c38
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/336819
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+index 3de34c9043e1..f89d6b8f462b 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
++++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+@@ -716,11 +716,11 @@ static void hantro_h1_vp8_enc_write_header(struct hantro_ctx *ctx, u32 qp,
+ 		ctx->vp8_enc.frame_tag->magic[1] = 0x01;
+ 		ctx->vp8_enc.frame_tag->magic[2] = 0x2a;
+ 
+-		ctx->vp8_enc.frame_tag->width[0] = ctx->src_fmt.width & 0xff;
+-		ctx->vp8_enc.frame_tag->width[1] = (ctx->src_fmt.width >> 8) & 0xff;
++		ctx->vp8_enc.frame_tag->width[0] = ctx->dst_fmt.width & 0xff;
++		ctx->vp8_enc.frame_tag->width[1] = (ctx->dst_fmt.width >> 8) & 0xff;
+ 
+-		ctx->vp8_enc.frame_tag->height[0] = ctx->src_fmt.height & 0xff;
+-		ctx->vp8_enc.frame_tag->height[1] = (ctx->src_fmt.height >> 8) & 0xff;
++		ctx->vp8_enc.frame_tag->height[0] = ctx->dst_fmt.height & 0xff;
++		ctx->vp8_enc.frame_tag->height[1] = (ctx->dst_fmt.height >> 8) & 0xff;
+ 	} else {
+ 		ctx->vp8_enc.frame_tag->tag[0] |= 0x1;
+ 	}
+-- 
+2.39.2
+

@@ -1,0 +1,49 @@
+From 93410fb22cb684968a3077d29641980260ec5879 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 12:12:57 +0100
+Subject: [PATCH 0666/1141] arm64: dts: st: enable camera pipeline on
+ stm32mp257f-dk board
+
+Enable camera pipeline on stm32mp257f-dk board.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I245ca4148d0fae0fc6ee41b169c201dc88771d6c
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 829a494719fa..b0a056174ebb 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -174,7 +174,7 @@ &arm_wdt {
+ };
+ 
+ &csi2host {
+-	status = "disabled";
++	status = "okay";
+ 	ports {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -196,7 +196,7 @@ csi2host_source: endpoint {
+ };
+ 
+ &dcmipp {
+-	status = "disabled";
++	status = "okay";
+ 	port {
+ 		dcmipp_0: endpoint {
+ 			remote-endpoint = <&csi2host_source>;
+@@ -287,7 +287,7 @@ imx335: imx335@1a {
+ 		clocks = <&clk_ext_camera>;
+ 		reset-gpios = <&gpiob 1 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+ 		powerdown-gpios = <&gpiob 11 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		port {
+ 			imx335_ep: endpoint {
+-- 
+2.39.2
+

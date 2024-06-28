@@ -1,0 +1,94 @@
+From 0f844ff6adc1ec4ca090b1586ddb90a7d7b9afc5 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 26 Jan 2024 11:27:24 +0100
+Subject: [PATCH 0859/1141] ARM: dts: stm32: add support of continuous display
+ on stm32mp157 EV1 boards
+
+Set the backlight & the panel on at probe.
+
+Change-Id: Idb77322eb8a08f13225f2d86022c725692377f59
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352878
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp157c-ev1.dts | 5 ++++-
+ arch/arm/boot/dts/stm32mp157f-ev1.dts | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+index a787781c204b..bc48a07ba59e 100644
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -28,7 +28,7 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
+-			clocks = <&rcc LTDC_PX>;
++			clocks = <&rcc LTDC_PX>, <&rcc DSI>, <&rcc DSI_PX>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -129,6 +129,7 @@ panel_backlight: panel-backlight {
+ 		compatible = "gpio-backlight";
+ 		gpios = <&gpiod 13 GPIO_ACTIVE_LOW>;
+ 		default-on;
++		default-brightness-level = <1>;
+ 		status = "okay";
+ 	};
+ 
+@@ -312,6 +313,7 @@ dfsdm_endpoint3: endpoint {
+ &dsi {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
++	default-on;
+ 	status = "okay";
+ 
+ 	ports {
+@@ -526,6 +528,7 @@ &i2c5 {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+index bf819d8501ce..b521a44b6cab 100644
+--- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
+@@ -28,7 +28,7 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
+-			clocks = <&rcc LTDC_PX>;
++			clocks = <&rcc LTDC_PX>, <&rcc DSI>, <&rcc DSI_PX>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -129,6 +129,7 @@ panel_backlight: panel-backlight {
+ 		compatible = "gpio-backlight";
+ 		gpios = <&gpiod 13 GPIO_ACTIVE_LOW>;
+ 		default-on;
++		default-brightness-level = <1>;
+ 		status = "okay";
+ 	};
+ 
+@@ -313,6 +314,7 @@ dfsdm_endpoint3: endpoint {
+ &dsi {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
++	default-on;
+ 	status = "okay";
+ 
+ 	ports {
+@@ -527,6 +529,7 @@ &i2c5 {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+-- 
+2.39.2
+

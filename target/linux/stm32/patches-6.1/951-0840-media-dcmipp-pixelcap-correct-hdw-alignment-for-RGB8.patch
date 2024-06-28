@@ -1,0 +1,39 @@
+From 2002017be176533979fc65ed93d5cb03f4b5455a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 25 Jan 2024 13:12:53 +0100
+Subject: [PATCH 0840/1141] media: dcmipp: pixelcap: correct hdw alignment for
+ RGB888
+
+Since the hardware requires to have a line length multiple of
+16 bytes, the alignment for RGB888 (3 bytes per pixel) is
+16 pixels.
+
+Change-Id: I195d8ce566de79ca2b5005b3f79e6152f31774a1
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354366
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index 9a338d121f0e..e96f02f95f67 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -234,8 +234,9 @@ static inline int hdw_pixel_alignment(u32 format)
+ 	case V4L2_PIX_FMT_YVYU:
+ 	case V4L2_PIX_FMT_UYVY:
+ 	case V4L2_PIX_FMT_VYUY:
+-	case V4L2_PIX_FMT_RGB24:
+ 		return 3;/* 2^3  = 8 pixels = 16 bytes */
++	case V4L2_PIX_FMT_RGB24:
++		return 4;/* 2^4 = 16 pixels = 48 bytes */
+ 	case V4L2_PIX_FMT_ARGB32:
+ 		return 2;/* 2^2  = 4 pixels = 16 bytes */
+ 	default:
+-- 
+2.39.2
+

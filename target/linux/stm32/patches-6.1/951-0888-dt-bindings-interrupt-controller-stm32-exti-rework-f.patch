@@ -1,0 +1,80 @@
+From ddd62bb622afe2172db756efc9d69cbd6774765f Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 27 Feb 2024 08:52:30 +0100
+Subject: [PATCH 0888/1141] dt-bindings: interrupt-controller: stm32-exti:
+ rework for upstream
+
+Due to upstream review, drop the interrupt-map child node and use
+the interrupts-extended property.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ib739fa516b50ed444f0067908b36014721bc71c7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/363286
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../interrupt-controller/st,stm32-exti.yaml   | 31 +++----------------
+ 1 file changed, 5 insertions(+), 26 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+index 77d36e5f36ea..b4bc1d4132ef 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+@@ -30,8 +30,6 @@ properties:
+ 
+   "#interrupt-cells":
+     const: 2
+-  "#address-cells":
+-    const: 0
+ 
+   reg:
+     maxItems: 1
+@@ -51,21 +49,6 @@ properties:
+ 
+   wakeup-parent: true
+ 
+-  exti-interrupt-map:
+-    type: object
+-    properties:
+-      interrupt-map: true
+-      interrupt-map-mask: true
+-      "#interrupt-cells":
+-        const: 2
+-      "#address-cells":
+-        const: 0
+-
+-    required:
+-      - interrupt-map
+-      - "#interrupt-cells"
+-      - "#address-cells"
+-
+ required:
+   - "#interrupt-cells"
+   - compatible
+@@ -122,15 +105,11 @@ examples:
+         #interrupt-cells = <2>;
+         reg = <0x5000d000 0x400>;
+         wakeup-parent = <&pwr_irq>;
+-        exti-interrupt-map {
+-            #address-cells = <0>;
+-            #interrupt-cells = <2>;
+-            interrupt-map-mask = <0xffffffff 0>;
+-            interrupt-map =
+-                <0 0 &intc GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+-                <3 0 &intc GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+-                <55 0 &pwr_irq 0 IRQ_TYPE_EDGE_FALLING 0>;
+-        };
++        interrupts-extended =
++            <&intc GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
++            <0>,
++            <&pwr_irq 0 IRQ_TYPE_EDGE_FALLING 0>,
++            <&intc GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+     };
+ 
+   - |
+-- 
+2.39.2
+

@@ -1,0 +1,38 @@
+From 3ad6bbf7a0a478a81d7183bbeec78e23ce746b74 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Wed, 23 Nov 2022 20:19:55 +0530
+Subject: [PATCH 0131/1141] arm64: dts: st: add USB3DRD support in
+ stm32mp257f-ev
+
+Add the required node(s) for USB3-DWC3 support : USB3DRD
+
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I3c60586ce242e1afe65cf144deff1ecf0e984917
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305766
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+index 4cbc1455959d..e763b0917347 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+@@ -104,3 +104,12 @@ &usb2_phy1 {
+ &usb2_phy2 {
+ 	status = "okay";
+ };
++
++&usb3dr {
++	status = "okay";
++
++	dwc3: usb@48300000 {
++		maximum-speed = "high-speed";
++		dr_mode = "peripheral";
++	};
++};
+-- 
+2.39.2
+

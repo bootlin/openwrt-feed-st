@@ -1,0 +1,47 @@
+From 7a7e2ab6e29b331d6e9a04ffe9ee0fa170bef1f2 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 2 Oct 2023 15:41:19 +0200
+Subject: [PATCH 0651/1141] arm64: dts: st: add pins muxing for i2c8 on
+ stm32mp257f-ev1 and -dk
+
+Add pins muxings for the i2c8 bus accessible via the expansion
+connector of the STM32MP257F-EV1 (MB1936) and STM32MP257F-DK (MB1605)
+boards.
+
+Change-Id: I425357daf0e0161c2ca9236fecd5d5ec20f82736
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 8cc0ca52a5c5..5049a06edb77 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -719,6 +719,23 @@ pins {
+ };
+ 
+ &pinctrl_z {
++	i2c8_pins_a: i2c8-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 4, AF8)>, /* I2C8_SCL */
++				 <STM32_PINMUX('Z', 3, AF8)>; /* I2C8_SDA */
++			bias-disable;
++			drive-open-drain;
++			slew-rate = <0>;
++		};
++	};
++
++	i2c8_sleep_pins_a: i2c8-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I2C8_SCL */
++				 <STM32_PINMUX('Z', 3, ANALOG)>; /* I2C8_SDA */
++		};
++	};
++
+ 	i3c4_pins_a: i3c4-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('Z', 4, AF11)>, /* I3C4_SCL */
+-- 
+2.39.2
+

@@ -1,0 +1,53 @@
+From dbc902eefb3c09d8cb7f63175530fab59511bf2c Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 2 Jun 2023 13:40:52 +0200
+Subject: [PATCH 0038/1141] drm/panel: otm8009a: Use runtime pm to avoid
+ excessive unprepare / prepare
+
+At end of probe, the driver should be suspended.
+
+Change-Id: Id42f9b0142cc8e84233e915662f26da20225856f
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310401
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+index 6fc0ae20c8bd..c7d68a09b9c9 100644
+--- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
++++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+@@ -463,9 +463,17 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+ 			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
+ 
++	pm_runtime_enable(ctx->dev);
++	pm_runtime_set_autosuspend_delay(ctx->dev, 1000);
++	pm_runtime_use_autosuspend(ctx->dev);
++
+ 	drm_panel_init(&ctx->panel, dev, &otm8009a_drm_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
+ 
++	pm_runtime_get_sync(ctx->dev);
++	pm_runtime_mark_last_busy(ctx->dev);
++	pm_runtime_put_autosuspend(ctx->dev);
++
+ 	ctx->bl_dev = devm_backlight_device_register(dev, dev_name(dev),
+ 						     dev, ctx,
+ 						     &otm8009a_backlight_ops,
+@@ -490,10 +498,6 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+ 		return ret;
+ 	}
+ 
+-	pm_runtime_enable(ctx->dev);
+-	pm_runtime_set_autosuspend_delay(ctx->dev, 1000);
+-	pm_runtime_use_autosuspend(ctx->dev);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

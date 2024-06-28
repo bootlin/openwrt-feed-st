@@ -1,0 +1,46 @@
+From d8ee4074b684a0ccd091d88588ade1bb457cf5e7 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 19 Sep 2023 15:37:15 +0200
+Subject: [PATCH 0527/1141] dmaengine: stm32-dma3: adopt dev_err_probe for clk
+
+Use dev_err_probe instead of checking for -EPROBE_DEFER to log an error.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: Ib2baeed72063f93234002b8682f680188613bfb1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329077
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/dma/stm32-dma3.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
+index 95a9dfd2d5ff..41e1538aae36 100644
+--- a/drivers/dma/stm32-dma3.c
++++ b/drivers/dma/stm32-dma3.c
+@@ -2148,18 +2148,12 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+ 		return PTR_ERR(ddata->base);
+ 
+ 	ddata->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(ddata->clk)) {
+-		ret = PTR_ERR(ddata->clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Failed to get clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(ddata->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(ddata->clk), "Failed to get clk\n");
+ 
+ 	ret = clk_prepare_enable(ddata->clk);
+-	if (ret) {
+-		dev_err(&pdev->dev, "Failed to enable clk: %d\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "Failed to enable clk\n");
+ 
+ 	reset = devm_reset_control_get(&pdev->dev, NULL);
+ 	if (IS_ERR(reset)) {
+-- 
+2.39.2
+

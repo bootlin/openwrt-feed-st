@@ -1,0 +1,74 @@
+From 40a7febc5265a2fce1f0aa6a7f5b0700f4b2d548 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:34 +0200
+Subject: [PATCH 0482/1141] dt-bindings: rng: add clock names for STM32 RNG
+
+There are 2 clocks connected to the RNG hardware block:
+- RNG kernel clock
+- RNG bus clock (To access its registers)
+
+On STM32MP1x platforms, there was no need to specify the bus clock
+as it shares the same gate as the RNG kernel clock. However it is not
+the case on STM32MP2x platforms. Introduce clock-names property for this
+hardware block to identify each of them.
+
+The clock-names property is only mandatory for STM32MP2x platforms.
+The RNG kernel clock will be defaulted to the clock at index 0 if
+there's no need to specify multiple clocks. This information is present
+in the compatible data.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Ia9842e4892ca6555e04676a09f13dee599403dcb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325020
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/rng/st,stm32-rng.yaml | 20 ++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 591af796a5eb..301d2f588a05 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -24,7 +24,7 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    maxItems: 1
++    minItems: 1
+ 
+   resets:
+     maxItems: 1
+@@ -53,6 +53,24 @@ allOf:
+           description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
+                        RNG_NSCR will be locked.
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: st,stm32mp25-rng
++    then:
++      properties:
++        clocks:
++          minItems: 2
++
++        clock-names:
++          items:
++            - const: rng_clk  # RNG kernel clock
++            - const: rng_hclk # RNG bus clock
++
++      required:
++        - clock-names
++
+ additionalProperties: false
+ 
+ examples:
+-- 
+2.39.2
+

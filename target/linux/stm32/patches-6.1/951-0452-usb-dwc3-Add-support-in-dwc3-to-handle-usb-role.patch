@@ -1,0 +1,159 @@
+From 656810f7cbecc3b00ee23414c6bb85cc9f948b66 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 27 Jun 2023 12:33:43 +0530
+Subject: [PATCH 0452/1141] usb: dwc3: Add support in dwc3 to handle usb-role
+
+dwc3_usb_role_switch_set callback provides usb_role data for
+each cable change event, usb_role information needs to be passed
+to the phy interface(phy_set_mode), each time the event happens.
+
+Currently usb_role is not used, also the phy_set_mode is only called
+when there is a mode change.
+
+Modifications here pass the usb_role to phy_set_mode, also phy_set_mode
+is called each time the role switch event happens. Aim is to support
+superspeed operation, along with role-switch for stm32mp25
+
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I45c1c8d00af3b64d760a5b381dd6c91b29337b35
+---
+ drivers/usb/dwc3/core.c | 26 ++++++++++++++++++++------
+ drivers/usb/dwc3/core.h |  5 ++++-
+ drivers/usb/dwc3/drd.c  | 10 ++++++++--
+ 3 files changed, 32 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 011a3909f9ad..da02bfcde3ff 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -137,8 +137,21 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	if (!desired_dr_role)
+ 		goto out;
+ 
+-	if (desired_dr_role == dwc->current_dr_role)
++	if (desired_dr_role == dwc->current_dr_role) {
++		switch (dwc->current_dr_role) {
++		case DWC3_GCTL_PRTCAP_HOST:
++			phy_set_mode_ext(dwc->usb2_generic_phy, PHY_MODE_USB_HOST, dwc->submode);
++			phy_set_mode_ext(dwc->usb3_generic_phy, PHY_MODE_USB_HOST, dwc->submode);
++			break;
++		case DWC3_GCTL_PRTCAP_DEVICE:
++			phy_set_mode_ext(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE, dwc->submode);
++			phy_set_mode_ext(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE, dwc->submode);
++			break;
++		default:
++			break;
++		}
+ 		goto out;
++	}
+ 
+ 	if (desired_dr_role == DWC3_GCTL_PRTCAP_OTG && dwc->edev)
+ 		goto out;
+@@ -200,8 +213,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 		} else {
+ 			if (dwc->usb2_phy)
+ 				otg_set_vbus(dwc->usb2_phy->otg, true);
+-			phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_HOST);
+-			phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_HOST);
++			phy_set_mode_ext(dwc->usb2_generic_phy, PHY_MODE_USB_HOST, dwc->submode);
++			phy_set_mode_ext(dwc->usb3_generic_phy, PHY_MODE_USB_HOST, dwc->submode);
+ 			if (dwc->dis_split_quirk) {
+ 				reg = dwc3_readl(dwc->regs, DWC3_GUCTL3);
+ 				reg |= DWC3_GUCTL3_SPLITDISABLE;
+@@ -216,8 +229,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 
+ 		if (dwc->usb2_phy)
+ 			otg_set_vbus(dwc->usb2_phy->otg, false);
+-		phy_set_mode(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE);
+-		phy_set_mode(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE);
++		phy_set_mode_ext(dwc->usb2_generic_phy, PHY_MODE_USB_DEVICE, dwc->submode);
++		phy_set_mode_ext(dwc->usb3_generic_phy, PHY_MODE_USB_DEVICE, dwc->submode);
+ 
+ 		ret = dwc3_gadget_init(dwc);
+ 		if (ret)
+@@ -237,7 +250,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	mutex_unlock(&dwc->mutex);
+ }
+ 
+-void dwc3_set_mode(struct dwc3 *dwc, u32 mode)
++void dwc3_set_mode_ext(struct dwc3 *dwc, u32 mode, int submode)
+ {
+ 	unsigned long flags;
+ 
+@@ -246,6 +259,7 @@ void dwc3_set_mode(struct dwc3 *dwc, u32 mode)
+ 
+ 	spin_lock_irqsave(&dwc->lock, flags);
+ 	dwc->desired_dr_role = mode;
++	dwc->submode = submode;
+ 	spin_unlock_irqrestore(&dwc->lock, flags);
+ 
+ 	queue_work(system_freezable_wq, &dwc->drd_work);
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 889c122dad45..9d793264526c 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1179,6 +1179,7 @@ struct dwc3 {
+ 	enum usb_dr_mode	dr_mode;
+ 	u32			current_dr_role;
+ 	u32			desired_dr_role;
++	int			submode;
+ 	struct extcon_dev	*edev;
+ 	struct notifier_block	edev_nb;
+ 	enum usb_phy_interface	hsphy_mode;
+@@ -1511,7 +1512,9 @@ struct dwc3_gadget_ep_cmd_params {
+ 
+ /* prototypes */
+ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode);
+-void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
++#define dwc3_set_mode(dwc3, mode) \
++	dwc3_set_mode_ext(dwc3, mode, USB_ROLE_NONE)
++void dwc3_set_mode_ext(struct dwc3 *dwc, u32 mode, int submode);
+ u32 dwc3_core_fifo_space(struct dwc3_ep *dep, u8 type);
+ 
+ #define DWC3_IP_IS(_ip)							\
+diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+index 57ddd2e43022..ef733ecc512e 100644
+--- a/drivers/usb/dwc3/drd.c
++++ b/drivers/usb/dwc3/drd.c
+@@ -440,6 +440,7 @@ static int dwc3_drd_notifier(struct notifier_block *nb,
+ 
+ #if IS_ENABLED(CONFIG_USB_ROLE_SWITCH)
+ #define ROLE_SWITCH 1
++static enum usb_role dwc3_usb_role_switch_get(struct usb_role_switch *sw);
+ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+ 				    enum usb_role role)
+ {
+@@ -461,7 +462,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+ 		break;
+ 	}
+ 
+-	dwc3_set_mode(dwc, mode);
++	dwc3_set_mode_ext(dwc, mode, role);
++
+ 	return 0;
+ }
+ 
+@@ -497,15 +499,19 @@ static int dwc3_setup_role_switch(struct dwc3 *dwc)
+ {
+ 	struct usb_role_switch_desc dwc3_role_switch = {NULL};
+ 	u32 mode;
++	int submode = USB_ROLE_NONE;
+ 
+ 	dwc->role_switch_default_mode = usb_get_role_switch_default_mode(dwc->dev);
+ 	if (dwc->role_switch_default_mode == USB_DR_MODE_HOST) {
+ 		mode = DWC3_GCTL_PRTCAP_HOST;
++		submode = USB_ROLE_HOST;
+ 	} else {
++		if (dwc->role_switch_default_mode == USB_DR_MODE_PERIPHERAL)
++			submode = USB_ROLE_DEVICE;
+ 		dwc->role_switch_default_mode = USB_DR_MODE_PERIPHERAL;
+ 		mode = DWC3_GCTL_PRTCAP_DEVICE;
+ 	}
+-	dwc3_set_mode(dwc, mode);
++	dwc3_set_mode_ext(dwc, mode, submode);
+ 
+ 	dwc3_role_switch.fwnode = dev_fwnode(dwc->dev);
+ 	dwc3_role_switch.set = dwc3_usb_role_switch_set;
+-- 
+2.39.2
+

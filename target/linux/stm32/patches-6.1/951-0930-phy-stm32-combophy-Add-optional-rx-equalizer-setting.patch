@@ -1,0 +1,63 @@
+From 37fc8221bdbf1574619d954cf931ac066009d248 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Tue, 13 Feb 2024 15:18:56 +0100
+Subject: [PATCH 0930/1141] phy: stm32: combophy: Add optional rx equalizer
+ setting
+
+Set Rx equalizer peak voltage filter value from
+SYSCFG_COMBOPHY_CR4_RX0_EQ bits.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Ifcb001b29cb9683882bba2133c0f80fa179d329b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359657
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/phy/st/phy-stm32-combophy.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
+index e046c5a2021d..a8809e348668 100644
+--- a/drivers/phy/st/phy-stm32-combophy.c
++++ b/drivers/phy/st/phy-stm32-combophy.c
+@@ -22,6 +22,7 @@
+ 
+ #define SYSCFG_COMBOPHY_CR1 0x4C00
+ #define SYSCFG_COMBOPHY_CR2 0x4C04
++#define SYSCFG_COMBOPHY_CR4 0x4C0C
+ #define SYSCFG_COMBOPHY_CR5 0x4C10
+ #define SYSCFG_COMBOPHY_SR  0x4C14
+ #define SYSCFG_PCIEPRGCR    0x6080
+@@ -42,6 +43,9 @@
+ #define SYSCFG_COMBOPHY_CR1_REFSSPEN BIT(18)
+ #define SYSCFG_COMBOPHY_CR1_SSCEN BIT(19)
+ 
++/* SYSCFG CR4 */
++#define SYSCFG_COMBOPHY_CR4_RX0_EQ GENMASK(2, 0)
++
+ #define MPLLMULT_19_2 (0x02u << 1)
+ #define MPLLMULT_20   (0x7Du << 1)
+ #define MPLLMULT_24   (0x68u << 1)
+@@ -196,6 +200,17 @@ static int stm32_combophy_pll_init(struct stm32_combophy *combophy)
+ 				   SYSCFG_COMBOPHY_CR1_SSCEN, SYSCFG_COMBOPHY_CR1_SSCEN);
+ 	}
+ 
++	if (!of_property_read_u32(combophy->dev->of_node, "st,rx_equalizer", &val)) {
++		dev_dbg(combophy->dev, "Set RX equalizer %u\n", val);
++		if (val > SYSCFG_COMBOPHY_CR4_RX0_EQ) {
++			dev_err(combophy->dev, "Invalid value %u for rx0 equalizer\n", val);
++			return -EINVAL;
++		}
++
++		regmap_update_bits(combophy->regmap, SYSCFG_COMBOPHY_CR4,
++			   SYSCFG_COMBOPHY_CR4_RX0_EQ, val);
++	}
++
+ 	if (combophy->type == PHY_TYPE_PCIE) {
+ 		ret = stm32_impedance_tune(combophy);
+ 		if (ret) {
+-- 
+2.39.2
+

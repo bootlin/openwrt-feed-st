@@ -1,0 +1,36 @@
+From 60ebdeb75efcc9ea8617123b95fe39fa7c08caf5 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Fri, 8 Dec 2023 11:04:41 +0100
+Subject: [PATCH 0630/1141] arm64: dts: st: avoid scmi regulator yaml warning
+ for stm32mp257f-dk
+
+Avoid an SCMI YAML code checking error.
+The SCMI YAML oblige the node name to be regulator@xx.
+
+Change-Id: If55c5ce2380b46ab76d1c46b9eb57f1b6add59d1
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 61014626cbe0..79aea8039e8d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -62,11 +62,11 @@ &arm_wdt {
+ };
+ 
+ &scmi_regu {
+-	scmi_vddio1: voltd-vddio1 {
++	scmi_vddio1: regulator@0 {
+ 		regulator-min-microvolt = <1800000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
+-	scmi_vdd_sdcard: voltd-vdd-sdcard {
++	scmi_vdd_sdcard: regulator@23 {
+ 		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
+ 		regulator-name = "vdd_sdcard";
+ 	};
+-- 
+2.39.2
+

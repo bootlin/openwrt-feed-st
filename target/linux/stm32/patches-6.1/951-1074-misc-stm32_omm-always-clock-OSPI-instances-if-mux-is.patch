@@ -1,0 +1,399 @@
+From 46b181ff85d9b3834854160d3a71620c1348d84b Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Mon, 18 Mar 2024 18:38:13 +0100
+Subject: [PATCH 1074/1141] misc: stm32_omm: always clock OSPI instances if mux
+ is enabled
+
+If the mux is enabled, the 2 OSPI clocks have to be always enabled.
+The driver is reworked to be able to manage the use case properly.
+
+Change-Id: Idd1c6c2b7c7ad7b3ff222cb1c729d505cdae502a
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368089
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/misc/stm32_omm.c | 201 ++++++++++++++++++++++++++-------------
+ 1 file changed, 133 insertions(+), 68 deletions(-)
+
+diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
+index d57ea4a79c72..3a4639e10d15 100644
+--- a/drivers/misc/stm32_omm.c
++++ b/drivers/misc/stm32_omm.c
+@@ -30,13 +30,15 @@
+ #define OMM_CHILD_NB		2
+ 
+ struct stm32_omm {
++	struct device_node *child_node[OMM_CHILD_NB];
+ 	struct device *child_dev[OMM_CHILD_NB];
++	struct clk *child_clk[OMM_CHILD_NB];
+ 	struct resource *mm_res;
+ 	struct clk *clk;
+ 	void __iomem *io_base;
+ 	u32 cr;
+ 	u8 nb_child;
+-	bool restore_cr;
++	bool restore_omm;
+ };
+ 
+ static int stm32_omm_set_amcr(struct device *dev, bool set)
+@@ -51,7 +53,7 @@ static int stm32_omm_set_amcr(struct device *dev, bool set)
+ 	int ret, i, idx;
+ 	unsigned int amcr, read_amcr;
+ 
+-	for (i = 0; i < 2; i++) {
++	for (i = 0; i < omm->nb_child; i++) {
+ 		idx = of_property_match_string(dev->of_node,
+ 					       "memory-region-names",
+ 					       mm_name[i]);
+@@ -120,18 +122,49 @@ static int stm32_omm_set_amcr(struct device *dev, bool set)
+ 	regmap_read(syscfg_regmap, amcr_base, &read_amcr);
+ 	read_amcr = read_amcr >> (ffs(amcr_mask) - 1);
+ 
+-	return amcr != read_amcr;
++	if (amcr != read_amcr) {
++		dev_err(dev, "AMCR value not coherent with DT memory-map areas\n");
++		ret = -EINVAL;
++	}
++
++	return ret;
+ }
+ 
+-static int stm32_omm_configure(struct platform_device *pdev)
++static int stm32_omm_enable_child_clock(struct device *dev, bool enable)
+ {
+-	struct stm32_omm *omm = platform_get_drvdata(pdev);
++	/* As there is only 2 children, remember first child in case of error */
++	struct clk *first_child_clk = NULL;
++	struct stm32_omm *omm = dev_get_drvdata(dev);
++	u8 i;
++	int ret;
++
++	for (i = 0; i < omm->nb_child; i++) {
++		if (enable) {
++			ret = clk_prepare_enable(omm->child_clk[i]);
++			if (ret) {
++				if (first_child_clk)
++					clk_disable_unprepare(first_child_clk);
++
++				dev_err(dev, "Can not enable clock\n");
++				return ret;
++			}
++		} else {
++			clk_disable_unprepare(omm->child_clk[i]);
++		}
++
++		first_child_clk = omm->child_clk[i];
++	}
++
++	return 0;
++}
++
++static int stm32_omm_configure(struct device *dev)
++{
++	struct stm32_omm *omm = dev_get_drvdata(dev);
+ 	struct reset_control *rstc;
+-	struct clk *child_clk;
+-	struct device_node *child;
+-	struct device *dev = &pdev->dev;
+ 	unsigned long clk_rate, clk_rate_max = 0;
+ 	int ret;
++	u8 i;
+ 	u32 mux = 0;
+ 	u32 cssel_ovr = 0;
+ 	u32 req2ack = 0;
+@@ -149,14 +182,10 @@ static int stm32_omm_configure(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	/* parse children's clock */
+-	for_each_available_child_of_node(dev->of_node, child) {
+-		child_clk = of_clk_get(child, 0);
+-
+-		clk_rate = clk_get_rate(child_clk);
+-		clk_put(child_clk);
++	for (i = 0; i < omm->nb_child; i++) {
++		clk_rate = clk_get_rate(omm->child_clk[i]);
+ 		if (!clk_rate) {
+ 			dev_err(dev, "Invalid clock rate\n");
+-			of_node_put(child);
+ 			goto err_clk_disable;
+ 		}
+ 
+@@ -192,6 +221,14 @@ static int stm32_omm_configure(struct platform_device *pdev)
+ 
+ 			omm->cr &= ~CR_REQ2ACK_MASK;
+ 			omm->cr |= FIELD_PREP(CR_REQ2ACK_MASK, req2ack);
++
++			/*
++			 * If the mux is enabled, the 2 OSPI clocks have to be
++			 * always enabled
++			 */
++			ret = stm32_omm_enable_child_clock(dev, true);
++			if (ret)
++				goto err_clk_disable;
+ 		}
+ 
+ 		omm->cr &= ~CR_MUXENMODE_MASK;
+@@ -206,7 +243,7 @@ static int stm32_omm_configure(struct platform_device *pdev)
+ 		omm->cr |= CR_CSSEL_OVR_EN;
+ 	}
+ 
+-	omm->restore_cr = true;
++	omm->restore_omm = true;
+ 	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
+ 
+ 	ret = stm32_omm_set_amcr(dev, true);
+@@ -235,33 +272,32 @@ static int stm32_omm_check_access(struct device *dev, struct device_node *np)
+ 	return stm32_rifsc_get_access_by_id(id_bus);
+ }
+ 
+-static int stm32_omm_disable_child(struct device *dev, struct device_node *child)
++static int stm32_omm_disable_child(struct device *dev)
+ {
++	struct stm32_omm *omm = dev_get_drvdata(dev);
+ 	struct regmap *omi_regmap;
+-	struct clk *clk;
++	u8 i;
+ 	int ret;
+ 
+-	clk = of_clk_get(child, 0);
+-	ret = clk_prepare_enable(clk);
+-	if (ret) {
+-		dev_err(dev, "Can not enable clock\n");
+-		clk_put(clk);
+-		return ret;
+-	}
++	for (i = 0; i < omm->nb_child; i++) {
++		ret = clk_prepare_enable(omm->child_clk[i]);
++		if (ret) {
++			dev_err(dev, "Can not enable clock\n");
++			return ret;
++		}
++
++		omi_regmap = device_node_to_regmap(omm->child_node[i]);
++		if (IS_ERR(omi_regmap)) {
++			dev_err(dev, "failed to get OMI regmap for %s (%ld)",
++				omm->child_node[i]->full_name, PTR_ERR(omi_regmap));
++			return PTR_ERR(omi_regmap);
++		}
+ 
+-	omi_regmap = device_node_to_regmap(child);
+-	if (IS_ERR(omi_regmap)) {
+-		dev_err(dev, "failed to get OMI regmap for %s (%ld)",
+-			child->full_name, PTR_ERR(omi_regmap));
+-		ret = PTR_ERR(omi_regmap);
+-	} else {
+ 		regmap_clear_bits(omi_regmap, OSPI_CR, CR_EN);
++		clk_disable_unprepare(omm->child_clk[i]);
+ 	}
+ 
+-	clk_disable_unprepare(clk);
+-	clk_put(clk);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -269,14 +305,13 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 	struct platform_device *vdev;
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *child;
+-	struct device_node *child_node[OMM_CHILD_NB];
+ 	struct stm32_omm *omm;
+ 	int ret;
+ 	u8 child_access_granted = 0;
+ 	u8 i, j;
+ 	bool child_access[OMM_CHILD_NB];
+ 
+-	omm = devm_kzalloc(&pdev->dev, sizeof(*omm), GFP_KERNEL);
++	omm = devm_kzalloc(dev, sizeof(*omm), GFP_KERNEL);
+ 	if (!omm)
+ 		return -ENOMEM;
+ 
+@@ -291,17 +326,20 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 		if (omm->nb_child >= OMM_CHILD_NB) {
+ 			dev_err(dev, "Bad DT, found too much children\n");
+ 			of_node_put(child);
+-			return -E2BIG;
++			ret = -E2BIG;
++			goto err_clk_release;
+ 		}
+ 
+ 		if (!of_device_is_compatible(child, "st,stm32mp25-omi")) {
+-			continue;
++			ret = -EINVAL;
++			of_node_put(child);
++			goto err_clk_release;
+ 		}
+ 
+ 		ret = stm32_omm_check_access(dev, child);
+ 		if (ret < 0 && ret != -EACCES) {
+ 			of_node_put(child);
+-			return ret;
++			goto err_clk_release;
+ 		}
+ 
+ 		child_access[omm->nb_child] = false;
+@@ -310,10 +348,16 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 			child_access[omm->nb_child] = true;
+ 		}
+ 
+-		child_node[omm->nb_child] = child;
++		omm->child_node[omm->nb_child] = child;
++		omm->child_clk[omm->nb_child] = of_clk_get(child, 0);
+ 		omm->nb_child++;
+ 	}
+ 
++	if (omm->nb_child != OMM_CHILD_NB) {
++		ret = -EINVAL;
++		goto err_clk_release;
++	}
++
+ 	platform_set_drvdata(pdev, omm);
+ 
+ 	pm_runtime_enable(dev);
+@@ -321,24 +365,17 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 	/* check if OMM's resource access is granted */
+ 	ret = stm32_omm_check_access(dev, dev->of_node);
+ 	if (ret < 0 && ret != -EACCES)
+-		return ret;
++		goto err_clk_release;
+ 
+-	if (!ret) {
+-		/* All child's access are granted ? */
+-		if (child_access_granted == OMM_CHILD_NB) {
+-			/* Ensure both OSPI instance are disabled before configuring OMM */
+-			for (i = 0; i < omm->nb_child; i++) {
+-				ret = stm32_omm_disable_child(dev, child_node[i]);
+-				if (ret)
+-					return ret;
+-			}
++	if (!ret && child_access_granted == OMM_CHILD_NB) {
++		/* Ensure both OSPI instance are disabled before configuring OMM */
++		ret = stm32_omm_disable_child(dev);
++		if (ret)
++			goto err_clk_release;
+ 
+-			ret = stm32_omm_configure(pdev);
+-			if (ret)
+-				return ret;
+-		} else {
+-			dev_dbg(dev, "Can't disable Octo Memory Manager's child\n");
+-		}
++		ret = stm32_omm_configure(dev);
++		if (ret)
++			goto err_clk_release;
+ 	} else {
+ 		dev_dbg(dev, "Octo Memory Manager resource's access not granted\n");
+ 		/*
+@@ -346,30 +383,36 @@ static int stm32_omm_probe(struct platform_device *pdev)
+ 		 * with memory-map areas defined in DT
+ 		 */
+ 		ret = stm32_omm_set_amcr(dev, false);
+-		if (ret > 0) {
+-			dev_err(dev, "AMCR value not coherent with DT memory-map areas\n");
+-
+-			return -EINVAL;
+-		}
++		if (ret)
++			goto err_clk_release;
+ 	}
+ 
+ 	/* for each child, if resource access is granted and status "okay", probe it */
+ 	for (i = 0; i < omm->nb_child; i++) {
+-		if (!child_access[i] || !of_device_is_available(child_node[i]))
++		if (!child_access[i] || !of_device_is_available(omm->child_node[i]))
+ 			continue;
+ 
+-		vdev = of_platform_device_create(child_node[i], NULL, dev);
++		vdev = of_platform_device_create(omm->child_node[i], NULL, dev);
+ 		if (!vdev) {
+ 			dev_err(dev, "Failed to create Octo Memory Manager child\n");
+-			for (j = i; j >= 0; --j)
+-				of_platform_device_destroy(omm->child_dev[j], NULL);
++			for (j = i; j > 0; --j) {
++				if (omm->child_dev[j])
++					of_platform_device_destroy(omm->child_dev[j], NULL);
++			}
+ 
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_clk_release;
+ 		}
+ 		omm->child_dev[i] = &vdev->dev;
+ 	}
+ 
+ 	return 0;
++
++err_clk_release:
++	for (i = 0; i < omm->nb_child; i++)
++		clk_put(omm->child_clk[i]);
++
++	return ret;
+ }
+ 
+ static int stm32_omm_remove(struct platform_device *pdev)
+@@ -381,6 +424,12 @@ static int stm32_omm_remove(struct platform_device *pdev)
+ 		if (omm->child_dev[i])
+ 			of_platform_device_destroy(omm->child_dev[i], NULL);
+ 
++	if (omm->cr & CR_MUXEN)
++		stm32_omm_enable_child_clock(&pdev->dev, false);
++
++	for (i = 0; i < omm->nb_child; i++)
++		clk_put(omm->child_clk[i]);
++
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ 	return 0;
+@@ -410,6 +459,11 @@ static int __maybe_unused stm32_omm_runtime_resume(struct device *dev)
+ 
+ static int __maybe_unused stm32_omm_suspend(struct device *dev)
+ {
++	struct stm32_omm *omm = dev_get_drvdata(dev);
++
++	if (omm->restore_omm && omm->cr & CR_MUXEN)
++		stm32_omm_enable_child_clock(dev, false);
++
+ 	return pinctrl_pm_select_sleep_state(dev);
+ }
+ 
+@@ -420,17 +474,28 @@ static int __maybe_unused stm32_omm_resume(struct device *dev)
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
+-	if (!omm->restore_cr)
++	if (!omm->restore_omm)
+ 		return 0;
+ 
++	/* Ensure both OSPI instance are disabled before configuring OMM */
++	ret = stm32_omm_disable_child(dev);
++	if (ret)
++		return ret;
++
+ 	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
++	ret = stm32_omm_set_amcr(dev, true);
+ 	pm_runtime_put_sync_suspend(dev);
++	if (ret)
++		return ret;
+ 
+-	return 0;
++	if (omm->cr & CR_MUXEN)
++		ret = stm32_omm_enable_child_clock(dev, true);
++
++	return ret;
+ }
+ 
+ static const struct dev_pm_ops stm32_omm_pm_ops = {
+-- 
+2.39.2
+

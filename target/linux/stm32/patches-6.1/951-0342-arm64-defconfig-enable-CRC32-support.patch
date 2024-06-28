@@ -1,0 +1,32 @@
+From f4de08de2cfe7327c7792d2f10d743ef2f8ca866 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Thu, 8 Jun 2023 09:15:47 +0200
+Subject: [PATCH 0342/1141] arm64: defconfig: enable CRC32 support
+
+Enable STM32 CRC32 support on 64 bits platform.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: Id0b6af271aab14ba4ab688378ca39402b40ebffd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/311510
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 1dce50082635..de87bd450c42 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -7,6 +7,7 @@ CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CAN_M_CAN=m
+ CONFIG_CAN_M_CAN_PLATFORM=m
+ CONFIG_COUNTER=m
++CONFIG_CRYPTO_DEV_STM32_CRC=m
+ CONFIG_CRYPTO_DEV_STM32_CRYP=m
+ CONFIG_DRM=y
+ CONFIG_DRM_BRIDGE=y
+-- 
+2.39.2
+

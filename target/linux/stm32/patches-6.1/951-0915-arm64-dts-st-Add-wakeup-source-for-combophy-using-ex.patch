@@ -1,0 +1,39 @@
+From e554c5a6805db6627c085c54e0f6340e3c671856 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Fri, 23 Feb 2024 15:55:22 +0530
+Subject: [PATCH 0915/1141] arm64: dts: st: Add wakeup source for combophy
+ using exti on stm32mp25
+
+Remote-wakeup capable device connected to COMBOPHY (linked to USB3DR)
+can act as a source to wakeup system from low-power state on
+mp25 platform
+Enable exti-intr connected to pipe0_rx_elecidle output of COMBOPHY
+as wakeup-source
+
+Change-Id: I856b646eddb69d7c3742e75e66ab9ae8bbdb1eee
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/362426
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 68c8fe54dbb1..e71d1b20f6e1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2122,6 +2122,8 @@ combophy: phy@480c0000 {
+ 				st,syscfg = <&syscfg>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_COMBOPHY_ID>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
++				interrupts-extended = <&exti1 45 IRQ_TYPE_EDGE_FALLING>;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.39.2
+

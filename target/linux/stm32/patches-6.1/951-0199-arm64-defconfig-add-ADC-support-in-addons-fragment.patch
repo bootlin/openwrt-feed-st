@@ -1,0 +1,32 @@
+From 8c0d85b35c42caffe4c9d7420a0ea95803faffd8 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Jun 2023 14:42:22 +0200
+Subject: [PATCH 0199/1141] arm64: defconfig: add ADC support in addons
+ fragment
+
+Enable STM32MP25 ADC driver, as module (same as in multiv7 defconfig).
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ib61ef9e9e2876fe35b8b7577a58601034d1167c7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/308363
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 1669995669aa..b14035d2a7c7 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -30,6 +30,8 @@ CONFIG_SENSORS_MR75203=y
+ CONFIG_SERIAL_STM32=y
+ CONFIG_SERIAL_STM32_CONSOLE=y
+ CONFIG_SPI_STM32=m
++CONFIG_STM32_ADC=m
++CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_DMA3=y
+ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_TIMER_CNT=m
+-- 
+2.39.2
+

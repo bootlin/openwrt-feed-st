@@ -1,0 +1,36 @@
+From 055265bb2010208ecae07197cd8fa7c5ca0a6501 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 31 Aug 2022 15:49:25 +0200
+Subject: [PATCH 0179/1141] arm64: dts: st: add bsec support to stm32mp25
+
+Add BSEC support to STM32MP25 SoC family.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I8fa60abf176f777721ee5beb2bad216f833ed31a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/264787
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/302170
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 22a866915766..bdcff2c4f7bd 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -782,6 +782,13 @@ pcie_rc: pcie@48400000 {
+ 			};
+ 		};
+ 
++		bsec: efuse@44000000 {
++			compatible = "st,stm32mp25-bsec";
++			reg = <0x44000000 0x1000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++		};
++
+ 		rcc: rcc@44200000 {
+ 			compatible = "st,stm32mp25-rcc";
+ 			reg = <0x44200000 0x10000>;
+-- 
+2.39.2
+

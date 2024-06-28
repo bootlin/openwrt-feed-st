@@ -1,0 +1,181 @@
+From bdeea2d0d21554f31710f32f56c08bef76f34fb4 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 17 Apr 2023 17:01:59 +0200
+Subject: [PATCH 0076/1141] arm64: dts: st: stm32: add RIFSC as a system bus
+ for STM32MP25x boards
+
+The STM32 System Bus is an internal bus on which devices are connected.
+RIFSC is a peripheral overseeing the firewall bus that configures
+and control access to the peripherals connected on it.
+
+For more information on which peripheral is securable, please read
+the STM32MP25 reference manual.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I7414a92082fa5c16c3d13887b67957bbccadd4ce
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/301993
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi  | 51 ++++++++++++++++---------
+ arch/arm64/boot/dts/st/stm32mp253.dtsi  |  5 +++
+ arch/arm64/boot/dts/st/stm32mp255.dtsi  |  4 ++
+ arch/arm64/boot/dts/st/stm32mp257.dtsi  |  4 ++
+ arch/arm64/boot/dts/st/stm32mp25xc.dtsi |  5 +++
+ arch/arm64/boot/dts/st/stm32mp25xf.dtsi |  5 +++
+ 6 files changed, 55 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 258e18a74add..988c9258feb7 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -3,6 +3,7 @@
+  * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
++#include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+ / {
+@@ -87,12 +88,37 @@ soc@0 {
+ 		interrupt-parent = <&intc>;
+ 		ranges = <0x0 0x0 0x0 0x80000000>;
+ 
+-		usart2: serial@400e0000 {
+-			compatible = "st,stm32h7-uart";
+-			reg = <0x400e0000 0x400>;
+-			interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&ck_flexgen_08>;
+-			status = "disabled";
++		rifsc: rifsc@42080000 {
++			compatible = "st,stm32mp25-sys-bus";
++			reg = <0x42080000 0x1000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges;
++			feature-domain-controller;
++			#feature-domain-cells = <1>;
++
++			usart2: serial@400e0000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x400e0000 0x400>;
++				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&ck_flexgen_08>;
++				feature-domains = <&rifsc STM32MP25_RIFSC_USART2_ID>;
++				status = "disabled";
++			};
++
++			sdmmc1: mmc@48220000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48220000 0x400>, <0x44230400 0x8>;
++				interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&ck_flexgen_51>;
++				clock-names = "apb_pclk";
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				feature-domains = <&rifsc STM32MP25_RIFSC_SDMMC1_ID>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		/* Break node order to solve dependency probe issue between pinctrl and exti. */
+@@ -246,18 +272,5 @@ gpioz: gpio@46200000 {
+ 			};
+ 
+ 		};
+-
+-		sdmmc1: mmc@48220000 {
+-			compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+-			arm,primecell-periphid = <0x00353180>;
+-			reg = <0x48220000 0x400>, <0x44230400 0x8>;
+-			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&ck_flexgen_51>;
+-			clock-names = "apb_pclk";
+-			cap-sd-highspeed;
+-			cap-mmc-highspeed;
+-			max-frequency = <120000000>;
+-			status = "disabled";
+-		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index af48e82efe8a..89dd2a54f90d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -20,4 +20,9 @@ arm-pmu {
+ 			     <GIC_SPI 369 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-affinity = <&cpu0>, <&cpu1>;
+ 	};
++
++	soc@0 {
++		rifsc: rifsc@42080000 {
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index e6fa596211f5..3156df8ce1c5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -6,4 +6,8 @@
+ #include "stm32mp253.dtsi"
+ 
+ / {
++	soc@0 {
++		rifsc: rifsc@42080000 {
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
+index 5c5000d3d9db..8c6b078584ec 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
+@@ -6,4 +6,8 @@
+ #include "stm32mp255.dtsi"
+ 
+ / {
++	soc@0 {
++		rifsc: rifsc@42080000 {
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+index 5e83a6926485..952764af6dd2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
+@@ -3,6 +3,11 @@
+  * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
++#include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ 
+ / {
++	soc {
++		rifsc: rifsc@42080000 {
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+index 5e83a6926485..952764af6dd2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
+@@ -3,6 +3,11 @@
+  * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
++#include <dt-bindings/bus/stm32mp25_sys_bus.h>
+ 
+ / {
++	soc {
++		rifsc: rifsc@42080000 {
++		};
++	};
+ };
+-- 
+2.39.2
+

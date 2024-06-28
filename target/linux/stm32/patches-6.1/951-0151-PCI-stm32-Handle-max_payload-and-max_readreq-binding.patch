@@ -1,0 +1,90 @@
+From f12058cf2f145fa2e92dd548bc8476aa4281287c Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Mon, 28 Nov 2022 14:38:40 +0100
+Subject: [PATCH 0151/1141] PCI: stm32: Handle max_payload and max_readreq
+ bindings
+
+Allow the DT to modify the payload and readreq max size values.
+If unset keep default values:
+128B for max payload
+512B for max read request size
+
+Return -EINVAL in case of invalid values
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Idad512702897622e00c903a456e82e0af11fac93
+---
+ drivers/pci/controller/dwc/pcie-stm32.c | 36 +++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
+index f2e496807d46..44a15b952213 100644
+--- a/drivers/pci/controller/dwc/pcie-stm32.c
++++ b/drivers/pci/controller/dwc/pcie-stm32.c
+@@ -24,6 +24,7 @@ struct stm32_pcie {
+ 	struct phy *phy;
+ 	struct clk *clk;
+ 	struct gpio_desc *reset_gpio;
++	u32 max_payload;
+ };
+ 
+ static const struct of_device_id stm32_pcie_of_match[] = {
+@@ -31,6 +32,35 @@ static const struct of_device_id stm32_pcie_of_match[] = {
+ 	{},
+ };
+ 
++static int stm32_pcie_set_max_payload(struct dw_pcie *pci, int mps)
++{
++	int ret;
++	struct device *dev = pci->dev;
++	struct pci_dev *pdev = to_pci_dev(dev);
++
++	if (mps != 128 && mps != 256) {
++		dev_err(dev, "Unexpected payload size %d\n", mps);
++		return -EINVAL;
++	}
++
++	ret = pcie_set_mps(pdev, mps);
++	if (ret)
++		dev_err(dev, "failed to set mps %d, error %d\n", mps, ret);
++
++	return ret;
++}
++
++static int stm32_pcie_host_init(struct dw_pcie_rp *pp)
++{
++	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
++	struct stm32_pcie *stm32_pcie = to_stm32_pcie(pci);
++
++	if (stm32_pcie->max_payload)
++		return stm32_pcie_set_max_payload(pci, stm32_pcie->max_payload);
++
++	return 0;
++}
++
+ static int stm32_pcie_start_link(struct dw_pcie *pci)
+ {
+ 	struct stm32_pcie *stm32_pcie = to_stm32_pcie(pci);
+@@ -71,6 +101,7 @@ static void stm32_pcie_stop_link(struct dw_pcie *pci)
+ }
+ 
+ static const struct dw_pcie_host_ops stm32_pcie_host_ops = {
++	.host_init = stm32_pcie_host_init
+ };
+ 
+ static const struct dw_pcie_ops dw_pcie_ops = {
+@@ -155,6 +186,11 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(stm32_pcie->rst),
+ 				     "Failed to get PCIe reset\n");
+ 
++	/* Optionally limit payload */
++	ret = of_property_read_u32(np, "max-payload-size", &stm32_pcie->max_payload);
++	if (ret && ret != -EINVAL)
++		return dev_err_probe(dev, ret, "Error reading max-payload value\n");
++
+ 	stm32_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(stm32_pcie->reset_gpio))
+ 		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
+-- 
+2.39.2
+

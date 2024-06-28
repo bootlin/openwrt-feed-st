@@ -1,0 +1,84 @@
+From e999100e89df5d16813fa78d2ad928d3afe37c3c Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Mon, 19 Jun 2023 09:44:28 +0200
+Subject: [PATCH 0004/1141] ARM: dts: stm32: fix dmas entres for CRYP driver
+
+MDMA on take 5 32bits word in is DMA cell.
+Remove one 0x00 to obtain a valid configuration.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: If3804e5a513b8ff38107471bf798829637b9c3da
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/317419
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm/boot/dts/stm32mp13xc.dtsi | 4 ++--
+ arch/arm/boot/dts/stm32mp13xf.dtsi | 4 ++--
+ arch/arm/boot/dts/stm32mp15xc.dtsi | 4 ++--
+ arch/arm/boot/dts/stm32mp15xf.dtsi | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/stm32mp13xc.dtsi b/arch/arm/boot/dts/stm32mp13xc.dtsi
+index 6afc7103aec7..aa4ce81c74d1 100644
+--- a/arch/arm/boot/dts/stm32mp13xc.dtsi
++++ b/arch/arm/boot/dts/stm32mp13xc.dtsi
+@@ -13,8 +13,8 @@ cryp: crypto@54002000 {
+ 				interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CRYP1>;
+ 				resets = <&rcc CRYP1_R>;
+-				dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
+-				       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
++				dmas = <&mdma 28 0x0 0x400202 0x0 0x0>,
++				       <&mdma 29 0x3 0x400808 0x0 0x0>;
+ 				dma-names = "in", "out";
+ 				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP_ID>;
+ 				status = "disabled";
+diff --git a/arch/arm/boot/dts/stm32mp13xf.dtsi b/arch/arm/boot/dts/stm32mp13xf.dtsi
+index 6afc7103aec7..aa4ce81c74d1 100644
+--- a/arch/arm/boot/dts/stm32mp13xf.dtsi
++++ b/arch/arm/boot/dts/stm32mp13xf.dtsi
+@@ -13,8 +13,8 @@ cryp: crypto@54002000 {
+ 				interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CRYP1>;
+ 				resets = <&rcc CRYP1_R>;
+-				dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
+-				       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
++				dmas = <&mdma 28 0x0 0x400202 0x0 0x0>,
++				       <&mdma 29 0x3 0x400808 0x0 0x0>;
+ 				dma-names = "in", "out";
+ 				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP_ID>;
+ 				status = "disabled";
+diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
+index 39197bc5ff19..f5c26b7f3e87 100644
+--- a/arch/arm/boot/dts/stm32mp15xc.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
+@@ -15,8 +15,8 @@ cryp1: cryp@54001000 {
+ 				interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CRYP1>;
+ 				resets = <&rcc CRYP1_R>;
+-				dmas = <&mdma1 29 0x0 0x400202 0x0 0x0 0x0>,
+-				       <&mdma1 30 0x3 0x400808 0x0 0x0 0x0>;
++				dmas = <&mdma1 29 0x0 0x400202 0x0 0x0>,
++				       <&mdma1 30 0x3 0x400808 0x0 0x0>;
+ 				dma-names = "in", "out";
+ 				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP1_ID>;
+ 				status = "disabled";
+diff --git a/arch/arm/boot/dts/stm32mp15xf.dtsi b/arch/arm/boot/dts/stm32mp15xf.dtsi
+index e73f46d17122..9f8dc6cbe5ec 100644
+--- a/arch/arm/boot/dts/stm32mp15xf.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xf.dtsi
+@@ -15,8 +15,8 @@ cryp1: cryp@54001000 {
+ 				interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CRYP1>;
+ 				resets = <&rcc CRYP1_R>;
+-				dmas = <&mdma1 29 0x0 0x400202 0x0 0x0 0x0>,
+-				       <&mdma1 30 0x3 0x400808 0x0 0x0 0x0>;
++				dmas = <&mdma1 29 0x0 0x400202 0x0 0x0>,
++				       <&mdma1 30 0x3 0x400808 0x0 0x0>;
+ 				dma-names = "in", "out";
+ 				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP1_ID>;
+ 				status = "disabled";
+-- 
+2.39.2
+

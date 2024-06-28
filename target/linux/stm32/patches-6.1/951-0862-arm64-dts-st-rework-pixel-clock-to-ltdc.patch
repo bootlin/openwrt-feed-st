@@ -1,0 +1,54 @@
+From 39ad2ef3f6ddfc8296cc6365b3db38ae6ecac5e5 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 25 Jan 2024 17:35:05 +0100
+Subject: [PATCH 0862/1141] arm64: dts: st: rework  pixel clock to ltdc
+
+Add management of lvds pixel clock to display controller.
+This rework will be clean up when the clock framework
+will expose a kind of LVDS pixel "virtual" clock.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I3c72ab9e38a6ab114a838b0f5084206e5e0cc824
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354665
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp253.dtsi | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 285aad944e0e..76c5ae71a176 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -69,9 +69,8 @@ lvds: lvds@48060000 {
+ 				#clock-cells = <0>;
+ 				compatible = "st,stm32-lvds";
+ 				reg = <0x48060000 0x2000>;
+-				clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>,
+-					 <&syscfg 0>;
+-				clock-names = "pclk", "ref", "pixclk";
++				clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
++				clock-names = "pclk", "ref";
+ 				resets = <&rcc LVDS_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_LVDS_ID>;
+ 				power-domains = <&CLUSTER_PD>;
+@@ -134,15 +133,9 @@ mtl_tx_setup_2: tx-queues-config {
+ 	};
+ };
+ 
+-&dsi {
+-	clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
+-		 <&rcc CK_KER_LTDC>, <&syscfg 0>;
+-	clock-names = "pclk", "ref", "px_clk", "pixclk";
+-};
+-
+ &ltdc {
+-	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
+-	clock-names = "bus", "ref", "lcd";
++	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>, <&lvds 0>;
++	clock-names = "bus", "ref", "lcd", "lvds";
+ };
+ 
+ &optee {
+-- 
+2.39.2
+

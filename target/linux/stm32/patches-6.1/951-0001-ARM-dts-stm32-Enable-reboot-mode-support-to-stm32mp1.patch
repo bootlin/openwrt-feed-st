@@ -1,0 +1,56 @@
+From c9459b65bf21325f6b7627a04bda5845ab7ffd5f Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@st.com>
+Date: Tue, 24 Sep 2019 17:56:37 +0200
+Subject: [PATCH 0001/1141] ARM: dts: stm32: Enable reboot mode support to
+ stm32mp157
+
+This patch enables syscon reboot mode.
+Normal, fastboot, recovery, serialx and usb boot modes are
+declared.
+Boot mode value is stored in TAMP backup register (TAMP_BKP20R
+offset 0x150).
+system.d command is need to set the boot mode.
+e.g.
+$ systemctl reboot ums_mmc0
+
+Change-Id: I41952cdb1d797c2cfd45233a0168567975240c99
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/225084
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/316836
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index 734bfcc6381e..c3ccc69ad23d 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -1944,6 +1944,19 @@ i2c6: i2c@5c009000 {
+ 		tamp: tamp@5c00a000 {
+ 			compatible = "st,stm32-tamp", "syscon", "simple-mfd";
+ 			reg = <0x5c00a000 0x400>;
++
++			reboot-mode {
++				compatible = "syscon-reboot-mode";
++				offset = <0x150>; /* reg20 */
++				mask = <0xff>;
++				mode-normal = <0>;
++				mode-fastboot = <0x1>;
++				mode-recovery = <0x2>;
++				mode-stm32cubeprogrammer = <0x3>;
++				mode-ums_mmc0 = <0x10>;
++				mode-ums_mmc1 = <0x11>;
++				mode-ums_mmc2 = <0x12>;
++			};
+ 		};
+ 
+ 		/*
+-- 
+2.39.2
+

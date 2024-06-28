@@ -1,0 +1,96 @@
+From 653a8e9bc8df2e688434799ddf82e219e292ff03 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 18 Jan 2024 19:37:03 +0100
+Subject: [PATCH 0828/1141] media: dcmipp: pixelproc: handle try mode in
+ set_selection ops
+
+Handle both active & try modes in the set_selection ops.
+
+Change-Id: I59b9b74557a31cd0f1ff494dab28979996da81f7
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352866
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 31 +++++--------------
+ 1 file changed, 7 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index fa14b5ae730c..27188b3f5a3a 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -552,6 +552,7 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
+ 	struct v4l2_mbus_framefmt *sink_fmt;
++	struct v4l2_mbus_framefmt *src_fmt;
+ 	struct v4l2_rect *crop, *compose;
+ 
+ 	if (IS_SRC(s->pad))
+@@ -559,10 +560,12 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ 
+ 	if (s->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+ 		sink_fmt = &pixelproc->sink_fmt;
++		src_fmt = &pixelproc->src_fmt;
+ 		crop = &pixelproc->crop;
+ 		compose = &pixelproc->compose;
+ 	} else {
+ 		sink_fmt = v4l2_subdev_get_try_format(sd, state, s->pad);
++		src_fmt = v4l2_subdev_get_try_format(sd, state, 1);
+ 		crop = v4l2_subdev_get_try_crop(sd, state, s->pad);
+ 		compose = v4l2_subdev_get_try_compose(sd, state, s->pad);
+ 	}
+@@ -576,18 +579,6 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ 		/* Setting the crop also set the compose identically */
+ 		*compose = *crop;
+ 
+-		/*
+-		 * In case of setting the crop with ACTIVE set, we need to
+-		 * update the source pad size
+-		 */
+-		if (s->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+-			pixelproc->src_fmt.width = s->r.width;
+-			pixelproc->src_fmt.height = s->r.height;
+-		}
+-		/* TODO - when not in format active, we should also update the
+-		 * try src pad format
+-		 */
+-
+ 		dev_dbg(pixelproc->dev, "s_selection: crop %ux%u@(%u,%u)\n",
+ 			crop->width, crop->height, crop->left, crop->top);
+ 		break;
+@@ -606,18 +597,6 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ 
+ 		*compose = s->r;
+ 
+-		/*
+-		 * In case of setting the compose with ACTIVE set, we need to
+-		 * update the source pad size
+-		 */
+-		if (s->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+-			pixelproc->src_fmt.width = s->r.width;
+-			pixelproc->src_fmt.height = s->r.height;
+-		}
+-		/* TODO - when not in format active, we should also update the
+-		 * try src pad format
+-		 */
+-
+ 		dev_dbg(pixelproc->dev, "s_selection: compose %ux%u@(%u,%u)\n",
+ 			s->r.width, s->r.height, s->r.left, s->r.top);
+ 		break;
+@@ -625,6 +604,10 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ 		return -EINVAL;
+ 	}
+ 
++	/* Update the source pad size */
++	src_fmt->width = s->r.width;
++	src_fmt->height = s->r.height;
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

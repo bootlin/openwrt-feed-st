@@ -1,0 +1,43 @@
+From 5ca2c7badaf245304f9b856d746ae6e51cab49b4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 21 Nov 2023 15:18:59 +0100
+Subject: [PATCH 0957/1141] ARM: dts: stm32: add Hardware debug port (HDP) on
+ stm32mp15
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add the hdp devicetree node for stm32mp15 SoC family
+
+Change-Id: Ic998e5751db7ab66e9ad0ecf0d6b9be26f09d8df
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/345029
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index cb9ba5018a94..c3d8cf0127b7 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -489,6 +489,13 @@ dts: thermal@50028000 {
+ 			status = "disabled";
+ 		};
+ 
++		hdp: pinctrl@5002a000 {
++			compatible = "st,stm32mp-hdp";
++			reg = <0x5002a000 0x400>;
++			clocks = <&rcc HDP>;
++			status = "disabled";
++		};
++
+ 		pinctrl_z: pinctrl@54004000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+-- 
+2.39.2
+

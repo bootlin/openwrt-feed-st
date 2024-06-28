@@ -1,0 +1,101 @@
+From da4088fbaa34af7117ddf7c851fc6e259f8f0c4b Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Wed, 6 Mar 2024 21:03:31 +0530
+Subject: [PATCH 0914/1141] phy: stm32: Add wakeup support for STM32MP25
+ ComboPHY.
+
+Add wakeup-source capability, to wakeup system using remote-wakeup
+capable usb device
+
+Change-Id: I13727b796f1006271891dba26ecda1f0222dc9e4
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359872
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/phy/st/phy-stm32-combophy.c | 31 +++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
+index 856bafb86725..e046c5a2021d 100644
+--- a/drivers/phy/st/phy-stm32-combophy.c
++++ b/drivers/phy/st/phy-stm32-combophy.c
+@@ -82,6 +82,7 @@ struct stm32_combophy {
+ 	struct clk *ker_clk;
+ 	unsigned int type;
+ 	bool is_init;
++	int irq_wakeup;
+ };
+ 
+ struct clk_impedance  {
+@@ -385,9 +386,13 @@ static int stm32_combophy_suspend_noirq(struct device *dev)
+ 	 * wakeup capability. In case usb-remote wakeup is not enabled,
+ 	 * combo-phy is already turned off by HCD driver using exit callback
+ 	 */
+-	if (combophy->is_init)
++	if (combophy->is_init) {
+ 		stm32_combophy_disable_clocks(combophy);
+ 
++		/* since wakeup is enabled for ctrl */
++		enable_irq_wake(combophy->irq_wakeup);
++	}
++
+ 	return pm_runtime_force_suspend(dev);
+ }
+ 
+@@ -408,6 +413,9 @@ static int stm32_combophy_resume_noirq(struct device *dev)
+ 	 * enabled, clocks already turned ON by HCD driver using init callback
+ 	 */
+ 	if (combophy->is_init) {
++		/* since wakeup was enabled for ctrl */
++		disable_irq_wake(combophy->irq_wakeup);
++
+ 		ret = stm32_combophy_enable_clocks(combophy);
+ 		if (ret) {
+ 			dev_err(dev, "can't enable clocks (%d)\n", ret);
+@@ -485,13 +493,18 @@ static const struct phy_ops stm32_combophy_phy_data = {
+ 	.owner = THIS_MODULE
+ };
+ 
++static irqreturn_t stm32_combophy_irq_wakeup_handler(int irq, void *dev_id)
++{
++	return IRQ_HANDLED;
++}
++
+ static int stm32_combophy_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_combophy *combophy;
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	struct phy_provider *phy_provider;
+-	int ret;
++	int ret, irq;
+ 
+ 	combophy = devm_kzalloc(dev, sizeof(*combophy), GFP_KERNEL);
+ 	if (!combophy)
+@@ -535,6 +548,20 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(combophy->phy),
+ 				     "failed to create PCIe/USB3 ComboPHY\n");
+ 
++	if (device_property_read_bool(dev, "wakeup-source")) {
++		irq = platform_get_irq(pdev, 0);
++		if (irq < 0)
++			return dev_err_probe(dev, irq, "failed to get IRQ\n");
++		combophy->irq_wakeup = irq;
++
++		ret = devm_request_threaded_irq(dev, combophy->irq_wakeup, NULL,
++						stm32_combophy_irq_wakeup_handler, IRQF_ONESHOT,
++						NULL, NULL);
++		if (ret)
++			return dev_err_probe(dev, ret, "unable to request wake IRQ %d\n",
++						 combophy->irq_wakeup);
++	}
++
+ 	ret = devm_pm_runtime_enable(dev);
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "Failed to enable pm runtime\n");
+-- 
+2.39.2
+

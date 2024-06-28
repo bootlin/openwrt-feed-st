@@ -1,0 +1,70 @@
+Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-core.c
+===================================================================
+--- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-core.c
++++ linux-6.1.89/drivers/iio/adc/stm32-mdf-core.c
+@@ -734,8 +734,8 @@ static int stm32_mdf_core_runtime_resume
+ }
+ 
+ static const struct dev_pm_ops stm32_mdf_core_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(stm32_mdf_core_suspend, stm32_mdf_core_resume)
+-	SET_RUNTIME_PM_OPS(stm32_mdf_core_runtime_suspend, stm32_mdf_core_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(stm32_mdf_core_suspend, stm32_mdf_core_resume)
++	RUNTIME_PM_OPS(stm32_mdf_core_runtime_suspend, stm32_mdf_core_runtime_resume, NULL)
+ };
+ 
+ static const struct of_device_id stm32_mdf_of_match[] = {
+@@ -750,7 +750,7 @@ static struct platform_driver stm32_mdf_
+ 	.driver = {
+ 		.name = "stm32-mdf",
+ 		.of_match_table = stm32_mdf_of_match,
+-		.pm = &stm32_mdf_core_pm_ops,
++		.pm = pm_ptr(&stm32_mdf_core_pm_ops),
+ 	},
+ };
+ 
+Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-adc.c
+===================================================================
+--- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-adc.c
++++ linux-6.1.89/drivers/iio/adc/stm32-mdf-adc.c
+@@ -1746,13 +1746,15 @@ static int stm32_mdf_adc_resume(struct d
+ 	return ret;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(stm32_mdf_adc_pm_ops, stm32_mdf_adc_suspend, stm32_mdf_adc_resume);
++static const struct dev_pm_ops stm32_mdf_adc_pm_ops = {
++	SYSTEM_SLEEP_PM_OPS(stm32_mdf_adc_suspend, stm32_mdf_adc_resume)
++};
+ 
+ static struct platform_driver stm32_mdf_adc_driver = {
+ 	.driver = {
+ 		.name = "stm32-mdf-adc",
+ 		.of_match_table = stm32_mdf_adc_match,
+-		.pm = &stm32_mdf_adc_pm_ops,
++		.pm = pm_sleep_ptr(&stm32_mdf_adc_pm_ops),
+ 	},
+ 	.probe = stm32_mdf_adc_probe,
+ 	.remove = stm32_mdf_adc_remove,
+Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-serial.c
+===================================================================
+--- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-serial.c
++++ linux-6.1.89/drivers/iio/adc/stm32-mdf-serial.c
+@@ -283,8 +283,8 @@ static int stm32_mdf_sitf_runtime_resume
+ }
+ 
+ static const struct dev_pm_ops stm32_mdf_sitf_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(stm32_mdf_sitf_suspend, stm32_mdf_sitf_resume)
+-	SET_RUNTIME_PM_OPS(stm32_mdf_sitf_runtime_suspend, stm32_mdf_sitf_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(stm32_mdf_sitf_suspend, stm32_mdf_sitf_resume)
++	RUNTIME_PM_OPS(stm32_mdf_sitf_runtime_suspend, stm32_mdf_sitf_runtime_resume, NULL)
+ };
+ 
+ static const struct of_device_id stm32_mdf_sitf_of_match[] = {
+@@ -299,7 +299,7 @@ static struct platform_driver stm32_mdf_
+ 	.driver = {
+ 		.name = "stm32-mdf-sitf",
+ 		.of_match_table = stm32_mdf_sitf_of_match,
+-		.pm = &stm32_mdf_sitf_pm_ops,
++		.pm = pm_ptr(&stm32_mdf_sitf_pm_ops),
+ 	},
+ };
+ 

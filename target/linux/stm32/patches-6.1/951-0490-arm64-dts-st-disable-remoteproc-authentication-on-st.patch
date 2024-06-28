@@ -1,0 +1,55 @@
+From 428068b70ff5a8540c8da226d86c8c627ab3c609 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Tue, 12 Sep 2023 15:24:07 +0200
+Subject: [PATCH 0490/1141] arm64: dts: st: disable remoteproc authentication
+ on stm32mp257f-ev1 board
+
+Configure the remote m33 node to allow Linux to directly loads non
+secure Cortex-M33 firmware without OPTEE authentication.
+
+- memory region for the cortex-M33 firmware are defined,
+- the "st,syscfg-nsvtor" property defines the register to store
+the boot address that corresponds to the vector table.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I0748a489c65bdb5fcd603649982be52764bec370
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/327202
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Michel JAOUEN <michel.jaouen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index df94e5646b88..912b57e46c22 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -119,6 +119,10 @@ panel_lvds_backlight: panel-lvds-backlight {
+ 	};
+ };
+ 
++&a35ss_syscfg {
++	status = "okay";
++};
++
+ &arm_wdt {
+ 	timeout-sec = <32>;
+ 	status = "okay";
+@@ -416,8 +420,10 @@ lvds_out0: endpoint {
+ &m33_rproc {
+ 	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
+ 	mbox-names = "vq0", "vq1", "shutdown";
+-	memory-region = <&ipc_shmem_1>, <&vdev0vring0>,
++	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
++			<&ipc_shmem_1>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
++	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.2
+

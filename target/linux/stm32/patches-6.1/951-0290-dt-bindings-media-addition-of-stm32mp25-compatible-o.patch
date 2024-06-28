@@ -1,0 +1,89 @@
+From a4305a43f187ac877a5d2bed17b20e74265c3ab6 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 Jun 2022 16:27:44 +0200
+Subject: [PATCH 0290/1141] dt-bindings: media: addition of stm32mp25
+ compatible of DCMIPP
+
+Addition of the stm32mp25 compatible for the DCMIPP.
+
+Change-Id: I0940910c7169d0ca033985086e10ac9f7d254dd5
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/257325
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ .../bindings/media/st,stm32-dcmipp.yaml       | 33 +++++++++++++++++--
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+index 70631046017d..5c80eb28489d 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+@@ -12,7 +12,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32mp13-dcmipp
++    enum:
++      - st,stm32mp13-dcmipp
++      - st,stm32mp25-dcmipp
+ 
+   reg:
+     maxItems: 1
+@@ -21,11 +23,14 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
+ 
+   clock-names:
+     items:
+       - const: kclk
++      - const: mclk
++    minItems: 1
+ 
+   resets:
+     maxItems: 1
+@@ -43,7 +48,7 @@ properties:
+ 
+         properties:
+           bus-type:
+-            enum: [5, 6]
++            enum: [4, 5, 6]
+             default: 5
+ 
+           bus-width:
+@@ -66,6 +71,28 @@ required:
+   - resets
+   - port
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: st,stm32mp13-dcmipp
++    then:
++      properties:
++        clocks:
++          maxItems: 1
++
++        clock-names:
++          items:
++            - const: kclk
++
++        port:
++          properties:
++            endpoint:
++              properties:
++                bus-type:
++                  enum: [5, 6]
++
+ additionalProperties: false
+ 
+ examples:
+-- 
+2.39.2
+

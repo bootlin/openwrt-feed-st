@@ -1,0 +1,32 @@
+From 4359602f47406b389dce6c1b02b444a093f5e687 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 6 Jul 2021 16:49:42 +0200
+Subject: [PATCH 0230/1141] arm64: defconfig: Add Octo Memory Manager support
+
+Enable Octo Memory Manager relative flag.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ibe9e9fb32efb0649f7796d36cb2f1778dc3fc3f7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/307844
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 3bc25b943953..ab0bf2a70b28 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -50,6 +50,7 @@ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_MDF_ADC=m
+ CONFIG_STM32_MDF_CORE=m
+ CONFIG_STM32_OMI=y
++CONFIG_STM32_OMM=y
+ CONFIG_STM32_TIMER_CNT=m
+ CONFIG_STMMAC_ETH=y
+ CONFIG_STMMAC_PLATFORM=y
+-- 
+2.39.2
+

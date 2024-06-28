@@ -1,0 +1,36 @@
+From f2d70b650bcc5dc254673fc84a5a8ab4c5b8b6f4 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 27 May 2024 09:09:22 +0200
+Subject: [PATCH 1136/1141] arm64: dts: st: use scmi clock for ipcc node
+
+Fix clock name for IPCC node
+
+Change-Id: I8ab1761bbc6990378840f7668e27025163ae596f
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382594
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a43e57dc571c..4ec04c776845 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -400,7 +400,7 @@ ipcc1: mailbox@40490000 {
+ 			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "rx", "tx";
+-			clocks = <&scmi_clk CK_BUS_IPCC1>;
++			clocks = <&scmi_clk CK_SCMI_IPCC1>;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.39.2
+

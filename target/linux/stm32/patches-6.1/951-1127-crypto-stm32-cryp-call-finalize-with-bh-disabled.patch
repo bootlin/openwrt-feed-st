@@ -1,0 +1,51 @@
+From 9d56f06456784ba89ec6769c98b31412fad5fa6b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Fri, 24 May 2024 17:15:37 +0200
+Subject: [PATCH 1127/1141] crypto: stm32/cryp - call finalize with bh disabled
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The finalize operation in interrupt mode produce a produces a spinlock
+recursion warning. The reason is the fact that BH must be disabled
+during this process.
+
+Change-Id: I4fb24ce10abee6f26464d0207f18f05c773c4823
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382486
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 50ea93038680..5f0cf7769eac 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -4,6 +4,7 @@
+  * Author: Fabien Dessenne <fabien.dessenne@st.com>
+  */
+ 
++#include <linux/bottom_half.h>
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+@@ -2097,8 +2098,11 @@ static irqreturn_t stm32_cryp_irq_thread(int irq, void *arg)
+ 		it_mask &= ~IMSCR_OUT;
+ 	stm32_cryp_write(cryp, CRYP_IMSCR, it_mask);
+ 
+-	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out)
++	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out) {
++		local_bh_disable();
+ 		stm32_cryp_finish_req(cryp, 0);
++		local_bh_enable();
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.39.2
+

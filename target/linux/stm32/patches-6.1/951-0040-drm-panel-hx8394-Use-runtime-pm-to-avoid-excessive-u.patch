@@ -1,0 +1,53 @@
+From 30e67c49a94d37b1fb728e90b1a506b152977944 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 2 Jun 2023 14:20:24 +0200
+Subject: [PATCH 0040/1141] drm/panel: hx8394: Use runtime pm to avoid
+ excessive unprepare / prepare
+
+At end of probe, the driver should be suspended.
+
+Change-Id: I0f887af1b317895029789f129b3db75e1dcfacdc
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310403
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/panel/panel-rocktech-hx8394.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-rocktech-hx8394.c b/drivers/gpu/drm/panel/panel-rocktech-hx8394.c
+index cc71168be292..44111830d9cc 100644
+--- a/drivers/gpu/drm/panel/panel-rocktech-hx8394.c
++++ b/drivers/gpu/drm/panel/panel-rocktech-hx8394.c
+@@ -336,9 +336,17 @@ static int hx8394_probe(struct mipi_dsi_device *dsi)
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+ 			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
+ 
++	pm_runtime_enable(ctx->dev);
++	pm_runtime_set_autosuspend_delay(ctx->dev, 1000);
++	pm_runtime_use_autosuspend(ctx->dev);
++
+ 	drm_panel_init(&ctx->panel, dev, &hx8394_drm_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
+ 
++	pm_runtime_get_sync(ctx->dev);
++	pm_runtime_mark_last_busy(ctx->dev);
++	pm_runtime_put_autosuspend(ctx->dev);
++
+ 	ret = drm_panel_of_backlight(&ctx->panel);
+ 	if (ret)
+ 		return ret;
+@@ -352,10 +360,6 @@ static int hx8394_probe(struct mipi_dsi_device *dsi)
+ 		return ret;
+ 	}
+ 
+-	pm_runtime_enable(ctx->dev);
+-	pm_runtime_set_autosuspend_delay(ctx->dev, 1000);
+-	pm_runtime_use_autosuspend(ctx->dev);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,49 @@
+From 81701283554038c9a48c5a0de8fb2d8f5a6378a5 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 16 Jun 2023 18:13:39 +0200
+Subject: [PATCH 0357/1141] dmaengine: stm32-dma3: add .remove() to disable
+ pm_runtime
+
+To avoid unbalanced pm_runtime_enable on unbind/bind or rmmod/insmod, add
+.remove() function to disable pm_runtime.
+
+Change-Id: I95541999b8500a0a834499c97a600a0335740c51
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/313448
+Tested-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ drivers/dma/stm32-dma3.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
+index d0670366a0c6..5d608e348051 100644
+--- a/drivers/dma/stm32-dma3.c
++++ b/drivers/dma/stm32-dma3.c
+@@ -2301,6 +2301,13 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static int stm32_dma3_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
+ static int __maybe_unused stm32_dma3_runtime_suspend(struct device *dev)
+ {
+ 	struct stm32_dma3_ddata *ddata = dev_get_drvdata(dev);
+@@ -2335,6 +2342,7 @@ static const struct dev_pm_ops stm32_dma3_pm_ops = {
+ 
+ static struct platform_driver stm32_dma3_driver = {
+ 	.probe = stm32_dma3_probe,
++	.remove = stm32_dma3_remove,
+ 	.driver = {
+ 		.name = "stm32-dma3",
+ 		.of_match_table = stm32_dma3_of_match,
+-- 
+2.39.2
+

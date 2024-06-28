@@ -1,0 +1,108 @@
+From 57d179051761fb8e3a6280d7a9446acdc3644fd4 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 4 Dec 2023 14:27:46 +0100
+Subject: [PATCH 0813/1141] media: dcmipp: isp: perform subdev register at end
+ of init
+
+Perform the subdev registration at the very end of the init
+since upon registration the user-space could start accessing to the
+device.
+
+Change-Id: I361b6cb81bdb5f0c97a21914ee0b6f7de5121e5d
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344622
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 55 ++++++++++---------
+ 1 file changed, 30 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index e69b6543afc2..cc7a608f0dcb 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -1098,31 +1098,11 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+ 		return -ENOMEM;
+ 
+ 	isp->regs = bind_data->regs;
++	isp->dev = comp;
+ 
+ 	/* Initialize the lock */
+ 	mutex_init(&isp->lock);
+ 
+-	/* Initialize ved and sd */
+-	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
+-				     bind_data->v4l2_dev,
+-				     pdata->entity_name,
+-				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER, 4,
+-				     (const unsigned long[4]) {
+-				     MEDIA_PAD_FL_SINK,
+-				     MEDIA_PAD_FL_SOURCE,
+-				     MEDIA_PAD_FL_SOURCE,
+-				     MEDIA_PAD_FL_SOURCE,
+-				     },
+-				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
+-				     NULL, dcmipp_isp_irq_thread);
+-	if (ret) {
+-		kfree(isp);
+-		return ret;
+-	}
+-
+-	dev_set_drvdata(comp, &isp->ved);
+-	isp->dev = comp;
+-
+ 	/* Initialize the frame format */
+ 	isp->sink_fmt = fmt_default;
+ 	isp->sink_fmt.code = ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
+@@ -1138,17 +1118,42 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+ 
+ 	isp->sd.ctrl_handler = &isp->ctrls;
+ 	if (isp->ctrls.error) {
+-		dev_err(isp->dev, "control initialization error %d\n",
+-			isp->ctrls.error);
+-		/* TODO - error handling */
++		ret = isp->ctrls.error;
++		dev_err(isp->dev, "control initialization error %d\n", ret);
++		mutex_destroy(&isp->lock);
++		kfree(isp);
++		return ret;
+ 	}
+ 
+ 	ret = v4l2_ctrl_handler_setup(&isp->ctrls);
+ 	if (ret < 0) {
+ 		dev_err(isp->dev, "Failed to set up control handlers\n");
+-		/* TODO - error handling */
++		mutex_destroy(&isp->lock);
++		kfree(isp);
++		return ret;
+ 	}
+ 
++	/* Initialize ved and sd */
++	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
++				     bind_data->v4l2_dev,
++				     pdata->entity_name,
++				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER, 4,
++				     (const unsigned long[4]) {
++				     MEDIA_PAD_FL_SINK,
++				     MEDIA_PAD_FL_SOURCE,
++				     MEDIA_PAD_FL_SOURCE,
++				     MEDIA_PAD_FL_SOURCE,
++				     },
++				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
++				     NULL, dcmipp_isp_irq_thread);
++	if (ret) {
++		mutex_destroy(&isp->lock);
++		kfree(isp);
++		return ret;
++	}
++
++	dev_set_drvdata(comp, &isp->ved);
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,58 @@
+From dd5d5c30dec57af56a5f0db2876e9c85f172bcb2 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 08:34:51 +0100
+Subject: [PATCH 1042/1141] media: addition of V4L2_CID_ISP_STAT_PROFILE
+ control
+
+Addition of a control V4L2_CID_ISP_STAT_PROFILE used to control
+the way statistics are being captured.  For now 3 profiles are being
+defined:
+  - FULL: all statistics are being captured
+  - AVERAGE_PRE: average pre-processing only
+  - AVERAGE_POST: average post-processing only
+
+Change-Id: Ie267361174d21314624a1f25f047243473a61c86
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369276
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c | 1 +
+ include/uapi/linux/v4l2-controls.h        | 7 +++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index 2a7175f6a092..d4afb01ef02d 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -1123,6 +1123,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_ISP_STAT_REGION:		return "ISP Stat Region";
+ 	case V4L2_CID_ISP_STAT_AVG_FILTER:	return "ISP Stat Average Filter";
+ 	case V4L2_CID_ISP_STAT_BIN_COMP:	return "ISP Stat Bin Component";
++	case V4L2_CID_ISP_STAT_PROFILE:		return "ISP Stat Profile";
+ 
+ 	/* DV controls */
+ 	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index ae289d829526..6d8c3103b767 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -1190,6 +1190,13 @@ enum v4l2_isp_stat_bin_comp {
+ 	V4L2_STAT_BIN_COMP_L		= 3,
+ };
+ 
++#define V4L2_CID_ISP_STAT_PROFILE		(V4L2_CID_IMAGE_PROC_CLASS_BASE + 14)
++enum v4l2_isp_stat_profile {
++	V4L2_STAT_PROFILE_FULL		= 0,
++	V4L2_STAT_PROFILE_AVERAGE_PRE	= 1,
++	V4L2_STAT_PROFILE_AVERAGE_POST	= 2,
++};
++
+ /*  DV-class control IDs defined by V4L2 */
+ #define V4L2_CID_DV_CLASS_BASE			(V4L2_CTRL_CLASS_DV | 0x900)
+ #define V4L2_CID_DV_CLASS			(V4L2_CTRL_CLASS_DV | 1)
+-- 
+2.39.2
+

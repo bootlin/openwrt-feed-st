@@ -1,0 +1,64 @@
+From dae094139bbddf938c12a76e4e73e14976011af7 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 3 May 2023 14:32:13 +0200
+Subject: [PATCH 0183/1141] arm64: dts: st: add thermal zone description on
+ stm32mp25
+
+Add thermal zone description on stm32mp25.
+The goal is to shutdown when the SOC temperature
+reaches 95 degrees.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I90f1f6404209bb7744fdec1176815c743d0e0d0d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/305106
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 30 ++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 4311bee53e8b..0a9b87871bc4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -145,6 +145,36 @@ psci {
+ 		method = "smc";
+ 	};
+ 
++	thermal-zones {
++		cpu0-thermal {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
++			thermal-sensors = <&dts 0>;
++
++			trips {
++				cpu0_crit {
++					temperature = <95000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu1-thermal {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
++			thermal-sensors = <&dts 1>;
++
++			trips {
++				cpu1_crit {
++					temperature = <95000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++	};
++
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupt-parent = <&intc>;
+-- 
+2.39.2
+

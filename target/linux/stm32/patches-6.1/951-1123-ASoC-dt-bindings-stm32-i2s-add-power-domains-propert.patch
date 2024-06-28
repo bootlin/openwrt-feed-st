@@ -1,0 +1,40 @@
+From 4c487061e398e669efdf827fa0fe87c6df89b51b Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 18 Dec 2023 19:39:39 +0100
+Subject: [PATCH 1123/1141] ASoC: dt-bindings: stm32-i2s: add 'power-domains'
+ property
+
+STM32 I2S may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 I2S.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I8f64f1d313cc5b903d6e040f569e139330d2182d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347853
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index c1d7c83849d8..03dc7c51ac02 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -49,6 +49,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   "#clock-cells":
+     description: Configure the I2S device as MCLK clock provider.
+     const: 0
+-- 
+2.39.2
+

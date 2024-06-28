@@ -1,0 +1,41 @@
+From 889805180249a48391ae69fabfb9c90f0e870012 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:38 +0200
+Subject: [PATCH 0485/1141] arm64: dts: fix RNG support for STM32MP25
+
+Add STM32MP25x platforms clock specificities and compatible.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Ib4406cb898ff19978855950094a652cf263482f5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325025
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index e53453664384..5316e7e2dac5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1778,9 +1778,10 @@ hash: hash@42010000 {
+ 			};
+ 
+ 			rng: rng@42020000 {
+-				compatible = "st,stm32mp13-rng";
++				compatible = "st,stm32mp25-rng";
+ 				reg = <0x42020000 0x400>;
+-				clocks = <&rcc CK_BUS_RNG>;
++				clocks = <&clk_rcbsec>, <&rcc CK_BUS_RNG>;
++				clock-names = "rng_clk", "rng_hclk";
+ 				resets = <&rcc RNG_R>;
+ 				feature-domains = <&rifsc STM32MP25_RIFSC_RNG_ID>;
+ 				power-domains = <&CLUSTER_PD>;
+-- 
+2.39.2
+

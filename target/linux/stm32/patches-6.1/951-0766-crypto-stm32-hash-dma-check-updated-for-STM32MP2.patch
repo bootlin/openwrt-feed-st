@@ -1,0 +1,60 @@
+From c9b65a3714bd7eb02f4288bd78c2144e612554cb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Tue, 9 Jan 2024 18:23:41 +0100
+Subject: [PATCH 0766/1141] crypto: stm32/hash - dma check updated for STM32MP2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The dma_mode is retrieved from the HASH_HWCFGR register in the bitfield
+HASH_HWCFG_DMA_MASK. On STM32MP1x, this bitfield was just set to one. On
+STM32MP2, it is set to 3. Therefore, the dma_mode tests should be
+updated to check for a non-null value instead of 1.
+
+Tested on mp1x and mp25.
+
+Change-Id: I68b6e98c391893d1aefec64ac30fb8fce807bc9e
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/350292
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-hash.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
+index 52b8980a58b0..e6d22a28afc2 100644
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -596,7 +596,7 @@ static int stm32_hash_hmac_dma_send(struct stm32_hash_dev *hdev)
+ 	struct stm32_hash_ctx *ctx = crypto_ahash_ctx(tfm);
+ 	int err;
+ 
+-	if (ctx->keylen < rctx->state.blocklen || hdev->dma_mode == 1) {
++	if (ctx->keylen < rctx->state.blocklen || hdev->dma_mode > 0) {
+ 		err = stm32_hash_write_key(hdev);
+ 		if (stm32_hash_wait_busy(hdev))
+ 			return -ETIMEDOUT;
+@@ -696,7 +696,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+ 				 * transfer.
+ 				 */
+ 				sg->length = rctx->total - bufcnt;
+-				if (hdev->dma_mode == 1) {
++				if (hdev->dma_mode > 0) {
+ 					len = (ALIGN(sg->length, 16) - 16);
+ 
+ 					ncp = sg_pcopy_to_buffer(rctx->sg, rctx->nents,
+@@ -751,7 +751,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+ 	 * last transfer of 4 words or less.
+ 	 */
+ 	if (final) {
+-		if (hdev->dma_mode == 1) {
++		if (hdev->dma_mode > 0) {
+ 			if (stm32_hash_wait_busy(hdev))
+ 				return -ETIMEDOUT;
+ 			reg = stm32_hash_read(hdev, HASH_CR);
+-- 
+2.39.2
+

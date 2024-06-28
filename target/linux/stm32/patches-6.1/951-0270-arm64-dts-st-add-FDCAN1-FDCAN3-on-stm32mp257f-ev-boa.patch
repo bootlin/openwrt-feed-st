@@ -1,0 +1,48 @@
+From 39efe5e80ae3865e35db75f8be53ca53ae11ad83 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 5 Apr 2023 09:19:14 +0200
+Subject: [PATCH 0270/1141] arm64: dts: st: add FDCAN1/FDCAN3 on stm32mp257f-ev
+ board
+
+Add support of FDCAN1 and FDCAN3
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I21307af641f38cd9d14bd01c87517384e2013323
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/298998
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310738
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+index 0c391185f949..695796790abe 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+@@ -165,6 +165,20 @@ &m33_rproc {
+ 	status = "okay";
+ };
+ 
++&m_can1 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&m_can1_pins_a>;
++	pinctrl-1 = <&m_can1_sleep_pins_a>;
++	status = "okay";
++};
++
++&m_can3 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&m_can3_pins_a>;
++	pinctrl-1 = <&m_can3_sleep_pins_a>;
++	status = "okay";
++};
++
+ &mlahb {
+ 	intc_rpmsg: interrupt-controller@0 {
+ 		compatible = "rpmsg,intc";
+-- 
+2.39.2
+

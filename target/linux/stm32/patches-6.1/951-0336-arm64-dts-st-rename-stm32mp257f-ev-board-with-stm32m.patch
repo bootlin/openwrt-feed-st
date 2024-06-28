@@ -1,0 +1,52 @@
+From cb9e34bbd34ed0f0a3dd4d8f47496d1646455c91 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 29 Mar 2024 10:39:53 +0100
+Subject: [PATCH 0336/1141] arm64: dts: st: rename stm32mp257f-ev board with
+ stm32mp257f-ev1
+
+fixup! arm64: dts: st: add stm32mp257f-ev board support
+
+Official board name is stm32mp257f-ev1.
+
+Change-Id: I5fa6e2b7fd4d73aecc1be27905caf34aa2503768
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/312287
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ arch/arm64/boot/dts/st/Makefile                               | 2 +-
+ .../boot/dts/st/{stm32mp257f-ev.dts => stm32mp257f-ev1.dts}   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+ rename arch/arm64/boot/dts/st/{stm32mp257f-ev.dts => stm32mp257f-ev1.dts} (98%)
+
+diff --git a/arch/arm64/boot/dts/st/Makefile b/arch/arm64/boot/dts/st/Makefile
+index a873148afe3c..0cc12f2b1dfe 100644
+--- a/arch/arm64/boot/dts/st/Makefile
++++ b/arch/arm64/boot/dts/st/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp257f-dk.dtb \
+-	stm32mp257f-ev.dtb
++	stm32mp257f-ev1.dtb
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+similarity index 98%
+rename from arch/arm64/boot/dts/st/stm32mp257f-ev.dts
+rename to arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 22f59d4472ad..93e2196154e6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -17,8 +17,8 @@
+ #include "stm32mp257f-ev-ca35tdcid-resmem.dtsi"
+ 
+ / {
+-	model = "STMicroelectronics STM32MP257F-EV Evaluation Board";
+-	compatible = "st,stm32mp257f-ev", "st,stm32mp257";
++	model = "STMicroelectronics STM32MP257F-EV1 Evaluation Board";
++	compatible = "st,stm32mp257f-ev1", "st,stm32mp257";
+ 
+ 	aliases {
+ 		ethernet0 = &eth2;
+-- 
+2.39.2
+

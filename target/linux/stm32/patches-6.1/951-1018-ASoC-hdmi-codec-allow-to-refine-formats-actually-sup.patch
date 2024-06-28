@@ -1,0 +1,53 @@
+From 356926a8c5c4a6a8d87ecba187969a73e3564ff8 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 14 Mar 2024 11:21:32 +0100
+Subject: [PATCH 1018/1141] ASoC: hdmi-codec: allow to refine formats actually
+ supported
+
+Currently the hdmi-codec driver registers all the formats that are
+allowed on the I2S bus. Add i2s_formats field to codec data, to allow
+the hdmi codec client to refine the list of the audio I2S formats
+actually supported.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I93e3e036d3b0081eb7391c6d6c1ab079f5de3795
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366949
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ include/sound/hdmi-codec.h    | 1 +
+ sound/soc/codecs/hdmi-codec.c | 4 ++++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index 9b162ac1e08e..498d21dfd879 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -123,6 +123,7 @@ struct hdmi_codec_ops {
+ /* HDMI codec initalization data */
+ struct hdmi_codec_pdata {
+ 	const struct hdmi_codec_ops *ops;
++	u64 i2s_formats;
+ 	uint i2s:1;
+ 	uint no_i2s_playback:1;
+ 	uint no_i2s_capture:1;
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 43345d3043bb..5c9c8c3f7e1a 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -1046,6 +1046,10 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	if (hcd->i2s) {
+ 		daidrv[i] = hdmi_i2s_dai;
+ 		daidrv[i].playback.channels_max = hcd->max_i2s_channels;
++		if (hcd->i2s_formats) {
++			daidrv[i].playback.formats = hcd->i2s_formats;
++			daidrv[i].capture.formats = hcd->i2s_formats;
++		}
+ 		if (hcd->no_i2s_playback)
+ 			memset(&daidrv[i].playback, 0,
+ 			       sizeof(daidrv[i].playback));
+-- 
+2.39.2
+

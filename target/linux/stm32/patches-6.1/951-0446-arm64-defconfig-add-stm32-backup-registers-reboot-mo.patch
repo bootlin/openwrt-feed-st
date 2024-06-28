@@ -1,0 +1,30 @@
+From df5be2d0d15fefd169d378b6ba53260acda6fbd4 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Tue, 20 Jun 2023 14:37:00 +0200
+Subject: [PATCH 0446/1141] arm64: defconfig: add stm32 backup registers reboot
+ mode support in addons fragment
+
+Enable REBOOT MODE from nvmmem cells with
+fragment-02-defconfig-addons.config (STM32MP25 Socs)
+
+Change-Id: I30f0d332e4f73f1c4a567e6b6719b279d503be9f
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 9be9598778b1..8e7e29a86164 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -49,6 +49,7 @@ CONFIG_NET_CLS_U32=m
+ CONFIG_NET_SCH_MULTIQ=m
+ CONFIG_NET_SCH_PRIO=m
+ CONFIG_NET_SCH_SKBPRIO=m
++CONFIG_NVMEM_REBOOT_MODE=y
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_NVMEM_STM32_TAMP=y
+ CONFIG_OF_OVERLAY=y
+-- 
+2.39.2
+

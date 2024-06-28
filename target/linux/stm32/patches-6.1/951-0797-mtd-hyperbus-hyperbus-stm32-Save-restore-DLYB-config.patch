@@ -1,0 +1,84 @@
+From ee5d4804b71e91a53bcc6926f56f2aa25a548605 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Wed, 20 Dec 2023 09:06:38 +0100
+Subject: [PATCH 0797/1141] mtd: hyperbus: hyperbus-stm32: Save/restore DLYB
+ configuration during suspend/resume
+
+Ensure that the delay block configuration is saved before suspending
+and restored after resuming.
+Move TCR register configuration from stm32_hyperbus_calibrate() to
+stm32_hyperbus_init() which ensure that DHQC bit is always restored when
+resuming.
+
+Change-Id: I4fa174fde6a1dbff5ab06f65b5bd7813d7442390
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/348033
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/mtd/hyperbus/hyperbus-stm32.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
+index 9b88eda14495..4622998d00f2 100644
+--- a/drivers/mtd/hyperbus/hyperbus-stm32.c
++++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
+@@ -19,6 +19,7 @@ struct stm32_hyperbus {
+ 	u32 real_flash_freq;	/* real flash freq = bus_freq x prescaler */
+ 	u32 tacc;
+ 	u32 cs;
++	u32 dlyb_cr;
+ 	bool wzl;
+ };
+ 
+@@ -145,8 +146,6 @@ static int stm32_hyperbus_calibrate(struct hyperbus_device *hbdev)
+ 
+ 	prescaler = FIELD_GET(DCR2_PRESC_MASK,
+ 			      readl(regs_base + OSPI_DCR2));
+-	if (prescaler)
+-		writel_relaxed(TCR_DHQC, regs_base + OSPI_TCR);
+ 
+ 	if (hyperbus->real_flash_freq <= STM32_DLYB_FREQ_THRESHOLD) {
+ 		bypass_mode = true;
+@@ -205,6 +204,9 @@ static void stm32_hyperbus_init(struct stm32_hyperbus *hyperbus)
+ 	if (prescaler > 255)
+ 		prescaler = 255;
+ 
++	if (prescaler)
++		writel_relaxed(TCR_DHQC, regs_base + OSPI_TCR);
++
+ 	writel_relaxed(FIELD_PREP(DCR2_PRESC_MASK, prescaler), regs_base + OSPI_DCR2);
+ 	hyperbus->real_flash_freq = omi->clk_rate / (prescaler + 1);
+ 
+@@ -239,6 +241,9 @@ static int __maybe_unused stm32_hyperbus_suspend(struct device *dev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	/* save DLYB configuration */
++	stm32_omi_dlyb_get_cr(omi, &hyperbus->dlyb_cr);
++
+ 	cr = readl_relaxed(regs_base + OSPI_CR);
+ 	cr &= ~CR_EN;
+ 	writel_relaxed(cr, regs_base + OSPI_CR);
+@@ -266,8 +271,16 @@ static int __maybe_unused stm32_hyperbus_resume(struct device *dev)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	/* dlyb may be restarted by bootloarder stage, so ensure it's stopped */
++	stm32_omi_dlyb_stop(omi);
++
+ 	stm32_hyperbus_init(hyperbus);
+ 
++	/* restore DLYB configuration */
++	ret = stm32_omi_dlyb_set_cr(omi, hyperbus->dlyb_cr);
++	if (ret)
++		return ret;
++
+ 	pm_runtime_mark_last_busy(omi->dev);
+ 	pm_runtime_put_autosuspend(omi->dev);
+ 
+-- 
+2.39.2
+

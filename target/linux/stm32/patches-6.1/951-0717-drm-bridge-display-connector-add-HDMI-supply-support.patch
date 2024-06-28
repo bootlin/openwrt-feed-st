@@ -1,0 +1,81 @@
+From cd7c71431fc9d3ab2be3684ab28ae0b8f94df24e Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 11 Dec 2023 14:42:29 +0100
+Subject: [PATCH 0717/1141] drm/bridge: display-connector:  add HDMI supply
+ support
+
+Add support of supply (5V) for the connector HDMI1.
+
+Change-Id: Ifb82dc34ae4ef2c22554cd6c49057c44b9babc00
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/345504
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/bridge/display-connector.c | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
+index 9a12449ad7b8..7d3f5eda3b61 100644
+--- a/drivers/gpu/drm/bridge/display-connector.c
++++ b/drivers/gpu/drm/bridge/display-connector.c
+@@ -25,6 +25,7 @@ struct display_connector {
+ 	int			hpd_irq;
+ 
+ 	struct regulator	*dp_pwr;
++	struct regulator	*hdmi_pwr;
+ 	struct gpio_desc	*ddc_en;
+ };
+ 
+@@ -315,6 +316,38 @@ static int display_connector_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	/* Get the PWR for HDMI connector. */
++	if (type == DRM_MODE_CONNECTOR_HDMIA) {
++		int ret;
++
++		conn->hdmi_pwr = devm_regulator_get_optional(&pdev->dev, "hdmi-pwr");
++
++		if (IS_ERR(conn->hdmi_pwr)) {
++			ret = PTR_ERR(conn->hdmi_pwr);
++
++			switch (ret) {
++			case -ENODEV:
++				conn->hdmi_pwr = NULL;
++				break;
++
++			case -EPROBE_DEFER:
++				return -EPROBE_DEFER;
++
++			default:
++				dev_err(&pdev->dev, "failed to get HDMI regulator: %d\n", ret);
++				return ret;
++			}
++		}
++
++		if (conn->hdmi_pwr) {
++			ret = regulator_enable(conn->hdmi_pwr);
++			if (ret) {
++				dev_err(&pdev->dev, "failed to enable HDMI regulator: %d\n", ret);
++				return ret;
++			}
++		}
++	}
++
+ 	/* Get the DP PWR for DP connector. */
+ 	if (type == DRM_MODE_CONNECTOR_DisplayPort) {
+ 		int ret;
+@@ -392,6 +425,9 @@ static int display_connector_remove(struct platform_device *pdev)
+ 	if (conn->dp_pwr)
+ 		regulator_disable(conn->dp_pwr);
+ 
++	if (conn->hdmi_pwr)
++		regulator_disable(conn->hdmi_pwr);
++
+ 	drm_bridge_remove(&conn->bridge);
+ 
+ 	if (!IS_ERR(conn->bridge.ddc))
+-- 
+2.39.2
+

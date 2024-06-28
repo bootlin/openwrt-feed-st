@@ -1,0 +1,126 @@
+From fb89f5d20fff857d025f37d59dd2c95946009f03 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 19 Dec 2023 17:20:56 +0100
+Subject: [PATCH 0818/1141] media: dcmipp: pixelproc: avoid indentation within
+ s_stream
+
+Avoid useless indentation in the s_stream ops by returning straight
+in case of disable.
+
+Change-Id: Ic132c67576eacc09f525a6a5fa4373a69f727040
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/348473
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 86 ++++++++++---------
+ 1 file changed, 44 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index e3443cd2196b..e7b60174cda4 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -821,54 +821,56 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 	int ret = 0;
+ 	unsigned int val;
+ 
++	if (!enable)
++		return 0;
++
+ 	mutex_lock(&pixelproc->lock);
+-	if (enable) {
+-		/* Configure framerate */
+-		dcmipp_pixelproc_configure_framerate(pixelproc);
+-
+-		/* Configure cropping */
+-		reg_write(pixelproc, DCMIPP_PxCRSTR(pixelproc->pipe_id),
+-			  (pixelproc->crop.top << DCMIPP_PxCRSTR_VSTART_SHIFT) |
+-			  (pixelproc->crop.left << DCMIPP_PxCRSTR_HSTART_SHIFT));
+-		reg_write(pixelproc, DCMIPP_PxCRSZR(pixelproc->pipe_id),
+-			  (pixelproc->crop.width << DCMIPP_PxCRSZR_HSIZE_SHIFT) |
+-			  (pixelproc->crop.height << DCMIPP_PxCRSZR_VSIZE_SHIFT) |
+-			  DCMIPP_PxCRSZR_ENABLE);
+-
+-		/* Configure downsize */
+-		dcmipp_pixelproc_set_downsize(pixelproc);
+-
+-		/* Configure YUV Conversion (if applicable) */
+-		if (pixelproc->pipe_id == 1) {
+-			ret = dcmipp_pixelproc_colorconv_config(pixelproc);
+-			if (ret)
+-				goto out;
+-		}
+ 
+-		/* Setup the PixelPacker based on the src pad format */
+-		vpix = dcmipp_pixelproc_pix_map_by_code(pixelproc->src_fmt.code, 1);
+-		if (!vpix) {
+-			ret = -EINVAL;
++	/* Configure framerate */
++	dcmipp_pixelproc_configure_framerate(pixelproc);
++
++	/* Configure cropping */
++	reg_write(pixelproc, DCMIPP_PxCRSTR(pixelproc->pipe_id),
++		  (pixelproc->crop.top << DCMIPP_PxCRSTR_VSTART_SHIFT) |
++		  (pixelproc->crop.left << DCMIPP_PxCRSTR_HSTART_SHIFT));
++	reg_write(pixelproc, DCMIPP_PxCRSZR(pixelproc->pipe_id),
++		  (pixelproc->crop.width << DCMIPP_PxCRSZR_HSIZE_SHIFT) |
++		  (pixelproc->crop.height << DCMIPP_PxCRSZR_VSIZE_SHIFT) |
++		  DCMIPP_PxCRSZR_ENABLE);
++
++	/* Configure downsize */
++	dcmipp_pixelproc_set_downsize(pixelproc);
++
++	/* Configure YUV Conversion (if applicable) */
++	if (pixelproc->pipe_id == 1) {
++		ret = dcmipp_pixelproc_colorconv_config(pixelproc);
++		if (ret)
+ 			goto out;
+-		}
+-
+-		val = vpix->ppcr_fmt;
+-		if (vpix->swap_uv)
+-			val |= DCMIPP_PxPPCR_SWAPRB;
+-
+-		reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
++	}
+ 
+-		/*
+-		 * In case of the subdev is the last one before the csi bridge
+-		 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
+-		 * in which case we need to enable the CSI input of the DCMIPP
+-		 * TODO: to will have to reworked to avoid duplication between
+-		 * subdeves
+-		 */
+-		if (pixelproc->ved.bus_type == V4L2_MBUS_CSI2_DPHY)
+-			reg_write(pixelproc, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
++	/* Setup the PixelPacker based on the src pad format */
++	vpix = dcmipp_pixelproc_pix_map_by_code(pixelproc->src_fmt.code, 1);
++	if (!vpix) {
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
++	val = vpix->ppcr_fmt;
++	if (vpix->swap_uv)
++		val |= DCMIPP_PxPPCR_SWAPRB;
++
++	reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
++
++	/*
++	 * In case of the subdev is the last one before the csi bridge
++	 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
++	 * in which case we need to enable the CSI input of the DCMIPP
++	 * TODO: to will have to reworked to avoid duplication between
++	 * subdeves
++	 */
++	if (pixelproc->ved.bus_type == V4L2_MBUS_CSI2_DPHY)
++		reg_write(pixelproc, DCMIPP_CMCR, DCMIPP_CMCR_INSEL);
++
+ out:
+ 	mutex_unlock(&pixelproc->lock);
+ 
+-- 
+2.39.2
+

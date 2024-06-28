@@ -1,0 +1,48 @@
+From 8986427c33c0d56470287929e5ebd9daf83c528b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 23 Mar 2024 22:12:41 +0100
+Subject: [PATCH 1037/1141] media: dcmipp: remove TODO mention about BOUND
+ selection
+
+Remove the TODO comment regarding missing BOUND support in the
+get_selection handler of isp and pixelproc subdevs.
+
+Change-Id: I771962afc3050d0ae633ced800cee5662270d7cb
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369270
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c       | 1 -
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index db2b6bb11cae..dfea34512714 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -452,7 +452,6 @@ static int dcmipp_isp_get_selection(struct v4l2_subdev *sd,
+ 	case V4L2_SEL_TGT_COMPOSE:
+ 		s->r = *compose;
+ 		break;
+-	/* TODO - not sure how to define BOUND here */
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 980507602c93..b3a16062726d 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -536,7 +536,6 @@ static int dcmipp_pixelproc_get_selection(struct v4l2_subdev *sd,
+ 	case V4L2_SEL_TGT_COMPOSE:
+ 		s->r = *compose;
+ 		break;
+-	/* TODO - not sure how to define BOUND here */
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.39.2
+

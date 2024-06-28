@@ -1,0 +1,49 @@
+From 12850fd172e8ee591f5665a019cf76231279fa83 Mon Sep 17 00:00:00 2001
+From: Eric Fourmont <eric.fourmont-ext@st.com>
+Date: Wed, 14 Feb 2024 10:03:58 +0100
+Subject: [PATCH 0657/1141] arm64: dts: st: add i2s2 pinmux for
+ stm32mp25-pinctrl.dtsi
+
+Add i2s2pinmux for stm32mp25-pinctrl.dtsi.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+
+Change-Id: I87bf11fe4bc124cfc7c6f17f23fbd1f00e0ea1d7
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 78e67cabce6a..84da83d1bea8 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -289,6 +289,25 @@ pins {
+ 		};
+ 	};
+ 
++	i2s2_pins_b: i2s2-1 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 2, AF2)>, /* I2S2_SDO */
++				<STM32_PINMUX('B', 3, AF2)>, /* I2S2_WS */
++				<STM32_PINMUX('B', 0, AF2)>; /* I2S2_CK */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++	};
++
++	i2s2_sleep_pins_b: i2s2-sleep-1 {
++		pins {
++			pinmux = <STM32_PINMUX('B', 2, ANALOG)>, /* I2S2_SDO */
++				<STM32_PINMUX('B', 3, ANALOG)>, /* I2S2_WS */
++				<STM32_PINMUX('B', 0, ANALOG)>; /* I2S2_CK */
++		};
++	};
++
+ 	m_can1_pins_a: m-can1-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('G', 11, AF7)>; /* CAN1_TX */
+-- 
+2.39.2
+

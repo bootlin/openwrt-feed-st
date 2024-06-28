@@ -1,0 +1,38 @@
+From 0f1ae1cfaf15eed901e5445c9c47873124feb7ee Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 09:54:35 +0100
+Subject: [PATCH 0689/1141] memory: stm32: Add support of octal-bus interface
+
+OSPI interface can be used as a communication channel (up to 8 lines)
+with a device which is not a memory device.
+For this purpose, introduce a new compatible "st,octal-bus" which
+allows to probe stm32-ospi driver which handle the octal-bus interface.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ieddb445b1b189e4580074f492ba5afc133da2ff9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/340951
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/memory/stm32-omi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
+index 40aed4de7f02..72eda1807a11 100644
+--- a/drivers/memory/stm32-omi.c
++++ b/drivers/memory/stm32-omi.c
+@@ -447,7 +447,8 @@ static int stm32_omi_probe(struct platform_device *pdev)
+ 			hyperflash_count++;
+ 
+ 		if (of_device_is_compatible(child, "jedec,spi-nor") ||
+-		    of_device_is_compatible(child, "spi-nand"))
++		    of_device_is_compatible(child, "spi-nand") ||
++		    of_device_is_compatible(child, "st,octal-bus"))
+ 			spi_flash_count++;
+ 
+ 		child_count++;
+-- 
+2.39.2
+

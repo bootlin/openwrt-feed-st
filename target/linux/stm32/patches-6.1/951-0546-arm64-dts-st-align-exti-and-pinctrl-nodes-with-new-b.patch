@@ -1,0 +1,60 @@
+From ea0a8d7a2588738d374a4c187e60885eb44761dc Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Wed, 9 Aug 2023 11:13:07 +0200
+Subject: [PATCH 0546/1141] arm64: dts: st: align exti and pinctrl nodes with
+ new bindings to stm32mp251
+
+Remove the property "st,syscfg" from pinctrl and the compatible
+"syscon" from EXTI.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia70b0afa00e82b524f18d2eb2e5637cbec98b651
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329526
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index ffc3f40fdb23..ca4708a79983 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2282,7 +2282,7 @@ pwr: syscon@44210000 {
+ 		};
+ 
+ 		exti1: interrupt-controller@44220000 {
+-			compatible = "st,stm32mp1-exti", "syscon";
++			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+@@ -2410,7 +2410,7 @@ reboot_mode: reboot-mode {
+ 		};
+ 
+ 		exti2: interrupt-controller@46230000 {
+-			compatible = "st,stm32mp1-exti", "syscon";
++			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+@@ -2463,7 +2463,6 @@ pinctrl: pinctrl@44240000 {
+ 			compatible = "st,stm32mp257-pinctrl";
+ 			ranges = <0 0x44240000 0xa0400>;
+ 			interrupt-parent = <&exti1>;
+-			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioa: gpio@44240000 {
+@@ -2604,7 +2603,6 @@ pinctrl_z: pinctrl@46200000 {
+ 			compatible = "st,stm32mp257-z-pinctrl";
+ 			ranges = <0 0x46200000 0x400>;
+ 			interrupt-parent = <&exti1>;
+-			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioz: gpio@46200000 {
+-- 
+2.39.2
+

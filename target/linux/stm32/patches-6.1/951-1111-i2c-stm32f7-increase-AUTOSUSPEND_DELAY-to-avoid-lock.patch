@@ -1,0 +1,45 @@
+From 1969a0ce85d126f48608fd85fa29c399209e55d9 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 8 Apr 2024 14:17:52 +0200
+Subject: [PATCH 1111/1141] i2c: stm32f7: increase AUTOSUSPEND_DELAY to avoid
+ lock
+
+Increase the AUTOSUSPEND_DELAY to avoid falling into lock due to the
+clock framework prepare_lock.  Indeed, within its pm_runtime suspend
+handling, the driver is turning off its clock via clk_disable_unprepare,
+leading to taking the prepare_lock of the clk framework.
+This could lead to a deadlock if a i2c client (such as implementing
+clk ops) is in the middle of a ops, hence already taking the prepare_lock.
+
+Change-Id: Iabdb56365465f68fb25316c7eb30a3c3f8642d41
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372136
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/i2c/busses/i2c-stm32f7.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index ea62939f8ed8..ff8cb56bd249 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -180,7 +180,12 @@ enum {
+ #define STM32F7_SCLH_MAX			BIT(8)
+ #define STM32F7_SCLL_MAX			BIT(8)
+ 
+-#define STM32F7_AUTOSUSPEND_DELAY		(HZ / 100)
++/*
++ * This autosuspend delay should be long enough so that a clk client device performing i2c
++ * transfer within its prepare_lock protected handler should be able to perform the whole
++ * handling without having the autosuspend to try to suspend the i2c adapter
++ */
++#define STM32F7_AUTOSUSPEND_DELAY		HZ
+ 
+ /**
+  * struct stm32f7_i2c_regs - i2c f7 registers backup
+-- 
+2.39.2
+

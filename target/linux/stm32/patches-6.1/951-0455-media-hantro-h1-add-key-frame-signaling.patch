@@ -1,0 +1,30 @@
+From 194ce136a56f88b019aa49abb6cd8d39770bee6f Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Wed, 9 Aug 2023 11:47:12 +0200
+Subject: [PATCH 0455/1141] media: hantro: h1: add key frame signaling
+
+Add key frame signaling.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: If41648bbfe2d6e026a80b26ada304e122933d28b
+---
+ drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+index 12267434c53f..e5d29c473cfa 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
++++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
+@@ -1579,4 +1579,9 @@ void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx)
+ 
+ 	ctx->vp8_enc.last_intra = is_intra(ctx);
+ 	++ctx->vp8_enc.frame_counter;
++
++	if (is_intra(ctx))
++		dst_buf->flags |= V4L2_BUF_FLAG_KEYFRAME;
++	else
++		dst_buf->flags |= V4L2_BUF_FLAG_PFRAME;
+ }
+-- 
+2.39.2
+

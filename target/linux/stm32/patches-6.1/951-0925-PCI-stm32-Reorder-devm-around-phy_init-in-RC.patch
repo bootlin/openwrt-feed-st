@@ -1,0 +1,138 @@
+From 2990e2a5a5f8bf61c99fc8e8568c8111ff908416 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 7 Mar 2024 07:21:10 +0100
+Subject: [PATCH 0925/1141] PCI: stm32: Reorder devm around phy_init in RC
+
+Reorder devm calls around phy_init
+
+Fixes: b197030f4744 ("PCI: stm32: add PCIe RC pm runtime support")
+Fixes: 52de713d0f21 ("PCI: stm32: Add PCIe RootComplex support for STM32MP25")
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I4fd3f92d7da6268fd70a40f27055f3e7bf23204d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365045
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/pci/controller/dwc/pcie-stm32.c | 51 ++++++++++++-------------
+ 1 file changed, 25 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
+index 6f0b468e3b53..120d7f2a6a15 100644
+--- a/drivers/pci/controller/dwc/pcie-stm32.c
++++ b/drivers/pci/controller/dwc/pcie-stm32.c
+@@ -290,21 +290,29 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+ 	if (stm32_pcie->pme_irq || stm32_pcie->aer_irq)
+ 		pcie_port_irqs_hook = stm32_pcie_port_irqs;
+ 
++	ret = phy_set_mode(stm32_pcie->phy, PHY_MODE_PCIE);
++	if (ret)
++		return ret;
++
++	ret = phy_init(stm32_pcie->phy);
++	if (ret)
++		return ret;
++
+ 	ret = regmap_update_bits(stm32_pcie->regmap, SYSCFG_PCIECR,
+ 				 STM32MP25_PCIECR_TYPE_MASK, STM32MP25_PCIECR_RC);
+ 	if (ret)
+-		return ret;
++		goto phy_disable;
+ 
+ 	ret = reset_control_reset(stm32_pcie->rst);
+ 	if (ret) {
+ 		dev_err(dev, "Core reset failed %d\n", ret);
+-		return ret;
++		goto phy_disable;
+ 	}
+ 
+ 	ret = clk_prepare_enable(stm32_pcie->clk);
+ 	if (ret) {
+ 		dev_err(dev, "Core clock enable failed %d\n", ret);
+-		return ret;
++		goto phy_disable;
+ 	}
+ 
+ 	pp->ops = &stm32_pcie_host_ops;
+@@ -312,10 +320,15 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+ 	if (ret) {
+ 		dev_err(dev, "failed to initialize host: %d\n", ret);
+ 		clk_disable_unprepare(stm32_pcie->clk);
+-		return ret;
++		goto phy_disable;
+ 	}
+ 
+ 	return 0;
++
++phy_disable:
++	phy_exit(stm32_pcie->phy);
++
++	return ret;
+ }
+ 
+ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -372,41 +385,27 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
+ 				     "Failed to get reset GPIO\n");
+ 
+-	ret = phy_set_mode(stm32_pcie->phy, PHY_MODE_PCIE);
+-	if (ret)
+-		return ret;
+-
+-	ret = phy_init(stm32_pcie->phy);
+-	if (ret)
+-		return ret;
+-
+ 	platform_set_drvdata(pdev, stm32_pcie);
+ 
+ 	ret = devm_pm_runtime_enable(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Failed to enable pm runtime %d\n", ret);
+-		goto phy_disable;
++		return ret;
+ 	}
+ 
+ 	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "pm runtime resume failed: %d\n", ret);
+-		goto phy_disable;
++		return ret;
+ 	}
+ 
+ 	ret = stm32_add_pcie_port(stm32_pcie, pdev);
+-	if (ret)
+-		goto sync_disable;
++	if (ret)  {
++		pm_runtime_put_sync(&pdev->dev);
++		return ret;
++	}
+ 
+ 	return 0;
+-
+-sync_disable:
+-	pm_runtime_put_sync(dev);
+-
+-phy_disable:
+-	phy_exit(stm32_pcie->phy);
+-
+-	return ret;
+ }
+ 
+ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -418,10 +417,10 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+ 	clk_disable_unprepare(stm32_pcie->clk);
+ 	pcie_port_irqs_hook = NULL;
+ 
+-	pm_runtime_put_sync(&pdev->dev);
+-
+ 	phy_exit(stm32_pcie->phy);
+ 
++	pm_runtime_put_sync(&pdev->dev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,52 @@
+From 3ac4166cd14340f48e9b34ecc87bb6914022be9e Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 4 Dec 2023 14:24:53 +0100
+Subject: [PATCH 0810/1141] media: dcmipp: isp: add event ops
+
+DCMIPP ISP subdev exposes ctrls and as such should implement the
+subscribe / unsubscribe event ops.
+
+Change-Id: I4c3580811d46c21bfbb37769bb4e321ea26052ba
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344619
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index c0546c7db0fc..e69b6543afc2 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -17,6 +17,7 @@
+ #include <linux/v4l2-mediabus.h>
+ #include <media/mipi-csi2.h>
+ #include <media/v4l2-ctrls.h>
++#include <media/v4l2-event.h>
+ #include <media/v4l2-rect.h>
+ #include <media/v4l2-subdev.h>
+ 
+@@ -988,11 +989,17 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+ 	return ret;
+ }
+ 
++static const struct v4l2_subdev_core_ops dcmipp_isp_core_ops = {
++	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
++	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
++};
++
+ static const struct v4l2_subdev_video_ops dcmipp_isp_video_ops = {
+ 	.s_stream = dcmipp_isp_s_stream,
+ };
+ 
+ static const struct v4l2_subdev_ops dcmipp_isp_ops = {
++	.core = &dcmipp_isp_core_ops,
+ 	.pad = &dcmipp_isp_pad_ops,
+ 	.video = &dcmipp_isp_video_ops,
+ };
+-- 
+2.39.2
+

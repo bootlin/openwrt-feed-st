@@ -1,0 +1,35 @@
+From 4d06da424418d5e5c43bad4799c2565c3c74aa1a Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 22 Feb 2024 14:10:43 +0100
+Subject: [PATCH 0934/1141] dt-bindings: display: update dt-bindings for STM32
+ LTDC device
+
+Add "st,stm32mp25-ltdc" compatible for SOC MP25
+
+Change-Id: Iacf9bc09ccc610bb9b048c39ab225db3b7210e4a
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/362681
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+index d6ea4d62a2cf..1adf97e32dbc 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+@@ -12,7 +12,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32-ltdc
++      enum:
++      - st,stm32-ltdc
++      - st,stm32mp25-ltdc
+ 
+   reg:
+     maxItems: 1
+-- 
+2.39.2
+

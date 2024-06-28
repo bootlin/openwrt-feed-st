@@ -1,0 +1,56 @@
+From 2e2c862a5f7569196e9bd46474c3020f2e526213 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Tue, 20 Jun 2023 11:08:37 +0200
+Subject: [PATCH 0346/1141] crypto: stm32/hash - remove bufcnt in
+ stm32_hash_write_ctrl.
+
+Commit "crypto: stm32 - Fix empty message processing" remove the use of
+the argument bufcnt in stm32_hash_write_ctrl.
+Hence, we can remove it from the function prototype and simplify the
+function declaration.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: I70a8c5fdcd56d46be8d74153b93e92fbd8f821b8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/314576
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-hash.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
+index f4523a6119b4..b75ae6ae5030 100644
+--- a/drivers/crypto/stm32/stm32-hash.c
++++ b/drivers/crypto/stm32/stm32-hash.c
+@@ -286,7 +286,7 @@ static int stm32_hash_write_key(struct stm32_hash_dev *hdev)
+ 	return 0;
+ }
+ 
+-static void stm32_hash_write_ctrl(struct stm32_hash_dev *hdev, int bufcnt)
++static void stm32_hash_write_ctrl(struct stm32_hash_dev *hdev)
+ {
+ 	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
+ 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(hdev->req);
+@@ -395,7 +395,7 @@ static int stm32_hash_xmit_cpu(struct stm32_hash_dev *hdev,
+ 
+ 	hdev->flags |= HASH_FLAGS_CPU;
+ 
+-	stm32_hash_write_ctrl(hdev, length);
++	stm32_hash_write_ctrl(hdev);
+ 
+ 	if (stm32_hash_wait_busy(hdev))
+ 		return -ETIMEDOUT;
+@@ -669,7 +669,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+ 	if (rctx->nents < 0)
+ 		return -EINVAL;
+ 
+-	stm32_hash_write_ctrl(hdev, rctx->total);
++	stm32_hash_write_ctrl(hdev);
+ 
+ 	if (hdev->flags & HASH_FLAGS_HMAC) {
+ 		err = stm32_hash_hmac_dma_send(hdev);
+-- 
+2.39.2
+

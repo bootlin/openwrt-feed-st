@@ -1,0 +1,48 @@
+From 5c5408110e7a413510560c60e6c3cb60135c99d8 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 17 Nov 2022 16:22:15 +0100
+Subject: [PATCH 0566/1141] ASoC: stm32: spdifrx: fix dma channel release in
+ stm32_spdifrx_remove
+
+In case of error when requesting ctrl_chan DMA channel, ctrl_chan is not
+null. So the release of the dma channel leads to the following issue:
+[    4.879000] st,stm32-spdifrx 500d0000.audio-controller: dma_request_slave_channel error -19
+[    4.888975] Unable to handle kernel NULL pointer dereference at virtual address 000000000000003d
+[...]
+[    5.096577] Call trace:
+[    5.099099]  dma_release_channel+0x24/0x100
+[    5.103235]  stm32_spdifrx_remove+0x24/0x60 [snd_soc_stm32_spdifrx]
+[    5.109494]  stm32_spdifrx_probe+0x320/0x4c4 [snd_soc_stm32_spdifrx]
+
+To avoid this issue, release channel only if the pointer is valid.
+
+Fixes: 794df9448edb ("ASoC: stm32: spdifrx: manage rebind issue")
+Change-Id: Id74456ff7d811b0b6229e600de0509c279f86b7c
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/331411
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ sound/soc/stm/stm32_spdifrx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index d399c906bb92..e66382680e09 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -943,7 +943,7 @@ static int stm32_spdifrx_remove(struct platform_device *pdev)
+ {
+ 	struct stm32_spdifrx_data *spdifrx = platform_get_drvdata(pdev);
+ 
+-	if (spdifrx->ctrl_chan)
++	if (!IS_ERR(spdifrx->ctrl_chan))
+ 		dma_release_channel(spdifrx->ctrl_chan);
+ 
+ 	if (spdifrx->dmab)
+-- 
+2.39.2
+

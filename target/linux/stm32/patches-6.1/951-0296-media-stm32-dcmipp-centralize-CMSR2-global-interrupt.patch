@@ -1,0 +1,101 @@
+From 5ac75d3e0dac0de40f4c1040b92d0aa575779ba9 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Tue, 8 Nov 2022 10:06:35 +0100
+Subject: [PATCH 0296/1141] media: stm32: dcmipp: centralize CMSR2 global
+ interrupt status
+
+Several entities are triggered on the interrupt callback : all of
+them need to know the interrupt status (CMSR2 register) when it is fired.
+In order to avoid race condition where an entity clears the IRQ before
+another one reads its status, read the status from a central place
+(dcmipp-core) just before calling the corresponding entity callbacks.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: Ieaa2c65bc6c37fa9a03c1660a7fefab25239fc5b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/292763
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c   | 3 ++-
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h    | 1 +
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c  | 6 ++++++
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c  | 4 ++--
+ 4 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index bf470fc88768..22ccd81efd60 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -985,9 +985,10 @@ static irqreturn_t dcmipp_bytecap_irq_callback(int irq, void *arg)
+ {
+ 	struct dcmipp_bytecap_device *vcap =
+ 			container_of(arg, struct dcmipp_bytecap_device, ved);
++	struct dcmipp_ent_device *ved = arg;
+ 
+ 	/* Store interrupt status register */
+-	vcap->cmsr2 = reg_read(vcap, DCMIPP_CMSR2) & vcap->cmier;
++	vcap->cmsr2 = ved->cmsr2 & vcap->cmier;
+ 	vcap->it_count++;
+ 
+ 	/* Clear interrupt */
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+index 8f60a8594323..4b4c2d1e26f7 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+@@ -121,6 +121,7 @@ struct dcmipp_ent_device {
+ 	enum v4l2_mbus_type		bus_type;
+ 	irq_handler_t handler;
+ 	irqreturn_t handler_ret;
++	u32 cmsr2;
+ 	irq_handler_t thread_fn;
+ };
+ 
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index c963f38c3958..40f2d94fb25d 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -38,6 +38,7 @@
+ #define DCMIPP_CMHWCFGR (0x200)
+ #define DCMIPP_CMCR (0x204)
+ #define DCMIPP_CMCR_INSEL BIT(0)
++#define DCMIPP_CMSR2 (0x3F8)
+ #define DCMIPP_P0HWCFGR (0x400)
+ #define DCMIPP_VERR (0xFF4)
+ 
+@@ -418,10 +419,15 @@ static irqreturn_t dcmipp_irq_callback(int irq, void *arg)
+ 	struct dcmipp_ent_device *ved;
+ 	irqreturn_t ret = IRQ_HANDLED;
+ 	unsigned int i;
++	u32 cmsr2;
++
++	/* Centralized read of CMSR2 */
++	cmsr2 = reg_read(dcmipp, DCMIPP_CMSR2);
+ 
+ 	/* Call irq handler of each entities of pipeline */
+ 	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++) {
+ 		ved = platform_get_drvdata(dcmipp->subdevs[i]);
++		ved->cmsr2 = cmsr2;
+ 		if (ved->handler)
+ 			ved->handler_ret = ved->handler(irq, ved);
+ 		else if (ved->thread_fn)
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index c90cfc4333f8..dadffb20c105 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -1139,9 +1139,9 @@ static irqreturn_t dcmipp_pixelcap_irq_callback(int irq, void *arg)
+ {
+ 	struct dcmipp_pixelcap_device *vcap =
+ 			container_of(arg, struct dcmipp_pixelcap_device, ved);
++	struct dcmipp_ent_device *ved = arg;
+ 
+-	vcap->cmsr2 = reg_read(vcap, DCMIPP_CMSR2);
+-	vcap->cmsr2 = vcap->cmsr2 & vcap->cmier;
++	vcap->cmsr2 = ved->cmsr2 & vcap->cmier;
+ 
+ 	vcap->it_count++;
+ 
+-- 
+2.39.2
+

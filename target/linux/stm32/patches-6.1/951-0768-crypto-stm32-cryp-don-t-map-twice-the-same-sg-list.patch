@@ -1,0 +1,79 @@
+From 70c5a1d9ee87e08120ce2afce36d6abd5000d181 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Wed, 20 Dec 2023 10:18:01 +0100
+Subject: [PATCH 0768/1141] crypto: stm32/cryp - don't map twice the same sg
+ list
+
+In some cases scatter gather lists "in_sg" and "out_sg" can be the same
+pointer provided by the crypto framework through a cypher request.
+Current implementation of the STM32 crypto driver doesn't handle well
+this case. Indeed, during DMA start function (stm32_cryp_dma_start)
+dma_map_sg is called twice: a first time for the in_sg and a second time
+for the out_sg. As "in_sg"="out_sg" the "in_sg" DMA address is not the
+one got by the first dma_map_sg call but the one got by the second call
+of dma_map_sg. Consequence is for the unmap phase. "dma_unmap_sg" is
+called but for the same DMA address.
+
+This creates an issue on system using SWIOTLB mechanism. On each
+dma_map_sg call (if SWIOTLB is used) SWIOTLB reserves an area in its
+aperture zone. So in the case explained above, SWIOTLB reserves 2 areas.
+But on the unmap phase only one area of both is released. That creates a
+a memory leak of the SWIOTLB aperture memory.
+
+This patch fixes the issue by calling dma_map_sg/dma_unmap_sg only one
+time if "in_sg" = "out_sg".
+
+Note this issue is not seen when SWIOTLB is not used. If SWIOTLB is not
+used, dma_map_sg do simply an address translation to provide the DMA
+address. There is no allocation/reservation done.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I20f91c605fe5f8d81f73e7b8880b5e7ef7cef114
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/349589
+Tested-by: Jerome BESNARD <jerome.besnard@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Maxime MERE <maxime.mere@foss.st.com>
+Tested-by: Maxime MERE <maxime.mere@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 92ed1a97c7af..4e88e522405c 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -765,7 +765,10 @@ static void stm32_cryp_dma_callback(void *param)
+ 	complete(&cryp->dma_completion); /* completion to indicate no timeout */
+ 
+ 	dma_sync_sg_for_device(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
+-	dma_unmap_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
++
++	if (cryp->in_sg != cryp->out_sg)
++		dma_unmap_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
++
+ 	dma_unmap_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
+ 
+ 	reg = stm32_cryp_read(cryp, CRYP_DMACR);
+@@ -856,10 +859,12 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+ 	struct dma_async_tx_descriptor *tx_in, *tx_out;
+ 	u32 reg;
+ 
+-	err = dma_map_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
+-	if (!err) {
+-		dev_err(cryp->dev, "dma_map_sg() error\n");
+-		return err;
++	if (cryp->in_sg != cryp->out_sg) {
++		err = dma_map_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
++		if (!err) {
++			dev_err(cryp->dev, "dma_map_sg() error\n");
++			return err;
++		}
+ 	}
+ 
+ 	err = dma_map_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
+-- 
+2.39.2
+

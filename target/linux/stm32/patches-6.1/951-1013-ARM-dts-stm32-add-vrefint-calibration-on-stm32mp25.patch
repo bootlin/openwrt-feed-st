@@ -1,0 +1,65 @@
+From 6950e497cea6f7415e464ef463c61484934a2077 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 26 Mar 2024 11:14:16 +0100
+Subject: [PATCH 1013/1141] ARM: dts: stm32: add vrefint calibration on
+ stm32mp25
+
+Describe vrefint calibration cell to be retrieved by ADCs through bsec,
+on STM32MP25.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I36cc4c13ccb4e915dc6535ef78445077acd54004
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369201
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index baa1c8fd0954..efffacb3699c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1669,6 +1669,8 @@ adc1: adc@0 {
+ 					#io-channel-cells = <1>;
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
++					nvmem-cells = <&vrefint>;
++					nvmem-cell-names = "vrefint";
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+@@ -1686,6 +1688,8 @@ adc2: adc@100 {
+ 					#io-channel-cells = <1>;
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
++					nvmem-cells = <&vrefint>;
++					nvmem-cell-names = "vrefint";
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+@@ -1874,6 +1878,8 @@ adc3: adc@0 {
+ 					#io-channel-cells = <1>;
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
++					nvmem-cells = <&vrefint>;
++					nvmem-cell-names = "vrefint";
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+@@ -2352,6 +2358,10 @@ part_number_otp@24 {
+ 				reg = <0x24 0x4>;
+ 			};
+ 
++			vrefint: vrefin-cal@1b8 {
++				reg = <0x1b8 0x2>;
++			};
++
+ 			package_otp@1e8 {
+ 				reg = <0x1e8 0x1>;
+ 				bits = <0 3>;
+-- 
+2.39.2
+

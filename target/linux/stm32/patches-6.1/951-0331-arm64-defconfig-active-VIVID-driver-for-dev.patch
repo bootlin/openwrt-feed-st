@@ -1,0 +1,45 @@
+From 72b33b855829bdcd1ab8b258b2ef845dcf74a3d1 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 6 Jun 2023 16:59:45 +0200
+Subject: [PATCH 0331/1141] arm64: defconfig: active VIVID driver for dev
+
+Activate Virtual Video Test driver for dev configuration.
+
+Change-Id: Ic0849d133bb8f7ad06a7195592dc5cf02aa6ee3f
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/309488
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 438b48154be7..9d95c7d26706 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -31,6 +31,7 @@ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_JFFS2_FS=y
++CONFIG_MEDIA_TEST_SUPPORT=y
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+@@ -88,6 +89,7 @@ CONFIG_TOUCHSCREEN_ILI210X=y
+ CONFIG_UBIFS_FS=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
++CONFIG_V4L_TEST_DRIVERS=y
+ CONFIG_VIDEOMODE_HELPERS=y
+ CONFIG_VIDEO_HANTRO=m
+ CONFIG_VIDEO_HANTRO_STM32MP25=y
+@@ -95,3 +97,4 @@ CONFIG_VIDEO_IMX335=m
+ CONFIG_VIDEO_STM32_CSI2HOST=m
+ CONFIG_VIDEO_STM32_DCMI=m
+ CONFIG_VIDEO_STM32_DCMIPP=m
++CONFIG_VIDEO_VIVID=m
+-- 
+2.39.2
+

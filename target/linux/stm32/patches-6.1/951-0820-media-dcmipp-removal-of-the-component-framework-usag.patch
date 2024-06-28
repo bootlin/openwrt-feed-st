@@ -1,0 +1,1769 @@
+From 6b95198fb5e86660eda6e6d8135720791f9e3029 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 11 Jan 2024 18:33:26 +0100
+Subject: [PATCH 0820/1141] media: dcmipp: removal of the component framework
+ usage
+
+Component framework usage isn't really necessary for this driver and
+its usage has been rejected during the upstream of the stm32mp13 dcmipp
+driver.
+Moreover its usage leads to difficulties in exchanging information
+between subdevices and video devices.
+
+This commit remove the whole usage of the component mechanism, having
+now a unique stm32-dcmipp driver which contains all blocks together.
+For the sake of avoiding too many modifications at the same time no
+further modifications are done in this commits, however more rework
+are needed to further allow easy data sharing between subdevices
+(this will be especially try in the context of ISP with params and
+statistics being closely related and having to share data between the
+params video device (OUTPUT) and the stats video device (CAPTURE))
+
+Component framework usage removal is done the following way:
+- add init / release entry points for all subdevs/video devices
+- core file call in each of the subdev init / release
+- each subdev / video dev do not have anymore their own platform
+  device but all share the one of the whole driver
+
+Change-Id: Id7fbca9969757b390b85ee682410f3566e316fc8
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/351134
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/Makefile   |   4 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    |  89 ++-----
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   |  70 +-----
+ .../st/stm32/stm32-dcmipp/dcmipp-colorconv.c  |   6 -
+ .../st/stm32/stm32-dcmipp/dcmipp-common.c     |   4 -
+ .../st/stm32/stm32-dcmipp/dcmipp-common.h     |  65 +++--
+ .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 228 +++++++-----------
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        |  85 ++-----
+ .../st/stm32/stm32-dcmipp/dcmipp-parallel.c   |  70 +-----
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   |  92 ++-----
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  |  86 ++-----
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    |  89 ++-----
+ 12 files changed, 248 insertions(+), 640 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
+index 23d81dfb580b..54f45f65cb1b 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-stm32-dcmipp-y := dcmipp-core.o dcmipp-common.o
++stm32-dcmipp-y := dcmipp-core.o dcmipp-common.o dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o
++stm32-dcmipp-y += dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o
+ 
+ obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
+-obj-$(CONFIG_VIDEO_STM32_DCMIPP) += dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 0e2bacad6e3e..ca22d2f3ddf2 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+@@ -120,7 +119,6 @@ struct dcmipp_bytecap_device {
+ 	struct dcmipp_ent_device ved;
+ 	struct video_device vdev;
+ 	struct device *dev;
+-	struct device *cdev;
+ 	struct v4l2_pix_format format;
+ 	struct vb2_queue queue;
+ 	struct list_head buffers;
+@@ -543,7 +541,7 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+ 	vcap->underrun_count = 0;
+ 	vcap->nactive_count = 0;
+ 
+-	ret = pm_runtime_get_sync(vcap->cdev);
++	ret = pm_runtime_get_sync(vcap->dev);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "%s: Failed to start streaming, cannot get sync (%d)\n",
+ 			__func__, ret);
+@@ -613,7 +611,7 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+ err_media_pipeline_stop:
+ 	media_pipeline_stop(entity->pads);
+ err_pm_put:
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ 	spin_lock_irq(&vcap->irqlock);
+ 	/*
+ 	 * Return all buffers to vb2 in QUEUED state.
+@@ -690,7 +688,7 @@ static void dcmipp_bytecap_stop_streaming(struct vb2_queue *vq)
+ 
+ 	spin_unlock_irq(&vcap->irqlock);
+ 
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ 
+ 	if (vcap->errors_count)
+ 		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d, limit=%d, nactive=%d), underrun=%d, buffers=%d\n",
+@@ -826,11 +824,8 @@ static void dcmipp_bytecap_release(struct video_device *vdev)
+ 	kfree(vcap);
+ }
+ 
+-static void dcmipp_bytecap_comp_unbind(struct device *comp,
+-				       struct device *master,
+-				       void *master_data)
++void dcmipp_bytecap_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_bytecap_device *vcap =
+ 		container_of(ved, struct dcmipp_bytecap_device, ved);
+ 
+@@ -985,11 +980,11 @@ static irqreturn_t dcmipp_bytecap_irq_callback(int irq, void *arg)
+ 	return IRQ_WAKE_THREAD;
+ }
+ 
+-static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+-				    void *master_data)
++struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
++						  const char *entity_name,
++						  struct v4l2_device *v4l2_dev,
++						  void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_bytecap_device *vcap;
+ 	struct v4l2_pix_format *format;
+ 	struct video_device *vdev;
+@@ -999,7 +994,7 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	/* Allocate the dcmipp_bytecap_device struct */
+ 	vcap = kzalloc(sizeof(*vcap), GFP_KERNEL);
+ 	if (!vcap)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* Allocate the pads */
+ 	vcap->ved.pads =
+@@ -1011,7 +1006,7 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	}
+ 
+ 	/* Initialize the media entity */
+-	vcap->vdev.entity.name = pdata->entity_name;
++	vcap->vdev.entity.name = entity_name;
+ 	vcap->vdev.entity.function = MEDIA_ENT_F_IO_V4L;
+ 	ret = media_entity_pads_init(&vcap->vdev.entity,
+ 				     1, vcap->ved.pads);
+@@ -1032,12 +1027,12 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	q->mem_ops = &vb2_dma_contig_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+ 	q->min_buffers_needed = 1;
+-	q->dev = comp;
++	q->dev = dev;
+ 
+ 	ret = vb2_queue_init(q);
+ 	if (ret) {
+-		dev_err(comp, "%s: vb2 queue init failed (err=%d)\n",
+-			pdata->entity_name, ret);
++		dev_err(dev, "%s: vb2 queue init failed (err=%d)\n",
++			entity_name, ret);
+ 		goto err_clean_m_ent;
+ 	}
+ 
+@@ -1058,10 +1053,8 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	vcap->ved.vdev_get_format = dcmipp_bytecap_get_format;
+ 	vcap->ved.handler = dcmipp_bytecap_irq_callback;
+ 	vcap->ved.thread_fn = dcmipp_bytecap_irq_thread;
+-	dev_set_drvdata(comp, &vcap->ved);
+-	vcap->dev = comp;
+-	vcap->regs = bind_data->regs;
+-	vcap->cdev = master;
++	vcap->dev = dev;
++	vcap->regs = regs;
+ 
+ 	/* Initialize the video_device struct */
+ 	vdev = &vcap->vdev;
+@@ -1073,19 +1066,19 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ 	vdev->ioctl_ops = &dcmipp_bytecap_ioctl_ops;
+ 	vdev->lock = &vcap->lock;
+ 	vdev->queue = q;
+-	vdev->v4l2_dev = bind_data->v4l2_dev;
+-	strscpy(vdev->name, pdata->entity_name, sizeof(vdev->name));
++	vdev->v4l2_dev = v4l2_dev;
++	strscpy(vdev->name, entity_name, sizeof(vdev->name));
+ 	video_set_drvdata(vdev, &vcap->ved);
+ 
+ 	/* Register the video_device with the v4l2 and the media framework */
+ 	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+-		dev_err(comp, "%s: video register failed (err=%d)\n",
++		dev_err(dev, "%s: video register failed (err=%d)\n",
+ 			vcap->vdev.name, ret);
+ 		goto err_clean_m_ent;
+ 	}
+ 
+-	return 0;
++	return &vcap->ved;
+ 
+ err_clean_m_ent:
+ 	media_entity_cleanup(&vcap->vdev.entity);
+@@ -1094,47 +1087,5 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+ err_free_vcap:
+ 	kfree(vcap);
+ 
+-	return ret;
+-}
+-
+-static const struct component_ops dcmipp_bytecap_comp_ops = {
+-	.bind = dcmipp_bytecap_comp_bind,
+-	.unbind = dcmipp_bytecap_comp_unbind,
+-};
+-
+-static int dcmipp_bytecap_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_bytecap_comp_ops);
++	return ERR_PTR(ret);
+ }
+-
+-static int dcmipp_bytecap_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_bytecap_comp_ops);
+-
+-	return 0;
+-}
+-
+-static const struct platform_device_id dcmipp_bytecap_driver_ids[] = {
+-	{
+-		.name	= DCMIPP_BYTECAP_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_bytecap_pdrv = {
+-	.probe		= dcmipp_bytecap_probe,
+-	.remove		= dcmipp_bytecap_remove,
+-	.id_table	= dcmipp_bytecap_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_BYTECAP_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_bytecap_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_bytecap_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index 79825976655b..765c2a8aaa38 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -750,22 +749,18 @@ static const struct v4l2_subdev_internal_ops dcmipp_byteproc_int_ops = {
+ 	.release = dcmipp_byteproc_release,
+ };
+ 
+-static void dcmipp_byteproc_comp_unbind(struct device *comp,
+-					struct device *master,
+-					void *master_data)
++void dcmipp_byteproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_byteproc_device *byteproc =
+ 			container_of(ved, struct dcmipp_byteproc_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &byteproc->sd);
+ }
+ 
+-static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+-				     void *master_data)
++struct dcmipp_ent_device *
++dcmipp_byteproc_ent_init(struct device *dev, const char *entity_name,
++			 struct v4l2_device *v4l2_dev, void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_byteproc_device *byteproc;
+ 	struct v4l2_rect r = {
+ 		.top = 0,
+@@ -782,10 +777,9 @@ static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+ 	/* Allocate the byteproc struct */
+ 	byteproc = kzalloc(sizeof(*byteproc), GFP_KERNEL);
+ 	if (!byteproc)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+-	byteproc->regs = bind_data->regs;
+-	byteproc->dev = comp;
++	byteproc->regs = regs;
+ 
+ 	/* Initialize the lock */
+ 	mutex_init(&byteproc->lock);
+@@ -799,8 +793,8 @@ static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+ 
+ 	/* Initialize ved and sd */
+ 	ret = dcmipp_ent_sd_register(&byteproc->ved, &byteproc->sd,
+-				     bind_data->v4l2_dev,
+-				     pdata->entity_name,
++				     v4l2_dev,
++				     entity_name,
+ 				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER, 2,
+ 				     (const unsigned long[2]) {
+ 				     MEDIA_PAD_FL_SINK,
+@@ -811,52 +805,10 @@ static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+ 				     NULL, NULL);
+ 	if (ret) {
+ 		kfree(byteproc);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+-	dev_set_drvdata(comp, &byteproc->ved);
++	byteproc->dev = dev;
+ 
+-	return 0;
+-}
+-
+-static const struct component_ops dcmipp_byteproc_comp_ops = {
+-	.bind = dcmipp_byteproc_comp_bind,
+-	.unbind = dcmipp_byteproc_comp_unbind,
+-};
+-
+-static int dcmipp_byteproc_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_byteproc_comp_ops);
+-}
+-
+-static int dcmipp_byteproc_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_byteproc_comp_ops);
+-
+-	return 0;
++	return &byteproc->ved;
+ }
+-
+-static const struct platform_device_id dcmipp_byteproc_driver_ids[] = {
+-	{
+-		.name           = DCMIPP_BYTEPROC_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_byteproc_pdrv = {
+-	.probe		= dcmipp_byteproc_probe,
+-	.remove		= dcmipp_byteproc_remove,
+-	.id_table	= dcmipp_byteproc_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_BYTEPROC_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_byteproc_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_byteproc_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
+index 3b72b4118994..77f483abd60c 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
+@@ -359,9 +359,3 @@ int dcmipp_colorconv_configure(struct device *dev,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(dcmipp_colorconv_configure);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+index 2a566bacc80e..9ec6cb1b3ae2 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+@@ -32,14 +32,12 @@ struct media_pad *dcmipp_pads_init(u16 num_pads, const unsigned long *pads_flag)
+ 
+ 	return pads;
+ }
+-EXPORT_SYMBOL_GPL(dcmipp_pads_init);
+ 
+ int dcmipp_link_validate(struct media_link *link)
+ {
+ 	/* TODO */
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(dcmipp_link_validate);
+ 
+ static const struct media_entity_operations dcmipp_ent_sd_mops = {
+ 	.link_validate = dcmipp_link_validate,
+@@ -106,11 +104,9 @@ int dcmipp_ent_sd_register(struct dcmipp_ent_device *ved,
+ 	dcmipp_pads_cleanup(ved->pads);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(dcmipp_ent_sd_register);
+ 
+ void dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved, struct v4l2_subdev *sd)
+ {
+ 	media_entity_cleanup(ved->ent);
+ 	v4l2_device_unregister_subdev(sd);
+ }
+-EXPORT_SYMBOL_GPL(dcmipp_ent_sd_unregister);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+index d7294f7daa25..346ff4cb122d 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+@@ -66,29 +66,6 @@ do {									\
+ 		(fmt)->xfer_func = DCMIPP_XFER_FUNC_DEFAULT;		\
+ } while (0)
+ 
+-/**
+- * struct dcmipp_platform_data - platform data to components
+- *
+- * @entity_name:	The name of the entity to be created
+- *
+- * Board setup code will often provide additional information using the device's
+- * platform_data field to hold additional information.
+- * When injecting a new platform_device in the component system the core needs
+- * to provide to the corresponding submodules the name of the entity that should
+- * be used when registering the subdevice in the Media Controller system.
+- */
+-struct dcmipp_platform_data {
+-	char entity_name[32];
+-};
+-
+-struct dcmipp_bind_data {
+-	/* Internal v4l2 parent device*/
+-	struct v4l2_device		*v4l2_dev;
+-
+-	/* Hardware resources */
+-	void __iomem			*regs;
+-};
+-
+ /**
+  * struct dcmipp_ent_device - core struct that represents a node in the topology
+  *
+@@ -236,5 +213,45 @@ static inline void reg_clear_dbg(struct device *dev, const char *regname,
+ 	reg_write_dbg(dev, regname, base, reg, readl_relaxed(base + reg) & ~mask);
+ }
+ 
+-#endif
++/* DCMIPP subdev init / release entry points */
++struct dcmipp_ent_device *dcmipp_par_ent_init(struct device *dev,
++					      const char *entity_name,
++					      struct v4l2_device *v4l2_dev,
++					      void __iomem *regs);
++void dcmipp_par_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *
++dcmipp_byteproc_ent_init(struct device *dev, const char *entity_name,
++			 struct v4l2_device *v4l2_dev, void __iomem *regs);
++void dcmipp_byteproc_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
++						  const char *entity_name,
++						  struct v4l2_device *v4l2_dev,
++						  void __iomem *regs);
++void dcmipp_bytecap_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
++					      const char *entity_name,
++					      struct v4l2_device *v4l2_dev,
++					      void __iomem *regs);
++void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_pixelproc_ent_init(struct device *dev,
++						    const char *entity_name,
++						    struct v4l2_device *v4l2_dev,
++						    void __iomem *regs);
++void dcmipp_pixelproc_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_pixelcap_ent_init(struct device *dev,
++						   const char *entity_name,
++						   struct v4l2_device *v4l2_dev,
++						   void __iomem *regs);
++void dcmipp_pixelcap_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_statcap_ent_init(struct device *dev,
++						  const char *entity_name,
++						  struct v4l2_device *v4l2_dev,
++						  void __iomem *regs);
++void dcmipp_statcap_ent_release(struct dcmipp_ent_device *ved);
++struct dcmipp_ent_device *dcmipp_isp_params_ent_init(struct device *dev,
++						     const char *entity_name,
++						     struct v4l2_device *v4l2_dev,
++						     void __iomem *regs);
++void dcmipp_isp_params_ent_release(struct dcmipp_ent_device *ved);
+ 
++#endif
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 70de96a2bb21..54d2c395a5c7 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ #include <linux/clk.h>
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -60,8 +59,8 @@ struct dcmipp_device {
+ 	/* Internal v4l2 parent device*/
+ 	struct v4l2_device		v4l2_dev;
+ 
+-	/* Subdevices */
+-	struct platform_device		**subdevs;
++	/* Entities */
++	struct dcmipp_ent_device	**entity;
+ 
+ 	struct v4l2_async_notifier	notifier;
+ };
+@@ -74,7 +73,10 @@ static inline struct dcmipp_device *notifier_to_dcmipp(struct v4l2_async_notifie
+ /* Structure which describes individual configuration for each entity */
+ struct dcmipp_ent_config {
+ 	const char *name;
+-	const char *drv;
++	struct dcmipp_ent_device *(*init)
++		(struct device *dev, const char *entity_name,
++		 struct v4l2_device *v4l2_dev, void __iomem *regs);
++	void (*release)(struct dcmipp_ent_device *ved);
+ };
+ 
+ /* Structure which describes links between entities */
+@@ -101,15 +103,18 @@ struct dcmipp_pipeline_config {
+ static const struct dcmipp_ent_config stm32mp13_ent_config[] = {
+ 	{
+ 		.name = "dcmipp_parallel",
+-		.drv = "dcmipp-parallel",
++		.init = dcmipp_par_ent_init,
++		.release = dcmipp_par_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_dump_postproc",
+-		.drv = "dcmipp-byteproc",
++		.init = dcmipp_byteproc_ent_init,
++		.release = dcmipp_byteproc_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_dump_capture",
+-		.drv = "dcmipp-bytecap",
++		.init = dcmipp_bytecap_ent_init,
++		.release = dcmipp_bytecap_ent_release,
+ 	},
+ };
+ 
+@@ -140,39 +145,48 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 	{
+ 		.name = "dcmipp_parallel",
+-		.drv = "dcmipp-parallel",
++		.init = dcmipp_par_ent_init,
++		.release = dcmipp_par_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_dump_postproc",
+-		.drv = "dcmipp-byteproc",
++		.init = dcmipp_byteproc_ent_init,
++		.release = dcmipp_byteproc_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_dump_capture",
+-		.drv = "dcmipp-bytecap",
++		.init = dcmipp_bytecap_ent_init,
++		.release = dcmipp_bytecap_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_main_isp",
+-		.drv = "dcmipp-isp",
++		.init = dcmipp_isp_ent_init,
++		.release = dcmipp_isp_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_main_postproc",
+-		.drv = "dcmipp-pixelproc",
++		.init = dcmipp_pixelproc_ent_init,
++		.release = dcmipp_pixelproc_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_main_capture",
+-		.drv = "dcmipp-pixelcap",
++		.init = dcmipp_pixelcap_ent_init,
++		.release = dcmipp_pixelcap_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_aux_postproc",
+-		.drv = "dcmipp-pixelproc",
++		.init = dcmipp_pixelproc_ent_init,
++		.release = dcmipp_pixelproc_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_aux_capture",
+-		.drv = "dcmipp-pixelcap",
++		.init = dcmipp_pixelcap_ent_init,
++		.release = dcmipp_pixelcap_ent_release,
+ 	},
+ 	{
+ 		.name = "dcmipp_main_isp_stat_capture",
+-		.drv = "dcmipp-statcap",
++		.init = dcmipp_statcap_ent_init,
++		.release = dcmipp_statcap_ent_release,
+ 	},
+ };
+ 
+@@ -216,20 +230,16 @@ static int dcmipp_create_links(struct dcmipp_device *dcmipp)
+ 
+ 	/* Initialize the links between entities */
+ 	for (i = 0; i < dcmipp->pipe_cfg->num_links; i++) {
+-		const struct dcmipp_ent_link *link = &dcmipp->pipe_cfg->links[i];
+-		/*
+-		 * TODO: Check another way of retrieving ved struct without
+-		 * relying on platform_get_drvdata
+-		 */
++		const struct dcmipp_ent_link *link =
++			&dcmipp->pipe_cfg->links[i];
+ 		struct dcmipp_ent_device *ved_src =
+-			platform_get_drvdata(dcmipp->subdevs[link->src_ent]);
++			dcmipp->entity[link->src_ent];
+ 		struct dcmipp_ent_device *ved_sink =
+-			platform_get_drvdata(dcmipp->subdevs[link->sink_ent]);
++			dcmipp->entity[link->sink_ent];
+ 
+ 		dev_dbg(dcmipp->dev, "Create link \"%s\":%d -> %d:\"%s\" [%s]\n",
+ 			dcmipp->pipe_cfg->ents[link->src_ent].name,
+-			link->src_pad,
+-			link->sink_pad,
++			link->src_pad, link->sink_pad,
+ 			dcmipp->pipe_cfg->ents[link->sink_ent].name,
+ 			LINK_FLAG_TO_STR(link->flags));
+ 
+@@ -245,118 +255,44 @@ static int dcmipp_create_links(struct dcmipp_device *dcmipp)
+ 
+ static int dcmipp_graph_init(struct dcmipp_device *dcmipp);
+ 
+-static int dcmipp_comp_bind(struct device *master)
++static int dcmipp_create_subdevs(struct dcmipp_device *dcmipp)
+ {
+-	struct dcmipp_device *dcmipp = platform_get_drvdata(to_platform_device(master));
+-	struct dcmipp_bind_data bind_data;
+-	int ret;
++	int ret, i;
+ 
+-	/* Register the v4l2 struct */
+-	ret = v4l2_device_register(dcmipp->mdev.dev, &dcmipp->v4l2_dev);
+-	if (ret) {
+-		dev_err(dcmipp->mdev.dev,
+-			"v4l2 device register failed (err=%d)\n", ret);
+-		return ret;
++	/* Call all subdev inits */
++	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++) {
++		const char *name = dcmipp->pipe_cfg->ents[i].name;
++
++		dev_dbg(dcmipp->dev, "add subdev %s\n", name);
++		dcmipp->entity[i] =
++			dcmipp->pipe_cfg->ents[i].init(dcmipp->dev, name,
++						       &dcmipp->v4l2_dev,
++						       dcmipp->regs);
++		if (IS_ERR(dcmipp->entity[i])) {
++			dev_err(dcmipp->dev, "failed to init subdev %s\n",
++				name);
++			ret = PTR_ERR(dcmipp->entity[i]);
++			goto err_init_entity;
++		}
+ 	}
+ 
+-	/* Bind subdevices */
+-	bind_data.v4l2_dev = &dcmipp->v4l2_dev;
+-	bind_data.regs = dcmipp->regs;
+-	ret = component_bind_all(master, &bind_data);
+-	if (ret)
+-		goto err_v4l2_unregister;
+-
+ 	/* Initialize links */
+ 	ret = dcmipp_create_links(dcmipp);
+ 	if (ret)
+-		goto err_comp_unbind_all;
++		goto err_init_entity;
+ 
+ 	ret = dcmipp_graph_init(dcmipp);
+ 	if (ret < 0)
+-		return ret;
++		goto err_init_entity;
+ 
+ 	return 0;
+ 
+-	media_device_unregister(&dcmipp->mdev);
+-	media_device_cleanup(&dcmipp->mdev);
+-err_comp_unbind_all:
+-	component_unbind_all(master, NULL);
+-err_v4l2_unregister:
+-	v4l2_device_unregister(&dcmipp->v4l2_dev);
+-
++err_init_entity:
++	while (i > 0)
++		dcmipp->pipe_cfg->ents[i - 1].release(dcmipp->entity[i - 1]);
+ 	return ret;
+ }
+ 
+-static void dcmipp_comp_unbind(struct device *master)
+-{
+-	struct dcmipp_device *dcmipp = platform_get_drvdata(to_platform_device(master));
+-
+-	v4l2_async_nf_unregister(&dcmipp->notifier);
+-	v4l2_async_nf_cleanup(&dcmipp->notifier);
+-
+-	media_device_unregister(&dcmipp->mdev);
+-	media_device_cleanup(&dcmipp->mdev);
+-	component_unbind_all(master, NULL);
+-	v4l2_device_unregister(&dcmipp->v4l2_dev);
+-}
+-
+-static int dcmipp_comp_compare(struct device *comp, void *data)
+-{
+-	return comp == data;
+-}
+-
+-static struct component_match *dcmipp_add_subdevs(struct dcmipp_device *dcmipp)
+-{
+-	struct component_match *match = NULL;
+-	struct dcmipp_platform_data pdata;
+-	int i;
+-
+-	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++) {
+-		dev_dbg(dcmipp->dev, "new pdev for %s (%s)\n",
+-			dcmipp->pipe_cfg->ents[i].drv,
+-			dcmipp->pipe_cfg->ents[i].name);
+-
+-		strscpy(pdata.entity_name, dcmipp->pipe_cfg->ents[i].name,
+-			sizeof(pdata.entity_name));
+-
+-		dcmipp->subdevs[i] =
+-			platform_device_register_data
+-				(dcmipp->dev,
+-				 dcmipp->pipe_cfg->ents[i].drv,
+-				 PLATFORM_DEVID_AUTO,
+-				 &pdata,
+-				 sizeof(pdata));
+-		if (IS_ERR(dcmipp->subdevs[i])) {
+-			match = ERR_CAST(dcmipp->subdevs[i]);
+-			while (--i >= 0)
+-				platform_device_unregister(dcmipp->subdevs[i]);
+-
+-			dev_err(dcmipp->mdev.dev,
+-				"%s error (err=%ld)\n", __func__,
+-				PTR_ERR(match));
+-			return match;
+-		}
+-
+-		component_match_add(dcmipp->dev, &match, dcmipp_comp_compare,
+-				    &dcmipp->subdevs[i]->dev);
+-	}
+-
+-	return match;
+-}
+-
+-static void dcmipp_rm_subdevs(struct dcmipp_device *dcmipp)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++)
+-		platform_device_unregister(dcmipp->subdevs[i]);
+-}
+-
+-static const struct component_master_ops dcmipp_comp_ops = {
+-	.bind = dcmipp_comp_bind,
+-	.unbind = dcmipp_comp_unbind,
+-};
+-
+ static const struct of_device_id dcmipp_of_match[] = {
+ 	{ .compatible = "st,stm32mp13-dcmipp", .data = &stm32mp13_pipe_cfg},
+ 	{ .compatible = "st,stm32mp25-dcmipp", .data = &stm32mp25_pipe_cfg},
+@@ -409,7 +345,7 @@ static irqreturn_t dcmipp_irq_thread(int irq, void *arg)
+ 
+ 	/* Call irq thread of each entities of pipeline */
+ 	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++) {
+-		ved = platform_get_drvdata(dcmipp->subdevs[i]);
++		ved = dcmipp->entity[i];
+ 		if (ved->thread_fn && ved->handler_ret == IRQ_WAKE_THREAD)
+ 			ved->thread_fn(irq, ved);
+ 	}
+@@ -430,7 +366,7 @@ static irqreturn_t dcmipp_irq_callback(int irq, void *arg)
+ 
+ 	/* Call irq handler of each entities of pipeline */
+ 	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++) {
+-		ved = platform_get_drvdata(dcmipp->subdevs[i]);
++		ved = dcmipp->entity[i];
+ 		ved->cmsr2 = cmsr2;
+ 		if (ved->handler)
+ 			ved->handler_ret = ved->handler(irq, ved);
+@@ -501,7 +437,7 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ 		 * Parallel input device detected
+ 		 * Connect it to parallel subdev
+ 		 */
+-		sink = platform_get_drvdata(dcmipp->subdevs[ID_PARALLEL]);
++		sink = dcmipp->entity[ID_PARALLEL];
+ 		sink->bus.flags = ep.bus.parallel.flags;
+ 		sink->bus.bus_width = ep.bus.parallel.bus_width;
+ 		sink->bus.data_shift = ep.bus.parallel.data_shift;
+@@ -545,7 +481,7 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ //FIXME check	if ((src_pad + endpoint.port) > subdev->entity.num_pads)
+ 
+ 		for (i = 0; i < ARRAY_SIZE(sink_ids); i++) {
+-			sink = platform_get_drvdata(dcmipp->subdevs[sink_ids[i]]);
++			sink = dcmipp->entity[sink_ids[i]];
+ 			sink->bus_type = V4L2_MBUS_CSI2_DPHY;
+ 			ret = media_create_pad_link(&subdev->entity, src_pad + endpoint.port,
+ 						    sink->ent, 0,
+@@ -619,7 +555,6 @@ static int dcmipp_graph_init(struct dcmipp_device *dcmipp)
+ static int dcmipp_probe(struct platform_device *pdev)
+ {
+ 	struct dcmipp_device *dcmipp;
+-	struct component_match *comp_match = NULL;
+ 	struct resource *res;
+ 	struct clk *kclk, *mclk;
+ 	const struct dcmipp_pipeline_config *pipe_cfg;
+@@ -703,15 +638,18 @@ static int dcmipp_probe(struct platform_device *pdev)
+ 		dcmipp->mclk = mclk;
+ 	}
+ 
+-	/* Create platform_device for each entity in the topology */
+-	dcmipp->subdevs = devm_kcalloc(&pdev->dev, dcmipp->pipe_cfg->num_ents,
+-				       sizeof(*dcmipp->subdevs), GFP_KERNEL);
+-	if (!dcmipp->subdevs)
++	dcmipp->entity = devm_kcalloc(&pdev->dev, dcmipp->pipe_cfg->num_ents,
++				      sizeof(*dcmipp->entity), GFP_KERNEL);
++	if (!dcmipp->entity)
+ 		return -ENOMEM;
+ 
+-	comp_match = dcmipp_add_subdevs(dcmipp);
+-	if (IS_ERR(comp_match))
+-		return PTR_ERR(comp_match);
++	/* Register the v4l2 struct */
++	ret = v4l2_device_register(&pdev->dev, &dcmipp->v4l2_dev);
++	if (ret) {
++		dev_err(&pdev->dev,
++			"v4l2 device register failed (err=%d)\n", ret);
++		return ret;
++	}
+ 
+ 	/* Link the media device within the v4l2_device */
+ 	dcmipp->v4l2_dev.mdev = &dcmipp->mdev;
+@@ -724,17 +662,16 @@ static int dcmipp_probe(struct platform_device *pdev)
+ 	dcmipp->mdev.dev = &pdev->dev;
+ 	media_device_init(&dcmipp->mdev);
+ 
+-	/* Add self to the component system */
+-	ret = component_master_add_with_match(&pdev->dev, &dcmipp_comp_ops,
+-					      comp_match);
++	pm_runtime_enable(dcmipp->dev);
++
++	/* Initialize subdevs */
++	ret = dcmipp_create_subdevs(dcmipp);
+ 	if (ret) {
+ 		media_device_cleanup(&dcmipp->mdev);
+-		dcmipp_rm_subdevs(dcmipp);
++		v4l2_device_unregister(&dcmipp->v4l2_dev);
+ 		return ret;
+ 	}
+ 
+-	pm_runtime_enable(dcmipp->dev);
+-
+ 	dev_info(&pdev->dev, "Probe done");
+ 
+ 	return 0;
+@@ -743,11 +680,20 @@ static int dcmipp_probe(struct platform_device *pdev)
+ static int dcmipp_remove(struct platform_device *pdev)
+ {
+ 	struct dcmipp_device *dcmipp = platform_get_drvdata(pdev);
++	unsigned int i;
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	component_master_del(&pdev->dev, &dcmipp_comp_ops);
+-	dcmipp_rm_subdevs(dcmipp);
++	v4l2_async_nf_unregister(&dcmipp->notifier);
++	v4l2_async_nf_cleanup(&dcmipp->notifier);
++
++	for (i = 0; i < dcmipp->pipe_cfg->num_ents; i++)
++		dcmipp->pipe_cfg->ents[i].release(dcmipp->entity[i]);
++
++	media_device_unregister(&dcmipp->mdev);
++	media_device_cleanup(&dcmipp->mdev);
++
++	v4l2_device_unregister(&dcmipp->v4l2_dev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index 7062e708f8f7..c9957555158b 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -242,7 +241,6 @@ struct dcmipp_isp_device {
+ 	struct dcmipp_ent_device ved;
+ 	struct v4l2_subdev sd;
+ 	struct device *dev;
+-	struct device *cdev;
+ 	struct v4l2_mbus_framefmt sink_fmt;
+ 	struct v4l2_mbus_framefmt src_fmt;
+ 	unsigned int decimation;
+@@ -296,7 +294,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2_ctrl *ctrl)
+ 
+ 	dev_dbg(isp->dev, ">> %s: ctrl->id = 0x%x\n", __func__, ctrl->id);
+ 
+-	if (pm_runtime_get_if_in_use(isp->cdev) == 0)
++	if (pm_runtime_get_if_in_use(isp->dev) == 0)
+ 		return 0;
+ 
+ 	spin_lock_irq(&isp->irqlock);
+@@ -345,7 +343,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	}
+ 
+ 	spin_unlock_irq(&isp->irqlock);
+-	pm_runtime_put(isp->cdev);
++	pm_runtime_put(isp->dev);
+ 
+ 	return 0;
+ };
+@@ -356,7 +354,7 @@ static int dcmipp_isp_g_ctrl(struct v4l2_ctrl *ctrl)
+ 			container_of(ctrl->handler, struct dcmipp_isp_device, ctrls);
+ 	int ret = 0;
+ 
+-	if (pm_runtime_get_if_in_use(isp->cdev) == 0)
++	if (pm_runtime_get_if_in_use(isp->dev) == 0)
+ 		return 0;
+ 
+ 	switch (ctrl->id) {
+@@ -366,7 +364,7 @@ static int dcmipp_isp_g_ctrl(struct v4l2_ctrl *ctrl)
+ 		break;
+ 	}
+ 
+-	pm_runtime_put(isp->cdev);
++	pm_runtime_put(isp->dev);
+ 
+ 	return ret;
+ };
+@@ -1079,32 +1077,29 @@ static const struct v4l2_subdev_internal_ops dcmipp_isp_int_ops = {
+ 	.release = dcmipp_isp_release,
+ };
+ 
+-static void dcmipp_isp_comp_unbind(struct device *comp, struct device *master,
+-				   void *master_data)
++void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_isp_device *isp =
+ 			container_of(ved, struct dcmipp_isp_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &isp->sd);
+ }
+ 
+-static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+-				void *master_data)
++struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
++					      const char *entity_name,
++					      struct v4l2_device *v4l2_dev,
++					      void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_isp_device *isp;
+ 	int ret, i;
+ 
+ 	/* Allocate the isp struct */
+ 	isp = kzalloc(sizeof(*isp), GFP_KERNEL);
+ 	if (!isp)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+-	isp->regs = bind_data->regs;
+-	isp->dev = comp;
+-	isp->cdev = master;
++	isp->regs = regs;
++	isp->dev = dev;
+ 
+ 	/* Initialize the lock */
+ 	mutex_init(&isp->lock);
+@@ -1128,7 +1123,7 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+ 		dev_err(isp->dev, "control initialization error %d\n", ret);
+ 		mutex_destroy(&isp->lock);
+ 		kfree(isp);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	ret = v4l2_ctrl_handler_setup(&isp->ctrls);
+@@ -1136,13 +1131,13 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+ 		dev_err(isp->dev, "Failed to set up control handlers\n");
+ 		mutex_destroy(&isp->lock);
+ 		kfree(isp);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	/* Initialize ved and sd */
+ 	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
+-				     bind_data->v4l2_dev,
+-				     pdata->entity_name,
++				     v4l2_dev,
++				     entity_name,
+ 				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER, 4,
+ 				     (const unsigned long[4]) {
+ 				     MEDIA_PAD_FL_SINK,
+@@ -1155,52 +1150,8 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+ 	if (ret) {
+ 		mutex_destroy(&isp->lock);
+ 		kfree(isp);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+-	dev_set_drvdata(comp, &isp->ved);
+-
+-	return 0;
+-}
+-
+-static const struct component_ops dcmipp_isp_comp_ops = {
+-	.bind = dcmipp_isp_comp_bind,
+-	.unbind = dcmipp_isp_comp_unbind,
+-};
+-
+-static int dcmipp_isp_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_isp_comp_ops);
++	return &isp->ved;
+ }
+-
+-static int dcmipp_isp_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_isp_comp_ops);
+-
+-	return 0;
+-}
+-
+-static const struct platform_device_id dcmipp_isp_driver_ids[] = {
+-	{
+-		.name           = DCMIPP_ISP_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_isp_pdrv = {
+-	.probe		= dcmipp_isp_probe,
+-	.remove		= dcmipp_isp_remove,
+-	.id_table	= dcmipp_isp_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_ISP_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_isp_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_isp_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
+index b4223fdfdc04..c8f8ce95b608 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+@@ -405,35 +404,33 @@ static const struct v4l2_subdev_internal_ops dcmipp_par_int_ops = {
+ 	.release = dcmipp_par_release,
+ };
+ 
+-static void dcmipp_par_comp_unbind(struct device *comp, struct device *master,
+-				   void *master_data)
++void dcmipp_par_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_par_device *par =
+ 			container_of(ved, struct dcmipp_par_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &par->sd);
+ }
+ 
+-static int dcmipp_par_comp_bind(struct device *comp, struct device *master,
+-				void *master_data)
++struct dcmipp_ent_device *dcmipp_par_ent_init(struct device *dev,
++					      const char *entity_name,
++					      struct v4l2_device *v4l2_dev,
++					      void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_par_device *par;
+ 	int ret;
+ 
+ 	/* Allocate the par struct */
+ 	par = kzalloc(sizeof(*par), GFP_KERNEL);
+ 	if (!par)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+-	par->regs = bind_data->regs;
++	par->regs = regs;
+ 
+ 	/* Initialize ved and sd */
+ 	ret = dcmipp_ent_sd_register
+-		(&par->ved, &par->sd, bind_data->v4l2_dev,
+-		 pdata->entity_name,
++		(&par->ved, &par->sd, v4l2_dev,
++		 entity_name,
+ 		 MEDIA_ENT_F_VID_IF_BRIDGE, 2,
+ 		 (const unsigned long[2]) {
+ 		  MEDIA_PAD_FL_SINK,
+@@ -444,59 +441,16 @@ static int dcmipp_par_comp_bind(struct device *comp, struct device *master,
+ 	if (ret)
+ 		goto err_free_hdl;
+ 
+-	dev_set_drvdata(comp, &par->ved);
+-	par->dev = comp;
++	par->dev = dev;
+ 
+ 	/* Initialize the frame format */
+ 	par->sink_format = fmt_default;
+ 	par->src_format = fmt_default;
+ 
+-	return 0;
++	return &par->ved;
+ 
+ err_free_hdl:
+ 	kfree(par);
+ 
+-	return ret;
+-}
+-
+-static const struct component_ops dcmipp_par_comp_ops = {
+-	.bind = dcmipp_par_comp_bind,
+-	.unbind = dcmipp_par_comp_unbind,
+-};
+-
+-static int dcmipp_par_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_par_comp_ops);
++	return ERR_PTR(ret);
+ }
+-
+-static int dcmipp_par_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_par_comp_ops);
+-
+-	return 0;
+-}
+-
+-static const struct platform_device_id dcmipp_par_driver_ids[] = {
+-	{
+-		.name           = DCMIPP_PAR_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_par_pdrv = {
+-	.probe		= dcmipp_par_probe,
+-	.remove		= dcmipp_par_remove,
+-	.id_table	= dcmipp_par_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_PAR_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_par_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_par_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <hugues.fruchet@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index e99598d1dc63..973a861dc256 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+@@ -167,7 +166,6 @@ struct dcmipp_pixelcap_device {
+ 	struct dcmipp_ent_device ved;
+ 	struct video_device vdev;
+ 	struct device *dev;
+-	struct device *cdev;
+ 	struct v4l2_pix_format format;
+ 	struct vb2_queue queue;
+ 	struct list_head buffers;
+@@ -688,7 +686,7 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ 	vcap->frame_count = 0;
+ 	vcap->it_count = 0;
+ 
+-	ret = pm_runtime_get_sync(vcap->cdev);
++	ret = pm_runtime_get_sync(vcap->dev);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "%s: Failed to start streaming, cannot get sync (%d)\n",
+ 			__func__, ret);
+@@ -761,7 +759,7 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ err_media_pipeline_stop:
+ 	media_pipeline_stop(entity->pads);
+ err_pm_put:
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ 	spin_lock_irq(&vcap->irqlock);
+ 	/*
+ 	 * Return all buffers to vb2 in QUEUED state.
+@@ -840,7 +838,7 @@ static void dcmipp_pixelcap_stop_streaming(struct vb2_queue *vq)
+ 
+ 	spin_unlock_irq(&vcap->irqlock);
+ 
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ 
+ 	if (vcap->errors_count)
+ 		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d), buffers=%d\n",
+@@ -997,11 +995,8 @@ static void dcmipp_pixelcap_release(struct video_device *vdev)
+ 	kfree(vcap);
+ }
+ 
+-static void dcmipp_pixelcap_comp_unbind(struct device *comp,
+-					struct device *master,
+-					void *master_data)
++void dcmipp_pixelcap_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_pixelcap_device *vcap =
+ 		container_of(ved, struct dcmipp_pixelcap_device, ved);
+ 
+@@ -1153,11 +1148,10 @@ static int dcmipp_name_to_pipe_id(const char *name)
+ 		return -EINVAL;
+ }
+ 
+-static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+-				     void *master_data)
++struct dcmipp_ent_device *
++dcmipp_pixelcap_ent_init(struct device *dev, const char *entity_name,
++			 struct v4l2_device *v4l2_dev, void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_pixelcap_device *vcap;
+ 	struct v4l2_pix_format *format;
+ 	struct video_device *vdev;
+@@ -1167,12 +1161,12 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	/* Allocate the dcmipp_cap_device struct */
+ 	vcap = kzalloc(sizeof(*vcap), GFP_KERNEL);
+ 	if (!vcap)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* Retrieve the pipe_id */
+-	vcap->pipe_id = dcmipp_name_to_pipe_id(pdata->entity_name);
++	vcap->pipe_id = dcmipp_name_to_pipe_id(entity_name);
+ 	if (vcap->pipe_id != 1 && vcap->pipe_id != 2) {
+-		dev_err(comp, "failed to retrieve pipe_id\n");
++		dev_err(dev, "failed to retrieve pipe_id\n");
+ 		goto err_free_vcap;
+ 	}
+ 	/* Allocate the pads */
+@@ -1184,7 +1178,7 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	}
+ 
+ 	/* Initialize the media entity */
+-	vcap->vdev.entity.name = pdata->entity_name;
++	vcap->vdev.entity.name = entity_name;
+ 	vcap->vdev.entity.function = MEDIA_ENT_F_IO_V4L;
+ 	ret = media_entity_pads_init(&vcap->vdev.entity,
+ 				     1, vcap->ved.pads);
+@@ -1205,12 +1199,12 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	q->mem_ops = &vb2_dma_contig_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+ 	q->min_buffers_needed = 1;
+-	q->dev = comp;
++	q->dev = dev;
+ 
+ 	ret = vb2_queue_init(q);
+ 	if (ret) {
+-		dev_err(comp, "%s: vb2 queue init failed (err=%d)\n",
+-			pdata->entity_name, ret);
++		dev_err(dev, "%s: vb2 queue init failed (err=%d)\n",
++			entity_name, ret);
+ 		goto err_clean_m_ent;
+ 	}
+ 
+@@ -1229,10 +1223,8 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	vcap->ved.vdev_get_format = dcmipp_pixelcap_get_format;
+ 	vcap->ved.handler = dcmipp_pixelcap_irq_callback;
+ 	vcap->ved.thread_fn = dcmipp_pixelcap_irq_thread;
+-	dev_set_drvdata(comp, &vcap->ved);
+-	vcap->dev = comp;
+-	vcap->regs = bind_data->regs;
+-	vcap->cdev = master;
++	vcap->dev = dev;
++	vcap->regs = regs;
+ 
+ 	/* Initialize the video_device struct */
+ 	vdev = &vcap->vdev;
+@@ -1244,19 +1236,19 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ 	vdev->ioctl_ops = &dcmipp_pixelcap_ioctl_ops;
+ 	vdev->lock = &vcap->lock;
+ 	vdev->queue = q;
+-	vdev->v4l2_dev = bind_data->v4l2_dev;
+-	strscpy(vdev->name, pdata->entity_name, sizeof(vdev->name));
++	vdev->v4l2_dev = v4l2_dev;
++	strscpy(vdev->name, entity_name, sizeof(vdev->name));
+ 	video_set_drvdata(vdev, &vcap->ved);
+ 
+ 	/* Register the video_device with the v4l2 and the media framework */
+ 	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+-		dev_err(comp, "%s: video register failed (err=%d)\n",
++		dev_err(dev, "%s: video register failed (err=%d)\n",
+ 			vcap->vdev.name, ret);
+ 		goto err_clean_m_ent;
+ 	}
+ 
+-	return 0;
++	return &vcap->ved;
+ 
+ err_clean_m_ent:
+ 	media_entity_cleanup(&vcap->vdev.entity);
+@@ -1265,47 +1257,5 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+ err_free_vcap:
+ 	kfree(vcap);
+ 
+-	return ret;
+-}
+-
+-static const struct component_ops dcmipp_pixelcap_comp_ops = {
+-	.bind = dcmipp_pixelcap_comp_bind,
+-	.unbind = dcmipp_pixelcap_comp_unbind,
+-};
+-
+-static int dcmipp_pixelcap_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_pixelcap_comp_ops);
++	return ERR_PTR(ret);
+ }
+-
+-static int dcmipp_pixelcap_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_pixelcap_comp_ops);
+-
+-	return 0;
+-}
+-
+-static const struct platform_device_id dcmipp_pixelcap_driver_ids[] = {
+-	{
+-		.name	= DCMIPP_PIXELCAP_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_pixelcap_pdrv = {
+-	.probe		= dcmipp_pixelcap_probe,
+-	.remove		= dcmipp_pixelcap_remove,
+-	.id_table	= dcmipp_pixelcap_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_PIXELCAP_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_pixelcap_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_pixelcap_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 134b83eb2b1b..395e9be53fe0 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -8,7 +8,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -212,7 +211,6 @@ struct dcmipp_pixelproc_device {
+ 	struct dcmipp_ent_device ved;
+ 	struct v4l2_subdev sd;
+ 	struct device *dev;
+-	struct device *cdev;
+ 	struct v4l2_mbus_framefmt sink_fmt;
+ 	struct v4l2_mbus_framefmt src_fmt;
+ 	bool streaming;
+@@ -270,7 +268,7 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+ 			     struct dcmipp_pixelproc_device, ctrls);
+ 	int ret = 0;
+ 
+-	if (pm_runtime_get_if_in_use(pixelproc->cdev) == 0)
++	if (pm_runtime_get_if_in_use(pixelproc->dev) == 0)
+ 		return 0;
+ 
+ 	mutex_lock(&pixelproc->lock);
+@@ -283,7 +281,7 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	}
+ 
+ 	mutex_unlock(&pixelproc->lock);
+-	pm_runtime_put(pixelproc->cdev);
++	pm_runtime_put(pixelproc->dev);
+ 
+ 	return ret;
+ };
+@@ -945,11 +943,8 @@ static const struct v4l2_subdev_internal_ops dcmipp_pixelproc_int_ops = {
+ 	.release = dcmipp_pixelproc_release,
+ };
+ 
+-static void
+-dcmipp_pixelproc_comp_unbind(struct device *comp, struct device *master,
+-			     void *master_data)
++void dcmipp_pixelproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_pixelproc_device *pixelproc =
+ 			container_of(ved, struct dcmipp_pixelproc_device, ved);
+ 
+@@ -966,12 +961,10 @@ static int dcmipp_name_to_pipe_id(const char *name)
+ 		return -EINVAL;
+ }
+ 
+-static int
+-dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+-			   void *master_data)
++struct dcmipp_ent_device *
++dcmipp_pixelproc_ent_init(struct device *dev, const char *entity_name,
++			  struct v4l2_device *v4l2_dev, void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_pixelproc_device *pixelproc;
+ 	struct v4l2_fract interval = {
+ 		.numerator = 1,
+@@ -982,22 +975,21 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+ 	/* Allocate the pixelproc struct */
+ 	pixelproc = kzalloc(sizeof(*pixelproc), GFP_KERNEL);
+ 	if (!pixelproc)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+-	pixelproc->regs = bind_data->regs;
+-	pixelproc->dev = comp;
+-	pixelproc->cdev = master;
++	pixelproc->regs = regs;
++	pixelproc->dev = dev;
+ 
+ 	/* Initialize the lock */
+ 	mutex_init(&pixelproc->lock);
+ 
+ 	/* Pipe identifier */
+-	pixelproc->pipe_id = dcmipp_name_to_pipe_id(pdata->entity_name);
++	pixelproc->pipe_id = dcmipp_name_to_pipe_id(entity_name);
+ 	if (pixelproc->pipe_id != 1 && pixelproc->pipe_id != 2) {
+-		dev_err(comp, "failed to retrieve pipe_id\n");
++		dev_err(dev, "failed to retrieve pipe_id\n");
+ 		mutex_destroy(&pixelproc->lock);
+ 		kfree(pixelproc);
+-		return -EIO;
++		return ERR_PTR(-EIO);
+ 	}
+ 
+ 	/* Initialize the frame format */
+@@ -1030,13 +1022,13 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+ 		dev_err(pixelproc->dev, "control initialization error %d\n", ret);
+ 		mutex_destroy(&pixelproc->lock);
+ 		kfree(pixelproc);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	/* Initialize ved and sd */
+ 	ret = dcmipp_ent_sd_register(&pixelproc->ved, &pixelproc->sd,
+-				     bind_data->v4l2_dev,
+-				     pdata->entity_name,
++				     v4l2_dev,
++				     entity_name,
+ 				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER, 2,
+ 				     (const unsigned long[2]) {
+ 				     MEDIA_PAD_FL_SINK,
+@@ -1047,52 +1039,8 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+ 	if (ret) {
+ 		mutex_destroy(&pixelproc->lock);
+ 		kfree(pixelproc);
+-		return ret;
++		return ERR_PTR(ret);
+ 	}
+ 
+-	dev_set_drvdata(comp, &pixelproc->ved);
+-
+-	return 0;
+-}
+-
+-static const struct component_ops dcmipp_pixelproc_comp_ops = {
+-	.bind = dcmipp_pixelproc_comp_bind,
+-	.unbind = dcmipp_pixelproc_comp_unbind,
+-};
+-
+-static int dcmipp_pixelproc_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_pixelproc_comp_ops);
+-}
+-
+-static int dcmipp_pixelproc_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_pixelproc_comp_ops);
+-
+-	return 0;
++	return &pixelproc->ved;
+ }
+-
+-static const struct platform_device_id dcmipp_pixelproc_driver_ids[] = {
+-	{
+-		.name           = DCMIPP_PIXELPROC_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_pixelproc_pdrv = {
+-	.probe		= dcmipp_pixelproc_probe,
+-	.remove		= dcmipp_pixelproc_remove,
+-	.id_table	= dcmipp_pixelproc_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_PIXELPROC_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_pixelproc_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_pixelproc_driver_ids);
+-
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 3f1cf739e8b1..08f606a31fa6 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -9,7 +9,6 @@
+  *          for STMicroelectronics.
+  */
+ 
+-#include <linux/component.h>
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+@@ -101,7 +100,6 @@ struct dcmipp_statcap_device {
+ 	struct dcmipp_ent_device ved;
+ 	struct video_device vdev;
+ 	struct device *dev;
+-	struct device *cdev;
+ 	struct v4l2_ctrl_handler ctrls;
+ 	/* Protect ctrls */
+ 	struct mutex ctrl_lock;
+@@ -355,7 +353,7 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ 
+ 	vcap->sequence = 0;
+ 
+-	ret = pm_runtime_get_sync(vcap->cdev);
++	ret = pm_runtime_get_sync(vcap->dev);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "%s: Failed to start streaming, cannot get sync (%d)\n",
+ 			__func__, ret);
+@@ -431,7 +429,7 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ err_media_pipeline_stop:
+ 	media_pipeline_stop(entity->pads);
+ err_pm_put:
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ 	spin_lock_irq(&vcap->irqlock);
+ 	/*
+ 	 * Return all buffers to vb2 in QUEUED state.
+@@ -475,7 +473,7 @@ static void dcmipp_statcap_stop_streaming(struct vb2_queue *vq)
+ 
+ 	spin_unlock_irq(&vcap->irqlock);
+ 
+-	pm_runtime_put(vcap->cdev);
++	pm_runtime_put(vcap->dev);
+ }
+ 
+ static int dcmipp_statcap_buf_prepare(struct vb2_buffer *vb)
+@@ -678,11 +676,8 @@ static void dcmipp_statcap_release(struct video_device *vdev)
+ 	kfree(vcap);
+ }
+ 
+-static void dcmipp_statcap_comp_unbind(struct device *comp,
+-				       struct device *master,
+-				       void *master_data)
++void dcmipp_statcap_ent_release(struct dcmipp_ent_device *ved)
+ {
+-	struct dcmipp_ent_device *ved = dev_get_drvdata(comp);
+ 	struct dcmipp_statcap_device *vcap =
+ 		container_of(ved, struct dcmipp_statcap_device, ved);
+ 
+@@ -859,11 +854,10 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+-				    void *master_data)
++struct dcmipp_ent_device *
++dcmipp_statcap_ent_init(struct device *dev, const char *entity_name,
++			struct v4l2_device *v4l2_dev, void __iomem *regs)
+ {
+-	struct dcmipp_bind_data *bind_data = master_data;
+-	struct dcmipp_platform_data *pdata = comp->platform_data;
+ 	struct dcmipp_statcap_device *vcap;
+ 	struct video_device *vdev;
+ 	struct vb2_queue *q;
+@@ -872,7 +866,7 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	/* Allocate the dcmipp_cap_device struct */
+ 	vcap = kzalloc(sizeof(*vcap), GFP_KERNEL);
+ 	if (!vcap)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* Allocate the pad */
+ 	vcap->ved.pads =
+@@ -883,7 +877,7 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	}
+ 
+ 	/* Initialize the media entity */
+-	vcap->vdev.entity.name = pdata->entity_name;
++	vcap->vdev.entity.name = entity_name;
+ 	vcap->vdev.entity.function = MEDIA_ENT_F_IO_V4L;
+ 	ret = media_entity_pads_init(&vcap->vdev.entity,
+ 				     1, vcap->ved.pads);
+@@ -904,12 +898,12 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	q->mem_ops = &vb2_vmalloc_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+ 	q->min_buffers_needed = 1;
+-	q->dev = comp;
++	q->dev = dev;
+ 
+ 	ret = vb2_queue_init(q);
+ 	if (ret) {
+-		dev_err(comp, "%s: vb2 queue init failed (err=%d)\n",
+-			pdata->entity_name, ret);
++		dev_err(dev, "%s: vb2 queue init failed (err=%d)\n",
++			entity_name, ret);
+ 		goto err_clean_m_ent;
+ 	}
+ 
+@@ -921,10 +915,8 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	vcap->ved.ent = &vcap->vdev.entity;
+ 	vcap->ved.handler = NULL;
+ 	vcap->ved.thread_fn = dcmipp_statcap_irq_thread;
+-	dev_set_drvdata(comp, &vcap->ved);
+-	vcap->dev = comp;
+-	vcap->regs = bind_data->regs;
+-	vcap->cdev = master;
++	vcap->dev = dev;
++	vcap->regs = regs;
+ 
+ 	/* Initialize the video_device struct */
+ 	vdev = &vcap->vdev;
+@@ -935,8 +927,8 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	vdev->ioctl_ops = &dcmipp_statcap_ioctl_ops;
+ 	vdev->lock = &vcap->lock;
+ 	vdev->queue = q;
+-	vdev->v4l2_dev = bind_data->v4l2_dev;
+-	strscpy(vdev->name, pdata->entity_name, sizeof(vdev->name));
++	vdev->v4l2_dev = v4l2_dev;
++	strscpy(vdev->name, entity_name, sizeof(vdev->name));
+ 	video_set_drvdata(vdev, &vcap->ved);
+ 
+ 	/* Add controls */
+@@ -962,12 +954,12 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ 	/* Register the video_device with the v4l2 and the media framework */
+ 	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+-		dev_err(comp, "%s: video register failed (err=%d)\n",
++		dev_err(dev, "%s: video register failed (err=%d)\n",
+ 			vcap->vdev.name, ret);
+ 		goto err_clean_ctrl_hdl;
+ 	}
+ 
+-	return 0;
++	return &vcap->ved;
+ 
+ err_clean_ctrl_hdl:
+ 	v4l2_ctrl_handler_free(&vcap->ctrls);
+@@ -978,48 +970,5 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+ err_free_vcap:
+ 	kfree(vcap);
+ 
+-	return ret;
+-}
+-
+-static const struct component_ops dcmipp_statcap_comp_ops = {
+-	.bind = dcmipp_statcap_comp_bind,
+-	.unbind = dcmipp_statcap_comp_unbind,
+-};
+-
+-static int dcmipp_statcap_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &dcmipp_statcap_comp_ops);
+-}
+-
+-static int dcmipp_statcap_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &dcmipp_statcap_comp_ops);
+-
+-	return 0;
++	return ERR_PTR(ret);
+ }
+-
+-static const struct platform_device_id dcmipp_statcap_driver_ids[] = {
+-	{
+-		.name	= DCMIPP_STATCAP_DRV_NAME,
+-	},
+-	{ }
+-};
+-
+-static struct platform_driver dcmipp_statcap_pdrv = {
+-	.probe		= dcmipp_statcap_probe,
+-	.remove		= dcmipp_statcap_remove,
+-	.id_table	= dcmipp_statcap_driver_ids,
+-	.driver		= {
+-		.name	= DCMIPP_STATCAP_DRV_NAME,
+-	},
+-};
+-
+-module_platform_driver(dcmipp_statcap_pdrv);
+-
+-MODULE_DEVICE_TABLE(platform, dcmipp_statcap_driver_ids);
+-
+-MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
+-MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@foss.st.com>");
+-MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
+-MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
+-MODULE_LICENSE("GPL");
+-- 
+2.39.2
+

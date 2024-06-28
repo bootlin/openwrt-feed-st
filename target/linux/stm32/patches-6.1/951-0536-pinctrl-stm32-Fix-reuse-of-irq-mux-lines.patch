@@ -1,0 +1,58 @@
+From 03e9be799fa1e1f93e1ccb41ce3d4083837a057a Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 24 Aug 2023 11:15:06 +0200
+Subject: [PATCH 0536/1141] pinctrl: stm32: Fix reuse of irq mux lines
+
+The driver programs a mux to connect the GPIO of a specific bank
+to the parent interrupt controller.
+The mux position is determined during irq_domain_ops::alloc(),
+based on the content of struct irq_fwspec.
+Once the GPIO is released, we need to also release the mux and
+dispose the virq, so a following GPIO request will trigger a new
+call to irq_domain_ops::alloc(). Currently this does not happen
+and a new GPIO request fails. Running:
+	gpiomon --chip 0 6
+it requires the mux line #6 on position #0 for GPIO bank #0.
+Quitting from 'gpiomon', the mux remains locked, and a following
+call, e.g.:
+	gpiomon --chip 2 6
+that requires the same mux line on position #2, fails with message:
+	stm32mp157-pinctrl soc:pinctrl@50002000: irq line 6 already requested.
+	gpiomon: unable to request lines on chip /dev/gpiochip2: No such device or address
+
+Call irq_dispose_mapping() in gpio_chip::free().
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ic25f4336742b004512df8b12eabe0a63e0b08683
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329516
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index e9233937a78a..afe2e61cff42 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -357,11 +357,16 @@ static int stm32_gpio_request(struct gpio_chip *chip, unsigned offset)
+ static void stm32_gpio_free(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct stm32_gpio_bank *bank = gpiochip_get_data(chip);
++	unsigned int virq;
+ 
+ 	pinctrl_gpio_free(chip->base + offset);
+ 
+ 	if (bank->rif_control)
+ 		stm32_gpio_rif_release_semaphore(bank, offset);
++
++	virq = irq_find_mapping(bank->domain, offset);
++	if (virq)
++		irq_dispose_mapping(virq);
+ }
+ 
+ static int stm32_gpio_get(struct gpio_chip *chip, unsigned offset)
+-- 
+2.39.2
+

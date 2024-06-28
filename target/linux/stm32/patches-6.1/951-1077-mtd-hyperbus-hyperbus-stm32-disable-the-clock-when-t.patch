@@ -1,0 +1,93 @@
+From 8cf9e4a4e304ab14bd922dd4930bf951373808e6 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 19 Mar 2024 18:43:32 +0100
+Subject: [PATCH 1077/1141] mtd: hyperbus: hyperbus-stm32: disable the clock
+ when the driver is unbind
+
+Disable the clock when the driver is unbind and manage error cases
+at probe time.
+
+Change-Id: Ic3de04a3a713e1fa4de2e3cdab5a16ebfeb52048
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368092
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/mtd/hyperbus/hyperbus-stm32.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
+index 4622998d00f2..5a5617501203 100644
+--- a/drivers/mtd/hyperbus/hyperbus-stm32.c
++++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
+@@ -329,7 +329,7 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+ 
+ 	ret = pm_runtime_resume_and_get(omi->dev);
+ 	if (ret < 0)
+-		return ret;
++		goto err_pm_disable;
+ 
+ 	if (omi->rstc) {
+ 		reset_control_assert(omi->rstc);
+@@ -340,19 +340,19 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+ 	flash = of_get_next_child(parent->of_node, NULL);
+ 	if (!flash) {
+ 		dev_warn(&pdev->dev, "No flash node found\n");
+-		goto err_pm_disable;
++		goto err_pm_resume;
+ 	}
+ 
+ 	ret = of_property_read_u32(flash, "reg", &hyperbus->cs);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Can't find reg property\n");
+-		goto err_pm_disable;
++		goto err_pm_resume;
+ 	}
+ 
+ 	ret = of_property_read_u32(flash, "st,max-frequency", &value);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Can't find st,max-frequency property\n");
+-		goto err_pm_disable;
++		goto err_pm_resume;
+ 	}
+ 	hyperbus->flash_freq = value;
+ 
+@@ -377,7 +377,7 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		/* disable ospi */
+ 		writel_relaxed(0, omi->regs_base + OSPI_CR);
+-		goto err_pm_disable;
++		goto err_pm_resume;
+ 	}
+ 
+ 	pm_runtime_mark_last_busy(omi->dev);
+@@ -385,9 +385,11 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+ 
+ 	return ret;
+ 
+-err_pm_disable:
++err_pm_resume:
+ 	pm_runtime_put_sync_suspend(omi->dev);
+-	pm_runtime_disable(omi->dev);
++
++err_pm_disable:
++	pm_runtime_force_suspend(omi->dev);
+ 
+ 	return ret;
+ }
+@@ -407,7 +409,7 @@ static int stm32_hyperbus_remove(struct platform_device *pdev)
+ 	stm32_omi_dlyb_stop(omi);
+ 
+ 	pm_runtime_put_sync_suspend(omi->dev);
+-	pm_runtime_disable(omi->dev);
++	pm_runtime_force_suspend(omi->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.39.2
+

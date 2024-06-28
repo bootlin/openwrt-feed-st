@@ -1,0 +1,47 @@
+From ff1fcd0b3c71158316255a9d6e823f5919e042e8 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 30 Aug 2023 16:47:15 +0200
+Subject: [PATCH 1061/1141] arm64: dts: st: enable hdmi-cec on stm32mp257f-ev1
+
+Add cec support using the adv7533 bridge.
+
+Change-Id: I3c072f6c7b18269bbfcb729215fd692e2bf13308
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/324900
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 7c27e597e3c9..6c01bf40246f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -42,6 +42,12 @@ framebuffer {
+ 	};
+ 
+ 	clocks {
++		cec_clock: cec-clock {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <12000000>;
++		};
++
+ 		clk_ext_camera: clk-ext-camera {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -336,6 +342,10 @@ adv753x: hdmi@3d {
+ 		compatible = "adi,adv7533";
+ 		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
+ 		reg-names = "main", "cec", "edid", "packet";
++		clocks = <&cec_clock>;
++		clock-names = "cec";
++		interrupt-parent = <&gpiod>;
++		interrupts = <10 IRQ_TYPE_EDGE_FALLING>;
+ 		status = "disabled";
+ 		adi,dsi-lanes = <4>;
+ 		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
+-- 
+2.39.2
+
