@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 BOARD:=stm32
 BOARDNAME:=STMicroelectronics STM32
 FEATURES:=boot-part emmc ext4 gpio rtc usb
-SUBTARGETS:=stm32mp1
+SUBTARGETS:=stm32mp1 stm32mp2
 CPU_TYPE:=
 
 KERNEL_PATCHVER:=6.1

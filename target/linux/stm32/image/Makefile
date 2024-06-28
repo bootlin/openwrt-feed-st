@@ -16,6 +16,7 @@ define Build/boot-img-ext4
 	$(CP) $(IMAGE_KERNEL) $@.boot/$(KERNEL_IMG)
 	$(INSTALL_DIR) $@.boot/extlinux
 	$(CP) ./extlinux.conf $@.boot/extlinux/
+	$(SED) 's/@KERNEL@/$(KERNEL_IMG)/' $@.boot/extlinux/extlinux.conf
 	$(SED) 's/@DEVICE@/$(DEVICE_NAME)/' $@.boot/extlinux/extlinux.conf
 	$(SED) 's/@DTS@/$(DEVICE_DTS)/' $@.boot/extlinux/extlinux.conf
 	$(SED) 's/@ROOT@/PARTUUID=$(shell echo $(IMG_PART_DISKGUID) | sed 's/00$$/06/')/' $@.boot/extlinux/extlinux.conf
@@ -39,28 +40,51 @@ define Device/Default
   IMAGE/factory.img.gz := boot-img-ext4 | sdcard-img | gzip
   IMAGE/sysupgrade.img.gz := boot-img-ext4 | sdcard-img | gzip | append-metadata
   KERNEL := kernel-bin
-  KERNEL_NAME := zImage
-  KERNEL_IMG := zImage
   ENV_SIZE := 0x200000
   DEVICE_PACKAGES := $(WIFI_PACKAGES) $(USB_PACKAGES) -mtd
 endef
 
+define Device/stm32mp1
+  KERNEL_NAME := zImage
+  KERNEL_IMG := zImage
+  DEVICE_DTS_DIR:= $(DTS_DIR)
+endef
+
+define Device/stm32mp2
+  KERNEL_NAME := Image.gz
+  KERNEL_IMG := Image.gz
+  DEVICE_DTS_DIR:= $(DTS_DIR)/st
+endef
+
 define Device/stm32mp157f-dk2
+  $(call Device/stm32mp1)
   DEVICE_MODEL := STM32MP157F-DK2
   DEVICE_DTS := stm32mp157f-dk2
   SUPPORTED_DEVICES := st,stm32mp157f-dk2
 endef
 
 define Device/stm32mp135f-dk
+  $(call Device/stm32mp1)
   DEVICE_MODEL := STM32MP135F-DK
   DEVICE_DTS := stm32mp135f-dk
   SUPPORTED_DEVICES := st,stm32mp135f-dk
+endef
+
+define Device/stm32mp257f-ev1
+  $(call Device/stm32mp2)
+  DEVICE_MODEL := STM32MP257F-EV1
+  DEVICE_DTS := stm32mp257f-ev1
+  SUPPORTED_DEVICES := st,stm32mp257f-ev1
 endef
 
 ifeq ($(SUBTARGET),stm32mp1)
   TARGET_DEVICES += \
 		    stm32mp157f-dk2 \
 		    stm32mp135f-dk
+endif
+
+ifeq ($(SUBTARGET),stm32mp2)
+  TARGET_DEVICES += stm32mp257f-ev1
 endif
 
 include demo.mk
