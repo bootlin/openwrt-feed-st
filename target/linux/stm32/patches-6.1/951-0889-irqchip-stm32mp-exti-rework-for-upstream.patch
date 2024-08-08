@@ -1,0 +1,152 @@
+From 2f7ef5144038f0f1a7e8b707a48a85ad18eef62f Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 23 Feb 2024 15:36:02 +0100
+Subject: [PATCH 0889/1141] irqchip/stm32mp-exti: rework for upstream
+
+Due to upstream review, drop the interrupt-map child node and use
+the interrupts-extended property.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I59f2cd81a994b69f1c22c490506caa20dfc9f91c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/363287
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 47 ++++++++++++------------------
+ 1 file changed, 18 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index d02c08abc6b1..5aaed1d49f01 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -81,7 +81,7 @@ struct stm32mp_exti_host_data {
+ 	struct stm32mp_exti_chip_data *chips_data;
+ 	const struct stm32mp_exti_drv_data *drv_data;
+ 	struct hwspinlock *hwlock;
+-	struct device_node *irq_map_node;
++	bool dt_has_irqs_desc; /* skip internal desc_irqs array and get it from DT */
+ 	bool has_syscon; /* using old DT; keep backward compatibility */
+ 	struct raw_spinlock gpio_mux_lock;
+ 	DECLARE_BITMAP(gpio_mux_used, STM32MP_GPIO_IRQ_LINES);
+@@ -553,14 +553,14 @@ static int stm32mp_exti_domain_match(struct irq_domain *dm,
+ 	    (bus_token != DOMAIN_BUS_ANY && dm->bus_token != bus_token))
+ 		return 0;
+ 
+-	if (!host_data->irq_map_node)
++	if (!host_data->dt_has_irqs_desc)
+ 		return (to_of_node(dm->fwnode) == node);
+ 
+-	if (node != host_data->irq_map_node->parent)
++	if (node != host_data->dev->of_node)
+ 		return 0;
+ 
+ 	return (to_of_node(dm->parent->fwnode) ==
+-		of_irq_find_parent(host_data->irq_map_node->parent));
++		of_irq_find_parent(host_data->dev->of_node));
+ }
+ 
+ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -578,10 +578,10 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+ 	    (bus_token != DOMAIN_BUS_ANY && dm->bus_token != bus_token))
+ 		return 0;
+ 
+-	if (!host_data->irq_map_node)
++	if (!host_data->dt_has_irqs_desc)
+ 		return (dm->fwnode == fwnode);
+ 
+-	if (fwnode != of_node_to_fwnode(host_data->irq_map_node->parent))
++	if (fwnode != of_node_to_fwnode(host_data->dev->of_node))
+ 		return 0;
+ 
+ 	gpio_bank = FIELD_GET(STM32MP_GPIO_BANK_MASK, fwspec->param[1]);
+@@ -591,12 +591,7 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+ 	     !stm32mp_exti_test_gpio_mux_available(host_data, gpio_bank, hwirq)))
+ 		return 0;
+ 
+-	out_irq.np = host_data->irq_map_node;
+-	out_irq.args_count = 2;
+-	out_irq.args[0] = fwspec->param[0];
+-	out_irq.args[1] = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+-
+-	ret = of_irq_parse_raw(NULL, &out_irq);
++	ret = of_irq_parse_one(host_data->dev->of_node, hwirq, &out_irq);
+ 	if (ret)
+ 		return 0;
+ 
+@@ -701,15 +696,10 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+ 
+ 	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
+ 
+-	if (host_data->irq_map_node) {
+-		out_irq.np = host_data->irq_map_node;
+-		out_irq.args_count = 2;
+-		out_irq.args[0] = fwspec->param[0];
+-		out_irq.args[1] = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+-
+-		ret = of_irq_parse_raw(NULL, &out_irq);
++	if (host_data->dt_has_irqs_desc) {
++		ret = of_irq_parse_one(host_data->dev->of_node, hwirq, &out_irq);
+ 		if (ret) {
+-			stm32mp_exti_gpio_bank_free(dm, fwspec->param[0]);
++			stm32mp_exti_gpio_bank_free(dm, hwirq);
+ 			return ret;
+ 		}
+ 
+@@ -718,13 +708,13 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+ 
+ 		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
+ 		if (ret)
+-			stm32mp_exti_gpio_bank_free(dm, fwspec->param[0]);
++			stm32mp_exti_gpio_bank_free(dm, hwirq);
+ 
+ 		return ret;
+ 	}
+ 
+ 	if (!host_data->drv_data->desc_irqs) {
+-		stm32mp_exti_gpio_bank_free(dm, fwspec->param[0]);
++		stm32mp_exti_gpio_bank_free(dm, hwirq);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -738,7 +728,7 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+ 
+ 		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
+ 		if (ret)
+-			stm32mp_exti_gpio_bank_free(dm, fwspec->param[0]);
++			stm32mp_exti_gpio_bank_free(dm, hwirq);
+ 
+ 		return ret;
+ 	}
+@@ -830,7 +820,7 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+ {
+ 	int ret, i;
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *child, *np = dev->of_node, *wakeup_np;
++	struct device_node *np = dev->of_node, *wakeup_np;
+ 	struct irq_domain *parent_domain, *domain, *wakeup_domain;
+ 	struct fwnode_handle *fwnode;
+ 	struct stm32mp_exti_host_data *host_data;
+@@ -909,13 +899,12 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	child = of_get_child_by_name(np, "exti-interrupt-map");
+-	if (child && of_property_read_bool(child, "interrupt-map"))
+-		host_data->irq_map_node = child;
++	if (of_property_read_bool(np, "interrupts-extended"))
++		host_data->dt_has_irqs_desc = true;
+ 
+ 	wakeup_np = of_parse_phandle(np, "wakeup-parent", 0);
+-	if (wakeup_np && !host_data->irq_map_node) {
+-		dev_warn(dev, "wakeup-parent ignored due to missing interrupt-map nexus node");
++	if (wakeup_np && !host_data->dt_has_irqs_desc) {
++		dev_warn(dev, "wakeup-parent ignored due to missing interrupts-extended");
+ 		of_node_put(wakeup_np);
+ 		wakeup_np = NULL;
+ 	}
+-- 
+2.39.2
+

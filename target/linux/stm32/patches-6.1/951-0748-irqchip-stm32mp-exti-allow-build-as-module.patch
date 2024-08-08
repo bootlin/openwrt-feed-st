@@ -1,0 +1,67 @@
+From 4e91015b15b1b357c7f68383b086e326913bf0e9 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 18 Dec 2023 13:45:33 +0100
+Subject: [PATCH 0748/1141] irqchip/stm32mp-exti: allow build as module
+
+Allow build the driver as a module by adding the necessarily hooks
+in Kconfig and in the driver's code.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia9d20e372b77b9de6348207eebfe9ddbefaf2eb4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347757
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/Kconfig            |  6 +++++-
+ drivers/irqchip/irq-stm32mp-exti.c | 15 ++++-----------
+ 2 files changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 1e0f01f34f9d..99b6ce023b1b 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -396,9 +396,13 @@ config PARTITION_PERCPU
+ 	bool
+ 
+ config STM32MP_EXTI
+-	bool
++	tristate "STM32MP extended interrupts and event controller"
++	depends on (ARCH_STM32 && !ARM_SINGLE_ARMV7M) || COMPILE_TEST
++	default y
+ 	select IRQ_DOMAIN
+ 	select GENERIC_IRQ_CHIP
++	help
++	  Support STM32MP EXTI (extended interrupts and event) controller.
+ 
+ config STM32_EXTI
+ 	bool
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 2b579245d3b0..d066d15f561f 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -1033,15 +1033,8 @@ static struct platform_driver stm32mp_exti_driver = {
+ 	},
+ };
+ 
+-static int __init stm32mp_exti_arch_init(void)
+-{
+-	return platform_driver_register(&stm32mp_exti_driver);
+-}
+-
+-static void __exit stm32mp_exti_arch_exit(void)
+-{
+-	return platform_driver_unregister(&stm32mp_exti_driver);
+-}
++module_platform_driver(stm32mp_exti_driver);
+ 
+-arch_initcall(stm32mp_exti_arch_init);
+-module_exit(stm32mp_exti_arch_exit);
++MODULE_AUTHOR("Maxime Coquelin <mcoquelin.stm32@gmail.com>");
++MODULE_DESCRIPTION("STM32MP EXTI driver");
++MODULE_LICENSE("GPL");
+-- 
+2.39.2
+

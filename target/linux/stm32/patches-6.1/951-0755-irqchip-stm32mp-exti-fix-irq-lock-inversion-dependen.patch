@@ -1,0 +1,74 @@
+From 5ced1226abc41bc9fca8c19864e9b0f455b624d7 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 15 Jan 2024 15:05:01 +0100
+Subject: [PATCH 0755/1141] irqchip/stm32mp-exti: fix irq lock inversion
+ dependency
+
+The same lock used by irq_domain_ops::alloc is re-used later in
+irq context. This triggers a dump, when
+	CONFIG_PROVE_LOCKING=y
+for irq lock inversion dependency.
+
+Since there is no need to share the same lock in the two contexts,
+add a new lock specific for use in irq_domain_ops::alloc.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia07f28c1f7337d233a8610c72edd5c4ef4746fde
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/351762
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 30ed2ef9226d..6f7cc8565062 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -83,6 +83,7 @@ struct stm32mp_exti_host_data {
+ 	struct hwspinlock *hwlock;
+ 	struct device_node *irq_map_node;
+ 	bool has_syscon; /* using old DT; keep backward compatibility */
++	struct raw_spinlock gpio_mux_lock;
+ 	DECLARE_BITMAP(gpio_mux_used, STM32MP_GPIO_IRQ_LINES);
+ 	u8 gpio_mux_pos[STM32MP_GPIO_IRQ_LINES];
+ };
+@@ -644,13 +645,13 @@ static int stm32mp_exti_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+ 		return -EBUSY;
+ 	}
+ 
+-	raw_spin_lock(&host_data->chips_data[0].rlock);
++	raw_spin_lock(&host_data->gpio_mux_lock);
+ 
+ 	if (hwlock) {
+ 		ret = hwspin_lock_timeout_in_atomic(hwlock, HWSPNLCK_TIMEOUT);
+ 		if (ret) {
+ 			pr_err("%s can't get hwspinlock (%d)\n", __func__, ret);
+-			raw_spin_unlock(&host_data->chips_data[0].rlock);
++			raw_spin_unlock(&host_data->gpio_mux_lock);
+ 			return ret;
+ 		}
+ 	}
+@@ -663,7 +664,7 @@ static int stm32mp_exti_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+ 	if (hwlock)
+ 		hwspin_unlock_in_atomic(hwlock);
+ 
+-	raw_spin_unlock(&host_data->chips_data[0].rlock);
++	raw_spin_unlock(&host_data->gpio_mux_lock);
+ 
+ 	set_bit(hwirq, host_data->gpio_mux_used);
+ 	host_data->gpio_mux_pos[hwirq] = gpio_bank;
+@@ -862,6 +863,7 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(dev, host_data);
+ 	host_data->dev = dev;
++	raw_spin_lock_init(&host_data->gpio_mux_lock);
+ 
+ 	if (of_device_is_compatible(np, "syscon"))
+ 		host_data->has_syscon = true;
+-- 
+2.39.2
+
