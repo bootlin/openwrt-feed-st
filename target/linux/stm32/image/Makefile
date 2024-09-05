@@ -54,6 +54,7 @@ define Device/stm32mp2
   KERNEL_NAME := Image.gz
   KERNEL_IMG := Image.gz
   DEVICE_DTS_DIR:= $(DTS_DIR)/st
+  DEVICE_PACKAGES += kmod-usb-stm32-usbh
 endef
 
 define Device/stm32mp157f-dk2
