@@ -13,7 +13,8 @@ st,stm32mp157f-dk2)
 	ucidef_set_interface_lan "eth0"
 	;;
 
-st,stm32mp135f-dk)
+st,stm32mp135f-dk | \
+st,stm32mp257f-ev1)
 	ucidef_set_interfaces_lan_wan "eth0" "eth1"
 	;;
 esac
