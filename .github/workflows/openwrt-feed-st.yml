@@ -6,8 +6,23 @@ jobs:
       openwrt_version: cffd3ad8d7cad2214d44695ad4f2405ea53a26c7
     strategy:
       matrix:
-        devices: [ stm32mp157f-dk2, stm32mp135f-dk, stm32mp157f-dk2-demo, stm32mp135f-dk-demo ]
+        include:
+          - subtarget: stm32mp1
+            profile: stm32mp157f-dk2
+          - subtarget: stm32mp1
+            profile: stm32mp157f-dk2-demo
+          - subtarget: stm32mp1
+            profile: stm32mp135f-dk
+          - subtarget: stm32mp1
+            profile: stm32mp135f-dk-demo
+          - subtarget: stm32mp2
+            profile: stm32mp257f-ev1
+          - subtarget: stm32mp2
+            profile: stm32mp257f-ev1-demo
     steps:
+      - uses: actions/checkout@v4
+        with:
+          path: openwrt-feed-st
       - uses: actions/checkout@v4
         with:
           repository: openwrt/openwrt
@@ -19,7 +34,7 @@ jobs:
           sudo apt install -y python3-pyelftools python3-cryptography python3-setuptools python3-pil python3-dev
           sudo apt install -y device-tree-compiler swig
       - name: Add ST feed
-        run: echo src-git st https://github.com/bootlin/openwrt-feed-st.git >> openwrt/feeds.conf.default
+        run: echo src-link st /home/runner/work/openwrt-feed-st/openwrt-feed-st/openwrt-feed-st >> openwrt/feeds.conf.default
       - name: Update feeds
         run: cd openwrt; ./scripts/feeds update -a
       - name: Install stm32 target
@@ -28,7 +43,7 @@ jobs:
         run: cd openwrt; ./scripts/feeds install -a -f
       - name: Configure
         run: |
-          printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_stm32mp1=y\\nCONFIG_TARGET_stm32_stm32mp1_DEVICE_${{ matrix.devices }}=y\\n" > openwrt/.config
+          printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}_DEVICE_${{ matrix.profile }}=y\\n" > openwrt/.config
           make -C openwrt defconfig
       - name: Build
         id: build
@@ -36,10 +51,10 @@ jobs:
       - name: 'Archive factory image'
         uses: actions/upload-artifact@v4
         with:
-          name: openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
-          path: openwrt/bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-factory.img.gz
+          name: openwrt-stm32-${{ matrix.subtarget }}-${{ matrix.profile }}-ext4-factory.img.gz
+          path: openwrt/bin/targets/stm32/${{ matrix.subtarget }}/openwrt-stm32-${{ matrix.subtarget }}-${{ matrix.profile }}-ext4-factory.img.gz
       - name: 'Archive sysupgrade image'
         uses: actions/upload-artifact@v4
         with:
-          name: openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-sysupgrade.img.gz
-          path: openwrt/bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-${{ matrix.devices }}-ext4-sysupgrade.img.gz
+          name: openwrt-stm32-${{ matrix.subtarget }}-${{ matrix.profile }}-ext4-sysupgrade.img.gz
+          path: openwrt/bin/targets/stm32/${{ matrix.subtarget }}/openwrt-stm32-${{ matrix.subtarget }}-${{ matrix.profile }}-ext4-sysupgrade.img.gz
