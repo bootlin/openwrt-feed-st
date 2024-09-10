@@ -3,6 +3,8 @@
 This repository is an OpenWRT feed dedicated to supporting the
 [STMicroelectronics](https://www.st.com)
 [STM32MP1](https://www.st.com/en/microcontrollers-microprocessors/stm32mp1-series.html)
+and
+[STM32MP2](https://www.st.com/en/microcontrollers-microprocessors/stm32mp2-series.html)
 platforms.
 
 ## Supported devices
@@ -11,37 +13,42 @@ platforms.
 
 2. `STM32MP135F-DK`: minimal support for the STM32MP135F-DK
 
-3. `STM32MP157F-DK2-DEMO`: based on the `STM32MP157F-DK2` device including
+3. `STM32MP257F-EV1`: minimal support for the STM32MP257F-EV1
+
+4. `STM32MP157F-DK2-DEMO`: based on the `STM32MP157F-DK2` device including
    additional packages like a web interface to configure the device.
 
-4. `STM32MP135F-DK-DEMO`: based on the `STM32MP135F-DK` device including
+5. `STM32MP135F-DK-DEMO`: based on the `STM32MP135F-DK` device including
    additional packages like a web interface to configure the device.
 
-|Supported features|STM32MP157F-DK2|STM32MP135F-DK|
-|------------------|---------------|--------------|
+6. `STM32MP257F-EV1-DEMO`: based on the `STM32MP257F-EV1` device including
+   additional packages like a web interface to configure the device.
+
+|Supported features|STM32MP157F-DK2|STM32MP135F-DK|STM32MP257F-EV1|
+|------------------|---------------|--------------|---------------|
 |Sysupgrade|yes|yes|
-|Ethernet|yes|yes|
-|Watchdog|yes|yes|
-|RTC|yes|yes|
-|RNG (Optee)|yes|yes|
-|LED|yes|yes|
-|Button|no|yes (USER2)|
-|Wifi|yes|yes|
-|USB Type-A|yes|yes|
+|Ethernet|yes|yes|yes|
+|Watchdog|yes|yes|yes|
+|RTC|yes|yes|yes|
+|RNG (Optee)|yes|yes|x|
+|LED|yes|yes|yes|
+|Button|no|yes (USER2)|yes (USER1/USER2)|
+|Wifi|yes|yes|x
+|USB Type-A|yes|yes|yes|
 
 ## BSP
 
-This feed is based on the `STPM32MP1 BSP v5.0`.
+This feed is based on the `STPM32MP1/STM32MP2 BSP v5.1`.
 
 |Components|Version|
 |----------|-------|
-|TF-A|v2.8-stm32mp-r1|
-|U-Boot|v2022.10-stm32mp-r1|
-|OPTEE|3.19.0-stm32mp-r1|
-|Linux|OpenWRT kernel + v6.1-stm32mp-r1|
+|TF-A|2.8-stm32mp-r2|
+|U-Boot|v2022.10-stm32mp-r2|
+|OPTEE|3.19.0-stm32mp-r2|
+|Linux|OpenWRT kernel + v6.1-stm32mp-r2|
 
 For the kernel, the patches from the v6.1-stm32mp branch until the tag
-v6.1-stm32mp-r1 were added.  
+v6.1-stm32mp-r2 were added.
 They are available in `target/linux/stm32/patches-6.1/`.  
 
 ## Getting started
@@ -109,8 +116,8 @@ Run `make menuconfig`
 $ make menuconfig
 ```
 
-Then select `STMicroelectronics STM32` for the `Target System`, `STM32MP1
-boards` for the `Subtarget`, and select the `Target Profile` corresponding to
+Then select `STMicroelectronics STM32` for the `Target System`, `STM32MP1` or
+`STM32MP2` for the `Subtarget`, and select the `Target Profile` corresponding to
 your hardware (for example `STMicroelectronics STM32MP135F-DK`).
 
 Then to start the build.
@@ -121,10 +128,11 @@ $ make -j$(nproc)
 
 ## Flashing and booting the system
 
-All images generated for the subtarget `stm32mp1` are stored in
-`bin/targets/stm32/stm32mp1/`.
+All images generated for are stored in `bin/targets/stm32/stm32mp1/` for
+subtarget `stm32mp1` and in `bin/targets/stm32/stm32mp2/` for subtarget
+`stm32mp2`.
 The images to flash on the SDCard are
-`openwrt-stm32-stm32mp1-stm32mpXXXXX-ext4-factory.img.gz`.
+`openwrt-stm32-stm32mpX-stm32mpXXXXX-ext4-factory.img.gz`.
 
 ```bash
 $ gzip -d -c bin/targets/stm32/stm32mp1/openwrt-stm32-stm32mp1-stm32mp135f-dk-ext4-factory.img.gz | dd of=/dev/sdX
@@ -136,22 +144,29 @@ Then:
 1. Insert the microSD card
    - STM32MP157: connector CN15
    - STM32MP135: connector CN3
+   - STM32MP257: connector CN1
 
-2. Plug a micro-USB cable and run your serial communication program on
-   /dev/ttyACM0.
+2. Plug a micro-USB cable or USB-C for `STM32MP257` and run your serial
+   communication program on /dev/ttyACM0
    - STM32MP157: connector CN11
    - STM32MP135: connector CN10
+   - STM32MP257: connector CN21
 
 3. Configure the SW1 switch to boot on SD card
    - STM32MP157: BOOT0 and BOOT2 to ON
    - STM32MP135: BOOT0 to ON, BOOT1 to OFF, BOOT2 to ON
+   - STM32MP257: BOOT0 to ON, BOOT1 and BOOT2 and BOOT3 to OFF
 
-4. Plug a USB-C cable to power-up the board
+4. Plug a USB-C cable or Barrel cable for `STM32MP257` to power-up the board.
    - STM32MP157: connector CN6
    - STM32MP135: connector CN12
+   - STM32MP257: connector CN20
 
 5. The system will start, with the console on UART. The default user is root
    with no password. The login is automatic.
+
+Note that `STM32MP257` can be powered using the USB-C (CN21) if the jumper JP4
+is set to the positioin [2-3].
 
 ```
 BusyBox v1.36.1 (2024-02-14 15:44:53 UTC) built-in shell (ash)
@@ -184,6 +199,7 @@ The configuration of Ethernet interfaces is the default OpenWRT configuration:
 
 - `STM32MP157F-DK2`: `lan` interface
 - `STM32MP135F-DK`: `lan` interface (`ETH1`) and `wan` interface (`ETH2`)
+- `STM32MP257-EV1`: `lan` interface (`ETH1`) and `wan` interface (`ETH2`)
 
 The `lan` interface is configured with a static ip address 192.168.1.1 and a
 dhcp server is running.  
@@ -212,7 +228,6 @@ Useful link: [Upgrading OpenWrt firmware using LuCI and CLI](https://openwrt.org
 ### Button
 
 The kernel module `gpio-button-hotplug` is used to support buttons.  
-The `STM32MP135F-DK` has one supported button: `USR2` (key `BTN_1`).
 
 To easily test the button:
 
@@ -231,9 +246,9 @@ Useful link: [Attach functions to a push button](https://openwrt.org/docs/guide-
 
 ### LED
 
-One LED is defined and labelled `blue:heartbeat` (`LD8` for `STM32MP157F-DK2` and
-`LD3` for `STM32MP135F-DK`). By default it is configured to use the heartbeat
-trigger.
+One LED is defined and labelled `blue:heartbeat` (`LD8` for `STM32MP157F-DK2`,
+`LD3` for `STM32MP135F-DK` and `LED1` for `STM32MP257F-EV1`). By default it is
+configured to use the heartbeat trigger.
 
 Useful link: [LED Configuration](https://openwrt.org/docs/guide-user/base-system/led_configuration)
 

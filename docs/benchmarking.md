@@ -365,6 +365,111 @@ stress-ng: info:  [2203] metrics untrustworthy: 0
 stress-ng: info:  [2203] successful run completed in 24 mins, 2.88 secs
 ```
 
+#### STM32MP257F-EV1
+
+[Results (yaml format)](stress-ng-stm32mp257f-ev1.yml)
+
+```
+stress-ng: info:  [2718] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [2718] dispatching hogs: 2 cpu, 2 matrix, 2 fp,[  193.246367] spectre-v4 mitigation disabled by command-line option  2 crypt, 2 goto, 2 cache, 2 bigheap, 2 malloc, 2 memcpy, 2 bsearch, 2 hsearch, 2 msg, 2 getrandom, 2 hrtimers, 2 daemon, 2 fork, 2 netdev, 2p
+stress-ng: info:  [2731] cache: cache flags used: prefetch fence
+stress-ng: info:  [2731] cache: unavailable unused cache flags: clflush sfence clflushopt cldemote clwb
+[  976.280658] hrtimer: interrupt took 10750 ns
+stress-ng: metrc: [2718] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [2718]                           (secs)    (secs)    (secs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [2718] cpu                6932     60.02    119.78      0.00       115.49          57.87        99.78          4344
+stress-ng: metrc: [2718] matrix            39068     60.01    119.82      0.01       651.04         326.02        99.85          3740
+stress-ng: metrc: [2718] fp                 2412     60.03    119.98      0.00        40.18          20.10        99.92          3576
+stress-ng: metrc: [2718] crypt             17820     60.01    119.93      0.00       296.96         148.59        99.93          4344
+stress-ng: metrc: [2718] goto           17397928     60.00    119.91      0.00    289965.15      145094.38        99.92          2296
+stress-ng: metrc: [2718] cache           2181096     60.00     73.58      0.09     36350.39       29607.92        61.39          7428
+stress-ng: metrc: [2718] bigheap         1242786     60.13      8.73    110.90     20668.60       10389.28        99.47       1530060
+stress-ng: metrc: [2718] malloc         27665546     60.14     61.34     58.23    460046.58      231378.48        99.41        251112
+stress-ng: metrc: [2718] memcpy             2938     60.08    120.03      0.02        48.90          24.47        99.91          3380
+stress-ng: metrc: [2718] bsearch            6217     60.01    119.83      0.02       103.59          51.87        99.85          3544
+stress-ng: metrc: [2718] hsearch           85813     60.00    119.63      0.00      1430.19         717.30        99.69          3892
+stress-ng: metrc: [2718] msg            31433557     60.00     17.18    101.82    523853.82      264135.16        99.16          3440
+stress-ng: metrc: [2718] getrandom        905232     60.00      0.67    119.16     15087.18        7554.29        99.86          2296
+stress-ng: metrc: [2718] hrtimers        6102343     60.04      4.54     96.68    101642.40       60285.33        84.30          3440
+stress-ng: metrc: [2718] daemon           161011     60.00      0.64      1.94      2683.51       62425.54         2.15          2296
+stress-ng: metrc: [2718] fork             129643     60.00     61.33     56.22      2160.71        1102.96        97.95          3544
+stress-ng: metrc: [2718] netdev          3664683     60.00     23.46     96.43     61077.95       30567.25        99.91          2296
+stress-ng: metrc: [2718] rawpkt          5794964     60.10      7.47     90.58     96416.86       59101.34        81.57          3016
+stress-ng: metrc: [2718] rawsock         6012015     61.50      3.24     76.23     97755.76       75647.33        64.61          3404
+stress-ng: metrc: [2718] rawudp          1484589     60.00      2.37     58.89     24742.83       24232.88        51.05          3704
+stress-ng: metrc: [2718] sock              20552     60.02      5.29     97.58       342.43         199.79        85.70          5408
+stress-ng: metrc: [2718] sockfd          3496967     60.01     10.52    106.88     58277.88       29787.52        97.82          3576
+stress-ng: metrc: [2718] sockmany         387469     60.08      1.63     70.31      6449.14        5385.56        59.87          3900
+stress-ng: metrc: [2718] udp             3451324     60.00      2.32     86.55     57521.42       38833.29        74.06          2300
+stress-ng: metrc: [2718] miscellaneous metrics:
+stress-ng: metrc: [2718] matrix             23404.89 add matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             66353.95 copy matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             12647.06 div matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             17740.87 frobenius matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             25869.77 hadamard matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             22553.08 identity matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             19056.83 mean matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             35078.27 mult matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             35033.45 negate matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix                46.71 prod matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix             25139.17 sub matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix                47.65 square matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix              5754.42 trans matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] matrix            120714.03 zero matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                    15.76 Mfp-ops per sec, float128 add         (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.61 Mfp-ops per sec, float64 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.76 Mfp-ops per sec, float32 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                   479.27 Mfp-ops per sec, float16 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1330.91 Mfp-ops per sec, float add            (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.93 Mfp-ops per sec, double add           (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                    15.78 Mfp-ops per sec, long double add      (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                     6.88 Mfp-ops per sec, float128 multiply    (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.04 Mfp-ops per sec, float64 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.34 Mfp-ops per sec, float32 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                   479.64 Mfp-ops per sec, float16 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1331.35 Mfp-ops per sec, float multiply       (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                  1332.15 Mfp-ops per sec, double multiply      (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                     6.88 Mfp-ops per sec, long double multiply (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                     5.25 Mfp-ops per sec, float128 divide      (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                    79.19 Mfp-ops per sec, float64 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                   150.45 Mfp-ops per sec, float32 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                   139.06 Mfp-ops per sec, float16 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                   150.45 Mfp-ops per sec, float divide         (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                    79.17 Mfp-ops per sec, double divide        (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] fp                     5.25 Mfp-ops per sec, long double divide   (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt              25294.59 MD5 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt                465.70 NT encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt              25260.33 SHA-1 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt              25345.15 SHA-256 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt                 33.22 SHA-512 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt                 46.70 scrypt encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt              24831.90 SunMD5 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] crypt              25286.33 yescrypt encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] goto                 148.46 million gotos per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] cache           18674022.41 cache ops per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] cache           40210301.72 shared cache reads per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] cache           37430960.80 shared cache writes per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] bigheap            72274.02 realloc calls per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] bsearch         51724584.93 bsearch comparisons per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] bsearch               15.00 bsearch comparisons per item (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] getrandom      494449223.57 getrandom bits per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] hrtimers           50823.55 hrtimer signals per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] rawpkt                 1.93 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] rawpkt           5794964.00 packets sent (total of 2 instances)
+stress-ng: metrc: [2718] rawpkt          10878341.00 packets received (total of 2 instances)
+stress-ng: metrc: [2718] rawsock                1.34 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] rawudp                 0.38 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] rawudp             12358.51 packets (32 bytes) received per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] sock               87483.86 messages sent per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] sock             2834389.48 byte average out queue length (harmonic mean of 2 instances)
+stress-ng: metrc: [2718] sock             5722518.63 byte average in queue length (geometric mean of 2 instances)
+stress-ng: info:  [2718] skipped: 0
+stress-ng: info:  [2718] passed: 48: cpu (2) matrix (2) fp (2) crypt (2) goto (2) cache (2) bigheap (2) malloc (2) memcpy (2) bsearch (2) hse)
+stress-ng: info:  [2718] failed: 0
+stress-ng: info:  [2718] metrics untrustworthy: 0
+stress-ng: info:  [2718] successful run completed in 24 mins, 2.38 secs
+```
+
 ### Iperf3
 
 #### STM32MP157F-DK2
@@ -385,3 +490,12 @@ stress-ng: info:  [2203] successful run completed in 24 mins, 2.88 secs
 |eth0|TCP|94.1 Mbits/sec, 94.2 Mbits/sec, 91.4 Mbits/sec + 91.8 Mbits/sec|
 |eth1|TCP|94.2 Mbits/sec, 94.1 Mbits/sec, 91.4 Mbits/sec + 91.5 Mbits/sec|
 |wifi|TCP|49.7 Mbits/sec, 36.3 Mbits/sec, 43.3 Mbits/sec + 6.33 Mbits/sec|
+
+#### STM32MP257F-EV1
+
+|Interface|Protocol|Bandwidth: RX, TX, Bidir (RX + TX)|
+|---------|--------|----------------------------------|
+|loopback|TCP|8.77 Gbits/sec, 8.77 Gbits/sec, 4.38 Gbits/sec + 4.40 Gbits/sec|
+|loopback|UDP|4.40 Gbits/sec, 4.40 Gbits/sec, 4.09 Gbits/sec + 4.04 Gbits/sec|
+|eth0|TCP|942 Mbits/sec, 942 Mbits/sec, 927 Mbits/sec + 939 Mbits/sec|
+|eth1|TCP|942 Mbits/sec, 491 Mbits/sec, 927 Mbits/sec + 939 Mbits/sec|

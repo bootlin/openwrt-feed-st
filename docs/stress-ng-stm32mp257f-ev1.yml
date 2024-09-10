@@ -1,0 +1,329 @@
+---
+system-info:
+      stress-ng-version: 0.18.01
+      run-by: root
+      date-yyyy-mm-dd: 2024:09:10
+      time-hh-mm-ss: 08:22:04
+      epoch-secs: 1715757724
+      hostname: OpenWrt
+      sysname: Linux
+      nodename: OpenWrt
+      release: 6.1.89
+      version: '#0 SMP Wed May 15 06:54:58 2024'
+      machine: aarch64
+      compiler: 'musl-gcc 13.2.0'
+      uptime: 1636
+      totalram: 3973033984
+      freeram: 3879858176
+      sharedram: 2764800
+      bufferram: 864256
+      totalswap: 0
+      freeswap: 0
+      pagesize: 4096
+      cpus: 2
+      cpus-online: 2
+      ticks-per-second: 100
+
+metrics:
+    - stressor: cpu
+      bogo-ops: 6932
+      bogo-ops-per-second-usr-sys-time: 57.871612
+      bogo-ops-per-second-real-time: 115.491074
+      wall-clock-time: 60.021955
+      user-time: 119.782389
+      system-time: 0.000000
+      cpu-usage-per-instance: 99.782146
+      max-rss: 4344
+
+    - stressor: matrix
+      bogo-ops: 39068
+      bogo-ops-per-second-usr-sys-time: 326.021828
+      bogo-ops-per-second-real-time: 651.039939
+      wall-clock-time: 60.008607
+      user-time: 119.822482
+      system-time: 0.009985
+      cpu-usage-per-instance: 99.846066
+      max-rss: 3740
+      add-matrix-ops-per-sec: 23406.845538
+      copy-matrix-ops-per-sec: 66355.684115
+      div-matrix-ops-per-sec: 12647.447078
+      frobenius-matrix-ops-per-sec: 17740.999042
+      hadamard-matrix-ops-per-sec: 25871.225190
+      identity-matrix-ops-per-sec: 22553.086206
+      mean-matrix-ops-per-sec: 19081.981086
+      mult-matrix-ops-per-sec: 35078.276291
+      negate-matrix-ops-per-sec: 35033.627245
+      prod-matrix-ops-per-sec: 46.709831
+      sub-matrix-ops-per-sec: 25139.180176
+      square-matrix-ops-per-sec: 47.655150
+      trans-matrix-ops-per-sec: 5763.516137
+      zero-matrix-ops-per-sec: 120714.027813
+
+    - stressor: fp
+      bogo-ops: 2412
+      bogo-ops-per-second-usr-sys-time: 20.103765
+      bogo-ops-per-second-real-time: 40.176699
+      wall-clock-time: 60.034798
+      user-time: 119.977524
+      system-time: 0.000000
+      cpu-usage-per-instance: 99.923318
+      max-rss: 3576
+      mfpops-per-sec-float128-add--------: 15.763544
+      mfpops-per-sec-float64-add---------: 1331.612142
+      mfpops-per-sec-float32-add---------: 1331.762700
+      mfpops-per-sec-float16-add---------: 479.272385
+      mfpops-per-sec-float-add-----------: 1330.911659
+      mfpops-per-sec-double-add----------: 1331.925150
+      mfpops-per-sec-long-double-add-----: 15.783571
+      mfpops-per-sec-float128-multiply---: 6.875136
+      mfpops-per-sec-float64-multiply----: 1331.037824
+      mfpops-per-sec-float32-multiply----: 1331.338417
+      mfpops-per-sec-float16-multiply----: 479.641763
+      mfpops-per-sec-float-multiply------: 1331.350512
+      mfpops-per-sec-double-multiply-----: 1332.147976
+      mfpops-per-sec-long-double-multiply: 6.883273
+      mfpops-per-sec-float128-divide-----: 5.249897
+      mfpops-per-sec-float64-divide------: 79.188742
+      mfpops-per-sec-float32-divide------: 150.454271
+      mfpops-per-sec-float16-divide------: 139.057890
+      mfpops-per-sec-float-divide--------: 150.456232
+      mfpops-per-sec-double-divide-------: 79.168247
+      mfpops-per-sec-long-double-divide--: 5.248442
+
+    - stressor: crypt
+      bogo-ops: 17820
+      bogo-ops-per-second-usr-sys-time: 148.586145
+      bogo-ops-per-second-real-time: 296.957119
+      wall-clock-time: 60.008664
+      user-time: 119.930428
+      system-time: 0.000000
+      cpu-usage-per-instance: 99.927594
+      max-rss: 4344
+      md5-encrypts-per-sec: 25294.591483
+      nt-encrypts-per-sec: 465.698421
+      sha1-encrypts-per-sec: 25260.335006
+      sha256-encrypts-per-sec: 25345.151995
+      sha512-encrypts-per-sec: 33.217408
+      scrypt-encrypts-per-sec: 46.699583
+      sunmd5-encrypts-per-sec: 24831.941243
+      yescrypt-encrypts-per-sec: 25286.332790
+
+    - stressor: goto
+      bogo-ops: 17397928
+      bogo-ops-per-second-usr-sys-time: 145094.384671
+      bogo-ops-per-second-real-time: 289965.153839
+      wall-clock-time: 60.000065
+      user-time: 119.907659
+      system-time: 0.000000
+      cpu-usage-per-instance: 99.922941
+      max-rss: 2296
+      million-gotos-per-sec: 148.462599
+
+    - stressor: cache
+      bogo-ops: 2181096
+      bogo-ops-per-second-usr-sys-time: 29607.917208
+      bogo-ops-per-second-real-time: 36350.388697
+      wall-clock-time: 60.001999
+      user-time: 73.576468
+      system-time: 0.089504
+      cpu-usage-per-instance: 61.386264
+      max-rss: 7428
+      cache-ops-per-second: 18675000.314083
+      shared-cache-reads-per-second: 40212846.487355
+      shared-cache-writes-per-second: 37431170.090890
+
+    - stressor: bigheap
+      bogo-ops: 1242786
+      bogo-ops-per-second-usr-sys-time: 10389.278652
+      bogo-ops-per-second-real-time: 20668.600560
+      wall-clock-time: 60.129180
+      user-time: 8.726438
+      system-time: 110.895534
+      cpu-usage-per-instance: 99.470816
+      max-rss: 1530060
+      realloc-calls-per-sec: 72274.062660
+
+    - stressor: malloc
+      bogo-ops: 27665546
+      bogo-ops-per-second-usr-sys-time: 231378.483142
+      bogo-ops-per-second-real-time: 460046.581428
+      wall-clock-time: 60.136402
+      user-time: 61.336731
+      system-time: 58.231630
+      cpu-usage-per-instance: 99.414296
+      max-rss: 251112
+
+    - stressor: memcpy
+      bogo-ops: 2938
+      bogo-ops-per-second-usr-sys-time: 24.472599
+      bogo-ops-per-second-real-time: 48.898862
+      wall-clock-time: 60.083198
+      user-time: 120.032759
+      system-time: 0.019875
+      cpu-usage-per-instance: 99.905329
+      max-rss: 3380
+
+    - stressor: bsearch
+      bogo-ops: 6217
+      bogo-ops-per-second-usr-sys-time: 51.872083
+      bogo-ops-per-second-real-time: 103.591485
+      wall-clock-time: 60.014585
+      user-time: 119.832602
+      system-time: 0.019921
+      cpu-usage-per-instance: 99.852830
+      max-rss: 3544
+      bsearch-comparisons-per-sec: 51727405.606686
+      bsearch-comparisons-per-item: 15.000275
+
+    - stressor: hsearch
+      bogo-ops: 85813
+      bogo-ops-per-second-usr-sys-time: 717.295883
+      bogo-ops-per-second-real-time: 1430.186112
+      wall-clock-time: 60.001282
+      user-time: 119.634034
+      system-time: 0.000000
+      cpu-usage-per-instance: 99.692898
+      max-rss: 3892
+
+    - stressor: msg
+      bogo-ops: 31433557
+      bogo-ops-per-second-usr-sys-time: 264135.156757
+      bogo-ops-per-second-real-time: 523853.817574
+      wall-clock-time: 60.004444
+      user-time: 17.181440
+      system-time: 101.824138
+      cpu-usage-per-instance: 99.163970
+      max-rss: 3440
+
+    - stressor: getrandom
+      bogo-ops: 905232
+      bogo-ops-per-second-usr-sys-time: 7554.292408
+      bogo-ops-per-second-real-time: 15087.177998
+      wall-clock-time: 60.000087
+      user-time: 0.669063
+      system-time: 119.161088
+      cpu-usage-per-instance: 99.858314
+      max-rss: 2296
+      getrandom-bits-per-sec: 494449231.876884
+
+    - stressor: hrtimers
+      bogo-ops: 6102343
+      bogo-ops-per-second-usr-sys-time: 60285.328390
+      bogo-ops-per-second-real-time: 101642.402975
+      wall-clock-time: 60.037374
+      user-time: 4.541702
+      system-time: 96.682645
+      cpu-usage-per-instance: 84.301111
+      max-rss: 3440
+      hrtimer-signals-per-sec: 50824.118181
+
+    - stressor: daemon
+      bogo-ops: 161011
+      bogo-ops-per-second-usr-sys-time: 62425.535495
+      bogo-ops-per-second-real-time: 2683.512599
+      wall-clock-time: 60.000091
+      user-time: 0.635782
+      system-time: 1.943467
+      cpu-usage-per-instance: 2.149371
+      max-rss: 2296
+
+    - stressor: fork
+      bogo-ops: 129643
+      bogo-ops-per-second-usr-sys-time: 1102.959330
+      bogo-ops-per-second-real-time: 2160.710034
+      wall-clock-time: 60.000184
+      user-time: 61.325405
+      system-time: 56.215647
+      cpu-usage-per-instance: 97.950576
+      max-rss: 3544
+
+    - stressor: netdev
+      bogo-ops: 3664683
+      bogo-ops-per-second-usr-sys-time: 30567.250035
+      bogo-ops-per-second-real-time: 61077.949036
+      wall-clock-time: 60.000099
+      user-time: 23.459857
+      system-time: 96.429338
+      cpu-usage-per-instance: 99.907497
+      max-rss: 2296
+
+    - stressor: rawpkt
+      bogo-ops: 5794964
+      bogo-ops-per-second-usr-sys-time: 59101.337118
+      bogo-ops-per-second-real-time: 96416.855222
+      wall-clock-time: 60.103226
+      user-time: 7.472057
+      system-time: 90.579261
+      cpu-usage-per-instance: 81.569098
+      max-rss: 3016
+      mb-recvd-per-sec: 1.934045
+      packets-sent: 2897482.000000
+      packets-received: 5439170.500000
+
+    - stressor: rawsock
+      bogo-ops: 6012015
+      bogo-ops-per-second-usr-sys-time: 75647.333264
+      bogo-ops-per-second-real-time: 97755.756899
+      wall-clock-time: 61.500368
+      user-time: 3.240464
+      system-time: 76.233785
+      cpu-usage-per-instance: 64.612824
+      max-rss: 3404
+      mb-recvd-per-sec: 1.337842
+
+    - stressor: rawudp
+      bogo-ops: 1484589
+      bogo-ops-per-second-usr-sys-time: 24232.884215
+      bogo-ops-per-second-real-time: 24742.828005
+      wall-clock-time: 60.000781
+      user-time: 2.371112
+      system-time: 58.892293
+      cpu-usage-per-instance: 51.052173
+      max-rss: 3704
+      mb-recvd-per-sec: 0.377555
+      packets-32-bytes-received-per-sec: 12371.724067
+
+    - stressor: sock
+      bogo-ops: 20552
+      bogo-ops-per-second-usr-sys-time: 199.788552
+      bogo-ops-per-second-real-time: 342.428767
+      wall-clock-time: 60.018322
+      user-time: 5.289274
+      system-time: 97.579483
+      cpu-usage-per-instance: 85.697795
+      max-rss: 5408
+      messages-sent-per-sec: 87493.075689
+      byte-average-out-queue-length: 2841719.500000
+      byte-average-in-queue-length: 5722548.926272
+
+    - stressor: sockfd
+      bogo-ops: 3496967
+      bogo-ops-per-second-usr-sys-time: 29787.522752
+      bogo-ops-per-second-real-time: 58277.878449
+      wall-clock-time: 60.005050
+      user-time: 10.515170
+      system-time: 106.881870
+      cpu-usage-per-instance: 97.822634
+      max-rss: 3576
+
+    - stressor: sockmany
+      bogo-ops: 387469
+      bogo-ops-per-second-usr-sys-time: 5385.562336
+      bogo-ops-per-second-real-time: 6449.139085
+      wall-clock-time: 60.080732
+      user-time: 1.634422
+      system-time: 70.311454
+      cpu-usage-per-instance: 59.874333
+      max-rss: 3900
+
+    - stressor: udp
+      bogo-ops: 3451324
+      bogo-ops-per-second-usr-sys-time: 38833.286204
+      bogo-ops-per-second-real-time: 57521.418443
+      wall-clock-time: 60.000676
+      user-time: 2.322336
+      system-time: 86.553068
+      cpu-usage-per-instance: 74.062002
+      max-rss: 2300
+
+...
