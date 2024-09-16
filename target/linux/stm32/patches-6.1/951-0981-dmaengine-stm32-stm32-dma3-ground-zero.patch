@@ -21,9 +21,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  delete mode 100644 Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
  delete mode 100644 drivers/dma/stm32-dma3.c
 
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
-deleted file mode 100644
-index 746348b735e9..000000000000
 --- a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 +++ /dev/null
 @@ -1,161 +0,0 @@
@@ -188,8 +185,6 @@ index 746348b735e9..000000000000
 -      st,axi-max-burst-len = <16>;
 -    };
 -...
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 1123655f06a3..81de833ccd04 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -579,17 +579,6 @@ config ST_FDMA
@@ -210,8 +205,6 @@ index 1123655f06a3..81de833ccd04 100644
  config STM32_DMA
  	bool "STMicroelectronics STM32 DMA support"
  	depends on ARCH_STM32 || COMPILE_TEST
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 1a54e9ba0e2f..10f7d4241001 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
 @@ -67,7 +67,6 @@ obj-$(CONFIG_PXA_DMA) += pxa_dma.o
@@ -222,9 +215,6 @@ index 1a54e9ba0e2f..10f7d4241001 100644
  obj-$(CONFIG_STM32_DMA) += stm32-dma.o
  obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
  obj-$(CONFIG_STM32_MDMA) += stm32-mdma.o
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-deleted file mode 100644
-index e34bbe5cb0e0..000000000000
 --- a/drivers/dma/stm32-dma3.c
 +++ /dev/null
 @@ -1,2521 +0,0 @@
@@ -2749,6 +2739,3 @@ index e34bbe5cb0e0..000000000000
 -MODULE_AUTHOR("Amelie Delaunay <amelie.delaunay@foss.st.com>");
 -MODULE_LICENSE("GPL v2");
 -
--- 
-2.39.2
-

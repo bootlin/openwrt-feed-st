@@ -25,11 +25,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 519ea94a06b3..9f243033ce03 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -146,7 +146,7 @@ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_sink_pix_map_list[
+@@ -146,7 +146,7 @@ static const struct dcmipp_pixelproc_pix
  };
  
  static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_src_pix_map_list[] = {
@@ -38,6 +36,3 @@ index 519ea94a06b3..9f243033ce03 100644
  	PIXMAP_MBUS_PPCR_SWAPUV(RGB565_2X8_LE, DCMIPP_PxPPCR_FORMAT_RGB565, 0),
  	PIXMAP_MBUS_PPCR_SWAPUV(YUYV8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 0),
  	PIXMAP_MBUS_PPCR_SWAPUV(YVYU8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 1),
--- 
-2.39.2
-

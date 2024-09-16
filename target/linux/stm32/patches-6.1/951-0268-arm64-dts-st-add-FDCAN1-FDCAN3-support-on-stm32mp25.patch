@@ -27,11 +27,9 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 28 ++++++++++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index bb75164b3fee..66a32b070d89 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -25,6 +25,34 @@ arm-pmu {
+@@ -25,6 +25,34 @@
  
  	soc@0 {
  		rifsc: rifsc@42080000 {
@@ -66,6 +64,3 @@ index bb75164b3fee..66a32b070d89 100644
  			eth2: eth2@482d0000 {
  				compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  				reg = <0x482d0000 0x4000>;
--- 
-2.39.2
-

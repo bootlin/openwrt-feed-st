@@ -15,11 +15,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index e763b0917347..9cbeef51d16a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -105,6 +105,14 @@ &usb2_phy2 {
+@@ -105,6 +105,14 @@
  	status = "okay";
  };
  
@@ -34,6 +32,3 @@ index e763b0917347..9cbeef51d16a 100644
  &usb3dr {
  	status = "okay";
  
--- 
-2.39.2
-

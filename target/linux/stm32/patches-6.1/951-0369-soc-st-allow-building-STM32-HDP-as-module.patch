@@ -18,8 +18,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/soc/st/stm32_hdp.c | 8 ++++++--
  2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soc/st/Kconfig b/drivers/soc/st/Kconfig
-index 6d9e85261706..739cfb9fe95a 100644
 --- a/drivers/soc/st/Kconfig
 +++ b/drivers/soc/st/Kconfig
 @@ -1,7 +1,7 @@
@@ -31,8 +29,6 @@ index 6d9e85261706..739cfb9fe95a 100644
  	depends on MACH_STM32MP157 || MACH_STM32MP13 || MACH_STM32MP25 || ARM64
  	default n
  	help
-diff --git a/drivers/soc/st/stm32_hdp.c b/drivers/soc/st/stm32_hdp.c
-index 47687ebd1ffd..4a267627fb7e 100644
 --- a/drivers/soc/st/stm32_hdp.c
 +++ b/drivers/soc/st/stm32_hdp.c
 @@ -1,7 +1,7 @@
@@ -45,7 +41,7 @@ index 47687ebd1ffd..4a267627fb7e 100644
   * for STMicroelectronics.
   */
  
-@@ -240,3 +240,7 @@ static struct platform_driver hdp_driver = {
+@@ -240,3 +240,7 @@ static struct platform_driver hdp_driver
  };
  
  module_platform_driver(hdp_driver);
@@ -53,6 +49,3 @@ index 47687ebd1ffd..4a267627fb7e 100644
 +MODULE_AUTHOR("Christophe Roullier <christophe.roullier@foss.st.com>");
 +MODULE_DESCRIPTION("STM32 Hardware Debug Port (HDP) pin control");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

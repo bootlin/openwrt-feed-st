@@ -17,11 +17,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 75 +++++++++++++++++++++++++
  1 file changed, 75 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index e2e1a975f18d..5c68b5340c4f 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
-@@ -105,6 +105,80 @@ static void stm32_pcie_stop_link(struct dw_pcie *pci)
+@@ -105,6 +105,80 @@ static void stm32_pcie_stop_link(struct
  		gpiod_set_value(stm32_pcie->reset_gpio, 1);
  }
  
@@ -102,7 +100,7 @@ index e2e1a975f18d..5c68b5340c4f 100644
  static const struct dw_pcie_host_ops stm32_pcie_host_ops = {
  	.host_init = stm32_pcie_host_init
  };
-@@ -339,6 +413,7 @@ static struct platform_driver stm32_pcie_driver = {
+@@ -339,6 +413,7 @@ static struct platform_driver stm32_pcie
  	.driver = {
  		.name = "stm32-pcie",
  		.of_match_table = stm32_pcie_of_match,
@@ -110,6 +108,3 @@ index e2e1a975f18d..5c68b5340c4f 100644
  	},
  };
  
--- 
-2.39.2
-

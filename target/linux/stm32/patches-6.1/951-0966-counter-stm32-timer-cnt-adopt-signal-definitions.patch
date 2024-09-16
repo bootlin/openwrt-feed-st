@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 15 +++++++++------
  1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 668e9d1061d3..c34747d7857e 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -21,6 +21,9 @@
@@ -32,7 +30,7 @@ index 668e9d1061d3..c34747d7857e 100644
  struct stm32_timer_regs {
  	u32 cr1;
  	u32 cnt;
-@@ -247,14 +250,14 @@ static int stm32_action_read(struct counter_device *counter,
+@@ -247,14 +250,14 @@ static int stm32_action_read(struct coun
  		return 0;
  	case COUNTER_FUNCTION_QUADRATURE_X2_A:
  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
@@ -49,7 +47,7 @@ index 668e9d1061d3..c34747d7857e 100644
  			*action = COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
  		else
  			*action = COUNTER_SYNAPSE_ACTION_NONE;
-@@ -278,11 +281,11 @@ static const struct counter_ops stm32_timer_cnt_ops = {
+@@ -278,11 +281,11 @@ static const struct counter_ops stm32_ti
  
  static struct counter_signal stm32_signals[] = {
  	{
@@ -63,7 +61,7 @@ index 668e9d1061d3..c34747d7857e 100644
  		.name = "Channel 2"
  	}
  };
-@@ -291,12 +294,12 @@ static struct counter_synapse stm32_count_synapses[] = {
+@@ -291,12 +294,12 @@ static struct counter_synapse stm32_coun
  	{
  		.actions_list = stm32_synapse_actions,
  		.num_actions = ARRAY_SIZE(stm32_synapse_actions),
@@ -78,6 +76,3 @@ index 668e9d1061d3..c34747d7857e 100644
  	}
  };
  
--- 
-2.39.2
-

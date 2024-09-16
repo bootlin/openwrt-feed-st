@@ -17,11 +17,9 @@ Change-Id: Ia387229b75f23d497c780732c35d52112c4bc818
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 170 ++++++++++++++++++++++
  1 file changed, 170 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 4f30988f19b0..3b43c318f080 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -31,6 +31,14 @@ chosen {
+@@ -31,6 +31,14 @@
  		stdout-path = "serial0:115200n8";
  	};
  
@@ -36,7 +34,7 @@ index 4f30988f19b0..3b43c318f080 100644
  	gpio-keys {
  		compatible = "gpio-keys";
  
-@@ -54,11 +62,61 @@ led-blue {
+@@ -54,11 +62,61 @@
  		};
  	};
  
@@ -98,7 +96,7 @@ index 4f30988f19b0..3b43c318f080 100644
  	wifi_pwrseq: wifi-pwrseq {
  		compatible = "mmc-pwrseq-simple";
  		reset-gpios = <&gpiog 8 GPIO_ACTIVE_LOW>;
-@@ -70,6 +128,29 @@ &arm_wdt {
+@@ -70,6 +128,29 @@
  	status = "okay";
  };
  
@@ -128,7 +126,7 @@ index 4f30988f19b0..3b43c318f080 100644
  &eth1 {
  	status = "okay";
  	pinctrl-0 = <&eth1_rgmii_pins_b>;
-@@ -105,6 +186,53 @@ &i2c2 {
+@@ -105,6 +186,53 @@
  	/* spare dmas for other usage */
  	/delete-property/dmas;
  	/delete-property/dma-names;
@@ -182,7 +180,7 @@ index 4f30988f19b0..3b43c318f080 100644
  };
  
  &i2c8 {
-@@ -120,6 +248,48 @@ &i2c8 {
+@@ -120,6 +248,48 @@
  	/delete-property/dma-names;
  };
  
@@ -231,6 +229,3 @@ index 4f30988f19b0..3b43c318f080 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.2
-

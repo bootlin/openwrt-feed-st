@@ -32,11 +32,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  sound/soc/codecs/hdmi-codec.c | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f61147773139..43345d3043bb 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -428,8 +428,13 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+@@ -428,8 +428,13 @@ static int hdmi_codec_startup(struct snd
  {
  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
@@ -50,7 +48,7 @@ index f61147773139..43345d3043bb 100644
  	mutex_lock(&hcp->lock);
  	if (hcp->busy) {
  		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
-@@ -468,6 +473,12 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+@@ -468,6 +473,12 @@ static void hdmi_codec_shutdown(struct s
  				struct snd_soc_dai *dai)
  {
  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
@@ -63,6 +61,3 @@ index f61147773139..43345d3043bb 100644
  
  	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
  	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
--- 
-2.39.2
-

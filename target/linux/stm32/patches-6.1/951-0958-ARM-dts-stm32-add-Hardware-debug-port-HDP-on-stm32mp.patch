@@ -20,11 +20,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm/boot/dts/stm32mp131.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
-index 91d53b2c55b3..108ac5d6f0f8 100644
 --- a/arch/arm/boot/dts/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/stm32mp131.dtsi
-@@ -1101,6 +1101,13 @@ dts: thermal@50028000 {
+@@ -1101,6 +1101,13 @@
  			status = "disabled";
  		};
  
@@ -38,6 +36,3 @@ index 91d53b2c55b3..108ac5d6f0f8 100644
  		mdma: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
--- 
-2.39.2
-

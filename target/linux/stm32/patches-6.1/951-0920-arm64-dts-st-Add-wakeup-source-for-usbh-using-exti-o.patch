@@ -20,11 +20,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 0b1b8d511c46..05f19148a88c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2238,6 +2238,8 @@ usbh: usb@482e0000 {
+@@ -2238,6 +2238,8 @@
  				ranges = <0x482e0000 0x482e0000 0x20000>;
  				feature-domains = <&rifsc STM32MP25_RIFSC_USBH_ID>;
  				power-domains = <&CLUSTER_PD>;
@@ -33,7 +31,7 @@ index 0b1b8d511c46..05f19148a88c 100644
  				status = "disabled";
  
  				usbh_ohci: usb@482e0000 {
-@@ -2248,6 +2250,7 @@ usbh_ohci: usb@482e0000 {
+@@ -2248,6 +2250,7 @@
  					interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
  					phys = <&usb2_phy1>;
  					phy-names = "usb";
@@ -41,7 +39,7 @@ index 0b1b8d511c46..05f19148a88c 100644
  				};
  
  				usbh_ehci: usb@482f0000 {
-@@ -2259,6 +2262,7 @@ usbh_ehci: usb@482f0000 {
+@@ -2259,6 +2262,7 @@
  					companion = <&usbh_ohci>;
  					phys = <&usb2_phy1>;
  					phy-names = "usb";
@@ -49,6 +47,3 @@ index 0b1b8d511c46..05f19148a88c 100644
  				};
  			};
  
--- 
-2.39.2
-

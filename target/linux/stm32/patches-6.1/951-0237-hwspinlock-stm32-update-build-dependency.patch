@@ -12,8 +12,6 @@ Change-Id: Ib0e7a834192e366a8f08e4d4d3184c52ebd36131
  drivers/hwspinlock/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-index 3874d15b0e9b..c77b5a01ef2c 100644
 --- a/drivers/hwspinlock/Kconfig
 +++ b/drivers/hwspinlock/Kconfig
 @@ -38,7 +38,7 @@ config HWSPINLOCK_SPRD
@@ -25,6 +23,3 @@ index 3874d15b0e9b..c77b5a01ef2c 100644
  	help
  	  Say y here to support the STM32 Hardware Spinlock device.
  
--- 
-2.39.2
-

@@ -30,8 +30,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 382 ++++++++++++++---------------
  1 file changed, 191 insertions(+), 191 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index add4d2d59f5e..2b579245d3b0 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -24,10 +24,10 @@
@@ -107,7 +105,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	.imr_ofst	= 0x80,
  	.rtsr_ofst	= 0x00,
  	.ftsr_ofst	= 0x04,
-@@ -102,7 +102,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b1 = {
+@@ -102,7 +102,7 @@ static const struct stm32_exti_bank stm3
  	.seccfgr_ofst	= 0x14,
  };
  
@@ -116,7 +114,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	.imr_ofst	= 0x90,
  	.rtsr_ofst	= 0x20,
  	.ftsr_ofst	= 0x24,
-@@ -113,7 +113,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
+@@ -113,7 +113,7 @@ static const struct stm32_exti_bank stm3
  	.seccfgr_ofst	= 0x34,
  };
  
@@ -125,7 +123,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	.imr_ofst	= 0xA0,
  	.rtsr_ofst	= 0x40,
  	.ftsr_ofst	= 0x44,
-@@ -124,17 +124,17 @@ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
+@@ -124,17 +124,17 @@ static const struct stm32_exti_bank stm3
  	.seccfgr_ofst	= 0x54,
  };
  
@@ -198,7 +196,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  {
  	u32 mask = BIT(d->hwirq % IRQS_PER_BANK);
  
-@@ -278,45 +278,45 @@ static int stm32_exti_set_type(struct irq_data *d,
+@@ -278,45 +278,45 @@ static int stm32_exti_set_type(struct ir
  	return 0;
  }
  
@@ -260,7 +258,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	void __iomem *base = chip_data->host_data->base;
  	u32 val;
  
-@@ -327,9 +327,9 @@ static inline u32 stm32_exti_set_bit(struct irq_data *d, u32 reg)
+@@ -327,9 +327,9 @@ static inline u32 stm32_exti_set_bit(str
  	return val;
  }
  
@@ -272,7 +270,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	void __iomem *base = chip_data->host_data->base;
  	u32 val;
  
-@@ -340,17 +340,17 @@ static inline u32 stm32_exti_clr_bit(struct irq_data *d, u32 reg)
+@@ -340,17 +340,17 @@ static inline u32 stm32_exti_clr_bit(str
  	return val;
  }
  
@@ -296,7 +294,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  	raw_spin_unlock(&chip_data->rlock);
  
-@@ -358,36 +358,36 @@ static void stm32_exti_h_eoi(struct irq_data *d)
+@@ -358,36 +358,36 @@ static void stm32_exti_h_eoi(struct irq_
  		irq_chip_eoi_parent(d);
  }
  
@@ -344,7 +342,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	struct hwspinlock *hwlock = chip_data->host_data->hwlock;
  	void __iomem *base = chip_data->host_data->base;
  	u32 rtsr, ftsr;
-@@ -403,15 +403,15 @@ static int stm32_exti_h_set_type(struct irq_data *d, unsigned int type)
+@@ -403,15 +403,15 @@ static int stm32_exti_h_set_type(struct
  		}
  	}
  
@@ -365,7 +363,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  unspinlock:
  	if (hwlock)
-@@ -425,9 +425,9 @@ static int stm32_exti_h_set_type(struct irq_data *d, unsigned int type)
+@@ -425,9 +425,9 @@ unlock:
  	return err;
  }
  
@@ -377,7 +375,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	u32 mask = BIT(d->hwirq % IRQS_PER_BANK);
  
  	raw_spin_lock(&chip_data->rlock);
-@@ -445,7 +445,7 @@ static int stm32_exti_h_set_wake(struct irq_data *d, unsigned int on)
+@@ -445,7 +445,7 @@ static int stm32_exti_h_set_wake(struct
  	return 0;
  }
  
@@ -386,7 +384,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  				     const struct cpumask *dest, bool force)
  {
  	if (d->parent_data->chip)
-@@ -454,23 +454,23 @@ static int stm32_exti_h_set_affinity(struct irq_data *d,
+@@ -454,23 +454,23 @@ static int stm32_exti_h_set_affinity(str
  	return IRQ_SET_MASK_OK_DONE;
  }
  
@@ -432,7 +430,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  		if (test_bit(i, host_data->gpio_mux_used)) {
  			write_cr = true;
  			cr |= (host_data->gpio_mux_pos[i] << EXTI_CR_SHIFT(i)) & EXTI_CR_MASK(i);
-@@ -498,98 +498,98 @@ static void stm32_exti_h_resume_gpio_mux(struct stm32_exti_host_data *host_data)
+@@ -498,98 +498,98 @@ static void stm32_exti_h_resume_gpio_mux
  	}
  }
  
@@ -569,7 +567,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  		return false;
  
  	if (!test_bit(gpio_nr, host_data->gpio_mux_used) ||
-@@ -599,11 +599,11 @@ static bool stm32_exti_h_test_gpio_mux_available(struct stm32_exti_host_data *ho
+@@ -599,11 +599,11 @@ static bool stm32_exti_h_test_gpio_mux_a
  	return false;
  }
  
@@ -583,7 +581,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  	if (!node ||
  	    (bus_token != DOMAIN_BUS_ANY && dm->bus_token != bus_token))
-@@ -619,12 +619,12 @@ static int stm32_exti_h_domain_match(struct irq_domain *dm,
+@@ -619,12 +619,12 @@ static int stm32_exti_h_domain_match(str
  		of_irq_find_parent(host_data->irq_map_node->parent));
  }
  
@@ -598,7 +596,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	irq_hw_number_t hwirq = fwspec->param[0];
  	struct of_phandle_args out_irq;
  	u32 gpio_bank;
-@@ -640,11 +640,11 @@ static int stm32_exti_h_domain_select(struct irq_domain *dm,
+@@ -640,11 +640,11 @@ static int stm32_exti_h_domain_select(st
  	if (fwnode != of_node_to_fwnode(host_data->irq_map_node->parent))
  		return 0;
  
@@ -613,7 +611,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  		return 0;
  
  	out_irq.np = host_data->irq_map_node;
-@@ -659,9 +659,9 @@ static int stm32_exti_h_domain_select(struct irq_domain *dm,
+@@ -659,9 +659,9 @@ static int stm32_exti_h_domain_select(st
  	return (dm->parent->fwnode == of_node_to_fwnode(out_irq.np));
  }
  
@@ -625,7 +623,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	struct hwspinlock *hwlock = host_data->hwlock;
  	irq_hw_number_t hwirq = fwspec->param[0];
  	void __iomem *base = host_data->base;
-@@ -671,12 +671,12 @@ static int stm32_exti_h_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+@@ -671,12 +671,12 @@ static int stm32_exti_h_gpio_bank_alloc(
  	if (host_data->has_syscon)
  		return 0;
  
@@ -641,7 +639,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  		pr_debug("GPIO IRQ %ld already in use\n", hwirq);
  		return -EBUSY;
  	}
-@@ -708,23 +708,23 @@ static int stm32_exti_h_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+@@ -708,23 +708,23 @@ static int stm32_exti_h_gpio_bank_alloc(
  	return 0;
  }
  
@@ -671,7 +669,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	u8 desc_irq;
  	struct irq_fwspec *fwspec = data;
  	struct irq_fwspec p_fwspec;
-@@ -747,13 +747,13 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -747,13 +747,13 @@ static int stm32_exti_h_domain_alloc(str
  		return -EPERM;
  	}
  
@@ -687,7 +685,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
  
-@@ -765,7 +765,7 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -765,7 +765,7 @@ static int stm32_exti_h_domain_alloc(str
  
  		ret = of_irq_parse_raw(NULL, &out_irq);
  		if (ret) {
@@ -696,7 +694,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  			return ret;
  		}
  
-@@ -774,13 +774,13 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -774,13 +774,13 @@ static int stm32_exti_h_domain_alloc(str
  
  		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
  		if (ret)
@@ -712,7 +710,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  		return -EINVAL;
  	}
  
-@@ -794,7 +794,7 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -794,7 +794,7 @@ static int stm32_exti_h_domain_alloc(str
  
  		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
  		if (ret)
@@ -721,7 +719,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  		return ret;
  	}
-@@ -802,29 +802,29 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -802,29 +802,29 @@ static int stm32_exti_h_domain_alloc(str
  	return 0;
  }
  
@@ -760,7 +758,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  	raw_spin_lock_init(&chip_data->rlock);
  
-@@ -832,25 +832,25 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
+@@ -832,25 +832,25 @@ stm32_exti_chip_data *stm32_exti_chip_in
  	 * This IP has no reset, so after hot reboot we should
  	 * clear registers to avoid residue
  	 */
@@ -794,7 +792,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  {
  	u32 cid, cidcfgr, hwcfgr1;
  	unsigned int bank, i, event;
-@@ -871,7 +871,7 @@ static void stm32_exti_check_rif(struct stm32_exti_host_data *host_data)
+@@ -871,7 +871,7 @@ static void stm32_exti_check_rif(struct
  	}
  }
  
@@ -803,7 +801,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  {
  	struct irq_domain *domain = data;
  	struct fwnode_handle *fwnode = domain->fwnode;
-@@ -882,21 +882,21 @@ static void stm32_exti_remove_irq(void *data)
+@@ -882,21 +882,21 @@ static void stm32_exti_remove_irq(void *
  		irq_domain_free_fwnode(fwnode);
  }
  
@@ -830,7 +828,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	char *name;
  
  	host_data = devm_kzalloc(dev, sizeof(*host_data), GFP_KERNEL);
-@@ -946,9 +946,9 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -946,9 +946,9 @@ static int stm32_exti_probe(struct platf
  		return PTR_ERR(host_data->base);
  
  	for (i = 0; i < drv_data->bank_nr; i++)
@@ -842,7 +840,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  
  	parent_domain = irq_find_host(of_irq_find_parent(np));
  	if (!parent_domain) {
-@@ -958,7 +958,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -958,7 +958,7 @@ static int stm32_exti_probe(struct platf
  
  	domain = irq_domain_add_hierarchy(parent_domain, 0,
  					  drv_data->bank_nr * IRQS_PER_BANK,
@@ -851,7 +849,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  					  host_data);
  
  	if (!domain) {
-@@ -966,7 +966,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -966,7 +966,7 @@ static int stm32_exti_probe(struct platf
  		return -ENOMEM;
  	}
  
@@ -860,7 +858,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  	if (ret)
  		return ret;
  
-@@ -999,7 +999,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -999,7 +999,7 @@ static int stm32_exti_probe(struct platf
  
  		domain = irq_domain_create_hierarchy(wakeup_domain, 0,
  						     drv_data->bank_nr * IRQS_PER_BANK,
@@ -869,7 +867,7 @@ index add4d2d59f5e..2b579245d3b0 100644
  						     host_data);
  		if (!domain) {
  			dev_err(dev, "Could not register exti domain\n");
-@@ -1007,41 +1007,41 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -1007,41 +1007,41 @@ static int stm32_exti_probe(struct platf
  			return -ENOMEM;
  		}
  
@@ -926,6 +924,3 @@ index add4d2d59f5e..2b579245d3b0 100644
 -module_exit(stm32_exti_arch_exit);
 +arch_initcall(stm32mp_exti_arch_init);
 +module_exit(stm32mp_exti_arch_exit);
--- 
-2.39.2
-

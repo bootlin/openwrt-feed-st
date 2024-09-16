@@ -40,7 +40,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  };
  
  #define phylink_printk(level, pl, fmt, ...) \
-@@ -1602,6 +1603,7 @@ struct phylink *phylink_create(struct ph
+@@ -1636,6 +1637,7 @@ struct phylink *phylink_create(struct ph
  		return ERR_PTR(-EINVAL);
  	}
  
@@ -48,7 +48,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  	pl->using_mac_select_pcs = using_mac_select_pcs;
  	pl->phy_state.interface = iface;
  	pl->link_interface = iface;
-@@ -2052,8 +2054,12 @@ void phylink_start(struct phylink *pl)
+@@ -2133,8 +2135,12 @@ void phylink_start(struct phylink *pl)
  
  	if (poll)
  		mod_timer(&pl->link_poll, jiffies + HZ);
@@ -63,7 +63,7 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  	if (pl->sfp_bus)
  		sfp_upstream_start(pl->sfp_bus);
  }
-@@ -2138,6 +2144,27 @@ void phylink_suspend(struct phylink *pl,
+@@ -2219,6 +2225,27 @@ void phylink_suspend(struct phylink *pl,
  EXPORT_SYMBOL_GPL(phylink_suspend);
  
  /**

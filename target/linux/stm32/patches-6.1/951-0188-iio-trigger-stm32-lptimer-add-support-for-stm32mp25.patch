@@ -20,8 +20,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/linux/iio/timer/stm32-lptim-trigger.h |  9 +++++++++
  2 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
-index 2e447a3f047d..19671286e160 100644
 --- a/drivers/iio/trigger/stm32-lptimer-trigger.c
 +++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
 @@ -16,11 +16,16 @@
@@ -42,7 +40,7 @@ index 2e447a3f047d..19671286e160 100644
  };
  
  struct stm32_lptim_trigger {
-@@ -73,6 +78,7 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
+@@ -73,6 +78,7 @@ static int stm32_lptim_trigger_probe(str
  {
  	struct stm32_lptim_trigger *priv;
  	u32 index;
@@ -50,7 +48,7 @@ index 2e447a3f047d..19671286e160 100644
  	int ret;
  
  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -82,7 +88,9 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
+@@ -82,7 +88,9 @@ static int stm32_lptim_trigger_probe(str
  	if (device_property_read_u32(&pdev->dev, "reg", &index))
  		return -EINVAL;
  
@@ -61,7 +59,7 @@ index 2e447a3f047d..19671286e160 100644
  		return -EINVAL;
  
  	priv->dev = &pdev->dev;
-@@ -98,7 +106,8 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
+@@ -98,7 +106,8 @@ static int stm32_lptim_trigger_probe(str
  }
  
  static const struct of_device_id stm32_lptim_trig_of_match[] = {
@@ -71,8 +69,6 @@ index 2e447a3f047d..19671286e160 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_lptim_trig_of_match);
-diff --git a/include/linux/iio/timer/stm32-lptim-trigger.h b/include/linux/iio/timer/stm32-lptim-trigger.h
-index a34dcf6a6001..ce3cf0addb2e 100644
 --- a/include/linux/iio/timer/stm32-lptim-trigger.h
 +++ b/include/linux/iio/timer/stm32-lptim-trigger.h
 @@ -14,6 +14,15 @@
@@ -91,6 +87,3 @@ index a34dcf6a6001..ce3cf0addb2e 100644
  
  #if IS_REACHABLE(CONFIG_IIO_STM32_LPTIMER_TRIGGER)
  bool is_stm32_lptim_trigger(struct iio_trigger *trig);
--- 
-2.39.2
-

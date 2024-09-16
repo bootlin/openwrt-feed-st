@@ -15,11 +15,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/gpu/drm/bridge/adv7511/adv7533.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-index 576de1c19815..0361c850018b 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-@@ -172,7 +172,7 @@ int adv7533_attach_dsi(struct adv7511 *adv)
+@@ -172,7 +172,7 @@ int adv7533_attach_dsi(struct adv7511 *a
  
  	host = of_find_mipi_dsi_host_by_node(adv->host_node);
  	if (!host) {
@@ -28,6 +26,3 @@ index 576de1c19815..0361c850018b 100644
  		return -EPROBE_DEFER;
  	}
  
--- 
-2.39.2
-

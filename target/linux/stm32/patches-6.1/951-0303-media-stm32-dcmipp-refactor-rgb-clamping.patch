@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c      | 15 ++++++---------
  4 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
-index 9d2710c1f515..3b72b4118994 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
-@@ -344,8 +344,13 @@ int dcmipp_colorconv_configure(struct device *dev,
+@@ -344,8 +344,13 @@ int dcmipp_colorconv_configure(struct de
  		FMT_STR(sink_fmt), RANGE_STR(sink_range),
  		FMT_STR(src_fmt), RANGE_STR(src_range));
  
@@ -38,8 +36,6 @@ index 9d2710c1f515..3b72b4118994 100644
  
  	cfg->enable = true;
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h
-index 870e55e1f0dc..a7205733b08e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h
 @@ -14,6 +14,7 @@
@@ -50,11 +46,9 @@ index 870e55e1f0dc..a7205733b08e 100644
  	bool enable;
  };
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 5e5aa0242f91..82e65d5ae3e8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -562,10 +562,6 @@ static int dcmipp_isp_get_fmt(struct v4l2_subdev *sd,
+@@ -562,10 +562,6 @@ static int dcmipp_isp_get_fmt(struct v4l
  	return 0;
  }
  
@@ -65,7 +59,7 @@ index 5e5aa0242f91..82e65d5ae3e8 100644
  static int dcmipp_isp_set_fmt(struct v4l2_subdev *sd,
  			      struct v4l2_subdev_state *state,
  			      struct v4l2_subdev_format *fmt)
-@@ -596,7 +592,8 @@ static int dcmipp_isp_set_fmt(struct v4l2_subdev *sd,
+@@ -596,7 +592,8 @@ static int dcmipp_isp_set_fmt(struct v4l
  	if (IS_SINK(fmt->pad) && fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
  		/* When setting sink format, we have to update the src format */
  		isp->src_fmt = fmt->format;
@@ -75,7 +69,7 @@ index 5e5aa0242f91..82e65d5ae3e8 100644
  			isp->src_fmt.code = MEDIA_BUS_FMT_YUV8_1X24;
  		else
  			isp->src_fmt.code = MEDIA_BUS_FMT_RGB888_1X24;
-@@ -870,7 +867,7 @@ static int dcmipp_isp_colorconv_config(struct dcmipp_isp_device *isp)
+@@ -870,7 +867,7 @@ static int dcmipp_isp_colorconv_config(s
  
  	if (ccconf.clamping)
  		val |= DCMIPP_P1CCCR_CLAMP;
@@ -84,11 +78,9 @@ index 5e5aa0242f91..82e65d5ae3e8 100644
  		val |= DCMIPP_P1CCCR_TYPE_RGB;
  	if (ccconf.enable)
  		val |= DCMIPP_P1CCCR_ENABLE;
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 6134ed516e36..3cbfd2f43932 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -410,10 +410,6 @@ static int dcmipp_pixelproc_get_fmt(struct v4l2_subdev *sd,
+@@ -410,10 +410,6 @@ static int dcmipp_pixelproc_get_fmt(stru
  	return 0;
  }
  
@@ -99,7 +91,7 @@ index 6134ed516e36..3cbfd2f43932 100644
  static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
  				    struct v4l2_subdev_state *state,
  				    struct v4l2_subdev_format *fmt)
-@@ -470,10 +466,11 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -470,10 +466,11 @@ static int dcmipp_pixelproc_set_fmt(stru
  
  		/* Update src pad format & size */
  		pixelproc->src_fmt = fmt_src_default;
@@ -115,7 +107,7 @@ index 6134ed516e36..3cbfd2f43932 100644
  		pixelproc->src_fmt.width = fmt->format.width;
  		pixelproc->src_fmt.height = fmt->format.height;
  	}
-@@ -634,7 +631,7 @@ dcmipp_pixelproc_colorconv_config(struct dcmipp_pixelproc_device *pixelproc)
+@@ -634,7 +631,7 @@ dcmipp_pixelproc_colorconv_config(struct
  
  	if (ccconf.clamping)
  		val |= DCMIPP_P1YUVCR_CLAMP;
@@ -124,6 +116,3 @@ index 6134ed516e36..3cbfd2f43932 100644
  		val |= DCMIPP_P1YUVCR_TYPE_RGB;
  	if (ccconf.enable)
  		val |= DCMIPP_P1YUVCR_ENABLE;
--- 
-2.39.2
-

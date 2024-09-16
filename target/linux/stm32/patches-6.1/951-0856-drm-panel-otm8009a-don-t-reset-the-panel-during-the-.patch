@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index 501c95c78113..e4140b43664a 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -299,6 +299,7 @@ static int otm8009a_unprepare(struct drm_panel *panel)
+@@ -299,6 +299,7 @@ static int otm8009a_unprepare(struct drm
  	if (!ctx->prepared)
  		return 0;
  
@@ -27,7 +25,7 @@ index 501c95c78113..e4140b43664a 100644
  	pm_runtime_mark_last_busy(panel->dev);
  	ret = pm_runtime_put_autosuspend(panel->dev);
  	if (ret < 0)
-@@ -471,7 +472,8 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -471,7 +472,8 @@ static int otm8009a_probe(struct mipi_ds
  			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
  
  	pm_runtime_enable(ctx->dev);
@@ -37,16 +35,13 @@ index 501c95c78113..e4140b43664a 100644
  	pm_runtime_use_autosuspend(ctx->dev);
  
  	drm_panel_init(&ctx->panel, dev, &otm8009a_drm_funcs,
-@@ -542,9 +544,6 @@ static __maybe_unused int orisetech_otm8009a_resume(struct device *dev)
- 		return ret;
+@@ -543,9 +545,6 @@ static __maybe_unused int orisetech_otm8
  	}
  
--	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+ 	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
 -	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
 -	msleep(20);
- 	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+-	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
  	msleep(100);
  
--- 
-2.39.2
-
+ 	return 0;

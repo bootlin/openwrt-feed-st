@@ -19,11 +19,9 @@ Domain-Review: Christophe ROULLIER <christophe.roullier@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index be6d965d0627..67872296ec64 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -231,7 +231,8 @@ dsi_out1: endpoint {
+@@ -231,7 +231,8 @@
  &eth1 {
  	status = "okay";
  	pinctrl-0 = <&eth1_rgmii_pins_b>;
@@ -33,6 +31,3 @@ index be6d965d0627..67872296ec64 100644
  	phy-mode = "rgmii-id";
  	max-speed = <1000>;
  	phy-handle = <&phy1_eth1>;
--- 
-2.39.2
-

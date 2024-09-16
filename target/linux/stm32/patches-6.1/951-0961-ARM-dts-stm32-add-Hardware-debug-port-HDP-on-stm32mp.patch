@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp157f-dk2.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp157f-dk2.dts b/arch/arm/boot/dts/stm32mp157f-dk2.dts
-index 7064f881832d..f18aa8c35fa8 100644
 --- a/arch/arm/boot/dts/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-dk2.dts
-@@ -84,6 +84,13 @@ panel_in: endpoint {
+@@ -84,6 +84,13 @@
  	};
  };
  
@@ -41,6 +39,3 @@ index 7064f881832d..f18aa8c35fa8 100644
  &i2c1 {
  	touchscreen@38 {
  		compatible = "focaltech,ft6236";
--- 
-2.39.2
-

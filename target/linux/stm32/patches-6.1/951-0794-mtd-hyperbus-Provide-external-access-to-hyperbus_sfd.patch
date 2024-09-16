@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/mtd/sfdp.h             | 5 ++++-
  2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-index 7efcc3c2cc0f..d6d6f75f1f41 100644
 --- a/drivers/mtd/hyperbus/hyperbus-sfdp.c
 +++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-@@ -64,7 +64,7 @@ static int __xipram hyperbus_sfdp_present(struct map_info *map, __u32 base,
+@@ -64,7 +64,7 @@ static int __xipram hyperbus_sfdp_presen
  	return 1; /* "SFDP" found */
  }
  
@@ -31,7 +29,7 @@ index 7efcc3c2cc0f..d6d6f75f1f41 100644
  					  struct cfi_private *cfi)
  {
  	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
-@@ -73,12 +73,14 @@ static int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
+@@ -73,12 +73,14 @@ static int __xipram hyperbus_sfdp_mode_o
  	hyperbus_write(HYPERBUS_CMD_RDSFDP, HYPERBUS_ADDR_UNLOCK1, map, cfi);
  	return hyperbus_sfdp_present(map, 0, cfi);
  }
@@ -47,8 +45,6 @@ index 7efcc3c2cc0f..d6d6f75f1f41 100644
  
  static u16 __xipram hyperbus_s26hx_rdvcr1(struct map_info *map,
  					  struct cfi_private *cfi)
-diff --git a/include/linux/mtd/sfdp.h b/include/linux/mtd/sfdp.h
-index 2bdb8cdc8170..8f33c356a0e0 100644
 --- a/include/linux/mtd/sfdp.h
 +++ b/include/linux/mtd/sfdp.h
 @@ -5,5 +5,8 @@
@@ -61,6 +57,3 @@ index 2bdb8cdc8170..8f33c356a0e0 100644
 +void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
 +				     struct cfi_private *cfi);
  #endif /* __MTD_SFDP_H__ */
--- 
-2.39.2
-

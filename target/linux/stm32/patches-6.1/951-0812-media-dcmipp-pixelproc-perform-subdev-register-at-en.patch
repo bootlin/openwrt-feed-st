@@ -19,11 +19,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 52 ++++++++++---------
  1 file changed, 28 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 71e9fcf403bc..eb50de90125c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -823,35 +823,18 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -823,35 +823,18 @@ dcmipp_pixelproc_comp_bind(struct device
  		return -ENOMEM;
  
  	pixelproc->regs = bind_data->regs;
@@ -63,7 +61,7 @@ index 71e9fcf403bc..eb50de90125c 100644
  	}
  
  	/* Initialize the frame format */
-@@ -878,11 +861,32 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -878,11 +861,32 @@ dcmipp_pixelproc_comp_bind(struct device
  
  	pixelproc->sd.ctrl_handler = &pixelproc->ctrls;
  	if (pixelproc->ctrls.error) {
@@ -99,6 +97,3 @@ index 71e9fcf403bc..eb50de90125c 100644
  	return 0;
  }
  
--- 
-2.39.2
-

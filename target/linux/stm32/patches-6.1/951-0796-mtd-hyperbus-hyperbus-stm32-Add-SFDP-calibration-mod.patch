@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mtd/hyperbus/hyperbus-stm32.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index 967147dc498e..9b88eda14495 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
 @@ -5,6 +5,7 @@
@@ -29,7 +27,7 @@ index 967147dc498e..9b88eda14495 100644
  #include <memory/stm32-omi.h>
  
  #define STM32_AUTOSUSPEND_DELAY -1
-@@ -119,8 +120,13 @@ static int stm32_hyperbus_check_transfert(struct stm32_omi *omi)
+@@ -119,8 +120,13 @@ static int stm32_hyperbus_check_transfer
  	cfi.interleave = 1;
  	cfi.device_type = CFI_DEVICETYPE_X16;
  
@@ -45,6 +43,3 @@ index 967147dc498e..9b88eda14495 100644
  
  	return !ret;
  }
--- 
-2.39.2
-

@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/char/hw_random/stm32-rng.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 8e43c131cc21..a54e59ff97b3 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -52,6 +52,7 @@ struct stm32_rng_private {
@@ -32,7 +30,7 @@ index 8e43c131cc21..a54e59ff97b3 100644
  };
  
  /*
-@@ -274,7 +275,9 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -274,7 +275,9 @@ static int stm32_rng_init(struct hwrng *
  		       (clock_div << RNG_CR_CLKDIV_SHIFT);
  		writel_relaxed(reg, priv->base + RNG_CR);
  		reg &= ~RNG_CR_CONDRST;
@@ -43,7 +41,7 @@ index 8e43c131cc21..a54e59ff97b3 100644
  		writel_relaxed(reg, priv->base + RNG_CR);
  		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
  							(!(reg & RNG_CR_CONDRST)),
-@@ -416,6 +419,7 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -416,6 +419,7 @@ static int stm32_rng_probe(struct platfo
  	}
  
  	priv->ced = of_property_read_bool(np, "clock-error-detect");
@@ -51,6 +49,3 @@ index 8e43c131cc21..a54e59ff97b3 100644
  
  	match = of_match_device(of_match_ptr(stm32_rng_match), dev);
  	if (!match) {
--- 
-2.39.2
-

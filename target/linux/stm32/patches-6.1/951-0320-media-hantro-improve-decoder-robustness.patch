@@ -29,11 +29,9 @@ Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
  drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c  | 6 ++++--
  3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-index d20ed9af5b47..cc06e36403b5 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
 +++ b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-@@ -269,14 +269,15 @@ int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+@@ -269,14 +269,15 @@ int hantro_g1_h264_dec_run(struct hantro
  	/* Start decoding! */
  	vdpu_write_relaxed(vpu,
  			   G1_REG_CONFIG_DEC_AXI_RD_ID(0xffu) |
@@ -51,8 +49,6 @@ index d20ed9af5b47..cc06e36403b5 100644
  			   G1_REG_CONFIG);
  	vdpu_write(vpu, G1_REG_INTERRUPT_DEC_E, G1_REG_INTERRUPT);
  
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_regs.h b/drivers/media/platform/verisilicon/hantro_g1_regs.h
-index c623b3b0be18..ce2b1b8a3a60 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_g1_regs.h
 @@ -32,6 +32,7 @@
@@ -63,11 +59,9 @@ index c623b3b0be18..ce2b1b8a3a60 100644
  #define     G1_REG_CONFIG_TILED_MODE_MSB		BIT(17)
  #define     G1_REG_CONFIG_DEC_OUT_TILED_E		BIT(17)
  #define     G1_REG_CONFIG_DEC_LATENCY(x)		(((x) & 0x3f) << 11)
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-index 3673cf111e49..a4e66d16ce3c 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
 +++ b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-@@ -452,14 +452,16 @@ int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+@@ -452,14 +452,16 @@ int hantro_g1_vp8_dec_run(struct hantro_
  
  	hantro_vp8_prob_update(ctx, hdr);
  
@@ -86,6 +80,3 @@ index 3673cf111e49..a4e66d16ce3c 100644
  	      G1_REG_CONFIG_DEC_MAX_BURST(vpu->max_burst_length);
  	vdpu_write_relaxed(vpu, reg, G1_REG_CONFIG);
  
--- 
-2.39.2
-

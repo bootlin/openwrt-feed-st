@@ -24,11 +24,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-hash.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 52b8980a58b0..e6d22a28afc2 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -596,7 +596,7 @@ static int stm32_hash_hmac_dma_send(struct stm32_hash_dev *hdev)
+@@ -596,7 +596,7 @@ static int stm32_hash_hmac_dma_send(stru
  	struct stm32_hash_ctx *ctx = crypto_ahash_ctx(tfm);
  	int err;
  
@@ -37,7 +35,7 @@ index 52b8980a58b0..e6d22a28afc2 100644
  		err = stm32_hash_write_key(hdev);
  		if (stm32_hash_wait_busy(hdev))
  			return -ETIMEDOUT;
-@@ -696,7 +696,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -696,7 +696,7 @@ static int stm32_hash_dma_send(struct st
  				 * transfer.
  				 */
  				sg->length = rctx->total - bufcnt;
@@ -46,7 +44,7 @@ index 52b8980a58b0..e6d22a28afc2 100644
  					len = (ALIGN(sg->length, 16) - 16);
  
  					ncp = sg_pcopy_to_buffer(rctx->sg, rctx->nents,
-@@ -751,7 +751,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -751,7 +751,7 @@ static int stm32_hash_dma_send(struct st
  	 * last transfer of 4 words or less.
  	 */
  	if (final) {
@@ -55,6 +53,3 @@ index 52b8980a58b0..e6d22a28afc2 100644
  			if (stm32_hash_wait_busy(hdev))
  				return -ETIMEDOUT;
  			reg = stm32_hash_read(hdev, HASH_CR);
--- 
-2.39.2
-

@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/phy/st,stm32-combophy.yaml       | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
-index b2353f9b4f0d..60710e94ef3c 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 @@ -87,6 +87,12 @@ properties:
@@ -67,6 +65,3 @@ index b2353f9b4f0d..60710e94ef3c 100644
 +              interrupts-extended = <&exti1 45 IRQ_TYPE_EDGE_FALLING>;
      };
  ...
--- 
-2.39.2
-

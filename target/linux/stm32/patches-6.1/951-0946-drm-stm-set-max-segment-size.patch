@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/drv.c | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index 4700a9331677..06f7cc1171a9 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -223,7 +223,18 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+@@ -223,7 +223,18 @@ static int stm_drm_platform_probe(struct
  	if (ret)
  		goto err_suspend;
  
@@ -38,6 +36,3 @@ index 4700a9331677..06f7cc1171a9 100644
  
  	ddev = drm_dev_alloc(&drv_driver, dev);
  	if (IS_ERR(ddev)) {
--- 
-2.39.2
-

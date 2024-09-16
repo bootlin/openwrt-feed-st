@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index f32d7df6b514..2977b6c06fc3 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -84,7 +84,7 @@
@@ -32,6 +30,3 @@ index f32d7df6b514..2977b6c06fc3 100644
  #define DCMIPP_PxGMCR(id) (((id) == 1) ? DCMIPP_P1GMCR :\
  			   DCMIPP_P2GMCR)
  #define DCMIPP_PxGMCR_ENABLE BIT(0)
--- 
-2.39.2
-

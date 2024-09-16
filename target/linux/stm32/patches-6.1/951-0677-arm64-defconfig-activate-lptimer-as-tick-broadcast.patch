@@ -19,8 +19,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index e0ab86d31c00..5b8412cec452 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -8,6 +8,7 @@ CONFIG_BT_HS=y
@@ -31,6 +29,3 @@ index e0ab86d31c00..5b8412cec452 100644
  CONFIG_COUNTER=m
  CONFIG_CRYPTO_DEV_STM32_CRC=m
  CONFIG_CRYPTO_DEV_STM32_CRYP=m
--- 
-2.39.2
-

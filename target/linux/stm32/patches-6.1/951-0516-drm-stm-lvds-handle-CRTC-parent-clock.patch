@@ -17,11 +17,9 @@ Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/lvds.c | 19 ++++++++++++++++++-
  1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index fd62d895288e..da68234d6caa 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -1073,8 +1073,9 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1073,8 +1073,9 @@ static int lvds_probe(struct platform_de
  	struct device *dev = &pdev->dev;
  	struct device_node *port1, *port2, *remote;
  	struct stm_lvds *lvds;
@@ -32,7 +30,7 @@ index fd62d895288e..da68234d6caa 100644
  
  	DRM_DEBUG_DRIVER("Probing LVDS driver...\n");
  
-@@ -1192,6 +1193,19 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1192,6 +1193,19 @@ static int lvds_probe(struct platform_de
  		goto err_lvds_probe;
  	}
  
@@ -52,7 +50,7 @@ index fd62d895288e..da68234d6caa 100644
  	lvds->lvds_bridge.funcs = &lvds_bridge_funcs;
  	lvds->lvds_bridge.of_node = dev->of_node;
  
-@@ -1199,7 +1213,10 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1199,7 +1213,10 @@ static int lvds_probe(struct platform_de
  
  	platform_set_drvdata(pdev, lvds);
  
@@ -63,6 +61,3 @@ index fd62d895288e..da68234d6caa 100644
  err_lvds_probe:
  	clk_disable_unprepare(lvds->pclk);
  
--- 
-2.39.2
-

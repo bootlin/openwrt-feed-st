@@ -20,8 +20,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-index 0a165ea39d9c..f9289ddb3957 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 @@ -77,6 +77,9 @@ properties:
@@ -34,6 +32,3 @@ index 0a165ea39d9c..f9289ddb3957 100644
    st,syscfg:
      description:
        Phandle to system configuration controller. It can be used to control the
--- 
-2.39.2
-

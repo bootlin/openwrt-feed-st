@@ -14,8 +14,6 @@ Change-Id: I6b3b6439757de61141790a1d9519990eefbdd0fc
  drivers/mmc/host/mmci_stm32_sdmmc.c | 66 ++++++++++++++++++++++++++++-
  1 file changed, 65 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 16b564bf01be..98a1e38c811c 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
 @@ -33,6 +33,20 @@
@@ -39,7 +37,7 @@ index 16b564bf01be..98a1e38c811c 100644
  struct sdmmc_lli_desc {
  	u32 idmalar;
  	u32 idmabase;
-@@ -518,6 +532,46 @@ static int sdmmc_dlyb_mp15_prepare(struct mmci_host *host)
+@@ -518,6 +532,46 @@ static int sdmmc_dlyb_mp15_prepare(struc
  	return 0;
  }
  
@@ -86,7 +84,7 @@ index 16b564bf01be..98a1e38c811c 100644
  static int sdmmc_dlyb_phase_tuning(struct mmci_host *host, u32 opcode)
  {
  	struct sdmmc_dlyb *dlyb = host->variant_priv;
-@@ -680,6 +734,12 @@ static struct sdmmc_tuning_ops dlyb_tuning_mp15_ops = {
+@@ -680,6 +734,12 @@ static struct sdmmc_tuning_ops dlyb_tuni
  	.set_cfg = sdmmc_dlyb_mp15_set_cfg,
  };
  
@@ -99,7 +97,7 @@ index 16b564bf01be..98a1e38c811c 100644
  void sdmmc_variant_init(struct mmci_host *host)
  {
  	struct device_node *np = host->mmc->parent->of_node;
-@@ -698,7 +758,11 @@ void sdmmc_variant_init(struct mmci_host *host)
+@@ -698,7 +758,11 @@ void sdmmc_variant_init(struct mmci_host
  		return;
  
  	dlyb->base = base_dlyb;
@@ -112,6 +110,3 @@ index 16b564bf01be..98a1e38c811c 100644
  	host->variant_priv = dlyb;
  	host->mmc_ops->execute_tuning = sdmmc_execute_tuning;
  }
--- 
-2.39.2
-

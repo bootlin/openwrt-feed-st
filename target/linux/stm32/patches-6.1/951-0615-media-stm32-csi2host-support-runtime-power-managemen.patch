@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../media/platform/st/stm32/stm32-csi2host.c  | 85 +++++++++++++------
  1 file changed, 59 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
-index 7639ef7d05e8..614a2331c89c 100644
 --- a/drivers/media/platform/st/stm32/stm32-csi2host.c
 +++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
-@@ -486,28 +486,23 @@ static int csi2host_start(struct csi2host_priv *csi2priv)
+@@ -486,28 +486,23 @@ static int csi2host_start(struct csi2hos
  		}
  	}
  
@@ -62,7 +60,7 @@ index 7639ef7d05e8..614a2331c89c 100644
  
  	/* FIXME - how to set the watchdog value .. */
  	writel_relaxed(0, csi2priv->base + CSI_WDR);
-@@ -568,15 +563,6 @@ static int csi2host_start(struct csi2host_priv *csi2priv)
+@@ -568,15 +563,6 @@ static int csi2host_start(struct csi2hos
  	writel_relaxed(0, csi2priv->base + CSI_PMCR);
  
  	return ret;
@@ -78,7 +76,7 @@ index 7639ef7d05e8..614a2331c89c 100644
  }
  
  static void csi2host_stop(struct csi2host_priv *csi2priv)
-@@ -595,9 +581,7 @@ static void csi2host_stop(struct csi2host_priv *csi2priv)
+@@ -595,9 +581,7 @@ static void csi2host_stop(struct csi2hos
  	/* Disable the CSI */
  	writel_relaxed(0, csi2priv->base + CSI_CR);
  
@@ -89,7 +87,7 @@ index 7639ef7d05e8..614a2331c89c 100644
  }
  
  static int csi2host_start_vc(struct csi2host_priv *csi2priv, uint32_t vc)
-@@ -1114,6 +1098,8 @@ static int csi2host_probe(struct platform_device *pdev)
+@@ -1114,6 +1098,8 @@ static int csi2host_probe(struct platfor
  		goto err_cleanup;
  	}
  
@@ -98,7 +96,7 @@ index 7639ef7d05e8..614a2331c89c 100644
  	dev_info(&pdev->dev,
  		 "Probed CSI2HOST with %u lanes\n", csi2priv->num_lanes);
  
-@@ -1131,15 +1117,61 @@ static int csi2host_remove(struct platform_device *pdev)
+@@ -1131,15 +1117,61 @@ static int csi2host_remove(struct platfo
  
  	v4l2_async_unregister_subdev(&csi2priv->subdev);
  
@@ -160,7 +158,7 @@ index 7639ef7d05e8..614a2331c89c 100644
  static struct platform_driver csi2host_driver = {
  	.probe	= csi2host_probe,
  	.remove	= csi2host_remove,
-@@ -1147,6 +1179,7 @@ static struct platform_driver csi2host_driver = {
+@@ -1147,6 +1179,7 @@ static struct platform_driver csi2host_d
  	.driver	= {
  		.name		= "stm32-csi2host",
  		.of_match_table	= csi2host_of_table,
@@ -168,6 +166,3 @@ index 7639ef7d05e8..614a2331c89c 100644
  	},
  };
  module_platform_driver(csi2host_driver);
--- 
-2.39.2
-

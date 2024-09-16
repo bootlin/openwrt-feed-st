@@ -34,11 +34,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp135f-dk.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp135f-dk.dts b/arch/arm/boot/dts/stm32mp135f-dk.dts
-index f30a5618a1d8..40e02fe88a40 100644
 --- a/arch/arm/boot/dts/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
-@@ -409,7 +409,7 @@ goodix: goodix-ts@5d {
+@@ -409,7 +409,7 @@
  		pinctrl-names = "default";
  		pinctrl-0 = <&goodix_pins_a>;
  		interrupt-parent = <&gpiof>;
@@ -47,6 +45,3 @@ index f30a5618a1d8..40e02fe88a40 100644
  		reset-gpios = <&gpioh 2 GPIO_ACTIVE_LOW>;
  		AVDD28-supply = <&scmi_v3v3_sw>;
  		VDDIO-supply = <&scmi_v3v3_sw>;
--- 
-2.39.2
-

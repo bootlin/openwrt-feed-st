@@ -19,11 +19,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 1 -
  2 files changed, 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index db2b6bb11cae..dfea34512714 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -452,7 +452,6 @@ static int dcmipp_isp_get_selection(struct v4l2_subdev *sd,
+@@ -452,7 +452,6 @@ static int dcmipp_isp_get_selection(stru
  	case V4L2_SEL_TGT_COMPOSE:
  		s->r = *compose;
  		break;
@@ -31,11 +29,9 @@ index db2b6bb11cae..dfea34512714 100644
  	default:
  		return -EINVAL;
  	}
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 980507602c93..b3a16062726d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -536,7 +536,6 @@ static int dcmipp_pixelproc_get_selection(struct v4l2_subdev *sd,
+@@ -536,7 +536,6 @@ static int dcmipp_pixelproc_get_selectio
  	case V4L2_SEL_TGT_COMPOSE:
  		s->r = *compose;
  		break;
@@ -43,6 +39,3 @@ index 980507602c93..b3a16062726d 100644
  	default:
  		return -EINVAL;
  	}
--- 
-2.39.2
-

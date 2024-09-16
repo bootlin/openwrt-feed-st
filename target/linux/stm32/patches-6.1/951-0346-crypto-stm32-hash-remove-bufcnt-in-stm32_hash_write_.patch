@@ -20,11 +20,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-hash.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index f4523a6119b4..b75ae6ae5030 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -286,7 +286,7 @@ static int stm32_hash_write_key(struct stm32_hash_dev *hdev)
+@@ -286,7 +286,7 @@ static int stm32_hash_write_key(struct s
  	return 0;
  }
  
@@ -33,7 +31,7 @@ index f4523a6119b4..b75ae6ae5030 100644
  {
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
  	struct crypto_ahash *tfm = crypto_ahash_reqtfm(hdev->req);
-@@ -395,7 +395,7 @@ static int stm32_hash_xmit_cpu(struct stm32_hash_dev *hdev,
+@@ -395,7 +395,7 @@ static int stm32_hash_xmit_cpu(struct st
  
  	hdev->flags |= HASH_FLAGS_CPU;
  
@@ -42,7 +40,7 @@ index f4523a6119b4..b75ae6ae5030 100644
  
  	if (stm32_hash_wait_busy(hdev))
  		return -ETIMEDOUT;
-@@ -669,7 +669,7 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -669,7 +669,7 @@ static int stm32_hash_dma_send(struct st
  	if (rctx->nents < 0)
  		return -EINVAL;
  
@@ -51,6 +49,3 @@ index f4523a6119b4..b75ae6ae5030 100644
  
  	if (hdev->flags & HASH_FLAGS_HMAC) {
  		err = stm32_hash_hmac_dma_send(hdev);
--- 
-2.39.2
-

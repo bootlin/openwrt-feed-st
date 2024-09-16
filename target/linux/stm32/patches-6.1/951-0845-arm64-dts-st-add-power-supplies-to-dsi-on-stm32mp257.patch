@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 106d338c4e19..4c3a6851b428 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -214,6 +214,8 @@ dcmipp_0: endpoint {
+@@ -214,6 +214,8 @@
  };
  
  &dsi {
@@ -28,7 +26,7 @@ index 106d338c4e19..4c3a6851b428 100644
  	status = "okay";
  
  	ports {
-@@ -619,6 +621,10 @@ scmi_vddio1: regulator@0 {
+@@ -619,6 +621,10 @@
  		regulator-min-microvolt = <1800000>;
  		regulator-max-microvolt = <3300000>;
  	};
@@ -39,6 +37,3 @@ index 106d338c4e19..4c3a6851b428 100644
  	scmi_v1v8: regulator@14  {
  		reg = <VOLTD_SCMI_STPMIC2_BUCK5>;
  		regulator-name = "v1v8";
--- 
-2.39.2
-

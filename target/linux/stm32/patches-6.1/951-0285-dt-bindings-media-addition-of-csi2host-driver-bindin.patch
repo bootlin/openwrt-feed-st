@@ -15,9 +15,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  1 file changed, 114 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
-new file mode 100644
-index 000000000000..0d90c587f4e3
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
 @@ -0,0 +1,114 @@
@@ -135,6 +132,3 @@ index 000000000000..0d90c587f4e3
 +    };
 +
 +...
--- 
-2.39.2
-

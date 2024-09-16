@@ -16,8 +16,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/spi/spi-stm32-ospi.c | 111 ++++++++++++++++++++++-------------
  1 file changed, 69 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 719269eb6659..626d632d4dfa 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -13,6 +13,7 @@ struct stm32_ospi_flash {
@@ -41,7 +39,7 @@ index 719269eb6659..626d632d4dfa 100644
  	u64 id_buf;
  	int last_cs;
  	unsigned long status_timeout;
-@@ -183,11 +182,23 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -183,11 +182,23 @@ static int stm32_ospi_send(struct spi_de
  		op->dummy.buswidth, op->data.buswidth,
  		op->addr.val, op->data.nbytes);
  
@@ -69,7 +67,7 @@ index 719269eb6659..626d632d4dfa 100644
  	}
  
  	cr = readl_relaxed(regs_base + OSPI_CR);
-@@ -200,12 +211,6 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -200,12 +211,6 @@ static int stm32_ospi_send(struct spi_de
  	if (op->data.nbytes)
  		writel_relaxed(op->data.nbytes - 1, regs_base + OSPI_DLR);
  
@@ -82,7 +80,7 @@ index 719269eb6659..626d632d4dfa 100644
  	ccr = FIELD_PREP(CCR_IMODE_MASK, stm32_ospi_get_mode(op->cmd.buswidth));
  
  	if (op->addr.nbytes) {
-@@ -473,8 +478,8 @@ static int stm32_ospi_readid(struct stm32_omi *omi)
+@@ -473,8 +478,8 @@ static int stm32_ospi_readid(struct stm3
  {
  	struct stm32_ospi *ospi =
  		container_of(omi, struct stm32_ospi, omi);
@@ -93,7 +91,7 @@ index 719269eb6659..626d632d4dfa 100644
  	u64 *rx_buf = &ospi->id_buf;
  	const struct spi_mem_op readid_op =
  		SPI_MEM_OP(SPI_MEM_OP_CMD(0x9F, 1),
-@@ -515,34 +520,42 @@ static int stm32_ospi_readid(struct stm32_omi *omi)
+@@ -515,34 +520,42 @@ static int stm32_ospi_readid(struct stm3
  	return -EIO;
  }
  
@@ -149,7 +147,7 @@ index 719269eb6659..626d632d4dfa 100644
  
  	ret = stm32_omi_dlyb_init(omi, false, 0);
  	if (ret)
-@@ -550,7 +563,7 @@ static int stm32_ospi_calibration(struct spi_device *spi, u32 freq)
+@@ -550,7 +563,7 @@ static int stm32_ospi_calibration(struct
  
  	/*
  	 * perform only Rx TAP selection
@@ -158,7 +156,7 @@ index 719269eb6659..626d632d4dfa 100644
  	 * be performed
  	 */
  	ret = stm32_omi_dlyb_find_tap(omi, true);
-@@ -576,8 +589,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -576,8 +589,7 @@ static int stm32_ospi_setup(struct spi_d
  	struct stm32_omi *omi = &ospi->omi;
  	struct stm32_ospi_flash *flash;
  	void __iomem *regs_base = ospi->omi.regs_base;
@@ -168,7 +166,7 @@ index 719269eb6659..626d632d4dfa 100644
  	int ret;
  
  	if (ctrl->busy)
-@@ -592,33 +604,51 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -592,33 +604,51 @@ static int stm32_ospi_setup(struct spi_d
  		return ret;
  	}
  
@@ -229,7 +227,7 @@ index 719269eb6659..626d632d4dfa 100644
  		}
  	}
  	mutex_unlock(&ospi->lock);
-@@ -655,11 +685,9 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -655,11 +685,9 @@ static int stm32_ospi_probe(struct platf
  
  	ospi = spi_controller_get_devdata(ctrl);
  	ospi->ctrl = ctrl;
@@ -241,7 +239,7 @@ index 719269eb6659..626d632d4dfa 100644
  
  	ret = stm32_omi_get_resources(omi, dev);
  	if (ret)
-@@ -813,7 +841,6 @@ static int __maybe_unused stm32_ospi_resume(struct device *dev)
+@@ -813,7 +841,6 @@ static int __maybe_unused stm32_ospi_res
  		return ret;
  
  	writel_relaxed(ospi->cr_reg, regs_base + OSPI_CR);
@@ -249,6 +247,3 @@ index 719269eb6659..626d632d4dfa 100644
  	ospi->last_cs = -1;
  	pm_runtime_mark_last_busy(dev);
  	pm_runtime_put_autosuspend(dev);
--- 
-2.39.2
-

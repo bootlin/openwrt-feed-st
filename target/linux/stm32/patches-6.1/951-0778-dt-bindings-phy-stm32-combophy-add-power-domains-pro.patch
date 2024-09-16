@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
-index 67dd9a82291f..b2353f9b4f0d 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 @@ -60,6 +60,9 @@ properties:
@@ -34,6 +32,3 @@ index 67dd9a82291f..b2353f9b4f0d 100644
    st,ssc-on:
      type: boolean
      description:
--- 
-2.39.2
-

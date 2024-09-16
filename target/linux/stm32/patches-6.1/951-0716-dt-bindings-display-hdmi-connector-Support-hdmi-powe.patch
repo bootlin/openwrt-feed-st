@@ -15,8 +15,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../devicetree/bindings/display/connector/hdmi-connector.yaml  | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/connector/hdmi-connector.yaml b/Documentation/devicetree/bindings/display/connector/hdmi-connector.yaml
-index 83c0d008265b..ea15c65c562a 100644
 --- a/Documentation/devicetree/bindings/display/connector/hdmi-connector.yaml
 +++ b/Documentation/devicetree/bindings/display/connector/hdmi-connector.yaml
 @@ -36,6 +36,9 @@ properties:
@@ -29,6 +27,3 @@ index 83c0d008265b..ea15c65c562a 100644
    port:
      $ref: /schemas/graph.yaml#/properties/port
      description: Connection to controller providing HDMI signals
--- 
-2.39.2
-

@@ -16,8 +16,6 @@ Change-Id: Ic4975cf40c72a86f70e9561f86dc764510fbe9e8
  Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
-index efe15a31383d..d264f268e3cc 100644
 --- a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 @@ -103,6 +103,14 @@ properties:
@@ -42,6 +40,3 @@ index efe15a31383d..d264f268e3cc 100644
 +      st,axi-max-burst-len = <16>;
      };
  ...
--- 
-2.39.2
-

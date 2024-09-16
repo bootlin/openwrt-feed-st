@@ -1,7 +1,5 @@
-Index: linux-6.1.89/drivers/gpu/drm/bridge/sii902x.c
-===================================================================
---- linux-6.1.89.orig/drivers/gpu/drm/bridge/sii902x.c
-+++ linux-6.1.89/drivers/gpu/drm/bridge/sii902x.c
+--- a/drivers/gpu/drm/bridge/sii902x.c
++++ b/drivers/gpu/drm/bridge/sii902x.c
 @@ -1244,7 +1244,7 @@ static int sii902x_pm_resume(struct devi
  }
  

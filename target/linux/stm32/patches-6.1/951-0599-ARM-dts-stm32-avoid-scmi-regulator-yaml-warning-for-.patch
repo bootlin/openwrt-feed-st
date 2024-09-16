@@ -18,11 +18,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp131.dtsi | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
-index f86c5d5a47f8..e830d068d5f1 100644
 --- a/arch/arm/boot/dts/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/stm32mp131.dtsi
-@@ -104,15 +104,15 @@ scmi_regu: regulators {
+@@ -104,15 +104,15 @@
  					#address-cells = <1>;
  					#size-cells = <0>;
  
@@ -41,6 +39,3 @@ index f86c5d5a47f8..e830d068d5f1 100644
  						reg = <VOLTD_SCMI_USB33>;
  						regulator-name = "usb33";
  					};
--- 
-2.39.2
-

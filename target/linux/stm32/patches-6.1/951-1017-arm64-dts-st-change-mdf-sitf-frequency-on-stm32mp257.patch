@@ -25,11 +25,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 3552358da2d2..6630e21515f0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -470,7 +470,7 @@ &mdf1 {
+@@ -470,7 +470,7 @@
  	pinctrl-1 = <&mdf_cck0_sleep_pins_a>;
  	#clock-cells = <0>;
  	clock-output-names = "cck0";
@@ -38,7 +36,7 @@ index 3552358da2d2..6630e21515f0 100644
  	status = "okay";
  
  	sitf6: sitf@380 {
-@@ -483,7 +483,7 @@ sitf6: sitf@380 {
+@@ -483,7 +483,7 @@
  	};
  
  	filter0: filter@84  {
@@ -47,7 +45,7 @@ index 3552358da2d2..6630e21515f0 100644
  		st,sitf = <&sitf6 0>;
  		st,hpf-filter-cutoff-bp = <625>;
  		status = "okay";
-@@ -504,7 +504,7 @@ mdf_endpoint0: endpoint {
+@@ -504,7 +504,7 @@
  	};
  
  	filter1: filter@104  {
@@ -56,6 +54,3 @@ index 3552358da2d2..6630e21515f0 100644
  		st,sitf = <&sitf6 1>;
  		st,hpf-filter-cutoff-bp = <625>;
  		status = "okay";
--- 
-2.39.2
-

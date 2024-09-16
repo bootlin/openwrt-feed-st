@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 97 +++++++++++++++++----------
  1 file changed, 60 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 7ff0c9afd6c8..0a5740e1b0f4 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -1125,8 +1125,15 @@ static struct dw_mipi_dsi_plat_data dw_mipi_dsi_stm_plat_data = {
+@@ -1125,8 +1125,15 @@ static struct dw_mipi_dsi_plat_data dw_m
  	.phy_ops = &dw_mipi_dsi_stm_phy_ops,
  };
  
@@ -34,7 +32,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  	{ },
  };
  MODULE_DEVICE_TABLE(of, dw_mipi_dsi_stm_dt_ids);
-@@ -1149,30 +1156,47 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1149,30 +1156,47 @@ static int dw_mipi_dsi_stm_probe(struct
  		return ret;
  	}
  
@@ -102,7 +100,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  	}
  
  	dsi->pllref_clk = devm_clk_get(dev, "ref");
-@@ -1225,14 +1249,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1225,14 +1249,6 @@ static int dw_mipi_dsi_stm_probe(struct
  	dsi->pdata.base = dsi->base;
  	dsi->pdata.priv_data = dsi;
  
@@ -117,7 +115,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  	platform_set_drvdata(pdev, dsi);
  
  	dsi->dsi = dw_mipi_dsi_probe(pdev, &dsi->pdata);
-@@ -1275,7 +1291,8 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1275,7 +1291,8 @@ static int dw_mipi_dsi_stm_probe(struct
  err_dsi_probe:
  	clk_disable_unprepare(dsi->pclk);
  err_regu_enable:
@@ -127,7 +125,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  err_clk_get:
  	regulator_disable(dsi->vdd_supply);
  
-@@ -1301,7 +1318,8 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+@@ -1301,7 +1318,8 @@ static int __maybe_unused dw_mipi_dsi_st
  	clk_disable_unprepare(dsi->pllref_clk);
  	clk_disable_unprepare(dsi->pclk);
  	regulator_disable(dsi->vdd_supply);
@@ -137,7 +135,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  
  	return 0;
  }
-@@ -1313,15 +1331,18 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -1313,15 +1331,18 @@ static int __maybe_unused dw_mipi_dsi_st
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -161,7 +159,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  		DRM_ERROR("Failed to enable regulator vdd: %d\n", ret);
  		return ret;
  	}
-@@ -1329,7 +1350,8 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -1329,7 +1350,8 @@ static int __maybe_unused dw_mipi_dsi_st
  	ret = clk_prepare_enable(dsi->pclk);
  	if (ret) {
  		regulator_disable(dsi->vdd_supply);
@@ -171,7 +169,7 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  		DRM_ERROR("Failed to enable pclk: %d\n", ret);
  		return ret;
  	}
-@@ -1338,7 +1360,8 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -1338,7 +1360,8 @@ static int __maybe_unused dw_mipi_dsi_st
  	if (ret) {
  		clk_disable_unprepare(dsi->pclk);
  		regulator_disable(dsi->vdd_supply);
@@ -181,6 +179,3 @@ index 7ff0c9afd6c8..0a5740e1b0f4 100644
  		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
  		return ret;
  	}
--- 
-2.39.2
-

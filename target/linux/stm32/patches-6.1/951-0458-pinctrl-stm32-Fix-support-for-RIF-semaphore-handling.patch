@@ -21,11 +21,9 @@ Change-Id: Ie88072a02b053567eea9b895180cce5d429f2287
  drivers/pinctrl/stm32/pinctrl-stm32.c | 123 ++++++++++++++++++--------
  1 file changed, 86 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index ee361bd5bb6b..e8ae266485fe 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -244,6 +244,80 @@ static void stm32_gpio_backup_delay(struct stm32_gpio_bank *bank, u32 offset, u3
+@@ -244,6 +244,80 @@ static void stm32_gpio_backup_delay(stru
  	bank->pin_backup[offset] |= delay << STM32_GPIO_BKP_DELAY_SHIFT;
  }
  
@@ -106,7 +104,7 @@ index ee361bd5bb6b..e8ae266485fe 100644
  /* GPIO functions */
  
  static inline void __stm32_gpio_set(struct stm32_gpio_bank *bank,
-@@ -270,12 +344,24 @@ static int stm32_gpio_request(struct gpio_chip *chip, unsigned offset)
+@@ -270,12 +344,24 @@ static int stm32_gpio_request(struct gpi
  		return -EINVAL;
  	}
  
@@ -131,7 +129,7 @@ index ee361bd5bb6b..e8ae266485fe 100644
  }
  
  static int stm32_gpio_get(struct gpio_chip *chip, unsigned offset)
-@@ -340,43 +426,6 @@ static int stm32_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+@@ -340,43 +426,6 @@ static int stm32_gpio_get_direction(stru
  	return ret;
  }
  
@@ -175,6 +173,3 @@ index ee361bd5bb6b..e8ae266485fe 100644
  static int stm32_gpio_init_valid_mask(struct gpio_chip *chip,
  				      unsigned long *valid_mask,
  				      unsigned int ngpios)
--- 
-2.39.2
-

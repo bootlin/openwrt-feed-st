@@ -15,11 +15,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  include/memory/stm32-omi.h            |   8 +-
  4 files changed, 232 insertions(+), 247 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index d402eef48c7c..931b55e8d268 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -111,7 +111,15 @@ int stm32_omi_wait_cmd(struct stm32_omi *omi)
+@@ -111,7 +111,15 @@ out:
  }
  EXPORT_SYMBOL(stm32_omi_wait_cmd);
  
@@ -36,7 +34,7 @@ index d402eef48c7c..931b55e8d268 100644
  {
  	struct stm32_omi *omi = (struct stm32_omi *)dev_id;
  	void __iomem *regs_base = omi->regs_base;
-@@ -139,141 +147,30 @@ irqreturn_t stm32_omi_irq(int irq, void *dev_id)
+@@ -139,141 +147,30 @@ irqreturn_t stm32_omi_irq(int irq, void
  
  	return IRQ_HANDLED;
  }
@@ -184,7 +182,7 @@ index d402eef48c7c..931b55e8d268 100644
  static int stm32_omi_dlyb_set_tap(struct stm32_omi *omi, u8 tap, bool rx_tap)
  {
  	u32 sr, mask, ack;
-@@ -517,10 +414,15 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -517,10 +414,15 @@ static int stm32_omi_probe(struct platfo
  	struct platform_device *vdev;
  	struct device *dev = &pdev->dev;
  	struct device_node *child;
@@ -200,7 +198,7 @@ index d402eef48c7c..931b55e8d268 100644
  
  	/*
  	 * Flash subnodes sanity check:
-@@ -561,21 +463,142 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -561,21 +463,142 @@ static int stm32_omi_probe(struct platfo
  	else
  		name = "stm32-hyperflash";
  
@@ -349,8 +347,6 @@ index d402eef48c7c..931b55e8d268 100644
  
  	return 0;
  }
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index ffa854520db1..5bfccad8d480 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
 @@ -11,7 +11,7 @@ struct stm32_hyperbus {
@@ -362,7 +358,7 @@ index ffa854520db1..5bfccad8d480 100644
  	u32 flash_freq;		/* flash max supported frequency */
  	u32 real_flash_freq;	/* real flash freq = bus_freq x prescaler */
  	u32 tacc;
-@@ -24,14 +24,14 @@ static void stm32_hyperbus_copy_from(struct hyperbus_device *hbdev, void *to,
+@@ -24,14 +24,14 @@ static void stm32_hyperbus_copy_from(str
  {
  	struct stm32_hyperbus *hyperbus =
  		container_of(hbdev, struct stm32_hyperbus, hbdev);
@@ -379,7 +375,7 @@ index ffa854520db1..5bfccad8d480 100644
  	void __iomem *regs_base = omi->regs_base;
  	u32 cr;
  
-@@ -52,15 +52,16 @@ static u16 stm32_hyperbus_read16(struct hyperbus_device *hbdev, unsigned long ad
+@@ -52,15 +52,16 @@ static u16 stm32_hyperbus_read16(struct
  {
  	struct stm32_hyperbus *hyperbus =
  		container_of(hbdev, struct stm32_hyperbus, hbdev);
@@ -399,7 +395,7 @@ index ffa854520db1..5bfccad8d480 100644
  
  	dev_dbg(hyperbus->dev, "%s: read 0x%x @ 0x%lx\n",
  		__func__, data, addr >> 1);
-@@ -75,14 +76,15 @@ static void stm32_hyperbus_write16(struct hyperbus_device *hbdev,
+@@ -75,14 +76,15 @@ static void stm32_hyperbus_write16(struc
  {
  	struct stm32_hyperbus *hyperbus =
  		container_of(hbdev, struct stm32_hyperbus, hbdev);
@@ -418,7 +414,7 @@ index ffa854520db1..5bfccad8d480 100644
  
  	dev_dbg(hyperbus->dev, "%s: write 0x%x @ 0x%lx\n",
  		__func__, data, addr >> 1);
-@@ -92,8 +94,7 @@ static void stm32_hyperbus_write16(struct hyperbus_device *hbdev,
+@@ -92,8 +94,7 @@ static void stm32_hyperbus_write16(struc
  
  static int stm32_hyperbus_check_transfert(struct stm32_omi *omi)
  {
@@ -428,7 +424,7 @@ index ffa854520db1..5bfccad8d480 100644
  	struct map_info *map = &hyperbus->hbdev.map;
  	struct cfi_private cfi;
  	int ret;
-@@ -111,7 +112,7 @@ static int stm32_hyperbus_calibrate(struct hyperbus_device *hbdev)
+@@ -111,7 +112,7 @@ static int stm32_hyperbus_calibrate(stru
  {
  	struct stm32_hyperbus *hyperbus =
  		container_of(hbdev, struct stm32_hyperbus, hbdev);
@@ -437,7 +433,7 @@ index ffa854520db1..5bfccad8d480 100644
  	void __iomem *regs_base = omi->regs_base;
  	u32 prescaler;
  	u16 period_ps = 0;
-@@ -161,7 +162,7 @@ static const struct hyperbus_ops stm32_hyperbus_ops = {
+@@ -161,7 +162,7 @@ static const struct hyperbus_ops stm32_h
  
  static void stm32_hyperbus_init(struct stm32_hyperbus *hyperbus)
  {
@@ -446,7 +442,7 @@ index ffa854520db1..5bfccad8d480 100644
  	void __iomem *regs_base = omi->regs_base;
  	unsigned long period;
  	u32 cr, dcr1, hlcr, ccr;
-@@ -206,7 +207,7 @@ static void stm32_hyperbus_init(struct stm32_hyperbus *hyperbus)
+@@ -206,7 +207,7 @@ static void stm32_hyperbus_init(struct s
  static int __maybe_unused stm32_hyperbus_suspend(struct device *dev)
  {
  	struct stm32_hyperbus *hyperbus = dev_get_drvdata(dev);
@@ -455,7 +451,7 @@ index ffa854520db1..5bfccad8d480 100644
  	void __iomem *regs_base = omi->regs_base;
  	u32 cr;
  
-@@ -222,7 +223,7 @@ static int __maybe_unused stm32_hyperbus_suspend(struct device *dev)
+@@ -222,7 +223,7 @@ static int __maybe_unused stm32_hyperbus
  static int __maybe_unused stm32_hyperbus_resume(struct device *dev)
  {
  	struct stm32_hyperbus *hyperbus = dev_get_drvdata(dev);
@@ -464,7 +460,7 @@ index ffa854520db1..5bfccad8d480 100644
  	int ret;
  
  	ret = clk_prepare_enable(omi->clk);
-@@ -241,26 +242,22 @@ static const struct dev_pm_ops stm32_hyperbus_pm_ops = {
+@@ -241,26 +242,22 @@ static const struct dev_pm_ops stm32_hyp
  
  static int stm32_hyperbus_probe(struct platform_device *pdev)
  {
@@ -497,7 +493,7 @@ index ffa854520db1..5bfccad8d480 100644
  	/* mandatory for HyperFlash */
  	if (!omi->mm_size) {
  		dev_err(dev, "Memory-map region not found\n");
-@@ -273,12 +270,6 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -273,12 +270,6 @@ static int stm32_hyperbus_probe(struct p
  		return -EINVAL;
  	}
  
@@ -510,7 +506,7 @@ index ffa854520db1..5bfccad8d480 100644
  	ret = clk_prepare_enable(omi->clk);
  	if (ret) {
  		dev_err(dev, "Can not enable hyperbus clock\n");
-@@ -291,14 +282,7 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -291,14 +282,7 @@ static int stm32_hyperbus_probe(struct p
  		reset_control_deassert(omi->rstc);
  	}
  
@@ -526,7 +522,7 @@ index ffa854520db1..5bfccad8d480 100644
  	if (!flash) {
  		dev_warn(&pdev->dev, "No flash node found\n");
  		goto err_clk_disable;
-@@ -324,9 +308,6 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -324,9 +308,6 @@ static int stm32_hyperbus_probe(struct p
  
  	hyperbus->wzl = of_property_read_bool(flash, "st,wzl");
  
@@ -536,7 +532,7 @@ index ffa854520db1..5bfccad8d480 100644
  	stm32_hyperbus_init(hyperbus);
  
  	platform_set_drvdata(pdev, hyperbus);
-@@ -334,11 +315,11 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -334,11 +315,11 @@ static int stm32_hyperbus_probe(struct p
  	hyperbus->hbdev.map.size = omi->mm_size;
  	hyperbus->hbdev.map.virt = omi->mm_base;
  
@@ -551,7 +547,7 @@ index ffa854520db1..5bfccad8d480 100644
  
  	return hyperbus_register_device(&hyperbus->hbdev);
  
-@@ -351,10 +332,10 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -351,10 +332,10 @@ err_clk_disable:
  static int stm32_hyperbus_remove(struct platform_device *pdev)
  {
  	struct stm32_hyperbus *hyperbus = platform_get_drvdata(pdev);
@@ -564,8 +560,6 @@ index ffa854520db1..5bfccad8d480 100644
  
  	return 0;
  }
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index eed6615820a8..6d46627f5eb0 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -22,7 +22,7 @@ struct stm32_ospi_flash {
@@ -588,7 +582,7 @@ index eed6615820a8..6d46627f5eb0 100644
  		      op->data.nbytes);
  	return 0;
  }
-@@ -49,7 +51,7 @@ static int stm32_ospi_tx_dma(struct stm32_ospi *ospi,
+@@ -49,7 +51,7 @@ static int stm32_ospi_tx_dma(struct stm3
  			     const struct spi_mem_op *op)
  {
  	struct dma_async_tx_descriptor *desc;
@@ -597,7 +591,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	void __iomem *regs_base = omi->regs_base;
  	enum dma_transfer_direction dma_dir;
  	struct dma_chan *dma_ch;
-@@ -113,13 +115,13 @@ static int stm32_ospi_tx_dma(struct stm32_ospi *ospi,
+@@ -113,13 +115,13 @@ out_unmap:
  
  static int stm32_ospi_tx(struct stm32_ospi *ospi, const struct spi_mem_op *op)
  {
@@ -613,7 +607,7 @@ index eed6615820a8..6d46627f5eb0 100644
  		return stm32_ospi_tx_mm(ospi, op);
  	else if (((op->data.dir == SPI_MEM_DATA_IN && omi->dma_chrx) ||
  		 (op->data.dir == SPI_MEM_DATA_OUT && omi->dma_chtx)) &&
-@@ -132,14 +134,14 @@ static int stm32_ospi_tx(struct stm32_ospi *ospi, const struct spi_mem_op *op)
+@@ -132,14 +134,14 @@ static int stm32_ospi_tx(struct stm32_os
  	else
  		buf = (u8 *)op->data.buf.out;
  
@@ -630,7 +624,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	void __iomem *regs_base = omi->regs_base;
  	u32 cr;
  
-@@ -170,7 +172,8 @@ static int stm32_ospi_get_mode(u8 buswidth)
+@@ -170,7 +172,8 @@ static int stm32_ospi_get_mode(u8 buswid
  
  static void stm32_ospi_set_prescaler(struct stm32_ospi *ospi, u32 presc)
  {
@@ -640,7 +634,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	u32 dcr2;
  
  	/* set prescaler */
-@@ -184,8 +187,8 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -184,8 +187,8 @@ static int stm32_ospi_send(struct spi_de
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(spi->master);
  	struct stm32_ospi_flash *flash = &ospi->flash[spi->chip_select];
@@ -651,7 +645,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	u32 ccr, cr, tcr = 0;
  	int timeout, err = 0, err_poll_status = 0;
  	int ret;
-@@ -291,7 +294,8 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -291,7 +294,8 @@ static int stm32_ospi_poll_status(struct
  				  unsigned long timeout_ms)
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(mem->spi->master);
@@ -661,7 +655,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	int ret;
  
  	ret = pm_runtime_get_sync(ospi->dev);
-@@ -304,7 +308,7 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -304,7 +308,7 @@ static int stm32_ospi_poll_status(struct
  
  	writel_relaxed(mask, regs_base + OSPI_PSMKR);
  	writel_relaxed(match, regs_base + OSPI_PSMAR);
@@ -670,7 +664,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	ospi->status_timeout = timeout_ms;
  
  	ret = stm32_ospi_send(mem->spi, op);
-@@ -319,6 +323,7 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -319,6 +323,7 @@ static int stm32_ospi_poll_status(struct
  static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(mem->spi->master);
@@ -678,7 +672,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	int ret;
  
  	ret = pm_runtime_get_sync(ospi->dev);
-@@ -329,9 +334,9 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -329,9 +334,9 @@ static int stm32_ospi_exec_op(struct spi
  
  	mutex_lock(&ospi->lock);
  	if (op->data.dir == SPI_MEM_DATA_IN && op->data.nbytes)
@@ -690,7 +684,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	ret = stm32_ospi_send(mem->spi, op);
  	mutex_unlock(&ospi->lock);
-@@ -345,7 +350,7 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -345,7 +350,7 @@ static int stm32_ospi_exec_op(struct spi
  static int stm32_ospi_dirmap_create(struct spi_mem_dirmap_desc *desc)
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(desc->mem->spi->master);
@@ -699,7 +693,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	if (desc->info.op_tmpl.data.dir == SPI_MEM_DATA_OUT)
  		return -EOPNOTSUPP;
-@@ -364,6 +369,7 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -364,6 +369,7 @@ static ssize_t stm32_ospi_dirmap_read(st
  				      u64 offs, size_t len, void *buf)
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(desc->mem->spi->master);
@@ -707,7 +701,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	struct spi_mem_op op;
  	u32 addr_max;
  	int ret;
-@@ -387,10 +393,10 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -387,10 +393,10 @@ static ssize_t stm32_ospi_dirmap_read(st
  	op.data.buf.in = buf;
  
  	addr_max = op.addr.val + op.data.nbytes + 1;
@@ -721,7 +715,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	ret = stm32_ospi_send(desc->mem->spi, &op);
  	mutex_unlock(&ospi->lock);
-@@ -405,6 +411,7 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -405,6 +411,7 @@ static int stm32_ospi_transfer_one_messa
  					   struct spi_message *msg)
  {
  	struct stm32_ospi *ospi = spi_controller_get_devdata(ctrl);
@@ -729,7 +723,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	struct spi_transfer *transfer;
  	struct spi_device *spi = msg->spi;
  	struct spi_mem_op op;
-@@ -453,12 +460,12 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -453,12 +460,12 @@ static int stm32_ospi_transfer_one_messa
  		op.data.nbytes = transfer->len;
  
  		if (transfer->rx_buf) {
@@ -744,7 +738,7 @@ index eed6615820a8..6d46627f5eb0 100644
  			op.data.buswidth = transfer->tx_nbits;
  			op.data.dir = SPI_MEM_DATA_OUT;
  			op.data.buf.out = transfer->tx_buf;
-@@ -487,8 +494,7 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -487,8 +494,7 @@ end_of_transfer:
  
  static int stm32_ospi_readid(struct stm32_omi *omi)
  {
@@ -754,7 +748,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	struct stm32_ospi_flash *flash = &ospi->flash[ospi->last_cs];
  	struct spi_device *spi = flash->spi;
  	u64 *rx_buf = &ospi->id_buf;
-@@ -533,10 +539,10 @@ static int stm32_ospi_readid(struct stm32_omi *omi)
+@@ -533,10 +539,10 @@ static int stm32_ospi_readid(struct stm3
  
  static int stm32_ospi_calibration(struct stm32_ospi *ospi)
  {
@@ -767,7 +761,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	u8 window_len_tcr0 = 0, window_len_tcr1 = 0;
  	int ret, ret_tcr0, ret_tcr1;
  
-@@ -544,7 +550,7 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -544,7 +550,7 @@ static int stm32_ospi_calibration(struct
  	 * set memory device at low frequency (50MHz) and sent
  	 * READID (0x9F) command, save the answer as golden answer
  	 */
@@ -776,7 +770,7 @@ index eed6615820a8..6d46627f5eb0 100644
  				    STM32_DLYB_FREQ_THRESHOLD) - 1;
  	stm32_ospi_set_prescaler(ospi, flash->presc);
  
-@@ -556,7 +562,7 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -556,7 +562,7 @@ static int stm32_ospi_calibration(struct
  	 * set memory device at expected frequency read from DT
  	 * prescaler should be set befor locking the DLL
  	 */
@@ -785,7 +779,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	stm32_ospi_set_prescaler(ospi, flash->presc);
  
  	flash->dcr_reg &= ~DCR1_DLYBYP;
-@@ -611,9 +617,9 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -611,9 +617,9 @@ static int stm32_ospi_setup(struct spi_d
  {
  	struct spi_controller *ctrl = spi->master;
  	struct stm32_ospi *ospi = spi_controller_get_devdata(ctrl);
@@ -797,7 +791,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	u32 bus_freq;
  	int ret;
  
-@@ -691,10 +697,11 @@ static const struct spi_controller_mem_ops stm32_ospi_mem_ops = {
+@@ -691,10 +697,11 @@ static const struct spi_controller_mem_o
  
  static int stm32_ospi_probe(struct platform_device *pdev)
  {
@@ -811,7 +805,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	struct dma_slave_config dma_cfg;
  	int ret;
  
-@@ -704,20 +711,9 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -704,20 +711,9 @@ static int stm32_ospi_probe(struct platf
  
  	ospi = spi_controller_get_devdata(ctrl);
  	ospi->ctrl = ctrl;
@@ -833,7 +827,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	ret = clk_prepare_enable(omi->clk);
  	if (ret) {
  		dev_err(dev, "Can not enable clock\n");
-@@ -730,30 +726,17 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -730,30 +726,17 @@ static int stm32_ospi_probe(struct platf
  		reset_control_deassert(omi->rstc);
  	}
  
@@ -867,7 +861,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	mutex_init(&ospi->lock);
  
-@@ -766,10 +749,10 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -766,10 +749,10 @@ static int stm32_ospi_probe(struct platf
  	ctrl->use_gpio_descriptors = true;
  	ctrl->transfer_one_message = stm32_ospi_transfer_one_message;
  	ctrl->num_chipselect = STM32_OMI_MAX_NORCHIP;
@@ -881,7 +875,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	pm_runtime_set_active(dev);
  	pm_runtime_enable(dev);
  	pm_runtime_get_noresume(dev);
-@@ -792,9 +775,6 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -792,9 +775,6 @@ err_pm_runtime_free:
  	pm_runtime_disable(dev);
  	pm_runtime_set_suspended(dev);
  	pm_runtime_dont_use_autosuspend(dev);
@@ -891,7 +885,7 @@ index eed6615820a8..6d46627f5eb0 100644
  	clk_disable_unprepare(omi->clk);
  
  	return ret;
-@@ -803,19 +783,19 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -803,19 +783,19 @@ err_clk_disable:
  static int stm32_ospi_remove(struct platform_device *pdev)
  {
  	struct stm32_ospi *ospi = platform_get_drvdata(pdev);
@@ -915,7 +909,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	return 0;
  }
-@@ -823,8 +803,9 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+@@ -823,8 +803,9 @@ static int stm32_ospi_remove(struct plat
  static int __maybe_unused stm32_ospi_runtime_suspend(struct device *dev)
  {
  	struct stm32_ospi *ospi = dev_get_drvdata(dev);
@@ -926,7 +920,7 @@ index eed6615820a8..6d46627f5eb0 100644
  
  	return 0;
  }
-@@ -832,8 +813,9 @@ static int __maybe_unused stm32_ospi_runtime_suspend(struct device *dev)
+@@ -832,8 +813,9 @@ static int __maybe_unused stm32_ospi_run
  static int __maybe_unused stm32_ospi_runtime_resume(struct device *dev)
  {
  	struct stm32_ospi *ospi = dev_get_drvdata(dev);
@@ -937,7 +931,7 @@ index eed6615820a8..6d46627f5eb0 100644
  }
  
  static int __maybe_unused stm32_ospi_suspend(struct device *dev)
-@@ -846,7 +828,8 @@ static int __maybe_unused stm32_ospi_suspend(struct device *dev)
+@@ -846,7 +828,8 @@ static int __maybe_unused stm32_ospi_sus
  static int __maybe_unused stm32_ospi_resume(struct device *dev)
  {
  	struct stm32_ospi *ospi = dev_get_drvdata(dev);
@@ -947,8 +941,6 @@ index eed6615820a8..6d46627f5eb0 100644
  	int ret;
  
  	ret = pm_runtime_force_resume(dev);
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index b1c9ab9ed9ae..1adac6e94d52 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -150,6 +150,7 @@
@@ -959,7 +951,7 @@ index b1c9ab9ed9ae..1adac6e94d52 100644
  	struct clk *clk;
  	struct reset_control *rstc;
  	struct regmap *regmap;
-@@ -189,11 +190,8 @@ int stm32_omi_dlyb_set_cr(struct stm32_omi *omi, u32 dlyb_cr);
+@@ -189,11 +190,8 @@ int stm32_omi_dlyb_set_cr(struct stm32_o
  void stm32_omi_dlyb_get_cr(struct stm32_omi *omi, u32 *dlyb_cr);
  void stm32_omi_dlyb_stop(struct stm32_omi *omi);
  void stm32_omi_dma_callback(void *arg);
@@ -973,6 +965,3 @@ index b1c9ab9ed9ae..1adac6e94d52 100644
  int stm32_omi_tx_poll(struct stm32_omi *omi, u8 *buf, u32 len, bool read);
  int stm32_omi_wait_cmd(struct stm32_omi *omi);
  int stm32_omi_wait_nobusy(struct stm32_omi *omi);
--- 
-2.39.2
-

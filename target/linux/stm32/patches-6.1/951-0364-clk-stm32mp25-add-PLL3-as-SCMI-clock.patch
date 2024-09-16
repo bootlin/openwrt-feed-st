@@ -15,11 +15,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 1e56e3070b5b..229b079f53d9 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -713,6 +713,7 @@ static CLK_STM32_GATE(ck_icn_p_gicv2m, "ck_icn_apb4", 0, GATE_GICV2M);
+@@ -713,6 +713,7 @@ static CLK_STM32_GATE(ck_icn_p_gicv2m, "
  
  /* GPU */
  static CLK_STM32_GATE(ck_icn_m_gpu, "ck_flexgen_59", 0, GATE_GPU);
@@ -27,7 +25,7 @@ index 1e56e3070b5b..229b079f53d9 100644
  
  /* HASH */
  static CLK_STM32_GATE(ck_icn_p_hash, "ck_icn_ls_mcu", 0, GATE_HASH);
-@@ -1173,6 +1174,7 @@ static const struct clock_config stm32mp25_clock_cfg[] = {
+@@ -1173,6 +1174,7 @@ static const struct clock_config stm32mp
  	STM32_GATE_CFG(CK_KER_ETH1PTP, ck_ker_eth1ptp, SEC_RIFSC(ETH1)),
  	STM32_GATE_CFG(CK_KER_ETH2PTP, ck_ker_eth2ptp, SEC_RIFSC(ETH2)),
  	STM32_GATE_CFG(CK_BUS_GPU, ck_icn_m_gpu, SEC_RIFSC(GPU)),
@@ -35,6 +33,3 @@ index 1e56e3070b5b..229b079f53d9 100644
  	STM32_GATE_CFG(CK_KER_ETHSWREF, ck_ker_ethswref, SEC_RIFSC(ETHSW_DEIP)),
  	STM32_GATE_CFG(CK_BUS_ETHSWACMCFG, ck_icn_p_ethsw_acm_cfg, SEC_RIFSC(ETHSW_ACM_CFG)),
  	STM32_GATE_CFG(CK_BUS_ETHSWACMMSG, ck_icn_p_ethsw_acm_msg, SEC_RIFSC(ETHSW_ACM_MSGBUF)),
--- 
-2.39.2
-

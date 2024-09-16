@@ -17,11 +17,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-hash.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 114252736123..f5db56e98376 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
-@@ -544,7 +544,7 @@ static int stm32_hash_xmit_dma(struct stm32_hash_dev *hdev,
+@@ -544,7 +544,7 @@ static int stm32_hash_xmit_dma(struct st
  
  	reg = stm32_hash_read(hdev, HASH_CR);
  
@@ -30,6 +28,3 @@ index 114252736123..f5db56e98376 100644
  		if (mdma)
  			reg |= HASH_CR_MDMAT;
  		else
--- 
-2.39.2
-

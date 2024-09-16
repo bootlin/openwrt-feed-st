@@ -22,8 +22,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 63 +++++++++++++++----
  1 file changed, 51 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index e7b60174cda4..134b83eb2b1b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -51,6 +51,14 @@
@@ -41,7 +39,7 @@ index e7b60174cda4..134b83eb2b1b 100644
  #define DCMIPP_P1DSCR (0x910)
  #define DCMIPP_P2DSCR (0xD10)
  #define DCMIPP_PxDSCR(id) (((id) == 1) ? DCMIPP_P1DSCR :\
-@@ -242,7 +250,13 @@ static const struct v4l2_rect crop_min = {
+@@ -242,7 +250,13 @@ static const struct v4l2_rect crop_min =
  	.left = 0,
  };
  
@@ -56,7 +54,7 @@ index e7b60174cda4..134b83eb2b1b 100644
  
  /*
   * Functions handling controls
-@@ -585,13 +599,13 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -585,13 +599,13 @@ static int dcmipp_pixelproc_set_selectio
  	case V4L2_SEL_TGT_COMPOSE:
  		if (s->r.width > crop->width)
  			s->r.width = crop->width;
@@ -74,7 +72,7 @@ index e7b60174cda4..134b83eb2b1b 100644
  		s->r.top = 0;
  		s->r.left = 0;
  
-@@ -698,32 +712,57 @@ dcmipp_pixelproc_colorconv_config(struct dcmipp_pixelproc_device *pixelproc)
+@@ -698,32 +712,57 @@ dcmipp_pixelproc_colorconv_config(struct
  #define DCMIPP_PIXELPROC_HVDIV_CONS	1024
  #define DCMIPP_PIXELPROC_HVDIV_MAX	1023
  static void
@@ -137,7 +135,7 @@ index e7b60174cda4..134b83eb2b1b 100644
  	reg_clear(pixelproc, DCMIPP_PxDSCR(pixelproc->pipe_id),
  		  DCMIPP_PxDSCR_ENABLE);
  	reg_write(pixelproc, DCMIPP_PxDSRTIOR(pixelproc->pipe_id),
-@@ -838,8 +877,8 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -838,8 +877,8 @@ static int dcmipp_pixelproc_s_stream(str
  		  (pixelproc->crop.height << DCMIPP_PxCRSZR_VSIZE_SHIFT) |
  		  DCMIPP_PxCRSZR_ENABLE);
  
@@ -148,6 +146,3 @@ index e7b60174cda4..134b83eb2b1b 100644
  
  	/* Configure YUV Conversion (if applicable) */
  	if (pixelproc->pipe_id == 1) {
--- 
-2.39.2
-

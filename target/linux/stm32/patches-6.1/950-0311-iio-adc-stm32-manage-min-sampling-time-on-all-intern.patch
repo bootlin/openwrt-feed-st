@@ -57,7 +57,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  
  	/* Determine sampling time (ADC clock cycles) */
  	period_ns = NSEC_PER_SEC / adc->common->rate;
-@@ -2571,6 +2572,9 @@ static const struct stm32_adc_cfg stm32f
+@@ -2572,6 +2573,9 @@ static const struct stm32_adc_cfg stm32f
  	.irq_clear = stm32f4_adc_irq_clear,
  };
  
@@ -67,7 +67,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  static const struct stm32_adc_cfg stm32h7_adc_cfg = {
  	.regs = &stm32h7_adc_regspec,
  	.adc_info = &stm32h7_adc_info,
-@@ -2584,8 +2588,12 @@ static const struct stm32_adc_cfg stm32h
+@@ -2585,8 +2589,12 @@ static const struct stm32_adc_cfg stm32h
  	.unprepare = stm32h7_adc_unprepare,
  	.smp_cycles = stm32h7_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,
@@ -80,7 +80,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
  	.regs = &stm32mp1_adc_regspec,
  	.adc_info = &stm32h7_adc_info,
-@@ -2600,9 +2608,12 @@ static const struct stm32_adc_cfg stm32m
+@@ -2601,9 +2609,12 @@ static const struct stm32_adc_cfg stm32m
  	.unprepare = stm32h7_adc_unprepare,
  	.smp_cycles = stm32h7_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,
@@ -94,7 +94,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
  	.regs = &stm32mp13_adc_regspec,
  	.adc_info = &stm32mp13_adc_info,
-@@ -2613,6 +2624,7 @@ static const struct stm32_adc_cfg stm32m
+@@ -2614,6 +2625,7 @@ static const struct stm32_adc_cfg stm32m
  	.unprepare = stm32h7_adc_unprepare,
  	.smp_cycles = stm32mp13_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,

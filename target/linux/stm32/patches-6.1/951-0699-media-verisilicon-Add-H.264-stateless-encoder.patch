@@ -27,8 +27,6 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  8 files changed, 1335 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index cbe975c03dcc..ad9351af8ba6 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -10,6 +10,7 @@ hantro-vpu-y += \
@@ -39,8 +37,6 @@ index cbe975c03dcc..ad9351af8ba6 100644
  		hantro_g1.o \
  		hantro_g1_h264_dec.o \
  		hantro_g1_mpeg2_dec.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 771676270519..aff55bd16f00 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -33,6 +33,7 @@ struct hantro_postproc_ops;
@@ -67,11 +63,9 @@ index 771676270519..aff55bd16f00 100644
  	};
  };
  
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index 1c6d0b8709bd..100dd524f2ad 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -514,6 +514,16 @@ static const struct hantro_ctrl controls[] = {
+@@ -514,6 +514,16 @@ static const struct hantro_ctrl controls
  		.cfg = {
  			.id = V4L2_CID_STATELESS_VP9_COMPRESSED_HDR,
  		},
@@ -88,9 +82,6 @@ index 1c6d0b8709bd..100dd524f2ad 100644
  	},
  };
  
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
-new file mode 100644
-index 000000000000..a9f742c733d8
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
 @@ -0,0 +1,493 @@
@@ -587,8 +578,6 @@ index 000000000000..a9f742c733d8
 +	if (ctx->h264_enc.reconstr_idx == ctx->h264_enc.ltr_idx)
 +		hantro_h1_bump_reconstr_idx(ctx);
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 9b818fc384bd..95367833582f 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -80,6 +80,7 @@
@@ -617,8 +606,6 @@ index 9b818fc384bd..95367833582f 100644
  #define H1_REG_VP8_BOOL_ENC				0x08c
  #define H1_REG_CHKPT_DELTA_QP				0x090
  #define     H1_REG_CHKPT_DELTA_QP_CHK0(x)		(((x) & 0x0f) << 0)
-diff --git a/drivers/media/platform/verisilicon/hantro_h264.c b/drivers/media/platform/verisilicon/hantro_h264.c
-index 4e9a0ecf5c13..7d38e599a1ef 100644
 --- a/drivers/media/platform/verisilicon/hantro_h264.c
 +++ b/drivers/media/platform/verisilicon/hantro_h264.c
 @@ -198,6 +198,586 @@ static const u32 h264_cabac_table[] = {
@@ -1208,7 +1195,7 @@ index 4e9a0ecf5c13..7d38e599a1ef 100644
  static void
  assemble_scaling_list(struct hantro_ctx *ctx)
  {
-@@ -519,3 +1099,202 @@ int hantro_h264_dec_init(struct hantro_ctx *ctx)
+@@ -519,3 +1099,202 @@ int hantro_h264_dec_init(struct hantro_c
  
  	return 0;
  }
@@ -1411,8 +1398,6 @@ index 4e9a0ecf5c13..7d38e599a1ef 100644
 +
 +	return ret;
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 7f23463c580f..1e38a45a6125 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
 @@ -334,6 +334,24 @@ struct hantro_vp8_enc_hw_ctx {
@@ -1440,7 +1425,7 @@ index 7f23463c580f..1e38a45a6125 100644
  /**
   * struct hantro_codec_ops - codec mode specific operations
   *
-@@ -537,4 +555,9 @@ void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
+@@ -537,4 +555,9 @@ void hantro_vp8_enc_exit(struct hantro_c
  int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx);
  void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx);
  
@@ -1450,11 +1435,9 @@ index 7f23463c580f..1e38a45a6125 100644
 +void hantro_h264_enc_exit(struct hantro_ctx *ctx);
 +
  #endif /* HANTRO_HW_H_ */
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-index fd9f76486dfb..c390a2d68d9c 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-@@ -204,6 +204,19 @@ static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+@@ -204,6 +204,19 @@ static const struct hantro_fmt stm32mp25
  			.step_height = MB_DIM,
  		},
  	},
@@ -1474,7 +1457,7 @@ index fd9f76486dfb..c390a2d68d9c 100644
  };
  
  static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
-@@ -247,6 +260,13 @@ static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
+@@ -247,6 +260,13 @@ static const struct hantro_codec_ops stm
  		.done = hantro_h1_vp8_enc_done,
  		.exit = hantro_vp8_enc_exit,
  	},
@@ -1488,7 +1471,7 @@ index fd9f76486dfb..c390a2d68d9c 100644
  };
  
  /*
-@@ -264,7 +284,7 @@ static const char * const stm32mp25_venc_clk_names[] = {
+@@ -264,7 +284,7 @@ static const char * const stm32mp25_venc
  const struct hantro_variant stm32mp25_venc_variant = {
  	.enc_fmts = stm32mp25_venc_fmts,
  	.num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
@@ -1497,6 +1480,3 @@ index fd9f76486dfb..c390a2d68d9c 100644
  	.codec_ops = stm32mp25_venc_codec_ops,
  	.irqs = stm32mp25_venc_irqs,
  	.num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
--- 
-2.39.2
-

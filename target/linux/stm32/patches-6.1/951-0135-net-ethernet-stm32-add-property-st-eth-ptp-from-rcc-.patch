@@ -18,8 +18,6 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c      | 8 ++++++++
  2 files changed, 13 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index 5c93167b3b41..f39c01711bf8 100644
 --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 @@ -93,6 +93,11 @@ properties:
@@ -34,8 +32,6 @@ index 5c93167b3b41..f39c01711bf8 100644
  required:
    - compatible
    - clocks
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index f1064593d8ff..ba4cb4ccdac2 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -53,6 +53,7 @@
@@ -54,7 +50,7 @@ index f1064593d8ff..ba4cb4ccdac2 100644
  	int eth_ref_clk_sel_reg;
  	u32 mode_reg;		 /* MAC glue-logic mode register */
  	u32 mode_mask;
-@@ -305,6 +307,9 @@ static int stm32mp2_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -305,6 +307,9 @@ static int stm32mp2_set_mode(struct plat
  		return -EINVAL;
  	}
  
@@ -64,7 +60,7 @@ index f1064593d8ff..ba4cb4ccdac2 100644
  	/* Update ETHCR (set register) */
  	return regmap_update_bits(dwmac->regmap, reg,
  				  dwmac->ops->syscfg_eth_mask, val);
-@@ -407,6 +412,9 @@ static int stm32mp1_parse_data(struct stm32_dwmac *dwmac,
+@@ -407,6 +412,9 @@ static int stm32mp1_parse_data(struct st
  	/* Ethernet PHY have no crystal */
  	dwmac->ext_phyclk = of_property_read_bool(np, "st,ext-phyclk");
  
@@ -74,6 +70,3 @@ index f1064593d8ff..ba4cb4ccdac2 100644
  	/* Gigabit Ethernet 125MHz clock selection. */
  	dwmac->eth_clk_sel_reg = of_property_read_bool(np, "st,eth-clk-sel");
  
--- 
-2.39.2
-

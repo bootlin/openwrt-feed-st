@@ -21,8 +21,6 @@ Tested-by: Christian BRUEL <christian.bruel@st.com>
  3 files changed, 428 insertions(+)
  create mode 100644 drivers/phy/st/phy-stm32-combophy.c
 
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index 5c5a6b17b3fc..a8c87495036a 100644
 --- a/drivers/phy/st/Kconfig
 +++ b/drivers/phy/st/Kconfig
 @@ -33,6 +33,15 @@ config PHY_STIH407_USB
@@ -41,20 +39,15 @@ index 5c5a6b17b3fc..a8c87495036a 100644
  config PHY_STM32_USBPHYC
  	tristate "STMicroelectronics STM32 USB HS PHY Controller driver"
  	depends on ARCH_STM32 || COMPILE_TEST
-diff --git a/drivers/phy/st/Makefile b/drivers/phy/st/Makefile
-index a396f236071f..4945df5ed78a 100644
 --- a/drivers/phy/st/Makefile
 +++ b/drivers/phy/st/Makefile
-@@ -3,5 +3,6 @@ obj-$(CONFIG_PHY_MIPHY28LP) 		+= phy-miphy28lp.o
+@@ -3,5 +3,6 @@ obj-$(CONFIG_PHY_MIPHY28LP) 		+= phy-mip
  obj-$(CONFIG_PHY_ST_SPEAR1310_MIPHY)	+= phy-spear1310-miphy.o
  obj-$(CONFIG_PHY_ST_SPEAR1340_MIPHY)	+= phy-spear1340-miphy.o
  obj-$(CONFIG_PHY_STIH407_USB)		+= phy-stih407-usb.o
 +obj-$(CONFIG_PHY_STM32_COMBOPHY)	+= phy-stm32-combophy.o
  obj-$(CONFIG_PHY_STM32_USBPHYC) 	+= phy-stm32-usbphyc.o
  obj-$(CONFIG_PHY_STM32_USB2PHY) 	+= phy-stm32-usb2phy.o
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-new file mode 100644
-index 000000000000..7879ae390f9c
 --- /dev/null
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -0,0 +1,418 @@
@@ -476,6 +469,3 @@ index 000000000000..7879ae390f9c
 +MODULE_AUTHOR("Christian Bruel <christian.bruel@foss.st.com>");
 +MODULE_DESCRIPTION("STM32MP25 Combophy USB3/PCIe controller driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

@@ -21,11 +21,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25xf.dtsi | 14 ++++++++++++++
  2 files changed, 28 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-index c93dc9c6bcb4..64927362f7d6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-@@ -19,4 +19,18 @@ cryp1: crypto@42030000 {
+@@ -19,4 +19,18 @@
  		power-domains = <&CLUSTER_PD>;
  		status = "disabled";
  	};
@@ -44,11 +42,9 @@ index c93dc9c6bcb4..64927362f7d6 100644
 +		status = "disabled";
 +	};
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-index c93dc9c6bcb4..64927362f7d6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-@@ -19,4 +19,18 @@ cryp1: crypto@42030000 {
+@@ -19,4 +19,18 @@
  		power-domains = <&CLUSTER_PD>;
  		status = "disabled";
  	};
@@ -67,6 +63,3 @@ index c93dc9c6bcb4..64927362f7d6 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.2
-

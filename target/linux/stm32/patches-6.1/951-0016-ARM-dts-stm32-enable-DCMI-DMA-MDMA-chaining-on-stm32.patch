@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp157f-ev1.dts | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-index 939345df2bcc..bf58f5098c07 100644
 --- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-@@ -181,6 +181,15 @@ &dcmi {
+@@ -181,6 +181,15 @@
  	pinctrl-0 = <&dcmi_pins_a>;
  	pinctrl-1 = <&dcmi_sleep_pins_a>;
  
@@ -38,7 +36,7 @@ index 939345df2bcc..bf58f5098c07 100644
  	port {
  		dcmi_0: endpoint {
  			remote-endpoint = <&ov5640_0>;
-@@ -659,6 +668,13 @@ &spi1 {
+@@ -659,6 +668,13 @@
  	status = "disabled";
  };
  
@@ -52,6 +50,3 @@ index 939345df2bcc..bf58f5098c07 100644
  &timers2 {
  	/* spare dmas for other usage (un-delete to enable pwm capture) */
  	/delete-property/dmas;
--- 
-2.39.2
-

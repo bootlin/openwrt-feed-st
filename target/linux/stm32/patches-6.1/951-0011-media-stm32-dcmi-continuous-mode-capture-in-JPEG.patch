@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 94b5b17b7ebd..ffd470f4fd8a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -892,10 +892,6 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
+@@ -892,10 +892,6 @@ static int dcmi_start_streaming(struct v
  	if (dcmi->do_crop)
  		dcmi_set_crop(dcmi);
  
@@ -33,6 +31,3 @@ index 94b5b17b7ebd..ffd470f4fd8a 100644
  	/* Enable dcmi */
  	reg_set(dcmi->regs, DCMI_CR, CR_ENABLE);
  
--- 
-2.39.2
-

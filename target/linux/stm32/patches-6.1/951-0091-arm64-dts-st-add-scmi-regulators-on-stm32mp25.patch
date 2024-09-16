@@ -15,8 +15,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 51 ++++++++++++++++++++++++++
  1 file changed, 51 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a4f23ca70378..fd008774dc96 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
 @@ -6,6 +6,7 @@
@@ -27,7 +25,7 @@ index a4f23ca70378..fd008774dc96 100644
  #include <dt-bindings/reset/stm32mp25-resets.h>
  
  / {
-@@ -58,6 +59,56 @@ scmi_reset: protocol@16 {
+@@ -58,6 +59,56 @@
  				reg = <0x16>;
  				#reset-cells = <1>;
  			};
@@ -84,6 +82,3 @@ index a4f23ca70378..fd008774dc96 100644
  		};
  	};
  
--- 
-2.39.2
-

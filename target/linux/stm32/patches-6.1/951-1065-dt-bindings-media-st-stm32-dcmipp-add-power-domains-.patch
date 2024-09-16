@@ -24,8 +24,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
-index 556a3d2e7f89..e5879b5493c0 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 @@ -35,6 +35,9 @@ properties:
@@ -38,6 +36,3 @@ index 556a3d2e7f89..e5879b5493c0 100644
    port:
      $ref: /schemas/graph.yaml#/$defs/port-base
      unevaluatedProperties: false
--- 
-2.39.2
-

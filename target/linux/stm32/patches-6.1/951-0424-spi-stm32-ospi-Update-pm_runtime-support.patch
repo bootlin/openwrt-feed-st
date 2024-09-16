@@ -35,11 +35,9 @@ Change-Id: I8d098aad20d2730ae792bde74575d9a2c36ebd7f
  drivers/spi/spi-stm32-ospi.c | 135 +++++++++++++----------------------
  1 file changed, 51 insertions(+), 84 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 6d46627f5eb0..b9f71ee4cf32 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -298,11 +298,9 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -298,11 +298,9 @@ static int stm32_ospi_poll_status(struct
  	void __iomem *regs_base = omi->regs_base;
  	int ret;
  
@@ -53,7 +51,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	mutex_lock(&ospi->lock);
  
-@@ -314,8 +312,8 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -314,8 +312,8 @@ static int stm32_ospi_poll_status(struct
  	ret = stm32_ospi_send(mem->spi, op);
  	mutex_unlock(&ospi->lock);
  
@@ -64,7 +62,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return ret;
  }
-@@ -326,11 +324,9 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -326,11 +324,9 @@ static int stm32_ospi_exec_op(struct spi
  	struct stm32_omi *omi = ospi->omi;
  	int ret;
  
@@ -78,7 +76,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	mutex_lock(&ospi->lock);
  	if (op->data.dir == SPI_MEM_DATA_IN && op->data.nbytes)
-@@ -341,8 +337,8 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -341,8 +337,8 @@ static int stm32_ospi_exec_op(struct spi
  	ret = stm32_ospi_send(mem->spi, op);
  	mutex_unlock(&ospi->lock);
  
@@ -89,7 +87,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return ret;
  }
-@@ -374,11 +370,9 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -374,11 +370,9 @@ static ssize_t stm32_ospi_dirmap_read(st
  	u32 addr_max;
  	int ret;
  
@@ -103,7 +101,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	mutex_lock(&ospi->lock);
  	/* make a local copy of desc op_tmpl and complete dirmap rdesc
-@@ -401,8 +395,8 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -401,8 +395,8 @@ static ssize_t stm32_ospi_dirmap_read(st
  	ret = stm32_ospi_send(desc->mem->spi, &op);
  	mutex_unlock(&ospi->lock);
  
@@ -114,7 +112,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return ret ?: len;
  }
-@@ -420,7 +414,7 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -420,7 +414,7 @@ static int stm32_ospi_transfer_one_messa
  	if (!spi->cs_gpiod)
  		return -EOPNOTSUPP;
  
@@ -123,7 +121,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  	if (ret < 0)
  		return ret;
  
-@@ -486,8 +480,8 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -486,8 +480,8 @@ end_of_transfer:
  	msg->status = ret;
  	spi_finalize_current_message(ctrl);
  
@@ -134,7 +132,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return ret;
  }
-@@ -629,11 +623,9 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -629,11 +623,9 @@ static int stm32_ospi_setup(struct spi_d
  	if (!spi->max_speed_hz)
  		return -EINVAL;
  
@@ -148,7 +146,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	flash = &ospi->flash[spi->chip_select];
  	flash->cs = spi->chip_select;
-@@ -678,8 +670,8 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -678,8 +670,8 @@ static int stm32_ospi_setup(struct spi_d
  	}
  	mutex_unlock(&ospi->lock);
  
@@ -159,7 +157,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return 0;
  }
-@@ -714,19 +706,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -714,19 +706,7 @@ static int stm32_ospi_probe(struct platf
  	ospi->omi = omi;
  	omi->check_transfer = stm32_ospi_readid;
  
@@ -180,7 +178,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  	platform_set_drvdata(pdev, ospi);
  
  	memset(&dma_cfg, 0, sizeof(dma_cfg));
-@@ -751,31 +731,34 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -751,31 +731,34 @@ static int stm32_ospi_probe(struct platf
  	ctrl->num_chipselect = STM32_OMI_MAX_NORCHIP;
  	ctrl->dev.of_node = parent->of_node;
  
@@ -230,7 +228,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  
  	return ret;
  }
-@@ -784,45 +767,31 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+@@ -784,45 +767,31 @@ static int stm32_ospi_remove(struct plat
  {
  	struct stm32_ospi *ospi = platform_get_drvdata(pdev);
  	struct stm32_omi *omi = ospi->omi;
@@ -285,7 +283,7 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  }
  
  static int __maybe_unused stm32_ospi_resume(struct device *dev)
-@@ -832,27 +801,25 @@ static int __maybe_unused stm32_ospi_resume(struct device *dev)
+@@ -832,27 +801,25 @@ static int __maybe_unused stm32_ospi_res
  	void __iomem *regs_base = omi->regs_base;
  	int ret;
  
@@ -317,6 +315,3 @@ index 6d46627f5eb0..b9f71ee4cf32 100644
  	SET_SYSTEM_SLEEP_PM_OPS(stm32_ospi_suspend, stm32_ospi_resume)
  };
  
--- 
-2.39.2
-

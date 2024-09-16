@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../memory-controllers/st,stm32-omi.yaml      | 42 +++++++++++++++++++
  1 file changed, 42 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-index 56142eb5c3a9..110b670578b3 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -101,6 +101,7 @@ patternProperties:
@@ -90,6 +88,3 @@ index 56142eb5c3a9..110b670578b3 100644
 +        spi-max-frequency = <50000000>;
 +      };
 +    };
--- 
-2.39.2
-

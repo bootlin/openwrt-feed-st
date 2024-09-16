@@ -20,8 +20,6 @@ Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/pinctrl/st,stm32-pinctrl.yaml    | 48 +++++++++++++++++++
  1 file changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index 8288a7c2e79d..1fb225ea1f3a 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 @@ -204,6 +204,54 @@ patternProperties:
@@ -79,6 +77,3 @@ index 8288a7c2e79d..1fb225ea1f3a 100644
  
          required:
            - pinmux
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index e92cd68e3b60..e0e11bed0a2c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1350,6 +1350,19 @@ uart8: serial@40380000 {
+@@ -1350,6 +1350,19 @@
  				status = "disabled";
  			};
  
@@ -42,6 +40,3 @@ index e92cd68e3b60..e0e11bed0a2c 100644
  			adc_12: adc@404e0000 {
  				compatible = "st,stm32mp25-adc-core";
  				reg = <0x404e0000 0x400>;
--- 
-2.39.2
-

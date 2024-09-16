@@ -22,11 +22,9 @@ Change-Id: I2690070d21ca6818f9dc915ec16a92c2b930a508
  include/memory/stm32-omi.h |  33 +++++
  2 files changed, 291 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index c8f861a80507..c7d352d70f85 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -30,7 +30,7 @@ int stm32_omi_abort(struct stm32_omi *omi)
+@@ -30,7 +30,7 @@ int stm32_omi_abort(struct stm32_omi *om
  						    cr, !(cr & CR_ABORT), 1,
  						    STM32_ABT_TIMEOUT_US);
  
@@ -35,7 +33,7 @@ index c8f861a80507..c7d352d70f85 100644
  		dev_err(omi->dev, "%s abort timeout:%d\n", __func__, timeout);
  
  	return timeout;
-@@ -54,8 +54,10 @@ int stm32_omi_tx_poll(struct stm32_omi *omi, u8 *buf, u32 len, bool read)
+@@ -54,8 +54,10 @@ int stm32_omi_tx_poll(struct stm32_omi *
  							sr, sr & SR_FTF, 1,
  							STM32_FIFO_TIMEOUT_US);
  		if (ret) {
@@ -48,7 +46,7 @@ index c8f861a80507..c7d352d70f85 100644
  			return ret;
  		}
  		tx_fifo(buf++, regs_base + OSPI_DR);
-@@ -221,6 +223,20 @@ int stm32_omi_get_resources(struct stm32_omi *omi, struct device *dev)
+@@ -221,6 +223,20 @@ int stm32_omi_get_resources(struct stm32
  		return dev_err_probe(dev, PTR_ERR(omi->rstc),
  				     "Can't get reset\n");
  
@@ -69,7 +67,7 @@ index c8f861a80507..c7d352d70f85 100644
  	ret = of_address_to_resource(np, 0, &res);
  	if (ret)
  		return ret;
-@@ -258,6 +274,245 @@ int stm32_omi_get_resources(struct stm32_omi *omi, struct device *dev)
+@@ -258,6 +274,245 @@ int stm32_omi_get_resources(struct stm32
  }
  EXPORT_SYMBOL(stm32_omi_get_resources);
  
@@ -315,8 +313,6 @@ index c8f861a80507..c7d352d70f85 100644
  static int stm32_omi_probe(struct platform_device *pdev)
  {
  	struct platform_device *vdev;
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index 0f392729b7e2..c9dae4a440d8 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -122,6 +122,21 @@
@@ -377,6 +373,3 @@ index 0f392729b7e2..c9dae4a440d8 100644
  void stm32_omi_dma_callback(void *arg);
  void stm32_omi_dma_free(struct stm32_omi *omi);
  int stm32_omi_dma_setup(struct stm32_omi *omi, struct device *dev,
--- 
-2.39.2
-

@@ -23,11 +23,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/dma/stm32/stm32-dma3.c | 19 ++++++++++++++-----
  1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 2cd25541c2d2..b6e39620982c 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -1729,9 +1729,6 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1729,9 +1729,6 @@ static int stm32_dma3_probe(struct platf
  		chan->fifo_size = get_chan_hwcfg(i, G_FIFO_SIZE(i), hwcfgr);
  		/* If chan->fifo_size > 0 then half of the fifo size, else no burst when no FIFO */
  		chan->max_burst = (chan->fifo_size) ? (1 << (chan->fifo_size + 1)) / 2 : 0;
@@ -37,7 +35,7 @@ index 2cd25541c2d2..b6e39620982c 100644
  	}
  
  	ret = dmaenginem_async_device_register(dma_dev);
-@@ -1739,14 +1736,26 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1739,14 +1736,26 @@ static int stm32_dma3_probe(struct platf
  		goto err_clk_disable;
  
  	for (i = 0; i < ddata->dma_channels; i++) {
@@ -66,6 +64,3 @@ index 2cd25541c2d2..b6e39620982c 100644
  		chan->irq = ret;
  
  		ret = devm_request_irq(&pdev->dev, chan->irq, stm32_dma3_chan_irq, 0,
--- 
-2.39.2
-

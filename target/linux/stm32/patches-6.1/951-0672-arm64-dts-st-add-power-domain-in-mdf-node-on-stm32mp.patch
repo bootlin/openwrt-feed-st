@@ -17,11 +17,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index af791375e0f6..177402265372 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1702,6 +1702,7 @@ mdf1: mdf@404d0000 {
+@@ -1702,6 +1702,7 @@
  				resets = <&rcc MDF1_R>;
  				reset-names = "mdf";
  				feature-domains = <&rifsc STM32MP25_RIFSC_MDF1_ID>;
@@ -29,6 +27,3 @@ index af791375e0f6..177402265372 100644
  				status = "disabled";
  
  				sitf0: sitf@80 {
--- 
-2.39.2
-

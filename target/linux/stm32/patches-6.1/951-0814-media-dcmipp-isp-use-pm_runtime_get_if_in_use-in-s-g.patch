@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c  | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index cc7a608f0dcb..7062e708f8f7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -13,6 +13,7 @@
@@ -38,7 +36,7 @@ index cc7a608f0dcb..7062e708f8f7 100644
  	struct v4l2_mbus_framefmt sink_fmt;
  	struct v4l2_mbus_framefmt src_fmt;
  	unsigned int decimation;
-@@ -294,7 +296,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -294,7 +296,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2
  
  	dev_dbg(isp->dev, ">> %s: ctrl->id = 0x%x\n", __func__, ctrl->id);
  
@@ -47,7 +45,7 @@ index cc7a608f0dcb..7062e708f8f7 100644
  		return 0;
  
  	spin_lock_irq(&isp->irqlock);
-@@ -343,6 +345,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -343,6 +345,7 @@ static int dcmipp_isp_s_ctrl(struct v4l2
  	}
  
  	spin_unlock_irq(&isp->irqlock);
@@ -55,7 +53,7 @@ index cc7a608f0dcb..7062e708f8f7 100644
  
  	return 0;
  };
-@@ -353,7 +356,7 @@ static int dcmipp_isp_g_ctrl(struct v4l2_ctrl *ctrl)
+@@ -353,7 +356,7 @@ static int dcmipp_isp_g_ctrl(struct v4l2
  			container_of(ctrl->handler, struct dcmipp_isp_device, ctrls);
  	int ret = 0;
  
@@ -64,7 +62,7 @@ index cc7a608f0dcb..7062e708f8f7 100644
  		return 0;
  
  	switch (ctrl->id) {
-@@ -363,6 +366,8 @@ static int dcmipp_isp_g_ctrl(struct v4l2_ctrl *ctrl)
+@@ -363,6 +366,8 @@ static int dcmipp_isp_g_ctrl(struct v4l2
  		break;
  	}
  
@@ -73,7 +71,7 @@ index cc7a608f0dcb..7062e708f8f7 100644
  	return ret;
  };
  
-@@ -1099,6 +1104,7 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+@@ -1099,6 +1104,7 @@ static int dcmipp_isp_comp_bind(struct d
  
  	isp->regs = bind_data->regs;
  	isp->dev = comp;
@@ -81,6 +79,3 @@ index cc7a608f0dcb..7062e708f8f7 100644
  
  	/* Initialize the lock */
  	mutex_init(&isp->lock);
--- 
-2.39.2
-

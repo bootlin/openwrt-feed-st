@@ -32,8 +32,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 53 ++++++++++++++++++++++++++++---
  1 file changed, 49 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index c34747d7857e..65b447b42e75 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -23,6 +23,7 @@
@@ -44,7 +42,7 @@ index c34747d7857e..65b447b42e75 100644
  
  struct stm32_timer_regs {
  	u32 cr1;
-@@ -226,6 +227,10 @@ static struct counter_comp stm32_count_ext[] = {
+@@ -226,6 +227,10 @@ static struct counter_comp stm32_count_e
  			     stm32_count_ceiling_write),
  };
  
@@ -55,7 +53,7 @@ index c34747d7857e..65b447b42e75 100644
  static const enum counter_synapse_action stm32_synapse_actions[] = {
  	COUNTER_SYNAPSE_ACTION_NONE,
  	COUNTER_SYNAPSE_ACTION_BOTH_EDGES
-@@ -246,7 +251,10 @@ static int stm32_action_read(struct counter_device *counter,
+@@ -246,7 +251,10 @@ static int stm32_action_read(struct coun
  	switch (function) {
  	case COUNTER_FUNCTION_INCREASE:
  		/* counts on internal clock when CEN=1 */
@@ -67,7 +65,7 @@ index c34747d7857e..65b447b42e75 100644
  		return 0;
  	case COUNTER_FUNCTION_QUADRATURE_X2_A:
  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
-@@ -264,7 +272,10 @@ static int stm32_action_read(struct counter_device *counter,
+@@ -264,7 +272,10 @@ static int stm32_action_read(struct coun
  		return 0;
  	case COUNTER_FUNCTION_QUADRATURE_X4:
  		/* counts up/down on both TI1FP1 and TI2FP2 edges */
@@ -79,7 +77,7 @@ index c34747d7857e..65b447b42e75 100644
  		return 0;
  	default:
  		return -EINVAL;
-@@ -279,7 +290,30 @@ static const struct counter_ops stm32_timer_cnt_ops = {
+@@ -279,7 +290,30 @@ static const struct counter_ops stm32_ti
  	.action_read = stm32_action_read,
  };
  
@@ -110,7 +108,7 @@ index c34747d7857e..65b447b42e75 100644
  	{
  		.id = STM32_CH1_SIG,
  		.name = "Channel 1"
-@@ -287,7 +321,13 @@ static struct counter_signal stm32_signals[] = {
+@@ -287,7 +321,13 @@ static struct counter_signal stm32_signa
  	{
  		.id = STM32_CH2_SIG,
  		.name = "Channel 2"
@@ -125,7 +123,7 @@ index c34747d7857e..65b447b42e75 100644
  };
  
  static struct counter_synapse stm32_count_synapses[] = {
-@@ -300,7 +340,12 @@ static struct counter_synapse stm32_count_synapses[] = {
+@@ -300,7 +340,12 @@ static struct counter_synapse stm32_coun
  		.actions_list = stm32_synapse_actions,
  		.num_actions = ARRAY_SIZE(stm32_synapse_actions),
  		.signal = &stm32_signals[STM32_CH2_SIG]
@@ -139,6 +137,3 @@ index c34747d7857e..65b447b42e75 100644
  };
  
  static struct counter_count stm32_counts = {
--- 
-2.39.2
-

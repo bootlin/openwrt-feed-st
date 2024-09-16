@@ -16,11 +16,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 43 ++++++++++++++++++++++++++
  1 file changed, 43 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 30d819031448..7507184c572c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -284,6 +284,49 @@ hpdma3: dma-controller@40420000 {
+@@ -284,6 +284,49 @@
  			st,axi-max-burst-len = <16>;
  		};
  
@@ -70,6 +68,3 @@ index 30d819031448..7507184c572c 100644
  		rifsc: rifsc@42080000 {
  			compatible = "st,stm32mp25-sys-bus";
  			reg = <0x42080000 0x1000>;
--- 
-2.39.2
-

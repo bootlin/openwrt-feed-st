@@ -19,8 +19,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 3156df8ce1c5..fb7bf40d999d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
 @@ -8,6 +8,16 @@
@@ -40,6 +38,3 @@ index 3156df8ce1c5..fb7bf40d999d 100644
  		};
  	};
  };
--- 
-2.39.2
-

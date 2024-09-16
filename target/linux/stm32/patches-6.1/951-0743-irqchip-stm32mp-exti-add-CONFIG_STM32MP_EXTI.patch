@@ -19,8 +19,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/Kconfig | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 7f193a6b82cb..967845ba4c79 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
 @@ -395,6 +395,10 @@ config LS_SCFG_MSI
@@ -34,6 +32,3 @@ index 7f193a6b82cb..967845ba4c79 100644
  config STM32_EXTI
  	bool
  	select IRQ_DOMAIN
--- 
-2.39.2
-

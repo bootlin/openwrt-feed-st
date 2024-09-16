@@ -22,8 +22,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/usb/typec/ucsi/ucsi_stm32g0.c | 52 ++++++++++++++++++++++-----
  1 file changed, 44 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_stm32g0.c b/drivers/usb/typec/ucsi/ucsi_stm32g0.c
-index 7b92f0c8de70..57e9c2567845 100644
 --- a/drivers/usb/typec/ucsi/ucsi_stm32g0.c
 +++ b/drivers/usb/typec/ucsi/ucsi_stm32g0.c
 @@ -50,6 +50,9 @@
@@ -36,7 +34,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  /* ucsi_stm32g0_fw_info located at the end of the firmware */
  struct ucsi_stm32g0_fw_info {
  	u32 version;
-@@ -68,6 +71,8 @@ struct ucsi_stm32g0 {
+@@ -69,6 +72,8 @@ struct ucsi_stm32g0 {
  	struct ucsi *ucsi;
  	bool suspended;
  	bool wakeup_event;
@@ -45,7 +43,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  };
  
  /*
-@@ -412,18 +417,15 @@ static int ucsi_stm32g0_sync_write(struct ucsi *ucsi, unsigned int offset, const
+@@ -422,18 +427,15 @@ out_clear_bit:
  	return ret;
  }
  
@@ -67,9 +65,9 @@ index 7b92f0c8de70..57e9c2567845 100644
  
  	if (UCSI_CCI_CONNECTOR(cci))
  		ucsi_connector_change(g0->ucsi, UCSI_CCI_CONNECTOR(cci));
-@@ -431,6 +433,19 @@ static irqreturn_t ucsi_stm32g0_irq_handler(int irq, void *data)
- 	if (test_bit(COMMAND_PENDING, &g0->flags) &&
- 	    cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))
+@@ -442,6 +444,19 @@ static irqreturn_t ucsi_stm32g0_irq_hand
+ 		complete(&g0->complete);
+ 	if (cci & UCSI_CCI_COMMAND_COMPLETE && test_and_clear_bit(COMMAND_PENDING, &g0->flags))
  		complete(&g0->complete);
 +}
 +
@@ -87,7 +85,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  
  	return IRQ_HANDLED;
  }
-@@ -630,6 +645,7 @@ static int ucsi_stm32g0_probe(struct i2c_client *client, const struct i2c_device
+@@ -641,6 +656,7 @@ static int ucsi_stm32g0_probe(struct i2c
  {
  	struct device *dev = &client->dev;
  	struct ucsi_stm32g0 *g0;
@@ -95,7 +93,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  	int ret;
  
  	g0 = devm_kzalloc(dev, sizeof(*g0), GFP_KERNEL);
-@@ -641,9 +657,23 @@ static int ucsi_stm32g0_probe(struct i2c_client *client, const struct i2c_device
+@@ -652,9 +668,23 @@ static int ucsi_stm32g0_probe(struct i2c
  	init_completion(&g0->complete);
  	i2c_set_clientdata(client, g0);
  
@@ -121,7 +119,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  
  	ucsi_set_drvdata(g0->ucsi, g0);
  
-@@ -684,6 +714,9 @@ static int ucsi_stm32g0_probe(struct i2c_client *client, const struct i2c_device
+@@ -695,6 +725,9 @@ freei2c:
  		i2c_unregister_device(g0->i2c_bl);
  destroy:
  	ucsi_destroy(g0->ucsi);
@@ -131,7 +129,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  
  	return ret;
  }
-@@ -697,6 +730,8 @@ static void ucsi_stm32g0_remove(struct i2c_client *client)
+@@ -708,6 +741,8 @@ static void ucsi_stm32g0_remove(struct i
  	if (g0->fw_name)
  		i2c_unregister_device(g0->i2c_bl);
  	ucsi_destroy(g0->ucsi);
@@ -140,7 +138,7 @@ index 7b92f0c8de70..57e9c2567845 100644
  }
  
  static int ucsi_stm32g0_suspend(struct device *dev)
-@@ -747,6 +782,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(ucsi_stm32g0_pm_ops, ucsi_stm32g0_suspend, ucsi_
+@@ -758,6 +793,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(ucsi_stm
  
  static const struct of_device_id __maybe_unused ucsi_stm32g0_typec_of_match[] = {
  	{ .compatible = "st,stm32g0-typec" },
@@ -148,6 +146,3 @@ index 7b92f0c8de70..57e9c2567845 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, ucsi_stm32g0_typec_of_match);
--- 
-2.39.2
-

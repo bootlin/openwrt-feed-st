@@ -49,7 +49,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  static int stm32_adc_fw_get_resolution(struct iio_dev *indio_dev)
  {
  	struct device *dev = &indio_dev->dev;
-@@ -2468,6 +2486,9 @@ static int stm32_adc_probe(struct platfo
+@@ -2469,6 +2487,9 @@ static int stm32_adc_probe(struct platfo
  	pm_runtime_mark_last_busy(dev);
  	pm_runtime_put_autosuspend(dev);
  
@@ -59,7 +59,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  	return 0;
  
  err_hw_stop:
-@@ -2496,6 +2517,7 @@ static int stm32_adc_remove(struct platf
+@@ -2497,6 +2518,7 @@ static int stm32_adc_remove(struct platf
  	struct stm32_adc *adc = iio_priv(indio_dev);
  
  	pm_runtime_get_sync(&pdev->dev);

@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 146 ++++++++++----------------
  1 file changed, 57 insertions(+), 89 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index c1b845975fa1..f3d29d2bc096 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -255,40 +255,6 @@ static int dsi_pll_get_params(struct dw_mipi_dsi_stm *dsi,
+@@ -255,40 +255,6 @@ static int dsi_pll_get_params(struct dw_
  	return 0;
  }
  
@@ -64,7 +62,7 @@ index c1b845975fa1..f3d29d2bc096 100644
  struct dphy_pll_parameter_map {
  	u32 data_rate;	/* upper margin of frequency range */
  	u8 hs_freq;	/* hsfreqrange */
-@@ -363,12 +329,62 @@ static const struct dphy_pll_parameter_map dppa_map[] = {
+@@ -363,12 +329,62 @@ static const struct dphy_pll_parameter_m
  	{2500, 0x49, 0x00, 0x01, 0x0C}
  };
  
@@ -128,7 +126,7 @@ index c1b845975fa1..f3d29d2bc096 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -399,40 +415,16 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+@@ -399,40 +415,16 @@ static int dw_mipi_dsi_phy_141_init(void
  	pll_out_khz = dsi->lane_mbps * 1000 / 2;
  	pll_in_khz = (unsigned int)(clk_get_rate(dsi->pllref_clk) / 1000);
  
@@ -173,7 +171,7 @@ index c1b845975fa1..f3d29d2bc096 100644
  
  	/* set DLD, HSFR & CCF */
  	val = (hsfreq << 8) | ccf;
-@@ -478,7 +470,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -478,7 +470,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  	struct dw_mipi_dsi_stm *dsi = priv_data;
  	unsigned int pll_out_khz, pll_in_khz;
  	u32 ndiv, odf, idf;
@@ -182,7 +180,7 @@ index c1b845975fa1..f3d29d2bc096 100644
  
  	/* Compute requested pll out */
  	dsi->format = format;
-@@ -500,31 +492,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -500,31 +492,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  
  	pll_in_khz = (unsigned int)(clk_get_rate(dsi->pllref_clk) / 1000);
  
@@ -215,6 +213,3 @@ index c1b845975fa1..f3d29d2bc096 100644
  
  	/* Get the adjusted lane data rate value, lane data rate = 2 * pll output */
  	*lane_mbps = 2 * dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf) / 1000;
--- 
-2.39.2
-

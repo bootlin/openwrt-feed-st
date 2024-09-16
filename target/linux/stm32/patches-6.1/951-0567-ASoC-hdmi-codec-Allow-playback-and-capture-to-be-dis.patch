@@ -30,8 +30,6 @@ Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
  sound/soc/codecs/hdmi-codec.c | 30 +++++++++++++++++++++++++-----
  2 files changed, 29 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 48ad33aba393..9b162ac1e08e 100644
 --- a/include/sound/hdmi-codec.h
 +++ b/include/sound/hdmi-codec.h
 @@ -124,7 +124,11 @@ struct hdmi_codec_ops {
@@ -46,11 +44,9 @@ index 48ad33aba393..9b162ac1e08e 100644
  	int max_i2s_channels;
  	void *data;
  };
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index d8259afc60b0..f61147773139 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -816,12 +816,19 @@ static int hdmi_dai_probe(struct snd_soc_dai *dai)
+@@ -816,12 +816,19 @@ static int hdmi_dai_probe(struct snd_soc
  			.source = "RX",
  		},
  	};
@@ -74,7 +70,7 @@ index d8259afc60b0..f61147773139 100644
  
  	daifmt = devm_kzalloc(dai->dev, sizeof(*daifmt), GFP_KERNEL);
  	if (!daifmt)
-@@ -1028,11 +1035,24 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+@@ -1028,11 +1035,24 @@ static int hdmi_codec_probe(struct platf
  	if (hcd->i2s) {
  		daidrv[i] = hdmi_i2s_dai;
  		daidrv[i].playback.channels_max = hcd->max_i2s_channels;
@@ -100,6 +96,3 @@ index d8259afc60b0..f61147773139 100644
  
  	dev_set_drvdata(dev, hcp);
  
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 4c3a6851b428..527544df573e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -451,6 +451,8 @@ ltdc_ep1_out: endpoint@1 {
+@@ -451,6 +451,8 @@
  
  &lvds {
  	status = "okay";
@@ -28,6 +26,3 @@ index 4c3a6851b428..527544df573e 100644
  	backlight = <&panel_lvds_backlight>;
  	ports {
  		#address-cells = <1>;
--- 
-2.39.2
-

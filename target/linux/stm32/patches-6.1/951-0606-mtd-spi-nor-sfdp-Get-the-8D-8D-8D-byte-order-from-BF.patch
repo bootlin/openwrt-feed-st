@@ -22,11 +22,9 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/spi-nor/sfdp.h | 1 +
  2 files changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 78110387be0b..846b34e63870 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -635,6 +635,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+@@ -635,6 +635,10 @@ static int spi_nor_parse_bfpt(struct spi
  		return -EOPNOTSUPP;
  	}
  
@@ -37,8 +35,6 @@ index 78110387be0b..846b34e63870 100644
  	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
  }
  
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index bbf80d2990ab..b39f101b1b17 100644
 --- a/drivers/mtd/spi-nor/sfdp.h
 +++ b/drivers/mtd/spi-nor/sfdp.h
 @@ -97,6 +97,7 @@ struct sfdp_bfpt {
@@ -49,6 +45,3 @@ index bbf80d2990ab..b39f101b1b17 100644
  
  struct sfdp_parameter_header {
  	u8		id_lsb;
--- 
-2.39.2
-

@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 132 ++++--------------
  1 file changed, 25 insertions(+), 107 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 973a861dc256..4e36d33f296f 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -217,59 +217,6 @@ struct dcmipp_pixelcap_buffer {
@@ -81,7 +79,7 @@ index 973a861dc256..4e36d33f296f 100644
  static inline int hdw_pixel_alignment(u32 format)
  {
  	/* 16 bytes alignment required by hardware */
-@@ -300,59 +247,30 @@ static inline int frame_planes(dma_addr_t base_addr, dma_addr_t addrs[],
+@@ -300,59 +247,30 @@ static inline int frame_planes(dma_addr_
  			       u32 strides[], u64 sizes[],
  			       u32 width, u32 height, u32 format)
  {
@@ -162,7 +160,7 @@ index 973a861dc256..4e36d33f296f 100644
  }
  
  static int dcmipp_pixelcap_querycap(struct file *file, void *priv,
-@@ -418,8 +336,8 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -418,8 +336,8 @@ static int dcmipp_pixelcap_try_fmt_vid_c
  			"resolution updated: %dx%d -> %dx%d\n",
  			in_w, in_h, format->width, format->height);
  
@@ -173,7 +171,7 @@ index 973a861dc256..4e36d33f296f 100644
  
  	if (format->field == V4L2_FIELD_ANY)
  		format->field = fmt_default.field;
-@@ -1215,8 +1133,8 @@ dcmipp_pixelcap_ent_init(struct device *dev, const char *entity_name,
+@@ -1215,8 +1133,8 @@ dcmipp_pixelcap_ent_init(struct device *
  	/* Set default frame format */
  	vcap->format = fmt_default;
  	format = &vcap->format;
@@ -184,6 +182,3 @@ index 973a861dc256..4e36d33f296f 100644
  
  	/* Fill the dcmipp_ent_device struct */
  	vcap->ved.ent = &vcap->vdev.entity;
--- 
-2.39.2
-

@@ -20,11 +20,9 @@ Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
  arch/arm64/boot/dts/st/stm32mp257.dtsi | 29 ++++++++++++++++++++++----
  1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-index 9f3e137196fb..f074157b2320 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-@@ -12,12 +12,15 @@ switch0: ttt-sw@4c000000 {
+@@ -12,12 +12,15 @@
  				#address-cells  = <1>;
  				#size-cells     = <1>;
  				compatible = "st,stm32-deip";
@@ -44,7 +42,7 @@ index 9f3e137196fb..f074157b2320 100644
  				feature-domains = <&rifsc STM32MP25_RIFSC_ETHSW_DEIP_ID>;
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
-@@ -27,6 +30,24 @@ deip_sw0: deip-sw@4c000000 {
+@@ -27,6 +30,24 @@
  					reg = <0x4c000000 0x2000000>;
  					interrupts = <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>;
  				};
@@ -69,6 +67,3 @@ index 9f3e137196fb..f074157b2320 100644
  			};
  		};
  	};
--- 
-2.39.2
-

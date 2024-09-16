@@ -25,8 +25,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/dmatest.c | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
-index ffe621695e47..02d8ff1ee248 100644
 --- a/drivers/dma/dmatest.c
 +++ b/drivers/dma/dmatest.c
 @@ -21,6 +21,10 @@
@@ -40,7 +38,7 @@ index ffe621695e47..02d8ff1ee248 100644
  static unsigned int test_buf_size = 16384;
  module_param(test_buf_size, uint, 0644);
  MODULE_PARM_DESC(test_buf_size, "Size of the memcpy test buffer");
-@@ -90,6 +94,7 @@ MODULE_PARM_DESC(polled, "Use polling for completion instead of interrupts");
+@@ -90,6 +94,7 @@ MODULE_PARM_DESC(polled, "Use polling fo
  
  /**
   * struct dmatest_params - test parameters.
@@ -48,7 +46,7 @@ index ffe621695e47..02d8ff1ee248 100644
   * @buf_size:		size of the memcpy test buffer
   * @channel:		bus ID of the channel to test
   * @device:		bus ID of the DMA Engine to test
-@@ -106,6 +111,7 @@ MODULE_PARM_DESC(polled, "Use polling for completion instead of interrupts");
+@@ -106,6 +111,7 @@ MODULE_PARM_DESC(polled, "Use polling fo
   * @polled:		use polling for completion instead of interrupts
   */
  struct dmatest_params {
@@ -64,7 +62,7 @@ index ffe621695e47..02d8ff1ee248 100644
  	unsigned int	cnt;
  	unsigned int	off;
  };
-@@ -533,7 +540,7 @@ static int dmatest_alloc_test_data(struct dmatest_data *d,
+@@ -533,7 +540,7 @@ static int dmatest_alloc_test_data(struc
  		goto err;
  
  	for (i = 0; i < d->cnt; i++) {
@@ -87,7 +85,7 @@ index ffe621695e47..02d8ff1ee248 100644
  	if (dmatest_alloc_test_data(src, buf_size, align) < 0)
  		goto err_free_coefs;
  
-@@ -1093,6 +1107,7 @@ static void add_threaded_test(struct dmatest_info *info)
+@@ -1093,6 +1107,7 @@ static void add_threaded_test(struct dma
  	struct dmatest_params *params = &info->params;
  
  	/* Copy test parameters */
@@ -95,6 +93,3 @@ index ffe621695e47..02d8ff1ee248 100644
  	params->buf_size = test_buf_size;
  	strscpy(params->channel, strim(test_channel), sizeof(params->channel));
  	strscpy(params->device, strim(test_device), sizeof(params->device));
--- 
-2.39.2
-

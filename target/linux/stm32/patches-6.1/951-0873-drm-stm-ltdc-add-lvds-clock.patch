@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.h |  3 +-
  2 files changed, 44 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 48b461eb3e98..dc5088f68e2f 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -985,6 +985,15 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -985,6 +985,15 @@ static void ltdc_crtc_atomic_disable(str
  
  	pm_runtime_put_sync_suspend(ddev->dev);
  
@@ -34,7 +32,7 @@ index 48b461eb3e98..dc5088f68e2f 100644
  	/*  clear interrupt error counters */
  	mutex_lock(&ldev->err_lock);
  	ldev->transfer_err = 0;
-@@ -1097,12 +1106,20 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -1097,12 +1106,20 @@ static void ltdc_crtc_mode_set_nofb(stru
  	if (connector)
  		orientation = connector->display_info.panel_orientation;
  
@@ -44,22 +42,22 @@ index 48b461eb3e98..dc5088f68e2f 100644
 +	if (encoder->encoder_type == DRM_MODE_ENCODER_LVDS) {
 +		if (ldev->lvds_clk) {
 +			ret = clk_set_parent(ldev->pixel_clk, ldev->lvds_clk);
-+			if (ret) {
-+				DRM_ERROR("Could not set parent clock: %d\n", ret);
+ 			if (ret) {
+ 				DRM_ERROR("Could not set parent clock: %d\n", ret);
+-				return MODE_BAD;
 +				return;
 +			}
 +		}
 +	} else {
 +		if (ldev->ltdc_clk) {
 +			ret = clk_set_parent(ldev->pixel_clk, ldev->ltdc_clk);
- 			if (ret) {
- 				DRM_ERROR("Could not set parent clock: %d\n", ret);
--				return MODE_BAD;
++			if (ret) {
++				DRM_ERROR("Could not set parent clock: %d\n", ret);
 +				return;
  			}
  		}
  	}
-@@ -2474,7 +2491,7 @@ int ltdc_parse_device_tree(struct device *dev)
+@@ -2474,7 +2491,7 @@ int ltdc_parse_device_tree(struct device
  
  int ltdc_get_clk(struct device *dev, struct ltdc_device *ldev)
  {
@@ -68,7 +66,7 @@ index 48b461eb3e98..dc5088f68e2f 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -2492,21 +2509,28 @@ int ltdc_get_clk(struct device *dev, struct ltdc_device *ldev)
+@@ -2492,21 +2509,28 @@ int ltdc_get_clk(struct device *dev, str
  		ldev->bus_clk = NULL;
  	}
  
@@ -110,8 +108,6 @@ index 48b461eb3e98..dc5088f68e2f 100644
  	}
  
  	return 0;
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 5bb69d370318..d21c04ed3857 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -47,7 +47,8 @@ struct ltdc_device {
@@ -124,6 +120,3 @@ index 5bb69d370318..d21c04ed3857 100644
  	struct mutex err_lock;	/* protecting error_status */
  	struct ltdc_caps caps;
  	u32 irq_status;
--- 
-2.39.2
-

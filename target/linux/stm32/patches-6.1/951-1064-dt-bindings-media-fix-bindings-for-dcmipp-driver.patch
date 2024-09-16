@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/media/st,stm32-dcmipp.yaml          | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
-index 5c80eb28489d..556a3d2e7f89 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 @@ -4,7 +4,7 @@
@@ -43,6 +41,3 @@ index 5c80eb28489d..556a3d2e7f89 100644
          required:
            - pclk-sample
  
--- 
-2.39.2
-

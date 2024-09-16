@@ -18,7 +18,7 @@ Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
 --- a/drivers/tty/serial/serial_core.c
 +++ b/drivers/tty/serial/serial_core.c
-@@ -3443,6 +3443,16 @@ int uart_get_rs485_mode(struct uart_port
+@@ -3451,6 +3451,16 @@ int uart_get_rs485_mode(struct uart_port
  	if (!(port->rs485_supported.flags & SER_RS485_ENABLED))
  		return 0;
  

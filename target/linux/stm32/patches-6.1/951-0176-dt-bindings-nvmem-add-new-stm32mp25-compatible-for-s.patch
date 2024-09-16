@@ -17,8 +17,6 @@ Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
  .../devicetree/bindings/nvmem/st,stm32-romem.yaml        | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-index 16f4cad2fa55..6c0339c9b7b8 100644
 --- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
 +++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
 @@ -24,6 +24,7 @@ properties:
@@ -44,6 +42,3 @@ index 16f4cad2fa55..6c0339c9b7b8 100644
  required:
    - "#address-cells"
    - "#size-cells"
--- 
-2.39.2
-

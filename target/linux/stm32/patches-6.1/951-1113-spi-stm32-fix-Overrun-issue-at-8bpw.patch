@@ -27,11 +27,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/spi/spi-stm32.c | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 579af2342664..df80c39d25e9 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
-@@ -1684,11 +1684,12 @@ static void stm32h7_spi_data_idleness(struct stm32_spi *spi, u32 len)
+@@ -1684,11 +1684,12 @@ static void stm32h7_spi_data_idleness(st
  	cfg2_clrb |= STM32H7_SPI_CFG2_MIDI;
  	if ((len > 1) && (spi->cur_midi > 0)) {
  		u32 sck_period_ns = DIV_ROUND_UP(NSEC_PER_SEC, spi->cur_speed);
@@ -48,6 +46,3 @@ index 579af2342664..df80c39d25e9 100644
  
  		dev_dbg(spi->dev, "period=%dns, midi=%d(=%dns)\n",
  			sck_period_ns, midi, midi * sck_period_ns);
--- 
-2.39.2
-

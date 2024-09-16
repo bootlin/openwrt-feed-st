@@ -26,8 +26,6 @@ Change-Id: I41c19e4f267e2eddf791a9b81d78e9db6ef20559
  3 files changed, 2229 insertions(+)
  create mode 100644 drivers/dma/stm32-dma3.c
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 81de833ccd04..1123655f06a3 100644
 --- a/drivers/dma/Kconfig
 +++ b/drivers/dma/Kconfig
 @@ -579,6 +579,17 @@ config ST_FDMA
@@ -48,8 +46,6 @@ index 81de833ccd04..1123655f06a3 100644
  config STM32_DMA
  	bool "STMicroelectronics STM32 DMA support"
  	depends on ARCH_STM32 || COMPILE_TEST
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index 10f7d4241001..1a54e9ba0e2f 100644
 --- a/drivers/dma/Makefile
 +++ b/drivers/dma/Makefile
 @@ -67,6 +67,7 @@ obj-$(CONFIG_PXA_DMA) += pxa_dma.o
@@ -60,9 +56,6 @@ index 10f7d4241001..1a54e9ba0e2f 100644
  obj-$(CONFIG_STM32_DMA) += stm32-dma.o
  obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
  obj-$(CONFIG_STM32_MDMA) += stm32-mdma.o
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-new file mode 100644
-index 000000000000..a581078f9271
 --- /dev/null
 +++ b/drivers/dma/stm32-dma3.c
 @@ -0,0 +1,2217 @@
@@ -2283,6 +2276,3 @@ index 000000000000..a581078f9271
 +MODULE_AUTHOR("Amelie Delaunay <amelie.delaunay@foss.st.com>");
 +MODULE_LICENSE("GPL v2");
 +
--- 
-2.39.2
-

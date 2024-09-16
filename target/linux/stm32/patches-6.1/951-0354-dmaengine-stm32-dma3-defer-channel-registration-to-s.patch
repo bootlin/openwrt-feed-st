@@ -24,11 +24,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/dma/stm32-dma3.c | 19 ++++++++++++++++---
  1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index b91918b5fe16..068a3a755298 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -2242,9 +2242,6 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2242,9 +2242,6 @@ static int stm32_dma3_probe(struct platf
  		chan->fifo_size = g_fifosz; /* If !g_fifosz, then no FIFO, burst = 0 */
  		chan->max_burst = (!chan->fifo_size) ? 0 : (1 << (chan->fifo_size + 1)) / 2;
  		chan->ext_addressing = (g_addr != G_ADDRESSING_FIXED_BLOCK);
@@ -38,7 +36,7 @@ index b91918b5fe16..068a3a755298 100644
  	}
  
  	ret = dmaenginem_async_device_register(dma_dev);
-@@ -2252,7 +2249,23 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2252,7 +2249,23 @@ static int stm32_dma3_probe(struct platf
  		goto err_clk_disable;
  
  	for (i = 0; i < ddata->dma_channels; i++) {
@@ -62,6 +60,3 @@ index b91918b5fe16..068a3a755298 100644
  		ret = platform_get_irq(pdev, i);
  		if (ret < 0) {
  			dev_err(&pdev->dev,
--- 
-2.39.2
-

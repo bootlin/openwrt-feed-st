@@ -13,11 +13,9 @@ Signed-off-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 27 +++++++++++++--------------
  1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 845d27b772a1..c95f3d445881 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -841,21 +841,20 @@ dw_mipi_dsi_stm_mode_valid(void *priv_data,
+@@ -841,21 +841,20 @@ dw_mipi_dsi_stm_mode_valid(void *priv_da
  
  		lane_mbps = pll_out_khz / 1000;
  
@@ -52,6 +50,3 @@ index 845d27b772a1..c95f3d445881 100644
  	}
  
  	return MODE_OK;
--- 
-2.39.2
-

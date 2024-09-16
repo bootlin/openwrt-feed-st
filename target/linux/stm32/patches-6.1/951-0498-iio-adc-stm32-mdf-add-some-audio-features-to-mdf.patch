@@ -29,8 +29,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  6 files changed, 1153 insertions(+), 416 deletions(-)
  create mode 100644 drivers/iio/adc/stm32-mdf-serial.c
 
-diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-index e60f5590b924..f46b3baece7a 100644
 --- a/drivers/iio/adc/Makefile
 +++ b/drivers/iio/adc/Makefile
 @@ -96,6 +96,7 @@ obj-$(CONFIG_STM32_ADC) += stm32-adc.o
@@ -41,8 +39,6 @@ index e60f5590b924..f46b3baece7a 100644
  obj-$(CONFIG_STM32_MDF_ADC) += stm32-mdf-adc.o
  obj-$(CONFIG_STMPE_ADC) += stmpe-adc.o
  obj-$(CONFIG_TI_ADC081C) += ti-adc081c.o
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index bae784624d65..b97e7405d09c 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
 @@ -2,8 +2,7 @@
@@ -230,7 +226,7 @@ index bae784624d65..b97e7405d09c 100644
  static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
-@@ -143,44 +270,104 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+@@ -143,44 +270,104 @@ static const struct regmap_config stm32_
  	.fast_io = true,
  };
  
@@ -345,7 +341,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	return ret;
  }
-@@ -188,12 +375,10 @@ static int stm32_mdf_start_conv(struct iio_dev *indio_dev)
+@@ -188,12 +375,10 @@ stop_sitf:
  static void stm32_mdf_stop_conv(struct iio_dev *indio_dev)
  {
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
@@ -359,7 +355,7 @@ index bae784624d65..b97e7405d09c 100644
  }
  
  static unsigned int stm32_mdf_adc_dma_residue(struct stm32_mdf_adc *adc)
-@@ -307,7 +492,6 @@ static void stm32_mdf_adc_dma_stop(struct iio_dev *indio_dev)
+@@ -307,7 +492,6 @@ static void stm32_mdf_adc_dma_stop(struc
  static int stm32_mdf_postenable(struct iio_dev *indio_dev)
  {
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
@@ -367,7 +363,7 @@ index bae784624d65..b97e7405d09c 100644
  	int ret;
  
  	/* Reset adc buffer index */
-@@ -318,10 +502,10 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+@@ -318,10 +502,10 @@ static int stm32_mdf_postenable(struct i
  		return ret;
  
  	/* Enable CCKx clock if configured as output */
@@ -380,7 +376,7 @@ index bae784624d65..b97e7405d09c 100644
  		goto err_stop_mdf;
  	}
  
-@@ -348,7 +532,7 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+@@ -348,7 +532,7 @@ static int stm32_mdf_postenable(struct i
  err_stop_dma:
  	stm32_mdf_adc_dma_stop(indio_dev);
  err_stop_clk:
@@ -389,7 +385,7 @@ index bae784624d65..b97e7405d09c 100644
  err_stop_mdf:
  	stm32_mdf_stop_mdf(adc->mdf);
  
-@@ -358,7 +542,6 @@ static int stm32_mdf_postenable(struct iio_dev *indio_dev)
+@@ -358,7 +542,6 @@ err_stop_mdf:
  static int stm32_mdf_predisable(struct iio_dev *indio_dev)
  {
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
@@ -397,7 +393,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	stm32_mdf_stop_conv(indio_dev);
  
-@@ -368,7 +551,7 @@ static int stm32_mdf_predisable(struct iio_dev *indio_dev)
+@@ -368,7 +551,7 @@ static int stm32_mdf_predisable(struct i
  			  MDF_DFLTIER_DOVRIE_MASK | MDF_DFLTIER_SATIE_MASK);
  
  	/* Disable CCKx clock if configured as output */
@@ -406,7 +402,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	stm32_mdf_stop_mdf(adc->mdf);
  
-@@ -446,7 +629,6 @@ static int stm32_mdf_audio_init(struct device *dev, struct iio_dev *indio_dev)
+@@ -446,7 +629,6 @@ static int stm32_mdf_audio_init(struct d
  	}
  	ch->info_mask_separate = BIT(IIO_CHAN_INFO_SAMP_FREQ);
  
@@ -414,7 +410,7 @@ index bae784624d65..b97e7405d09c 100644
  	indio_dev->num_channels = 1;
  	indio_dev->channels = ch;
  
-@@ -459,75 +641,199 @@ static int stm32_mdf_audio_init(struct device *dev, struct iio_dev *indio_dev)
+@@ -459,75 +641,199 @@ static int stm32_mdf_audio_init(struct d
  	return 0;
  }
  
@@ -648,7 +644,7 @@ index bae784624d65..b97e7405d09c 100644
  	if (ret < 0)
  		return ret;
  
-@@ -628,6 +934,9 @@ static irqreturn_t stm32_mdf_irq(int irq, void *arg)
+@@ -628,6 +934,9 @@ static irqreturn_t stm32_mdf_irq(int irq
  	if (flags & MDF_DFLTISR_SATF_MASK) {
  		dev_warn(&indio_dev->dev, "Saturation detected\n");
  		regmap_set_bits(regmap, MDF_DFLTISR_REG, MDF_DFLTISR_SATF_MASK);
@@ -658,7 +654,7 @@ index bae784624d65..b97e7405d09c 100644
  	}
  
  	return IRQ_HANDLED;
-@@ -700,19 +1009,31 @@ static const struct of_device_id stm32_mdf_adc_match[] = {
+@@ -700,19 +1009,31 @@ static const struct of_device_id stm32_m
  };
  MODULE_DEVICE_TABLE(of, stm32_mdf_adc_match);
  
@@ -700,7 +696,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	ret = device_property_read_u32(dev, "st,cic-mode", &val);
  	if (ret) {
-@@ -720,58 +1041,200 @@ static int stm32_mdf_adc_parse_of(struct platform_device *pdev, struct stm32_mdf
+@@ -720,58 +1041,200 @@ static int stm32_mdf_adc_parse_of(struct
  		return ret;
  	}
  	adc->cicmode = val;
@@ -782,19 +778,13 @@ index bae784624d65..b97e7405d09c 100644
 -	ret = device_property_read_u32_array(dev, "st,sitf-indexes", sitfs, nb_itf);
 -	if (ret < 0) {
 -		dev_err(dev, "Could not get serial interface indexes: %d\n", ret);
--		return ret;
--	};
 +	if (device_property_present(&pdev->dev, "st,sync")) {
 +		filt_node = fwnode_find_reference(dev_fwnode(dev), "st,sync", 0);
 +		if (IS_ERR(filt_node)) {
 +			dev_err(dev, "Failed to get filter sync handle %ld\n", PTR_ERR(filt_node));
 +			return PTR_ERR(filt_node);
 +		}
- 
--	/* Only support BSMX filter source right now */
--	adc->datsrc = STM32_MDF_DATSRC_BSMX;
--	dfltcicr_msk |= MDF_SITFCR_SCKSRC_MASK;
--	dfltcicr |= MDF_SITFCR_SCKSRC(adc->datsrc);
++
 +		adcm = stm32_mdf_get_filter_by_handle(adc->mdf, filt_node);
 +		if (!adcm)
 +			return dev_err_probe(dev, -EPROBE_DEFER, "Failed to get filter synchro\n");
@@ -809,10 +799,7 @@ index bae784624d65..b97e7405d09c 100644
 +					 MDF_DFLTCR_TRGSRC(STM32_MDF_TRGSRC_TRGO));
 +		if (ret)
 +			return ret;
- 
--	/* TODO: read sitfs array from DT to support interleave mode */
--	if (!adc->mdf->sitf[sitfs[0]].registered) {
--		dev_err(dev, "Interface [%d] not registered\n", sitfs[0]);
++
 +		adc->sync = STM32_MDF_ACQ_MODE_SYNC_CONT;
 +	}
 +
@@ -866,10 +853,19 @@ index bae784624d65..b97e7405d09c 100644
 +	ret = fwnode_property_get_reference_args(dev_fwnode(dev), "st,sitf", NULL, 1, 0, &args);
 +	if (ret) {
 +		dev_err(dev, "Serial interface node not found: %d\n", ret);
-+		return ret;
+ 		return ret;
+-	};
 +	}
 +	sitf_node = args.fwnode;
-+
+ 
+-	/* Only support BSMX filter source right now */
+-	adc->datsrc = STM32_MDF_DATSRC_BSMX;
+-	dfltcicr_msk |= MDF_SITFCR_SCKSRC_MASK;
+-	dfltcicr |= MDF_SITFCR_SCKSRC(adc->datsrc);
+-
+-	/* TODO: read sitfs array from DT to support interleave mode */
+-	if (!adc->mdf->sitf[sitfs[0]].registered) {
+-		dev_err(dev, "Interface [%d] not registered\n", sitfs[0]);
 +	/* Get stream index */
 +	if (args.nargs != 1) {
 +		dev_err(dev, "Failed to get stream index in st,sitf property\n");
@@ -933,7 +929,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	return 0;
  }
-@@ -797,7 +1260,7 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+@@ -797,7 +1260,7 @@ static int stm32_mdf_adc_probe(struct pl
  	adc = iio_priv(iio);
  	adc->mdf = dev_get_drvdata(dev->parent);
  
@@ -942,7 +938,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
  	if (IS_ERR(base))
-@@ -814,7 +1277,7 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+@@ -814,7 +1277,7 @@ static int stm32_mdf_adc_probe(struct pl
  
  	irq = platform_get_irq(pdev, 0);
  	if (irq < 0)
@@ -951,7 +947,7 @@ index bae784624d65..b97e7405d09c 100644
  
  	ret = devm_request_irq(dev, irq, stm32_mdf_irq, 0, pdev->name, iio);
  	if (ret < 0) {
-@@ -826,21 +1289,24 @@ static int stm32_mdf_adc_probe(struct platform_device *pdev)
+@@ -826,21 +1289,24 @@ static int stm32_mdf_adc_probe(struct pl
  		iio->info = &stm32_mdf_info_audio;
  	iio->name = dev_name(&pdev->dev);
  
@@ -981,7 +977,7 @@ index bae784624d65..b97e7405d09c 100644
  			goto err_unregister;
  		}
  	}
-@@ -862,16 +1328,40 @@ static int stm32_mdf_adc_remove(struct platform_device *pdev)
+@@ -862,16 +1328,40 @@ static int stm32_mdf_adc_remove(struct p
  
  	if (adc->dev_data->type == STM32_MDF_AUDIO)
  		of_platform_depopulate(&pdev->dev);
@@ -1023,8 +1019,6 @@ index bae784624d65..b97e7405d09c 100644
  	},
  	.probe = stm32_mdf_adc_probe,
  	.remove = stm32_mdf_adc_remove,
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 79ff45b14cc9..2efb636e6d61 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
 @@ -2,7 +2,7 @@
@@ -1056,7 +1050,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
-@@ -73,7 +75,6 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+@@ -73,7 +75,6 @@ static const struct regmap_config stm32_
   * @div: serial clock divider data
   * @gate: serial clock gating data
   * @id: serial clock provider id (0 for cck0 & 1 for cck1)
@@ -1172,7 +1166,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
  {
  	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
-@@ -197,24 +131,28 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+@@ -197,24 +131,28 @@ int stm32_mdf_start_mdf(struct stm32_mdf
  	u32 val;
  
  	if (atomic_inc_return(&priv->n_active_ch) == 1) {
@@ -1205,7 +1199,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  err:
  	atomic_dec(&priv->n_active_ch);
  
-@@ -222,56 +160,33 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+@@ -222,56 +160,33 @@ err:
  }
  EXPORT_SYMBOL_GPL(stm32_mdf_start_mdf);
  
@@ -1227,8 +1221,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  	return 0;
  }
 -EXPORT_SYMBOL_GPL(stm32_mdf_stop_mdf);
-+EXPORT_SYMBOL_GPL(stm32_mdf_trigger);
- 
+-
 -int stm32_mdf_start_sitf(struct stm32_mdf_sitf *sitf)
 -{
 -	int ret;
@@ -1247,7 +1240,8 @@ index 79ff45b14cc9..2efb636e6d61 100644
 -	return ret;
 -}
 -EXPORT_SYMBOL_GPL(stm32_mdf_start_sitf);
--
++EXPORT_SYMBOL_GPL(stm32_mdf_trigger);
+ 
 -int stm32_mdf_stop_sitf(struct stm32_mdf_sitf *sitf)
 +int stm32_mdf_stop_mdf(struct stm32_mdf *mdf)
  {
@@ -1274,7 +1268,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  
  static int stm32_mdf_clk_gate_endisable(struct clk_hw *hw, int enable)
  {
-@@ -344,30 +259,35 @@ static long stm32_mdf_cck_divider_round_rate(struct clk_hw *hw, unsigned long ra
+@@ -344,30 +259,35 @@ static long stm32_mdf_cck_divider_round_
  	struct stm32_mdf_sck_prov *prov = div_to_sck_prov(div);
  	struct stm32_mdf_priv *priv = prov->data;
  	struct device *dev = &priv->pdev->dev;
@@ -1325,7 +1319,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  
  		/*
  		 * The total divider ratio must be split between proc divider and
-@@ -380,16 +300,26 @@ static long stm32_mdf_cck_divider_round_rate(struct clk_hw *hw, unsigned long ra
+@@ -380,16 +300,26 @@ static long stm32_mdf_cck_divider_round_
  		if (procdiv > MDF_PROCDIV_MAX) {
  			dev_err(dev, "Proc divider out of range: %d > %d\n",
  				procdiv, MDF_PROCDIV_MAX);
@@ -1353,7 +1347,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  };
  
  static const struct clk_ops cck_gate_ops = {
-@@ -416,32 +346,38 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -416,32 +346,38 @@ static int stm32_mdf_core_register_clock
  	struct clk_gate *gate;
  	struct clk_divider *div;
  	const char *clk_name;
@@ -1399,7 +1393,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  
  		priv->prov[index].data = priv;
  
-@@ -456,40 +392,49 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -456,40 +392,49 @@ static int stm32_mdf_core_register_clock
  
  		priv->prov[index].hw = hw;
  		clk_data->hws[index] = hw;
@@ -1458,7 +1452,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  
  	return 0;
  }
-@@ -506,11 +451,7 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -506,11 +451,7 @@ static int stm32_mdf_core_parse_clocks(s
  	priv->kclk = kclk;
  
  	/* CCK0 and CCK1 clocks are optional. Used only in SPI master modes. */
@@ -1471,7 +1465,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  	if (ret)
  		return ret;
  
-@@ -518,18 +459,18 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -518,18 +459,18 @@ static int stm32_mdf_core_parse_clocks(s
  	if (ret)
  		return ret;
  
@@ -1496,7 +1490,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  			return ret;
  		}
  	}
-@@ -537,157 +478,62 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -537,157 +478,62 @@ static int stm32_mdf_core_parse_clocks(s
  	return 0;
  }
  
@@ -1538,51 +1532,51 @@ index 79ff45b14cc9..2efb636e6d61 100644
 -	const char *str;
 -	int ret, i;
 -	u32 idx, mode, sitfcr;
--
++	struct fwnode_handle *fwnode = dev_fwnode(dev);
++	struct fwnode_handle *handle;
++	struct fwnode_handle **fh;
++	int count, ret, i;
+ 
 -	sitf = devm_kzalloc(&pdev->dev, mdf->nbf * sizeof(*mdf->sitf), GFP_KERNEL);
 -	if (!sitf)
 -		return -ENOMEM;
 -	spin_lock_init(&sitf->lock);
 -	mdf->sitf = sitf;
--
++	if (!node)
++		return -EINVAL;
+ 
 -	for (i = 0; i < mdf->nbf; i++) {
 -		sitf[i].dev = dev;
 -		sitf[i].scksrc = STM32_MDF_SCKSRC_NONE;
--	}
-+	struct fwnode_handle *fwnode = dev_fwnode(dev);
-+	struct fwnode_handle *handle;
-+	struct fwnode_handle **fh;
-+	int count, ret, i;
++	rst = devm_reset_control_get_optional_exclusive(&pdev->dev, "mdf");
++	if (IS_ERR(rst))
++		return dev_err_probe(dev, PTR_ERR(rst), "Failed to get reset controller\n");
++
++	ret = reset_control_reset(rst);
++	if (ret) {
++		dev_err(&pdev->dev, "reset_control_reset failed %d\n", ret);
++		return ret;
+ 	}
  
 -	for_each_available_child_of_node(node, child) {
 -		/* If compatible found, child node is not a sitf node. skip it */
 -		ret = of_property_read_string(child, "compatible", &str);
 -		if (!ret)
 -			continue;
-+	if (!node)
-+		return -EINVAL;
- 
+-
 -		ret = of_property_read_u32(child, "reg", &idx);
 -		if (ret) {
 -			dev_err(dev, "Could not get interface index: %d\n", ret);
 -			return ret;
 -		}
 -		idx = (idx >> 7) - 1;
-+	rst = devm_reset_control_get_optional_exclusive(&pdev->dev, "mdf");
-+	if (IS_ERR(rst))
-+		return dev_err_probe(dev, PTR_ERR(rst), "Failed to get reset controller\n");
- 
+-
 -		of_address_to_resource(child, 0, &res);
 -		if (ret) {
 -			dev_err(dev, "Failed to get resource from address: %d\n", ret);
 -			return ret;
 -		}
-+	ret = reset_control_reset(rst);
-+	if (ret) {
-+		dev_err(&pdev->dev, "reset_control_reset failed %d\n", ret);
-+		return ret;
-+	}
- 
+-
 -		base = devm_ioremap_resource(dev, &res);
 -		if (IS_ERR(base)) {
 -			ret = PTR_ERR(base);
@@ -1693,7 +1687,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  	return ret;
  }
  
-@@ -752,11 +598,98 @@ static int stm32_mdf_core_probe(struct platform_device *pdev)
+@@ -752,11 +598,98 @@ static int stm32_mdf_core_probe(struct p
  	if (ret < 0)
  		return ret;
  
@@ -1793,7 +1787,7 @@ index 79ff45b14cc9..2efb636e6d61 100644
  static const struct of_device_id stm32_mdf_of_match[] = {
  	{ .compatible = "st,stm32mp25-mdf" },
  	{}
-@@ -765,9 +698,11 @@ MODULE_DEVICE_TABLE(of, stm32_mdf_of_match);
+@@ -765,9 +698,11 @@ MODULE_DEVICE_TABLE(of, stm32_mdf_of_mat
  
  static struct platform_driver stm32_mdf_driver = {
  	.probe = stm32_mdf_core_probe,
@@ -1805,9 +1799,6 @@ index 79ff45b14cc9..2efb636e6d61 100644
  	},
  };
  
-diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
-new file mode 100644
-index 000000000000..521c4a16d34f
 --- /dev/null
 +++ b/drivers/iio/adc/stm32-mdf-serial.c
 @@ -0,0 +1,290 @@
@@ -2101,8 +2092,6 @@ index 000000000000..521c4a16d34f
 +MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 MDF serial driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index 5654bba806bb..ab59286a3dbc 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -2,7 +2,7 @@
@@ -2215,11 +2204,9 @@ index 5654bba806bb..ab59286a3dbc 100644
 -int stm32_mdf_stop_sitf(struct stm32_mdf_sitf *sitf);
 +int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf);
 +int stm32_mdf_sitf_stop(struct stm32_mdf_sitf *sitf);
-diff --git a/sound/soc/stm/stm32_amdf.c b/sound/soc/stm/stm32_amdf.c
-index 5e1483d566a7..ea94014a65de 100644
 --- a/sound/soc/stm/stm32_amdf.c
 +++ b/sound/soc/stm/stm32_amdf.c
-@@ -113,7 +113,7 @@ static const struct snd_soc_dai_ops stm32_amdf_dai_ops = {
+@@ -113,7 +113,7 @@ static const struct snd_soc_dai_ops stm3
  static const struct snd_soc_dai_driver stm32_amdf_dai = {
  	.capture = {
  		    .channels_min = 1,
@@ -2228,6 +2215,3 @@ index 5e1483d566a7..ea94014a65de 100644
  		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
  			       SNDRV_PCM_FMTBIT_S32_LE,
  		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
--- 
-2.39.2
-

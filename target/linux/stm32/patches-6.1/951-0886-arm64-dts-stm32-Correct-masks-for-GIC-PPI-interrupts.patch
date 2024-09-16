@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 7 +++++++
  2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 9bdf63ade098..7dc39ae5da6d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -248,10 +248,10 @@ cpu1_crit {
+@@ -248,10 +248,10 @@
  	timer {
  		compatible = "arm,armv8-timer";
  		interrupt-parent = <&intc>;
@@ -36,11 +34,9 @@ index 9bdf63ade098..7dc39ae5da6d 100644
  		arm,no-tick-in-suspend;
  	};
  
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 76c5ae71a176..8cb48badabd2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -33,6 +33,13 @@ CPU_PD1: power-domain-cpu1 {
+@@ -33,6 +33,13 @@
  		};
  	};
  
@@ -54,6 +50,3 @@ index 76c5ae71a176..8cb48badabd2 100644
  	soc@0 {
  		rifsc: rifsc@42080000 {
  			m_can1: can@402d0000 {
--- 
-2.39.2
-

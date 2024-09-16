@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-index 9817a54fd96f..e063e62a2d71 100644
 --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
 +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
 @@ -52,6 +52,9 @@ properties:
@@ -34,6 +32,3 @@ index 9817a54fd96f..e063e62a2d71 100644
    dmas:
      description: |
        DMA specifiers for tx and rx dma. DMA fifo mode must be used. See
--- 
-2.39.2
-

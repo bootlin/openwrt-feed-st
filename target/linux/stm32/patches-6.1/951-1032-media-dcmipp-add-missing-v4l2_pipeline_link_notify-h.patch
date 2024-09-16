@@ -21,11 +21,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c   | 1 -
  4 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index f5c49aa6c61b..a4a8782d294a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -331,7 +331,6 @@ static int dcmipp_bytecap_enum_framesizes(struct file *file, void *fh,
+@@ -331,7 +331,6 @@ static int dcmipp_bytecap_enum_framesize
  	return 0;
  }
  
@@ -33,8 +31,6 @@ index f5c49aa6c61b..a4a8782d294a 100644
  static int dcmipp_bytecap_open(struct file *file)
  {
  	struct dcmipp_bytecap_device *vcap = video_drvdata(file);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 55df89ba97a0..f89ee41a78f6 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -21,6 +21,7 @@
@@ -45,7 +41,7 @@ index 55df89ba97a0..f89ee41a78f6 100644
  
  #include "dcmipp-common.h"
  
-@@ -463,6 +464,10 @@ static int dcmipp_graph_init(struct dcmipp_device *dcmipp)
+@@ -463,6 +464,10 @@ static int dcmipp_graph_init(struct dcmi
  	return 0;
  }
  
@@ -56,7 +52,7 @@ index 55df89ba97a0..f89ee41a78f6 100644
  static int dcmipp_probe(struct platform_device *pdev)
  {
  	struct dcmipp_device *dcmipp;
-@@ -571,6 +576,7 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -571,6 +576,7 @@ static int dcmipp_probe(struct platform_
  	snprintf(dcmipp->mdev.bus_info, sizeof(dcmipp->mdev.bus_info),
  		 "platform:%s", DCMIPP_PDEV_NAME);
  	dcmipp->mdev.dev = &pdev->dev;
@@ -64,11 +60,9 @@ index 55df89ba97a0..f89ee41a78f6 100644
  	media_device_init(&dcmipp->mdev);
  
  	pm_runtime_enable(dcmipp->dev);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index a2f5fa0fe8c3..2e734c1e0170 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -436,7 +436,6 @@ static int dcmipp_pixelcap_enum_framesizes(struct file *file, void *fh,
+@@ -436,7 +436,6 @@ static int dcmipp_pixelcap_enum_framesiz
  	return 0;
  }
  
@@ -76,11 +70,9 @@ index a2f5fa0fe8c3..2e734c1e0170 100644
  static int dcmipp_pixelcap_open(struct file *file)
  {
  	struct dcmipp_pixelcap_device *vcap = video_drvdata(file);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index ddd5896bfaeb..81b6fbf6de04 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -161,7 +161,6 @@ static int dcmipp_statcap_enum_fmt_meta_cap(struct file *file, void *priv,
+@@ -161,7 +161,6 @@ static int dcmipp_statcap_enum_fmt_meta_
  	return 0;
  }
  
@@ -88,6 +80,3 @@ index ddd5896bfaeb..81b6fbf6de04 100644
  static int dcmipp_statcap_open(struct file *file)
  {
  	struct dcmipp_statcap_device *vcap = video_drvdata(file);
--- 
-2.39.2
-

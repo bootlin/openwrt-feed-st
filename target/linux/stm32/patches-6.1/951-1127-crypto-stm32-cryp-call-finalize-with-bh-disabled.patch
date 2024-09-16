@@ -21,8 +21,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 50ea93038680..5f0cf7769eac 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
 @@ -4,6 +4,7 @@
@@ -33,7 +31,7 @@ index 50ea93038680..5f0cf7769eac 100644
  #include <linux/clk.h>
  #include <linux/debugfs.h>
  #include <linux/delay.h>
-@@ -2097,8 +2098,11 @@ static irqreturn_t stm32_cryp_irq_thread(int irq, void *arg)
+@@ -2097,8 +2098,11 @@ static irqreturn_t stm32_cryp_irq_thread
  		it_mask &= ~IMSCR_OUT;
  	stm32_cryp_write(cryp, CRYP_IMSCR, it_mask);
  
@@ -46,6 +44,3 @@ index 50ea93038680..5f0cf7769eac 100644
  
  	return IRQ_HANDLED;
  }
--- 
-2.39.2
-

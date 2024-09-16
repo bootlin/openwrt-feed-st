@@ -18,8 +18,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  3 files changed, 718 insertions(+)
  create mode 100644 drivers/spi/spi-stm32-ospi.c
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 906b4e8b79a5..f9f8ec8c5717 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -920,6 +920,17 @@ config SPI_STM32
@@ -40,8 +38,6 @@ index 906b4e8b79a5..f9f8ec8c5717 100644
  config SPI_STM32_QSPI
  	tristate "STMicroelectronics STM32 QUAD SPI controller"
  	depends on ARCH_STM32 || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 4b34e855c841..18a7e48ce750 100644
 --- a/drivers/spi/Makefile
 +++ b/drivers/spi/Makefile
 @@ -124,6 +124,7 @@ obj-$(CONFIG_SPI_SPRD)			+= spi-sprd.o
@@ -52,9 +48,6 @@ index 4b34e855c841..18a7e48ce750 100644
  obj-$(CONFIG_SPI_ST_SSC4)		+= spi-st-ssc4.o
  obj-$(CONFIG_SPI_SUN4I)			+= spi-sun4i.o
  obj-$(CONFIG_SPI_SUN6I)			+= spi-sun6i.o
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-new file mode 100644
-index 000000000000..5861c8c40a71
 --- /dev/null
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -0,0 +1,706 @@
@@ -764,6 +757,3 @@ index 000000000000..5861c8c40a71
 +
 +MODULE_DESCRIPTION("STMicroelectronics STM32 OCTO SPI driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

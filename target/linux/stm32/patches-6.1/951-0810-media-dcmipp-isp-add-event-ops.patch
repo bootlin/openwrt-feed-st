@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index c0546c7db0fc..e69b6543afc2 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -17,6 +17,7 @@
@@ -29,7 +27,7 @@ index c0546c7db0fc..e69b6543afc2 100644
  #include <media/v4l2-rect.h>
  #include <media/v4l2-subdev.h>
  
-@@ -988,11 +989,17 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -988,11 +989,17 @@ out:
  	return ret;
  }
  
@@ -47,6 +45,3 @@ index c0546c7db0fc..e69b6543afc2 100644
  	.pad = &dcmipp_isp_pad_ops,
  	.video = &dcmipp_isp_video_ops,
  };
--- 
-2.39.2
-

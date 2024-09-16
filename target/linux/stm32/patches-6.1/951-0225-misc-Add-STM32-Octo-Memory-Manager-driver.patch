@@ -29,8 +29,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  3 files changed, 446 insertions(+)
  create mode 100644 drivers/misc/stm32_omm.c
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 0cef98319f0e..e95bf0d60701 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -436,6 +436,23 @@ config DW_XDATA_PCIE
@@ -57,18 +55,13 @@ index 0cef98319f0e..e95bf0d60701 100644
  config PCI_ENDPOINT_TEST
  	depends on PCI
  	select CRC32
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index ac9b3e757ba1..b5c255d92b3b 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
-@@ -62,3 +62,4 @@ obj-$(CONFIG_HI6421V600_IRQ)	+= hi6421v600-irq.o
+@@ -62,3 +62,4 @@ obj-$(CONFIG_HI6421V600_IRQ)	+= hi6421v6
  obj-$(CONFIG_OPEN_DICE)		+= open-dice.o
  obj-$(CONFIG_GP_PCI1XXXX)	+= mchp_pci1xxxx/
  obj-$(CONFIG_VCPU_STALL_DETECTOR)	+= vcpu_stall_detector.o
 +obj-$(CONFIG_STM32_OMM)	 	+= stm32_omm.o
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-new file mode 100644
-index 000000000000..571ddab511a1
 --- /dev/null
 +++ b/drivers/misc/stm32_omm.c
 @@ -0,0 +1,428 @@
@@ -500,6 +493,3 @@ index 000000000000..571ddab511a1
 +
 +MODULE_DESCRIPTION("STMicroelectronics Octo Memory Manager driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

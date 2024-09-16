@@ -32,11 +32,9 @@ Reviewed-by: Michel JAOUEN <michel.jaouen@st.com>
  drivers/irqchip/irq-rpmsg.c | 44 ++++++++++++++++++++++---------------
  1 file changed, 26 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/irqchip/irq-rpmsg.c b/drivers/irqchip/irq-rpmsg.c
-index fa9e9d947bfb..fed22dbfa67f 100644
 --- a/drivers/irqchip/irq-rpmsg.c
 +++ b/drivers/irqchip/irq-rpmsg.c
-@@ -75,7 +75,7 @@ static int irq_rpmsg_map(struct irq_domain *d,
+@@ -75,7 +75,7 @@ static int irq_rpmsg_map(struct irq_doma
  	struct rpmsg_irq_dev *rirq_dev = d->host_data;
  
  	if (!atomic_read(&rirq_dev->initialized))
@@ -45,7 +43,7 @@ index fa9e9d947bfb..fed22dbfa67f 100644
  
  	irq_set_status_flags(virq, IRQ_LEVEL);
  	irq_set_chip_and_handler(virq, &irq_rpmsg_chip, handle_level_irq);
-@@ -169,25 +169,19 @@ static void irq_rpmsg_setup_work(struct work_struct *ws)
+@@ -169,25 +169,19 @@ static void irq_rpmsg_setup_work(struct
  		goto err;
  	}
  
@@ -80,7 +78,7 @@ index fa9e9d947bfb..fed22dbfa67f 100644
  	return;
  
  err:
-@@ -229,8 +223,6 @@ static void irq_rpmsg_remove(struct rpmsg_device *rpdev)
+@@ -229,8 +223,6 @@ static void irq_rpmsg_remove(struct rpms
  	struct rpmsg_irq_dev *rirq_dev = dev_get_drvdata(&rpdev->dev);
  
  	cancel_work_sync(&rirq_dev->irqrpmsg_work);
@@ -89,7 +87,7 @@ index fa9e9d947bfb..fed22dbfa67f 100644
  
  	atomic_set(&rirq_dev->initialized, 0);
  }
-@@ -262,9 +254,23 @@ static int irq_rpmsg_plat_probe(struct platform_device *pdev)
+@@ -262,9 +254,23 @@ static int irq_rpmsg_plat_probe(struct p
  	platform_set_drvdata(pdev, rirq_dev);
  
  	rirq_dev->rpdrv = rpmsg_irq_drv;
@@ -113,7 +111,7 @@ index fa9e9d947bfb..fed22dbfa67f 100644
  		return ret;
  	}
  
-@@ -277,6 +283,8 @@ static int irq_rpmsg_plat_remove(struct platform_device *pdev)
+@@ -277,6 +283,8 @@ static int irq_rpmsg_plat_remove(struct
  
  	unregister_rpmsg_driver(&rirq_dev->rpdrv);
  
@@ -122,6 +120,3 @@ index fa9e9d947bfb..fed22dbfa67f 100644
  	return 0;
  }
  
--- 
-2.39.2
-

@@ -31,9 +31,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  delete mode 100644 include/dt-bindings/soc/stm32mp13-hdp.h
  delete mode 100644 include/dt-bindings/soc/stm32mp25-hdp.h
 
-diff --git a/Documentation/devicetree/bindings/soc/stm32/stm32_hdp.txt b/Documentation/devicetree/bindings/soc/stm32/stm32_hdp.txt
-deleted file mode 100644
-index e2bd82f4980e..000000000000
 --- a/Documentation/devicetree/bindings/soc/stm32/stm32_hdp.txt
 +++ /dev/null
 @@ -1,39 +0,0 @@
@@ -76,8 +73,6 @@ index e2bd82f4980e..000000000000
 -		       STM32_HDP(6, HDP6_GPOVAL_6) |
 -		       STM32_HDP(7, HDP7_GPOVAL_7))>;
 -};
-diff --git a/drivers/soc/st/Kconfig b/drivers/soc/st/Kconfig
-index 739cfb9fe95a..82ee423e3464 100644
 --- a/drivers/soc/st/Kconfig
 +++ b/drivers/soc/st/Kconfig
 @@ -1,13 +1,5 @@
@@ -94,16 +89,11 @@ index 739cfb9fe95a..82ee423e3464 100644
  config STM32_PM_DOMAINS
  	bool "STM32 PM domains"
  	depends on MACH_STM32MP157
-diff --git a/drivers/soc/st/Makefile b/drivers/soc/st/Makefile
-index 0fce1db16642..8d7f2919fe18 100644
 --- a/drivers/soc/st/Makefile
 +++ b/drivers/soc/st/Makefile
 @@ -1,2 +1 @@
 -obj-$(CONFIG_STM32_HDP) += stm32_hdp.o
  obj-$(CONFIG_STM32_PM_DOMAINS) += stm32_pm_domain.o
-diff --git a/drivers/soc/st/stm32_hdp.c b/drivers/soc/st/stm32_hdp.c
-deleted file mode 100644
-index 4a267627fb7e..000000000000
 --- a/drivers/soc/st/stm32_hdp.c
 +++ /dev/null
 @@ -1,246 +0,0 @@
@@ -353,9 +343,6 @@ index 4a267627fb7e..000000000000
 -MODULE_AUTHOR("Christophe Roullier <christophe.roullier@foss.st.com>");
 -MODULE_DESCRIPTION("STM32 Hardware Debug Port (HDP) pin control");
 -MODULE_LICENSE("GPL");
-diff --git a/include/dt-bindings/soc/stm32-hdp.h b/include/dt-bindings/soc/stm32-hdp.h
-deleted file mode 100644
-index 5d4d8c408f39..000000000000
 --- a/include/dt-bindings/soc/stm32-hdp.h
 +++ /dev/null
 @@ -1,119 +0,0 @@
@@ -478,9 +465,6 @@ index 5d4d8c408f39..000000000000
 -#define HDP7_GPOVAL_7				15
 -
 -#endif /* _DT_BINDINGS_STM32_HDP_H */
-diff --git a/include/dt-bindings/soc/stm32mp13-hdp.h b/include/dt-bindings/soc/stm32mp13-hdp.h
-deleted file mode 100644
-index 4e0d0ade40d7..000000000000
 --- a/include/dt-bindings/soc/stm32mp13-hdp.h
 +++ /dev/null
 @@ -1,133 +0,0 @@
@@ -617,9 +601,6 @@ index 4e0d0ade40d7..000000000000
 -#define HDP7_GPOVAL_7				15
 -
 -#endif /* _DT_BINDINGS_STM32_HDP_H */
-diff --git a/include/dt-bindings/soc/stm32mp25-hdp.h b/include/dt-bindings/soc/stm32mp25-hdp.h
-deleted file mode 100644
-index 6f4592a4b5c9..000000000000
 --- a/include/dt-bindings/soc/stm32mp25-hdp.h
 +++ /dev/null
 @@ -1,147 +0,0 @@
@@ -770,6 +751,3 @@ index 6f4592a4b5c9..000000000000
 -#define HDP7_GPOVAL_7				15
 -
 -#endif /* _DT_BINDINGS_STM32_HDP_H */
--- 
-2.39.2
-

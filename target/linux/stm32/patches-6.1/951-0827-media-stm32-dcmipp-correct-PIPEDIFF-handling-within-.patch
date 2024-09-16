@@ -22,11 +22,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 25 ++++++++++++++++---
  2 files changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 59e678453763..5ecbef7f8ccb 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -199,13 +199,13 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -199,13 +199,13 @@ static const struct dcmipp_ent_link stm3
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  	DCMIPP_ENT_LINK(ID_MAIN_ISP,	1, ID_MAIN_POSTPROC,  0,
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
@@ -42,11 +40,9 @@ index 59e678453763..5ecbef7f8ccb 100644
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 7b63d042d7b6..88c3a8a75fce 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -927,6 +927,24 @@ static int dcmipp_isp_colorconv_user(struct dcmipp_isp_device *isp)
+@@ -927,6 +927,24 @@ static int dcmipp_isp_colorconv_user(str
  	return dcmipp_isp_colorconv_set(isp, &ccconf);
  }
  
@@ -71,7 +67,7 @@ index 7b63d042d7b6..88c3a8a75fce 100644
  static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
  {
  	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
-@@ -935,7 +953,7 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -935,7 +953,7 @@ static int dcmipp_isp_s_stream(struct v4
  	mutex_lock(&isp->lock);
  	if (enable) {
  		/* Check if link between ISP & Pipe2 postproc is enabled */
@@ -80,7 +76,7 @@ index 7b63d042d7b6..88c3a8a75fce 100644
  			reg_clear(isp, DCMIPP_P1FSCR, DCMIPP_P1FSCR_PIPEDIFF);
  		else
  			reg_set(isp, DCMIPP_P1FSCR, DCMIPP_P1FSCR_PIPEDIFF);
-@@ -1117,12 +1135,11 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -1117,12 +1135,11 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
  				     v4l2_dev,
  				     entity_name,
@@ -95,6 +91,3 @@ index 7b63d042d7b6..88c3a8a75fce 100644
  				     },
  				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
  				     NULL, dcmipp_isp_irq_thread);
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 9a338d121f0e..e96f02f95f67 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -234,8 +234,9 @@ static inline int hdw_pixel_alignment(u32 format)
+@@ -234,8 +234,9 @@ static inline int hdw_pixel_alignment(u3
  	case V4L2_PIX_FMT_YVYU:
  	case V4L2_PIX_FMT_UYVY:
  	case V4L2_PIX_FMT_VYUY:
@@ -34,6 +32,3 @@ index 9a338d121f0e..e96f02f95f67 100644
  	case V4L2_PIX_FMT_ARGB32:
  		return 2;/* 2^2  = 4 pixels = 16 bytes */
  	default:
--- 
-2.39.2
-

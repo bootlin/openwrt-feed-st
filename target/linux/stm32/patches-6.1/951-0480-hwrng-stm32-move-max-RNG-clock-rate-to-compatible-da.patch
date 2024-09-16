@@ -24,8 +24,6 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/char/hw_random/stm32-rng.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index bed28707d5d9..a14685cf7fe4 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -44,11 +44,10 @@
@@ -41,7 +39,7 @@ index bed28707d5d9..a14685cf7fe4 100644
  	u32	cr;
  	u32	nscr;
  	u32	htcr;
-@@ -267,7 +266,7 @@ static uint stm32_rng_clock_freq_restrain(struct hwrng *rng)
+@@ -267,7 +266,7 @@ static uint stm32_rng_clock_freq_restrai
  	 * No need to handle the case when clock-div > 0xF as it is physically
  	 * impossible
  	 */
@@ -50,7 +48,7 @@ index bed28707d5d9..a14685cf7fe4 100644
  		clock_div++;
  
  	pr_debug("RNG clk rate : %lu\n", clk_get_rate(priv->clk) >> clock_div);
-@@ -479,6 +478,7 @@ static const struct dev_pm_ops stm32_rng_pm_ops = {
+@@ -479,6 +478,7 @@ static const struct dev_pm_ops stm32_rng
  
  static const struct stm32_rng_data stm32mp13_rng_data = {
  	.has_cond_reset = true,
@@ -58,7 +56,7 @@ index bed28707d5d9..a14685cf7fe4 100644
  	.cr = 0x00F00D00,
  	.nscr = 0x2B5BB,
  	.htcr = 0x969D,
-@@ -486,6 +486,7 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+@@ -486,6 +486,7 @@ static const struct stm32_rng_data stm32
  
  static const struct stm32_rng_data stm32_rng_data = {
  	.has_cond_reset = false,
@@ -66,6 +64,3 @@ index bed28707d5d9..a14685cf7fe4 100644
  };
  
  static const struct of_device_id stm32_rng_match[] = {
--- 
-2.39.2
-

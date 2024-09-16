@@ -21,8 +21,6 @@ Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  tools/counter/counter_watch_events.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
-index 3898fe7e35ec..37d1b4b3e63d 100644
 --- a/tools/counter/counter_watch_events.c
 +++ b/tools/counter/counter_watch_events.c
 @@ -120,8 +120,8 @@ static void print_usage(void)
@@ -36,6 +34,3 @@ index 3898fe7e35ec..37d1b4b3e63d 100644
  		"\n"
  		"Example with two watched events:\n\n"
  		"counter_watch_events -d \\\n"
--- 
-2.39.2
-

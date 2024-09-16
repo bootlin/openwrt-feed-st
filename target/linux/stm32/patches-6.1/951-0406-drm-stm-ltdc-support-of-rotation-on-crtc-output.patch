@@ -16,8 +16,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h |   4 +
  2 files changed, 198 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 61857292e19f..f3560e20bd4c 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -16,6 +16,7 @@
@@ -80,7 +78,7 @@ index 61857292e19f..f3560e20bd4c 100644
  
  #define EDCR_OCYEN	BIT(25)		/* Output Conversion to YCbCr 422: ENable */
  #define EDCR_OCYSEL	BIT(26)		/* Output Conversion to YCbCr 422: SELection of the CCIR */
-@@ -727,6 +738,8 @@ static irqreturn_t ltdc_irq_thread(int irq, void *arg)
+@@ -727,6 +738,8 @@ static irqreturn_t ltdc_irq_thread(int i
  		ldev->fifo_err++;
  	if (ldev->irq_status & ISR_FUWIF)
  		ldev->fifo_warn++;
@@ -89,7 +87,7 @@ index 61857292e19f..f3560e20bd4c 100644
  	mutex_unlock(&ldev->err_lock);
  
  	return IRQ_HANDLED;
-@@ -792,7 +805,12 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -792,7 +805,12 @@ static void ltdc_crtc_atomic_enable(stru
  	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
  
  	/* Enable IRQ */
@@ -103,7 +101,7 @@ index 61857292e19f..f3560e20bd4c 100644
  
  	/* Commit shadow registers = update planes at next vblank */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -818,7 +836,12 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -818,7 +836,12 @@ static void ltdc_crtc_atomic_disable(str
  				  LXCR_CLUTEN | LXCR_LEN, 0);
  
  	/* disable IRQ */
@@ -117,7 +115,7 @@ index 61857292e19f..f3560e20bd4c 100644
  
  	/* immediately commit disable of layers before switching off LTDC */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -831,6 +854,7 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -831,6 +854,7 @@ static void ltdc_crtc_atomic_disable(str
  	ldev->transfer_err = 0;
  	ldev->fifo_err = 0;
  	ldev->fifo_warn = 0;
@@ -125,7 +123,7 @@ index 61857292e19f..f3560e20bd4c 100644
  	mutex_unlock(&ldev->err_lock);
  }
  
-@@ -908,6 +932,7 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -908,6 +932,7 @@ static void ltdc_crtc_mode_set_nofb(stru
  	u32 total_width, total_height;
  	u32 bus_formats = MEDIA_BUS_FMT_RGB888_1X24;
  	u32 bus_flags = 0;
@@ -133,13 +131,25 @@ index 61857292e19f..f3560e20bd4c 100644
  	u32 val;
  	int ret;
  
-@@ -991,23 +1016,44 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -991,23 +1016,44 @@ static void ltdc_crtc_mode_set_nofb(stru
  	regmap_update_bits(ldev->regmap, LTDC_GCR,
  			   GCR_HSPOL | GCR_VSPOL | GCR_DEPOL | GCR_PCPOL | GCR_DEN, val);
  
 -	/* Set Synchronization size */
 -	val = (hsync << 16) | vsync;
 -	regmap_update_bits(ldev->regmap, LTDC_SSCR, SSCR_VSH | SSCR_HSW, val);
+-
+-	/* Set Accumulated Back porch */
+-	val = (accum_hbp << 16) | accum_vbp;
+-	regmap_update_bits(ldev->regmap, LTDC_BPCR, BPCR_AVBP | BPCR_AHBP, val);
+-
+-	/* Set Accumulated Active Width */
+-	val = (accum_act_w << 16) | accum_act_h;
+-	regmap_update_bits(ldev->regmap, LTDC_AWCR, AWCR_AAW | AWCR_AAH, val);
+-
+-	/* Set total width & height */
+-	val = (total_width << 16) | total_height;
+-	regmap_update_bits(ldev->regmap, LTDC_TWCR, TWCR_TOTALH | TWCR_TOTALW, val);
 +	/* check that an output rotation is required */
 +	if (ldev->caps.crtc_rotation && (ldev->output_rotation == 90 || ldev->output_rotation == 270)) {
 +		/* Set Synchronization size */
@@ -149,35 +159,26 @@ index 61857292e19f..f3560e20bd4c 100644
 +		/* Set Accumulated Back porch */
 +		val = (accum_vbp << 16) | accum_hbp;
 +		regmap_update_bits(ldev->regmap, LTDC_BPCR, BPCR_AVBP | BPCR_AHBP, val);
- 
--	/* Set Accumulated Back porch */
--	val = (accum_hbp << 16) | accum_vbp;
--	regmap_update_bits(ldev->regmap, LTDC_BPCR, BPCR_AVBP | BPCR_AHBP, val);
++
 +		/* Set Accumulated Active Width */
 +		val = (accum_act_h << 16) | accum_act_w;
 +		regmap_update_bits(ldev->regmap, LTDC_AWCR, AWCR_AAW | AWCR_AAH, val);
- 
--	/* Set Accumulated Active Width */
--	val = (accum_act_w << 16) | accum_act_h;
--	regmap_update_bits(ldev->regmap, LTDC_AWCR, AWCR_AAW | AWCR_AAH, val);
++
 +		/* Set total width & height */
 +		val = (total_height << 16) | total_width;
 +		regmap_update_bits(ldev->regmap, LTDC_TWCR, TWCR_TOTALH | TWCR_TOTALW, val);
-+
+ 
+-	regmap_write(ldev->regmap, LTDC_LIPCR, (accum_act_h + 1));
 +		regmap_write(ldev->regmap, LTDC_LIPCR, (accum_act_w + 1));
 +	} else {
 +		/* Set Synchronization size */
 +		val = (hsync << 16) | vsync;
 +		regmap_update_bits(ldev->regmap, LTDC_SSCR, SSCR_VSH | SSCR_HSW, val);
- 
--	/* Set total width & height */
--	val = (total_width << 16) | total_height;
--	regmap_update_bits(ldev->regmap, LTDC_TWCR, TWCR_TOTALH | TWCR_TOTALW, val);
++
 +		/* Set Accumulated Back porch */
 +		val = (accum_hbp << 16) | accum_vbp;
 +		regmap_update_bits(ldev->regmap, LTDC_BPCR, BPCR_AVBP | BPCR_AHBP, val);
- 
--	regmap_write(ldev->regmap, LTDC_LIPCR, (accum_act_h + 1));
++
 +		/* Set Accumulated Active Width */
 +		val = (accum_act_w << 16) | accum_act_h;
 +		regmap_update_bits(ldev->regmap, LTDC_AWCR, AWCR_AAW | AWCR_AAH, val);
@@ -191,7 +192,7 @@ index 61857292e19f..f3560e20bd4c 100644
  
  	/* Configure the output format (hw version dependent) */
  	if (ldev->caps.ycbcr_output) {
-@@ -1038,6 +1084,30 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -1038,6 +1084,30 @@ static void ltdc_crtc_mode_set_nofb(stru
  			break;
  		}
  	}
@@ -222,7 +223,7 @@ index 61857292e19f..f3560e20bd4c 100644
  }
  
  static void ltdc_crtc_atomic_flush(struct drm_crtc *crtc,
-@@ -1221,6 +1291,7 @@ static void ltdc_crtc_atomic_print_state(struct drm_printer *p,
+@@ -1221,6 +1291,7 @@ static void ltdc_crtc_atomic_print_state
  	drm_printf(p, "\ttransfer_error=%d\n", ldev->transfer_err);
  	drm_printf(p, "\tfifo_underrun_error=%d\n", ldev->fifo_err);
  	drm_printf(p, "\tfifo_underrun_warning=%d\n", ldev->fifo_warn);
@@ -230,7 +231,7 @@ index 61857292e19f..f3560e20bd4c 100644
  	drm_printf(p, "\tfifo_underrun_threshold=%d\n", ldev->fifo_threshold);
  }
  
-@@ -1300,6 +1371,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1300,6 +1371,7 @@ static void ltdc_plane_atomic_update(str
  	u32 val, pitch_in_bytes, line_length, line_number, ahbp, avbp, bpcr;
  	u32 paddr, paddr1, paddr2;
  	enum ltdc_pix_fmt pf;
@@ -238,17 +239,12 @@ index 61857292e19f..f3560e20bd4c 100644
  
  	if (!newstate->crtc || !fb) {
  		DRM_DEBUG_DRIVER("fb or crtc NULL");
-@@ -1323,18 +1395,63 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1323,18 +1395,63 @@ static void ltdc_plane_atomic_update(str
  
  	regmap_read(ldev->regmap, LTDC_BPCR, &bpcr);
  
 -	ahbp = (bpcr & BPCR_AHBP) >> 16;
 -	avbp = bpcr & BPCR_AVBP;
--
--	/* Configures the horizontal start and stop position */
--	val = ((x1 + 1 + ahbp) << 16) + (x0 + 1 + ahbp);
--	regmap_write_bits(ldev->regmap, LTDC_L1WHPCR + lofs,
--			  LXWHPCR_WHSTPOS | LXWHPCR_WHSPPOS, val);
 +	if (ldev->caps.crtc_rotation && (ldev->output_rotation == 90 || ldev->output_rotation == 270)) {
 +		avbp = (bpcr & BPCR_AHBP) >> 16;
 +		ahbp = bpcr & BPCR_AVBP;
@@ -272,6 +268,11 @@ index 61857292e19f..f3560e20bd4c 100644
 +				plane_rotation |= DRM_MODE_REFLECT_X;
 +		}
  
+-	/* Configures the horizontal start and stop position */
+-	val = ((x1 + 1 + ahbp) << 16) + (x0 + 1 + ahbp);
+-	regmap_write_bits(ldev->regmap, LTDC_L1WHPCR + lofs,
+-			  LXWHPCR_WHSTPOS | LXWHPCR_WHSPPOS, val);
+-
 -	/* Configures the vertical start and stop position */
 -	val = ((y1 + 1 + avbp) << 16) + (y0 + 1 + avbp);
 -	regmap_write_bits(ldev->regmap, LTDC_L1WVPCR + lofs,
@@ -313,7 +314,7 @@ index 61857292e19f..f3560e20bd4c 100644
  
  	/* Specifies the pixel format */
  	pf = to_ltdc_pixelformat(fb->format->format);
-@@ -1379,10 +1496,10 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1379,10 +1496,10 @@ static void ltdc_plane_atomic_update(str
  	/* Sets the FB address */
  	paddr = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 0);
  
@@ -326,7 +327,7 @@ index 61857292e19f..f3560e20bd4c 100644
  		paddr += (fb->pitches[0] * (y1 - y0));
  
  	DRM_DEBUG_DRIVER("fb: phys 0x%08x", paddr);
-@@ -1392,7 +1509,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1392,7 +1509,7 @@ static void ltdc_plane_atomic_update(str
  	line_length = fb->format->cpp[0] *
  		      (x1 - x0 + 1) + (ldev->caps.bus_width >> 3) - 1;
  
@@ -335,7 +336,7 @@ index 61857292e19f..f3560e20bd4c 100644
  		/* Compute negative value (signed on 16 bits) for the picth */
  		pitch_in_bytes = 0x10000 - fb->pitches[0];
  	else
-@@ -1413,10 +1530,10 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1413,10 +1530,10 @@ static void ltdc_plane_atomic_update(str
  			/* Configure the auxiliary frame buffer address 0 */
  			paddr1 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 1);
  
@@ -348,7 +349,7 @@ index 61857292e19f..f3560e20bd4c 100644
  				paddr1 += (fb->pitches[1] * (y1 - y0 - 1)) >> 1;
  
  			regmap_write(ldev->regmap, LTDC_L1AFBA0R + lofs, paddr1);
-@@ -1426,12 +1543,12 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1426,12 +1543,12 @@ static void ltdc_plane_atomic_update(str
  			paddr1 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 1);
  			paddr2 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 2);
  
@@ -363,7 +364,7 @@ index 61857292e19f..f3560e20bd4c 100644
  				paddr1 += (fb->pitches[1] * (y1 - y0 - 1)) >> 1;
  				paddr2 += (fb->pitches[2] * (y1 - y0 - 1)) >> 1;
  			}
-@@ -1444,12 +1561,12 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1444,12 +1561,12 @@ static void ltdc_plane_atomic_update(str
  			paddr1 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 2);
  			paddr2 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 1);
  
@@ -378,7 +379,7 @@ index 61857292e19f..f3560e20bd4c 100644
  				paddr1 += (fb->pitches[1] * (y1 - y0 - 1)) >> 1;
  				paddr2 += (fb->pitches[2] * (y1 - y0 - 1)) >> 1;
  			}
-@@ -1464,7 +1581,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1464,7 +1581,7 @@ static void ltdc_plane_atomic_update(str
  			 * buffers if the framebuffer contains more than one plane.
  			 */
  			if (fb->format->num_planes > 1) {
@@ -387,7 +388,7 @@ index 61857292e19f..f3560e20bd4c 100644
  					/*
  					 * Compute negative value (signed on 16 bits)
  					 * for the picth
-@@ -1504,7 +1621,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1504,7 +1621,7 @@ static void ltdc_plane_atomic_update(str
  	val |= LXCR_LEN;
  
  	/* Enable horizontal mirroring if requested */
@@ -396,7 +397,7 @@ index 61857292e19f..f3560e20bd4c 100644
  		val |= LXCR_HMEN;
  
  	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_LEN | LXCR_CLUTEN | LXCR_HMEN, val);
-@@ -1522,6 +1639,11 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1522,6 +1639,11 @@ static void ltdc_plane_atomic_update(str
  		ldev->transfer_err = 0;
  	}
  
@@ -408,7 +409,7 @@ index 61857292e19f..f3560e20bd4c 100644
  	if (ldev->caps.fifo_threshold) {
  		if (ldev->fifo_err) {
  			DRM_WARN("ltdc fifo underrun: please verify display mode\n");
-@@ -1892,6 +2014,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -1892,6 +2014,7 @@ static int ltdc_get_caps(struct drm_devi
  		ldev->caps.crc = false;
  		ldev->caps.dynamic_zorder = false;
  		ldev->caps.plane_rotation = false;
@@ -416,7 +417,7 @@ index 61857292e19f..f3560e20bd4c 100644
  		ldev->caps.fifo_threshold = false;
  		break;
  	case HWVER_20101:
-@@ -1910,6 +2033,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -1910,6 +2033,7 @@ static int ltdc_get_caps(struct drm_devi
  		ldev->caps.crc = false;
  		ldev->caps.dynamic_zorder = false;
  		ldev->caps.plane_rotation = false;
@@ -424,7 +425,7 @@ index 61857292e19f..f3560e20bd4c 100644
  		ldev->caps.fifo_threshold = false;
  		break;
  	case HWVER_40100:
-@@ -1932,6 +2056,11 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -1932,6 +2056,11 @@ static int ltdc_get_caps(struct drm_devi
  		ldev->caps.crc = true;
  		ldev->caps.dynamic_zorder = true;
  		ldev->caps.plane_rotation = true;
@@ -502,8 +503,6 @@ index 61857292e19f..f3560e20bd4c 100644
  	for (i = 0; i < nb_endpoints; i++)
  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
  
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index a9246bd81bbb..309a3f6f69a9 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -30,6 +30,7 @@ struct ltdc_caps {
@@ -531,6 +530,3 @@ index a9246bd81bbb..309a3f6f69a9 100644
  };
  
  int ltdc_load(struct drm_device *ddev);
--- 
-2.39.2
-

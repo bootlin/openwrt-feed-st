@@ -17,22 +17,18 @@ Change-Id: Ifb87d83aebb7e71b6ac44d9393aaab5fbf329a6c
  4 files changed, 151 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index 167361878f68..c8382ebac209 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
-@@ -38,4 +38,5 @@ hantro-vpu-$(CONFIG_VIDEO_HANTRO_SUNXI) += \
+@@ -38,4 +38,5 @@ hantro-vpu-$(CONFIG_VIDEO_HANTRO_SUNXI)
  		sunxi_vpu_hw.o
  
  hantro-vpu-$(CONFIG_VIDEO_HANTRO_STM32MP25) += \
 -		stm32mp25_vdec_hw.o
 +		stm32mp25_vdec_hw.o \
 +		stm32mp25_venc_hw.o
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index caa988746969..d1bb1ed54df5 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -645,6 +645,7 @@ static const struct of_device_id of_hantro_match[] = {
+@@ -645,6 +645,7 @@ static const struct of_device_id of_hant
  #endif
  #ifdef CONFIG_VIDEO_HANTRO_STM32MP25
  	{ .compatible = "st,stm32mp25-vdec", .data = &stm32mp25_vdec_variant, },
@@ -40,11 +36,9 @@ index caa988746969..d1bb1ed54df5 100644
  #endif
  	{ /* sentinel */ }
  };
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 1bbdc49e5fe0..d82a817c708d 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
-@@ -323,6 +323,7 @@ extern const struct hantro_variant rk3568_vpu_variant;
+@@ -323,6 +323,7 @@ extern const struct hantro_variant rk356
  extern const struct hantro_variant sama5d4_vdec_variant;
  extern const struct hantro_variant sunxi_vpu_variant;
  extern const struct hantro_variant stm32mp25_vdec_variant;
@@ -52,9 +46,6 @@ index 1bbdc49e5fe0..d82a817c708d 100644
  
  extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
  extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-new file mode 100644
-index 000000000000..0aac33afcadc
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 @@ -0,0 +1,147 @@
@@ -205,6 +196,3 @@ index 000000000000..0aac33afcadc
 +	.num_clocks = ARRAY_SIZE(stm32mp25_venc_clk_names)
 +};
 +
--- 
-2.39.2
-

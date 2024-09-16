@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 7746a67de9bc..106d338c4e19 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -29,6 +29,14 @@ aliases {
+@@ -29,6 +29,14 @@
  
  	chosen {
  		stdout-path = "serial0:115200n8";
@@ -35,6 +33,3 @@ index 7746a67de9bc..106d338c4e19 100644
  	};
  
  	clocks {
--- 
-2.39.2
-

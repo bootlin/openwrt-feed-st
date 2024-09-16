@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 110 +++++++++++++++++-
  1 file changed, 108 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 741cd0615a4e..ab9cfbd071cd 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -17,6 +17,7 @@
@@ -73,7 +71,7 @@ index 741cd0615a4e..ab9cfbd071cd 100644
  	u32 nb_comp_pix[COMP_MAX];
  
  	/*
-@@ -538,6 +559,69 @@ static const struct media_entity_operations dcmipp_statcap_mops = {
+@@ -538,6 +559,69 @@ static const struct media_entity_operati
  	.link_validate		= dcmipp_link_validate,
  };
  
@@ -143,7 +141,7 @@ index 741cd0615a4e..ab9cfbd071cd 100644
  static void dcmipp_statcap_release(struct video_device *vdev)
  {
  	struct dcmipp_statcap_device *vcap =
-@@ -728,7 +812,7 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+@@ -728,7 +812,7 @@ static int dcmipp_statcap_comp_bind(stru
  	struct dcmipp_statcap_device *vcap;
  	struct video_device *vdev;
  	struct vb2_queue *q;
@@ -152,7 +150,7 @@ index 741cd0615a4e..ab9cfbd071cd 100644
  
  	/* Allocate the dcmipp_cap_device struct */
  	vcap = kzalloc(sizeof(*vcap), GFP_KERNEL);
-@@ -800,16 +884,38 @@ static int dcmipp_statcap_comp_bind(struct device *comp, struct device *master,
+@@ -800,16 +884,38 @@ static int dcmipp_statcap_comp_bind(stru
  	strscpy(vdev->name, pdata->entity_name, sizeof(vdev->name));
  	video_set_drvdata(vdev, &vcap->ved);
  
@@ -192,6 +190,3 @@ index 741cd0615a4e..ab9cfbd071cd 100644
  err_clean_m_ent:
  	media_entity_cleanup(&vcap->vdev.entity);
  err_clean_pads:
--- 
-2.39.2
-

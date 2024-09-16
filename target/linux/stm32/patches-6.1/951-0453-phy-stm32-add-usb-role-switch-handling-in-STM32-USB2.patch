@@ -23,8 +23,6 @@ Change-Id: Ice2afd2633e432b73063faba899377bb73f5627a
  drivers/phy/st/phy-stm32-usb2phy.c | 65 +++++++++++++++++++++++++-----
  1 file changed, 55 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index d0047d7230c2..21ad6ff29286 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -16,6 +16,7 @@
@@ -43,7 +41,7 @@ index d0047d7230c2..21ad6ff29286 100644
  	const struct stm32mp2_usb2phy_hw_data *hw_data;
  };
  
-@@ -197,12 +199,23 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -197,12 +199,23 @@ static int stm32_usb2phy_set_mode(struct
  						 phy_data->cr_offset,
  						 SYSCFG_USB2PHY2CR_USB2PHY2CMN_MASK,
  						 0);
@@ -73,7 +71,7 @@ index d0047d7230c2..21ad6ff29286 100644
  		if (ret) {
  			dev_err(dev, "can't set usb2phycr (%d)\n", ret);
  			return ret;
-@@ -210,10 +223,36 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -210,10 +223,36 @@ static int stm32_usb2phy_set_mode(struct
  		break;
  
  	case PHY_MODE_USB_DEVICE:
@@ -114,7 +112,7 @@ index d0047d7230c2..21ad6ff29286 100644
  		if (ret) {
  			dev_err(dev, "can't set usb2phycr (%d)\n", ret);
  			return ret;
-@@ -570,6 +609,12 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -570,6 +609,12 @@ static int stm32_usb2phy_probe(struct pl
  	phy_dev->phy = phy;
  	phy_set_drvdata(phy, phy_dev);
  
@@ -127,6 +125,3 @@ index d0047d7230c2..21ad6ff29286 100644
  	/* Configure phy tuning */
  	ret = stm32_usb2phy_tuning(phy);
  	if (ret)
--- 
-2.39.2
-

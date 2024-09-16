@@ -15,8 +15,6 @@ Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml       | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 3450afec60b0..484ca03e53e7 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -32,7 +32,6 @@ properties:
@@ -38,6 +36,3 @@ index 3450afec60b0..484ca03e53e7 100644
        st,syscfg-holdboot = <&rcc 0x10C 0x1>;
        st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
        st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
--- 
-2.39.2
-

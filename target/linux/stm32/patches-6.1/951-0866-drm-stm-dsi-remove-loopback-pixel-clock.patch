@@ -13,8 +13,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 15 ---------------
  1 file changed, 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 86fba2decf07..7ff0c9afd6c8 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -135,7 +135,6 @@ struct dw_mipi_dsi_stm {
@@ -25,7 +23,7 @@ index 86fba2decf07..7ff0c9afd6c8 100644
  	struct clk_hw txbyte_clk;
  	struct dw_mipi_dsi *dsi;
  	u32 hw_version;
-@@ -390,13 +389,6 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+@@ -390,13 +389,6 @@ static int dw_mipi_dsi_phy_141_init(void
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -39,7 +37,7 @@ index 86fba2decf07..7ff0c9afd6c8 100644
  	/* Select video mode by resetting DSIM bit */
  	dsi_clear(dsi, DSI_WCFGR, WCFGR_DSIM);
  
-@@ -1261,13 +1253,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1261,13 +1253,6 @@ static int dw_mipi_dsi_stm_probe(struct
  	if (IS_ERR(dsi->px_clk))
  		dev_err_probe(dev, PTR_ERR(dsi->px_clk), "Unable to get px_clk clock\n");
  
@@ -53,6 +51,3 @@ index 86fba2decf07..7ff0c9afd6c8 100644
  	dsi->probe_done = true;
  
  	/*
--- 
-2.39.2
-

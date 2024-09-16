@@ -20,8 +20,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366026
  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index 13b984076af5..f8d9bdff7030 100644
 --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
 @@ -294,6 +294,11 @@ properties:
@@ -36,6 +34,3 @@ index 13b984076af5..f8d9bdff7030 100644
    mdio:
      $ref: mdio.yaml#
      unevaluatedProperties: false
--- 
-2.39.2
-

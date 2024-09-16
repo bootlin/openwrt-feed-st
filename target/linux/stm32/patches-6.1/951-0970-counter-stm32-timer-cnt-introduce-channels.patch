@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 17f87ace450d..f63d0c3e3f22 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -25,6 +25,8 @@
@@ -32,7 +30,7 @@ index 17f87ace450d..f63d0c3e3f22 100644
  
  struct stm32_timer_regs {
  	u32 cr1;
-@@ -365,6 +367,14 @@ static struct counter_signal stm32_signals[] = {
+@@ -365,6 +367,14 @@ static struct counter_signal stm32_signa
  		.ext = stm32_count_clock_ext,
  		.num_ext = ARRAY_SIZE(stm32_count_clock_ext),
  	},
@@ -47,7 +45,7 @@ index 17f87ace450d..f63d0c3e3f22 100644
  };
  
  static struct counter_synapse stm32_count_synapses[] = {
-@@ -383,6 +393,16 @@ static struct counter_synapse stm32_count_synapses[] = {
+@@ -383,6 +393,16 @@ static struct counter_synapse stm32_coun
  		.num_actions = ARRAY_SIZE(stm32_clock_synapse_actions),
  		.signal = &stm32_signals[STM32_CLOCK_SIG]
  	},
@@ -64,6 +62,3 @@ index 17f87ace450d..f63d0c3e3f22 100644
  };
  
  static struct counter_count stm32_counts = {
--- 
-2.39.2
-

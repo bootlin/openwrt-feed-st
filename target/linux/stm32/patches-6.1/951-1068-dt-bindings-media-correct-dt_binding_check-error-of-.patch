@@ -22,8 +22,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-index 781379090f40..8d02be87e774 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 @@ -4,7 +4,7 @@
@@ -35,6 +33,3 @@ index 781379090f40..8d02be87e774 100644
  
  maintainers:
    - Hugues Fruchet <hugues.fruchet@foss.st.com>
--- 
-2.39.2
-

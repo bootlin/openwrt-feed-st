@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/cpuidle/cpuidle-stm32.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpuidle/cpuidle-stm32.c b/drivers/cpuidle/cpuidle-stm32.c
-index 91f89af76a8b..8baf43721096 100644
 --- a/drivers/cpuidle/cpuidle-stm32.c
 +++ b/drivers/cpuidle/cpuidle-stm32.c
-@@ -257,6 +257,7 @@ static const struct of_device_id stm32_cpuidle_of_match[] = {
+@@ -257,6 +257,7 @@ static const struct of_device_id stm32_c
  	{
  		.compatible = "stm32,cpuidle",
  	},
@@ -31,6 +29,3 @@ index 91f89af76a8b..8baf43721096 100644
  };
  
  static struct platform_driver stm32_cpuidle_driver = {
--- 
-2.39.2
-

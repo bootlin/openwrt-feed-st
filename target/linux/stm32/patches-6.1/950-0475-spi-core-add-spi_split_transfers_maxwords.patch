@@ -33,7 +33,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
 
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -3606,6 +3606,55 @@ int spi_split_transfers_maxsize(struct s
+@@ -3621,6 +3621,55 @@ int spi_split_transfers_maxsize(struct s
  }
  EXPORT_SYMBOL_GPL(spi_split_transfers_maxsize);
  
@@ -91,7 +91,7 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  /* Core methods for SPI controller protocol drivers.  Some of the
 --- a/include/linux/spi/spi.h
 +++ b/include/linux/spi/spi.h
-@@ -1251,6 +1251,10 @@ extern int spi_split_transfers_maxsize(s
+@@ -1296,6 +1296,10 @@ extern int spi_split_transfers_maxsize(s
  				       struct spi_message *msg,
  				       size_t maxsize,
  				       gfp_t gfp);

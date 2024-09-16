@@ -19,8 +19,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  include/dt-bindings/clock/stm32mp25-clks.h | 12 ++++++++----
  1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/dt-bindings/clock/stm32mp25-clks.h b/include/dt-bindings/clock/stm32mp25-clks.h
-index 9876ee0dd1e4..a8d28b325da1 100644
 --- a/include/dt-bindings/clock/stm32mp25-clks.h
 +++ b/include/dt-bindings/clock/stm32mp25-clks.h
 @@ -109,7 +109,7 @@
@@ -63,6 +61,3 @@ index 9876ee0dd1e4..a8d28b325da1 100644
 +#define CK_SCMI_KER_ETR		124
  
  #endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
--- 
-2.39.2
-

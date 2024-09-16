@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/dma/stm32-dma3.c | 14 ++++----------
  1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 95a9dfd2d5ff..41e1538aae36 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -2148,18 +2148,12 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2148,18 +2148,12 @@ static int stm32_dma3_probe(struct platf
  		return PTR_ERR(ddata->base);
  
  	ddata->clk = devm_clk_get(&pdev->dev, NULL);
@@ -41,6 +39,3 @@ index 95a9dfd2d5ff..41e1538aae36 100644
  
  	reset = devm_reset_control_get(&pdev->dev, NULL);
  	if (IS_ERR(reset)) {
--- 
-2.39.2
-

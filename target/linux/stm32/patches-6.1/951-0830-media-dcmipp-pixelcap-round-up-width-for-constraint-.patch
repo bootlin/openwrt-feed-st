@@ -21,11 +21,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c         | 13 +++++++------
  1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index f6c892fd74ca..9a338d121f0e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -325,12 +325,13 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -325,12 +325,13 @@ static int dcmipp_pixelcap_try_fmt_vid_c
  	/* Adjust width & height */
  	in_w = format->width;
  	in_h = format->height;
@@ -45,6 +43,3 @@ index f6c892fd74ca..9a338d121f0e 100644
  	if (format->width != in_w || format->height != in_h)
  		dev_dbg(vcap->dev,
  			"resolution updated: %dx%d -> %dx%d\n",
--- 
-2.39.2
-

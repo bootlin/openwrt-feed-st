@@ -19,11 +19,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 27 +++++++++++++++++---------
  1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 88e82f09252f..baa1c8fd0954 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -839,52 +839,56 @@ spdifrx: audio-controller@400d0000 {
+@@ -839,52 +839,56 @@
  			usart2: serial@400e0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x400e0000 0x400>;
@@ -84,7 +82,7 @@ index 88e82f09252f..baa1c8fd0954 100644
  				status = "disabled";
  			};
  
-@@ -1179,13 +1183,14 @@ counter {
+@@ -1179,13 +1183,14 @@
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40220000 0x400>;
@@ -100,7 +98,7 @@ index 88e82f09252f..baa1c8fd0954 100644
  				status = "disabled";
  			};
  
-@@ -1460,13 +1465,14 @@ sai3b: audio-controller@502b0024 {
+@@ -1460,13 +1465,14 @@
  			uart9: serial@402c0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x402c0000 0x400>;
@@ -116,7 +114,7 @@ index 88e82f09252f..baa1c8fd0954 100644
  				status = "disabled";
  			};
  
-@@ -1507,13 +1513,14 @@ counter {
+@@ -1507,13 +1513,14 @@
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40330000 0x400>;
@@ -132,7 +130,7 @@ index 88e82f09252f..baa1c8fd0954 100644
  				status = "disabled";
  			};
  
-@@ -1589,26 +1596,28 @@ spi7: spi@40360000 {
+@@ -1589,26 +1596,28 @@
  			uart7: serial@40370000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40370000 0x400>;
@@ -163,6 +161,3 @@ index 88e82f09252f..baa1c8fd0954 100644
  				status = "disabled";
  			};
  
--- 
-2.39.2
-

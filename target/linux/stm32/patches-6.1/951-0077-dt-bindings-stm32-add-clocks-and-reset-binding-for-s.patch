@@ -27,9 +27,6 @@ Tested-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
  create mode 100644 include/dt-bindings/clock/stm32mp25-clks.h
  create mode 100644 include/dt-bindings/reset/stm32mp25-resets.h
 
-diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-new file mode 100644
-index 000000000000..34df9a534070
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 @@ -0,0 +1,107 @@
@@ -140,9 +137,6 @@ index 000000000000..34df9a534070
 +        feature-domains = <&rifsc 156>;
 +    };
 +...
-diff --git a/include/dt-bindings/clock/stm32mp25-clks.h b/include/dt-bindings/clock/stm32mp25-clks.h
-new file mode 100644
-index 000000000000..9876ee0dd1e4
 --- /dev/null
 +++ b/include/dt-bindings/clock/stm32mp25-clks.h
 @@ -0,0 +1,492 @@
@@ -638,9 +632,6 @@ index 000000000000..9876ee0dd1e4
 +#define CK_SCMI_STM500		122
 +
 +#endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
-diff --git a/include/dt-bindings/reset/stm32mp25-resets.h b/include/dt-bindings/reset/stm32mp25-resets.h
-new file mode 100644
-index 000000000000..9e4d44df5bf4
 --- /dev/null
 +++ b/include/dt-bindings/reset/stm32mp25-resets.h
 @@ -0,0 +1,166 @@
@@ -810,6 +801,3 @@ index 000000000000..9e4d44df5bf4
 +#define RST_SCMI_OSPI2DLL	8
 +
 +#endif /* _DT_BINDINGS_STM32MP25_RESET_H_ */
--- 
-2.39.2
-

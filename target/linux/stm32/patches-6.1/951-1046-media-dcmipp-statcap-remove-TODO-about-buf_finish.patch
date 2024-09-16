@@ -19,11 +19,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 5 -----
  1 file changed, 5 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 52a39de20826..bcfd3eb4c6a2 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -491,11 +491,6 @@ static const struct vb2_ops dcmipp_statcap_qops = {
+@@ -491,11 +491,6 @@ static const struct vb2_ops dcmipp_statc
  	.buf_prepare		= dcmipp_statcap_buf_prepare,
  	.buf_queue		= dcmipp_statcap_buf_queue,
  
@@ -35,6 +33,3 @@ index 52a39de20826..bcfd3eb4c6a2 100644
  	.queue_setup		= dcmipp_statcap_queue_setup,
  	/*
  	 * Since q->lock is set we can use the standard
--- 
-2.39.2
-

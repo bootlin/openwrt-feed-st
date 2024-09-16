@@ -18,11 +18,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  include/memory/stm32-omi.h            |  7 ++--
  4 files changed, 50 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 199e6d872ac5..d402eef48c7c 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -305,7 +305,7 @@ static int stm32_omi_dlyb_set_tap(struct stm32_omi *omi, u8 tap, bool rx_tap)
+@@ -305,7 +305,7 @@ static int stm32_omi_dlyb_set_tap(struct
  	return ret;
  }
  
@@ -31,7 +29,7 @@ index 199e6d872ac5..d402eef48c7c 100644
  {
  	struct stm32_tap_window rx_tap_w[DLYBOS_TAPSEL_NB];
  	int ret = 0;
-@@ -371,6 +371,7 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only)
+@@ -371,6 +371,7 @@ int stm32_omi_dlyb_find_tap(struct stm32
  		}
  
  		rx_tap = rx_window_end - rx_window_len / 2;
@@ -39,7 +37,7 @@ index 199e6d872ac5..d402eef48c7c 100644
  		dev_dbg(omi->dev, "RX_TAP_SEL set to %d\n", rx_tap);
  
  		return stm32_omi_dlyb_set_tap(omi, rx_tap, true);
-@@ -402,7 +403,7 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only)
+@@ -402,7 +403,7 @@ int stm32_omi_dlyb_find_tap(struct stm32
  }
  EXPORT_SYMBOL(stm32_omi_dlyb_find_tap);
  
@@ -48,7 +46,7 @@ index 199e6d872ac5..d402eef48c7c 100644
  {
  	bool bypass_mode = false;
  	int ret;
-@@ -426,13 +427,13 @@ int stm32_omi_dlyb_restore(struct stm32_omi *omi, u32 dlyb_cr)
+@@ -426,13 +427,13 @@ int stm32_omi_dlyb_restore(struct stm32_
  	tx_tap = FIELD_GET(DLYBOS_CR_TXTAPSEL_MASK, dlyb_cr);
  	return stm32_omi_dlyb_set_tap(omi, tx_tap, false);
  }
@@ -65,11 +63,9 @@ index 199e6d872ac5..d402eef48c7c 100644
  
  /* ½ memory clock period in pico second */
  static const u16 dlybos_delay_ps[STM32_DLYBOS_DELAY_NB] = {
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index 8650dff953a1..ffa854520db1 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
-@@ -115,6 +115,7 @@ static int stm32_hyperbus_calibrate(struct hyperbus_device *hbdev)
+@@ -115,6 +115,7 @@ static int stm32_hyperbus_calibrate(stru
  	void __iomem *regs_base = omi->regs_base;
  	u32 prescaler;
  	u16 period_ps = 0;
@@ -77,7 +73,7 @@ index 8650dff953a1..ffa854520db1 100644
  	int ret;
  	bool bypass_mode = false;
  
-@@ -136,10 +137,10 @@ static int stm32_hyperbus_calibrate(struct hyperbus_device *hbdev)
+@@ -136,10 +137,10 @@ static int stm32_hyperbus_calibrate(stru
  
  	if (bypass_mode || prescaler)
  		/* perform only RX TAP selection */
@@ -90,8 +86,6 @@ index 8650dff953a1..ffa854520db1 100644
  
  	if (ret) {
  		dev_err(omi->dev, "Calibration failed\n");
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 10229b354b4b..eed6615820a8 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -16,6 +16,7 @@ struct stm32_ospi_flash {
@@ -102,7 +96,7 @@ index 10229b354b4b..eed6615820a8 100644
  };
  
  struct stm32_ospi {
-@@ -185,7 +186,7 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -185,7 +186,7 @@ static int stm32_ospi_send(struct spi_de
  	struct stm32_ospi_flash *flash = &ospi->flash[spi->chip_select];
  	void __iomem *regs_base = ospi->omi.regs_base;
  	struct stm32_omi *omi = &ospi->omi;
@@ -111,7 +105,7 @@ index 10229b354b4b..eed6615820a8 100644
  	int timeout, err = 0, err_poll_status = 0;
  	int ret;
  
-@@ -203,7 +204,7 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -203,7 +204,7 @@ static int stm32_ospi_send(struct spi_de
  		stm32_ospi_set_prescaler(ospi, flash->presc);
  
  		if (flash->calibrated) {
@@ -120,7 +114,7 @@ index 10229b354b4b..eed6615820a8 100644
  			if (ret)
  				return ret;
  		}
-@@ -227,7 +228,9 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -227,7 +228,9 @@ static int stm32_ospi_send(struct spi_de
  		ccr |= FIELD_PREP(CCR_ADSIZE_MASK, op->addr.nbytes - 1);
  	}
  
@@ -131,7 +125,7 @@ index 10229b354b4b..eed6615820a8 100644
  	if (op->dummy.buswidth && op->dummy.nbytes) {
  		tcr |= FIELD_PREP(TCR_DCYC_MASK,
  				  op->dummy.nbytes * 8 / op->dummy.buswidth);
-@@ -534,7 +537,8 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -534,7 +537,8 @@ static int stm32_ospi_calibration(struct
  	struct stm32_ospi_flash *flash = &ospi->flash[ospi->last_cs];
  	struct spi_device *spi = flash->spi;
  	void __iomem *regs_base = ospi->omi.regs_base;
@@ -141,7 +135,7 @@ index 10229b354b4b..eed6615820a8 100644
  
  	/*
  	 * set memory device at low frequency (50MHz) and sent
-@@ -567,18 +571,38 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -567,18 +571,38 @@ static int stm32_ospi_calibration(struct
  	 * when DTR support will be added, Rx/Tx TAP selection will have to
  	 * be performed
  	 */
@@ -188,7 +182,7 @@ index 10229b354b4b..eed6615820a8 100644
  
  	return 0;
  }
-@@ -636,6 +660,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -636,6 +660,7 @@ static int stm32_ospi_setup(struct spi_d
  
  			/* stop the DLL */
  			stm32_omi_dlyb_stop(omi);
@@ -196,8 +190,6 @@ index 10229b354b4b..eed6615820a8 100644
  
  			flash->presc = DIV_ROUND_UP(omi->clk_rate,
  						    STM32_DLYB_FREQ_THRESHOLD) - 1;
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index c9dae4a440d8..b1c9ab9ed9ae 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -183,9 +183,10 @@ struct stm32_tap_window {
@@ -214,6 +206,3 @@ index c9dae4a440d8..b1c9ab9ed9ae 100644
  void stm32_omi_dlyb_stop(struct stm32_omi *omi);
  void stm32_omi_dma_callback(void *arg);
  void stm32_omi_dma_free(struct stm32_omi *omi);
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 86 ++++++++++---------
  1 file changed, 44 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index e3443cd2196b..e7b60174cda4 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -821,54 +821,56 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -821,54 +821,56 @@ static int dcmipp_pixelproc_s_stream(str
  	int ret = 0;
  	unsigned int val;
  
@@ -52,11 +50,12 @@ index e3443cd2196b..e7b60174cda4 100644
 -			if (ret)
 -				goto out;
 -		}
- 
+-
 -		/* Setup the PixelPacker based on the src pad format */
 -		vpix = dcmipp_pixelproc_pix_map_by_code(pixelproc->src_fmt.code, 1);
 -		if (!vpix) {
 -			ret = -EINVAL;
++
 +	/* Configure framerate */
 +	dcmipp_pixelproc_configure_framerate(pixelproc);
 +
@@ -78,14 +77,14 @@ index e3443cd2196b..e7b60174cda4 100644
 +		if (ret)
  			goto out;
 -		}
--
++	}
+ 
 -		val = vpix->ppcr_fmt;
 -		if (vpix->swap_uv)
 -			val |= DCMIPP_PxPPCR_SWAPRB;
 -
 -		reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
-+	}
- 
+-
 -		/*
 -		 * In case of the subdev is the last one before the csi bridge
 -		 * the ent.bus.bus_type will be set to V4L2_MBUS_CSI2_DPHY,
@@ -121,6 +120,3 @@ index e3443cd2196b..e7b60174cda4 100644
  out:
  	mutex_unlock(&pixelproc->lock);
  
--- 
-2.39.2
-

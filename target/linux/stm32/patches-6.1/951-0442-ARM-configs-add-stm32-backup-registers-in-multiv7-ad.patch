@@ -12,8 +12,6 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 981ed4d22f3f..9ff491a4f13b 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -48,6 +48,7 @@ CONFIG_MTD_SPI_NAND=y
@@ -24,6 +22,3 @@ index 981ed4d22f3f..9ff491a4f13b 100644
  CONFIG_OF_OVERLAY=y
  CONFIG_OPTEE=y
  CONFIG_OVERLAY_FS=y
--- 
-2.39.2
-

@@ -18,8 +18,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  3 files changed, 258 insertions(+)
  create mode 100644 drivers/usb/dwc3/dwc3-stm32.c
 
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 864fef540a39..e42fdf0a54f1 100644
 --- a/drivers/usb/dwc3/Kconfig
 +++ b/drivers/usb/dwc3/Kconfig
 @@ -127,6 +127,17 @@ config USB_DWC3_ST
@@ -40,11 +38,9 @@ index 864fef540a39..e42fdf0a54f1 100644
  config USB_DWC3_QCOM
  	tristate "Qualcomm Platform"
  	depends on ARCH_QCOM || COMPILE_TEST
-diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
-index 9f66bd82b639..27ad540ebc48 100644
 --- a/drivers/usb/dwc3/Makefile
 +++ b/drivers/usb/dwc3/Makefile
-@@ -51,6 +51,7 @@ obj-$(CONFIG_USB_DWC3_KEYSTONE)		+= dwc3-keystone.o
+@@ -51,6 +51,7 @@ obj-$(CONFIG_USB_DWC3_KEYSTONE)		+= dwc3
  obj-$(CONFIG_USB_DWC3_MESON_G12A)	+= dwc3-meson-g12a.o
  obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+= dwc3-of-simple.o
  obj-$(CONFIG_USB_DWC3_ST)		+= dwc3-st.o
@@ -52,9 +48,6 @@ index 9f66bd82b639..27ad540ebc48 100644
  obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
  obj-$(CONFIG_USB_DWC3_IMX8MP)		+= dwc3-imx8mp.o
  obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
-diff --git a/drivers/usb/dwc3/dwc3-stm32.c b/drivers/usb/dwc3/dwc3-stm32.c
-new file mode 100644
-index 000000000000..923d5cb8ede1
 --- /dev/null
 +++ b/drivers/usb/dwc3/dwc3-stm32.c
 @@ -0,0 +1,246 @@
@@ -304,6 +297,3 @@ index 000000000000..923d5cb8ede1
 +MODULE_AUTHOR("Pankaj Dev <pankaj.dev@st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 DWC3 Specific Glue layer");
 +MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

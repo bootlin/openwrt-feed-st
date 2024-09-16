@@ -18,8 +18,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-index 9c1262a276b5..781379090f40 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 @@ -27,15 +27,27 @@ properties:
@@ -51,6 +49,3 @@ index 9c1262a276b5..781379090f40 100644
    port:
      $ref: /schemas/graph.yaml#/$defs/port-base
      unevaluatedProperties: false
--- 
-2.39.2
-

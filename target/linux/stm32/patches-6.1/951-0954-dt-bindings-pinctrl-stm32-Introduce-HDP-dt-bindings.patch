@@ -26,9 +26,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  1 file changed, 91 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
-new file mode 100644
-index 000000000000..429601891fc0
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
 @@ -0,0 +1,91 @@
@@ -123,6 +120,3 @@ index 000000000000..429601891fc0
 +      pinctrl-names = "default";
 +      pinctrl-0 = <&hdp2>;
 +    };
--- 
-2.39.2
-

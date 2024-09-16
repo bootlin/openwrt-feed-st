@@ -19,11 +19,9 @@ Change-Id: I9dae495d704a5eca875354fe43d351221307230a
  drivers/memory/stm32-omi.c | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 931b55e8d268..d8a81765c612 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -603,6 +603,27 @@ static int stm32_omi_remove(struct platform_device *pdev)
+@@ -603,6 +603,27 @@ static int stm32_omi_remove(struct platf
  	return 0;
  }
  
@@ -51,7 +49,7 @@ index 931b55e8d268..d8a81765c612 100644
  static const struct of_device_id stm32_omi_of_match[] = {
  	{ .compatible = "st,stm32mp25-omi", },
  	{},
-@@ -615,6 +636,7 @@ static struct platform_driver stm32_omi_driver = {
+@@ -615,6 +636,7 @@ static struct platform_driver stm32_omi_
  	.driver = {
  		.name =	"stm32-omi",
  		.of_match_table = stm32_omi_of_match,
@@ -59,6 +57,3 @@ index 931b55e8d268..d8a81765c612 100644
  	},
  };
  module_platform_driver(stm32_omi_driver);
--- 
-2.39.2
-

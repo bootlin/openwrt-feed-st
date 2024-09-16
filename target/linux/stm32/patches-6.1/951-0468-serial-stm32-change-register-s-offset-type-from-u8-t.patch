@@ -18,8 +18,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/tty/serial/stm32-usart.h | 26 +++++++++++++-------------
  1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index 3c427f4d6350..b8b6dbbacd60 100644
 --- a/drivers/tty/serial/stm32-usart.h
 +++ b/drivers/tty/serial/stm32-usart.h
 @@ -9,18 +9,18 @@
@@ -62,6 +60,3 @@ index 3c427f4d6350..b8b6dbbacd60 100644
  
  /* USART_SR (F4) / USART_ISR (F7) */
  #define USART_SR_PE		BIT(0)
--- 
-2.39.2
-

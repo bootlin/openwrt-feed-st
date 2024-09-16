@@ -22,11 +22,9 @@ Change-Id: I45c1c8d00af3b64d760a5b381dd6c91b29337b35
  drivers/usb/dwc3/drd.c  | 10 ++++++++--
  3 files changed, 32 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 011a3909f9ad..da02bfcde3ff 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -137,8 +137,21 @@ static void __dwc3_set_mode(struct work_struct *work)
+@@ -158,8 +158,21 @@ static void __dwc3_set_mode(struct work_
  	if (!desired_dr_role)
  		goto out;
  
@@ -49,7 +47,7 @@ index 011a3909f9ad..da02bfcde3ff 100644
  
  	if (desired_dr_role == DWC3_GCTL_PRTCAP_OTG && dwc->edev)
  		goto out;
-@@ -200,8 +213,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+@@ -221,8 +234,8 @@ static void __dwc3_set_mode(struct work_
  		} else {
  			if (dwc->usb2_phy)
  				otg_set_vbus(dwc->usb2_phy->otg, true);
@@ -60,7 +58,7 @@ index 011a3909f9ad..da02bfcde3ff 100644
  			if (dwc->dis_split_quirk) {
  				reg = dwc3_readl(dwc->regs, DWC3_GUCTL3);
  				reg |= DWC3_GUCTL3_SPLITDISABLE;
-@@ -216,8 +229,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+@@ -237,8 +250,8 @@ static void __dwc3_set_mode(struct work_
  
  		if (dwc->usb2_phy)
  			otg_set_vbus(dwc->usb2_phy->otg, false);
@@ -71,7 +69,7 @@ index 011a3909f9ad..da02bfcde3ff 100644
  
  		ret = dwc3_gadget_init(dwc);
  		if (ret)
-@@ -237,7 +250,7 @@ static void __dwc3_set_mode(struct work_struct *work)
+@@ -258,7 +271,7 @@ out:
  	mutex_unlock(&dwc->mutex);
  }
  
@@ -80,7 +78,7 @@ index 011a3909f9ad..da02bfcde3ff 100644
  {
  	unsigned long flags;
  
-@@ -246,6 +259,7 @@ void dwc3_set_mode(struct dwc3 *dwc, u32 mode)
+@@ -267,6 +280,7 @@ void dwc3_set_mode(struct dwc3 *dwc, u32
  
  	spin_lock_irqsave(&dwc->lock, flags);
  	dwc->desired_dr_role = mode;
@@ -88,8 +86,6 @@ index 011a3909f9ad..da02bfcde3ff 100644
  	spin_unlock_irqrestore(&dwc->lock, flags);
  
  	queue_work(system_freezable_wq, &dwc->drd_work);
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 889c122dad45..9d793264526c 100644
 --- a/drivers/usb/dwc3/core.h
 +++ b/drivers/usb/dwc3/core.h
 @@ -1179,6 +1179,7 @@ struct dwc3 {
@@ -111,11 +107,9 @@ index 889c122dad45..9d793264526c 100644
  u32 dwc3_core_fifo_space(struct dwc3_ep *dep, u8 type);
  
  #define DWC3_IP_IS(_ip)							\
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index 57ddd2e43022..ef733ecc512e 100644
 --- a/drivers/usb/dwc3/drd.c
 +++ b/drivers/usb/dwc3/drd.c
-@@ -440,6 +440,7 @@ static int dwc3_drd_notifier(struct notifier_block *nb,
+@@ -440,6 +440,7 @@ static int dwc3_drd_notifier(struct noti
  
  #if IS_ENABLED(CONFIG_USB_ROLE_SWITCH)
  #define ROLE_SWITCH 1
@@ -123,7 +117,7 @@ index 57ddd2e43022..ef733ecc512e 100644
  static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
  				    enum usb_role role)
  {
-@@ -461,7 +462,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw,
+@@ -461,7 +462,8 @@ static int dwc3_usb_role_switch_set(stru
  		break;
  	}
  
@@ -133,7 +127,7 @@ index 57ddd2e43022..ef733ecc512e 100644
  	return 0;
  }
  
-@@ -497,15 +499,19 @@ static int dwc3_setup_role_switch(struct dwc3 *dwc)
+@@ -497,15 +499,19 @@ static int dwc3_setup_role_switch(struct
  {
  	struct usb_role_switch_desc dwc3_role_switch = {NULL};
  	u32 mode;
@@ -154,6 +148,3 @@ index 57ddd2e43022..ef733ecc512e 100644
  
  	dwc3_role_switch.fwnode = dev_fwnode(dwc->dev);
  	dwc3_role_switch.set = dwc3_usb_role_switch_set;
--- 
-2.39.2
-

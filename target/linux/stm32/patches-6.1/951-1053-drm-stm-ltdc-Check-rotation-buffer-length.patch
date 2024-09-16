@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 39 +++++++++++++++++++++++++++++++++++++-
  1 file changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 9706cfa91bad..1f003877a234 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -900,7 +900,19 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -900,7 +900,19 @@ static void ltdc_crtc_atomic_enable(stru
  		}
  	}
  
@@ -40,7 +38,7 @@ index 9706cfa91bad..1f003877a234 100644
  		rota0_buf = (u32)ldev->rot_mem->base;
  		rota1_buf = (u32)ldev->rot_mem->base + (ldev->rot_mem->size >> 1);
  
-@@ -2064,6 +2076,9 @@ static enum drm_mode_status ltdc_encoder_mode_valid(struct drm_encoder *encoder,
+@@ -2064,6 +2076,9 @@ static enum drm_mode_status ltdc_encoder
  	struct drm_device *ddev = encoder->dev;
  	struct ltdc_device *ldev =  ddev->dev_private;
  	struct device *dev = ddev->dev;
@@ -50,7 +48,7 @@ index 9706cfa91bad..1f003877a234 100644
  	int target = mode->clock * 1000;
  	int target_min = target - CLK_TOLERANCE_HZ;
  	int target_max = target + CLK_TOLERANCE_HZ;
-@@ -2080,6 +2095,28 @@ static enum drm_mode_status ltdc_encoder_mode_valid(struct drm_encoder *encoder,
+@@ -2080,6 +2095,28 @@ static enum drm_mode_status ltdc_encoder
  
  	DRM_DEBUG_DRIVER("clk rate target %d, available %d\n", target, result);
  
@@ -79,6 +77,3 @@ index 9706cfa91bad..1f003877a234 100644
  	/* Filter modes according to the max frequency supported by the pads */
  	if (result > ldev->caps.pad_max_freq_hz)
  		return MODE_CLOCK_HIGH;
--- 
-2.39.2
-

@@ -12,11 +12,9 @@ Change-Id: I226981fbe8a58551715d40d376497ffad07713ef
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 29741c4ddce2..6db9c7ded3c3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -22,6 +22,7 @@ / {
+@@ -22,6 +22,7 @@
  
  	aliases {
  		serial0 = &usart2;
@@ -24,7 +22,7 @@ index 29741c4ddce2..6db9c7ded3c3 100644
  	};
  
  	chosen {
-@@ -150,3 +151,12 @@ &usart2 {
+@@ -150,3 +151,12 @@
  	/delete-property/dma-names;
  	status = "okay";
  };
@@ -37,6 +35,3 @@ index 29741c4ddce2..6db9c7ded3c3 100644
 +	uart-has-rtscts;
 +	status = "disabled";
 +};
--- 
-2.39.2
-

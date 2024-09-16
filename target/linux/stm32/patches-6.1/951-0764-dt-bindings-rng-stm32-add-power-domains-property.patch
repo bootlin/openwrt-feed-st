@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 301d2f588a05..721199fca435 100644
 --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 @@ -29,6 +29,9 @@ properties:
@@ -34,6 +32,3 @@ index 301d2f588a05..721199fca435 100644
    clock-error-detect:
      type: boolean
      description: If set enable the clock detection management
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index c3ccc69ad23d..3c41c59cef26 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -153,6 +153,14 @@ soc {
+@@ -153,6 +153,14 @@
  		interrupt-parent = <&intc>;
  		ranges;
  
@@ -37,6 +35,3 @@ index c3ccc69ad23d..3c41c59cef26 100644
  		hsem: hwspinlock@4c000000 {
  			compatible = "st,stm32-hwspinlock";
  			#hwlock-cells = <2>;
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index f89ee41a78f6..4faffb2f939d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -299,7 +299,7 @@ static int dcmipp_create_subdevs(struct dcmipp_device *dcmipp)
+@@ -299,7 +299,7 @@ static int dcmipp_create_subdevs(struct
  	return 0;
  
  err_init_entity:
@@ -31,6 +29,3 @@ index f89ee41a78f6..4faffb2f939d 100644
  		dcmipp->pipe_cfg->ents[i - 1].release(dcmipp->entity[i - 1]);
  	return ret;
  }
--- 
-2.39.2
-

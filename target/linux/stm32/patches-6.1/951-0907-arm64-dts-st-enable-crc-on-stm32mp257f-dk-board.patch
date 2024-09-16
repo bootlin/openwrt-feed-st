@@ -16,11 +16,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index f5d56eeeba55..f7702bd821ba 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -181,6 +181,10 @@ &arm_wdt {
+@@ -181,6 +181,10 @@
  	status = "okay";
  };
  
@@ -31,6 +29,3 @@ index f5d56eeeba55..f7702bd821ba 100644
  &csi2host {
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_v1v8>;
--- 
-2.39.2
-

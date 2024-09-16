@@ -18,11 +18,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  arch/arm/boot/dts/stm32mp157d-ev1.dts | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-index b4d3a9e0797d..59607bdac82d 100644
 --- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-@@ -180,6 +180,14 @@ &dcmi {
+@@ -180,6 +180,14 @@
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&dcmi_pins_a>;
  	pinctrl-1 = <&dcmi_sleep_pins_a>;
@@ -37,7 +35,7 @@ index b4d3a9e0797d..59607bdac82d 100644
  
  	port {
  		dcmi_0: endpoint {
-@@ -657,6 +665,13 @@ &spi1 {
+@@ -657,6 +665,13 @@
  	status = "disabled";
  };
  
@@ -51,6 +49,3 @@ index b4d3a9e0797d..59607bdac82d 100644
  &timers2 {
  	/* spare dmas for other usage (un-delete to enable pwm capture) */
  	/delete-property/dmas;
--- 
-2.39.2
-

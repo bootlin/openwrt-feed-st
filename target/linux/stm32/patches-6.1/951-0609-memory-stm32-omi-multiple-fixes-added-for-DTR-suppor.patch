@@ -26,11 +26,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/memory/stm32-omi.h |  3 +++
  2 files changed, 15 insertions(+)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index d8a81765c612..40aed4de7f02 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -235,6 +235,10 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+@@ -235,6 +235,10 @@ int stm32_omi_dlyb_find_tap(struct stm32
  			ret = omi->check_transfer(omi);
  			omi->calibration = false;
  			if (ret) {
@@ -41,7 +39,7 @@ index d8a81765c612..40aed4de7f02 100644
  				rx_len = 0;
  			} else {
  				rx_len++;
-@@ -245,6 +249,9 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+@@ -245,6 +249,9 @@ int stm32_omi_dlyb_find_tap(struct stm32
  			}
  		}
  
@@ -51,7 +49,7 @@ index d8a81765c612..40aed4de7f02 100644
  		rx_tap_w[tx_tap].end = rx_window_end;
  		rx_tap_w[tx_tap].length = rx_window_len;
  
-@@ -261,6 +268,11 @@ int stm32_omi_dlyb_find_tap(struct stm32_omi *omi, bool rx_only, u8 *window_len)
+@@ -261,6 +268,11 @@ int stm32_omi_dlyb_find_tap(struct stm32
  			tx_tap, rx_tap_w[tx_tap].end, tx_tap, rx_tap_w[tx_tap].length);
  	}
  
@@ -63,8 +61,6 @@ index d8a81765c612..40aed4de7f02 100644
  	if (rx_only) {
  		if (!rx_window_len) {
  			dev_err(omi->dev, "Can't find RX phase settings\n");
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index 1adac6e94d52..8ebd788e07ad 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -57,6 +57,7 @@
@@ -84,6 +80,3 @@ index 1adac6e94d52..8ebd788e07ad 100644
  #define CCR_ADMODE_MASK		GENMASK(10, 8)
  #define CCR_ADMODE_8LINES	4
  #define CCR_ADDTR		BIT(11)
--- 
-2.39.2
-

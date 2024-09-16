@@ -18,8 +18,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 31 +++++++++++++++++++++++++
  1 file changed, 31 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index f75372d81b60..b80ca3b1d90c 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -13,6 +13,7 @@
@@ -30,7 +28,7 @@ index f75372d81b60..b80ca3b1d90c 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include "pcie-designware.h"
-@@ -137,6 +138,30 @@ static irqreturn_t stm32_pcie_aer_msi_irq_handler(int irq, void *priv)
+@@ -137,6 +138,30 @@ static irqreturn_t stm32_pcie_aer_msi_ir
  	return IRQ_HANDLED;
  }
  
@@ -61,7 +59,7 @@ index f75372d81b60..b80ca3b1d90c 100644
  static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
  			       struct platform_device *pdev)
  {
-@@ -186,6 +211,10 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -186,6 +211,10 @@ static int stm32_add_pcie_port(struct st
  		}
  	}
  
@@ -72,7 +70,7 @@ index f75372d81b60..b80ca3b1d90c 100644
  	ret = regmap_update_bits(stm32_pcie->regmap, SYSCFG_PCIECR,
  				 STM32MP25_PCIECR_TYPE_MASK, STM32MP25_PCIECR_RC);
  	if (ret)
-@@ -297,6 +326,8 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -297,6 +326,8 @@ static int stm32_pcie_remove(struct plat
  
  	dw_pcie_host_deinit(pp);
  	clk_disable_unprepare(stm32_pcie->clk);
@@ -81,6 +79,3 @@ index f75372d81b60..b80ca3b1d90c 100644
  	phy_exit(stm32_pcie->phy);
  
  	return 0;
--- 
-2.39.2
-

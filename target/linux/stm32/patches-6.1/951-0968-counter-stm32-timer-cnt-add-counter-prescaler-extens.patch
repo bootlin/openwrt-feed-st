@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 29 +++++++++++++++++++++++++++++
  1 file changed, 29 insertions(+)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 65b447b42e75..b969d550e90a 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
-@@ -220,11 +220,40 @@ static int stm32_count_enable_write(struct counter_device *counter,
+@@ -220,11 +220,40 @@ static int stm32_count_enable_write(stru
  	return 0;
  }
  
@@ -65,6 +63,3 @@ index 65b447b42e75..b969d550e90a 100644
  };
  
  static const enum counter_synapse_action stm32_clock_synapse_actions[] = {
--- 
-2.39.2
-

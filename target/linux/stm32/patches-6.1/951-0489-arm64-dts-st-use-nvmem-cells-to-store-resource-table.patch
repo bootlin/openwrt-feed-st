@@ -19,11 +19,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5316e7e2dac5..7534f02e63da 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2346,6 +2346,12 @@ nvram: nvram@46010100 {
+@@ -2346,6 +2346,12 @@
  				boot_mode: tamp-bkp@180 {
  					reg = <0x180 0x4>;
  				};
@@ -36,7 +34,7 @@ index 5316e7e2dac5..7534f02e63da 100644
  			};
  
  			reboot_mode: reboot-mode {
-@@ -2638,6 +2644,8 @@ m33_rproc: m33@a040000 {
+@@ -2638,6 +2644,8 @@
  			st,syscfg-cm-state = <&pwr 0x204 0x0000000c>;
  			interrupt-parent = <&intc>;
  			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
@@ -45,6 +43,3 @@ index 5316e7e2dac5..7534f02e63da 100644
  
  			status = "disabled";
  		};
--- 
-2.39.2
-

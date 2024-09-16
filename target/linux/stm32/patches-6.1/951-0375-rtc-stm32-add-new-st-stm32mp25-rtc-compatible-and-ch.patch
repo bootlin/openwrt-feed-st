@@ -26,8 +26,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/rtc/rtc-stm32.c | 80 +++++++++++++++++++++++++++++++++++++++++
  1 file changed, 80 insertions(+)
 
-diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
-index 59bbf7530d77..9320fa7f8b3d 100644
 --- a/drivers/rtc/rtc-stm32.c
 +++ b/drivers/rtc/rtc-stm32.c
 @@ -99,6 +99,18 @@
@@ -72,7 +70,7 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  /*
   *  -------------------------------------------------------------------------
   * | TAMPOE | OSEL[1:0] | COE | OUT2EN |     RTC_OUT1     |     RTC_OUT2     |
-@@ -721,6 +742,7 @@ static const struct stm32_rtc_data stm32_rtc_data = {
+@@ -721,6 +742,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = false,
  	.has_lsco = false,
  	.has_alarm_out = false,
@@ -80,7 +78,7 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -746,6 +768,7 @@ static const struct stm32_rtc_data stm32h7_rtc_data = {
+@@ -746,6 +768,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = false,
  	.has_lsco = false,
  	.has_alarm_out = false,
@@ -88,7 +86,7 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -780,6 +803,7 @@ static const struct stm32_rtc_data stm32mp1_data = {
+@@ -780,6 +803,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = true,
  	.has_lsco = true,
  	.has_alarm_out = true,
@@ -96,7 +94,7 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -799,14 +823,60 @@ static const struct stm32_rtc_data stm32mp1_data = {
+@@ -799,14 +823,60 @@ static const struct stm32_rtc_data stm32
  	.clear_events = stm32mp1_rtc_clear_events,
  };
  
@@ -157,7 +155,7 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  static int stm32_rtc_init(struct platform_device *pdev,
  			  struct stm32_rtc *rtc)
  {
-@@ -962,6 +1032,16 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+@@ -962,6 +1032,16 @@ static int stm32_rtc_probe(struct platfo
  		regmap_update_bits(rtc->dbp, rtc->dbp_reg,
  				   rtc->dbp_mask, rtc->dbp_mask);
  
@@ -174,6 +172,3 @@ index 59bbf7530d77..9320fa7f8b3d 100644
  	/*
  	 * After a system reset, RTC_ISR.INITS flag can be read to check if
  	 * the calendar has been initialized or not. INITS flag is reset by a
--- 
-2.39.2
-

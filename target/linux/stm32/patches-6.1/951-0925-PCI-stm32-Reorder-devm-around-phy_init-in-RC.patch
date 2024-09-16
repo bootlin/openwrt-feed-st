@@ -18,11 +18,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 51 ++++++++++++-------------
  1 file changed, 25 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index 6f0b468e3b53..120d7f2a6a15 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
-@@ -290,21 +290,29 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -290,21 +290,29 @@ static int stm32_add_pcie_port(struct st
  	if (stm32_pcie->pme_irq || stm32_pcie->aer_irq)
  		pcie_port_irqs_hook = stm32_pcie_port_irqs;
  
@@ -55,7 +53,7 @@ index 6f0b468e3b53..120d7f2a6a15 100644
  	}
  
  	pp->ops = &stm32_pcie_host_ops;
-@@ -312,10 +320,15 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -312,10 +320,15 @@ static int stm32_add_pcie_port(struct st
  	if (ret) {
  		dev_err(dev, "failed to initialize host: %d\n", ret);
  		clk_disable_unprepare(stm32_pcie->clk);
@@ -72,7 +70,7 @@ index 6f0b468e3b53..120d7f2a6a15 100644
  }
  
  static int stm32_pcie_probe(struct platform_device *pdev)
-@@ -372,41 +385,27 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -372,41 +385,27 @@ static int stm32_pcie_probe(struct platf
  		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
  				     "Failed to get reset GPIO\n");
  
@@ -120,7 +118,7 @@ index 6f0b468e3b53..120d7f2a6a15 100644
  }
  
  static int stm32_pcie_remove(struct platform_device *pdev)
-@@ -418,10 +417,10 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -418,10 +417,10 @@ static int stm32_pcie_remove(struct plat
  	clk_disable_unprepare(stm32_pcie->clk);
  	pcie_port_irqs_hook = NULL;
  
@@ -133,6 +131,3 @@ index 6f0b468e3b53..120d7f2a6a15 100644
  	return 0;
  }
  
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/memory/stm32-omi.h | 1 -
  2 files changed, 2 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 9fda9ab80012..ea052290fb20 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -558,7 +558,6 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -558,7 +558,6 @@ static int stm32_omi_probe(struct platfo
  	of_node_put(node);
  
  	if (rmem) {
@@ -30,8 +28,6 @@ index 9fda9ab80012..ea052290fb20 100644
  		omi->mm_size = rmem->size;
  		omi->mm_base = devm_ioremap(dev, rmem->base, rmem->size);
  		if (IS_ERR(omi->mm_base)) {
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index 5799e3640398..bd182567a384 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -167,7 +167,6 @@ struct stm32_omi {
@@ -42,6 +38,3 @@ index 5799e3640398..bd182567a384 100644
  	phys_addr_t regs_phys_base;
  	resource_size_t mm_size;
  	u32 clk_rate;
--- 
-2.39.2
-

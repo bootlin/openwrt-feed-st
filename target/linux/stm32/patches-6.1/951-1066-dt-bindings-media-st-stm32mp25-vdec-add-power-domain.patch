@@ -20,8 +20,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
-index 618c678e5045..69a7211fb779 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
 @@ -36,6 +36,9 @@ properties:
@@ -34,6 +32,3 @@ index 618c678e5045..69a7211fb779 100644
  required:
    - compatible
    - reg
--- 
-2.39.2
-

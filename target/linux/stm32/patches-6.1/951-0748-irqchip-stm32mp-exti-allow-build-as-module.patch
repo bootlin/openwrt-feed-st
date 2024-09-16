@@ -19,8 +19,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 15 ++++-----------
  2 files changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 1e0f01f34f9d..99b6ce023b1b 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
 @@ -396,9 +396,13 @@ config PARTITION_PERCPU
@@ -38,11 +36,9 @@ index 1e0f01f34f9d..99b6ce023b1b 100644
  
  config STM32_EXTI
  	bool
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 2b579245d3b0..d066d15f561f 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -1033,15 +1033,8 @@ static struct platform_driver stm32mp_exti_driver = {
+@@ -1033,15 +1033,8 @@ static struct platform_driver stm32mp_ex
  	},
  };
  
@@ -50,18 +46,15 @@ index 2b579245d3b0..d066d15f561f 100644
 -{
 -	return platform_driver_register(&stm32mp_exti_driver);
 -}
--
++module_platform_driver(stm32mp_exti_driver);
+ 
 -static void __exit stm32mp_exti_arch_exit(void)
 -{
 -	return platform_driver_unregister(&stm32mp_exti_driver);
 -}
-+module_platform_driver(stm32mp_exti_driver);
- 
+-
 -arch_initcall(stm32mp_exti_arch_init);
 -module_exit(stm32mp_exti_arch_exit);
 +MODULE_AUTHOR("Maxime Coquelin <mcoquelin.stm32@gmail.com>");
 +MODULE_DESCRIPTION("STM32MP EXTI driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

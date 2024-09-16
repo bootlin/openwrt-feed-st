@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-index 28ae81ca3651..ce6eda87bfe0 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -232,6 +232,9 @@ static const struct hdmi_codec_ops adv7511_codec_ops = {
+@@ -232,6 +232,9 @@ static const struct hdmi_codec_ops adv75
  
  static const struct hdmi_codec_pdata codec_data = {
  	.ops = &adv7511_codec_ops,
@@ -37,6 +35,3 @@ index 28ae81ca3651..ce6eda87bfe0 100644
  	.max_i2s_channels = 2,
  	.i2s = 1,
  	.no_i2s_capture = 1,
--- 
-2.39.2
-

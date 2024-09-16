@@ -13,11 +13,9 @@ Change-Id: Id5a9407b37631efdd0c2655b70955d369a6b920e
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 27 +++++++++++++++++++++++
  1 file changed, 27 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 7dd7f13a7c93..29741c4ddce2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -55,6 +55,11 @@ memory@80000000 {
+@@ -55,6 +55,11 @@
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
  	};
@@ -29,7 +27,7 @@ index 7dd7f13a7c93..29741c4ddce2 100644
  };
  
  &arm_wdt {
-@@ -114,6 +119,28 @@ &sdmmc1 {
+@@ -114,6 +119,28 @@
  	status = "okay";
  };
  
@@ -58,6 +56,3 @@ index 7dd7f13a7c93..29741c4ddce2 100644
  &usart2 {
  	pinctrl-names = "default", "idle", "sleep";
  	pinctrl-0 = <&usart2_pins_a>;
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/mailbox/stm32-ipcc.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index ce8dfc5a30c5..3254abb01347 100644
 --- a/drivers/mailbox/stm32-ipcc.c
 +++ b/drivers/mailbox/stm32-ipcc.c
-@@ -311,7 +311,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -311,7 +311,7 @@ static int stm32_ipcc_probe(struct platf
  	struct device *dev = &pdev->dev;
  	struct device_node *np = dev->of_node;
  	struct stm32_ipcc *ipcc;
@@ -31,7 +29,7 @@ index ce8dfc5a30c5..3254abb01347 100644
  	unsigned long i;
  	int ret;
  
-@@ -381,7 +381,8 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -381,7 +381,8 @@ static int stm32_ipcc_probe(struct platf
  	if (cid_mask) {
  		cidcfgr = readl(ipcc->reg_base + IPCC_CIDCFGR(ipcc->proc_id));
  		cid = FIELD_GET(IPCC_CIDCFGR_SCID_MASK, cidcfgr);
@@ -41,6 +39,3 @@ index ce8dfc5a30c5..3254abb01347 100644
  			dev_err(dev, "Unexpected CID%u, no access right\n", cid & cid_mask);
  			ret = -EPERM;
  			goto err_init_wkp;
--- 
-2.39.2
-

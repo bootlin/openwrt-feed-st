@@ -21,11 +21,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/clk/stm32/clk-stm32mp25-syscfg.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25-syscfg.c b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
-index caa7ea44b732..d004a2ce6059 100644
 --- a/drivers/clk/stm32/clk-stm32mp25-syscfg.c
 +++ b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
-@@ -35,9 +35,13 @@ static int clk_regmap_mux_determine_rate(struct clk_hw *hw,
+@@ -35,9 +35,13 @@ static int clk_regmap_mux_determine_rate
  #ifdef CONFIG_PM_SLEEP
  static void clk_regmap_mux_pm_restore(struct clk_hw *hw)
  {
@@ -41,6 +39,3 @@ index caa7ea44b732..d004a2ce6059 100644
  }
  #endif
  
--- 
-2.39.2
-

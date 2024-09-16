@@ -24,8 +24,6 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  sound/soc/stm/stm32_sai_sub.c | 142 ++++++++++++++++++++++++++++++++--
  3 files changed, 183 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index 8e21e6f886fc..ddba065ce835 100644
 --- a/sound/soc/stm/stm32_sai.c
 +++ b/sound/soc/stm/stm32_sai.c
 @@ -19,26 +19,37 @@
@@ -67,7 +65,7 @@ index 8e21e6f886fc..ddba065ce835 100644
  	{}
  };
  
-@@ -148,6 +159,29 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+@@ -148,6 +159,29 @@ error:
  	return ret;
  }
  
@@ -97,7 +95,7 @@ index 8e21e6f886fc..ddba065ce835 100644
  static int stm32_sai_probe(struct platform_device *pdev)
  {
  	struct stm32_sai_data *sai;
-@@ -160,6 +194,8 @@ static int stm32_sai_probe(struct platform_device *pdev)
+@@ -160,6 +194,8 @@ static int stm32_sai_probe(struct platfo
  	if (!sai)
  		return -ENOMEM;
  
@@ -106,7 +104,7 @@ index 8e21e6f886fc..ddba065ce835 100644
  	sai->base = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(sai->base))
  		return PTR_ERR(sai->base);
-@@ -178,15 +214,11 @@ static int stm32_sai_probe(struct platform_device *pdev)
+@@ -178,15 +214,11 @@ static int stm32_sai_probe(struct platfo
  					     "missing bus clock pclk\n");
  	}
  
@@ -127,7 +125,7 @@ index 8e21e6f886fc..ddba065ce835 100644
  
  	/* init irqs */
  	sai->irq = platform_get_irq(pdev, 0);
-@@ -227,7 +259,6 @@ static int stm32_sai_probe(struct platform_device *pdev)
+@@ -227,7 +259,6 @@ static int stm32_sai_probe(struct platfo
  	}
  	clk_disable_unprepare(sai->pclk);
  
@@ -135,8 +133,6 @@ index 8e21e6f886fc..ddba065ce835 100644
  	sai->set_sync = &stm32_sai_set_sync;
  	platform_set_drvdata(pdev, sai);
  
-diff --git a/sound/soc/stm/stm32_sai.h b/sound/soc/stm/stm32_sai.h
-index 33e4bff8c2f5..9f331a49b170 100644
 --- a/sound/soc/stm/stm32_sai.h
 +++ b/sound/soc/stm/stm32_sai.h
 @@ -264,13 +264,17 @@ enum stm32_sai_syncout {
@@ -157,8 +153,6 @@ index 33e4bff8c2f5..9f331a49b170 100644
  	u32 version;
  	u32 fifo_size;
  	bool has_spdif_pdm;
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index eb31b49e6597..c4402cbb3885 100644
 --- a/sound/soc/stm/stm32_sai_sub.c
 +++ b/sound/soc/stm/stm32_sai_sub.c
 @@ -60,6 +60,9 @@
@@ -205,7 +199,7 @@ index eb31b49e6597..c4402cbb3885 100644
  };
  
  enum stm32_sai_fifo_th {
-@@ -351,8 +360,26 @@ static int stm32_sai_set_clk_div(struct stm32_sai_sub_data *sai,
+@@ -351,8 +360,26 @@ static int stm32_sai_set_clk_div(struct
  	return ret;
  }
  
@@ -234,7 +228,7 @@ index eb31b49e6597..c4402cbb3885 100644
  {
  	struct platform_device *pdev = sai->pdev;
  	struct clk *parent_clk = sai->pdata->clk_x8k;
-@@ -370,6 +397,92 @@ static int stm32_sai_set_parent_clock(struct stm32_sai_sub_data *sai,
+@@ -370,6 +397,92 @@ static int stm32_sai_set_parent_clock(st
  	return ret;
  }
  
@@ -327,7 +321,7 @@ index eb31b49e6597..c4402cbb3885 100644
  static long stm32_sai_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
  				      unsigned long *prate)
  {
-@@ -565,11 +678,15 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
+@@ -565,11 +678,15 @@ static int stm32_sai_set_sysclk(struct s
  				clk_rate_exclusive_put(sai->sai_mclk);
  				sai->mclk_rate = 0;
  			}
@@ -345,7 +339,7 @@ index eb31b49e6597..c4402cbb3885 100644
  		if (ret)
  			return ret;
  
-@@ -993,7 +1110,7 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
+@@ -993,7 +1110,7 @@ static int stm32_sai_configure_clock(str
  	int ret;
  
  	if (!sai->sai_mclk) {
@@ -354,7 +348,7 @@ index eb31b49e6597..c4402cbb3885 100644
  		if (ret)
  			return ret;
  	}
-@@ -1154,6 +1271,14 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
+@@ -1154,6 +1271,14 @@ static void stm32_sai_shutdown(struct sn
  
  	clk_disable_unprepare(sai->sai_ck);
  
@@ -369,7 +363,7 @@ index eb31b49e6597..c4402cbb3885 100644
  	spin_lock_irqsave(&sai->irq_lock, flags);
  	sai->substream = NULL;
  	spin_unlock_irqrestore(&sai->irq_lock, flags);
-@@ -1523,6 +1648,13 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+@@ -1523,6 +1648,13 @@ static int stm32_sai_sub_probe(struct pl
  		return -EINVAL;
  	}
  
@@ -383,6 +377,3 @@ index eb31b49e6597..c4402cbb3885 100644
  	ret = stm32_sai_sub_parse_of(pdev, sai);
  	if (ret)
  		return ret;
--- 
-2.39.2
-

@@ -13,11 +13,9 @@ Change-Id: I859f50f8a13138310de214dba647a3b331479fb6
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0be9f900b98d..4f30988f19b0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -107,6 +107,19 @@ &i2c2 {
+@@ -107,6 +107,19 @@
  	/delete-property/dma-names;
  };
  
@@ -37,6 +35,3 @@ index 0be9f900b98d..4f30988f19b0 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.2
-

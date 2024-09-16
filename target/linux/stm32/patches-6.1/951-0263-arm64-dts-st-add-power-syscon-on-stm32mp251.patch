@@ -18,11 +18,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 030863c7a259..3a603ad2ed22 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1959,6 +1959,11 @@ rcc: rcc@44200000 {
+@@ -1959,6 +1959,11 @@
  			feature-domains = <&rifsc 156>;
  		};
  
@@ -34,7 +32,7 @@ index 030863c7a259..3a603ad2ed22 100644
  		exti1: interrupt-controller@44220000 {
  			compatible = "st,stm32mp1-exti", "syscon";
  			interrupt-controller;
-@@ -2312,6 +2317,7 @@ m33_rproc: m33@a040000 {
+@@ -2312,6 +2317,7 @@
  			resets = <&scmi_reset RST_SCMI_C2_R>,
  				 <&scmi_reset RST_SCMI_C2_HOLDBOOT_R>;
  			reset-names = "mcu_rst", "hold_boot";
@@ -42,6 +40,3 @@ index 030863c7a259..3a603ad2ed22 100644
  			interrupt-parent = <&intc>;
  			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
  
--- 
-2.39.2
-

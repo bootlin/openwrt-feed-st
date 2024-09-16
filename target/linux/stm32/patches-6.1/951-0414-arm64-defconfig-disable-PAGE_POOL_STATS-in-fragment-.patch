@@ -16,8 +16,6 @@ Change-Id: I9e1cf8ead74d690c880c8e6f5486dd6d08aae5e9
  arch/arm64/configs/fragment-01-defconfig-cleanup.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
-index 9e39d7422c60..cf92bedd16c4 100644
 --- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
 +++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
 @@ -46,3 +46,4 @@
@@ -25,6 +23,3 @@ index 9e39d7422c60..cf92bedd16c4 100644
  # CONFIG_MTD_PHYSMAP is not set
  # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
 +# CONFIG_PAGE_POOL_STATS is not set
--- 
-2.39.2
-

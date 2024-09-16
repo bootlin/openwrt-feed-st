@@ -17,11 +17,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index b80ca3b1d90c..e2e1a975f18d 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
-@@ -406,6 +406,26 @@ static void quirk_stm32_pcie_limit_mrrs(struct pci_dev *pci)
+@@ -406,6 +406,26 @@ static void quirk_stm32_pcie_limit_mrrs(
  DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID,
  			 quirk_stm32_pcie_limit_mrrs);
  
@@ -48,6 +46,3 @@ index b80ca3b1d90c..e2e1a975f18d 100644
  module_platform_driver(stm32_pcie_driver);
  MODULE_DESCRIPTION("STM32MP25 PCIe Controller driver");
  MODULE_LICENSE("GPL");
--- 
-2.39.2
-

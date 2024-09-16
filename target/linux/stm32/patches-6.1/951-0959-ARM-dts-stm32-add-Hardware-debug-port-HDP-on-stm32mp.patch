@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index b6c6f00c82e9..88e82f09252f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2361,6 +2361,13 @@ dts: thermal-sensor@44070000 {
+@@ -2361,6 +2361,13 @@
  			#thermal-sensor-cells = <1>;
  		};
  
@@ -38,6 +36,3 @@ index b6c6f00c82e9..88e82f09252f 100644
  		rcc: rcc@44200000 {
  			compatible = "st,stm32mp25-rcc";
  			reg = <0x44200000 0x10000>;
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 56 +++++++++++++++++++++++
  1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index d67c908d8256..22f59d4472ad 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -32,6 +32,12 @@ chosen {
+@@ -32,6 +32,12 @@
  	};
  
  	clocks {
@@ -36,7 +34,7 @@ index d67c908d8256..22f59d4472ad 100644
  		pad_clk: pad-clk {
  			#clock-cells = <0>;
  			compatible = "fixed-clock";
-@@ -124,6 +130,38 @@ &combophy {
+@@ -124,6 +130,38 @@
  	status = "okay";
  };
  
@@ -75,7 +73,7 @@ index d67c908d8256..22f59d4472ad 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -243,6 +281,24 @@ &i2c2 {
+@@ -243,6 +281,24 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  
@@ -100,6 +98,3 @@ index d67c908d8256..22f59d4472ad 100644
  	adv7535: hdmi@3d {
  		compatible = "adi,adv7535";
  		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
--- 
-2.39.2
-

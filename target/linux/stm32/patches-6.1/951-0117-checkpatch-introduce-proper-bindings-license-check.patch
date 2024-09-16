@@ -38,8 +38,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  scripts/checkpatch.pl | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index ecf4250b0d2d..acacba8c6129 100755
 --- a/scripts/checkpatch.pl
 +++ b/scripts/checkpatch.pl
 @@ -3693,7 +3693,7 @@ sub process {
@@ -63,6 +61,3 @@ index ecf4250b0d2d..acacba8c6129 100755
  				}
  			}
  		}
--- 
-2.39.2
-

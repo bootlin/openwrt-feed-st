@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 7182f8132093..1277e91f9e51 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -1401,6 +1401,16 @@ static unsigned long clk_summary_div_recalc_rate(struct clk_stm32_clock_data *da
+@@ -1401,6 +1401,16 @@ static unsigned long clk_summary_div_rec
  	.div_id		= NO_STM32_DIV,\
  }
  
@@ -39,7 +37,7 @@ index 7182f8132093..1277e91f9e51 100644
  static unsigned long clk_summary_clk_recalc_rate(struct clk_stm32_clock_data *data,
  						 struct clk_summary *c,
  						 unsigned long parent_rate)
-@@ -1763,7 +1773,7 @@ static struct clk_summary stm32mp25_clock_summary[] = {
+@@ -1763,7 +1773,7 @@ static struct clk_summary stm32mp25_cloc
  	CS_DIV("ck_icn_apb2", "ck_icn_ls_mcu", DIV_APB2),
  	CS_DIV("ck_icn_apb3", "ck_icn_ls_mcu", DIV_APB3),
  	CS_DIV("ck_icn_apb4", "ck_icn_ls_mcu", DIV_APB4),
@@ -48,7 +46,7 @@ index 7182f8132093..1277e91f9e51 100644
  
  	CS_STM32_TIMER("ck_timg1", "ck_icn_apb1", RCC_APB1DIVR, RCC_TIMG1PRER),
  	CS_STM32_TIMER("ck_timg2", "ck_icn_apb2", RCC_APB2DIVR, RCC_TIMG2PRER),
-@@ -1915,6 +1925,8 @@ static struct clk_summary stm32mp25_clock_summary[] = {
+@@ -1915,6 +1925,8 @@ static struct clk_summary stm32mp25_cloc
  	CS_GATE("ck_icn_p_vdec", "ck_icn_apb4", GATE_VDEC),
  	CS_GATE("ck_icn_p_venc", "ck_icn_apb4", GATE_VENC),
  	CS_GATE("ck_sys_dbg", "ck_icn_apbdbg", GATE_DBG),
@@ -57,6 +55,3 @@ index 7182f8132093..1277e91f9e51 100644
  	CS_GATE("ck_ker_tim2", "ck_timg1", GATE_TIM2),
  	CS_GATE("ck_ker_tim3", "ck_timg1", GATE_TIM3),
  	CS_GATE("ck_ker_tim4", "ck_timg1", GATE_TIM4),
--- 
-2.39.2
-

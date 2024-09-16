@@ -26,11 +26,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 6f7cc8565062..3bf33f52219c 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -416,8 +416,9 @@ static int stm32mp_exti_set_type(struct irq_data *d, unsigned int type)
+@@ -416,8 +416,9 @@ unspinlock:
  unlock:
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -41,6 +39,3 @@ index 6f7cc8565062..3bf33f52219c 100644
  
  	return err;
  }
--- 
-2.39.2
-

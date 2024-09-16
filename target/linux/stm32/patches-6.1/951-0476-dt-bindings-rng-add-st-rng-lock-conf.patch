@@ -21,8 +21,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 59abdc85a9fb..0055f14a8e3f 100644
 --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 @@ -37,6 +37,20 @@ required:
@@ -46,6 +44,3 @@ index 59abdc85a9fb..0055f14a8e3f 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.2
-

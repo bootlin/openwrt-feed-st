@@ -13,11 +13,9 @@ Change-Id: Ie9520b0906d7896c1929d743c837e6ded39c79c4
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index a2e46a364a3a..0be9f900b98d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -94,6 +94,19 @@ phy1_eth1: ethernet-phy@1 {
+@@ -94,6 +94,19 @@
  	};
  };
  
@@ -37,6 +35,3 @@ index a2e46a364a3a..0be9f900b98d 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.2
-

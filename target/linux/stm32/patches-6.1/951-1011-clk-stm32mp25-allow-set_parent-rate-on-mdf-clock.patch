@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 1277e91f9e51..72d55012a3cf 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -782,7 +782,7 @@ static CLK_STM32_COMPOSITE(ck_mco2, mco2_src, 0, GATE_MCO2, MUX_MCO2, NO_STM32_D
+@@ -782,7 +782,7 @@ static CLK_STM32_COMPOSITE(ck_mco2, mco2
  
  /* MDF */
  static CLK_STM32_GATE(ck_icn_p_mdf1, "ck_icn_ls_mcu", 0, GATE_MDF1);
@@ -31,6 +29,3 @@ index 1277e91f9e51..72d55012a3cf 100644
  
  /* OSPI */
  static CLK_STM32_GATE(ck_icn_p_ospiiom, "ck_icn_ls_mcu", 0, GATE_OSPIIOM);
--- 
-2.39.2
-

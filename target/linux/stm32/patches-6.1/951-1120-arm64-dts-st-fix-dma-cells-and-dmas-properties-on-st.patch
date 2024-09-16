@@ -29,11 +29,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp25xf.dtsi |   8 +-
  3 files changed, 99 insertions(+), 99 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 28c12a16e1b8..a43e57dc571c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -338,7 +338,7 @@ hpdma: dma-controller@40400000 {
+@@ -338,7 +338,7 @@
  				     <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA1>;
  			power-domains = <&RET_PD>;
@@ -42,7 +40,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  			st,axi-max-burst-len = <16>;
  		};
  
-@@ -363,7 +363,7 @@ hpdma2: dma-controller@40410000 {
+@@ -363,7 +363,7 @@
  				     <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA2>;
  			power-domains = <&RET_PD>;
@@ -51,7 +49,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  			st,axi-max-burst-len = <16>;
  		};
  
-@@ -388,7 +388,7 @@ hpdma3: dma-controller@40420000 {
+@@ -388,7 +388,7 @@
  				     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA3>;
  			power-domains = <&RET_PD>;
@@ -60,7 +58,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  			st,axi-max-burst-len = <16>;
  		};
  
-@@ -423,8 +423,8 @@ ospi1: spi@40430000 {
+@@ -423,8 +423,8 @@
  				compatible = "st,stm32mp25-omi";
  				reg = <0 0 0x400>;
  				interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
@@ -71,7 +69,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "tx", "rx";
  				st,syscfg-dlyb = <&syscfg 0x1000>;
  				clocks = <&scmi_clk CK_SCMI_OSPI1>;
-@@ -438,8 +438,8 @@ ospi2: spi@40440000 {
+@@ -438,8 +438,8 @@
  				compatible = "st,stm32mp25-omi";
  				reg = <1 0 0x400>;
  				interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
@@ -82,7 +80,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "tx", "rx";
  				st,syscfg-dlyb = <&syscfg 0x1400>;
  				clocks = <&scmi_clk CK_SCMI_OSPI2>;
-@@ -806,8 +806,8 @@ i2s2: audio-controller@400b0000 {
+@@ -806,8 +806,8 @@
  				clocks = <&rcc CK_BUS_SPI2>, <&rcc CK_KER_SPI2>;
  				clock-names = "pclk", "i2sclk";
  				resets = <&rcc SPI2_R>;
@@ -93,7 +91,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI2_ID>;
  				power-domains = <&RET_PD>;
-@@ -822,8 +822,8 @@ spi2: spi@400b0000 {
+@@ -822,8 +822,8 @@
  				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI2>;
  				resets = <&rcc SPI2_R>;
@@ -104,7 +102,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI2_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -838,8 +838,8 @@ i2s3: audio-controller@400c0000 {
+@@ -838,8 +838,8 @@
  				clocks = <&rcc CK_BUS_SPI3>, <&rcc CK_KER_SPI3>;
  				clock-names = "pclk", "i2sclk";
  				resets = <&rcc SPI3_R>;
@@ -115,7 +113,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI3_ID>;
  				power-domains = <&RET_PD>;
-@@ -854,8 +854,8 @@ spi3: spi@400c0000 {
+@@ -854,8 +854,8 @@
  				interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI3>;
  				resets = <&rcc SPI3_R>;
@@ -126,7 +124,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI3_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -869,8 +869,8 @@ spdifrx: audio-controller@400d0000 {
+@@ -869,8 +869,8 @@
  				clocks = <&rcc CK_KER_SPDIFRX>;
  				clock-names = "kclk";
  				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
@@ -137,7 +135,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "rx-ctrl";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPDIFRX_ID>;
  				status = "disabled";
-@@ -881,8 +881,8 @@ usart2: serial@400e0000 {
+@@ -881,8 +881,8 @@
  				reg = <0x400e0000 0x400>;
  				interrupts-extended = <&exti1 27 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART2>;
@@ -148,7 +146,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_USART2_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -895,8 +895,8 @@ usart3: serial@400f0000 {
+@@ -895,8 +895,8 @@
  				reg = <0x400f0000 0x400>;
  				interrupts-extended = <&exti1 28 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART3>;
@@ -159,7 +157,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_USART3_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -909,8 +909,8 @@ uart4: serial@40100000 {
+@@ -909,8 +909,8 @@
  				reg = <0x40100000 0x400>;
  				interrupts-extended = <&exti1 30 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART4>;
@@ -170,7 +168,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_UART4_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -923,8 +923,8 @@ uart5: serial@40110000 {
+@@ -923,8 +923,8 @@
  				reg = <0x40110000 0x400>;
  				interrupts-extended = <&exti1 31 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART5>;
@@ -181,7 +179,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_UART5_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -941,8 +941,8 @@ i2c1: i2c@40120000 {
+@@ -941,8 +941,8 @@
  				resets = <&rcc I2C1_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -192,7 +190,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C1_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -958,8 +958,8 @@ i2c2: i2c@40130000 {
+@@ -958,8 +958,8 @@
  				resets = <&rcc I2C2_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -203,7 +201,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C2_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -975,8 +975,8 @@ i2c3: i2c@40140000 {
+@@ -975,8 +975,8 @@
  				resets = <&rcc I2C3_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -214,7 +212,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C3_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -992,8 +992,8 @@ i2c4: i2c@40150000 {
+@@ -992,8 +992,8 @@
  				resets = <&rcc I2C4_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -225,7 +223,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C4_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1009,8 +1009,8 @@ i2c5: i2c@40160000 {
+@@ -1009,8 +1009,8 @@
  				resets = <&rcc I2C5_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -236,7 +234,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C5_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1026,8 +1026,8 @@ i2c6: i2c@40170000 {
+@@ -1026,8 +1026,8 @@
  				resets = <&rcc I2C6_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -247,7 +245,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C6_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1043,8 +1043,8 @@ i2c7: i2c@40180000 {
+@@ -1043,8 +1043,8 @@
  				resets = <&rcc I2C7_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -258,7 +256,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C7_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1225,8 +1225,8 @@ usart6: serial@40220000 {
+@@ -1225,8 +1225,8 @@
  				reg = <0x40220000 0x400>;
  				interrupts-extended = <&exti1 29 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART6>;
@@ -269,7 +267,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_USART6_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1242,8 +1242,8 @@ i2s1: audio-controller@40230000 {
+@@ -1242,8 +1242,8 @@
  				clocks = <&rcc CK_BUS_SPI1>, <&rcc CK_KER_SPI1>;
  				clock-names = "pclk", "i2sclk";
  				resets = <&rcc SPI1_R>;
@@ -280,7 +278,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI1_ID>;
  				power-domains = <&RET_PD>;
-@@ -1258,8 +1258,8 @@ spi1: spi@40230000 {
+@@ -1258,8 +1258,8 @@
  				interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI1>;
  				resets = <&rcc SPI1_R>;
@@ -291,7 +289,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI1_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1274,8 +1274,8 @@ spi4: spi@40240000 {
+@@ -1274,8 +1274,8 @@
  				interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI4>;
  				resets = <&rcc SPI4_R>;
@@ -302,7 +300,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI4_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1383,8 +1383,8 @@ spi5: spi@40280000 {
+@@ -1383,8 +1383,8 @@
  				interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI5>;
  				resets = <&rcc SPI5_R>;
@@ -313,7 +311,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI5_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1411,7 +1411,7 @@ sai1a: audio-controller@40290004 {
+@@ -1411,7 +1411,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI1>;
  					clock-names = "sai_ck";
@@ -322,7 +320,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1422,7 +1422,7 @@ sai1b: audio-controller@40290024 {
+@@ -1422,7 +1422,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI1>;
  					clock-names = "sai_ck";
@@ -331,7 +329,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1448,7 +1448,7 @@ sai2a: audio-controller@402a0004 {
+@@ -1448,7 +1448,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI2>;
  					clock-names = "sai_ck";
@@ -340,7 +338,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1459,7 +1459,7 @@ sai2b: audio-controller@402a0024 {
+@@ -1459,7 +1459,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI2>;
  					clock-names = "sai_ck";
@@ -349,7 +347,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1485,7 +1485,7 @@ sai3a: audio-controller@402b0004 {
+@@ -1485,7 +1485,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI3>;
  					clock-names = "sai_ck";
@@ -358,7 +356,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1496,7 +1496,7 @@ sai3b: audio-controller@502b0024 {
+@@ -1496,7 +1496,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI3>;
  					clock-names = "sai_ck";
@@ -367,7 +365,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1507,8 +1507,8 @@ uart9: serial@402c0000 {
+@@ -1507,8 +1507,8 @@
  				reg = <0x402c0000 0x400>;
  				interrupts-extended = <&exti1 34 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART9>;
@@ -378,7 +376,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_UART9_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1555,8 +1555,8 @@ usart1: serial@40330000 {
+@@ -1555,8 +1555,8 @@
  				reg = <0x40330000 0x400>;
  				interrupts-extended = <&exti1 26 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART1>;
@@ -389,7 +387,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_USART1_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1584,7 +1584,7 @@ sai4a: audio-controller@40340004 {
+@@ -1584,7 +1584,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI4>;
  					clock-names = "sai_ck";
@@ -398,7 +396,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1595,7 +1595,7 @@ sai4b: audio-controller@40340024 {
+@@ -1595,7 +1595,7 @@
  					#sound-dai-cells = <0>;
  					clocks = <&rcc CK_KER_SAI4>;
  					clock-names = "sai_ck";
@@ -407,7 +405,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					power-domains = <&CLUSTER_PD>;
  					status = "disabled";
  				};
-@@ -1609,8 +1609,8 @@ spi6: spi@40350000 {
+@@ -1609,8 +1609,8 @@
  				interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI6>;
  				resets = <&rcc SPI6_R>;
@@ -418,7 +416,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI6_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1625,8 +1625,8 @@ spi7: spi@40360000 {
+@@ -1625,8 +1625,8 @@
  				interrupts = <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI7>;
  				resets = <&rcc SPI7_R>;
@@ -429,7 +427,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI7_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1638,8 +1638,8 @@ uart7: serial@40370000 {
+@@ -1638,8 +1638,8 @@
  				reg = <0x40370000 0x400>;
  				interrupts-extended = <&exti1 32 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART7>;
@@ -440,7 +438,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_UART7_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1652,8 +1652,8 @@ uart8: serial@40380000 {
+@@ -1652,8 +1652,8 @@
  				reg = <0x40380000 0x400>;
  				interrupts-extended = <&exti1 33 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART8>;
@@ -451,7 +449,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_UART8_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1668,7 +1668,7 @@ dcmi: dcmi@404a0000 {
+@@ -1668,7 +1668,7 @@
  				resets = <&rcc CCI_R>;
  				clocks = <&rcc CK_BUS_CCI>;
  				clock-names = "mclk";
@@ -460,7 +458,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_DCMI_PSSI_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1704,7 +1704,7 @@ adc1: adc@0 {
+@@ -1704,7 +1704,7 @@
  					reg = <0x0>;
  					interrupt-parent = <&adc_12>;
  					interrupts = <0>;
@@ -469,7 +467,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
-@@ -1723,7 +1723,7 @@ adc2: adc@100 {
+@@ -1723,7 +1723,7 @@
  					reg = <0x100>;
  					interrupt-parent = <&adc_12>;
  					interrupts = <1>;
@@ -478,7 +476,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
-@@ -1818,7 +1818,7 @@ filter0: filter@84 {
+@@ -1818,7 +1818,7 @@
  					reg = <0x84 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
@@ -487,7 +485,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1828,7 +1828,7 @@ filter1: filter@104 {
+@@ -1828,7 +1828,7 @@
  					reg = <0x104 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>;
@@ -496,7 +494,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1838,7 +1838,7 @@ filter2: filter@184 {
+@@ -1838,7 +1838,7 @@
  					reg = <0x184 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
@@ -505,7 +503,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1848,7 +1848,7 @@ filter3: filter@204 {
+@@ -1848,7 +1848,7 @@
  					reg = <0x204 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
@@ -514,7 +512,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1858,7 +1858,7 @@ filter4: filter@284 {
+@@ -1858,7 +1858,7 @@
  					reg = <0x284 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>;
@@ -523,7 +521,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1868,7 +1868,7 @@ filter5: filter@304 {
+@@ -1868,7 +1868,7 @@
  					reg = <0x304 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
@@ -532,7 +530,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1878,7 +1878,7 @@ filter6: filter@384 {
+@@ -1878,7 +1878,7 @@
  					reg = <0x384 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
@@ -541,7 +539,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1888,7 +1888,7 @@ filter7: filter@404 {
+@@ -1888,7 +1888,7 @@
  					reg = <0x404 0x70>;
  					#io-channel-cells = <1>;
  					interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
@@ -550,7 +548,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					status = "disabled";
  				};
-@@ -1913,7 +1913,7 @@ adc3: adc@0 {
+@@ -1913,7 +1913,7 @@
  					reg = <0x0>;
  					interrupt-parent = <&adc_3>;
  					interrupts = <0>;
@@ -559,7 +557,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  					dma-names = "rx";
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
-@@ -1946,7 +1946,7 @@ hash: hash@42010000 {
+@@ -1946,7 +1946,7 @@
  				interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_HASH>;
  				resets = <&rcc HASH_R>;
@@ -568,7 +566,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "in";
  				feature-domains = <&rifsc STM32MP25_RIFSC_HASH_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -1992,8 +1992,8 @@ spi8: spi@46020000 {
+@@ -1992,8 +1992,8 @@
  				interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI8>;
  				resets = <&rcc SPI8_R>;
@@ -579,7 +577,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_SPI8_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -2005,8 +2005,8 @@ lpuart1: serial@46030000 {
+@@ -2005,8 +2005,8 @@
  				reg = <0x46030000 0x400>;
  				interrupts-extended = <&exti2 26 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPUART1>;
@@ -590,7 +588,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_LPUART1_ID>;
  				status = "disabled";
-@@ -2021,8 +2021,8 @@ i2c8: i2c@46040000 {
+@@ -2021,8 +2021,8 @@
  				resets = <&rcc I2C8_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -601,7 +599,7 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "rx", "tx";
  				feature-domains = <&rifsc STM32MP25_RIFSC_I2C8_ID>;
  				power-domains = <&CLUSTER_PD>;
-@@ -2913,9 +2913,9 @@ nand-controller@4,0 {
+@@ -2913,9 +2913,9 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
@@ -614,11 +612,9 @@ index 28c12a16e1b8..a43e57dc571c 100644
  				dma-names = "tx", "rx", "ecc";
  				status = "disabled";
  			};
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-index 64927362f7d6..8d6ae78f506f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-@@ -12,8 +12,8 @@ cryp1: crypto@42030000 {
+@@ -12,8 +12,8 @@
  		interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -629,7 +625,7 @@ index 64927362f7d6..8d6ae78f506f 100644
  		dma-names = "in", "out";
  		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
  		power-domains = <&CLUSTER_PD>;
-@@ -26,8 +26,8 @@ cryp2: crypto@42040000 {
+@@ -26,8 +26,8 @@
  		interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP2>;
  		resets = <&rcc CRYP2_R>;
@@ -640,11 +636,9 @@ index 64927362f7d6..8d6ae78f506f 100644
  		dma-names = "in", "out";
  		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP2_ID>;
  		power-domains = <&CLUSTER_PD>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-index 64927362f7d6..8d6ae78f506f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-@@ -12,8 +12,8 @@ cryp1: crypto@42030000 {
+@@ -12,8 +12,8 @@
  		interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -655,7 +649,7 @@ index 64927362f7d6..8d6ae78f506f 100644
  		dma-names = "in", "out";
  		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP1_ID>;
  		power-domains = <&CLUSTER_PD>;
-@@ -26,8 +26,8 @@ cryp2: crypto@42040000 {
+@@ -26,8 +26,8 @@
  		interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP2>;
  		resets = <&rcc CRYP2_R>;
@@ -666,6 +660,3 @@ index 64927362f7d6..8d6ae78f506f 100644
  		dma-names = "in", "out";
  		feature-domains = <&rifsc STM32MP25_RIFSC_CRYP2_ID>;
  		power-domains = <&CLUSTER_PD>;
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-index 313ccbb7e19d..f28072380a23 100644
 --- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-@@ -75,6 +75,19 @@ gpu_reserved: gpu@d4000000 {
+@@ -75,6 +75,19 @@
  		};
  	};
  
@@ -39,7 +37,7 @@ index 313ccbb7e19d..f28072380a23 100644
  	led {
  		compatible = "gpio-leds";
  		led-blue {
-@@ -232,6 +245,13 @@ sii9022_in: endpoint {
+@@ -232,6 +245,13 @@
  				};
  			};
  
@@ -53,6 +51,3 @@ index 313ccbb7e19d..f28072380a23 100644
  			port@3 {
  				reg = <3>;
  				sii9022_tx_endpoint: endpoint {
--- 
-2.39.2
-

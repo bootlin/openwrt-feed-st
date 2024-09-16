@@ -19,11 +19,9 @@ Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/mtd/spi-nor/macronix.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index cacd33d51274..9ff289dd8582 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -235,6 +235,10 @@ static int macronix_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+@@ -140,6 +140,10 @@ static const struct flash_info macronix_
  static void macronix_nor_default_init(struct spi_nor *nor)
  {
  	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
@@ -32,9 +30,9 @@ index cacd33d51274..9ff289dd8582 100644
 +static void macronix_nor_late_init(struct spi_nor *nor)
 +{
  	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
- 	nor->params->octal_dtr_enable = macronix_nor_set_octal_dtr;
- }
-@@ -258,6 +262,7 @@ static int macronix_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id
+ 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+ 	nor->flags |= SNOR_F_HAS_LOCK;
+@@ -164,6 +168,7 @@ static int macronix_nor_read_id(struct s
  
  static const struct spi_nor_fixups macronix_nor_fixups = {
  	.default_init = macronix_nor_default_init,
@@ -42,6 +40,3 @@ index cacd33d51274..9ff289dd8582 100644
  	.read_id = macronix_nor_read_id,
  };
  
--- 
-2.39.2
-

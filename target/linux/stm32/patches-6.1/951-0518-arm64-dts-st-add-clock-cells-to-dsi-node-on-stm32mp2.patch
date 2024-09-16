@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index d5d9082b375e..ffc3f40fdb23 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1963,6 +1963,7 @@ i3c4: i3c@46080000 {
+@@ -1963,6 +1963,7 @@
  			dsi: dsi@48000000 {
  				compatible = "st,stm32-dsi";
  				reg = <0x48000000 0x800>;
@@ -31,6 +29,3 @@ index d5d9082b375e..ffc3f40fdb23 100644
  				clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
  					 <&rcc CK_KER_LTDC>;
  				clock-names = "pclk", "ref", "px_clk";
--- 
-2.39.2
-

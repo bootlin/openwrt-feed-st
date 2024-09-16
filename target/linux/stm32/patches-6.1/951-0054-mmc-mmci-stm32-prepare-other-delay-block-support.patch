@@ -12,8 +12,6 @@ Change-Id: I13a72bfaf8f564146cb064999372718e7f58923f
  drivers/mmc/host/mmci_stm32_sdmmc.c | 68 +++++++++++++++++++++++------
  1 file changed, 55 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 6b53fa916688..16b564bf01be 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
 @@ -47,10 +47,21 @@ struct sdmmc_idma {
@@ -38,7 +36,7 @@ index 6b53fa916688..16b564bf01be 100644
  };
  
  static int sdmmc_idma_validate_data(struct mmci_host *host,
-@@ -322,7 +333,7 @@ static void mmci_sdmmc_set_clkreg(struct mmci_host *host, unsigned int desired)
+@@ -322,7 +333,7 @@ static void mmci_sdmmc_set_clkreg(struct
  	mmci_write_clkreg(host, clk);
  }
  
@@ -47,7 +45,7 @@ index 6b53fa916688..16b564bf01be 100644
  {
  	if (!dlyb || !dlyb->base)
  		return;
-@@ -339,7 +350,8 @@ static void mmci_sdmmc_set_pwrreg(struct mmci_host *host, unsigned int pwr)
+@@ -339,7 +350,8 @@ static void mmci_sdmmc_set_pwrreg(struct
  	/* adds OF options */
  	pwr = host->pwr_reg_add;
  
@@ -57,7 +55,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  	if (ios.power_mode == MMC_POWER_OFF) {
  		/* Only a reset could power-off sdmmc */
-@@ -449,8 +461,15 @@ static bool sdmmc_busy_complete(struct mmci_host *host, u32 status, u32 err_msk)
+@@ -449,8 +461,15 @@ complete:
  	return true;
  }
  
@@ -75,7 +73,7 @@ index 6b53fa916688..16b564bf01be 100644
  {
  	u32 cfgr;
  
-@@ -462,16 +481,18 @@ static void sdmmc_dlyb_set_cfgr(struct sdmmc_dlyb *dlyb,
+@@ -462,16 +481,18 @@ static void sdmmc_dlyb_set_cfgr(struct s
  
  	if (!sampler)
  		writel_relaxed(DLYB_CR_DEN, dlyb->base + DLYB_CR);
@@ -96,7 +94,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  		ret = readl_relaxed_poll_timeout(dlyb->base + DLYB_CFGR, cfgr,
  						 (cfgr & DLYB_CFGR_LNGF),
-@@ -501,10 +522,14 @@ static int sdmmc_dlyb_phase_tuning(struct mmci_host *host, u32 opcode)
+@@ -501,10 +522,14 @@ static int sdmmc_dlyb_phase_tuning(struc
  {
  	struct sdmmc_dlyb *dlyb = host->variant_priv;
  	int cur_len = 0, max_len = 0, end_of_len = 0;
@@ -113,7 +111,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  		if (mmc_send_tuning(host->mmc, opcode, NULL)) {
  			cur_len = 0;
-@@ -522,10 +547,15 @@ static int sdmmc_dlyb_phase_tuning(struct mmci_host *host, u32 opcode)
+@@ -522,10 +547,15 @@ static int sdmmc_dlyb_phase_tuning(struc
  		return -EINVAL;
  	}
  
@@ -131,7 +129,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  	dev_dbg(mmc_dev(host->mmc), "unit:%d max_dly:%d phase:%d\n",
  		dlyb->unit, dlyb->max, phase);
-@@ -538,6 +568,7 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+@@ -538,6 +568,7 @@ static int sdmmc_execute_tuning(struct m
  	struct mmci_host *host = mmc_priv(mmc);
  	struct sdmmc_dlyb *dlyb = host->variant_priv;
  	u32 clk;
@@ -139,7 +137,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  	if ((host->mmc->ios.timing != MMC_TIMING_UHS_SDR104 &&
  	     host->mmc->ios.timing != MMC_TIMING_MMC_HS200) ||
-@@ -547,7 +578,9 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+@@ -547,7 +578,9 @@ static int sdmmc_execute_tuning(struct m
  	if (!dlyb || !dlyb->base)
  		return -EINVAL;
  
@@ -150,7 +148,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  	/*
  	 * SDMMC_FBCK is selected when an external Delay Block is needed
-@@ -558,8 +591,9 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+@@ -558,8 +591,9 @@ static int sdmmc_execute_tuning(struct m
  	clk |= MCI_STM32_CLK_SELFBCK;
  	mmci_write_clkreg(host, clk);
  
@@ -162,7 +160,7 @@ index 6b53fa916688..16b564bf01be 100644
  
  	return sdmmc_dlyb_phase_tuning(host, opcode);
  }
-@@ -639,6 +673,13 @@ static struct mmci_host_ops sdmmc_variant_ops = {
+@@ -639,6 +673,13 @@ static struct mmci_host_ops sdmmc_varian
  	.sdio_irq = sdmmc_sdio_irq,
  };
  
@@ -176,7 +174,7 @@ index 6b53fa916688..16b564bf01be 100644
  void sdmmc_variant_init(struct mmci_host *host)
  {
  	struct device_node *np = host->mmc->parent->of_node;
-@@ -657,6 +698,7 @@ void sdmmc_variant_init(struct mmci_host *host)
+@@ -657,6 +698,7 @@ void sdmmc_variant_init(struct mmci_host
  		return;
  
  	dlyb->base = base_dlyb;
@@ -184,6 +182,3 @@ index 6b53fa916688..16b564bf01be 100644
  	host->variant_priv = dlyb;
  	host->mmc_ops->execute_tuning = sdmmc_execute_tuning;
  }
--- 
-2.39.2
-

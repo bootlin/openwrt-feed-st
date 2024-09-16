@@ -16,8 +16,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index f2ca36d2ee82..25d9aa577c0b 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -1,5 +1,6 @@
@@ -27,6 +25,3 @@ index f2ca36d2ee82..25d9aa577c0b 100644
  CONFIG_ARM_SMC_WATCHDOG=y
  CONFIG_DYNAMIC_DEBUG=y
  CONFIG_REGULATOR_ARM_SCMI=y
--- 
-2.39.2
-

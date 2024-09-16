@@ -18,8 +18,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index e046c5a2021d..a8809e348668 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -22,6 +22,7 @@
@@ -40,7 +38,7 @@ index e046c5a2021d..a8809e348668 100644
  #define MPLLMULT_19_2 (0x02u << 1)
  #define MPLLMULT_20   (0x7Du << 1)
  #define MPLLMULT_24   (0x68u << 1)
-@@ -196,6 +200,17 @@ static int stm32_combophy_pll_init(struct stm32_combophy *combophy)
+@@ -196,6 +200,17 @@ static int stm32_combophy_pll_init(struc
  				   SYSCFG_COMBOPHY_CR1_SSCEN, SYSCFG_COMBOPHY_CR1_SSCEN);
  	}
  
@@ -58,6 +56,3 @@ index e046c5a2021d..a8809e348668 100644
  	if (combophy->type == PHY_TYPE_PCIE) {
  		ret = stm32_impedance_tune(combophy);
  		if (ret) {
--- 
-2.39.2
-

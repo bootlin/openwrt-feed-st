@@ -24,8 +24,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-index 97885c5bfb22..65bf12010350 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
 @@ -39,6 +39,9 @@ properties:
@@ -38,6 +36,3 @@ index 97885c5bfb22..65bf12010350 100644
    sram:
      $ref: /schemas/types.yaml#/definitions/phandle
      description:
--- 
-2.39.2
-

@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index bdd87f1d4ba9..59231035762a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -374,8 +374,6 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+@@ -374,8 +374,6 @@ static int dcmipp_statcap_start_streamin
  		goto err_media_pipeline_stop;
  	}
  
@@ -30,7 +28,7 @@ index bdd87f1d4ba9..59231035762a 100644
  	return 0;
  
  err_media_pipeline_stop:
-@@ -684,7 +682,7 @@ static void dcmipp_statcap_buffer_done(struct dcmipp_statcap_device *vcap)
+@@ -684,7 +682,7 @@ static void dcmipp_statcap_buffer_done(s
  	/* Send buffer */
  	vb2_set_plane_payload(&cur_buf->vb.vb2_buf, 0,
  			      sizeof(struct stm32_dcmipp_stat_buf));
@@ -39,6 +37,3 @@ index bdd87f1d4ba9..59231035762a 100644
  	cur_buf->vb.vb2_buf.timestamp = ktime_get_ns();
  	vb2_buffer_done(&cur_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
  }
--- 
-2.39.2
-

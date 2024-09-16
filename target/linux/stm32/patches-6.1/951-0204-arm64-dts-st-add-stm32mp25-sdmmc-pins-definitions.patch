@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 129 ++++++++++++++++++
  1 file changed, 129 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 339b1f77ef7d..0ca4671055a5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -221,6 +221,135 @@ pins {
+@@ -221,6 +221,135 @@
  		};
  	};
  
@@ -155,6 +153,3 @@ index 339b1f77ef7d..0ca4671055a5 100644
  	spi3_pins_a: spi3-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('B', 7, AF1)>, /* SPI3_SCK */
--- 
-2.39.2
-

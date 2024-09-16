@@ -21,11 +21,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp131.dtsi | 238 +++++++++++++++---------------
  1 file changed, 117 insertions(+), 121 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
-index e830d068d5f1..0fc7a61651b2 100644
 --- a/arch/arm/boot/dts/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/stm32mp131.dtsi
-@@ -845,6 +845,123 @@ rcc: rcc@50000000 {
+@@ -845,6 +845,123 @@
  				 <&scmi_clk CK_SCMI_LSI>;
  		};
  
@@ -149,7 +147,7 @@ index e830d068d5f1..0fc7a61651b2 100644
  		exti: interrupt-controller@5000d000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
-@@ -1725,126 +1842,5 @@ reboot_mode: reboot-mode {
+@@ -1725,126 +1842,5 @@
  				mode-romcode_serial = <0xff>;
  			};
  		};
@@ -276,6 +274,3 @@ index e830d068d5f1..0fc7a61651b2 100644
 -		};
  	};
  };
--- 
-2.39.2
-

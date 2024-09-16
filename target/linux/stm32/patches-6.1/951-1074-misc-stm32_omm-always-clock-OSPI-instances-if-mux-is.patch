@@ -20,8 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/misc/stm32_omm.c | 201 ++++++++++++++++++++++++++-------------
  1 file changed, 133 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-index d57ea4a79c72..3a4639e10d15 100644
 --- a/drivers/misc/stm32_omm.c
 +++ b/drivers/misc/stm32_omm.c
 @@ -30,13 +30,15 @@
@@ -41,7 +39,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  };
  
  static int stm32_omm_set_amcr(struct device *dev, bool set)
-@@ -51,7 +53,7 @@ static int stm32_omm_set_amcr(struct device *dev, bool set)
+@@ -51,7 +53,7 @@ static int stm32_omm_set_amcr(struct dev
  	int ret, i, idx;
  	unsigned int amcr, read_amcr;
  
@@ -50,7 +48,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  		idx = of_property_match_string(dev->of_node,
  					       "memory-region-names",
  					       mm_name[i]);
-@@ -120,18 +122,49 @@ static int stm32_omm_set_amcr(struct device *dev, bool set)
+@@ -120,18 +122,49 @@ static int stm32_omm_set_amcr(struct dev
  	regmap_read(syscfg_regmap, amcr_base, &read_amcr);
  	read_amcr = read_amcr >> (ffs(amcr_mask) - 1);
  
@@ -106,7 +104,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	u32 mux = 0;
  	u32 cssel_ovr = 0;
  	u32 req2ack = 0;
-@@ -149,14 +182,10 @@ static int stm32_omm_configure(struct platform_device *pdev)
+@@ -149,14 +182,10 @@ static int stm32_omm_configure(struct pl
  		return ret;
  
  	/* parse children's clock */
@@ -123,7 +121,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  			goto err_clk_disable;
  		}
  
-@@ -192,6 +221,14 @@ static int stm32_omm_configure(struct platform_device *pdev)
+@@ -192,6 +221,14 @@ static int stm32_omm_configure(struct pl
  
  			omm->cr &= ~CR_REQ2ACK_MASK;
  			omm->cr |= FIELD_PREP(CR_REQ2ACK_MASK, req2ack);
@@ -138,7 +136,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  		}
  
  		omm->cr &= ~CR_MUXENMODE_MASK;
-@@ -206,7 +243,7 @@ static int stm32_omm_configure(struct platform_device *pdev)
+@@ -206,7 +243,7 @@ static int stm32_omm_configure(struct pl
  		omm->cr |= CR_CSSEL_OVR_EN;
  	}
  
@@ -147,7 +145,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
  
  	ret = stm32_omm_set_amcr(dev, true);
-@@ -235,33 +272,32 @@ static int stm32_omm_check_access(struct device *dev, struct device_node *np)
+@@ -235,33 +272,32 @@ static int stm32_omm_check_access(struct
  	return stm32_rifsc_get_access_by_id(id_bus);
  }
  
@@ -199,7 +197,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  }
  
  static int stm32_omm_probe(struct platform_device *pdev)
-@@ -269,14 +305,13 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -269,14 +305,13 @@ static int stm32_omm_probe(struct platfo
  	struct platform_device *vdev;
  	struct device *dev = &pdev->dev;
  	struct device_node *child;
@@ -215,7 +213,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	if (!omm)
  		return -ENOMEM;
  
-@@ -291,17 +326,20 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -291,17 +326,20 @@ static int stm32_omm_probe(struct platfo
  		if (omm->nb_child >= OMM_CHILD_NB) {
  			dev_err(dev, "Bad DT, found too much children\n");
  			of_node_put(child);
@@ -239,7 +237,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  		}
  
  		child_access[omm->nb_child] = false;
-@@ -310,10 +348,16 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -310,10 +348,16 @@ static int stm32_omm_probe(struct platfo
  			child_access[omm->nb_child] = true;
  		}
  
@@ -257,7 +255,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	platform_set_drvdata(pdev, omm);
  
  	pm_runtime_enable(dev);
-@@ -321,24 +365,17 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -321,24 +365,17 @@ static int stm32_omm_probe(struct platfo
  	/* check if OMM's resource access is granted */
  	ret = stm32_omm_check_access(dev, dev->of_node);
  	if (ret < 0 && ret != -EACCES)
@@ -273,25 +271,26 @@ index d57ea4a79c72..3a4639e10d15 100644
 -				if (ret)
 -					return ret;
 -			}
-+	if (!ret && child_access_granted == OMM_CHILD_NB) {
-+		/* Ensure both OSPI instance are disabled before configuring OMM */
-+		ret = stm32_omm_disable_child(dev);
-+		if (ret)
-+			goto err_clk_release;
- 
+-
 -			ret = stm32_omm_configure(pdev);
 -			if (ret)
 -				return ret;
 -		} else {
 -			dev_dbg(dev, "Can't disable Octo Memory Manager's child\n");
 -		}
++	if (!ret && child_access_granted == OMM_CHILD_NB) {
++		/* Ensure both OSPI instance are disabled before configuring OMM */
++		ret = stm32_omm_disable_child(dev);
++		if (ret)
++			goto err_clk_release;
++
 +		ret = stm32_omm_configure(dev);
 +		if (ret)
 +			goto err_clk_release;
  	} else {
  		dev_dbg(dev, "Octo Memory Manager resource's access not granted\n");
  		/*
-@@ -346,30 +383,36 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -346,30 +383,36 @@ static int stm32_omm_probe(struct platfo
  		 * with memory-map areas defined in DT
  		 */
  		ret = stm32_omm_set_amcr(dev, false);
@@ -338,7 +337,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  }
  
  static int stm32_omm_remove(struct platform_device *pdev)
-@@ -381,6 +424,12 @@ static int stm32_omm_remove(struct platform_device *pdev)
+@@ -381,6 +424,12 @@ static int stm32_omm_remove(struct platf
  		if (omm->child_dev[i])
  			of_platform_device_destroy(omm->child_dev[i], NULL);
  
@@ -351,7 +350,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	pm_runtime_disable(&pdev->dev);
  
  	return 0;
-@@ -410,6 +459,11 @@ static int __maybe_unused stm32_omm_runtime_resume(struct device *dev)
+@@ -410,6 +459,11 @@ static int __maybe_unused stm32_omm_runt
  
  static int __maybe_unused stm32_omm_suspend(struct device *dev)
  {
@@ -363,7 +362,7 @@ index d57ea4a79c72..3a4639e10d15 100644
  	return pinctrl_pm_select_sleep_state(dev);
  }
  
-@@ -420,17 +474,28 @@ static int __maybe_unused stm32_omm_resume(struct device *dev)
+@@ -420,17 +474,28 @@ static int __maybe_unused stm32_omm_resu
  
  	pinctrl_pm_select_default_state(dev);
  
@@ -394,6 +393,3 @@ index d57ea4a79c72..3a4639e10d15 100644
  }
  
  static const struct dev_pm_ops stm32_omm_pm_ops = {
--- 
-2.39.2
-

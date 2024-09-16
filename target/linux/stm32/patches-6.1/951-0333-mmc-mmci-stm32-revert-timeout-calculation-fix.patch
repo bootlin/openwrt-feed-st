@@ -17,11 +17,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/mmc/host/mmci.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 001f0926c29c..38a30ca56d87 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -1776,8 +1776,7 @@ static void mmci_set_max_busy_timeout(struct mmc_host *mmc)
+@@ -1776,8 +1776,7 @@ static void mmci_set_max_busy_timeout(st
  		return;
  
  	if (host->variant->busy_timeout && mmc->actual_clock)
@@ -31,6 +29,3 @@ index 001f0926c29c..38a30ca56d87 100644
  
  	mmc->max_busy_timeout = max_busy_timeout;
  }
--- 
-2.39.2
-

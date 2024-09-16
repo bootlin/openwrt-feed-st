@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/dma/stm32-dma3.c | 83 ++++++++++++++++++++++++++++++++++++----
  1 file changed, 76 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 9d5560540630..e34bbe5cb0e0 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -1623,6 +1623,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+@@ -1623,6 +1623,10 @@ static struct dma_async_tx_descriptor *s
  	bool prevent_refactor = !!FIELD_GET(STM32_DMA3_DT_NOPACK, chan->dt_config.tr_conf) ||
  				!!FIELD_GET(STM32_DMA3_DT_NOREFACT, chan->dt_config.tr_conf);
  
@@ -38,7 +36,7 @@ index 9d5560540630..e34bbe5cb0e0 100644
  	/* TODO: Check if channel is busy ? */
  
  /* TODO: ch12-15 extra block size
-@@ -1704,6 +1708,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+@@ -1704,6 +1708,10 @@ static struct dma_async_tx_descriptor *s
  				!!FIELD_GET(STM32_DMA3_DT_NOREFACT, chan->dt_config.tr_conf);
  	int ret;
  
@@ -49,7 +47,7 @@ index 9d5560540630..e34bbe5cb0e0 100644
  	/* TODO: Check if channel is busy ? */
  
  /* TODO: ch12-15 extra block size
-@@ -1811,6 +1819,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_cyclic(struct dma_cha
+@@ -1811,6 +1819,10 @@ static struct dma_async_tx_descriptor *s
  	u32 ccr, ctr1, ctr2, ctr3;
  	int ret;
  
@@ -60,7 +58,7 @@ index 9d5560540630..e34bbe5cb0e0 100644
  	/* TODO: Check if channel is busy ? */
  
  /* TODO: ch12-15 extra block size
-@@ -2401,8 +2413,6 @@ static int __maybe_unused stm32_dma3_runtime_suspend(struct device *dev)
+@@ -2401,8 +2413,6 @@ static int __maybe_unused stm32_dma3_run
  {
  	struct stm32_dma3_ddata *ddata = dev_get_drvdata(dev);
  
@@ -69,7 +67,7 @@ index 9d5560540630..e34bbe5cb0e0 100644
  	clk_disable_unprepare(ddata->clk);
  
  	return 0;
-@@ -2415,16 +2425,75 @@ static int __maybe_unused stm32_dma3_runtime_resume(struct device *dev)
+@@ -2415,16 +2425,75 @@ static int __maybe_unused stm32_dma3_run
  
  	ret = clk_prepare_enable(ddata->clk);
  	if (ret)
@@ -150,6 +148,3 @@ index 9d5560540630..e34bbe5cb0e0 100644
  	SET_RUNTIME_PM_OPS(stm32_dma3_runtime_suspend,
  			   stm32_dma3_runtime_resume, NULL)
  };
--- 
-2.39.2
-

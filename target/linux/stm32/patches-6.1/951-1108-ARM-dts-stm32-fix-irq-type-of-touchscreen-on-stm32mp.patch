@@ -38,11 +38,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 +-
  4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157a-ev1.dts b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-index 96aeb870405d..c17d288ec93f 100644
 --- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-@@ -499,7 +499,7 @@ gt9147: goodix-ts@5d {
+@@ -499,7 +499,7 @@
  		VDDIO-supply = <&v3v3>;
  		status = "okay";
  
@@ -51,11 +49,9 @@ index 96aeb870405d..c17d288ec93f 100644
  		interrupt-parent = <&stmfx_pinctrl>;
  	};
  };
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index bbbc2eba4fdd..ac37098b9564 100644
 --- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -501,7 +501,7 @@ gt9147: goodix-ts@5d {
+@@ -501,7 +501,7 @@
  		VDDIO-supply = <&v3v3>;
  		status = "okay";
  
@@ -64,11 +60,9 @@ index bbbc2eba4fdd..ac37098b9564 100644
  		interrupt-parent = <&stmfx_pinctrl>;
  	};
  };
-diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-index 5094c59fe0de..730b466d6aad 100644
 --- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-@@ -499,7 +499,7 @@ gt9147: goodix-ts@5d {
+@@ -499,7 +499,7 @@
  		VDDIO-supply = <&v3v3>;
  		status = "okay";
  
@@ -77,11 +71,9 @@ index 5094c59fe0de..730b466d6aad 100644
  		interrupt-parent = <&stmfx_pinctrl>;
  	};
  };
-diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-index 9c2fa3b73c8f..fb8051fab93b 100644
 --- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-@@ -502,7 +502,7 @@ gt9147: goodix-ts@5d {
+@@ -502,7 +502,7 @@
  		VDDIO-supply = <&v3v3>;
  		status = "okay";
  
@@ -90,6 +82,3 @@ index 9c2fa3b73c8f..fb8051fab93b 100644
  		interrupt-parent = <&stmfx_pinctrl>;
  	};
  };
--- 
-2.39.2
-

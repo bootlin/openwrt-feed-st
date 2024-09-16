@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp157f-ev1.dts | 9 +++++++++
  2 files changed, 18 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index 4f16f8f359a5..a787781c204b 100644
 --- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -681,6 +681,9 @@ &timers2 {
+@@ -681,6 +681,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -31,7 +29,7 @@ index 4f16f8f359a5..a787781c204b 100644
  	pwm {
  		pinctrl-0 = <&pwm2_pins_a>;
  		pinctrl-1 = <&pwm2_sleep_pins_a>;
-@@ -696,6 +699,9 @@ &timers8 {
+@@ -696,6 +699,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -41,7 +39,7 @@ index 4f16f8f359a5..a787781c204b 100644
  	pwm {
  		pinctrl-0 = <&pwm8_pins_a>;
  		pinctrl-1 = <&pwm8_sleep_pins_a>;
-@@ -711,6 +717,9 @@ &timers12 {
+@@ -711,6 +717,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -51,11 +49,9 @@ index 4f16f8f359a5..a787781c204b 100644
  	pwm {
  		pinctrl-0 = <&pwm12_pins_a>;
  		pinctrl-1 = <&pwm12_sleep_pins_a>;
-diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-index 61a52c4d7b83..bf819d8501ce 100644
 --- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-@@ -682,6 +682,9 @@ &timers2 {
+@@ -682,6 +682,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -65,7 +61,7 @@ index 61a52c4d7b83..bf819d8501ce 100644
  	pwm {
  		pinctrl-0 = <&pwm2_pins_a>;
  		pinctrl-1 = <&pwm2_sleep_pins_a>;
-@@ -697,6 +700,9 @@ &timers8 {
+@@ -697,6 +700,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -75,7 +71,7 @@ index 61a52c4d7b83..bf819d8501ce 100644
  	pwm {
  		pinctrl-0 = <&pwm8_pins_a>;
  		pinctrl-1 = <&pwm8_sleep_pins_a>;
-@@ -712,6 +718,9 @@ &timers12 {
+@@ -712,6 +718,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -85,6 +81,3 @@ index 61a52c4d7b83..bf819d8501ce 100644
  	pwm {
  		pinctrl-0 = <&pwm12_pins_a>;
  		pinctrl-1 = <&pwm12_sleep_pins_a>;
--- 
-2.39.2
-

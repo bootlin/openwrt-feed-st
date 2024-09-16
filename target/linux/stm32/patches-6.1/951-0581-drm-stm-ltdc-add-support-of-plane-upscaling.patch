@@ -16,8 +16,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h |   5 +-
  2 files changed, 110 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 8ba1dbb32027..92c7a0cda4fd 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -112,10 +112,16 @@
@@ -51,7 +49,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  
  #define LXWHPCR_WHSTPOS	GENMASK(11, 0)	/* Window Horizontal StarT POSition */
  #define LXWHPCR_WHSPPOS	GENMASK(27, 16)	/* Window Horizontal StoP POSition */
-@@ -401,6 +408,12 @@ static const u32 ltdc_layer_regs_a0[] = {
+@@ -401,6 +408,12 @@ static const u32 ltdc_layer_regs_a0[] =
  	0x00,	/* not available */
  	0x00,	/* not available */
  	0x00,	/* not available */
@@ -64,7 +62,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  	0x00	/* not available */
  };
  
-@@ -429,6 +442,12 @@ static const u32 ltdc_layer_regs_a1[] = {
+@@ -429,6 +442,12 @@ static const u32 ltdc_layer_regs_a1[] =
  	0x00,	/* not available */
  	0x00,	/* not available */
  	0x00,	/* not available */
@@ -77,7 +75,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  	0x00	/* not available */
  };
  
-@@ -454,6 +473,12 @@ static const u32 ltdc_layer_regs_a2[] = {
+@@ -454,6 +473,12 @@ static const u32 ltdc_layer_regs_a2[] =
  	0x148,	/* L1 auxiliary frame buffer length */
  	0x14c,	/* L1 auxiliary frame buffer line number */
  	0x150,	/* L1 CLUT write */
@@ -90,7 +88,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  	0x16c,	/* L1 Conversion YCbCr RGB 0 */
  	0x170,	/* L1 Conversion YCbCr RGB 1 */
  	0x174,	/* L1 Flexible Pixel Format 0 */
-@@ -1330,10 +1355,10 @@ static const struct drm_crtc_funcs ltdc_crtc_with_crc_support_funcs = {
+@@ -1330,10 +1355,10 @@ static const struct drm_crtc_funcs ltdc_
  static int ltdc_plane_atomic_check(struct drm_plane *plane,
  				   struct drm_atomic_state *state)
  {
@@ -104,7 +102,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -1343,17 +1368,43 @@ static int ltdc_plane_atomic_check(struct drm_plane *plane,
+@@ -1343,17 +1368,43 @@ static int ltdc_plane_atomic_check(struc
  	/* convert src_ from 16:16 format */
  	src_w = new_plane_state->src_w >> 16;
  	src_h = new_plane_state->src_h >> 16;
@@ -152,7 +150,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  static void ltdc_plane_atomic_update(struct drm_plane *plane,
  				     struct drm_atomic_state *state)
  {
-@@ -1364,7 +1415,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1364,7 +1415,7 @@ static void ltdc_plane_atomic_update(str
  	struct drm_framebuffer *fb = newstate->fb;
  	u32 lofs = plane->index * LAY_OFS;
  	u32 val, pitch_in_bytes, line_length, line_number, ahbp, avbp, bpcr;
@@ -161,7 +159,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  	enum ltdc_pix_fmt pf;
  	unsigned int plane_rotation = newstate->rotation;
  	struct drm_rect dst, src;
-@@ -1610,14 +1661,42 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1610,14 +1661,42 @@ static void ltdc_plane_atomic_update(str
  	regmap_write(ldev->regmap, LTDC_L1BLCR + lofs, ldev->max_burst_length);
  
  	/* Enable layer and CLUT if needed */
@@ -208,7 +206,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  
  	/* Commit shadow registers = update plane at next vblank */
  	if (ldev->caps.plane_reg_shadow)
-@@ -1964,7 +2043,7 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+@@ -1964,7 +2043,7 @@ static int ltdc_encoder_init(struct drm_
  static int ltdc_get_caps(struct drm_device *ddev)
  {
  	struct ltdc_device *ldev = ddev->dev_private;
@@ -217,7 +215,7 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  
  	/*
  	 * at least 1 layer must be managed & the number of layers
-@@ -2055,6 +2134,16 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2055,6 +2134,16 @@ static int ltdc_get_caps(struct drm_devi
  		else
  			ldev->caps.crtc_rotation = false;
  		ldev->caps.fifo_threshold = true;
@@ -234,8 +232,6 @@ index 8ba1dbb32027..92c7a0cda4fd 100644
  		break;
  	default:
  		return -ENODEV;
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 309a3f6f69a9..87164010fd13 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -11,6 +11,8 @@
@@ -259,6 +255,3 @@ index 309a3f6f69a9..87164010fd13 100644
  struct fps_info {
  	unsigned int counter;
  	ktime_t last_timestamp;
--- 
-2.39.2
-

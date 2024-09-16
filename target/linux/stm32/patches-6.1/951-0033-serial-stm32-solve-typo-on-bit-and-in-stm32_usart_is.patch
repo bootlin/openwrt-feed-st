@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/tty/serial/stm32-usart.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 9c664dd5db40..47a235cb60ff 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -464,7 +464,7 @@ static int stm32_usart_config_iso7816(struct uart_port *port, struct serial_iso7
+@@ -464,7 +464,7 @@ deinit_iso7816_config:
  static bool stm32_usart_iso7816_enabled(struct stm32_port *stm32_port)
  {
  	return stm32_port->port.iso7816.flags &&
@@ -36,6 +34,3 @@ index 9c664dd5db40..47a235cb60ff 100644
  }
  
  static bool stm32_usart_rx_dma_started(struct stm32_port *stm32_port)
--- 
-2.39.2
-

@@ -21,8 +21,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  3 files changed, 613 insertions(+)
  create mode 100644 drivers/phy/st/phy-stm32-usb2phy.c
 
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index 3fc3d0781fb8..5c5a6b17b3fc 100644
 --- a/drivers/phy/st/Kconfig
 +++ b/drivers/phy/st/Kconfig
 @@ -47,3 +47,12 @@ config PHY_STM32_USBPHYC
@@ -38,18 +36,13 @@ index 3fc3d0781fb8..5c5a6b17b3fc 100644
 +	  Enable this to support the High-Speed USB2 transceivers that are part
 +	  of some STMicroelectronics STM32 SoCs. The PHY integrated is from
 +	  synopsys, and called FEMTO-PHY
-diff --git a/drivers/phy/st/Makefile b/drivers/phy/st/Makefile
-index c862dd937b64..a396f236071f 100644
 --- a/drivers/phy/st/Makefile
 +++ b/drivers/phy/st/Makefile
-@@ -4,3 +4,4 @@ obj-$(CONFIG_PHY_ST_SPEAR1310_MIPHY)	+= phy-spear1310-miphy.o
+@@ -4,3 +4,4 @@ obj-$(CONFIG_PHY_ST_SPEAR1310_MIPHY)	+=
  obj-$(CONFIG_PHY_ST_SPEAR1340_MIPHY)	+= phy-spear1340-miphy.o
  obj-$(CONFIG_PHY_STIH407_USB)		+= phy-stih407-usb.o
  obj-$(CONFIG_PHY_STM32_USBPHYC) 	+= phy-stm32-usbphyc.o
 +obj-$(CONFIG_PHY_STM32_USB2PHY) 	+= phy-stm32-usb2phy.o
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-new file mode 100644
-index 000000000000..d0047d7230c2
 --- /dev/null
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -0,0 +1,603 @@
@@ -656,6 +649,3 @@ index 000000000000..d0047d7230c2
 +MODULE_AUTHOR("Pankaj Dev <pankaj.dev@st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics Generic femtoPHY driver for stm32");
 +MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

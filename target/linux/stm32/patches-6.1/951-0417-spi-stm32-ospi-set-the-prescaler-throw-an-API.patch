@@ -12,11 +12,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  drivers/spi/spi-stm32-ospi.c | 44 ++++++++++++++++--------------------
  1 file changed, 19 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 626d632d4dfa..10229b354b4b 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -167,13 +167,25 @@ static int stm32_ospi_get_mode(u8 buswidth)
+@@ -167,13 +167,25 @@ static int stm32_ospi_get_mode(u8 buswid
  	}
  }
  
@@ -43,7 +41,7 @@ index 626d632d4dfa..10229b354b4b 100644
  	int timeout, err = 0, err_poll_status = 0;
  	int ret;
  
-@@ -188,11 +200,7 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -188,11 +200,7 @@ static int stm32_ospi_send(struct spi_de
  		stm32_omi_dlyb_stop(omi);
  		writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
  
@@ -56,7 +54,7 @@ index 626d632d4dfa..10229b354b4b 100644
  
  		if (flash->calibrated) {
  			ret = stm32_omi_dlyb_restore(omi, flash->dlyb_cr);
-@@ -526,7 +534,6 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -526,7 +534,6 @@ static int stm32_ospi_calibration(struct
  	struct stm32_ospi_flash *flash = &ospi->flash[ospi->last_cs];
  	struct spi_device *spi = flash->spi;
  	void __iomem *regs_base = ospi->omi.regs_base;
@@ -64,7 +62,7 @@ index 626d632d4dfa..10229b354b4b 100644
  	int ret;
  
  	/*
-@@ -535,10 +542,7 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -535,10 +542,7 @@ static int stm32_ospi_calibration(struct
  	 */
  	flash->presc = DIV_ROUND_UP(ospi->omi.clk_rate,
  				    STM32_DLYB_FREQ_THRESHOLD) - 1;
@@ -76,7 +74,7 @@ index 626d632d4dfa..10229b354b4b 100644
  
  	ret = stm32_ospi_readid(omi);
  	if (ret)
-@@ -549,10 +553,7 @@ static int stm32_ospi_calibration(struct stm32_ospi *ospi)
+@@ -549,10 +553,7 @@ static int stm32_ospi_calibration(struct
  	 * prescaler should be set befor locking the DLL
  	 */
  	flash->presc = DIV_ROUND_UP(ospi->omi.clk_rate, spi->max_speed_hz) - 1;
@@ -88,7 +86,7 @@ index 626d632d4dfa..10229b354b4b 100644
  
  	flash->dcr_reg &= ~DCR1_DLYBYP;
  	writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
-@@ -589,7 +590,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -589,7 +590,7 @@ static int stm32_ospi_setup(struct spi_d
  	struct stm32_omi *omi = &ospi->omi;
  	struct stm32_ospi_flash *flash;
  	void __iomem *regs_base = ospi->omi.regs_base;
@@ -97,7 +95,7 @@ index 626d632d4dfa..10229b354b4b 100644
  	int ret;
  
  	if (ctrl->busy)
-@@ -621,11 +622,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -621,11 +622,7 @@ static int stm32_ospi_setup(struct spi_d
  	flash->dcr_reg = DCR1_DEVSIZE_MASK | DCR1_DLYBYP;
  	writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
  
@@ -110,7 +108,7 @@ index 626d632d4dfa..10229b354b4b 100644
  
  	ospi->last_cs = spi->chip_select;
  
-@@ -642,10 +639,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -642,10 +639,7 @@ static int stm32_ospi_setup(struct spi_d
  
  			flash->presc = DIV_ROUND_UP(omi->clk_rate,
  						    STM32_DLYB_FREQ_THRESHOLD) - 1;
@@ -122,6 +120,3 @@ index 626d632d4dfa..10229b354b4b 100644
  
  			flash->dcr_reg |= DCR1_DLYBYP;
  			writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
--- 
-2.39.2
-

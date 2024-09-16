@@ -30,8 +30,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index 797faf1a1fe8..14d7948c5953 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -58,6 +58,9 @@ description: |
@@ -44,6 +42,3 @@ index 797faf1a1fe8..14d7948c5953 100644
  
  maintainers:
    - Amelie Delaunay <amelie.delaunay@foss.st.com>
--- 
-2.39.2
-

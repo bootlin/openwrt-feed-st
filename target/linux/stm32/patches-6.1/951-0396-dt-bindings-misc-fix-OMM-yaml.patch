@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../bindings/misc/st,stm32-omm.yaml           | 20 ++++++++++---------
  1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
-index 5549bbf15a1b..1e539f671354 100644
 --- a/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 +++ b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 @@ -4,7 +4,7 @@
@@ -93,6 +91,3 @@ index 5549bbf15a1b..1e539f671354 100644
 +        feature-domains = <&rifsc STM32MP25_RIFSC_OCTOSPI2_ID>;
        };
      };
--- 
-2.39.2
-

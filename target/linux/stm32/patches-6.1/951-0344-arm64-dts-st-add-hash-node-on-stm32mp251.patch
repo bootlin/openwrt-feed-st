@@ -16,11 +16,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index ae79d5a7edda..4ee579a0eb0b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1600,6 +1600,18 @@ channel@18 {
+@@ -1600,6 +1600,18 @@
  				};
  			};
  
@@ -39,6 +37,3 @@ index ae79d5a7edda..4ee579a0eb0b 100644
  			rng: rng@42020000 {
  				compatible = "st,stm32mp13-rng";
  				reg = <0x42020000 0x400>;
--- 
-2.39.2
-

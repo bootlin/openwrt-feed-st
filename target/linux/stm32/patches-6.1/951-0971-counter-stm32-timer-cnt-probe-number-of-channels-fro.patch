@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index f63d0c3e3f22..e1c0a502b74c 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -42,6 +42,7 @@ struct stm32_timer_cnt {
@@ -33,7 +31,7 @@ index f63d0c3e3f22..e1c0a502b74c 100644
  };
  
  static const enum counter_function stm32_count_functions[] = {
-@@ -416,6 +417,20 @@ static struct counter_count stm32_counts = {
+@@ -416,6 +417,20 @@ static struct counter_count stm32_counts
  	.num_ext = ARRAY_SIZE(stm32_count_ext)
  };
  
@@ -54,7 +52,7 @@ index f63d0c3e3f22..e1c0a502b74c 100644
  /* encoder supported on TIM1 TIM2 TIM3 TIM4 TIM5 TIM8 */
  #define STM32_TIM_ENCODER_SUPPORTED	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(7))
  
-@@ -484,6 +499,8 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+@@ -484,6 +499,8 @@ static int stm32_timer_cnt_probe(struct
  	if (ret)
  		return ret;
  
@@ -63,6 +61,3 @@ index f63d0c3e3f22..e1c0a502b74c 100644
  	counter->name = dev_name(dev);
  	counter->parent = dev;
  	counter->ops = &stm32_timer_cnt_ops;
--- 
-2.39.2
-

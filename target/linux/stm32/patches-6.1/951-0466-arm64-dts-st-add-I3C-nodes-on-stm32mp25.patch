@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 52 ++++++++++++++++++++++++++
  1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 0654cb6933bb..0a606735144c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -931,6 +931,45 @@ i2c7: i2c@40180000 {
+@@ -931,6 +931,45 @@
  				status = "disabled";
  			};
  
@@ -64,7 +62,7 @@ index 0654cb6933bb..0a606735144c 100644
  			timers10: timer@401c0000 {
  				compatible = "st,stm32mp25-timers";
  				reg = <0x401c0000 0x400>;
-@@ -1878,6 +1917,19 @@ trigger@4 {
+@@ -1878,6 +1917,19 @@
  				};
  			};
  
@@ -84,6 +82,3 @@ index 0654cb6933bb..0a606735144c 100644
  			dsi: dsi@48000000 {
  				compatible = "st,stm32-dsi";
  				reg = <0x48000000 0x800>;
--- 
-2.39.2
-

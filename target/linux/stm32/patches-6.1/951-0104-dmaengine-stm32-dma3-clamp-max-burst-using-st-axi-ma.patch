@@ -15,8 +15,6 @@ Change-Id: I34f40edefa2e9113fc8525064a8791d3e10a36ea
  drivers/dma/stm32-dma3.c | 43 ++++++++++++++++++++++++++++++----------
  1 file changed, 33 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index f26f3c8511b5..1a500279298b 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
 @@ -317,6 +317,9 @@ enum g_data_width {
@@ -37,7 +35,7 @@ index f26f3c8511b5..1a500279298b 100644
  };
  
  static inline struct stm32_dma3_chan *to_stm32_dma3_chan(struct dma_chan *c)
-@@ -726,7 +730,8 @@ static enum dma_slave_buswidth stm32_dma3_get_max_dw(u32 len, dma_addr_t addr, u
+@@ -726,7 +730,8 @@ static enum dma_slave_buswidth stm32_dma
  	return max_dw;
  }
  
@@ -47,7 +45,7 @@ index f26f3c8511b5..1a500279298b 100644
  {
  	u32 max_burst = chan_max_burst / dw;
  
-@@ -740,8 +745,9 @@ static u32 stm32_dma3_get_max_burst(u32 len, enum dma_slave_buswidth dw, u32 cha
+@@ -740,8 +745,9 @@ static u32 stm32_dma3_get_max_burst(u32
  	/*
  	 * HW doesn't modify the burst if burst size <= half of the fifo size.
  	 * If len is not a multiple of burst size, last burst is shortened by HW.
@@ -58,7 +56,7 @@ index f26f3c8511b5..1a500279298b 100644
  }
  
  static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transfer_direction dir,
-@@ -750,6 +756,7 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -750,6 +756,7 @@ static int stm32_dma3_chan_prep_hw(struc
  {
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(&chan->vchan.chan);
  	struct dma_device dma_device = ddata->dma_dev;
@@ -66,7 +64,7 @@ index f26f3c8511b5..1a500279298b 100644
  	u32 sdw, ddw, sbl_max, dbl_max, tcem, init_dw, init_bl_max, id = chan->id;
  	u32 _ccr, _ctr1 = 0, _ctr2 = 0, _ctr3 = 0;
  	u32 ch_conf = chan->dt_config.ch_conf;
-@@ -788,12 +795,16 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -788,12 +795,16 @@ static int stm32_dma3_chan_prep_hw(struc
  
  	if (FIELD_GET(STM32_DMA3_DT_SINC, tr_conf))
  		_ctr1 |= CTR1_SINC;
@@ -85,7 +83,7 @@ index f26f3c8511b5..1a500279298b 100644
  
  	_ctr2 |= FIELD_PREP(CTR2_REQSEL, chan->dt_config.req_line);
  	_ctr2 &= ~CTR2_SWREQ;
-@@ -812,7 +823,8 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -812,7 +823,8 @@ static int stm32_dma3_chan_prep_hw(struc
  	case DMA_MEM_TO_DEV:
  		/* Set destination (device) data width and burst */
  		ddw = min_t(u32, ddw, stm32_dma3_get_max_dw(len, dst_addr, chan->max_burst));
@@ -95,7 +93,7 @@ index f26f3c8511b5..1a500279298b 100644
  
  		/* Set source (memory) data width and burst */
  		if (!!FIELD_GET(STM32_DMA3_DT_NOPACK, tr_conf)) {
-@@ -820,7 +832,8 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -820,7 +832,8 @@ static int stm32_dma3_chan_prep_hw(struc
  			sbl_max = dbl_max;
  		} else {
  			sdw = stm32_dma3_get_max_dw(len, src_addr, chan->max_burst);
@@ -105,7 +103,7 @@ index f26f3c8511b5..1a500279298b 100644
  		}
  
  		_ctr1 |= FIELD_PREP(CTR1_SDW_LOG2, ilog2(sdw));
-@@ -847,7 +860,8 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -847,7 +860,8 @@ static int stm32_dma3_chan_prep_hw(struc
  	case DMA_DEV_TO_MEM:
  		/* Set source (device) data width and burst */
  		sdw = min_t(u32, sdw, stm32_dma3_get_max_dw(len, src_addr, chan->max_burst));
@@ -115,7 +113,7 @@ index f26f3c8511b5..1a500279298b 100644
  
  		/* Set destination (memory) data width and burst */
  		if (!!FIELD_GET(STM32_DMA3_DT_NOPACK, tr_conf)) {
-@@ -855,7 +869,8 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -855,7 +869,8 @@ static int stm32_dma3_chan_prep_hw(struc
  			dbl_max = sbl_max;
  		} else {
  			ddw = stm32_dma3_get_max_dw(len, dst_addr, chan->max_burst);
@@ -125,7 +123,7 @@ index f26f3c8511b5..1a500279298b 100644
  		}
  
  		_ctr1 |= FIELD_PREP(CTR1_SDW_LOG2, ilog2(sdw));
-@@ -884,7 +899,7 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -884,7 +899,7 @@ static int stm32_dma3_chan_prep_hw(struc
  		init_dw = sdw;
  		init_bl_max = sbl_max;
  		sdw = stm32_dma3_get_max_dw(len, src_addr, chan->max_burst);
@@ -134,7 +132,7 @@ index f26f3c8511b5..1a500279298b 100644
  		if (chan->config_set & STM32_DMA3_CFG_SET_DMA) {
  			sdw = min_t(u32, init_dw, sdw);
  			sbl_max = min_t(u32, init_bl_max, sbl_max);
-@@ -894,7 +909,7 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -894,7 +909,7 @@ static int stm32_dma3_chan_prep_hw(struc
  		init_dw = ddw;
  		init_bl_max = dbl_max;
  		ddw = stm32_dma3_get_max_dw(len, dst_addr, chan->max_burst);
@@ -143,7 +141,7 @@ index f26f3c8511b5..1a500279298b 100644
  		if (chan->config_set & STM32_DMA3_CFG_SET_DMA) {
  			ddw = min_t(u32, init_dw, ddw);
  			dbl_max = min_t(u32, init_bl_max, dbl_max);
-@@ -2087,6 +2102,14 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2087,6 +2102,14 @@ static int stm32_dma3_probe(struct platf
  		ddata->dma_requests = FIELD_GET(G_MAX_REQ_ID, hwcfgr[0]) + 1;
  	}
  
@@ -158,6 +156,3 @@ index f26f3c8511b5..1a500279298b 100644
  	//TODO: pre-allocate any memory needed during transfer setup to avoid
  	//putting to much pressure on the nowait allocator.
  
--- 
-2.39.2
-

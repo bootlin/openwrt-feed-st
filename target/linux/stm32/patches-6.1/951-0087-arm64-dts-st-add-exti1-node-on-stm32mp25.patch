@@ -21,11 +21,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 82 ++++++++++++++++++++++++++
  1 file changed, 82 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5b10a527967f..395a6b402ab5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -142,6 +142,88 @@ rcc: rcc@44200000 {
+@@ -142,6 +142,88 @@
  			feature-domains = <&rifsc 156>;
  		};
  
@@ -114,6 +112,3 @@ index 5b10a527967f..395a6b402ab5 100644
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
  			reg = <0x44230000 0x10000>;
--- 
-2.39.2
-

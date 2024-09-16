@@ -14,11 +14,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/179770
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 34b46d18b7b0..5b10a527967f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -142,6 +142,12 @@ rcc: rcc@44200000 {
+@@ -142,6 +142,12 @@
  			feature-domains = <&rifsc 156>;
  		};
  
@@ -31,6 +29,3 @@ index 34b46d18b7b0..5b10a527967f 100644
  		/* Break node order to solve dependency probe issue between pinctrl and exti. */
  
  		pinctrl: pinctrl@44240000 {
--- 
-2.39.2
-

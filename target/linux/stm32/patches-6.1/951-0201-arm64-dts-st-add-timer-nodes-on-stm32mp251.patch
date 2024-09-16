@@ -21,11 +21,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 457 +++++++++++++++++++++++++
  1 file changed, 457 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c3dff7bed65d..eb0768ddca3c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -293,6 +293,239 @@ rifsc: rifsc@42080000 {
+@@ -293,6 +293,239 @@
  			feature-domain-controller;
  			#feature-domain-cells = <1>;
  
@@ -265,7 +263,7 @@ index c3dff7bed65d..eb0768ddca3c 100644
  			lptimer1: timer@40090000 {
  				compatible = "st,stm32mp25-lptimer";
  				reg = <0x40090000 0x400>;
-@@ -553,6 +786,122 @@ i2c7: i2c@40180000 {
+@@ -553,6 +786,122 @@
  				status = "disabled";
  			};
  
@@ -388,7 +386,7 @@ index c3dff7bed65d..eb0768ddca3c 100644
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40220000 0x400>;
-@@ -595,6 +944,81 @@ spi4: spi@40240000 {
+@@ -595,6 +944,81 @@
  				status = "disabled";
  			};
  
@@ -470,7 +468,7 @@ index c3dff7bed65d..eb0768ddca3c 100644
  			spi5: spi@40280000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -622,6 +1046,39 @@ uart9: serial@402c0000 {
+@@ -622,6 +1046,39 @@
  				status = "disabled";
  			};
  
@@ -510,6 +508,3 @@ index c3dff7bed65d..eb0768ddca3c 100644
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40330000 0x400>;
--- 
-2.39.2
-

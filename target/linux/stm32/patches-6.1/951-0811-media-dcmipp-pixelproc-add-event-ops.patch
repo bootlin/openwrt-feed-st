@@ -17,8 +17,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c      | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 88d79c9323c7..71e9fcf403bc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -16,6 +16,7 @@
@@ -29,7 +27,7 @@ index 88d79c9323c7..71e9fcf403bc 100644
  #include <media/v4l2-rect.h>
  #include <media/v4l2-subdev.h>
  
-@@ -759,11 +760,17 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -759,11 +760,17 @@ out:
  	return ret;
  }
  
@@ -47,6 +45,3 @@ index 88d79c9323c7..71e9fcf403bc 100644
  	.pad = &dcmipp_pixelproc_pad_ops,
  	.video = &dcmipp_pixelproc_video_ops,
  };
--- 
-2.39.2
-

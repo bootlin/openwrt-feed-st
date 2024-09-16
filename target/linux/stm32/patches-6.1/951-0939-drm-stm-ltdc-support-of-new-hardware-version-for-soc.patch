@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h |  4 ++
  3 files changed, 52 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index 41a82ab2c457..4700a9331677 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -266,8 +266,17 @@ static int stm_drm_platform_remove(struct platform_device *pdev)
+@@ -266,8 +266,17 @@ static int stm_drm_platform_remove(struc
  	return 0;
  }
  
@@ -41,8 +39,6 @@ index 41a82ab2c457..4700a9331677 100644
  	{ /* end node */ },
  };
  MODULE_DEVICE_TABLE(of, drv_dt_ids);
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 9624eb64eca5..71d27bf7a287 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -15,6 +15,7 @@
@@ -53,7 +49,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  #include <linux/of_graph.h>
  #include <linux/of_reserved_mem.h>
  #include <linux/pinctrl/consumer.h>
-@@ -1514,6 +1515,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1514,6 +1515,7 @@ static void ltdc_plane_atomic_update(str
  {
  	struct ltdc_device *ldev = plane_to_ltdc(plane);
  	struct drm_device *ddev = plane->dev;
@@ -61,7 +57,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
  									  plane);
  	struct drm_framebuffer *fb = newstate->fb;
-@@ -1787,7 +1789,8 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1787,7 +1789,8 @@ static void ltdc_plane_atomic_update(str
  	}
  
  	/* Configure burst length */
@@ -71,7 +67,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  
  	/* set color look-up table */
  	if (fb->format->format == DRM_FORMAT_C8)
-@@ -2126,6 +2129,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2126,6 +2129,7 @@ static int ltdc_get_caps(struct drm_devi
  {
  	struct ltdc_device *ldev = ddev->dev_private;
  	u32 bus_width_log2, lcr, gc2r, lxc1r;
@@ -79,7 +75,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  
  	/*
  	 * at least 1 layer must be managed & the number of layers
-@@ -2141,6 +2145,8 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2141,6 +2145,8 @@ static int ltdc_get_caps(struct drm_devi
  	ldev->caps.bus_width = 8 << bus_width_log2;
  	regmap_read(ldev->regmap, LTDC_IDR, &ldev->caps.hw_version);
  
@@ -88,7 +84,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  	switch (ldev->caps.hw_version) {
  	case HWVER_10200:
  	case HWVER_10300:
-@@ -2158,7 +2164,6 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2158,7 +2164,6 @@ static int ltdc_get_caps(struct drm_devi
  		 * does not work on 2nd layer.
  		 */
  		ldev->caps.non_alpha_only_l1 = true;
@@ -96,7 +92,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  		if (ldev->caps.hw_version == HWVER_10200)
  			ldev->caps.pad_max_freq_hz = 65000000;
  		ldev->caps.nb_irq = 2;
-@@ -2199,11 +2204,6 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2199,11 +2204,6 @@ static int ltdc_get_caps(struct drm_devi
  		ldev->caps.pix_fmt_nb = ARRAY_SIZE(ltdc_drm_fmt_a2);
  		ldev->caps.pix_fmt_flex = true;
  		ldev->caps.non_alpha_only_l1 = false;
@@ -131,7 +127,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  
  	/* Get endpoints if any */
  	for (i = 0; i < nb_endpoints; i++) {
-@@ -2447,7 +2449,6 @@ int ltdc_load(struct drm_device *ddev)
+@@ -2447,7 +2449,6 @@ err:
  	for (i = 0; i < nb_endpoints; i++)
  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
  
@@ -139,7 +135,7 @@ index 9624eb64eca5..71d27bf7a287 100644
  	return ret;
  }
  
-@@ -2512,35 +2513,33 @@ int ltdc_get_clk(struct device *dev, struct ltdc_device *ldev)
+@@ -2512,35 +2513,33 @@ int ltdc_get_clk(struct device *dev, str
  		return PTR_ERR(ldev->pixel_clk);
  	}
  
@@ -149,18 +145,19 @@ index 9624eb64eca5..71d27bf7a287 100644
 -			DRM_DEBUG_DRIVER("Unable to get bus clock\n");
 -		ldev->bus_clk = NULL;
 -	}
-+	if (of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc")) {
-+		ldev->bus_clk = devm_clk_get(dev, "bus");
-+		if (IS_ERR(ldev->bus_clk))
-+			return dev_err_probe(dev, PTR_ERR(ldev->bus_clk),
-+					     "Unable to get bus clock\n");
- 
+-
 -	ldev->ltdc_clk = devm_clk_get(dev, "ref");
 -	if (IS_ERR(ldev->ltdc_clk)) {
 -		if (PTR_ERR(ldev->ltdc_clk) != -EPROBE_DEFER)
 -			DRM_DEBUG_DRIVER("Unable to get ltdc clock\n");
 -		ldev->ltdc_clk = NULL;
 -	}
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc")) {
++		ldev->bus_clk = devm_clk_get(dev, "bus");
++		if (IS_ERR(ldev->bus_clk))
++			return dev_err_probe(dev, PTR_ERR(ldev->bus_clk),
++					     "Unable to get bus clock\n");
++
 +		ldev->ltdc_clk = devm_clk_get(dev, "ref");
 +		if (IS_ERR(ldev->ltdc_clk))
 +			return dev_err_probe(dev, PTR_ERR(ldev->ltdc_clk),
@@ -197,8 +194,6 @@ index 9624eb64eca5..71d27bf7a287 100644
  	}
  
  	return 0;
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 26d53d30c65e..5913eb2e2fb3 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -42,6 +42,10 @@ struct fps_info {
@@ -212,6 +207,3 @@ index 26d53d30c65e..5913eb2e2fb3 100644
  struct ltdc_device {
  	void __iomem *regs;
  	struct regmap *regmap;
--- 
-2.39.2
-

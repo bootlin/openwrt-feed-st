@@ -27,11 +27,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/i2c/busses/i2c-stm32f7.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index ff8cb56bd249..c9109cb82283 100644
 --- a/drivers/i2c/busses/i2c-stm32f7.c
 +++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -2149,8 +2149,8 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+@@ -2149,8 +2149,8 @@ static int stm32f7_i2c_probe(struct plat
  	phy_addr = (dma_addr_t)res->start;
  
  	irq_event = platform_get_irq(pdev, 0);
@@ -42,6 +40,3 @@ index ff8cb56bd249..c9109cb82283 100644
  
  	i2c_dev->wakeup_src = of_property_read_bool(pdev->dev.of_node,
  						    "wakeup-source");
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310738
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index 0c391185f949..695796790abe 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -165,6 +165,20 @@ &m33_rproc {
+@@ -165,6 +165,20 @@
  	status = "okay";
  };
  
@@ -43,6 +41,3 @@ index 0c391185f949..695796790abe 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@0 {
  		compatible = "rpmsg,intc";
--- 
-2.39.2
-

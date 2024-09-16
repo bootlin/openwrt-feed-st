@@ -20,11 +20,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 21 ++++++++++++-------
  1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index bcfd3eb4c6a2..a420e429fe0d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -512,7 +512,7 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -512,7 +512,7 @@ static int dcmipp_statcap_s_ctrl(struct
  	struct v4l2_ctrl_isp_stat_region *region;
  	struct v4l2_subdev_selection sel;
  	struct media_pad *pad;
@@ -33,7 +31,7 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  
  	dev_dbg(vcap->dev, ">> %s: ctrl->id = 0x%x\n", __func__, ctrl->id);
  
-@@ -524,8 +524,10 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -524,8 +524,10 @@ static int dcmipp_statcap_s_ctrl(struct
  		/* Get pointer to the source subdev (if case of not yet set */
  		if (!vcap->s_subdev) {
  			pad = media_pad_remote_pad_first(&entity->pads[0]);
@@ -46,7 +44,7 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  			vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
  		}
  
-@@ -533,7 +535,8 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -533,7 +535,8 @@ static int dcmipp_statcap_s_ctrl(struct
  		if (region->nb_regions > DCMIPP_NB_STAT_REGION) {
  			dev_dbg(vcap->dev, "Unsupported number of stat region: %d vs max=%d\n",
  				region->nb_regions, DCMIPP_NB_STAT_REGION);
@@ -56,7 +54,7 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  		}
  
  		/* Get frame information */
-@@ -543,7 +546,7 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -543,7 +546,7 @@ static int dcmipp_statcap_s_ctrl(struct
  		ret = v4l2_subdev_call(vcap->s_subdev, pad, get_selection, NULL, &sel);
  		if (ret < 0) {
  			dev_err(vcap->dev, "Failed to get frame size\n");
@@ -65,7 +63,7 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  		}
  
  		if (!region->nb_regions ||
-@@ -559,7 +562,8 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -559,7 +562,8 @@ static int dcmipp_statcap_s_ctrl(struct
  			   (region->left[0] + region->width[0]) > sel.r.width ||
  			   (region->top[0] + region->height[0]) > sel.r.height) {
  			dev_err(vcap->dev, "Invalid or stat region not fitting into frame\n");
@@ -75,7 +73,7 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  		}
  
  		spin_lock_irq(&vcap->irqlock);
-@@ -594,7 +598,10 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -594,7 +598,10 @@ static int dcmipp_statcap_s_ctrl(struct
  		break;
  	}
  
@@ -87,6 +85,3 @@ index bcfd3eb4c6a2..a420e429fe0d 100644
  };
  
  static const struct v4l2_ctrl_ops dcmipp_statcap_ctrl_ops = {
--- 
-2.39.2
-

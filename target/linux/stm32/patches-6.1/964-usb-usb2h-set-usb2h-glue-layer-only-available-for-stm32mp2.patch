@@ -1,7 +1,5 @@
-Index: linux-6.1.89/drivers/usb/host/Kconfig
-===================================================================
---- linux-6.1.89.orig/drivers/usb/host/Kconfig
-+++ linux-6.1.89/drivers/usb/host/Kconfig
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
 @@ -128,7 +128,7 @@ config USB_BRCMSTB
  
  config USB_STM32_USBH

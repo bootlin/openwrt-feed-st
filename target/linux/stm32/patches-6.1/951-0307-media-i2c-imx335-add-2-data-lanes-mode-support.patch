@@ -18,8 +18,6 @@ Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
  drivers/media/i2c/imx335.c | 93 ++++++++++++++++++++++++++++++++------
  1 file changed, 79 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 8330d189737b..f47bac41fcd7 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
 @@ -50,7 +50,6 @@
@@ -66,7 +64,7 @@ index 8330d189737b..f47bac41fcd7 100644
  };
  
  static const s64 link_freq[] = {
-@@ -237,8 +240,24 @@ static const struct imx335_reg mode_2592x1940_regs[] = {
+@@ -237,8 +240,24 @@ static const struct imx335_reg mode_2592
  	{0x3a00, 0x01},
  };
  
@@ -92,7 +90,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	.width = 2592,
  	.height = 1940,
  	.hblank = 342,
-@@ -248,10 +267,34 @@ static const struct imx335_mode supported_mode = {
+@@ -248,10 +267,34 @@ static const struct imx335_mode supporte
  	.pclk = 396000000,
  	.link_freq_idx = 0,
  	.code = MEDIA_BUS_FMT_SRGGB12_1X12,
@@ -128,7 +126,7 @@ index 8330d189737b..f47bac41fcd7 100644
  };
  
  /**
-@@ -499,10 +542,12 @@ static int imx335_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -499,10 +542,12 @@ static int imx335_enum_mbus_code(struct
  				 struct v4l2_subdev_state *sd_state,
  				 struct v4l2_subdev_mbus_code_enum *code)
  {
@@ -142,7 +140,7 @@ index 8330d189737b..f47bac41fcd7 100644
  
  	return 0;
  }
-@@ -519,15 +564,17 @@ static int imx335_enum_frame_size(struct v4l2_subdev *sd,
+@@ -519,15 +564,17 @@ static int imx335_enum_frame_size(struct
  				  struct v4l2_subdev_state *sd_state,
  				  struct v4l2_subdev_frame_size_enum *fsize)
  {
@@ -163,7 +161,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	fsize->max_height = fsize->min_height;
  
  	return 0;
-@@ -602,7 +649,7 @@ static int imx335_set_pad_format(struct v4l2_subdev *sd,
+@@ -602,7 +649,7 @@ static int imx335_set_pad_format(struct
  
  	mutex_lock(&imx335->mutex);
  
@@ -172,7 +170,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	imx335_fill_pad_format(imx335, mode, fmt);
  
  	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-@@ -635,7 +682,7 @@ static int imx335_init_pad_cfg(struct v4l2_subdev *sd,
+@@ -635,7 +682,7 @@ static int imx335_init_pad_cfg(struct v4
  	struct v4l2_subdev_format fmt = { 0 };
  
  	fmt.which = sd_state ? V4L2_SUBDEV_FORMAT_TRY : V4L2_SUBDEV_FORMAT_ACTIVE;
@@ -181,7 +179,7 @@ index 8330d189737b..f47bac41fcd7 100644
  
  	return imx335_set_pad_format(sd, sd_state, &fmt);
  }
-@@ -652,7 +699,7 @@ static int imx335_start_streaming(struct imx335 *imx335)
+@@ -652,7 +699,7 @@ static int imx335_start_streaming(struct
  	int ret;
  
  	/* Write sensor mode registers */
@@ -190,7 +188,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	ret = imx335_write_regs(imx335, reg_list->regs,
  				reg_list->num_of_regs);
  	if (ret) {
-@@ -660,6 +707,18 @@ static int imx335_start_streaming(struct imx335 *imx335)
+@@ -660,6 +707,18 @@ static int imx335_start_streaming(struct
  		return ret;
  	}
  
@@ -209,7 +207,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	/* Setup handler will write actual exposure and gain */
  	ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
  	if (ret) {
-@@ -823,7 +882,8 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -823,7 +882,8 @@ static int imx335_parse_hw_config(struct
  	if (ret)
  		return ret;
  
@@ -219,7 +217,7 @@ index 8330d189737b..f47bac41fcd7 100644
  		dev_err(imx335->dev,
  			"number of CSI2 data lanes %d is not supported",
  			bus_cfg.bus.mipi_csi2.num_data_lanes);
-@@ -831,6 +891,8 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -831,6 +891,8 @@ static int imx335_parse_hw_config(struct
  		goto done_endpoint_free;
  	}
  
@@ -228,7 +226,7 @@ index 8330d189737b..f47bac41fcd7 100644
  	if (!bus_cfg.nr_of_link_frequencies) {
  		dev_err(imx335->dev, "no link frequencies defined");
  		ret = -EINVAL;
-@@ -1050,7 +1112,10 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1050,7 +1112,10 @@ static int imx335_probe(struct i2c_clien
  	}
  
  	/* Set default mode to max resolution */
@@ -240,6 +238,3 @@ index 8330d189737b..f47bac41fcd7 100644
  	imx335->vblank = imx335->cur_mode->vblank;
  
  	ret = imx335_init_controls(imx335);
--- 
-2.39.2
-

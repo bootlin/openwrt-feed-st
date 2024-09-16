@@ -22,11 +22,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/char/hw_random/stm32-rng.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index acbf6c29bfa5..56b0819231ce 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -358,7 +358,7 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -358,7 +358,7 @@ static int stm32_rng_init(struct hwrng *
  	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, reg,
  						reg & RNG_SR_DRDY,
  						10, 100000);
@@ -35,6 +33,3 @@ index acbf6c29bfa5..56b0819231ce 100644
  		if (priv->bus_clk)
  			clk_disable_unprepare(priv->bus_clk);
  		clk_disable_unprepare(priv->clk);
--- 
-2.39.2
-

@@ -16,8 +16,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 61 ++++++++++++++-----
  1 file changed, 45 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 62e55987cc17..5bb7b39ff3f3 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -15,6 +15,7 @@
@@ -82,7 +80,7 @@ index 62e55987cc17..5bb7b39ff3f3 100644
  };
  
  static const struct dcmipp_byteproc_pix_map *dcmipp_byteproc_pix_map_by_index(unsigned int i)
-@@ -642,14 +652,33 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -642,14 +652,33 @@ static int dcmipp_byteproc_s_stream(stru
  
  	mutex_lock(&byteproc->lock);
  	if (enable) {
@@ -120,6 +118,3 @@ index 62e55987cc17..5bb7b39ff3f3 100644
  	mutex_unlock(&byteproc->lock);
  
  	return ret;
--- 
-2.39.2
-

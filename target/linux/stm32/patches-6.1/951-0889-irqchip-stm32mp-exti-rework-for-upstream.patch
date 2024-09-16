@@ -18,8 +18,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 47 ++++++++++++------------------
  1 file changed, 18 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index d02c08abc6b1..5aaed1d49f01 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -81,7 +81,7 @@ struct stm32mp_exti_host_data {
@@ -31,7 +29,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  	bool has_syscon; /* using old DT; keep backward compatibility */
  	struct raw_spinlock gpio_mux_lock;
  	DECLARE_BITMAP(gpio_mux_used, STM32MP_GPIO_IRQ_LINES);
-@@ -553,14 +553,14 @@ static int stm32mp_exti_domain_match(struct irq_domain *dm,
+@@ -553,14 +553,14 @@ static int stm32mp_exti_domain_match(str
  	    (bus_token != DOMAIN_BUS_ANY && dm->bus_token != bus_token))
  		return 0;
  
@@ -49,7 +47,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  }
  
  static int stm32mp_exti_domain_select(struct irq_domain *dm,
-@@ -578,10 +578,10 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -578,10 +578,10 @@ static int stm32mp_exti_domain_select(st
  	    (bus_token != DOMAIN_BUS_ANY && dm->bus_token != bus_token))
  		return 0;
  
@@ -62,7 +60,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  		return 0;
  
  	gpio_bank = FIELD_GET(STM32MP_GPIO_BANK_MASK, fwspec->param[1]);
-@@ -591,12 +591,7 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -591,12 +591,7 @@ static int stm32mp_exti_domain_select(st
  	     !stm32mp_exti_test_gpio_mux_available(host_data, gpio_bank, hwirq)))
  		return 0;
  
@@ -76,7 +74,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  	if (ret)
  		return 0;
  
-@@ -701,15 +696,10 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -701,15 +696,10 @@ static int stm32mp_exti_domain_alloc(str
  
  	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
  
@@ -95,7 +93,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  			return ret;
  		}
  
-@@ -718,13 +708,13 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -718,13 +708,13 @@ static int stm32mp_exti_domain_alloc(str
  
  		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
  		if (ret)
@@ -111,7 +109,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  		return -EINVAL;
  	}
  
-@@ -738,7 +728,7 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -738,7 +728,7 @@ static int stm32mp_exti_domain_alloc(str
  
  		ret = irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
  		if (ret)
@@ -120,7 +118,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  
  		return ret;
  	}
-@@ -830,7 +820,7 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -830,7 +820,7 @@ static int stm32mp_exti_probe(struct pla
  {
  	int ret, i;
  	struct device *dev = &pdev->dev;
@@ -129,7 +127,7 @@ index d02c08abc6b1..5aaed1d49f01 100644
  	struct irq_domain *parent_domain, *domain, *wakeup_domain;
  	struct fwnode_handle *fwnode;
  	struct stm32mp_exti_host_data *host_data;
-@@ -909,13 +899,12 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -909,13 +899,12 @@ static int stm32mp_exti_probe(struct pla
  	if (ret)
  		return ret;
  
@@ -147,6 +145,3 @@ index d02c08abc6b1..5aaed1d49f01 100644
  		of_node_put(wakeup_np);
  		wakeup_np = NULL;
  	}
--- 
-2.39.2
-

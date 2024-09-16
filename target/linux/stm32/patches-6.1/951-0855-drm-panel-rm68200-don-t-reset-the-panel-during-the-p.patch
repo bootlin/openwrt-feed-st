@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/panel/panel-raydium-rm68200.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raydium-rm68200.c b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-index 666578baae33..13113dbdce88 100644
 --- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
 +++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-@@ -277,6 +277,7 @@ static int rm68200_unprepare(struct drm_panel *panel)
+@@ -277,6 +277,7 @@ static int rm68200_unprepare(struct drm_
  	if (ret)
  		dev_warn(panel->dev, "failed to enter sleep mode: %d\n", ret);
  
@@ -27,7 +25,7 @@ index 666578baae33..13113dbdce88 100644
  	pm_runtime_mark_last_busy(panel->dev);
  	ret = pm_runtime_put_autosuspend(panel->dev);
  	if (ret < 0)
-@@ -423,7 +424,8 @@ static int rm68200_probe(struct mipi_dsi_device *dsi)
+@@ -423,7 +424,8 @@ static int rm68200_probe(struct mipi_dsi
  			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
  
  	pm_runtime_enable(ctx->dev);
@@ -37,7 +35,7 @@ index 666578baae33..13113dbdce88 100644
  	pm_runtime_use_autosuspend(ctx->dev);
  
  	drm_panel_init(&ctx->panel, dev, &rm68200_drm_funcs,
-@@ -483,8 +485,6 @@ static __maybe_unused int raydium_rm68200_resume(struct device *dev)
+@@ -483,8 +485,6 @@ static __maybe_unused int raydium_rm6820
  		return ret;
  	}
  
@@ -46,6 +44,3 @@ index 666578baae33..13113dbdce88 100644
  	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
  	msleep(100);
  
--- 
-2.39.2
-

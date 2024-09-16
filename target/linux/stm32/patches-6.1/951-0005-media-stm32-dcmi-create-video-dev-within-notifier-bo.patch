@@ -31,11 +31,9 @@ Tested-by: Alain VOLMAT <alain.volmat@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 23 ++++++++++----------
  1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 1bf4f90adb9a..92f398fff819 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -1868,6 +1868,15 @@ static int dcmi_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -1868,6 +1868,15 @@ static int dcmi_graph_notify_bound(struc
  
  	dev_dbg(dcmi->dev, "Subdev \"%s\" bound\n", subdev->name);
  
@@ -51,7 +49,7 @@ index 1bf4f90adb9a..92f398fff819 100644
  	/*
  	 * Link this sub-device to DCMI, it could be
  	 * a parallel camera sensor or a bridge
-@@ -1880,10 +1889,11 @@ static int dcmi_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -1880,10 +1889,11 @@ static int dcmi_graph_notify_bound(struc
  				    &dcmi->vdev->entity, 0,
  				    MEDIA_LNK_FL_IMMUTABLE |
  				    MEDIA_LNK_FL_ENABLED);
@@ -65,7 +63,7 @@ index 1bf4f90adb9a..92f398fff819 100644
  		dev_dbg(dcmi->dev, "DCMI is now linked to \"%s\"\n",
  			subdev->name);
  
-@@ -2090,15 +2100,6 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -2090,15 +2100,6 @@ static int dcmi_probe(struct platform_de
  	}
  	dcmi->vdev->entity.flags |= MEDIA_ENT_FL_DEFAULT;
  
@@ -81,6 +79,3 @@ index 1bf4f90adb9a..92f398fff819 100644
  	/* Buffer queue */
  	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
  	q->io_modes = VB2_MMAP | VB2_READ | VB2_DMABUF;
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/memory/stm32-omi.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 40aed4de7f02..72eda1807a11 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -447,7 +447,8 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -447,7 +447,8 @@ static int stm32_omi_probe(struct platfo
  			hyperflash_count++;
  
  		if (of_device_is_compatible(child, "jedec,spi-nor") ||
@@ -33,6 +31,3 @@ index 40aed4de7f02..72eda1807a11 100644
  			spi_flash_count++;
  
  		child_count++;
--- 
-2.39.2
-

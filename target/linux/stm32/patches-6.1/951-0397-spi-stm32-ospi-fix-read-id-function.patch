@@ -21,8 +21,6 @@ Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
  drivers/spi/spi-stm32-ospi.c | 19 ++++++++++---------
  1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 424dd9c3efc4..719269eb6659 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -13,6 +13,7 @@ struct stm32_ospi_flash {
@@ -42,7 +40,7 @@ index 424dd9c3efc4..719269eb6659 100644
  	int last_cs;
  	unsigned long status_timeout;
  
-@@ -473,12 +474,13 @@ static int stm32_ospi_readid(struct stm32_omi *omi)
+@@ -473,12 +474,13 @@ static int stm32_ospi_readid(struct stm3
  	struct stm32_ospi *ospi =
  		container_of(omi, struct stm32_ospi, omi);
  	struct spi_device *spi = ospi->spi;
@@ -58,7 +56,7 @@ index 424dd9c3efc4..719269eb6659 100644
  	int ret;
  
  	omi->fmode = CR_FMODE_INDR;
-@@ -494,20 +496,20 @@ static int stm32_ospi_readid(struct stm32_omi *omi)
+@@ -494,20 +496,20 @@ static int stm32_ospi_readid(struct stm3
  	if (ret)
  		return ret;
  
@@ -84,7 +82,7 @@ index 424dd9c3efc4..719269eb6659 100644
  		return 0;
  
  	return -EIO;
-@@ -532,7 +534,6 @@ static int stm32_ospi_calibration(struct spi_device *spi, u32 freq)
+@@ -532,7 +534,6 @@ static int stm32_ospi_calibration(struct
  	 */
  	flash->presc = DIV_ROUND_UP(ospi->omi.clk_rate,
  				    STM32_DLYB_FREQ_THRESHOLD) - 1;
@@ -92,6 +90,3 @@ index 424dd9c3efc4..719269eb6659 100644
  	ret = stm32_ospi_readid(omi);
  	if (ret)
  		return ret;
--- 
-2.39.2
-

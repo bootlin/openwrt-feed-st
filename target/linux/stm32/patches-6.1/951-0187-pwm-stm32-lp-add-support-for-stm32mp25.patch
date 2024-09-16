@@ -31,8 +31,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/pwm/pwm-stm32-lp.c | 217 ++++++++++++++++++++++++++++++++-----
  1 file changed, 191 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
-index ce73d14b0a07..5092357e2efa 100644
 --- a/drivers/pwm/pwm-stm32-lp.c
 +++ b/drivers/pwm/pwm-stm32-lp.c
 @@ -21,6 +21,7 @@ struct stm32_pwm_lp {
@@ -43,7 +41,7 @@ index ce73d14b0a07..5092357e2efa 100644
  };
  
  static inline struct stm32_pwm_lp *to_stm32_pwm_lp(struct pwm_chip *chip)
-@@ -31,13 +32,101 @@ static inline struct stm32_pwm_lp *to_stm32_pwm_lp(struct pwm_chip *chip)
+@@ -31,13 +32,101 @@ static inline struct stm32_pwm_lp *to_st
  /* STM32 Low-Power Timer is preceded by a configurable power-of-2 prescaler */
  #define STM32_LPTIM_MAX_PRESCALER	128
  
@@ -146,7 +144,7 @@ index ce73d14b0a07..5092357e2efa 100644
  	bool reenable;
  	int ret;
  
-@@ -46,10 +135,28 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -46,10 +135,28 @@ static int stm32_pwm_lp_apply(struct pwm
  
  	if (!state->enabled) {
  		if (cstate.enabled) {
@@ -155,12 +153,12 @@ index ce73d14b0a07..5092357e2efa 100644
 +			/* Disable CC channel if any */
 +			ret = stm32_pwm_lp_compare_channel_apply(priv, pwm->hwpwm, false,
 +								 state->polarity);
- 			if (ret)
- 				return ret;
-+			ret = regmap_write(priv->regmap, pwm->hwpwm ?
-+					   STM32MP25_LPTIM_CCR2 : STM32_LPTIM_CMP, 0);
 +			if (ret)
 +				return ret;
++			ret = regmap_write(priv->regmap, pwm->hwpwm ?
++					   STM32MP25_LPTIM_CCR2 : STM32_LPTIM_CMP, 0);
+ 			if (ret)
+ 				return ret;
 +
 +			/* Check if the timer can be disabled */
 +			ret = stm32_pwm_lp_update_allowed(priv, pwm->hwpwm);
@@ -177,7 +175,7 @@ index ce73d14b0a07..5092357e2efa 100644
  			/* disable clock to PWM counter */
  			clk_disable(priv->clk);
  		}
-@@ -80,6 +187,23 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -80,6 +187,23 @@ static int stm32_pwm_lp_apply(struct pwm
  	dty = prd * state->duty_cycle;
  	dty = DIV_ROUND_CLOSEST_ULL(dty, state->period);
  
@@ -201,7 +199,7 @@ index ce73d14b0a07..5092357e2efa 100644
  	if (!cstate.enabled) {
  		/* enable clock to drive PWM counter */
  		ret = clk_enable(priv->clk);
-@@ -87,15 +211,20 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -87,15 +211,20 @@ static int stm32_pwm_lp_apply(struct pwm
  			return ret;
  	}
  
@@ -229,7 +227,7 @@ index ce73d14b0a07..5092357e2efa 100644
  
  		/* Must disable LP timer to modify CFGR */
  		reenable = true;
-@@ -121,20 +250,27 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -121,20 +250,27 @@ static int stm32_pwm_lp_apply(struct pwm
  	if (ret)
  		goto err;
  
@@ -262,7 +260,7 @@ index ce73d14b0a07..5092357e2efa 100644
  	if (ret)
  		goto err;
  
-@@ -163,25 +299,43 @@ static int stm32_pwm_lp_get_state(struct pwm_chip *chip,
+@@ -163,25 +299,43 @@ static int stm32_pwm_lp_get_state(struct
  {
  	struct stm32_pwm_lp *priv = to_stm32_pwm_lp(chip);
  	unsigned long rate = clk_get_rate(priv->clk);
@@ -310,7 +308,7 @@ index ce73d14b0a07..5092357e2efa 100644
  	tmp = prd - val;
  	tmp = (tmp << presc) * NSEC_PER_SEC;
  	state->duty_cycle = DIV_ROUND_CLOSEST_ULL(tmp, rate);
-@@ -208,8 +362,15 @@ static int stm32_pwm_lp_probe(struct platform_device *pdev)
+@@ -208,8 +362,15 @@ static int stm32_pwm_lp_probe(struct pla
  	priv->regmap = ddata->regmap;
  	priv->clk = ddata->clk;
  	priv->chip.dev = &pdev->dev;
@@ -327,18 +325,17 @@ index ce73d14b0a07..5092357e2efa 100644
  
  	ret = devm_pwmchip_add(&pdev->dev, &priv->chip);
  	if (ret < 0)
-@@ -224,12 +385,15 @@ static int __maybe_unused stm32_pwm_lp_suspend(struct device *dev)
+@@ -224,12 +385,15 @@ static int __maybe_unused stm32_pwm_lp_s
  {
  	struct stm32_pwm_lp *priv = dev_get_drvdata(dev);
  	struct pwm_state state;
--
++	unsigned int i;
+ 
 -	pwm_get_state(&priv->chip.pwms[0], &state);
 -	if (state.enabled) {
 -		dev_err(dev, "The consumer didn't stop us (%s)\n",
 -			priv->chip.pwms[0].label);
 -		return -EBUSY;
-+	unsigned int i;
-+
 +	for (i = 0; i < priv->chip.npwm; i++) {
 +		pwm_get_state(&priv->chip.pwms[i], &state);
 +		if (state.enabled) {
@@ -349,7 +346,7 @@ index ce73d14b0a07..5092357e2efa 100644
  	}
  
  	return pinctrl_pm_select_sleep_state(dev);
-@@ -245,6 +409,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_lp_pm_ops, stm32_pwm_lp_suspend,
+@@ -245,6 +409,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_lp_pm
  
  static const struct of_device_id stm32_pwm_lp_of_match[] = {
  	{ .compatible = "st,stm32-pwm-lp", },
@@ -357,6 +354,3 @@ index ce73d14b0a07..5092357e2efa 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_pwm_lp_of_match);
--- 
-2.39.2
-

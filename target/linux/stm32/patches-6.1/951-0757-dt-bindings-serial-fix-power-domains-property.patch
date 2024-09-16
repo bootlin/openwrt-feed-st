@@ -25,8 +25,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 622a6c232664..f1205cbf0f03 100644
 --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
 +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
 @@ -67,7 +67,6 @@ properties:
@@ -37,6 +35,3 @@ index 622a6c232664..f1205cbf0f03 100644
      maxItems: 1
  
    rx-threshold:
--- 
-2.39.2
-

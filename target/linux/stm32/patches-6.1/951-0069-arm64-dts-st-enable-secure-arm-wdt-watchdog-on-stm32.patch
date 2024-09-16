@@ -19,11 +19,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index c29d2baeb0ed..e402e5244031 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -28,3 +28,8 @@ memory@80000000 {
+@@ -28,3 +28,8 @@
  		reg = <0x0 0x80000000 0x1 0x0>;
  	};
  };
@@ -32,6 +30,3 @@ index c29d2baeb0ed..e402e5244031 100644
 +	timeout-sec = <32>;
 +	status = "okay";
 +};
--- 
-2.39.2
-

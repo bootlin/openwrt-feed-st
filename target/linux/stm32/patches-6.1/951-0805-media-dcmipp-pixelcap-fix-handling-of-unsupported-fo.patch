@@ -17,11 +17,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c    | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 6cfc7acc101c..d37104d8ce1e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -394,8 +394,10 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -394,8 +394,10 @@ static int dcmipp_pixelcap_try_fmt_vid_c
  
  	/* Don't accept a pixelformat that is not on the table */
  	vpix = dcmipp_pixelcap_pix_map_by_pixelformat(format->pixelformat);
@@ -33,6 +31,3 @@ index 6cfc7acc101c..d37104d8ce1e 100644
  
  	/* Semiplanar & planar formats are only supported on main pipe */
  	if (vpix->plane_nb > 1 && vcap->pipe_id != 1)
--- 
-2.39.2
-

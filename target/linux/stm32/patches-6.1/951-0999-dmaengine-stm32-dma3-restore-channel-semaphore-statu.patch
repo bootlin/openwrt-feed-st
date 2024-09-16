@@ -24,11 +24,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 73 ++++++++++++++++++++++++++++++++++
  1 file changed, 73 insertions(+)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 854be36fa0b4..ebf64983574d 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -1344,6 +1344,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+@@ -1344,6 +1344,10 @@ static struct dma_async_tx_descriptor *s
  	bool prevent_refactor = !!FIELD_GET(STM32_DMA3_DT_NOPACK, chan->dt_config.tr_conf) ||
  				!!FIELD_GET(STM32_DMA3_DT_NOREFACT, chan->dt_config.tr_conf);
  
@@ -39,7 +37,7 @@ index 854be36fa0b4..ebf64983574d 100644
  	count = stm32_dma3_get_ll_count(chan, len, prevent_refactor);
  
  	swdesc = stm32_dma3_chan_desc_alloc(chan, count);
-@@ -1404,6 +1408,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+@@ -1404,6 +1408,10 @@ static struct dma_async_tx_descriptor *s
  				!!FIELD_GET(STM32_DMA3_DT_NOREFACT, chan->dt_config.tr_conf);
  	int ret;
  
@@ -50,7 +48,7 @@ index 854be36fa0b4..ebf64983574d 100644
  	count = 0;
  	for_each_sg(sgl, sg, sg_len, i)
  		count += stm32_dma3_get_ll_count(chan, sg_dma_len(sg), prevent_refactor);
-@@ -1490,6 +1498,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_cyclic(struct dma_cha
+@@ -1490,6 +1498,10 @@ static struct dma_async_tx_descriptor *s
  	u32 count, i, ctr1, ctr2;
  	int ret;
  
@@ -61,7 +59,7 @@ index 854be36fa0b4..ebf64983574d 100644
  	if (!buf_len || !period_len || period_len > STM32_DMA3_MAX_BLOCK_SIZE) {
  		dev_err(chan2dev(chan), "Invalid buffer/period length\n");
  		return NULL;
-@@ -2036,6 +2048,67 @@ static int stm32_dma3_runtime_resume(struct device *dev)
+@@ -2036,6 +2048,67 @@ static int stm32_dma3_runtime_resume(str
  	return ret;
  }
  
@@ -129,6 +127,3 @@ index 854be36fa0b4..ebf64983574d 100644
  static const struct dev_pm_ops stm32_dma3_pm_ops = {
  	SYSTEM_SLEEP_PM_OPS(stm32_dma3_pm_suspend, stm32_dma3_pm_resume)
  	RUNTIME_PM_OPS(stm32_dma3_runtime_suspend, stm32_dma3_runtime_resume, NULL)
--- 
-2.39.2
-

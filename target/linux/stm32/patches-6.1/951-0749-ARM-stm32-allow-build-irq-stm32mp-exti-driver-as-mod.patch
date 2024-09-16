@@ -19,8 +19,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/mach-stm32/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index 41bfcf31f8a7..8c8d5fc1217f 100644
 --- a/arch/arm/mach-stm32/Kconfig
 +++ b/arch/arm/mach-stm32/Kconfig
 @@ -11,7 +11,6 @@ menuconfig ARCH_STM32
@@ -31,6 +29,3 @@ index 41bfcf31f8a7..8c8d5fc1217f 100644
  	select STM32_EXTI if ARM_SINGLE_ARMV7M
  	help
  	  Support for STMicroelectronics STM32 processors.
--- 
-2.39.2
-

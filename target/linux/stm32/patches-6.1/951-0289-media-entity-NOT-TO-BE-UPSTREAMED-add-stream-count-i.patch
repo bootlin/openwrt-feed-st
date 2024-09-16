@@ -15,11 +15,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  include/media/media-entity.h | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 28c9de8a1f34..11829757dd20 100644
 --- a/include/media/media-entity.h
 +++ b/include/media/media-entity.h
-@@ -345,6 +345,12 @@ struct media_entity {
+@@ -347,6 +347,12 @@ struct media_entity {
  
  	int use_count;
  
@@ -32,6 +30,3 @@ index 28c9de8a1f34..11829757dd20 100644
  	union {
  		struct {
  			u32 major;
--- 
-2.39.2
-

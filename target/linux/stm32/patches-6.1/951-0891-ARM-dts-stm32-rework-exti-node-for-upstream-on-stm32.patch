@@ -19,11 +19,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm/boot/dts/stm32mp131.dtsi | 121 ++++++++++++++++++------------
  1 file changed, 72 insertions(+), 49 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
-index 0fc7a61651b2..29ead6b0b3a4 100644
 --- a/arch/arm/boot/dts/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/stm32mp131.dtsi
-@@ -966,56 +966,79 @@ exti: interrupt-controller@5000d000 {
+@@ -966,56 +966,79 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -152,6 +150,3 @@ index 0fc7a61651b2..29ead6b0b3a4 100644
  		};
  
  		syscfg: syscon@50020000 {
--- 
-2.39.2
-

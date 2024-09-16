@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index e82266e3e0ad..030f1400b5db 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -2264,7 +2264,7 @@ m4_rproc: m4@10000000 {
+@@ -2264,7 +2264,7 @@
  			st,syscfg-holdboot = <&rcc 0x10c 0x1>;
  			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
  			st,syscfg-rsc-tbl = <&tamp 0x144 0xffffffff>;
@@ -30,6 +28,3 @@ index e82266e3e0ad..030f1400b5db 100644
  			status = "disabled";
  
  			m4_system_resources {
--- 
-2.39.2
-

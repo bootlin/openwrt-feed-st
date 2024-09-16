@@ -15,8 +15,6 @@ Change-Id: I7369849403effb4056f78a367875c34ab1118000
  4 files changed, 1640 insertions(+), 5 deletions(-)
  create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index 1cc06c7f4add..0a1c362771b8 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -8,6 +8,7 @@ hantro-vpu-y += \
@@ -27,8 +25,6 @@ index 1cc06c7f4add..0a1c362771b8 100644
  		hantro_g1.o \
  		hantro_g1_h264_dec.o \
  		hantro_g1_mpeg2_dec.o \
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 30e7e7b920b5..5062ee1c87a2 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -34,9 +34,12 @@
@@ -148,9 +144,6 @@ index 30e7e7b920b5..5062ee1c87a2 100644
 +#define     H1_REG_VP8_LF_MODE_DELTA_BPRED(x)		(((x) & 0x7f) << 0)
  
  #endif /* HANTRO_H1_REGS_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-new file mode 100644
-index 000000000000..8a7c19aa91ef
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 @@ -0,0 +1,1570 @@
@@ -1724,11 +1717,9 @@ index 000000000000..8a7c19aa91ef
 +	ctx->vp8_enc.last_intra = is_intra(ctx);
 +	++ctx->vp8_enc.frame_counter;
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index f86a68ebfc31..7ca93babd859 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
-@@ -530,4 +530,7 @@ int hantro_vp8_enc_init(struct hantro_ctx *ctx);
+@@ -530,4 +530,7 @@ int hantro_vp8_enc_init(struct hantro_ct
  void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx);
  void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
  
@@ -1736,6 +1727,3 @@ index f86a68ebfc31..7ca93babd859 100644
 +void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx);
 +
  #endif /* HANTRO_HW_H_ */
--- 
-2.39.2
-

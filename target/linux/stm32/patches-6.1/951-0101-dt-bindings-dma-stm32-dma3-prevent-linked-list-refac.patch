@@ -21,8 +21,6 @@ Change-Id: I3984ad1eeee414e48868bbd7ebe007149eaecf9f
  Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
-index e7c756f16143..efe15a31383d 100644
 --- a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 @@ -60,6 +60,9 @@ description: |
@@ -35,6 +33,3 @@ index e7c756f16143..efe15a31383d 100644
      4. A 32-bit mask specifying the DMA transfer extended requirements
        -bit 0-12: The source address offset increment
        -bit 13: The source address increment type
--- 
-2.39.2
-

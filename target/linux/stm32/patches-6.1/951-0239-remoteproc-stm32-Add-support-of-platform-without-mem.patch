@@ -21,11 +21,9 @@ Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 21 ++++++++++++++++++++-
  1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 0ea7b832438f..2eb6068e099b 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -107,6 +107,11 @@ static int stm32_rproc_pa_to_da(struct rproc *rproc, phys_addr_t pa, u64 *da)
+@@ -107,6 +107,11 @@ static int stm32_rproc_pa_to_da(struct r
  	struct stm32_rproc *ddata = rproc->priv;
  	struct stm32_rproc_mem *p_mem;
  
@@ -37,7 +35,7 @@ index 0ea7b832438f..2eb6068e099b 100644
  	for (i = 0; i < ddata->nb_rmems; i++) {
  		p_mem = &ddata->rmems[i];
  
-@@ -164,11 +169,19 @@ static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
+@@ -164,11 +169,19 @@ static int stm32_rproc_of_memory_transla
  
  	cnt = of_property_count_elems_of_size(np, "dma-ranges",
  					      sizeof(*mem_range));
@@ -58,7 +56,7 @@ index 0ea7b832438f..2eb6068e099b 100644
  	p_mems = devm_kcalloc(dev, cnt, sizeof(*p_mems), GFP_KERNEL);
  	if (!p_mems)
  		return -ENOMEM;
-@@ -700,6 +713,12 @@ static int stm32_rproc_da_to_pa(struct rproc *rproc,
+@@ -700,6 +713,12 @@ static int stm32_rproc_da_to_pa(struct r
  	struct stm32_rproc_mem *p_mem;
  	unsigned int i;
  
@@ -71,6 +69,3 @@ index 0ea7b832438f..2eb6068e099b 100644
  	for (i = 0; i < ddata->nb_rmems; i++) {
  		p_mem = &ddata->rmems[i];
  
--- 
-2.39.2
-

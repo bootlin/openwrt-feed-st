@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  MAINTAINERS | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 59ff0701f567..0692d14ccf25 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -19545,6 +19545,13 @@ T:	git git://linuxtv.org/media_tree.git
+@@ -19559,6 +19559,13 @@ T:	git git://linuxtv.org/media_tree.git
  F:	Documentation/devicetree/bindings/media/i2c/st,st-mipid02.txt
  F:	drivers/media/i2c/st-mipid02.c
  
@@ -38,6 +36,3 @@ index 59ff0701f567..0692d14ccf25 100644
  ST STM32 I2C/SMBUS DRIVER
  M:	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
  M:	Alain Volmat <alain.volmat@foss.st.com>
--- 
-2.39.2
-

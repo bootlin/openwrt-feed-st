@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../gpu/drm/panel/panel-orisetech-otm8009a.c  | 21 ++++++++++++-------
  1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index c7d68a09b9c9..501c95c78113 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -110,13 +110,16 @@ static inline struct otm8009a *panel_to_otm8009a(struct drm_panel *panel)
+@@ -110,13 +110,16 @@ static inline struct otm8009a *panel_to_
  	return container_of(panel, struct otm8009a, panel);
  }
  
@@ -40,7 +38,7 @@ index c7d68a09b9c9..501c95c78113 100644
  }
  
  #define dcs_write_seq(ctx, seq...)			\
-@@ -394,10 +397,11 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -394,10 +397,11 @@ static int otm8009a_backlight_update_sta
  {
  	struct otm8009a *ctx = bl_get_data(bd);
  	u8 data[2];
@@ -53,7 +51,7 @@ index c7d68a09b9c9..501c95c78113 100644
  	}
  
  	if (bd->props.power <= FB_BLANK_NORMAL) {
-@@ -407,11 +411,12 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -407,11 +411,12 @@ static int otm8009a_backlight_update_sta
  		 */
  		data[0] = MIPI_DCS_SET_DISPLAY_BRIGHTNESS;
  		data[1] = bd->props.brightness;
@@ -68,7 +66,7 @@ index c7d68a09b9c9..501c95c78113 100644
  	} else {
  		/* Power off the backlight: set Brightness Control & Bl off */
  		data[1] = 0;
-@@ -419,7 +424,9 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -419,7 +424,9 @@ static int otm8009a_backlight_update_sta
  
  	/* Update Brightness Control & Backlight */
  	data[0] = MIPI_DCS_WRITE_CONTROL_DISPLAY;
@@ -79,6 +77,3 @@ index c7d68a09b9c9..501c95c78113 100644
  
  	return 0;
  }
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 19 +++++++++----------
  1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 0c713aa51e87..0d9a94d93b8a 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -833,11 +833,10 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -833,11 +833,10 @@ static void ltdc_crtc_atomic_enable(stru
  
  	/* Enable IRQ */
  	if (ldev->caps.crtc_rotation)
@@ -34,7 +32,7 @@ index 0c713aa51e87..0d9a94d93b8a 100644
  
  	/* Commit shadow registers = update planes at next vblank */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -864,10 +863,10 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -864,10 +863,10 @@ static void ltdc_crtc_atomic_disable(str
  	/* disable IRQ */
  	if (ldev->caps.crtc_rotation)
  		regmap_clear_bits(ldev->regmap, LTDC_IER, IER_FUWIE | IER_FUEIE |
@@ -63,6 +61,3 @@ index 0c713aa51e87..0d9a94d93b8a 100644
  
  	DRM_DEBUG_DRIVER("ltdc hw version 0x%08x\n", ldev->caps.hw_version);
  
--- 
-2.39.2
-

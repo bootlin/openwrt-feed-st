@@ -19,11 +19,9 @@ Change-Id: Ia2acea3439ef3d25f584dd1dac031935a327c01b
  drivers/dma/stm32-dma3.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index a581078f9271..e088d26aae1d 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -1896,7 +1896,8 @@ static struct dma_chan *stm32_dma3_of_xlate(struct of_phandle_args *dma_spec, st
+@@ -1896,7 +1896,8 @@ static struct dma_chan *stm32_dma3_of_xl
  		return NULL;
  	}
  
@@ -33,6 +31,3 @@ index a581078f9271..e088d26aae1d 100644
  	if (!c) {
  		dev_err(ddata->dma_dev.dev, "No suitable channel found\n");
  		return NULL;
--- 
-2.39.2
-

@@ -30,8 +30,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/dma/stm32/stm32-dma3.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index c6841e2688d1..4d48500e5be1 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -221,6 +221,7 @@ enum stm32_dma3_port_data_width {
@@ -42,7 +40,7 @@ index c6841e2688d1..4d48500e5be1 100644
  
  /* struct stm32_dma3_chan .config_set bitfield */
  #define STM32_DMA3_CFG_SET_DT		BIT(0)
-@@ -618,6 +619,10 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -618,6 +619,10 @@ static int stm32_dma3_chan_prep_hw(struc
  		/* Set source (memory) data width and burst */
  		sdw = stm32_dma3_get_max_dw(chan->max_burst, sap_max_dw, len, src_addr);
  		sbl_max = stm32_dma3_get_max_burst(len, sdw, chan->max_burst);
@@ -53,7 +51,7 @@ index c6841e2688d1..4d48500e5be1 100644
  
  		_ctr1 |= FIELD_PREP(CTR1_SDW_LOG2, ilog2(sdw));
  		_ctr1 |= FIELD_PREP(CTR1_SBL_1, sbl_max - 1);
-@@ -648,6 +653,11 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -648,6 +653,11 @@ static int stm32_dma3_chan_prep_hw(struc
  		/* Set destination (memory) data width and burst */
  		ddw = stm32_dma3_get_max_dw(chan->max_burst, dap_max_dw, len, dst_addr);
  		dbl_max = stm32_dma3_get_max_burst(len, ddw, chan->max_burst);
@@ -65,6 +63,3 @@ index c6841e2688d1..4d48500e5be1 100644
  
  		_ctr1 |= FIELD_PREP(CTR1_SDW_LOG2, ilog2(sdw));
  		_ctr1 |= FIELD_PREP(CTR1_SBL_1, sbl_max - 1);
--- 
-2.39.2
-

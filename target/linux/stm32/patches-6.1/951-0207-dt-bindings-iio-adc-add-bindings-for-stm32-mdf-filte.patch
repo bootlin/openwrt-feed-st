@@ -14,9 +14,6 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  1 file changed, 241 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
-new file mode 100644
-index 000000000000..4a8087423cc7
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 @@ -0,0 +1,241 @@
@@ -261,6 +258,3 @@ index 000000000000..4a8087423cc7
 +    };
 +
 +...
--- 
-2.39.2
-

@@ -16,8 +16,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 51984990b839..bf5cde9703d9 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
 @@ -1332,6 +1332,8 @@ patternProperties:
@@ -29,6 +27,3 @@ index 51984990b839..bf5cde9703d9 100644
    "^traverse,.*":
      description: Traverse Technologies Australia Pty Ltd
    "^tronfy,.*":
--- 
-2.39.2
-

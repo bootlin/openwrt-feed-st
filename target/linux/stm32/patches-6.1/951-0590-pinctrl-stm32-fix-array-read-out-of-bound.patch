@@ -21,11 +21,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32.c | 8 +++++---
  1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 03008578e441..c4836d9853a1 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -1693,9 +1693,11 @@ static struct stm32_desc_pin *stm32_pctrl_get_desc_pin_from_gpio(struct stm32_pi
+@@ -1693,9 +1693,11 @@ static struct stm32_desc_pin *stm32_pctr
  	int i;
  
  	/* With few exceptions (e.g. bank 'Z'), pin number matches with pin index in array */
@@ -40,6 +38,3 @@ index 03008578e441..c4836d9853a1 100644
  
  	/* Otherwise, loop all array to find the pin with the right number */
  	for (i = 0; i < pctl->npins; i++) {
--- 
-2.39.2
-

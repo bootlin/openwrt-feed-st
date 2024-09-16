@@ -13,11 +13,9 @@ Change-Id: I60fe17ae1a51bf1e4115a30ca80fc146b30b4e73
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 25 +++++++++++++++++++++++
  1 file changed, 25 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 3dbc91a0ae2b..e6592b8c7149 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -24,6 +24,7 @@ aliases {
+@@ -24,6 +24,7 @@
  		serial0 = &usart2;
  		serial1 = &usart6;
  		serial2 = &usart1;
@@ -25,7 +23,7 @@ index 3dbc91a0ae2b..e6592b8c7149 100644
  	};
  
  	chosen {
-@@ -69,6 +70,30 @@ &arm_wdt {
+@@ -69,6 +70,30 @@
  	status = "okay";
  };
  
@@ -56,6 +54,3 @@ index 3dbc91a0ae2b..e6592b8c7149 100644
  &rtc {
  	st,lsco = <RTC_OUT2_RMP>;
  	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
--- 
-2.39.2
-

@@ -14,8 +14,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 27c685256251..14f68af5fb4f 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -107,7 +107,7 @@
@@ -27,6 +25,3 @@ index 27c685256251..14f68af5fb4f 100644
  
  #define PHY_SLV_OFS	0x100
  
--- 
-2.39.2
-

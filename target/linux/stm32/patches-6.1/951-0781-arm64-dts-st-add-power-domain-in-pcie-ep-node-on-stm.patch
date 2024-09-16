@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 6adfb41a1b28..27b55a1fa310 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2299,6 +2299,7 @@ pcie_ep: pcie-ep@48400000 {
+@@ -2299,6 +2299,7 @@
  				phys = <&combophy PHY_TYPE_PCIE>;
  				phy-names = "pcie-phy";
  				feature-domains = <&rifsc STM32MP25_RIFSC_PCIE_ID>;
@@ -28,6 +26,3 @@ index 6adfb41a1b28..27b55a1fa310 100644
  				status = "disabled";
  			};
  
--- 
-2.39.2
-

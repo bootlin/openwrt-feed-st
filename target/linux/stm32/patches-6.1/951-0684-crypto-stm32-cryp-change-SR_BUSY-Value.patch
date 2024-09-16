@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index e9a73146ce06..d7b55445f447 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -114,7 +114,7 @@ static const struct debugfs_reg32 stm32_cryp_regs[] = {
+@@ -114,7 +114,7 @@ static const struct debugfs_reg32 stm32_
  
  #define SR_IFNF                 BIT(1)
  #define SR_OFNE                 BIT(2)
@@ -32,6 +30,3 @@ index e9a73146ce06..d7b55445f447 100644
  
  #define DMACR_DIEN              BIT(0)
  #define DMACR_DOEN              BIT(1)
--- 
-2.39.2
-

@@ -17,9 +17,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  1 file changed, 176 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 
-diff --git a/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
-new file mode 100644
-index 000000000000..5549bbf15a1b
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 @@ -0,0 +1,176 @@
@@ -199,6 +196,3 @@ index 000000000000..5549bbf15a1b
 +        st,access = <&rifsc STM32MP25_RIFSC_OCTOSPI2_ID>;
 +      };
 +    };
--- 
-2.39.2
-

@@ -38,8 +38,6 @@ Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
  4 files changed, 159 insertions(+), 2 deletions(-)
  create mode 100644 drivers/bus/stm32_sys_bus.h
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 884978899bbc..bfd0268c9293 100644
 --- a/arch/arm64/Kconfig.platforms
 +++ b/arch/arm64/Kconfig.platforms
 @@ -292,6 +292,7 @@ config ARCH_STM32
@@ -50,8 +48,6 @@ index 884978899bbc..bfd0268c9293 100644
  	help
  	  This enables support for ARMv8 based STMicroelectronics STM32 family.
  
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index 638bf5839cb0..441c531cef21 100644
 --- a/drivers/bus/Kconfig
 +++ b/drivers/bus/Kconfig
 @@ -166,7 +166,7 @@ config QCOM_SSC_BLOCK_BUS
@@ -63,8 +59,6 @@ index 638bf5839cb0..441c531cef21 100644
  	help
  	  Say y to enable device access right verification before device probing.
  	  If access not granted, device won't be probed and an error message will
-diff --git a/drivers/bus/stm32_sys_bus.c b/drivers/bus/stm32_sys_bus.c
-index e94eb16e6a2d..7444d75c97d6 100644
 --- a/drivers/bus/stm32_sys_bus.c
 +++ b/drivers/bus/stm32_sys_bus.c
 @@ -15,6 +15,8 @@
@@ -123,7 +117,7 @@ index e94eb16e6a2d..7444d75c97d6 100644
  struct sys_bus_data;
  
  struct stm32_sys_bus_match_data {
-@@ -93,6 +135,102 @@ static int stm32_etzpc_get_access(struct sys_bus_data *pdata, struct device_node
+@@ -93,6 +135,102 @@ static int stm32_etzpc_get_access(struct
  	return 0;
  }
  
@@ -226,7 +220,7 @@ index e94eb16e6a2d..7444d75c97d6 100644
  static void stm32_sys_bus_populate(struct sys_bus_data *pdata)
  {
  	struct device *parent;
-@@ -109,7 +247,7 @@ static void stm32_sys_bus_populate(struct sys_bus_data *pdata)
+@@ -109,7 +247,7 @@ static void stm32_sys_bus_populate(struc
  			 * Mark the node as populated so platform bus won't probe it
  			 */
  			of_node_set_flag(child, OF_POPULATED);
@@ -235,7 +229,7 @@ index e94eb16e6a2d..7444d75c97d6 100644
  				child->full_name);
  		}
  	}
-@@ -162,9 +300,15 @@ static const struct stm32_sys_bus_match_data stm32mp13_sys_bus_data = {
+@@ -162,9 +300,15 @@ static const struct stm32_sys_bus_match_
  	.sys_bus_get_access = stm32_etzpc_get_access,
  };
  
@@ -251,9 +245,6 @@ index e94eb16e6a2d..7444d75c97d6 100644
  	{}
  };
  MODULE_DEVICE_TABLE(of, stm32_sys_bus_of_match);
-diff --git a/drivers/bus/stm32_sys_bus.h b/drivers/bus/stm32_sys_bus.h
-new file mode 100644
-index 000000000000..1e1260947700
 --- /dev/null
 +++ b/drivers/bus/stm32_sys_bus.h
 @@ -0,0 +1,12 @@
@@ -269,6 +260,3 @@ index 000000000000..1e1260947700
 +int stm32_rifsc_get_access_by_id(u32 id);
 +
 +#endif /* __ARCH_ARM_MACH_STM32MP25_SYSTEM_BUS */
--- 
-2.39.2
-

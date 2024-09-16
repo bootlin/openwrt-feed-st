@@ -15,11 +15,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index 4666569a7301..1d5c5338e6d9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -24,6 +24,7 @@ aliases {
+@@ -24,6 +24,7 @@
  		ethernet0 = &eth2;
  		ethernet1 = &eth1;
  		serial0 = &usart2;
@@ -27,7 +25,7 @@ index 4666569a7301..1d5c5338e6d9 100644
  	};
  
  	chosen {
-@@ -229,6 +230,15 @@ &usart2 {
+@@ -229,6 +230,15 @@
  	status = "okay";
  };
  
@@ -43,6 +41,3 @@ index 4666569a7301..1d5c5338e6d9 100644
  &usb2_phy1 {
  	status = "okay";
  };
--- 
-2.39.2
-

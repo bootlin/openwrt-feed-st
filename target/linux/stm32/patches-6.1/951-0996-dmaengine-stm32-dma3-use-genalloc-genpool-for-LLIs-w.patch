@@ -32,8 +32,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/dma/stm32/stm32-dma3.c | 160 ++++++++++++++++++++++++++-------
  1 file changed, 127 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 9fba3a7d7086..da26487e76c4 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -11,11 +11,13 @@
@@ -67,7 +65,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  	enum stm32_dma3_port_data_width ports_max_dw[2];
  };
  
-@@ -389,11 +392,121 @@ static void stm32_dma3_chan_dump_hwdesc(struct stm32_dma3_chan *chan,
+@@ -389,11 +392,121 @@ static void stm32_dma3_chan_dump_hwdesc(
  	}
  }
  
@@ -190,7 +188,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  
  	/*
  	 * If the memory to be allocated for the number of hwdesc (6 u32 members but 32-bytes
-@@ -409,11 +522,12 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -409,11 +522,12 @@ static struct stm32_dma3_swdesc *stm32_d
  	if (!swdesc)
  		return NULL;
  
@@ -208,7 +206,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  	}
  	swdesc->lli_size = count;
  	swdesc->ccr = 0;
-@@ -426,23 +540,16 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -426,23 +540,16 @@ static struct stm32_dma3_swdesc *stm32_d
  	swdesc->ccr &= ~CCR_LAP;
  
  	return swdesc;
@@ -234,7 +232,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  
  	kfree(swdesc);
  }
-@@ -1068,15 +1175,6 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1068,15 +1175,6 @@ static int stm32_dma3_alloc_chan_resourc
  		goto err_put_sync;
  	}
  
@@ -250,7 +248,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  	/* Take the channel semaphore */
  	if (chan->semaphore_mode) {
  		writel_relaxed(CSEMCR_SEM_MUTEX, ddata->base + STM32_DMA3_CSEMCR(id));
-@@ -1086,17 +1184,13 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1086,17 +1184,13 @@ static int stm32_dma3_alloc_chan_resourc
  		if (ccid != CCIDCFGR_CID1) {
  			dev_err(chan2dev(chan), "Not under CID1 control (in-use by CID%d)\n", ccid);
  			ret = -EPERM;
@@ -269,7 +267,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  err_put_sync:
  	pm_runtime_put_sync(ddata->dma_dev.dev);
  
-@@ -1117,9 +1211,6 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1117,9 +1211,6 @@ static void stm32_dma3_free_chan_resourc
  
  	vchan_free_chan_resources(to_virt_chan(c));
  
@@ -279,7 +277,7 @@ index 9fba3a7d7086..da26487e76c4 100644
  	/* Release the channel semaphore */
  	if (chan->semaphore_mode)
  		writel_relaxed(0, ddata->base + STM32_DMA3_CSEMCR(chan->id));
-@@ -1763,6 +1854,9 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1763,6 +1854,9 @@ static int stm32_dma3_probe(struct platf
  	else /* Dual master ports */
  		ddata->ports_max_dw[1] = FIELD_GET(G_M1_DATA_WIDTH_ENC, hwcfgr);
  
@@ -289,6 +287,3 @@ index 9fba3a7d7086..da26487e76c4 100644
  
  	ddata->chans = devm_kcalloc(&pdev->dev, ddata->dma_channels, sizeof(*ddata->chans),
  				    GFP_KERNEL);
--- 
-2.39.2
-

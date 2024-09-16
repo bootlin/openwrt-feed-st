@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml     | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-index f7107d345138..ab88193ab7f5 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -137,7 +137,6 @@ patternProperties:
@@ -29,6 +27,3 @@ index f7107d345138..ab88193ab7f5 100644
  
  additionalProperties: false
  
--- 
-2.39.2
-

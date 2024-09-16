@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 217 +++++++++++++++++++++----------------
  1 file changed, 122 insertions(+), 95 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 2dd40c36e97a..494bfb688cbd 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -798,10 +798,53 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -798,10 +798,53 @@ static void ltdc_crtc_atomic_enable(stru
  {
  	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
  	struct drm_device *ddev = crtc->dev;
@@ -72,7 +70,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  	if (!pm_runtime_active(ddev->dev)) {
  		ret = pm_runtime_get_sync(ddev->dev);
  		if (ret) {
-@@ -810,6 +853,84 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -810,6 +853,84 @@ static void ltdc_crtc_atomic_enable(stru
  		}
  	}
  
@@ -157,7 +155,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  	/* Sets the background color value */
  	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
  
-@@ -927,14 +1048,10 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -927,14 +1048,10 @@ static void ltdc_crtc_mode_set_nofb(stru
  	struct drm_connector_list_iter iter;
  	struct drm_connector *connector = NULL;
  	struct drm_encoder *encoder = NULL, *en_iter;
@@ -172,7 +170,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  	u32 val;
  	int ret;
  
-@@ -946,13 +1063,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -946,13 +1063,6 @@ static void ltdc_crtc_mode_set_nofb(stru
  		}
  
  	if (encoder) {
@@ -186,7 +184,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  		/* Get the connector from encoder */
  		drm_connector_list_iter_begin(ddev, &iter);
  		drm_for_each_connector_iter(connector, &iter)
-@@ -961,15 +1071,8 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -961,15 +1071,8 @@ static void ltdc_crtc_mode_set_nofb(stru
  		drm_connector_list_iter_end(&iter);
  	}
  
@@ -203,7 +201,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  
  	if (!pm_runtime_active(ddev->dev)) {
  		ret = pm_runtime_get_sync(ddev->dev);
-@@ -999,27 +1102,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -999,27 +1102,6 @@ static void ltdc_crtc_mode_set_nofb(stru
  	total_width = mode->htotal - 1;
  	total_height = mode->vtotal - 1;
  
@@ -231,7 +229,7 @@ index 2dd40c36e97a..494bfb688cbd 100644
  	/* check that an output rotation is required */
  	if (ldev->caps.crtc_rotation &&
  	    (orientation == DRM_MODE_PANEL_ORIENTATION_LEFT_UP ||
-@@ -1060,61 +1142,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -1060,61 +1142,6 @@ static void ltdc_crtc_mode_set_nofb(stru
  
  		regmap_write(ldev->regmap, LTDC_LIPCR, (accum_act_h + 1));
  	}
@@ -293,6 +291,3 @@ index 2dd40c36e97a..494bfb688cbd 100644
  }
  
  static void ltdc_crtc_atomic_flush(struct drm_crtc *crtc,
--- 
-2.39.2
-

@@ -14,11 +14,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/352883
  drivers/gpu/drm/stm/ltdc.h |   2 +
  3 files changed, 106 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index 5d4dd8d5ea97..ebee758267fb 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -69,17 +69,10 @@ static const struct drm_driver drv_driver = {
+@@ -69,17 +69,10 @@ static const struct drm_driver drv_drive
  static int drv_load(struct drm_device *ddev)
  {
  	struct platform_device *pdev = to_platform_device(ddev->dev);
@@ -36,7 +34,7 @@ index 5d4dd8d5ea97..ebee758267fb 100644
  	ret = drmm_mode_config_init(ddev);
  	if (ret)
  		return ret;
-@@ -183,19 +176,41 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+@@ -183,19 +176,41 @@ static int stm_drm_platform_probe(struct
  {
  	struct device *dev = &pdev->dev;
  	struct drm_device *ddev;
@@ -82,7 +80,7 @@ index 5d4dd8d5ea97..ebee758267fb 100644
  
  	ret = drv_load(ddev);
  	if (ret)
-@@ -211,6 +226,8 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+@@ -211,6 +226,8 @@ static int stm_drm_platform_probe(struct
  
  err_put:
  	drm_dev_put(ddev);
@@ -91,8 +89,6 @@ index 5d4dd8d5ea97..ebee758267fb 100644
  
  	return ret;
  }
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 539a87cdd663..e44a3a09ff6b 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -2272,49 +2272,6 @@ int ltdc_load(struct drm_device *ddev)
@@ -183,7 +179,7 @@ index 539a87cdd663..e44a3a09ff6b 100644
  	pinctrl_pm_select_sleep_state(ddev->dev);
  
  	pm_runtime_enable(ddev->dev);
-@@ -2451,9 +2404,6 @@ int ltdc_load(struct drm_device *ddev)
+@@ -2451,9 +2404,6 @@ err:
  	for (i = 0; i < nb_endpoints; i++)
  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
  
@@ -193,7 +189,7 @@ index 539a87cdd663..e44a3a09ff6b 100644
  
  	return ret;
  }
-@@ -2473,6 +2423,79 @@ void ltdc_unload(struct drm_device *ddev)
+@@ -2473,6 +2423,79 @@ void ltdc_unload(struct drm_device *ddev
  	pm_runtime_disable(ddev->dev);
  }
  
@@ -273,8 +269,6 @@ index 539a87cdd663..e44a3a09ff6b 100644
  MODULE_AUTHOR("Philippe Cornu <philippe.cornu@st.com>");
  MODULE_AUTHOR("Yannick Fertre <yannick.fertre@st.com>");
  MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@st.com>");
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 7664b286a557..5bb69d370318 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -64,6 +64,8 @@ struct ltdc_device {
@@ -286,6 +280,3 @@ index 7664b286a557..5bb69d370318 100644
  int ltdc_load(struct drm_device *ddev);
  void ltdc_unload(struct drm_device *ddev);
  void ltdc_suspend(struct ltdc_device *ldev);
--- 
-2.39.2
-

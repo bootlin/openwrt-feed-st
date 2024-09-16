@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 58 +++----------------
  1 file changed, 9 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index ca22d2f3ddf2..c35fb56aea03 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -166,49 +166,6 @@ static const struct v4l2_pix_format fmt_default = {
+@@ -166,49 +166,6 @@ static const struct v4l2_pix_format fmt_
  	.xfer_func = DCMIPP_XFER_FUNC_DEFAULT,
  };
  
@@ -72,7 +70,7 @@ index ca22d2f3ddf2..c35fb56aea03 100644
  static inline int hdw_pixel_alignment(u32 format)
  {
  	/* 16 bytes alignment required by hardware */
-@@ -289,8 +246,13 @@ static int dcmipp_bytecap_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -289,8 +246,13 @@ static int dcmipp_bytecap_try_fmt_vid_ca
  			"resolution updated: %dx%d -> %dx%d\n",
  			in_w, in_h, format->width, format->height);
  
@@ -88,7 +86,7 @@ index ca22d2f3ddf2..c35fb56aea03 100644
  
  	if (format->field == V4L2_FIELD_ANY)
  		format->field = fmt_default.field;
-@@ -1043,10 +1005,8 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -1043,10 +1005,8 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	/* Set default frame format */
  	vcap->format = fmt_default;
  	format = &vcap->format;
@@ -101,6 +99,3 @@ index ca22d2f3ddf2..c35fb56aea03 100644
  
  	/* Fill the dcmipp_ent_device struct */
  	vcap->ved.ent = &vcap->vdev.entity;
--- 
-2.39.2
-

@@ -16,11 +16,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 988c9258feb7..58b043f0ae71 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -55,6 +55,25 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+@@ -55,6 +55,25 @@
  		};
  	};
  
@@ -46,6 +44,3 @@ index 988c9258feb7..58b043f0ae71 100644
  	intc: interrupt-controller@4ac00000 {
  		compatible = "arm,cortex-a7-gic";
  		#interrupt-cells = <3>;
--- 
-2.39.2
-

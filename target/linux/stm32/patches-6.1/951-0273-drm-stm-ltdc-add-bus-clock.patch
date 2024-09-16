@@ -18,11 +18,9 @@ Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
  drivers/gpu/drm/stm/ltdc.h |  1 +
  2 files changed, 27 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 884777df4db4..7b9bb560a5a2 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1940,6 +1940,8 @@ void ltdc_suspend(struct drm_device *ddev)
+@@ -1940,6 +1940,8 @@ void ltdc_suspend(struct drm_device *dde
  
  	DRM_DEBUG_DRIVER("\n");
  	clk_disable_unprepare(ldev->pixel_clk);
@@ -79,7 +77,7 @@ index 884777df4db4..7b9bb560a5a2 100644
  
  	pinctrl_pm_select_sleep_state(ddev->dev);
  
-@@ -2118,6 +2142,8 @@ int ltdc_load(struct drm_device *ddev)
+@@ -2118,6 +2142,8 @@ err:
  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
  
  	clk_disable_unprepare(ldev->pixel_clk);
@@ -88,8 +86,6 @@ index 884777df4db4..7b9bb560a5a2 100644
  
  	return ret;
  }
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 9d488043ffdb..155d8e4a7c6b 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -44,6 +44,7 @@ struct ltdc_device {
@@ -100,6 +96,3 @@ index 9d488043ffdb..155d8e4a7c6b 100644
  	struct mutex err_lock;	/* protecting error_status */
  	struct ltdc_caps caps;
  	u32 irq_status;
--- 
-2.39.2
-

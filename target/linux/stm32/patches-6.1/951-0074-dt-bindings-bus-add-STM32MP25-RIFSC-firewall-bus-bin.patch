@@ -22,9 +22,6 @@ Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
  1 file changed, 127 insertions(+)
  create mode 100644 include/dt-bindings/bus/stm32mp25_sys_bus.h
 
-diff --git a/include/dt-bindings/bus/stm32mp25_sys_bus.h b/include/dt-bindings/bus/stm32mp25_sys_bus.h
-new file mode 100644
-index 000000000000..76ad05cfb192
 --- /dev/null
 +++ b/include/dt-bindings/bus/stm32mp25_sys_bus.h
 @@ -0,0 +1,127 @@
@@ -155,6 +152,3 @@ index 000000000000..76ad05cfb192
 +#define STM32MP25_RIFSC_IAC_ID			127
 +
 +#endif /* _DT_BINDINGS_BUS_STM32MP25_SYS_BUS_H */
--- 
-2.39.2
-

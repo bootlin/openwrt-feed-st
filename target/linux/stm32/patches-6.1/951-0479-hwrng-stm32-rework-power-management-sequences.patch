@@ -24,8 +24,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/char/hw_random/stm32-rng.c | 85 ++++++++++++++++++++++++++----
  1 file changed, 76 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 836d9aa8e1cb..bed28707d5d9 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -55,13 +55,26 @@ struct stm32_rng_data {
@@ -56,7 +54,7 @@ index 836d9aa8e1cb..bed28707d5d9 100644
  	bool ced;
  	bool lock_conf;
  };
-@@ -358,24 +371,65 @@ static int stm32_rng_remove(struct platform_device *ofdev)
+@@ -358,24 +371,65 @@ static int stm32_rng_remove(struct platf
  #ifdef CONFIG_PM
  static int stm32_rng_runtime_suspend(struct device *dev)
  {
@@ -125,7 +123,7 @@ index 836d9aa8e1cb..bed28707d5d9 100644
  
  	/* Clean error indications */
  	writel_relaxed(0, priv->base + RNG_SR);
-@@ -387,27 +441,40 @@ static int stm32_rng_runtime_resume(struct device *dev)
+@@ -387,27 +441,40 @@ static int stm32_rng_runtime_resume(stru
  		 * not taken into account. CONFIGLOCK bit must also be unset but
  		 * it is not handled at the moment.
  		 */
@@ -171,6 +169,3 @@ index 836d9aa8e1cb..bed28707d5d9 100644
  };
  
  static const struct stm32_rng_data stm32mp13_rng_data = {
--- 
-2.39.2
-

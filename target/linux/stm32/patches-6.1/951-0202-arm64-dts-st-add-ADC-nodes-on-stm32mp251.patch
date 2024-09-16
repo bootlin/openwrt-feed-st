@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 104 +++++++++++++++++++++++++
  1 file changed, 104 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index eb0768ddca3c..65ac1a6b85eb 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1145,6 +1145,110 @@ uart8: serial@40380000 {
+@@ -1145,6 +1145,110 @@
  				status = "disabled";
  			};
  
@@ -135,6 +133,3 @@ index eb0768ddca3c..65ac1a6b85eb 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.2
-

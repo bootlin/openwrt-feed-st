@@ -16,8 +16,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  .../devicetree/bindings/pci/st,stm32-pcie-host.yaml   | 11 +++++++----
  1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-index b0e562fad5b2..57688866f2f5 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -47,12 +47,14 @@ properties:
@@ -49,6 +47,3 @@ index b0e562fad5b2..57688866f2f5 100644
               #address-cells = <3>;
               #size-cells = <2>;
               ranges = <0x01000000 0 0x10010000 0x10010000 0 0x10000>,
--- 
-2.39.2
-

@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index f39c01711bf8..48481ab22e88 100644
 --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 @@ -72,6 +72,9 @@ properties:
@@ -35,6 +33,3 @@ index f39c01711bf8..48481ab22e88 100644
    st,syscon:
      $ref: "/schemas/types.yaml#/definitions/phandle-array"
      items:
--- 
-2.39.2
-

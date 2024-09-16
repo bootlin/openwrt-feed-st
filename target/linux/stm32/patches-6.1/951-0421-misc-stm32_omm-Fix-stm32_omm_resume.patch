@@ -16,8 +16,6 @@ Change-Id: I6ad2ce6eb61ba3337680611ed26949d6a4e44ad2
  drivers/misc/stm32_omm.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-index 215d6835960b..c63f5390a33d 100644
 --- a/drivers/misc/stm32_omm.c
 +++ b/drivers/misc/stm32_omm.c
 @@ -35,6 +35,7 @@ struct stm32_omm {
@@ -28,7 +26,7 @@ index 215d6835960b..c63f5390a33d 100644
  };
  
  static int stm32_omm_set_amcr(struct device *dev, bool set)
-@@ -206,6 +207,7 @@ static int stm32_omm_configure(struct platform_device *pdev)
+@@ -206,6 +207,7 @@ static int stm32_omm_configure(struct pl
  		omm->cr |= CR_CSSEL_OVR_EN;
  	}
  
@@ -36,7 +34,7 @@ index 215d6835960b..c63f5390a33d 100644
  	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
  
  	ret = stm32_omm_set_amcr(dev, true);
-@@ -279,8 +281,6 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -279,8 +281,6 @@ static int stm32_omm_probe(struct platfo
  	if (!omm)
  		return -ENOMEM;
  
@@ -45,7 +43,7 @@ index 215d6835960b..c63f5390a33d 100644
  	omm->io_base = devm_platform_ioremap_resource_byname(pdev, "omm");
  	if (IS_ERR(omm->io_base))
  		return PTR_ERR(omm->io_base);
-@@ -398,8 +398,12 @@ static int __maybe_unused stm32_omm_resume(struct device *dev)
+@@ -398,8 +398,12 @@ static int __maybe_unused stm32_omm_resu
  {
  	struct stm32_omm *omm = dev_get_drvdata(dev);
  
@@ -59,6 +57,3 @@ index 215d6835960b..c63f5390a33d 100644
  	writel_relaxed(omm->cr, omm->io_base + OMM_CR);
  	clk_disable_unprepare(omm->clk);
  
--- 
-2.39.2
-

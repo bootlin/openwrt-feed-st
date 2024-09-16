@@ -19,8 +19,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 32 +++++++++----------
  1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 5de56455db35..88d79c9323c7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -220,20 +220,15 @@ struct dcmipp_pixelproc_device {
@@ -49,7 +47,7 @@ index 5de56455db35..88d79c9323c7 100644
  };
  
  static const struct v4l2_rect crop_min = {
-@@ -324,8 +319,8 @@ static void dcmipp_pixelproc_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -324,8 +319,8 @@ static void dcmipp_pixelproc_adjust_fmt(
  	/* Only accept code in the pix map table */
  	vpix = dcmipp_pixelproc_pix_map_by_code(fmt->code, pad);
  	if (!vpix)
@@ -60,7 +58,7 @@ index 5de56455db35..88d79c9323c7 100644
  
  	fmt->width = clamp_t(u32, fmt->width, DCMIPP_FRAME_MIN_WIDTH,
  			     DCMIPP_FRAME_MAX_WIDTH) & ~1;
-@@ -333,8 +328,7 @@ static void dcmipp_pixelproc_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -333,8 +328,7 @@ static void dcmipp_pixelproc_adjust_fmt(
  			      DCMIPP_FRAME_MAX_HEIGHT);
  
  	if (fmt->field == V4L2_FIELD_ANY || fmt->field == V4L2_FIELD_ALTERNATE)
@@ -70,7 +68,7 @@ index 5de56455db35..88d79c9323c7 100644
  
  	dcmipp_colorimetry_clamp(fmt);
  }
-@@ -348,7 +342,9 @@ static int dcmipp_pixelproc_init_cfg(struct v4l2_subdev *sd,
+@@ -348,7 +342,9 @@ static int dcmipp_pixelproc_init_cfg(str
  		struct v4l2_mbus_framefmt *mf;
  
  		mf = v4l2_subdev_get_try_format(sd, state, i);
@@ -81,7 +79,7 @@ index 5de56455db35..88d79c9323c7 100644
  	}
  
  	return 0;
-@@ -852,8 +848,10 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -852,8 +848,10 @@ dcmipp_pixelproc_comp_bind(struct device
  	}
  
  	/* Initialize the frame format */
@@ -94,6 +92,3 @@ index 5de56455db35..88d79c9323c7 100644
  	pixelproc->crop.top = 0;
  	pixelproc->crop.left = 0;
  	pixelproc->crop.width = DCMIPP_FMT_WIDTH_DEFAULT;
--- 
-2.39.2
-

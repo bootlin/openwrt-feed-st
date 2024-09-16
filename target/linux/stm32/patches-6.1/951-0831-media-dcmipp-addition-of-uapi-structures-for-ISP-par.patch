@@ -19,8 +19,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  2 files changed, 190 insertions(+), 16 deletions(-)
  create mode 100644 include/uapi/linux/stm32-dcmipp-config.h
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 08f606a31fa6..7f5d0f8940e4 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -21,6 +21,7 @@
@@ -54,9 +52,6 @@ index 08f606a31fa6..7f5d0f8940e4 100644
  struct dcmipp_buf {
  	struct vb2_v4l2_buffer	vb;
  	bool			prepared;
-diff --git a/include/uapi/linux/stm32-dcmipp-config.h b/include/uapi/linux/stm32-dcmipp-config.h
-new file mode 100644
-index 000000000000..8cff27f51d71
 --- /dev/null
 +++ b/include/uapi/linux/stm32-dcmipp-config.h
 @@ -0,0 +1,189 @@
@@ -249,6 +244,3 @@ index 000000000000..8cff27f51d71
 +};
 +
 +#endif
--- 
-2.39.2
-

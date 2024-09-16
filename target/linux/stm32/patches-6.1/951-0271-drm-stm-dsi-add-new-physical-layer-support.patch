@@ -15,8 +15,6 @@ Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 496 +++++++++++++++++++++++++-
  1 file changed, 481 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 6c0f9bd2a61c..845d27b772a1 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -4,12 +4,14 @@
@@ -115,7 +113,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  };
  
  static inline void dsi_write(struct dw_mipi_dsi_stm *dsi, u32 reg, u32 val)
-@@ -196,6 +251,286 @@ static int dsi_pll_get_params(struct dw_mipi_dsi_stm *dsi,
+@@ -196,6 +251,286 @@ static int dsi_pll_get_params(struct dw_
  	return 0;
  }
  
@@ -402,7 +400,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  static int dw_mipi_dsi_phy_init(void *priv_data)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
-@@ -324,6 +659,107 @@ dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
+@@ -324,6 +659,107 @@ dw_mipi_dsi_phy_get_timing(void *priv_da
  	return 0;
  }
  
@@ -510,7 +508,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  #define CLK_TOLERANCE_HZ 50
  
  static enum drm_mode_status
-@@ -404,7 +840,11 @@ dw_mipi_dsi_stm_mode_valid(void *priv_data,
+@@ -404,7 +840,11 @@ dw_mipi_dsi_stm_mode_valid(void *priv_da
  		}
  
  		lane_mbps = pll_out_khz / 1000;
@@ -523,7 +521,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  		if (ret)
  			return MODE_ERROR;
  		/*
-@@ -429,6 +869,14 @@ static const struct dw_mipi_dsi_phy_ops dw_mipi_dsi_stm_phy_ops = {
+@@ -429,6 +869,14 @@ static const struct dw_mipi_dsi_phy_ops
  	.get_timing = dw_mipi_dsi_phy_get_timing,
  };
  
@@ -538,7 +536,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  static struct dw_mipi_dsi_plat_data dw_mipi_dsi_stm_plat_data = {
  	.max_data_lanes = 2,
  	.mode_valid = dw_mipi_dsi_stm_mode_valid,
-@@ -445,6 +893,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -445,6 +893,7 @@ static int dw_mipi_dsi_stm_probe(struct
  {
  	struct device *dev = &pdev->dev;
  	struct dw_mipi_dsi_stm *dsi;
@@ -546,7 +544,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  	int ret;
  
  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-@@ -500,26 +949,42 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -500,26 +949,42 @@ static int dw_mipi_dsi_stm_probe(struct
  	dsi->hw_version = dsi_read(dsi, DSI_VERSION) & VERSION;
  	clk_disable_unprepare(dsi->pclk);
  
@@ -599,7 +597,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  	if (IS_ERR(dsi->dsi)) {
  		ret = PTR_ERR(dsi->dsi);
  		dev_err_probe(dev, ret, "Failed to initialize mipi dsi host\n");
-@@ -549,7 +1014,7 @@ static int dw_mipi_dsi_stm_remove(struct platform_device *pdev)
+@@ -549,7 +1014,7 @@ static int dw_mipi_dsi_stm_remove(struct
  
  static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
  {
@@ -608,7 +606,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -562,7 +1027,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+@@ -562,7 +1027,7 @@ static int __maybe_unused dw_mipi_dsi_st
  
  static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
  {
@@ -617,7 +615,7 @@ index 6c0f9bd2a61c..845d27b772a1 100644
  	int ret;
  
  	DRM_DEBUG_DRIVER("\n");
-@@ -610,7 +1075,8 @@ static struct platform_driver dw_mipi_dsi_stm_driver = {
+@@ -610,7 +1075,8 @@ static struct platform_driver dw_mipi_ds
  
  module_platform_driver(dw_mipi_dsi_stm_driver);
  
@@ -628,6 +626,3 @@ index 6c0f9bd2a61c..845d27b772a1 100644
 +MODULE_AUTHOR("Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>");
  MODULE_DESCRIPTION("STMicroelectronics DW MIPI DSI host controller driver");
  MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

@@ -19,8 +19,6 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 5be8ccd6b7fb..1e64bf71a06d 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -70,7 +70,7 @@
@@ -32,11 +30,9 @@ index 5be8ccd6b7fb..1e64bf71a06d 100644
  #define    H1_REG_ENC_CTRL2_H264_INTER4X4_MODE		BIT(17)
  #define    H1_REG_ENC_CTRL2_H264_STREAM_MODE		BIT(16)
  #define    H1_REG_ENC_CTRL2_INTRA16X16_MODE(x)		((x))
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index 0ccd232cc5c5..ea0e21d371df 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1216,7 +1216,7 @@ static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_c
+@@ -1216,7 +1216,7 @@ static void hantro_h1_vp8_enc_set_params
  	reg = 0;
  	if (mb_width * mb_height > MAX_MB_COUNT_TO_DISABLE_QUARTER_PIXEL_MV)
  		reg = H1_REG_ENC_CTRL2_DISABLE_QUARTER_PIXMV;
@@ -45,6 +41,3 @@ index 0ccd232cc5c5..ea0e21d371df 100644
  
  	inter_favor = 128 - ctx->vp8_enc.prob_intra;
  	if (inter_favor >= 0)
--- 
-2.39.2
-

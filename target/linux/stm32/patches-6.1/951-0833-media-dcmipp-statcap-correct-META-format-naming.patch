@@ -16,11 +16,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 7f5d0f8940e4..5d21e8e41486 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -140,7 +140,7 @@ static int dcmipp_statcap_g_fmt_meta_cap(struct file *file, void *priv,
+@@ -140,7 +140,7 @@ static int dcmipp_statcap_g_fmt_meta_cap
  {
  	struct v4l2_meta_format *meta = &f->fmt.meta;
  
@@ -29,7 +27,7 @@ index 7f5d0f8940e4..5d21e8e41486 100644
  	meta->buffersize = sizeof(struct stm32_dcmipp_stat_buf);
  
  	return 0;
-@@ -153,7 +153,7 @@ static int dcmipp_statcap_enum_fmt_meta_cap(struct file *file, void *priv,
+@@ -153,7 +153,7 @@ static int dcmipp_statcap_enum_fmt_meta_
  		return -EINVAL;
  
  	f->type = V4L2_BUF_TYPE_META_CAPTURE;
@@ -38,6 +36,3 @@ index 7f5d0f8940e4..5d21e8e41486 100644
  
  	return 0;
  }
--- 
-2.39.2
-

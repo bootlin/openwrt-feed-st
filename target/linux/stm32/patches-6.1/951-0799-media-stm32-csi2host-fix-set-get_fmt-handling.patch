@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/media/platform/st/stm32/stm32-csi2host.c | 14 ++++++++++++--
  1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
-index 614a2331c89c..5d1a3383bb4b 100644
 --- a/drivers/media/platform/st/stm32/stm32-csi2host.c
 +++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
-@@ -761,9 +761,18 @@ static int csi2host_set_pad_format(struct v4l2_subdev *sd,
+@@ -761,9 +761,18 @@ static int csi2host_set_pad_format(struc
  
  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
  		csi2priv->mf[format->pad] = format->format;
@@ -42,7 +40,7 @@ index 614a2331c89c..5d1a3383bb4b 100644
  	}
  
  	return 0;
-@@ -778,7 +787,8 @@ static int csi2host_get_pad_format(struct v4l2_subdev *sd,
+@@ -778,7 +787,8 @@ static int csi2host_get_pad_format(struc
  	if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE)
  		format->format = csi2priv->mf[format->pad];
  	else
@@ -52,6 +50,3 @@ index 614a2331c89c..5d1a3383bb4b 100644
  
  	return 0;
  }
--- 
-2.39.2
-

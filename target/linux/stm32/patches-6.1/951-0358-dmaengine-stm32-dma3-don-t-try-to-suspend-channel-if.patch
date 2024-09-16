@@ -23,11 +23,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32-dma3.c | 20 ++++++++++++++------
  1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 5d608e348051..f4222c68650a 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -1185,19 +1185,27 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1185,19 +1185,27 @@ static void stm32_dma3_chan_set_residue(
  
  	residue = 0;
  
@@ -60,7 +58,7 @@ index 5d608e348051..f4222c68650a 100644
  	}
  
  	/* Read registers to have a snapshot */
-@@ -1205,7 +1213,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1205,7 +1213,7 @@ static void stm32_dma3_chan_set_residue(
  	cbr1 = readl_relaxed(ddata->base + STM32_DMA3_CBR1(chan->id));
  	cllr = readl_relaxed(ddata->base + STM32_DMA3_CLLR(chan->id));
  
@@ -69,6 +67,3 @@ index 5d608e348051..f4222c68650a 100644
  		/* Resume current transfer */
  		writel_relaxed(CFCR_SUSPF, ddata->base + STM32_DMA3_CFCR(chan->id));
  		writel_relaxed(ccr & ~CCR_SUSP, ddata->base + STM32_DMA3_CCR(chan->id));
--- 
-2.39.2
-

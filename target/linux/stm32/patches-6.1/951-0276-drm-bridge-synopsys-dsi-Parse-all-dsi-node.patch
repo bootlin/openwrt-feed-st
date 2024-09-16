@@ -15,11 +15,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 30 +++++++++++++++----
  1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 92f125996a5f..6a6d25c41158 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -315,7 +315,7 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+@@ -315,7 +315,7 @@ static int dw_mipi_dsi_host_attach(struc
  	struct dw_mipi_dsi *dsi = host_to_dsi(host);
  	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
  	struct drm_bridge *bridge;
@@ -28,7 +26,7 @@ index 92f125996a5f..6a6d25c41158 100644
  
  	if (device->lanes > dsi->plat_data->max_data_lanes) {
  		dev_err(dsi->dev, "the number of data lanes(%u) is too many\n",
-@@ -328,13 +328,31 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+@@ -328,13 +328,31 @@ static int dw_mipi_dsi_host_attach(struc
  	dsi->format = device->format;
  	dsi->mode_flags = device->mode_flags;
  
@@ -65,6 +63,3 @@ index 92f125996a5f..6a6d25c41158 100644
  
  	if (pdata->host_ops && pdata->host_ops->attach) {
  		ret = pdata->host_ops->attach(pdata->priv_data, device);
--- 
-2.39.2
-

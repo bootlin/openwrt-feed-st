@@ -17,11 +17,9 @@ Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 500de518245e..a0481520626c 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -418,6 +418,9 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+@@ -418,6 +418,9 @@ static int dw_mipi_dsi_phy_141_init(void
  	dsi_clear(dsi, DSI_PTCR0, PTCR0_TRSEN);
  	mdelay(1);
  
@@ -31,6 +29,3 @@ index 500de518245e..a0481520626c 100644
  	ret = clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000 / 2);
  	if (ret)
  		return ret;
--- 
-2.39.2
-

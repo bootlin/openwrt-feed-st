@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  sound/soc/stm/stm32_sai.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index 044204068e23..fa1131b2c134 100644
 --- a/sound/soc/stm/stm32_sai.c
 +++ b/sound/soc/stm/stm32_sai.c
 @@ -12,6 +12,7 @@
@@ -29,7 +27,7 @@ index 044204068e23..fa1131b2c134 100644
  #include <linux/reset.h>
  
  #include <sound/dmaengine_pcm.h>
-@@ -267,6 +268,8 @@ static int stm32_sai_probe(struct platform_device *pdev)
+@@ -267,6 +268,8 @@ static int stm32_sai_probe(struct platfo
  	sai->set_sync = &stm32_sai_set_sync;
  	platform_set_drvdata(pdev, sai);
  
@@ -38,6 +36,3 @@ index 044204068e23..fa1131b2c134 100644
  	return devm_of_platform_populate(&pdev->dev);
  }
  
--- 
-2.39.2
-

@@ -31,8 +31,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 248 ++++++++++++++++---
  1 file changed, 219 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 080f471a5162..94b5b17b7ebd 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
 @@ -15,6 +15,7 @@
@@ -69,7 +67,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	u32				misr;
  	int				errors_count;
  	int				overrun_count;
-@@ -247,12 +259,22 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
+@@ -247,12 +259,22 @@ static int dcmi_start_dma(struct stm32_d
  			  struct dcmi_buf *buf)
  {
  	/* Push current DMA transaction in the pending queue */
@@ -92,7 +90,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	dma_async_issue_pending(dcmi->dma_chan);
  
  	return 0;
-@@ -301,7 +323,9 @@ static void dcmi_set_crop(struct stm32_dcmi *dcmi)
+@@ -301,7 +323,9 @@ static void dcmi_set_crop(struct stm32_d
  
  static void dcmi_process_frame(struct stm32_dcmi *dcmi)
  {
@@ -103,7 +101,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	enum dma_status status;
  	struct dcmi_buf *buf = dcmi->active;
  
-@@ -309,23 +333,36 @@ static void dcmi_process_frame(struct stm32_dcmi *dcmi)
+@@ -309,23 +333,36 @@ static void dcmi_process_frame(struct st
  		return;
  
  	/*
@@ -152,7 +150,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	} else {
  		dcmi->errors_count++;
  		dev_err(dcmi->dev, "%s: DMA error. status: 0x%x, residue: %d\n",
-@@ -337,6 +374,8 @@ static void dcmi_process_frame(struct stm32_dcmi *dcmi)
+@@ -337,6 +374,8 @@ static void dcmi_process_frame(struct st
  	spin_unlock_irq(&dcmi->irqlock);
  	/* Abort DMA operation */
  	dmaengine_terminate_sync(dcmi->dma_chan);
@@ -161,7 +159,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	spin_lock_irq(&dcmi->irqlock);
  }
  
-@@ -357,14 +396,16 @@ static irqreturn_t dcmi_irq_thread(int irq, void *arg)
+@@ -357,14 +396,16 @@ static irqreturn_t dcmi_irq_thread(int i
  
  		spin_unlock_irq(&dcmi->irqlock);
  		dmaengine_terminate_sync(dcmi->dma_chan);
@@ -179,7 +177,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	if (dcmi->misr & IT_ERR)
  		dcmi->errors_count++;
  
-@@ -451,28 +492,70 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -451,28 +492,70 @@ static int dcmi_buf_prepare(struct vb2_b
  	vb2_set_plane_payload(vb, 0, size);
  
  	if (!buf->prepared) {
@@ -192,11 +190,11 @@ index 080f471a5162..94b5b17b7ebd 100644
 -			num_sgs = DIV_ROUND_UP(buf->size, dcmi->dma_max_burst);
 +		if (dcmi->mdma_chan)
 +			max_size = dcmi->sram_buf_size / 2;
- 
--		ret = sg_alloc_table(&buf->sgt, num_sgs, GFP_ATOMIC);
++
 +		if (buf->size > max_size)
 +			num_sgs = DIV_ROUND_UP(buf->size, max_size);
-+
+ 
+-		ret = sg_alloc_table(&buf->sgt, num_sgs, GFP_ATOMIC);
 +		/*
 +		 * If we use MDMA chaining, DMA is used in cyclic mode and the scatterlist
 +		 * maximum size is thus 2
@@ -259,7 +257,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  			size -= bytes;
  		}
  
-@@ -482,6 +565,8 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -482,6 +565,8 @@ static int dcmi_buf_prepare(struct vb2_b
  							DMA_PREP_INTERRUPT);
  		if (!buf->dma_desc) {
  			dev_err(dcmi->dev, "%s: DMA dmaengine_prep_slave_sg failed\n", __func__);
@@ -268,7 +266,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  			sg_free_table(&buf->sgt);
  			return -EIO;
  		}
-@@ -491,10 +576,48 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -491,10 +576,48 @@ static int dcmi_buf_prepare(struct vb2_b
  		if (ret) {
  			dev_err(dcmi->dev, "%s: DMA dmaengine_desc_set_reuse failed\n", __func__);
  			dmaengine_desc_free(buf->dma_desc);
@@ -317,7 +315,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  		buf->prepared = true;
  
  		vb2_set_plane_payload(&buf->vb.vb2_buf, 0, buf->size);
-@@ -513,6 +636,14 @@ static void dcmi_buf_cleanup(struct vb2_buffer *vb)
+@@ -513,6 +636,14 @@ static void dcmi_buf_cleanup(struct vb2_
  	if (!buf->prepared)
  		return;
  
@@ -332,7 +330,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	ret = dmaengine_desc_free(buf->dma_desc);
  	if (ret)
  		dev_err(dcmi->dev, "%s: Failed to free the mdma descriptor (0x%x)\n",
-@@ -860,6 +991,8 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
+@@ -860,6 +991,8 @@ static void dcmi_stop_streaming(struct v
  
  	/* Stop all pending DMA operations */
  	dmaengine_terminate_sync(dcmi->dma_chan);
@@ -341,7 +339,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  
  	pm_runtime_put(dcmi->dev);
  
-@@ -1883,9 +2016,9 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1883,9 +2016,9 @@ static int dcmi_probe(struct platform_de
  	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
  	struct stm32_dcmi *dcmi;
  	struct vb2_queue *q;
@@ -353,7 +351,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	struct clk *mclk;
  	int irq;
  	int ret = 0;
-@@ -1962,15 +2095,21 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1962,15 +2095,21 @@ static int dcmi_probe(struct platform_de
  	if (IS_ERR(chan))
  		return dev_err_probe(&pdev->dev, PTR_ERR(chan), "Failed to request DMA channel\n");
  
@@ -379,7 +377,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  
  	/* Configure DMA channel */
  	ret = dmaengine_slave_config(chan, &dma_config);
-@@ -1980,6 +2119,47 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1980,6 +2119,47 @@ static int dcmi_probe(struct platform_de
  		goto err_dma_slave_config;
  	}
  
@@ -427,7 +425,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  	spin_lock_init(&dcmi->irqlock);
  	mutex_init(&dcmi->lock);
  	init_completion(&dcmi->complete);
-@@ -1989,6 +2169,7 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1989,6 +2169,7 @@ static int dcmi_probe(struct platform_de
  	dcmi->mclk = mclk;
  	dcmi->state = STOPPED;
  	dcmi->dma_chan = chan;
@@ -435,7 +433,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  
  	q = &dcmi->queue;
  
-@@ -2087,8 +2268,13 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -2087,8 +2268,13 @@ err_device_unregister:
  	v4l2_device_unregister(&dcmi->v4l2_dev);
  err_media_device_cleanup:
  	media_device_cleanup(&dcmi->mdev);
@@ -449,7 +447,7 @@ index 080f471a5162..94b5b17b7ebd 100644
  
  	return ret;
  }
-@@ -2106,6 +2292,10 @@ static int dcmi_remove(struct platform_device *pdev)
+@@ -2106,6 +2292,10 @@ static int dcmi_remove(struct platform_d
  	media_device_cleanup(&dcmi->mdev);
  
  	dma_release_channel(dcmi->dma_chan);
@@ -460,6 +458,3 @@ index 080f471a5162..94b5b17b7ebd 100644
  
  	return 0;
  }
--- 
-2.39.2
-

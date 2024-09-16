@@ -15,11 +15,9 @@ Change-Id: I4afcb6d780f3e70197133cf8e5a3475870689b9d
  drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index dd8a296e6437..12267434c53f 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1475,6 +1475,7 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+@@ -1475,6 +1475,7 @@ int hantro_h1_vp8_enc_run(struct hantro_
  	/* Start the hardware. */
  	reg =     H1_REG_ENC_CTRL_TIMEOUT_EN
  		| H1_REG_ENC_CTRL_MV_WRITE //for VEPU_REG_MV_WRITE_EN in VEPU_REG_INTERRUPT
@@ -27,6 +25,3 @@ index dd8a296e6437..12267434c53f 100644
  		| H1_REG_ENC_CTRL_WIDTH(MB_WIDTH(ctx->src_fmt.width))
  		| H1_REG_ENC_CTRL_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
  		| H1_REG_ENC_CTRL_ENC_MODE_VP8
--- 
-2.39.2
-

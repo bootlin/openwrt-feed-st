@@ -13,11 +13,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 30 ++++++++++++++++++++++++++
  1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 65ac1a6b85eb..a10d8f97c773 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1413,6 +1413,36 @@ sdmmc1: mmc@48220000 {
+@@ -1413,6 +1413,36 @@
  				status = "disabled";
  			};
  
@@ -54,6 +52,3 @@ index 65ac1a6b85eb..a10d8f97c773 100644
  			eth1: eth1@482c0000 {
  				compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  				reg = <0x482c0000 0x4000>;
--- 
-2.39.2
-

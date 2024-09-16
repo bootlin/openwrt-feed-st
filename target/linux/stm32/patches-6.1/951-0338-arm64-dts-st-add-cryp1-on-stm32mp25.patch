@@ -17,8 +17,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25xf.dtsi | 16 ++++++++++++----
  2 files changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-index 952764af6dd2..88c262b8a29d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 @@ -5,9 +5,17 @@
@@ -43,8 +41,6 @@ index 952764af6dd2..88c262b8a29d 100644
 +		status = "disabled";
  	};
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-index 952764af6dd2..88c262b8a29d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 @@ -5,9 +5,17 @@
@@ -69,6 +65,3 @@ index 952764af6dd2..88c262b8a29d 100644
 +		status = "disabled";
  	};
  };
--- 
-2.39.2
-

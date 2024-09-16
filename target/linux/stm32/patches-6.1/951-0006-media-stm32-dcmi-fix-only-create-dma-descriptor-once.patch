@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 92f398fff819..e5b3585b4552 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
 @@ -164,9 +164,6 @@ struct stm32_dcmi {
@@ -32,7 +30,7 @@ index 92f398fff819..e5b3585b4552 100644
  	struct media_device		mdev;
  	struct media_pad		vid_cap_pad;
  	struct media_pipeline		pipeline;
-@@ -924,9 +921,7 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
+@@ -924,9 +921,7 @@ static void dcmi_stop_streaming(struct v
  	spin_unlock_irq(&dcmi->irqlock);
  
  	/* Stop all pending DMA operations */
@@ -42,7 +40,7 @@ index 92f398fff819..e5b3585b4552 100644
  
  	pm_runtime_put(dcmi->dev);
  
-@@ -2049,7 +2044,6 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -2049,7 +2044,6 @@ static int dcmi_probe(struct platform_de
  
  	spin_lock_init(&dcmi->irqlock);
  	mutex_init(&dcmi->lock);
@@ -50,6 +48,3 @@ index 92f398fff819..e5b3585b4552 100644
  	init_completion(&dcmi->complete);
  	INIT_LIST_HEAD(&dcmi->buffers);
  
--- 
-2.39.2
-

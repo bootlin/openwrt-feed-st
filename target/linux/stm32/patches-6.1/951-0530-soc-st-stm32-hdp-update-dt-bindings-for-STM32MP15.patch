@@ -22,8 +22,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  include/dt-bindings/soc/stm32-hdp.h | 29 ++++++++++++++++++++---------
  1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/include/dt-bindings/soc/stm32-hdp.h b/include/dt-bindings/soc/stm32-hdp.h
-index d98665327281..5d4d8c408f39 100644
 --- a/include/dt-bindings/soc/stm32-hdp.h
 +++ b/include/dt-bindings/soc/stm32-hdp.h
 @@ -1,7 +1,7 @@
@@ -123,6 +121,3 @@ index d98665327281..5d4d8c408f39 100644
  #define HDP7_GPOVAL_7				15
  
  #endif /* _DT_BINDINGS_STM32_HDP_H */
--- 
-2.39.2
-

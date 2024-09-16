@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 34 ++++++++++---------
  1 file changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 4b9c610e316b..8d5a32767bd3 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -1230,28 +1230,30 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+@@ -1230,28 +1230,30 @@ __dw_mipi_dsi_probe(struct platform_devi
  	 * Note that the reset was not defined in the initial device tree, so
  	 * we have to be prepared for it not being found.
  	 */
@@ -66,6 +64,3 @@ index 4b9c610e316b..8d5a32767bd3 100644
  	}
  
  	dw_mipi_dsi_debugfs_init(dsi);
--- 
-2.39.2
-

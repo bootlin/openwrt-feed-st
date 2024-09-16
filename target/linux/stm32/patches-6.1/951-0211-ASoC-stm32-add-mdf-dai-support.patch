@@ -15,8 +15,6 @@ Change-Id: Ie57eddcd18004454e068756a075cbc344d74171b
  3 files changed, 402 insertions(+)
  create mode 100644 sound/soc/stm/stm32_amdf.c
 
-diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
-index da1f7a16605b..28436fcb55c5 100644
 --- a/sound/soc/stm/Kconfig
 +++ b/sound/soc/stm/Kconfig
 @@ -44,4 +44,17 @@ config SND_SOC_STM32_DFSDM
@@ -37,20 +35,15 @@ index da1f7a16605b..28436fcb55c5 100644
 +	  Digital Filter (MDF) driver used in STM32MP2 series for
 +	  digital microphone capture.
  endmenu
-diff --git a/sound/soc/stm/Makefile b/sound/soc/stm/Makefile
-index 3143c0b47042..9ab9c9b4243f 100644
 --- a/sound/soc/stm/Makefile
 +++ b/sound/soc/stm/Makefile
-@@ -16,3 +16,6 @@ obj-$(CONFIG_SND_SOC_STM32_SPDIFRX) += snd-soc-stm32-spdifrx.o
+@@ -16,3 +16,6 @@ obj-$(CONFIG_SND_SOC_STM32_SPDIFRX) += s
  
  #DFSDM
  obj-$(CONFIG_SND_SOC_STM32_DFSDM) += stm32_adfsdm.o
 +
 +#MDF
 +obj-$(CONFIG_SND_SOC_STM32_MDF) += stm32_amdf.o
-diff --git a/sound/soc/stm/stm32_amdf.c b/sound/soc/stm/stm32_amdf.c
-new file mode 100644
-index 000000000000..5e1483d566a7
 --- /dev/null
 +++ b/sound/soc/stm/stm32_amdf.c
 @@ -0,0 +1,386 @@
@@ -440,6 +433,3 @@ index 000000000000..5e1483d566a7
 +MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:" STM32_AMDF_DRV_NAME);
--- 
-2.39.2
-

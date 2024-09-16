@@ -22,8 +22,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/i2c/busses/i2c-stm32f7.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index ea62939f8ed8..ff8cb56bd249 100644
 --- a/drivers/i2c/busses/i2c-stm32f7.c
 +++ b/drivers/i2c/busses/i2c-stm32f7.c
 @@ -180,7 +180,12 @@ enum {
@@ -40,6 +38,3 @@ index ea62939f8ed8..ff8cb56bd249 100644
  
  /**
   * struct stm32f7_i2c_regs - i2c f7 registers backup
--- 
-2.39.2
-

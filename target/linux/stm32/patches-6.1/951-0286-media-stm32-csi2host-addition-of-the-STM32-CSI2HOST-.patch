@@ -17,8 +17,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  4 files changed, 1177 insertions(+)
  create mode 100644 drivers/media/platform/st/stm32/stm32-csi2host.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 888e41794bcb..71391b1a4356 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -12873,6 +12873,14 @@ W:	https://linuxtv.org
@@ -36,8 +34,6 @@ index 888e41794bcb..71391b1a4356 100644
  MEDIA DRIVERS FOR STM32 - DCMI
  M:	Hugues Fruchet <hugues.fruchet@foss.st.com>
  L:	linux-media@vger.kernel.org
-diff --git a/drivers/media/platform/st/stm32/Kconfig b/drivers/media/platform/st/stm32/Kconfig
-index a54b00f21261..86604194e534 100644
 --- a/drivers/media/platform/st/stm32/Kconfig
 +++ b/drivers/media/platform/st/stm32/Kconfig
 @@ -1,6 +1,19 @@
@@ -60,8 +56,6 @@ index a54b00f21261..86604194e534 100644
  config VIDEO_STM32_DCMI
  	tristate "STM32 Digital Camera Memory Interface (DCMI) support"
  	depends on V4L_PLATFORM_DRIVERS
-diff --git a/drivers/media/platform/st/stm32/Makefile b/drivers/media/platform/st/stm32/Makefile
-index 7ed8297b9b19..80fdeb5c138b 100644
 --- a/drivers/media/platform/st/stm32/Makefile
 +++ b/drivers/media/platform/st/stm32/Makefile
 @@ -1,4 +1,5 @@
@@ -70,9 +64,6 @@ index 7ed8297b9b19..80fdeb5c138b 100644
  obj-$(CONFIG_VIDEO_STM32_DCMI) += stm32-dcmi.o
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp/
  stm32-dma2d-objs := dma2d/dma2d.o dma2d/dma2d-hw.o
-diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
-new file mode 100644
-index 000000000000..7639ef7d05e8
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
 @@ -0,0 +1,1155 @@
@@ -1231,6 +1222,3 @@ index 000000000000..7639ef7d05e8
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STM32 CSI controller");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

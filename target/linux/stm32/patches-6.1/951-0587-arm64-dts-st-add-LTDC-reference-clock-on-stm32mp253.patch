@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index edb796d54ea0..613e736a0be0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -137,6 +137,6 @@ &dsi {
+@@ -137,6 +137,6 @@
  };
  
  &ltdc {
@@ -30,6 +28,3 @@ index edb796d54ea0..613e736a0be0 100644
 +	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
 +	clock-names = "bus", "ref", "lcd";
  };
--- 
-2.39.2
-

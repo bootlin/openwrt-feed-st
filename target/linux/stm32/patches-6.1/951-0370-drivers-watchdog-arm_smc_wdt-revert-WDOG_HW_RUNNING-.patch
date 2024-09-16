@@ -18,11 +18,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/watchdog/arm_smc_wdt.c | 9 ---------
  1 file changed, 9 deletions(-)
 
-diff --git a/drivers/watchdog/arm_smc_wdt.c b/drivers/watchdog/arm_smc_wdt.c
-index 9e05abbe5812..8f3d0c3a005f 100644
 --- a/drivers/watchdog/arm_smc_wdt.c
 +++ b/drivers/watchdog/arm_smc_wdt.c
-@@ -148,15 +148,6 @@ static int smcwd_probe(struct platform_device *pdev)
+@@ -148,15 +148,6 @@ static int smcwd_probe(struct platform_d
  	if (err)
  		return err;
  
@@ -38,6 +36,3 @@ index 9e05abbe5812..8f3d0c3a005f 100644
  	err = devm_watchdog_register_device(&pdev->dev, wdd);
  	if (err)
  		return err;
--- 
-2.39.2
-

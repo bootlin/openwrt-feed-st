@@ -18,11 +18,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-core.c     | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 6d46861cdc58..c963f38c3958 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -447,6 +447,7 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -447,6 +447,7 @@ static int dcmipp_graph_notify_bound(str
  	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
  	struct device_node *_np = dcmipp->dev->of_node;//FIXME _np/_ep...
  	struct device_node *_ep;
@@ -30,7 +28,7 @@ index 6d46861cdc58..c963f38c3958 100644
  	u32 flags = MEDIA_LNK_FL_ENABLED;
  
  	dev_dbg(dcmipp->dev, "Subdev \"%s\" bound\n", subdev->name);
-@@ -506,6 +507,17 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -506,6 +507,17 @@ static int dcmipp_graph_notify_bound(str
  			dev_dbg(dcmipp->dev, "DCMIPP is now linked to \"%s\"\n",
  				subdev->name);
  
@@ -48,6 +46,3 @@ index 6d46861cdc58..c963f38c3958 100644
  		/* Use the parallel interface */
  		reg_write(dcmipp, DCMIPP_CMCR, 0);
  
--- 
-2.39.2
-

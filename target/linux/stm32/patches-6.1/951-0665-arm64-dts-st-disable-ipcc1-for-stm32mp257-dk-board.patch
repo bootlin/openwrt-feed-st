@@ -13,11 +13,9 @@ Change-Id: Ibf4bfde5248e2824ad18e8225924920bcce4e4d0
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index ca352a7395ea..829a494719fa 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -415,6 +415,10 @@ i2s2_endpoint: endpoint {
+@@ -415,6 +415,10 @@
  	};
  };
  
@@ -28,6 +26,3 @@ index ca352a7395ea..829a494719fa 100644
  &ltdc {
  	status = "okay";
  
--- 
-2.39.2
-

@@ -13,8 +13,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354669
  drivers/gpu/drm/stm/ltdc.c | 28 ++++++++++++++++++++++------
  1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index e44a3a09ff6b..48b461eb3e98 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -2256,6 +2256,7 @@ int ltdc_load(struct drm_device *ddev)
@@ -68,6 +66,3 @@ index e44a3a09ff6b..48b461eb3e98 100644
  	/* Get the secure rotation buffer memory resource */
  	np = of_parse_phandle(dev->of_node, "rotation-memory", 0);
  	if (np)
--- 
-2.39.2
-

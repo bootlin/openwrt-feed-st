@@ -19,11 +19,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c  | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 360ca37b199f..decc1fcc7793 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -72,6 +72,18 @@ static const struct dcmipp_bytecap_pix_map dcmipp_bytecap_pix_map_list[] = {
+@@ -72,6 +72,18 @@ static const struct dcmipp_bytecap_pix_m
  	PIXMAP_MBUS_PFMT(SGBRG8_1X8, SGBRG8),
  	PIXMAP_MBUS_PFMT(SGRBG8_1X8, SGRBG8),
  	PIXMAP_MBUS_PFMT(SRGGB8_1X8, SRGGB8),
@@ -42,6 +40,3 @@ index 360ca37b199f..decc1fcc7793 100644
  	PIXMAP_MBUS_PFMT(JPEG_1X8, JPEG),
  };
  
--- 
-2.39.2
-

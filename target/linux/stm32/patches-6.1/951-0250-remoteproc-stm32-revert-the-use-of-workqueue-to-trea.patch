@@ -25,8 +25,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 45 ++++----------------------------
  1 file changed, 5 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 4eff39aa06de..42008e2d260b 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -20,7 +20,6 @@
@@ -63,7 +61,7 @@ index 4eff39aa06de..42008e2d260b 100644
  	bool fw_loaded;
  	struct tee_rproc *trproc;
  	const struct stm32_rproc_data *desc;
-@@ -518,30 +513,13 @@ static irqreturn_t stm32_rproc_wdg(int irq, void *data)
+@@ -518,30 +513,13 @@ static irqreturn_t stm32_rproc_wdg(int i
  	return IRQ_HANDLED;
  }
  
@@ -96,7 +94,7 @@ index 4eff39aa06de..42008e2d260b 100644
  }
  
  static void stm32_rproc_free_mbox(struct rproc *rproc)
-@@ -559,7 +537,7 @@ static void stm32_rproc_free_mbox(struct rproc *rproc)
+@@ -559,7 +537,7 @@ static void stm32_rproc_free_mbox(struct
  static const struct stm32_mbox stm32_rproc_mbox[MBOX_NB_MBX] = {
  	{
  		.name = STM32_MBX_VQ0,
@@ -105,7 +103,7 @@ index 4eff39aa06de..42008e2d260b 100644
  		.client = {
  			.rx_callback = stm32_rproc_mb_callback,
  			.tx_block = false,
-@@ -567,7 +545,7 @@ static const struct stm32_mbox stm32_rproc_mbox[MBOX_NB_MBX] = {
+@@ -567,7 +545,7 @@ static const struct stm32_mbox stm32_rpr
  	},
  	{
  		.name = STM32_MBX_VQ1,
@@ -114,7 +112,7 @@ index 4eff39aa06de..42008e2d260b 100644
  		.client = {
  			.rx_callback = stm32_rproc_mb_callback,
  			.tx_block = false,
-@@ -623,10 +601,6 @@ static int stm32_rproc_request_mbox(struct rproc *rproc)
+@@ -623,10 +601,6 @@ static int stm32_rproc_request_mbox(stru
  			dev_warn(dev, "cannot get %s mbox\n", name);
  			ddata->mb[i].chan = NULL;
  		}
@@ -125,7 +123,7 @@ index 4eff39aa06de..42008e2d260b 100644
  	}
  
  	return 0;
-@@ -1154,18 +1128,12 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1154,18 +1128,12 @@ static int stm32_rproc_probe(struct plat
  		rproc->state = RPROC_DETACHED;
  
  	rproc->has_iommu = false;
@@ -145,7 +143,7 @@ index 4eff39aa06de..42008e2d260b 100644
  
  	ret = rproc_add(rproc);
  	if (ret)
-@@ -1175,8 +1143,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1175,8 +1143,6 @@ static int stm32_rproc_probe(struct plat
  
  free_mb:
  	stm32_rproc_free_mbox(rproc);
@@ -154,7 +152,7 @@ index 4eff39aa06de..42008e2d260b 100644
  free_resources:
  	rproc_resource_cleanup(rproc);
  free_rproc:
-@@ -1203,7 +1169,6 @@ static int stm32_rproc_remove(struct platform_device *pdev)
+@@ -1203,7 +1169,6 @@ static int stm32_rproc_remove(struct pla
  
  	rproc_del(rproc);
  	stm32_rproc_free_mbox(rproc);
@@ -162,6 +160,3 @@ index 4eff39aa06de..42008e2d260b 100644
  
  	if (device_may_wakeup(dev)) {
  		dev_pm_clear_wake_irq(dev);
--- 
-2.39.2
-

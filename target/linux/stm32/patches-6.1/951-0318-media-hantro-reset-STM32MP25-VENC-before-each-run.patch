@@ -14,8 +14,6 @@ Change-Id: Ideeab1edbb4a64878231a2b34c3a1b34ce3af4a2
  drivers/media/platform/verisilicon/stm32mp25_venc_hw.c | 3 +++
  2 files changed, 5 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index d1bb1ed54df5..dfbe1dff6399 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
 @@ -186,6 +186,8 @@ static void device_run(void *priv)
@@ -27,11 +25,9 @@ index d1bb1ed54df5..dfbe1dff6399 100644
  	if (ctx->codec_ops->run(ctx))
  		goto err_cancel_job;
  
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-index 0aac33afcadc..3dc4ada288a7 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-@@ -108,6 +108,9 @@ static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
+@@ -108,6 +108,9 @@ static irqreturn_t stm32mp25_venc_irq(in
  
  static void stm32mp25_venc_reset(struct hantro_ctx *ctx)
  {
@@ -41,6 +37,3 @@ index 0aac33afcadc..3dc4ada288a7 100644
  }
  
  /*
--- 
-2.39.2
-

@@ -16,11 +16,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index efac3e0735b9..b4f13bf63a8d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -539,6 +539,16 @@ gpiok: gpio@442e0000 {
+@@ -539,6 +539,16 @@
  			};
  		};
  
@@ -37,6 +35,3 @@ index efac3e0735b9..b4f13bf63a8d 100644
  		pinctrl_z: pinctrl@46200000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.2
-

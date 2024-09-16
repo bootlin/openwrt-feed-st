@@ -16,11 +16,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index e4b119c18ce8..baf39e03e8bc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -28,6 +28,14 @@ chosen {
+@@ -28,6 +28,14 @@
  		stdout-path = "serial0:115200n8";
  	};
  
@@ -35,7 +33,7 @@ index e4b119c18ce8..baf39e03e8bc 100644
  	memory@80000000 {
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
-@@ -39,6 +47,12 @@ &arm_wdt {
+@@ -39,6 +47,12 @@
  	status = "okay";
  };
  
@@ -48,7 +46,7 @@ index e4b119c18ce8..baf39e03e8bc 100644
  &eth1 {
  	status = "okay";
  	pinctrl-0 = <&eth1_mdio_pins_a>;
-@@ -113,6 +127,14 @@ &i2c2 {
+@@ -113,6 +127,14 @@
  	/delete-property/dma-names;
  };
  
@@ -63,6 +61,3 @@ index e4b119c18ce8..baf39e03e8bc 100644
  &rtc {
  	status = "okay";
  };
--- 
-2.39.2
-

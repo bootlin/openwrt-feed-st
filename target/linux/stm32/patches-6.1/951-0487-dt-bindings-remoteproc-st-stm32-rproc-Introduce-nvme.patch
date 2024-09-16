@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/remoteproc/st,stm32-rproc.yaml           | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index af8944977f58..a7ea628a5047 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -131,6 +131,17 @@ properties:
@@ -42,6 +40,3 @@ index af8944977f58..a7ea628a5047 100644
    st,auto-boot:
      $ref: /schemas/types.yaml#/definitions/flag
      description:
--- 
-2.39.2
-

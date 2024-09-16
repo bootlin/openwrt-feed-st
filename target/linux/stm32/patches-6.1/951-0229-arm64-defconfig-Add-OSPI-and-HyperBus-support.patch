@@ -16,8 +16,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config  | 4 ++++
  2 files changed, 5 insertions(+)
 
-diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
-index 0548ffe18bb3..9ff3b3194e28 100644
 --- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
 +++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
 @@ -43,3 +43,4 @@
@@ -25,8 +23,6 @@ index 0548ffe18bb3..9ff3b3194e28 100644
  # CONFIG_MEDIA_SDR_SUPPORT is not set
  # CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
 +# CONFIG_MTD_PHYSMAP is not set
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index 7221879f8d63..3bc25b943953 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -13,6 +13,7 @@ CONFIG_JFFS2_FS=y
@@ -54,6 +50,3 @@ index 7221879f8d63..3bc25b943953 100644
  CONFIG_STM32_TIMER_CNT=m
  CONFIG_STMMAC_ETH=y
  CONFIG_STMMAC_PLATFORM=y
--- 
-2.39.2
-

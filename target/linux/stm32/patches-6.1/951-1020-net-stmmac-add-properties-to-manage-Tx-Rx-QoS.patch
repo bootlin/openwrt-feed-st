@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/stmmac.h                                |  2 ++
  4 files changed, 20 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-index d99fa028c646..e9766725e56f 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-@@ -77,6 +77,12 @@ static void dwmac4_dma_init_rx_chan(void __iomem *ioaddr,
+@@ -77,6 +77,12 @@ static void dwmac4_dma_init_rx_chan(void
  
  	value = readl(ioaddr + DMA_CHAN_RX_CONTROL(chan));
  	value = value | (rxpbl << DMA_BUS_MODE_RPBL_SHIFT);
@@ -40,7 +38,7 @@ index d99fa028c646..e9766725e56f 100644
  	writel(value, ioaddr + DMA_CHAN_RX_CONTROL(chan));
  
  	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) && likely(dma_cfg->eame))
-@@ -99,6 +105,11 @@ static void dwmac4_dma_init_tx_chan(void __iomem *ioaddr,
+@@ -99,6 +105,11 @@ static void dwmac4_dma_init_tx_chan(void
  	/* Enable OSP to get best performance */
  	value |= DMA_CONTROL_OSP;
  
@@ -52,8 +50,6 @@ index d99fa028c646..e9766725e56f 100644
  	writel(value, ioaddr + DMA_CHAN_TX_CONTROL(chan));
  
  	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) && likely(dma_cfg->eame))
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
-index 9321879b599c..fe3cdc844223 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
 @@ -125,11 +125,16 @@
@@ -73,11 +69,9 @@ index 9321879b599c..fe3cdc844223 100644
  #define DMA_CONTROL_SR			BIT(0)
  #define DMA_RBSZ_MASK			GENMASK(14, 1)
  #define DMA_RBSZ_SHIFT			1
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 0046a4ee6e64..86dffb690f28 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -553,6 +553,8 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+@@ -553,6 +553,8 @@ stmmac_probe_config_dt(struct platform_d
  	of_property_read_u32(np, "snps,txpbl", &dma_cfg->txpbl);
  	of_property_read_u32(np, "snps,rxpbl", &dma_cfg->rxpbl);
  	dma_cfg->pblx8 = !of_property_read_bool(np, "snps,no-pbl-x8");
@@ -86,8 +80,6 @@ index 0046a4ee6e64..86dffb690f28 100644
  
  	dma_cfg->aal = of_property_read_bool(np, "snps,aal");
  	dma_cfg->fixed_burst = of_property_read_bool(np, "snps,fixed-burst");
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 9f4a4f70270d..0cbfbc687452 100644
 --- a/include/linux/stmmac.h
 +++ b/include/linux/stmmac.h
 @@ -91,6 +91,8 @@ struct stmmac_dma_cfg {
@@ -99,6 +91,3 @@ index 9f4a4f70270d..0cbfbc687452 100644
  	bool pblx8;
  	int fixed_burst;
  	int mixed_burst;
--- 
-2.39.2
-

@@ -19,8 +19,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
-index d264f268e3cc..9b3600c0da8a 100644
 --- a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 @@ -103,6 +103,15 @@ properties:
@@ -39,6 +37,3 @@ index d264f268e3cc..9b3600c0da8a 100644
    st,axi-max-burst-len:
      description: |
        Restrict master AXI burst length in unit of beat by value specified in this property.
--- 
-2.39.2
-

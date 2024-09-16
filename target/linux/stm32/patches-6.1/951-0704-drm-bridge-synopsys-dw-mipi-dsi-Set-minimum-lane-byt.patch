@@ -45,11 +45,9 @@ Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 98186c9e39c8..d469738cc0c9 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -733,12 +733,19 @@ static void dw_mipi_dsi_command_mode_config(struct dw_mipi_dsi *dsi)
+@@ -733,12 +733,19 @@ static void dw_mipi_dsi_command_mode_con
  	dsi_write(dsi, DSI_MODE_CFG, ENABLE_CMD_MODE);
  }
  
@@ -70,7 +68,7 @@ index 98186c9e39c8..d469738cc0c9 100644
  	int bpp;
  
  	bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
-@@ -754,6 +761,11 @@ static u32 dw_mipi_dsi_get_hcomponent_lbcc(struct dw_mipi_dsi *dsi,
+@@ -754,6 +761,11 @@ static u32 dw_mipi_dsi_get_hcomponent_lb
  	if (frac)
  		lbcc++;
  
@@ -82,6 +80,3 @@ index 98186c9e39c8..d469738cc0c9 100644
  	return lbcc;
  }
  
--- 
-2.39.2
-

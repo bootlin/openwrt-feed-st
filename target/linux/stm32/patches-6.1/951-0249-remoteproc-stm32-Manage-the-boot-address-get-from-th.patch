@@ -35,8 +35,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 111 ++++++++++++++++++++++++++-----
  1 file changed, 96 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 174d3aeae2b9..4eff39aa06de 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -23,6 +23,7 @@
@@ -112,7 +110,7 @@ index 174d3aeae2b9..4eff39aa06de 100644
  static int stm32_rproc_pa_to_da(struct rproc *rproc, phys_addr_t pa, u64 *da)
  {
  	unsigned int i;
-@@ -649,6 +701,22 @@ static int stm32_rproc_start(struct rproc *rproc)
+@@ -649,6 +701,22 @@ static int stm32_rproc_start(struct rpro
  		}
  	}
  
@@ -135,7 +133,7 @@ index 174d3aeae2b9..4eff39aa06de 100644
  	err = stm32_rproc_set_hold_boot(rproc, false);
  	if (err)
  		return err;
-@@ -813,7 +881,7 @@ static const struct rproc_ops st_rproc_ops = {
+@@ -813,7 +881,7 @@ static const struct rproc_ops st_rproc_o
  	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
  	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
  	.sanity_check	= rproc_elf_sanity_check,
@@ -144,7 +142,7 @@ index 174d3aeae2b9..4eff39aa06de 100644
  };
  
  static const struct rproc_ops st_rproc_tee_ops = {
-@@ -1012,8 +1080,9 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1012,8 +1080,9 @@ static int stm32_rproc_probe(struct plat
  	struct stm32_rproc *ddata;
  	struct device_node *np = dev->of_node;
  	const struct stm32_rproc_data *desc;
@@ -155,7 +153,7 @@ index 174d3aeae2b9..4eff39aa06de 100644
  	unsigned int state;
  	int ret;
  
-@@ -1023,15 +1092,20 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1023,15 +1092,20 @@ static int stm32_rproc_probe(struct plat
  	if (ret)
  		return ret;
  
@@ -184,7 +182,7 @@ index 174d3aeae2b9..4eff39aa06de 100644
  		if (PTR_ERR(trproc) == -EPROBE_DEFER)
  			return PTR_ERR(trproc);
  		trproc = NULL;
-@@ -1048,19 +1122,26 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1048,19 +1122,26 @@ static int stm32_rproc_probe(struct plat
  	ddata = rproc->priv;
  	ddata->desc = desc;
  	ddata->trproc = trproc;
@@ -216,6 +214,3 @@ index 174d3aeae2b9..4eff39aa06de 100644
  	ret = stm32_rproc_of_memory_translations(pdev, ddata);
  	if (ret)
  		goto free_rproc;
--- 
-2.39.2
-

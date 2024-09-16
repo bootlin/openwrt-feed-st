@@ -22,11 +22,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c     | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 2977b6c06fc3..d120f69f08e2 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -705,12 +705,12 @@ dcmipp_pixelproc_set_downscale(struct dcmipp_pixelproc_device *pixelproc)
+@@ -705,12 +705,12 @@ dcmipp_pixelproc_set_downscale(struct dc
  	}
  
  	/* Compute downsize factor */
@@ -43,6 +41,3 @@ index 2977b6c06fc3..d120f69f08e2 100644
  	if (vratio > DCMIPP_PIXELPROC_HVRATIO_MAX)
  		vratio = DCMIPP_PIXELPROC_HVRATIO_MAX;
  	hdiv = (DCMIPP_PIXELPROC_HVDIV_CONS * pixelproc->compose.width) /
--- 
-2.39.2
-

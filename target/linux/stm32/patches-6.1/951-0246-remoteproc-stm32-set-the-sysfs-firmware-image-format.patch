@@ -20,11 +20,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index aa29f6422659..174d3aeae2b9 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -1048,8 +1048,12 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1048,8 +1048,12 @@ static int stm32_rproc_probe(struct plat
  	ddata = rproc->priv;
  	ddata->desc = desc;
  	ddata->trproc = trproc;
@@ -38,6 +36,3 @@ index aa29f6422659..174d3aeae2b9 100644
  
  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
  
--- 
-2.39.2
-

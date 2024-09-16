@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp-params.c | 123 ++++++++++++++++--
  1 file changed, 115 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
-index ceb5ab6eb324..623403c6cc80 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
-@@ -125,13 +125,19 @@ static void dcmipp_isp_params_stop_streaming(struct vb2_queue *vq)
+@@ -125,13 +125,19 @@ static void dcmipp_isp_params_stop_strea
  	spin_unlock_irq(&vout->irqlock);
  }
  
@@ -42,7 +40,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  	vb2_set_plane_payload(vb, 0, size);
  
  	return 0;
-@@ -144,8 +150,6 @@ static void dcmipp_isp_params_buf_queue(struct vb2_buffer *vb2_buf)
+@@ -144,8 +150,6 @@ static void dcmipp_isp_params_buf_queue(
  	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb2_buf);
  	struct dcmipp_buf *buf = container_of(vbuf, struct dcmipp_buf, vb);
  
@@ -51,7 +49,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  	spin_lock_irq(&vout->irqlock);
  	list_add_tail(&buf->list, &vout->buffers);
  	spin_unlock_irq(&vout->irqlock);
-@@ -221,6 +225,16 @@ void dcmipp_isp_params_ent_release(struct dcmipp_ent_device *ved)
+@@ -221,6 +225,16 @@ void dcmipp_isp_params_ent_release(struc
  #define DCMIPP_P1BPRCR (0x824)
  #define DCMIPP_P1BPRCR_ENABLE BIT(0)
  #define DCMIPP_P1BPRCR_STRENGTH_SHIFT 1
@@ -68,7 +66,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  static inline void
  dcmipp_isp_params_apply_bpr(struct dcmipp_isp_params_device *vout,
  			    struct stm32_dcmipp_isp_bpr_cfg *cfg)
-@@ -250,12 +264,24 @@ dcmipp_isp_params_apply_blc(struct dcmipp_isp_params_device *vout,
+@@ -250,12 +264,24 @@ dcmipp_isp_params_apply_blc(struct dcmip
  #define DCMIPP_P1EXCR1_ENABLE BIT(0)
  #define DCMIPP_P1EXCR1_MULTR_SHIFT 20
  #define DCMIPP_P1EXCR1_SHFR_SHIFT 28
@@ -93,7 +91,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  static inline void
  dcmipp_isp_params_apply_ex(struct dcmipp_isp_params_device *vout,
  			   struct stm32_dcmipp_isp_ex_cfg *cfg)
-@@ -274,21 +300,35 @@ dcmipp_isp_params_apply_ex(struct dcmipp_isp_params_device *vout,
+@@ -274,21 +300,35 @@ dcmipp_isp_params_apply_ex(struct dcmipp
  
  #define DCMIPP_P1DMCR (0x870)
  #define DCMIPP_P1DMCR_PEAK_SHIFT 16
@@ -135,7 +133,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  
  	dmcr = reg_read(vout, DCMIPP_P1DMCR) & ~mask;
  	reg_write(vout, DCMIPP_P1DMCR, dmcr |
-@@ -303,6 +343,8 @@ dcmipp_isp_params_apply_dm(struct dcmipp_isp_params_device *vout,
+@@ -303,6 +343,8 @@ dcmipp_isp_params_apply_dm(struct dcmipp
  #define DCMIPP_P1CCCR_TYPE_YUV 0
  #define DCMIPP_P1CCCR_TYPE_RGB BIT(1)
  #define DCMIPP_P1CCCR_CLAMP BIT(2)
@@ -144,7 +142,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  #define DCMIPP_P1CCRR1 (0x884)
  #define DCMIPP_P1CCRR1_RG_SHIFT	16
  #define DCMIPP_P1CCRR1_RR_SHIFT	0
-@@ -321,6 +363,20 @@ dcmipp_isp_params_apply_dm(struct dcmipp_isp_params_device *vout,
+@@ -321,6 +363,20 @@ dcmipp_isp_params_apply_dm(struct dcmipp
  #define DCMIPP_P1CCBR2 (0x898)
  #define DCMIPP_P1CCBR2_BA_SHIFT	16
  #define DCMIPP_P1CCBR2_BB_SHIFT	0
@@ -165,7 +163,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  static inline void
  dcmipp_isp_params_apply_cc(struct dcmipp_isp_params_device *vout,
  			   struct stm32_dcmipp_isp_cc_cfg *cfg)
-@@ -356,6 +412,7 @@ dcmipp_isp_params_apply_cc(struct dcmipp_isp_params_device *vout,
+@@ -356,6 +412,7 @@ dcmipp_isp_params_apply_cc(struct dcmipp
  
  #define DCMIPP_P1CTCR1 (0x8a0)
  #define DCMIPP_P1CTCR1_ENABLE BIT(0)
@@ -173,7 +171,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  #define DCMIPP_P1CTCR1_LUM0_SHIFT 9
  
  #define DCMIPP_P1CTCR2 (0x8a4)
-@@ -369,6 +426,18 @@ dcmipp_isp_params_apply_cc(struct dcmipp_isp_params_device *vout,
+@@ -369,6 +426,18 @@ dcmipp_isp_params_apply_cc(struct dcmipp
  #define DCMIPP_P1CTCR3_LUM7_SHIFT 9
  #define DCMIPP_P1CTCR3_LUM6_SHIFT 17
  #define DCMIPP_P1CTCR3_LUM5_SHIFT 25
@@ -192,7 +190,7 @@ index ceb5ab6eb324..623403c6cc80 100644
  static inline void
  dcmipp_isp_params_apply_ce(struct dcmipp_isp_params_device *vout,
  			   struct stm32_dcmipp_isp_ce_cfg *cfg)
-@@ -388,6 +457,44 @@ dcmipp_isp_params_apply_ce(struct dcmipp_isp_params_device *vout,
+@@ -388,6 +457,44 @@ dcmipp_isp_params_apply_ce(struct dcmipp
  		  cfg->lum[8] << DCMIPP_P1CTCR3_LUM8_SHIFT);
  }
  
@@ -237,6 +235,3 @@ index ceb5ab6eb324..623403c6cc80 100644
  static inline void
  dcmipp_isp_params_apply(struct dcmipp_isp_params_device *vout,
  			struct stm32_dcmipp_params_cfg *buf)
--- 
-2.39.2
-

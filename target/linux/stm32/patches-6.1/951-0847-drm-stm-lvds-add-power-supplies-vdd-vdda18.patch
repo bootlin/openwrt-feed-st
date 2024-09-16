@@ -14,8 +14,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 53 +++++++++++++++++++++++++++++++-------
  1 file changed, 43 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index a58f8c4aa870..41482dd699fb 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -20,6 +20,7 @@
@@ -36,7 +34,7 @@ index a58f8c4aa870..41482dd699fb 100644
  };
  
  #define bridge_to_stm_lvds(b) \
-@@ -1118,6 +1122,18 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1118,6 +1122,18 @@ static int lvds_probe(struct platform_de
  		return ret;
  	}
  
@@ -55,7 +53,7 @@ index a58f8c4aa870..41482dd699fb 100644
  	rstc = devm_reset_control_get_exclusive(dev, NULL);
  
  	if (IS_ERR(rstc)) {
-@@ -1244,6 +1260,8 @@ static int __maybe_unused lvds_runtime_suspend(struct device *dev)
+@@ -1244,6 +1260,8 @@ static int __maybe_unused lvds_runtime_s
  
  	clk_disable_unprepare(lvds->pllref_clk);
  	clk_disable_unprepare(lvds->pclk);
@@ -64,7 +62,7 @@ index a58f8c4aa870..41482dd699fb 100644
  
  	return 0;
  }
-@@ -1255,19 +1273,34 @@ static int __maybe_unused lvds_runtime_resume(struct device *dev)
+@@ -1255,19 +1273,34 @@ static int __maybe_unused lvds_runtime_r
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -109,6 +107,3 @@ index a58f8c4aa870..41482dd699fb 100644
  
  	return ret;
  }
--- 
-2.39.2
-

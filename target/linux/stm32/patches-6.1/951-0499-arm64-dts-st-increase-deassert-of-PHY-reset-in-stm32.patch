@@ -23,11 +23,9 @@ Domain-Review: Christophe ROULLIER <christophe.roullier@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 6b492aaaa793..a8a9797f5035 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -257,7 +257,7 @@ phy2_eth1: ethernet-phy@5 {
+@@ -257,7 +257,7 @@
  				     "ethernet-phy-ieee802.3-c22";
  			reset-gpios =  <&gpioj 9 GPIO_ACTIVE_LOW>;
  			reset-assert-us = <10000>;
@@ -36,7 +34,7 @@ index 6b492aaaa793..a8a9797f5035 100644
  			realtek,eee-disable;
  			reg = <5>;
  		};
-@@ -281,7 +281,7 @@ phy1_eth2: ethernet-phy@1 {
+@@ -281,7 +281,7 @@
  			compatible = "ethernet-phy-id001c.c916";
  			reset-gpios =  <&gpiog 6 GPIO_ACTIVE_LOW>;
  			reset-assert-us = <10000>;
@@ -45,6 +43,3 @@ index 6b492aaaa793..a8a9797f5035 100644
  			realtek,eee-disable;
  			reg = <1>;
  		};
--- 
-2.39.2
-

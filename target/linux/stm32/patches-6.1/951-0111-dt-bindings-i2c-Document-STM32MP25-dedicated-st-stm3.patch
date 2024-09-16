@@ -13,8 +13,6 @@ Signed-off-by: Alain VOLMAT <alain.volmat@foss.st.com>
  .../devicetree/bindings/i2c/st,stm32-i2c.yaml | 33 ++++++++++++++++---
  1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-index bf396e9466aa..482368d55a8b 100644
 --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 @@ -19,6 +19,7 @@ allOf:
@@ -75,6 +73,3 @@ index bf396e9466aa..482368d55a8b 100644
  
    interrupt-names:
      items:
--- 
-2.39.2
-

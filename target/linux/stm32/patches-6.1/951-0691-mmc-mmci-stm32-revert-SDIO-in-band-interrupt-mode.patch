@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/mmc/host/mmci_stm32_sdmmc.c | 21 ----------
  3 files changed, 85 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 001f0926c29c..65c5f2d1ff51 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -271,7 +271,6 @@ static struct variant_data variant_stm32_sdmmc = {
+@@ -271,7 +271,6 @@ static struct variant_data variant_stm32
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(12, 5),
  	.stm32_idmabsize_align	= BIT(5),
@@ -32,7 +30,7 @@ index 001f0926c29c..65c5f2d1ff51 100644
  	.busy_timeout		= true,
  	.busy_detect		= true,
  	.busy_detect_flag	= MCI_STM32_BUSYD0,
-@@ -299,7 +298,6 @@ static struct variant_data variant_stm32_sdmmcv2 = {
+@@ -299,7 +298,6 @@ static struct variant_data variant_stm32
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(16, 5),
  	.stm32_idmabsize_align	= BIT(5),
@@ -40,7 +38,7 @@ index 001f0926c29c..65c5f2d1ff51 100644
  	.dma_lli		= true,
  	.busy_timeout		= true,
  	.busy_detect		= true,
-@@ -424,10 +422,6 @@ static void mmci_write_datactrlreg(struct mmci_host *host, u32 datactrl)
+@@ -424,10 +422,6 @@ static void mmci_write_datactrlreg(struc
  	/* Keep busy mode in DPSM if enabled */
  	datactrl |= host->datactrl_reg & host->variant->busy_dpsm_flag;
  
@@ -51,7 +49,7 @@ index 001f0926c29c..65c5f2d1ff51 100644
  	if (host->datactrl_reg != datactrl) {
  		host->datactrl_reg = datactrl;
  		writel(datactrl, host->base + MMCIDATACTRL);
-@@ -1686,11 +1680,6 @@ static irqreturn_t mmci_irq(int irq, void *dev_id)
+@@ -1686,11 +1680,6 @@ static irqreturn_t mmci_irq(int irq, voi
  			mmci_data_irq(host, host->data, status);
  		}
  
@@ -63,7 +61,7 @@ index 001f0926c29c..65c5f2d1ff51 100644
  		/*
  		 * Busy detection has been handled by mmci_cmd_irq() above.
  		 * Clear the status bit to prevent polling in IRQ context.
-@@ -1927,45 +1916,6 @@ static int mmci_sig_volt_switch(struct mmc_host *mmc, struct mmc_ios *ios)
+@@ -1927,45 +1916,6 @@ static int mmci_sig_volt_switch(struct m
  	return ret;
  }
  
@@ -118,7 +116,7 @@ index 001f0926c29c..65c5f2d1ff51 100644
  };
  
  static void mmci_probe_level_translator(struct mmc_host *mmc)
-@@ -2243,14 +2191,6 @@ static int mmci_probe(struct amba_device *dev,
+@@ -2243,14 +2191,6 @@ static int mmci_probe(struct amba_device
  		mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
  	}
  
@@ -133,8 +131,6 @@ index 001f0926c29c..65c5f2d1ff51 100644
  	/* Variants with mandatory busy timeout in HW needs R1B responses. */
  	if (variant->busy_timeout)
  		mmc->caps |= MMC_CAP_NEED_RSP_BUSY;
-diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
-index dec5e3e8b4a5..d9a2589f717e 100644
 --- a/drivers/mmc/host/mmci.h
 +++ b/drivers/mmc/host/mmci.h
 @@ -319,7 +319,6 @@ struct mmci_host;
@@ -162,11 +158,9 @@ index dec5e3e8b4a5..d9a2589f717e 100644
  };
  
  struct mmci_host {
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 98a1e38c811c..d18e50e2e39e 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -690,25 +690,6 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
+@@ -690,25 +690,6 @@ static int sdmmc_post_sig_volt_switch(st
  	return ret;
  }
  
@@ -192,7 +186,7 @@ index 98a1e38c811c..d18e50e2e39e 100644
  static struct mmci_host_ops sdmmc_variant_ops = {
  	.validate_data = sdmmc_idma_validate_data,
  	.prep_data = sdmmc_idma_prep_data,
-@@ -723,8 +704,6 @@ static struct mmci_host_ops sdmmc_variant_ops = {
+@@ -723,8 +704,6 @@ static struct mmci_host_ops sdmmc_varian
  	.busy_complete = sdmmc_busy_complete,
  	.pre_sig_volt_switch = sdmmc_pre_sig_volt_vswitch,
  	.post_sig_volt_switch = sdmmc_post_sig_volt_switch,
@@ -201,6 +195,3 @@ index 98a1e38c811c..d18e50e2e39e 100644
  };
  
  static struct sdmmc_tuning_ops dlyb_tuning_mp15_ops = {
--- 
-2.39.2
-

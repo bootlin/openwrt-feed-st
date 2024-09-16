@@ -22,9 +22,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  1 file changed, 126 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-new file mode 100644
-index 000000000000..797faf1a1fe8
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -0,0 +1,126 @@
@@ -154,6 +151,3 @@ index 000000000000..797faf1a1fe8
 +    };
 +...
 +
--- 
-2.39.2
-

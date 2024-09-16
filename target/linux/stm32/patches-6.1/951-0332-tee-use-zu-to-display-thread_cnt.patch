@@ -45,11 +45,9 @@ Domain-Review: Lionel DEBIEVE <lionel.debieve@foss.st.com>
  drivers/tee/optee/smc_abi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index 2d2ee43ce97e..e598751ecd42 100644
 --- a/drivers/tee/optee/smc_abi.c
 +++ b/drivers/tee/optee/smc_abi.c
-@@ -924,7 +924,7 @@ static void call_out_of_thread(struct tee_context *ctx, bool system_call)
+@@ -924,7 +924,7 @@ static void call_out_of_thread(struct te
  		 */
  		thd->thread_cnt--;
  		thd->thread_free_cnt--;
@@ -58,6 +56,3 @@ index 2d2ee43ce97e..e598751ecd42 100644
  
  		/*
  		 * If no enough thread to satisfy already provisioned system
--- 
-2.39.2
-

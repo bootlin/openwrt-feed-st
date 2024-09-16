@@ -16,11 +16,9 @@ Change-Id: I168d7b920fab6d0240be6ad6dec347ab6723c708
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 33 +++++++++++++++++++++++
  1 file changed, 33 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 899037ee2ee2..7c52b73a10f6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -117,6 +117,17 @@ panel_lvds_backlight: panel-lvds-backlight {
+@@ -117,6 +117,17 @@
  		status = "okay";
  	};
  
@@ -38,7 +36,7 @@ index 899037ee2ee2..7c52b73a10f6 100644
  	wifi_pwrseq: wifi-pwrseq {
  		compatible = "mmc-pwrseq-simple";
  		reset-gpios = <&gpiog 8 GPIO_ACTIVE_LOW>;
-@@ -222,6 +233,13 @@ adv7535_out: endpoint {
+@@ -222,6 +233,13 @@
  					remote-endpoint = <&hdmi_connector_in>;
  				};
  			};
@@ -52,7 +50,7 @@ index 899037ee2ee2..7c52b73a10f6 100644
  		};
  	};
  
-@@ -281,6 +299,21 @@ &i2c8 {
+@@ -281,6 +299,21 @@
  	/delete-property/dma-names;
  };
  
@@ -74,6 +72,3 @@ index 899037ee2ee2..7c52b73a10f6 100644
  &ltdc {
  	status = "okay";
  
--- 
-2.39.2
-

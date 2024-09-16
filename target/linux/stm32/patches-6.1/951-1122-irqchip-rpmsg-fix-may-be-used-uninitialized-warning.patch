@@ -21,11 +21,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/irqchip/irq-rpmsg.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-rpmsg.c b/drivers/irqchip/irq-rpmsg.c
-index f84e8c163fa3..f0f15ccb9ff9 100644
 --- a/drivers/irqchip/irq-rpmsg.c
 +++ b/drivers/irqchip/irq-rpmsg.c
-@@ -164,7 +164,8 @@ static void irq_rpmsg_setup_work(struct work_struct *ws)
+@@ -164,7 +164,8 @@ static void irq_rpmsg_setup_work(struct
  	struct rpmsg_intc_msg msg = {VIRT_INTC_CFG, 0, 0};
  	int ret;
  
@@ -35,6 +33,3 @@ index f84e8c163fa3..f0f15ccb9ff9 100644
  		dev_err(&rpdev->dev, "read intc cfg failed: %d\n", ret);
  		goto err;
  	}
--- 
-2.39.2
-

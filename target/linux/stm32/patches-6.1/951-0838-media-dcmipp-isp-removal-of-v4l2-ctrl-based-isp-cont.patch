@@ -21,8 +21,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 385 +-----------------
  1 file changed, 2 insertions(+), 383 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index d36b6da041d9..6d742e00d4ca 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -16,7 +16,6 @@
@@ -150,7 +148,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  };
  
  static const struct v4l2_mbus_framefmt fmt_default = {
-@@ -272,196 +193,6 @@ static const struct v4l2_mbus_framefmt fmt_default = {
+@@ -272,196 +193,6 @@ static const struct v4l2_mbus_framefmt f
  	.xfer_func = V4L2_XFER_FUNC_DEFAULT,
  };
  
@@ -347,7 +345,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  static inline unsigned int dcmipp_isp_compute_decimation(unsigned int orig,
  							 unsigned int req)
  {
-@@ -908,25 +639,6 @@ static int dcmipp_isp_colorconv_auto(struct dcmipp_isp_device *isp)
+@@ -908,25 +639,6 @@ static int dcmipp_isp_colorconv_auto(str
  	return dcmipp_isp_colorconv_set(isp, &ccconf);
  }
  
@@ -373,7 +371,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  static bool dcmipp_isp_is_aux_output_enabled(struct dcmipp_isp_device *isp)
  {
  	struct media_link *link;
-@@ -967,7 +679,6 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -967,7 +679,6 @@ static int dcmipp_isp_s_stream(struct v4
  		/* Configure Decimation */
  		reg_write(isp, DCMIPP_P1DECR, isp->decimation);
  
@@ -381,7 +379,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  		/* Configure Demosaicing */
  		dcmipp_isp_config_demosaicing(isp);
  
-@@ -979,89 +690,21 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -979,89 +690,21 @@ static int dcmipp_isp_s_stream(struct v4
  
  	isp->streaming = enable;
  
@@ -471,7 +469,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  /* FIXME */
  static void dcmipp_isp_release(struct v4l2_subdev *sd)
  {
-@@ -1088,7 +731,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -1088,7 +731,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  					      void __iomem *regs)
  {
  	struct dcmipp_isp_device *isp;
@@ -480,7 +478,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  
  	/* Allocate the isp struct */
  	isp = kzalloc(sizeof(*isp), GFP_KERNEL);
-@@ -1107,30 +750,6 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -1107,30 +750,6 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  	isp->src_fmt = fmt_default;
  	isp->src_fmt.code = ISP_MEDIA_BUS_SRC_FMT_DEFAULT;
  
@@ -511,7 +509,7 @@ index d36b6da041d9..6d742e00d4ca 100644
  	/* Initialize ved and sd */
  	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
  				     v4l2_dev,
-@@ -1143,7 +762,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -1143,7 +762,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  				     MEDIA_PAD_FL_SOURCE,
  				     },
  				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
@@ -520,6 +518,3 @@ index d36b6da041d9..6d742e00d4ca 100644
  	if (ret) {
  		mutex_destroy(&isp->lock);
  		kfree(isp);
--- 
-2.39.2
-

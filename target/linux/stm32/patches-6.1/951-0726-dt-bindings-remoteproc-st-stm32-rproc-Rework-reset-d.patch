@@ -37,8 +37,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../bindings/remoteproc/st,stm32-rproc.yaml   | 21 ++++++++++++++++---
  1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index a7ea628a5047..8b0b3991ec42 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -34,6 +34,7 @@ properties:
@@ -83,6 +81,3 @@ index a7ea628a5047..8b0b3991ec42 100644
        st,syscfg-holdboot = <&rcc 0x10C 0x1>;
        st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
        st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
--- 
-2.39.2
-

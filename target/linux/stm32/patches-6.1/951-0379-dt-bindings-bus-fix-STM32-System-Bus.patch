@@ -20,8 +20,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  Documentation/devicetree/bindings/bus/st,sys-bus.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/bus/st,sys-bus.yaml b/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
-index ef876ebc8370..caa0d973391b 100644
 --- a/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
 +++ b/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
 @@ -70,6 +70,11 @@ examples:
@@ -36,6 +34,3 @@ index ef876ebc8370..caa0d973391b 100644
      etzpc: etzpc@0x5C007000 {
          compatible = "st,stm32mp15-sys-bus";
          reg = <0x5c007000 0x400>;
--- 
-2.39.2
-

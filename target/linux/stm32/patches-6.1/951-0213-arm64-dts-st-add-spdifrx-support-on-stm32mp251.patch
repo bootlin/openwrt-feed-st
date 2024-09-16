@@ -15,11 +15,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a10d8f97c773..3083a12e1065 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -626,6 +626,20 @@ spi3: spi@400c0000 {
+@@ -626,6 +626,20 @@
  				status = "disabled";
  			};
  
@@ -40,6 +38,3 @@ index a10d8f97c773..3083a12e1065 100644
  			usart2: serial@400e0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x400e0000 0x400>;
--- 
-2.39.2
-

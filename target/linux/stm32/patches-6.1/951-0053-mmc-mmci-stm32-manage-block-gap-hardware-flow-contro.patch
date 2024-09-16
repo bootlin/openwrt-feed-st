@@ -19,8 +19,6 @@ Change-Id: I99b5da872ae27b0d004359d11403d09f23593801
  drivers/mmc/host/mmci_stm32_sdmmc.c | 13 +++++++++++++
  2 files changed, 18 insertions(+)
 
-diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
-index b0de8262a4bc..dec5e3e8b4a5 100644
 --- a/drivers/mmc/host/mmci.h
 +++ b/drivers/mmc/host/mmci.h
 @@ -218,6 +218,11 @@
@@ -35,11 +33,9 @@ index b0de8262a4bc..dec5e3e8b4a5 100644
  #define MMCIFIFOCNT		0x048
  #define MMCIFIFO		0x080 /* to 0x0bc */
  
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 4fc63e569bca..6b53fa916688 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -384,6 +384,19 @@ static u32 sdmmc_get_dctrl_cfg(struct mmci_host *host)
+@@ -384,6 +384,19 @@ static u32 sdmmc_get_dctrl_cfg(struct mm
  
  	datactrl = mmci_dctrl_blksz(host);
  
@@ -59,6 +55,3 @@ index 4fc63e569bca..6b53fa916688 100644
  	if (host->mmc->card && mmc_card_sdio(host->mmc->card) &&
  	    host->data->blocks == 1)
  		datactrl |= MCI_DPSM_STM32_MODE_SDIO;
--- 
-2.39.2
-

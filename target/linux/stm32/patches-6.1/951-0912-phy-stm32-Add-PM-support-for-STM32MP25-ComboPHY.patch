@@ -16,8 +16,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 53 +++++++++++++++++++++++++++++
  1 file changed, 53 insertions(+)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 9a4ed78a7190..856bafb86725 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -81,6 +81,7 @@ struct stm32_combophy {
@@ -28,7 +26,7 @@ index 9a4ed78a7190..856bafb86725 100644
  };
  
  struct clk_impedance  {
-@@ -375,10 +376,54 @@ static void stm32_combophy_disable_clocks(struct stm32_combophy *combophy)
+@@ -375,10 +376,54 @@ static void stm32_combophy_disable_clock
  	clk_disable_unprepare(combophy->phy_clk);
  }
  
@@ -83,7 +81,7 @@ index 9a4ed78a7190..856bafb86725 100644
  	if (combophy->type == PHY_TYPE_PCIE && !combophy->pad_clk)
  		regmap_update_bits(combophy->regmap, SYSCFG_PCIEPRGCR,
  				   STM32MP25_PCIEPRGCR_EN, 0);
-@@ -429,6 +474,8 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -429,6 +474,8 @@ static int stm32_combophy_init(struct ph
  		pm_runtime_put_sync(combophy->dev);
  	}
  
@@ -92,7 +90,7 @@ index 9a4ed78a7190..856bafb86725 100644
  	return ret;
  }
  
-@@ -499,6 +546,11 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -499,6 +546,11 @@ static int stm32_combophy_probe(struct p
  	return PTR_ERR_OR_ZERO(phy_provider);
  }
  
@@ -104,7 +102,7 @@ index 9a4ed78a7190..856bafb86725 100644
  static const struct of_device_id stm32_combophy_of_match[] = {
  	{ .compatible = "st,stm32mp25-combophy", },
  	{ },
-@@ -510,6 +562,7 @@ static struct platform_driver stm32_combophy_driver = {
+@@ -510,6 +562,7 @@ static struct platform_driver stm32_comb
  	.driver = {
  		   .name = "stm32-combophy",
  		   .of_match_table = stm32_combophy_of_match,
@@ -112,6 +110,3 @@ index 9a4ed78a7190..856bafb86725 100644
  	}
  };
  
--- 
-2.39.2
-

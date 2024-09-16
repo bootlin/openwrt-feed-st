@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/drv.c | 23 ++++++++++++++++++++++-
  1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index ebee758267fb..41a82ab2c457 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -177,10 +177,31 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+@@ -177,10 +177,31 @@ static int stm_drm_platform_probe(struct
  	struct device *dev = &pdev->dev;
  	struct drm_device *ddev;
  	struct ltdc_device *ldev;
@@ -53,6 +51,3 @@ index ebee758267fb..41a82ab2c457 100644
  	ldev = devm_kzalloc(dev, sizeof(*ldev), GFP_KERNEL);
  	if (!ldev)
  		return -ENOMEM;
--- 
-2.39.2
-

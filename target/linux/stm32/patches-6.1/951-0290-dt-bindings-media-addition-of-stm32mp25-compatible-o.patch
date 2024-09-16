@@ -15,8 +15,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../bindings/media/st,stm32-dcmipp.yaml       | 33 +++++++++++++++++--
  1 file changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
-index 70631046017d..5c80eb28489d 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 @@ -12,7 +12,9 @@ maintainers:
@@ -84,6 +82,3 @@ index 70631046017d..5c80eb28489d 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.2
-

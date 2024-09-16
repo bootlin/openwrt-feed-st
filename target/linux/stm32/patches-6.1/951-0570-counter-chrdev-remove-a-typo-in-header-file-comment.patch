@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/uapi/linux/counter.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/counter.h b/include/uapi/linux/counter.h
-index 8ab12d731e3b..a1e2fee92951 100644
 --- a/include/uapi/linux/counter.h
 +++ b/include/uapi/linux/counter.h
 @@ -38,7 +38,7 @@ enum counter_scope {
@@ -32,6 +30,3 @@ index 8ab12d731e3b..a1e2fee92951 100644
   * the respective /sys/bus/counter/devices/counter4/count2/ceiling_component_id
   * sysfs attribute.
   */
--- 
-2.39.2
-

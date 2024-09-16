@@ -13,11 +13,9 @@ Change-Id: I6899bb46e20d189d8412d54ce29f0a282d5050bc
  drivers/clk/stm32/clk-stm32mp25.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index d423b38173ff..2308ba69a7c8 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -988,7 +988,7 @@ static int stm32mp25_check_security(void __iomem *base,
+@@ -988,7 +988,7 @@ static int stm32mp25_check_security(void
  		u32 index = (u32)cfg->sec_id;
  
  		if (index & SEC_RIFSC_FLAG)
@@ -26,6 +24,3 @@ index d423b38173ff..2308ba69a7c8 100644
  		else
  			ret = stm32_rcc_get_access(base, cfg->sec_id & ~SEC_RIFSC_FLAG);
  	}
--- 
-2.39.2
-

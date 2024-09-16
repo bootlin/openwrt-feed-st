@@ -19,11 +19,9 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 01b41d8518c2..436dde10247f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1775,6 +1775,17 @@ csi2host: csi2host@48020000 {
+@@ -1775,6 +1775,17 @@
  				status = "disabled";
  			};
  
@@ -41,6 +39,3 @@ index 01b41d8518c2..436dde10247f 100644
  			combophy: phy@480c0000 {
  				compatible = "st,stm32mp25-combophy";
  				reg = <0x480c0000 0x1000>;
--- 
-2.39.2
-

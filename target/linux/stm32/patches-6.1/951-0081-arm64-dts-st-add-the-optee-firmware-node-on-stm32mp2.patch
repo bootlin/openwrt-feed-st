@@ -22,11 +22,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 58b043f0ae71..12238f35bedc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -56,6 +56,11 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+@@ -56,6 +56,11 @@
  	};
  
  	firmware {
@@ -38,6 +36,3 @@ index 58b043f0ae71..12238f35bedc 100644
  		scmi: scmi {
  			compatible = "linaro,scmi-optee";
  			#address-cells = <1>;
--- 
-2.39.2
-

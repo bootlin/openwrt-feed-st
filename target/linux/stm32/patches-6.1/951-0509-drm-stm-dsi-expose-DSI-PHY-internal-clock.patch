@@ -28,8 +28,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 235 +++++++++++++++++++++++---
  1 file changed, 208 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index c95f3d445881..c1b845975fa1 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -8,7 +8,9 @@
@@ -53,7 +51,7 @@ index c95f3d445881..c1b845975fa1 100644
  	struct dw_mipi_dsi *dsi;
  	u32 hw_version;
  	int lane_min_kbps;
-@@ -531,29 +535,198 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -531,29 +535,198 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  	return 0;
  }
  
@@ -258,7 +256,7 @@ index c95f3d445881..c1b845975fa1 100644
  static void dw_mipi_dsi_phy_power_on(void *priv_data)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
-@@ -570,6 +743,8 @@ static void dw_mipi_dsi_phy_power_off(void *priv_data)
+@@ -570,6 +743,8 @@ static void dw_mipi_dsi_phy_power_off(vo
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -267,7 +265,7 @@ index c95f3d445881..c1b845975fa1 100644
  	/* Disable the DSI wrapper */
  	dsi_clear(dsi, DSI_WCR, WCR_DSIEN);
  }
-@@ -580,9 +755,8 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+@@ -580,9 +755,8 @@ dw_mipi_dsi_get_lane_mbps(void *priv_dat
  			  unsigned int *lane_mbps)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
@@ -278,7 +276,7 @@ index c95f3d445881..c1b845975fa1 100644
  
  	pll_in_khz = (unsigned int)(clk_get_rate(dsi->pllref_clk) / 1000);
  
-@@ -603,25 +777,10 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+@@ -603,25 +777,10 @@ dw_mipi_dsi_get_lane_mbps(void *priv_dat
  		DRM_WARN("Warning min phy mbps is used\n");
  	}
  
@@ -307,7 +305,7 @@ index c95f3d445881..c1b845975fa1 100644
  
  	/* Select video mode by resetting DSIM bit */
  	dsi_clear(dsi, DSI_WCFGR, WCFGR_DSIM);
-@@ -976,7 +1135,10 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -976,7 +1135,10 @@ static int dw_mipi_dsi_stm_probe(struct
  	dsi->pdata.base = dsi->base;
  	dsi->pdata.priv_data = dsi;
  
@@ -319,7 +317,7 @@ index c95f3d445881..c1b845975fa1 100644
  		dsi->pdata.max_data_lanes = 4;
  		dsi->pdata.phy_ops = &dw_mipi_dsi_stm_phy_141_ops;
  	}
-@@ -990,6 +1152,24 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -990,6 +1152,24 @@ static int dw_mipi_dsi_stm_probe(struct
  		goto err_dsi_probe;
  	}
  
@@ -344,7 +342,7 @@ index c95f3d445881..c1b845975fa1 100644
  	return 0;
  
  err_dsi_probe:
-@@ -1006,6 +1186,7 @@ static int dw_mipi_dsi_stm_remove(struct platform_device *pdev)
+@@ -1006,6 +1186,7 @@ static int dw_mipi_dsi_stm_remove(struct
  
  	dw_mipi_dsi_remove(dsi->dsi);
  	clk_disable_unprepare(dsi->pllref_clk);
@@ -352,6 +350,3 @@ index c95f3d445881..c1b845975fa1 100644
  	regulator_disable(dsi->vdd_supply);
  
  	return 0;
--- 
-2.39.2
-

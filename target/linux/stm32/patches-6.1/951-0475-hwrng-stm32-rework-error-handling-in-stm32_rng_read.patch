@@ -25,8 +25,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/char/hw_random/stm32-rng.c | 56 ++++++++++++++++++++++--------
  1 file changed, 42 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index d25562425309..8e43c131cc21 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -38,6 +38,8 @@
@@ -38,7 +36,7 @@ index d25562425309..8e43c131cc21 100644
  struct stm32_rng_data {
  	bool	has_cond_reset;
  };
-@@ -155,40 +157,66 @@ static int stm32_rng_conceal_seed_error(struct hwrng *rng)
+@@ -155,40 +157,66 @@ static int stm32_rng_conceal_seed_error(
  
  static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  {
@@ -119,6 +117,3 @@ index d25562425309..8e43c131cc21 100644
  		retval += sizeof(u32);
  		data += sizeof(u32);
  		max -= sizeof(u32);
--- 
-2.39.2
-

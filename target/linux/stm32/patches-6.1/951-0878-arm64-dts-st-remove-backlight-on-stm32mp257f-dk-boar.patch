@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 527544df573e..6ee43bac12b0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -453,7 +453,6 @@ &lvds {
+@@ -453,7 +453,6 @@
  	status = "okay";
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_v1v8>;
@@ -27,6 +25,3 @@ index 527544df573e..6ee43bac12b0 100644
  	ports {
  		#address-cells = <1>;
  		#size-cells = <0>;
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 222 ++++++++++++++++----------
  1 file changed, 134 insertions(+), 88 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index f3d29d2bc096..7f90724f7e7b 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -382,9 +382,7 @@ static int dsi_phy_141_pll_get_params(struct dw_mipi_dsi_stm *dsi,
+@@ -382,9 +382,7 @@ static int dsi_phy_141_pll_get_params(st
  static int dw_mipi_dsi_phy_141_init(void *priv_data)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
@@ -34,7 +32,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -411,54 +409,13 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+@@ -411,54 +409,13 @@ static int dw_mipi_dsi_phy_141_init(void
  	dsi_clear(dsi, DSI_PTCR0, PTCR0_TRSEN);
  	mdelay(1);
  
@@ -80,20 +78,20 @@ index f3d29d2bc096..7f90724f7e7b 100644
 +	ret = clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000 / 2);
  	if (ret)
 -		DRM_ERROR("!TIMEOUT! waiting PLL, let's continue\n");
--
--	DRM_DEBUG_DRIVER("IDF %d ODF %d NDIV %d\n", idf, odf, ndiv);
--	DRM_DEBUG_DRIVER("VCO %d BIAS %d INT %d GMP %d PROP %d\n", vco, bias, int1, gmp, prop);
 +		return ret;
  
--	dsi_set(dsi, DSI_WRPCR2, WRPCR2_PLLEN);
+-	DRM_DEBUG_DRIVER("IDF %d ODF %d NDIV %d\n", idf, odf, ndiv);
+-	DRM_DEBUG_DRIVER("VCO %d BIAS %d INT %d GMP %d PROP %d\n", vco, bias, int1, gmp, prop);
 +	ret = clk_prepare_enable(dsi->txbyte_clk.clk);
  
+-	dsi_set(dsi, DSI_WRPCR2, WRPCR2_PLLEN);
+-
 -	return 0;
 +	return ret;
  }
  
  static int
-@@ -512,11 +469,16 @@ static void dw_mipi_dsi_clk_disable(struct clk_hw *clk)
+@@ -512,11 +469,16 @@ static void dw_mipi_dsi_clk_disable(stru
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -114,7 +112,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  }
  
  static int dw_mipi_dsi_clk_enable(struct clk_hw *clk)
-@@ -527,19 +489,28 @@ static int dw_mipi_dsi_clk_enable(struct clk_hw *clk)
+@@ -527,19 +489,28 @@ static int dw_mipi_dsi_clk_enable(struct
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -124,18 +122,19 @@ index f3d29d2bc096..7f90724f7e7b 100644
 -					SLEEP_US, TIMEOUT_US);
 -	if (ret)
 -		DRM_DEBUG_DRIVER("!TIMEOUT! waiting REGU, let's continue\n");
-+	if (dsi->hw_version == HWVER_141) {
-+		ret = readl_poll_timeout_atomic(dsi->base + DSI_PSR, val, val & PSR_PSSC,
-+						SLEEP_US, TIMEOUT_US);
-+		if (ret)
-+			DRM_ERROR("!TIMEOUT! waiting PLL, let's continue\n");
- 
+-
 -	/* Enable the DSI PLL & wait for its lock */
 -	dsi_set(dsi, DSI_WRPCR, WRPCR_PLLEN);
 -	ret = readl_poll_timeout_atomic(dsi->base + DSI_WISR, val, val & WISR_PLLLS,
 -					SLEEP_US, TIMEOUT_US);
 -	if (ret)
 -		DRM_DEBUG_DRIVER("!TIMEOUT! waiting PLL, let's continue\n");
++	if (dsi->hw_version == HWVER_141) {
++		ret = readl_poll_timeout_atomic(dsi->base + DSI_PSR, val, val & PSR_PSSC,
++						SLEEP_US, TIMEOUT_US);
++		if (ret)
++			DRM_ERROR("!TIMEOUT! waiting PLL, let's continue\n");
++
 +		dsi_set(dsi, DSI_WRPCR2, WRPCR2_PLLEN);
 +	} else {
 +		/* Enable the regulator */
@@ -155,7 +154,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	return 0;
  }
-@@ -548,7 +519,10 @@ static int dw_mipi_dsi_clk_is_enabled(struct clk_hw *hw)
+@@ -548,7 +519,10 @@ static int dw_mipi_dsi_clk_is_enabled(st
  {
  	struct dw_mipi_dsi_stm *dsi = clk_to_dw_mipi_dsi_stm(hw);
  
@@ -167,22 +166,22 @@ index f3d29d2bc096..7f90724f7e7b 100644
  }
  
  static unsigned long dw_mipi_dsi_clk_recalc_rate(struct clk_hw *hw,
-@@ -562,13 +536,24 @@ static unsigned long dw_mipi_dsi_clk_recalc_rate(struct clk_hw *hw,
+@@ -562,13 +536,24 @@ static unsigned long dw_mipi_dsi_clk_rec
  
  	pll_in_khz = (unsigned int)(parent_rate / 1000);
  
 -	val = dsi_read(dsi, DSI_WRPCR);
 +	if (dsi->hw_version == HWVER_141) {
 +		val = dsi_read(dsi, DSI_WRPCR0);
++
++		idf = (val & WRPCR0_IDF) + 1;
++		ndiv = ((val & WRPCR0_NDIV) >> 4) + 2;
  
 -	idf = (val & WRPCR_IDF) >> 11;
 -	if (!idf)
 -		idf = 1;
 -	ndiv = (val & WRPCR_NDIV) >> 2;
 -	odf = int_pow(2, (val & WRPCR_ODF) >> 16);
-+		idf = (val & WRPCR0_IDF) + 1;
-+		ndiv = ((val & WRPCR0_NDIV) >> 4) + 2;
-+
 +		val = dsi_read(dsi, DSI_WRPCR1);
 +
 +		odf = int_pow(2, (val & WRPCR1_ODF) >> 28);
@@ -198,7 +197,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	/* Get the adjusted pll out value */
  	pll_out_khz = dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf);
-@@ -592,8 +577,12 @@ static long dw_mipi_dsi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+@@ -592,8 +577,12 @@ static long dw_mipi_dsi_clk_round_rate(s
  	ndiv = 0;
  	odf = 0;
  
@@ -213,7 +212,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  	if (ret)
  		DRM_WARN("Warning dsi_pll_get_params(): bad params\n");
  
-@@ -607,9 +596,9 @@ static int dw_mipi_dsi_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+@@ -607,9 +596,9 @@ static int dw_mipi_dsi_clk_set_rate(stru
  				    unsigned long parent_rate)
  {
  	struct dw_mipi_dsi_stm *dsi = clk_to_dw_mipi_dsi_stm(hw);
@@ -226,19 +225,28 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -620,20 +609,63 @@ static int dw_mipi_dsi_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+@@ -620,20 +609,63 @@ static int dw_mipi_dsi_clk_set_rate(stru
  	ndiv = 0;
  	odf = 0;
  
 -	ret = dsi_pll_get_params(dsi, pll_in_khz, rate / 1000, &idf, &ndiv, &odf);
 -	if (ret)
 -		DRM_WARN("Warning dsi_pll_get_params(): bad params\n");
+-
+-	/* Get the adjusted pll out value */
+-	pll_out_khz = dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf);
+-
+-	/* Set the PLL division factors */
+-	dsi_update_bits(dsi, DSI_WRPCR,	WRPCR_NDIV | WRPCR_IDF | WRPCR_ODF,
+-			(ndiv << 2) | (idf << 11) | ((ffs(odf) - 1) << 16));
+-
+-	/* Compute uix4 & set the bit period in high-speed mode */
+-	val = 4000000 / pll_out_khz;
+-	dsi_update_bits(dsi, DSI_WPCR0, WPCR0_UIX4, val);
 +	if (dsi->hw_version == HWVER_141) {
 +		/* Compute requested pll out, pll out is the half of the lane data rate */
 +		pll_out_khz = dsi->lane_mbps * 1000 / 2;
- 
--	/* Get the adjusted pll out value */
--	pll_out_khz = dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf);
++
 +		ret = dsi_phy_141_pll_get_params(dsi, pll_in_khz, pll_out_khz,
 +						 &idf, &ndiv, &odf, &dppa_index);
 +		if (ret)
@@ -267,16 +275,10 @@ index f3d29d2bc096..7f90724f7e7b 100644
 +		dsi_write(dsi, DSI_PCTLR, PCTLR_CKEN);
 +
 +		dsi_update_bits(dsi, DSI_WRPCR2, WRPCR2_SEL, 0x01);
- 
--	/* Set the PLL division factors */
--	dsi_update_bits(dsi, DSI_WRPCR,	WRPCR_NDIV | WRPCR_IDF | WRPCR_ODF,
--			(ndiv << 2) | (idf << 11) | ((ffs(odf) - 1) << 16));
++
 +		dsi_set(dsi, DSI_WRPCR2, WRPCR2_UPD);
 +		mdelay(1);
- 
--	/* Compute uix4 & set the bit period in high-speed mode */
--	val = 4000000 / pll_out_khz;
--	dsi_update_bits(dsi, DSI_WPCR0, WPCR0_UIX4, val);
++
 +		dsi_clear(dsi, DSI_WRPCR2, WRPCR2_UPD);
 +		mdelay(1);
 +
@@ -301,7 +303,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	return 0;
  }
-@@ -664,6 +696,13 @@ static struct clk_init_data cdata_init = {
+@@ -664,6 +696,13 @@ static struct clk_init_data cdata_init =
  	.num_parents = 1,
  };
  
@@ -315,7 +317,7 @@ index f3d29d2bc096..7f90724f7e7b 100644
  static int dw_mipi_dsi_clk_register(struct dw_mipi_dsi_stm *dsi,
  				    struct device *dev)
  {
-@@ -672,7 +711,14 @@ static int dw_mipi_dsi_clk_register(struct dw_mipi_dsi_stm *dsi,
+@@ -672,7 +711,14 @@ static int dw_mipi_dsi_clk_register(stru
  
  	DRM_DEBUG_DRIVER("Registering clk\n");
  
@@ -331,6 +333,3 @@ index f3d29d2bc096..7f90724f7e7b 100644
  
  	ret = clk_hw_register(dev, &dsi->txbyte_clk);
  	if (ret)
--- 
-2.39.2
-

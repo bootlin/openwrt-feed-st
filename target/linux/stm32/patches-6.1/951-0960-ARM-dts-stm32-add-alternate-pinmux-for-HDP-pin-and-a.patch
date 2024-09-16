@@ -21,8 +21,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 23 +++++++++++++++++++++++
  1 file changed, 23 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 46a4ed05fd62..20b4f0d82b74 100644
 --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
 @@ -4,6 +4,14 @@
@@ -40,7 +38,7 @@ index 46a4ed05fd62..20b4f0d82b74 100644
  
  &pinctrl {
  	adc1_in6_pins_a: adc1-in6-0 {
-@@ -583,6 +591,21 @@ pins {
+@@ -583,6 +591,21 @@
  		};
  	};
  
@@ -62,6 +60,3 @@ index 46a4ed05fd62..20b4f0d82b74 100644
  	i2c1_pins_a: i2c1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
--- 
-2.39.2
-

@@ -32,8 +32,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  3 files changed, 1247 insertions(+)
  create mode 100644 drivers/gpu/drm/stm/lvds.c
 
-diff --git a/drivers/gpu/drm/stm/Kconfig b/drivers/gpu/drm/stm/Kconfig
-index ded72f879482..a0bdfda4f4d5 100644
 --- a/drivers/gpu/drm/stm/Kconfig
 +++ b/drivers/gpu/drm/stm/Kconfig
 @@ -20,3 +20,9 @@ config DRM_STM_DSI
@@ -46,8 +44,6 @@ index ded72f879482..a0bdfda4f4d5 100644
 +	depends on DRM_STM
 +	help
 +	  Enable support for LVDS encoders on STMicroelectronics SoC.
-diff --git a/drivers/gpu/drm/stm/Makefile b/drivers/gpu/drm/stm/Makefile
-index 4df5caf01f35..ad740d6175a6 100644
 --- a/drivers/gpu/drm/stm/Makefile
 +++ b/drivers/gpu/drm/stm/Makefile
 @@ -5,4 +5,6 @@ stm-drm-y := \
@@ -57,9 +53,6 @@ index 4df5caf01f35..ad740d6175a6 100644
 +obj-$(CONFIG_DRM_STM_LVDS) += lvds.o
 +
  obj-$(CONFIG_DRM_STM) += stm-drm.o
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-new file mode 100644
-index 000000000000..fa14f999b5dc
 --- /dev/null
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -0,0 +1,1239 @@
@@ -1302,6 +1295,3 @@ index 000000000000..fa14f999b5dc
 +MODULE_AUTHOR("Yannick Fertre <yannick.fertre@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics LVDS Display Interface Transmitter DRM driver");
 +MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

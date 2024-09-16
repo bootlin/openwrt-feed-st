@@ -21,11 +21,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index c4836d9853a1..09a8702e8bb1 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -602,6 +602,8 @@ static struct irq_chip stm32_gpio_irq_chip = {
+@@ -602,6 +602,8 @@ static struct irq_chip stm32_gpio_irq_ch
  	.irq_set_wake	= irq_chip_set_wake_parent,
  	.irq_request_resources = stm32_gpio_irq_request_resources,
  	.irq_release_resources = stm32_gpio_irq_release_resources,
@@ -34,6 +32,3 @@ index c4836d9853a1..09a8702e8bb1 100644
  };
  
  static int stm32_gpio_domain_select(struct irq_domain *dm,
--- 
-2.39.2
-

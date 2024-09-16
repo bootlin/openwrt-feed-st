@@ -18,8 +18,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/phy/st/phy-stm32-usb2phy.c | 44 ++++++++++--------------------
  1 file changed, 14 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index 836bad72dfe2..375253531527 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -81,7 +81,7 @@ struct stm32_usb2phy {
@@ -31,7 +29,7 @@ index 836bad72dfe2..375253531527 100644
  	struct clk_hw clk48_hw;
  	atomic_t en_refcnt;
  	const struct stm32mp2_usb2phy_hw_data *hw_data;
-@@ -351,7 +351,7 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -351,7 +351,7 @@ static int stm32_usb2phy_set_mode(struct
  						 SYSCFG_USB2PHY2CR_USB2PHY2CMN_MASK,
  						 0);
  		else {
@@ -40,7 +38,7 @@ index 836bad72dfe2..375253531527 100644
  				ret = regmap_update_bits(phy_dev->regmap,
  							 phy_data->cr_offset,
  							 SYSCFG_USB2PHY2CR_USB2PHY2CMN_MASK |
-@@ -374,35 +374,25 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -374,35 +374,25 @@ static int stm32_usb2phy_set_mode(struct
  		break;
  
  	case PHY_MODE_USB_DEVICE:
@@ -88,7 +86,7 @@ index 836bad72dfe2..375253531527 100644
  		}
  		if (ret) {
  			dev_err(dev, "can't set usb2phycr (%d)\n", ret);
-@@ -751,12 +741,6 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -751,12 +741,6 @@ static int stm32_usb2phy_probe(struct pl
  	phy_dev->phy = phy;
  	phy_set_drvdata(phy, phy_dev);
  
@@ -101,6 +99,3 @@ index 836bad72dfe2..375253531527 100644
  	/* Configure phy tuning */
  	ret = stm32_usb2phy_tuning(phy);
  	if (ret)
--- 
-2.39.2
-

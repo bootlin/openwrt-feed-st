@@ -13,8 +13,6 @@ Change-Id: I6cbdf7d896e4177029b724570a395e7f0ed434c8
  Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-index c45cebf88932..f482ec49ed0b 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -102,6 +102,10 @@ then:
@@ -28,6 +26,3 @@ index c45cebf88932..f482ec49ed0b 100644
  required:
    - st,syscfg
    - interrupt-map
--- 
-2.39.2
-

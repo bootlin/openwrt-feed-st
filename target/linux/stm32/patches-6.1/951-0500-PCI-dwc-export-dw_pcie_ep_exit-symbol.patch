@@ -16,11 +16,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-designware-ep.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 4086a7818981..1326eb7aaf09 100644
 --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
 +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -623,6 +623,7 @@ void dw_pcie_ep_exit(struct dw_pcie_ep *ep)
+@@ -630,6 +630,7 @@ void dw_pcie_ep_exit(struct dw_pcie_ep *
  
  	pci_epc_mem_exit(epc);
  }
@@ -28,6 +26,3 @@ index 4086a7818981..1326eb7aaf09 100644
  
  static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
  {
--- 
-2.39.2
-

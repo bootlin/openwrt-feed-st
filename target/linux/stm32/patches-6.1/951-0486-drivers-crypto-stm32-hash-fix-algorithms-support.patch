@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/crypto/stm32/stm32-hash.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index 0d7d71b6585d..db764e4848a9 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
 @@ -74,7 +74,7 @@
@@ -30,6 +28,3 @@ index 0d7d71b6585d..db764e4848a9 100644
  #define HASH_CSR_NB_SHA512_HMAC		103
  #define HASH_CSR_NB_SHA512		91
  #define HASH_CSR_NB_SHA3_HMAC		88
--- 
-2.39.2
-

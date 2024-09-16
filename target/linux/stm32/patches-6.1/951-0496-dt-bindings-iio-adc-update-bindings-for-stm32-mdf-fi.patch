@@ -19,8 +19,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/iio/adc/st,stm32-mdf-adc.yaml    | 83 +++++++++++++------
  1 file changed, 59 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
-index 4a8087423cc7..40cc30e42bf2 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 @@ -33,10 +33,6 @@ properties:
@@ -181,6 +179,3 @@ index 4a8087423cc7..40cc30e42bf2 100644
  
          asoc_pdm0: mdf-dai {
            compatible = "st,stm32mp25-mdf-dai";
--- 
-2.39.2
-

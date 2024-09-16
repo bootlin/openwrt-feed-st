@@ -24,8 +24,6 @@ Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 11 ++++++++++-
  1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index f1f1e69a33b1..98186c9e39c8 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 @@ -12,6 +12,8 @@
@@ -37,7 +35,7 @@ index f1f1e69a33b1..98186c9e39c8 100644
  #include <linux/module.h>
  #include <linux/of_device.h>
  #include <linux/pm_runtime.h>
-@@ -737,8 +739,15 @@ static u32 dw_mipi_dsi_get_hcomponent_lbcc(struct dw_mipi_dsi *dsi,
+@@ -737,8 +739,15 @@ static u32 dw_mipi_dsi_get_hcomponent_lb
  					   u32 hcomponent)
  {
  	u32 frac, lbcc;
@@ -54,6 +52,3 @@ index f1f1e69a33b1..98186c9e39c8 100644
  
  	frac = lbcc % mode->clock;
  	lbcc = lbcc / mode->clock;
--- 
-2.39.2
-

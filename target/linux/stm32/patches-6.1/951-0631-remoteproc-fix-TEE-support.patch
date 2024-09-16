@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/remoteproc/tee_remoteproc.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
-index 514080fdd38b..239fe0f157cc 100644
 --- a/drivers/remoteproc/tee_remoteproc.c
 +++ b/drivers/remoteproc/tee_remoteproc.c
-@@ -162,6 +162,9 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+@@ -162,6 +162,9 @@ int rproc_tee_get_rsc_table(struct tee_r
  
  	rsc_size = param[2].u.value.a;
  
@@ -33,6 +31,3 @@ index 514080fdd38b..239fe0f157cc 100644
  	/*
  	 * Store the resource table address that would be updated by the remote
  	 * core and the virtio.
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 7534f02e63da..5da4ce6c1975 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -703,6 +703,7 @@ i2s2: audio-controller@400b0000 {
+@@ -703,6 +703,7 @@
  				dmas = <&hpdma 51 0x43 0x12 0>,
  					<&hpdma 52 0x43 0x21 0>;
  				dma-names = "rx", "tx";
@@ -30,7 +28,7 @@ index 7534f02e63da..5da4ce6c1975 100644
  				power-domains = <&RET_PD>;
  				status = "disabled";
  			};
-@@ -734,6 +735,7 @@ i2s3: audio-controller@400c0000 {
+@@ -734,6 +735,7 @@
  				dmas = <&hpdma 53 0x43 0x12 0>,
  					<&hpdma 54 0x43 0x21 0>;
  				dma-names = "rx", "tx";
@@ -38,7 +36,7 @@ index 7534f02e63da..5da4ce6c1975 100644
  				power-domains = <&RET_PD>;
  				status = "disabled";
  			};
-@@ -1122,6 +1124,7 @@ i2s1: audio-controller@40230000 {
+@@ -1122,6 +1124,7 @@
  				dmas = <&hpdma 49 0x43 0x12 0>,
  					<&hpdma 50 0x43 0x21 0>;
  				dma-names = "rx", "tx";
@@ -46,6 +44,3 @@ index 7534f02e63da..5da4ce6c1975 100644
  				power-domains = <&RET_PD>;
  				status = "disabled";
  			};
--- 
-2.39.2
-

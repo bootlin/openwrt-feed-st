@@ -12,8 +12,6 @@ Change-Id: Iac8b4d1db25fc808d9fbe977aee372ae14dcdb59
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 4955dd9c11ec..7dd7f13a7c93 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 @@ -9,6 +9,7 @@
@@ -24,7 +22,7 @@ index 4955dd9c11ec..7dd7f13a7c93 100644
  #include "stm32mp257.dtsi"
  #include "stm32mp25xf.dtsi"
  #include "stm32mp25-pinctrl.dtsi"
-@@ -61,6 +62,13 @@ &arm_wdt {
+@@ -61,6 +62,13 @@
  	status = "okay";
  };
  
@@ -38,6 +36,3 @@ index 4955dd9c11ec..7dd7f13a7c93 100644
  &scmi_regu {
  	scmi_vddio1: regulator@0 {
  		regulator-min-microvolt = <1800000>;
--- 
-2.39.2
-

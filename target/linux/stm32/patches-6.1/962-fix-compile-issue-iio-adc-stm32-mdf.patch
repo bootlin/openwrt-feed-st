@@ -1,7 +1,5 @@
-Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-core.c
-===================================================================
---- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-core.c
-+++ linux-6.1.89/drivers/iio/adc/stm32-mdf-core.c
+--- a/drivers/iio/adc/stm32-mdf-core.c
++++ b/drivers/iio/adc/stm32-mdf-core.c
 @@ -734,8 +734,8 @@ static int stm32_mdf_core_runtime_resume
  }
  
@@ -22,10 +20,8 @@ Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-core.c
  	},
  };
  
-Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-adc.c
-===================================================================
---- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-adc.c
-+++ linux-6.1.89/drivers/iio/adc/stm32-mdf-adc.c
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
 @@ -1746,13 +1746,15 @@ static int stm32_mdf_adc_resume(struct d
  	return ret;
  }
@@ -44,10 +40,8 @@ Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-adc.c
  	},
  	.probe = stm32_mdf_adc_probe,
  	.remove = stm32_mdf_adc_remove,
-Index: linux-6.1.89/drivers/iio/adc/stm32-mdf-serial.c
-===================================================================
---- linux-6.1.89.orig/drivers/iio/adc/stm32-mdf-serial.c
-+++ linux-6.1.89/drivers/iio/adc/stm32-mdf-serial.c
+--- a/drivers/iio/adc/stm32-mdf-serial.c
++++ b/drivers/iio/adc/stm32-mdf-serial.c
 @@ -283,8 +283,8 @@ static int stm32_mdf_sitf_runtime_resume
  }
  

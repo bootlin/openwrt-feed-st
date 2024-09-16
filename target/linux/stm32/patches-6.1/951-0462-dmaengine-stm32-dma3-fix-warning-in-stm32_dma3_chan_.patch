@@ -32,11 +32,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32-dma3.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 71eac66fb77f..95a9dfd2d5ff 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -1210,7 +1210,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1210,7 +1210,7 @@ static void stm32_dma3_chan_set_residue(
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(&chan->vchan.chan);
  	struct device *dev = chan2dev(chan);
  	struct stm32_dma3_hwdesc *hwdesc;
@@ -45,7 +43,7 @@ index 71eac66fb77f..95a9dfd2d5ff 100644
  	bool pack_unpack;
  	u32 i, _curr_lli;
  	int ret;
-@@ -1220,8 +1220,8 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1220,8 +1220,8 @@ static void stm32_dma3_chan_set_residue(
  	csr = readl_relaxed(ddata->base + STM32_DMA3_CSR(chan->id));
  	if (!(csr & CSR_IDLEF) && chan->dma_status != DMA_PAUSED) {
  		/* Suspend current transfer to read registers for a snapshot */
@@ -56,7 +54,7 @@ index 71eac66fb77f..95a9dfd2d5ff 100644
  		ret = readl_relaxed_poll_timeout_atomic(ddata->base + STM32_DMA3_CSR(chan->id), csr,
  							csr & CSR_SUSPF, 10, USEC_PER_SEC);
  		if (ret < 0) {
-@@ -1245,7 +1245,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1245,7 +1245,7 @@ static void stm32_dma3_chan_set_residue(
  	cbr1 = readl_relaxed(ddata->base + STM32_DMA3_CBR1(chan->id));
  	cllr = readl_relaxed(ddata->base + STM32_DMA3_CLLR(chan->id));
  
@@ -65,6 +63,3 @@ index 71eac66fb77f..95a9dfd2d5ff 100644
  		/* Resume current transfer */
  		writel_relaxed(CFCR_SUSPF, ddata->base + STM32_DMA3_CFCR(chan->id));
  		writel_relaxed(ccr & ~CCR_SUSP, ddata->base + STM32_DMA3_CCR(chan->id));
--- 
-2.39.2
-

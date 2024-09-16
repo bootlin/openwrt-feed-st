@@ -19,11 +19,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  include/linux/pci-epc.h                       | 2 ++
  2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index 2e8a4de2abab..0cd96ce0b846 100644
 --- a/drivers/pci/endpoint/functions/pci-epf-test.c
 +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -959,6 +959,7 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+@@ -959,6 +959,7 @@ static int pci_epf_test_bind(struct pci_
  	struct pci_epc *epc = epf->epc;
  	bool linkup_notifier = false;
  	bool core_init_notifier = false;
@@ -31,7 +29,7 @@ index 2e8a4de2abab..0cd96ce0b846 100644
  
  	if (WARN_ON_ONCE(!epc))
  		return -EINVAL;
-@@ -971,6 +972,7 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+@@ -971,6 +972,7 @@ static int pci_epf_test_bind(struct pci_
  
  	linkup_notifier = epc_features->linkup_notifier;
  	core_init_notifier = epc_features->core_init_notifier;
@@ -39,7 +37,7 @@ index 2e8a4de2abab..0cd96ce0b846 100644
  	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
  	if (test_reg_bar < 0)
  		return -EINVAL;
-@@ -983,7 +985,7 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+@@ -983,7 +985,7 @@ static int pci_epf_test_bind(struct pci_
  	if (ret)
  		return ret;
  
@@ -48,8 +46,6 @@ index 2e8a4de2abab..0cd96ce0b846 100644
  		ret = pci_epf_test_core_init(epf);
  		if (ret)
  			return ret;
-diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-index a48778e1a4ee..ebf54a619cef 100644
 --- a/include/linux/pci-epc.h
 +++ b/include/linux/pci-epc.h
 @@ -154,6 +154,7 @@ struct pci_epc {
@@ -68,6 +64,3 @@ index a48778e1a4ee..ebf54a619cef 100644
  	unsigned int	linkup_notifier : 1;
  	unsigned int	core_init_notifier : 1;
  	unsigned int	msi_capable : 1;
--- 
-2.39.2
-

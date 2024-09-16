@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 17 +++++++++++++++++
  2 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 8cb48badabd2..4ceab91c6089 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -72,18 +72,6 @@ m_can3: can@402f0000 {
+@@ -72,18 +72,6 @@
  				status = "disabled";
  			};
  
@@ -39,7 +37,7 @@ index 8cb48badabd2..4ceab91c6089 100644
  			eth2: eth2@482d0000 {
  				compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  				reg = <0x482d0000 0x4000>;
-@@ -140,11 +128,6 @@ mtl_tx_setup_2: tx-queues-config {
+@@ -140,11 +128,6 @@
  	};
  };
  
@@ -51,11 +49,9 @@ index 8cb48badabd2..4ceab91c6089 100644
  &optee {
  	interrupts = <GIC_PPI 15 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 1ea99d5102d8..b0ffae4a929f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -22,6 +22,18 @@ dsi: dsi@48000000 {
+@@ -22,6 +22,18 @@
  				status = "disabled";
  			};
  
@@ -74,7 +70,7 @@ index 1ea99d5102d8..b0ffae4a929f 100644
  			vdec: vdec@480d0000 {
  				compatible = "st,stm32mp25-vdec";
  				reg = <0x480d0000 0x3c8>;
-@@ -60,3 +72,8 @@ gpu: gpu@48280000 {
+@@ -60,3 +72,8 @@
  		};
  	};
  };
@@ -83,6 +79,3 @@ index 1ea99d5102d8..b0ffae4a929f 100644
 +	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>, <&lvds 0>;
 +	clock-names = "bus", "ref", "lcd", "lvds";
 +};
--- 
-2.39.2
-

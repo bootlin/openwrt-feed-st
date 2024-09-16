@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/pci/controller/dwc/pcie-stm32-ep.c | 34 ++++++++++------------
  1 file changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-index 4b22cc7348db..53a5acf839ab 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32-ep.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-@@ -321,24 +321,7 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+@@ -321,24 +321,7 @@ static int stm32_add_pcie_ep(struct stm3
  		return ret;
  	}
  
@@ -47,7 +45,7 @@ index 4b22cc7348db..53a5acf839ab 100644
  }
  
  static int stm32_pcie_probe(struct platform_device *pdev)
-@@ -399,6 +382,21 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -399,6 +382,21 @@ static int stm32_pcie_probe(struct platf
  		return ret;
  	}
  
@@ -69,6 +67,3 @@ index 4b22cc7348db..53a5acf839ab 100644
  	return stm32_add_pcie_ep(stm32_pcie, pdev);
  }
  
--- 
-2.39.2
-

@@ -27,11 +27,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index 3de34c9043e1..f89d6b8f462b 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -716,11 +716,11 @@ static void hantro_h1_vp8_enc_write_header(struct hantro_ctx *ctx, u32 qp,
+@@ -716,11 +716,11 @@ static void hantro_h1_vp8_enc_write_head
  		ctx->vp8_enc.frame_tag->magic[1] = 0x01;
  		ctx->vp8_enc.frame_tag->magic[2] = 0x2a;
  
@@ -47,6 +45,3 @@ index 3de34c9043e1..f89d6b8f462b 100644
  	} else {
  		ctx->vp8_enc.frame_tag->tag[0] |= 0x1;
  	}
--- 
-2.39.2
-

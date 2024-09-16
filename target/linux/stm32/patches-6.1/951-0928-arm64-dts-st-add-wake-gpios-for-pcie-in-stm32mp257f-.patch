@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index d03a69297b73..11ecc9f69347 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -559,6 +559,8 @@ &pcie_rc {
+@@ -559,6 +559,8 @@
  	pinctrl-1 = <&pcie_init_pins_a>;
  	pinctrl-2 = <&pcie_sleep_pins_a>;
  	reset-gpios = <&gpioj 8 GPIO_ACTIVE_LOW>;
@@ -33,6 +31,3 @@ index d03a69297b73..11ecc9f69347 100644
  	status = "okay";
  };
  
--- 
-2.39.2
-

@@ -12,8 +12,6 @@ Change-Id: I720b70e5c25ad2f2a41b835d2a768e6374e1cbc1
  .../platform/verisilicon/hantro_h1_vp8_enc.c  | 51 +++++++++++++++++++
  2 files changed, 55 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 614f84723502..d221989b3f95 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -221,6 +221,8 @@ struct hantro_dev {
@@ -34,11 +32,9 @@ index 614f84723502..d221989b3f95 100644
  	u32 sequence_cap;
  	u32 sequence_out;
  
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index e5d29c473cfa..3de34c9043e1 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1403,6 +1403,55 @@ static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_c
+@@ -1403,6 +1403,55 @@ static void hantro_h1_vp8_enc_set_params
  	}
  }
  
@@ -94,7 +90,7 @@ index e5d29c473cfa..3de34c9043e1 100644
  int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
  {
  	struct hantro_dev *vpu = ctx->dev;
-@@ -1417,6 +1466,8 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+@@ -1417,6 +1466,8 @@ int hantro_h1_vp8_enc_run(struct hantro_
  	if (WARN_ON(!params))
  		return -EINVAL;
  
@@ -103,6 +99,3 @@ index e5d29c473cfa..3de34c9043e1 100644
  	if (params->flags & V4L2_VP8_FRAME_FLAG_SEGMENT_ENABLED)
  		return -EINVAL;
  
--- 
-2.39.2
-

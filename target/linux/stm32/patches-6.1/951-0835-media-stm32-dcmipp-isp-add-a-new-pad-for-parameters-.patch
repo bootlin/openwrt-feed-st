@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 88c3a8a75fce..d36b6da041d9 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -1135,10 +1135,11 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(struct device *dev,
+@@ -1135,10 +1135,11 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
  				     v4l2_dev,
  				     entity_name,
@@ -36,6 +34,3 @@ index 88c3a8a75fce..d36b6da041d9 100644
  				     MEDIA_PAD_FL_SOURCE,
  				     },
  				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
--- 
-2.39.2
-

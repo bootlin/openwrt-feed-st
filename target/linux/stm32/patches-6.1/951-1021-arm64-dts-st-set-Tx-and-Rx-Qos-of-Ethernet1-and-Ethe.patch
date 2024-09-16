@@ -25,11 +25,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 2 ++
  2 files changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index efffacb3699c..24f674a728aa 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2201,6 +2201,8 @@ eth1: eth1@482c0000 {
+@@ -2201,6 +2201,8 @@
  				st,syscon = <&syscfg 0x3000 0xffffffff>;
  				snps,mixed-burst;
  				snps,pbl = <2>;
@@ -38,11 +36,9 @@ index efffacb3699c..24f674a728aa 100644
  				snps,axi-config = <&stmmac_axi_config_1>;
  				snps,tso;
  				feature-domains = <&rifsc STM32MP25_RIFSC_ETH1_ID>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 4ceab91c6089..9bda696af6a6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -95,6 +95,8 @@ eth2: eth2@482d0000 {
+@@ -95,6 +95,8 @@
  				st,syscon = <&syscfg 0x3400 0xffffffff>;
  				snps,mixed-burst;
  				snps,pbl = <2>;
@@ -51,6 +47,3 @@ index 4ceab91c6089..9bda696af6a6 100644
  				snps,axi-config = <&stmmac_axi_config_2>;
  				snps,tso;
  				feature-domains = <&rifsc STM32MP25_RIFSC_ETH2_ID>;
--- 
-2.39.2
-

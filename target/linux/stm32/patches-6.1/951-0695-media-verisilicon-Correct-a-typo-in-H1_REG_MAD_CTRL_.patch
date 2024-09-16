@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/media/platform/verisilicon/hantro_h1_regs.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 72458de5e55b..5be8ccd6b7fb 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -92,7 +92,7 @@
@@ -32,6 +30,3 @@ index 72458de5e55b..5be8ccd6b7fb 100644
  #define    H1_REG_MAD_CTRL_QP_SUM_DIV2(x)		((x))
  #define H1_REG_ADDR_VP8_PROB_CNT			0x068
  #define H1_REG_QP_VAL					0x06c
--- 
-2.39.2
-

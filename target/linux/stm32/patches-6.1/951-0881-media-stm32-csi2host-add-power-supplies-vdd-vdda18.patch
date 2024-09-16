@@ -19,8 +19,6 @@ Reviewed-by: Alain VOLMAT <alain.volmat@foss.st.com>
  .../media/platform/st/stm32/stm32-csi2host.c  | 26 +++++++++++++++++--
  1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-csi2host.c b/drivers/media/platform/st/stm32/stm32-csi2host.c
-index 5d1a3383bb4b..bb8b6ad48241 100644
 --- a/drivers/media/platform/st/stm32/stm32-csi2host.c
 +++ b/drivers/media/platform/st/stm32/stm32-csi2host.c
 @@ -170,6 +170,7 @@ struct csi2host_priv {
@@ -31,7 +29,7 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  	struct reset_control		*rstc;
  
  	u8				lanes[CSI2HOST_LANES_MAX];
-@@ -927,8 +928,9 @@ static int csi2host_get_resources(struct csi2host_priv *csi2priv,
+@@ -927,8 +928,9 @@ static int csi2host_get_resources(struct
  {
  	struct resource *res;
  #ifdef CSI2HOST_ERROR_HANDLING
@@ -42,7 +40,7 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  	u32 dev_cfg;
  
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -957,6 +959,13 @@ static int csi2host_get_resources(struct csi2host_priv *csi2priv,
+@@ -957,6 +959,13 @@ static int csi2host_get_resources(struct
  		return dev_err_probe(&pdev->dev, PTR_ERR(csi2priv->rstc),
  				     "Couldn't get reset control\n");
  
@@ -56,7 +54,7 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  #ifdef CSI2HOST_ERROR_HANDLING
  	irq = platform_get_irq(pdev, 0);
  	if (irq <= 0)
-@@ -1135,11 +1144,16 @@ static int csi2host_remove(struct platform_device *pdev)
+@@ -1135,11 +1144,16 @@ static int csi2host_remove(struct platfo
  static int __maybe_unused csi2host_runtime_suspend(struct device *dev)
  {
  	struct csi2host_priv *csi2priv = dev_get_drvdata(dev);
@@ -73,7 +71,7 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  	return 0;
  }
  
-@@ -1148,10 +1162,14 @@ static int __maybe_unused csi2host_runtime_resume(struct device *dev)
+@@ -1148,10 +1162,14 @@ static int __maybe_unused csi2host_runti
  	struct csi2host_priv *csi2priv = dev_get_drvdata(dev);
  	int ret;
  
@@ -89,7 +87,7 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  	ret = clk_prepare_enable(csi2priv->txesc);
  	if (ret)
  		goto error_disable_pclk;
-@@ -1166,6 +1184,10 @@ static int __maybe_unused csi2host_runtime_resume(struct device *dev)
+@@ -1166,6 +1184,10 @@ error_disable_txesc:
  	clk_disable_unprepare(csi2priv->txesc);
  error_disable_pclk:
  	clk_disable_unprepare(csi2priv->pclk);
@@ -100,6 +98,3 @@ index 5d1a3383bb4b..bb8b6ad48241 100644
  error_out:
  	dev_err(csi2priv->dev, "Failed to resume: %d\n", ret);
  
--- 
-2.39.2
-

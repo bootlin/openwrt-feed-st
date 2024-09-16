@@ -23,8 +23,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  5 files changed, 876 insertions(+), 3 deletions(-)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 
-diff --git a/drivers/media/platform/st/stm32/Kconfig b/drivers/media/platform/st/stm32/Kconfig
-index 86604194e534..3a67d0ed6977 100644
 --- a/drivers/media/platform/st/stm32/Kconfig
 +++ b/drivers/media/platform/st/stm32/Kconfig
 @@ -34,6 +34,7 @@ config VIDEO_STM32_DCMIPP
@@ -35,8 +33,6 @@ index 86604194e534..3a67d0ed6977 100644
  	select V4L2_FWNODE
  	help
  	  This module makes the STM32 Digital Camera Memory Interface
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index bd9e5c381f83..23d81dfb580b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -2,4 +2,4 @@
@@ -45,11 +41,9 @@ index bd9e5c381f83..23d81dfb580b 100644
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
 -obj-$(CONFIG_VIDEO_STM32_DCMIPP) += dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o
 +obj-$(CONFIG_VIDEO_STM32_DCMIPP) += dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 40f2d94fb25d..4082d3a549dc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -138,6 +138,7 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -138,6 +138,7 @@ static const struct dcmipp_pipeline_conf
  #define	ID_MAIN_CAPTURE	5
  #define	ID_AUX_POSTPROC 6
  #define	ID_AUX_CAPTURE 7
@@ -57,7 +51,7 @@ index 40f2d94fb25d..4082d3a549dc 100644
  static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
  	{
  		.name = "dcmipp_parallel",
-@@ -171,6 +172,10 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+@@ -171,6 +172,10 @@ static const struct dcmipp_ent_config st
  		.name = "dcmipp_aux_capture",
  		.drv = "dcmipp-pixelcap",
  	},
@@ -68,7 +62,7 @@ index 40f2d94fb25d..4082d3a549dc 100644
  };
  
  static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
-@@ -186,6 +191,8 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -186,6 +191,8 @@ static const struct dcmipp_ent_link stm3
  	DCMIPP_ENT_LINK(ID_PARALLEL,	1, ID_AUX_POSTPROC,  0, 0),
  	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
@@ -77,11 +71,9 @@ index 40f2d94fb25d..4082d3a549dc 100644
  };
  
  static const struct dcmipp_pipeline_config stm32mp25_pipe_cfg = {
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index a7d4161dd811..e5e16514472d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -923,11 +923,12 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+@@ -923,11 +923,12 @@ static int dcmipp_isp_comp_bind(struct d
  	ret = dcmipp_ent_sd_register(&isp->ved, &isp->sd,
  				     bind_data->v4l2_dev,
  				     pdata->entity_name,
@@ -96,9 +88,6 @@ index a7d4161dd811..e5e16514472d 100644
  				     },
  				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
  				     NULL, NULL);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-new file mode 100644
-index 000000000000..741cd0615a4e
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -0,0 +1,864 @@
@@ -966,6 +955,3 @@ index 000000000000..741cd0615a4e
 +MODULE_AUTHOR("Hugues Fruchet <hugues.fruchet@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

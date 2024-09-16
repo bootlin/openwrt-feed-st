@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 9b07cd272ebb..0d2c5a6d5097 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -371,6 +371,7 @@ &ipcc1 {
+@@ -371,6 +371,7 @@
  };
  
  &ltdc {
@@ -27,6 +25,3 @@ index 9b07cd272ebb..0d2c5a6d5097 100644
  	status = "okay";
  
  	port {
--- 
-2.39.2
-

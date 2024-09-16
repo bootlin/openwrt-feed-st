@@ -17,11 +17,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 283ec1469b6b..74fb762af804 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -2358,6 +2358,7 @@ static void cryp_debugfs(struct stm32_cryp *cryp)
+@@ -2358,6 +2358,7 @@ static void cryp_debugfs(struct stm32_cr
  	if (!regset)
  		return;
  
@@ -29,6 +27,3 @@ index 283ec1469b6b..74fb762af804 100644
  	regset->regs = stm32_cryp_regs;
  	regset->nregs = ARRAY_SIZE(stm32_cryp_regs);
  	regset->base = cryp->regs;
--- 
-2.39.2
-

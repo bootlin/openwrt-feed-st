@@ -25,8 +25,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-usb2phy.c | 248 ++++++++++++++++++++---------
  2 files changed, 177 insertions(+), 72 deletions(-)
 
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index a8c87495036a..3f8169dfcccf 100644
 --- a/drivers/phy/st/Kconfig
 +++ b/drivers/phy/st/Kconfig
 @@ -60,6 +60,7 @@ config PHY_STM32_USBPHYC
@@ -37,8 +35,6 @@ index a8c87495036a..3f8169dfcccf 100644
  	select GENERIC_PHY
  	help
  	  Enable this to support the High-Speed USB2 transceivers that are part
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index 21ad6ff29286..520ac736553a 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -7,6 +7,7 @@
@@ -58,7 +54,7 @@ index 21ad6ff29286..520ac736553a 100644
  	const struct stm32mp2_usb2phy_hw_data *hw_data;
  };
  
-@@ -185,6 +188,112 @@ static int stm32_usb2phy_regulators_disable(struct stm32_usb2phy *phy_dev)
+@@ -185,6 +188,112 @@ static int stm32_usb2phy_regulators_disa
  	return 0;
  }
  
@@ -171,7 +167,7 @@ index 21ad6ff29286..520ac736553a 100644
  static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
  {
  	int ret;
-@@ -273,83 +382,25 @@ static int stm32_usb2phy_init(struct phy *phy)
+@@ -273,83 +382,25 @@ static int stm32_usb2phy_init(struct phy
  	int ret;
  	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
  	struct device *dev = &phy->dev;
@@ -259,7 +255,7 @@ index 21ad6ff29286..520ac736553a 100644
  
  	return ret;
  }
-@@ -359,17 +410,9 @@ static int stm32_usb2phy_exit(struct phy *phy)
+@@ -359,17 +410,9 @@ static int stm32_usb2phy_exit(struct phy
  	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
  	int ret;
  
@@ -279,7 +275,7 @@ index 21ad6ff29286..520ac736553a 100644
  		return ret;
  	}
  
-@@ -383,6 +426,60 @@ static const struct phy_ops stm32_usb2phy_data = {
+@@ -383,6 +426,60 @@ static const struct phy_ops stm32_usb2ph
  	.owner = THIS_MODULE,
  };
  
@@ -340,7 +336,7 @@ index 21ad6ff29286..520ac736553a 100644
  static int stm32_usb2phy_tuning(struct phy *phy)
  {
  	int ret;
-@@ -624,6 +721,13 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -624,6 +721,13 @@ static int stm32_usb2phy_probe(struct pl
  	if (IS_ERR(phy_provider))
  		return PTR_ERR(phy_provider);
  
@@ -354,6 +350,3 @@ index 21ad6ff29286..520ac736553a 100644
  	return 0;
  }
  
--- 
-2.39.2
-

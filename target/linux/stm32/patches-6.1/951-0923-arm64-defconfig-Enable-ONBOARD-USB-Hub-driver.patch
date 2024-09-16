@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index 22f9b98bca77..df3446a487ce 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -109,6 +109,7 @@ CONFIG_UBIFS_FS=y
@@ -29,6 +27,3 @@ index 22f9b98bca77..df3446a487ce 100644
  CONFIG_USB_STM32_USBH=y
  CONFIG_V4L_TEST_DRIVERS=y
  CONFIG_VIDEOMODE_HELPERS=y
--- 
-2.39.2
-

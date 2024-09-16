@@ -21,11 +21,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index d7b55445f447..d4e62bce024a 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -1527,8 +1527,6 @@ static int stm32_cryp_prepare_req(struct skcipher_request *req,
+@@ -1527,8 +1527,6 @@ static int stm32_cryp_prepare_req(struct
  	rctx = req ? skcipher_request_ctx(req) : aead_request_ctx(areq);
  	rctx->mode &= FLG_MODE_MASK;
  
@@ -34,6 +32,3 @@ index d7b55445f447..d4e62bce024a 100644
  	cryp->flags = (cryp->flags & ~FLG_MODE_MASK) | rctx->mode;
  	cryp->hw_blocksize = is_aes(cryp) ? AES_BLOCK_SIZE : DES_BLOCK_SIZE;
  	cryp->ctx = ctx;
--- 
-2.39.2
-

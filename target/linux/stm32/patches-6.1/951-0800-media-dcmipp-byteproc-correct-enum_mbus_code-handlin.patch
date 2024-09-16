@@ -19,11 +19,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 32 ++++++++++---------
  1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 07173fbc5674..4db4b8934137 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -98,17 +98,6 @@ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+@@ -98,17 +98,6 @@ static const struct dcmipp_byteproc_pix_
  	PIXMAP_MBUS_BPP(JPEG_1X8, 1, 0x00), /* TODO - DT value to be fixed */
  };
  
@@ -41,7 +39,7 @@ index 07173fbc5674..4db4b8934137 100644
  static const struct dcmipp_byteproc_pix_map *dcmipp_byteproc_pix_map_by_code(u32 code)
  {
  	const struct dcmipp_byteproc_pix_map *l = dcmipp_byteproc_pix_map_list;
-@@ -275,13 +264,26 @@ static int dcmipp_byteproc_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -275,13 +264,26 @@ static int dcmipp_byteproc_enum_mbus_cod
  					  struct v4l2_subdev_state *sd_state,
  					  struct v4l2_subdev_mbus_code_enum *code)
  {
@@ -72,6 +70,3 @@ index 07173fbc5674..4db4b8934137 100644
  
  	return 0;
  }
--- 
-2.39.2
-

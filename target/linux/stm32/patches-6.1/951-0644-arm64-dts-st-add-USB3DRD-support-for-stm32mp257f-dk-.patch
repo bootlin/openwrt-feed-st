@@ -13,11 +13,9 @@ Change-Id: Iabdcf799214622a78a43209532a4ce1e5301ce15
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 93176151ae9f..a6790693ee96 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -212,3 +212,13 @@ &usb2_phy1 {
+@@ -212,3 +212,13 @@
  &usb2_phy2 {
  	status = "okay";
  };
@@ -31,6 +29,3 @@ index 93176151ae9f..a6790693ee96 100644
 +		usb-role-switch;
 +	};
 +};
--- 
-2.39.2
-

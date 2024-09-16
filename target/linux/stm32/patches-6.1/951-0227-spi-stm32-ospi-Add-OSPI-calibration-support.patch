@@ -25,8 +25,6 @@ Change-Id: Ia78dd726be3715922116f87ee23909a8ec4373f1
  drivers/spi/spi-stm32-ospi.c | 140 ++++++++++++++++++++++++++++++++++-
  1 file changed, 137 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 5861c8c40a71..424dd9c3efc4 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -1,6 +1,6 @@
@@ -62,7 +60,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	unsigned long status_timeout;
  
  	/*
-@@ -169,12 +175,20 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -169,12 +175,20 @@ static int stm32_ospi_send(struct spi_de
  	struct stm32_omi *omi = &ospi->omi;
  	u32 ccr, cr, dcr2, tcr;
  	int timeout, err = 0, err_poll_status = 0;
@@ -83,7 +81,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	cr = readl_relaxed(regs_base + OSPI_CR);
  	cr &= ~CR_CSSEL;
  	cr |= FIELD_PREP(CR_CSSEL, flash->cs);
-@@ -187,6 +201,7 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -187,6 +201,7 @@ static int stm32_ospi_send(struct spi_de
  
  	/* set prescaler */
  	dcr2 = readl_relaxed(regs_base + OSPI_DCR2);
@@ -91,7 +89,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	dcr2 |= FIELD_PREP(DCR2_PRESC_MASK, flash->presc);
  	writel_relaxed(dcr2, regs_base + OSPI_DCR2);
  
-@@ -453,13 +468,115 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -453,13 +468,115 @@ end_of_transfer:
  	return ret;
  }
  
@@ -207,7 +205,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	int ret;
  
  	if (ctrl->busy)
-@@ -474,7 +591,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -474,7 +591,7 @@ static int stm32_ospi_setup(struct spi_d
  		return ret;
  	}
  
@@ -216,7 +214,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  
  	flash = &ospi->flash[spi->chip_select];
  	flash->cs = spi->chip_select;
-@@ -489,6 +606,20 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -489,6 +606,20 @@ static int stm32_ospi_setup(struct spi_d
  	ospi->dcr_reg = DCR1_DEVSIZE_MASK | DCR1_DLYBYP;
  	writel_relaxed(ospi->dcr_reg, regs_base + OSPI_DCR1);
  
@@ -237,7 +235,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	mutex_unlock(&ospi->lock);
  
  	pm_runtime_mark_last_busy(ospi->dev);
-@@ -523,8 +654,11 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -523,8 +654,11 @@ static int stm32_ospi_probe(struct platf
  
  	ospi = spi_controller_get_devdata(ctrl);
  	ospi->ctrl = ctrl;
@@ -249,7 +247,7 @@ index 5861c8c40a71..424dd9c3efc4 100644
  
  	ret = stm32_omi_get_resources(omi, dev);
  	if (ret)
-@@ -679,7 +813,7 @@ static int __maybe_unused stm32_ospi_resume(struct device *dev)
+@@ -679,7 +813,7 @@ static int __maybe_unused stm32_ospi_res
  
  	writel_relaxed(ospi->cr_reg, regs_base + OSPI_CR);
  	writel_relaxed(ospi->dcr_reg, regs_base + OSPI_DCR1);
@@ -258,6 +256,3 @@ index 5861c8c40a71..424dd9c3efc4 100644
  	pm_runtime_mark_last_busy(dev);
  	pm_runtime_put_autosuspend(dev);
  
--- 
-2.39.2
-

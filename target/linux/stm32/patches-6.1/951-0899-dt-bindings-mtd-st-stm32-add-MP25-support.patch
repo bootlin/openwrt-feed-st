@@ -23,8 +23,6 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 25 ++++++++++++++++++-
  1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-index eab8ea3da1fa..07331e68e1c6 100644
 --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
 +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
 @@ -14,10 +14,11 @@ properties:
@@ -69,6 +67,3 @@ index eab8ea3da1fa..07331e68e1c6 100644
  required:
    - compatible
    - reg
--- 
-2.39.2
-

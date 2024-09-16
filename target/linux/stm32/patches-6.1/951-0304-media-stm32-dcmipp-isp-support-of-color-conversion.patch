@@ -25,8 +25,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 71 +++++++++++++++----
  1 file changed, 57 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 82e65d5ae3e8..7b77ce58051e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -255,6 +255,8 @@ struct dcmipp_isp_device {
@@ -38,7 +36,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  
  	struct v4l2_ctrl_handler ctrls;
  };
-@@ -335,6 +337,10 @@ static int dcmipp_isp_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -335,6 +337,10 @@ static int dcmipp_isp_s_ctrl(struct v4l2
  		isp->contrast = *(struct v4l2_ctrl_isp_contrast *)ctrl->p_new.p;
  		isp->contrast_needs_update = true;
  		break;
@@ -49,7 +47,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  	}
  
  	spin_unlock_irq(&isp->irqlock);
-@@ -450,6 +456,11 @@ static const struct v4l2_ctrl_config dcmipp_isp_ctrls[] = {
+@@ -450,6 +456,11 @@ static const struct v4l2_ctrl_config dcm
  		.id		= V4L2_CID_ISP_CONTRAST,
  		.type		= V4L2_CTRL_TYPE_ISP_CONTRAST,
  		.name		= "ISP Contrast block control",
@@ -61,7 +59,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  	}
  };
  
-@@ -851,25 +862,20 @@ static void dcmipp_isp_config_demosaicing(struct dcmipp_isp_device *isp)
+@@ -851,25 +862,20 @@ static void dcmipp_isp_config_demosaicin
  		reg_set(isp, DCMIPP_P1DMCR, val);
  }
  
@@ -95,7 +93,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  		val |= DCMIPP_P1CCCR_ENABLE;
  
  	reg_write(isp, DCMIPP_P1CCCR, val);
-@@ -877,6 +883,38 @@ static int dcmipp_isp_colorconv_config(struct dcmipp_isp_device *isp)
+@@ -877,6 +883,38 @@ static int dcmipp_isp_colorconv_config(s
  	return 0;
  }
  
@@ -134,7 +132,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
  {
  	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
-@@ -911,7 +949,7 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -911,7 +949,7 @@ static int dcmipp_isp_s_stream(struct v4
  		dcmipp_isp_config_demosaicing(isp);
  
  		/* Configure ColorConversion */
@@ -143,7 +141,7 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  		if (ret)
  			goto out;
  	}
-@@ -985,6 +1023,11 @@ static irqreturn_t dcmipp_isp_irq_thread(int irq, void *arg)
+@@ -985,6 +1023,11 @@ static irqreturn_t dcmipp_isp_irq_thread
  		isp->contrast_needs_update = false;
  	}
  
@@ -155,6 +153,3 @@ index 82e65d5ae3e8..7b77ce58051e 100644
  	spin_unlock_irq(&isp->irqlock);
  
  	return IRQ_HANDLED;
--- 
-2.39.2
-

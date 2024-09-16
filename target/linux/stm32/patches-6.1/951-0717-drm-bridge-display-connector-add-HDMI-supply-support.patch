@@ -15,8 +15,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/bridge/display-connector.c | 36 ++++++++++++++++++++++
  1 file changed, 36 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
-index 9a12449ad7b8..7d3f5eda3b61 100644
 --- a/drivers/gpu/drm/bridge/display-connector.c
 +++ b/drivers/gpu/drm/bridge/display-connector.c
 @@ -25,6 +25,7 @@ struct display_connector {
@@ -27,7 +25,7 @@ index 9a12449ad7b8..7d3f5eda3b61 100644
  	struct gpio_desc	*ddc_en;
  };
  
-@@ -315,6 +316,38 @@ static int display_connector_probe(struct platform_device *pdev)
+@@ -315,6 +316,38 @@ static int display_connector_probe(struc
  		}
  	}
  
@@ -66,7 +64,7 @@ index 9a12449ad7b8..7d3f5eda3b61 100644
  	/* Get the DP PWR for DP connector. */
  	if (type == DRM_MODE_CONNECTOR_DisplayPort) {
  		int ret;
-@@ -392,6 +425,9 @@ static int display_connector_remove(struct platform_device *pdev)
+@@ -392,6 +425,9 @@ static int display_connector_remove(stru
  	if (conn->dp_pwr)
  		regulator_disable(conn->dp_pwr);
  
@@ -76,6 +74,3 @@ index 9a12449ad7b8..7d3f5eda3b61 100644
  	drm_bridge_remove(&conn->bridge);
  
  	if (!IS_ERR(conn->bridge.ddc))
--- 
-2.39.2
-

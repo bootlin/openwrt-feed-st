@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/phy/st/phy-stm32-usb2phy.c | 67 ++++++++++++++++++++++++++----
  1 file changed, 58 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index 520ac736553a..836bad72dfe2 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -81,7 +81,7 @@ struct stm32_usb2phy {
@@ -33,7 +31,7 @@ index 520ac736553a..836bad72dfe2 100644
  	struct clk_hw clk48_hw;
  	atomic_t en_refcnt;
  	const struct stm32mp2_usb2phy_hw_data *hw_data;
-@@ -294,6 +294,48 @@ static int stm32_usb2phy_disable(struct stm32_usb2phy *phy_dev)
+@@ -294,6 +294,48 @@ static int stm32_usb2phy_disable(struct
  	return 0;
  }
  
@@ -82,7 +80,7 @@ index 520ac736553a..836bad72dfe2 100644
  static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
  {
  	int ret;
-@@ -397,6 +439,8 @@ static int stm32_usb2phy_init(struct phy *phy)
+@@ -397,6 +439,8 @@ static int stm32_usb2phy_init(struct phy
  		}
  	}
  
@@ -91,7 +89,7 @@ index 520ac736553a..836bad72dfe2 100644
  	return 0;
  
  error_disable:
-@@ -412,10 +456,12 @@ static int stm32_usb2phy_exit(struct phy *phy)
+@@ -412,10 +456,12 @@ static int stm32_usb2phy_exit(struct phy
  
  	ret = stm32_usb2phy_disable(phy_dev);
  	if (ret) {
@@ -105,7 +103,7 @@ index 520ac736553a..836bad72dfe2 100644
  	return 0;
  }
  
-@@ -479,7 +525,6 @@ static int stm32_usb2phy_clk48_register(struct stm32_usb2phy *phy_dev)
+@@ -479,7 +525,6 @@ static int stm32_usb2phy_clk48_register(
  	return ret;
  }
  
@@ -113,7 +111,7 @@ index 520ac736553a..836bad72dfe2 100644
  static int stm32_usb2phy_tuning(struct phy *phy)
  {
  	int ret;
-@@ -665,7 +710,7 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -665,7 +710,7 @@ static int stm32_usb2phy_probe(struct pl
  
  	phy_dev->rstc = devm_reset_control_get(dev, NULL);
  	if (IS_ERR(phy_dev->rstc))
@@ -122,7 +120,7 @@ index 520ac736553a..836bad72dfe2 100644
  
  	phy_dev->phyref = devm_clk_get(dev, NULL);
  	if (IS_ERR(phy_dev->phyref))
-@@ -701,14 +746,14 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -701,14 +746,14 @@ static int stm32_usb2phy_probe(struct pl
  
  	phy = devm_phy_create(dev, NULL, &stm32_usb2phy_data);
  	if (IS_ERR(phy))
@@ -139,7 +137,7 @@ index 520ac736553a..836bad72dfe2 100644
  			phy_dev->internal_vbus_comp ? "Internal" : "External");
  	}
  
-@@ -731,6 +776,9 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -731,6 +776,9 @@ static int stm32_usb2phy_probe(struct pl
  	return 0;
  }
  
@@ -149,7 +147,7 @@ index 520ac736553a..836bad72dfe2 100644
  static const struct of_device_id stm32_usb2phy_of_match[] = {
  	{ .compatible = "st,stm32mp25-usb2phy" },
  	{ /* sentinel */ },
-@@ -740,13 +788,14 @@ MODULE_DEVICE_TABLE(of, stm32_usb2phy_of_match);
+@@ -740,13 +788,14 @@ MODULE_DEVICE_TABLE(of, stm32_usb2phy_of
  static struct platform_driver stm32_usb2phy_driver = {
  	.probe = stm32_usb2phy_probe,
  	.driver = {
@@ -167,6 +165,3 @@ index 520ac736553a..836bad72dfe2 100644
 -MODULE_DESCRIPTION("STMicroelectronics Generic femtoPHY driver for stm32");
 +MODULE_DESCRIPTION("STMicroelectronics Generic USB2PHY driver for stm32");
  MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

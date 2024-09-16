@@ -18,8 +18,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 124 +++++++++++++++++-
  1 file changed, 123 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index ff50150f72f8..e3443cd2196b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -216,6 +216,7 @@ struct dcmipp_pixelproc_device {
@@ -30,7 +28,7 @@ index ff50150f72f8..e3443cd2196b 100644
  	struct v4l2_fract sink_interval;
  	unsigned int frate;
  	u32 src_code;
-@@ -618,10 +619,46 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -618,10 +619,46 @@ static int dcmipp_pixelproc_set_selectio
  	return 0;
  }
  
@@ -77,7 +75,7 @@ index ff50150f72f8..e3443cd2196b 100644
  	.get_fmt		= dcmipp_pixelproc_get_fmt,
  	.set_fmt		= dcmipp_pixelproc_set_fmt,
  	.get_selection		= dcmipp_pixelproc_get_selection,
-@@ -701,6 +738,82 @@ dcmipp_pixelproc_set_downsize(struct dcmipp_pixelproc_device *pixelproc)
+@@ -701,6 +738,82 @@ dcmipp_pixelproc_set_downsize(struct dcm
  		  DCMIPP_PxDSCR_ENABLE);
  }
  
@@ -160,7 +158,7 @@ index ff50150f72f8..e3443cd2196b 100644
  static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
  {
  	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
-@@ -710,7 +823,8 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -710,7 +823,8 @@ static int dcmipp_pixelproc_s_stream(str
  
  	mutex_lock(&pixelproc->lock);
  	if (enable) {
@@ -170,7 +168,7 @@ index ff50150f72f8..e3443cd2196b 100644
  
  		/* Configure cropping */
  		reg_write(pixelproc, DCMIPP_PxCRSTR(pixelproc->pipe_id),
-@@ -767,6 +881,8 @@ static const struct v4l2_subdev_core_ops dcmipp_pixelproc_core_ops = {
+@@ -767,6 +881,8 @@ static const struct v4l2_subdev_core_ops
  };
  
  static const struct v4l2_subdev_video_ops dcmipp_pixelproc_video_ops = {
@@ -179,7 +177,7 @@ index ff50150f72f8..e3443cd2196b 100644
  	.s_stream = dcmipp_pixelproc_s_stream,
  };
  
-@@ -816,6 +932,10 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -816,6 +932,10 @@ dcmipp_pixelproc_comp_bind(struct device
  	struct dcmipp_bind_data *bind_data = master_data;
  	struct dcmipp_platform_data *pdata = comp->platform_data;
  	struct dcmipp_pixelproc_device *pixelproc;
@@ -190,7 +188,7 @@ index ff50150f72f8..e3443cd2196b 100644
  	int ret, i;
  
  	/* Allocate the pixelproc struct */
-@@ -852,6 +972,8 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -852,6 +972,8 @@ dcmipp_pixelproc_comp_bind(struct device
  	pixelproc->compose.left = 0;
  	pixelproc->compose.width = DCMIPP_FMT_WIDTH_DEFAULT;
  	pixelproc->compose.height = DCMIPP_FMT_HEIGHT_DEFAULT;
@@ -199,6 +197,3 @@ index ff50150f72f8..e3443cd2196b 100644
  
  	/* Initialize controls */
  	v4l2_ctrl_handler_init(&pixelproc->ctrls,
--- 
-2.39.2
-

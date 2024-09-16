@@ -20,8 +20,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  Documentation/devicetree/bindings/sound/st,stm32-sai.yaml | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-index 7c0f61928fb3..1a0f692ac958 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
 @@ -56,6 +56,9 @@ properties:
@@ -44,6 +42,3 @@ index 7c0f61928fb3..1a0f692ac958 100644
        dmas:
          maxItems: 1
  
--- 
-2.39.2
-

@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32mp257.c | 11 ++++++-----
  4 files changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index bfd0268c9293..b771b692e143 100644
 --- a/arch/arm64/Kconfig.platforms
 +++ b/arch/arm64/Kconfig.platforms
 @@ -286,7 +286,6 @@ config ARCH_STM32
@@ -33,8 +31,6 @@ index bfd0268c9293..b771b692e143 100644
  	select COMMON_CLK_STM32MP257
  	select RESET_STM32MP1
  	select ARM_SMC_MBOX
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index 2656d3d3ae40..64af7b1521fb 100644
 --- a/drivers/pinctrl/stm32/Kconfig
 +++ b/drivers/pinctrl/stm32/Kconfig
 @@ -2,7 +2,7 @@
@@ -57,11 +53,9 @@ index 2656d3d3ae40..64af7b1521fb 100644
 +	default MACH_STM32MP25 || ARM64
  	select PINCTRL_STM32
  endif
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 5e3e49669728..e9233937a78a 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -1976,6 +1976,7 @@ int stm32_pctl_probe(struct platform_device *pdev)
+@@ -1976,6 +1976,7 @@ int stm32_pctl_probe(struct platform_dev
  
  	return 0;
  }
@@ -69,7 +63,7 @@ index 5e3e49669728..e9233937a78a 100644
  
  static int __maybe_unused stm32_pinctrl_restore_advcfgr(struct stm32_gpio_bank *bank,
  							int offset, u32 bpos)
-@@ -2088,6 +2089,7 @@ int __maybe_unused stm32_pinctrl_suspend(struct device *dev)
+@@ -2088,6 +2089,7 @@ int __maybe_unused stm32_pinctrl_suspend
  
  	return 0;
  }
@@ -77,7 +71,7 @@ index 5e3e49669728..e9233937a78a 100644
  
  int __maybe_unused stm32_pinctrl_resume(struct device *dev)
  {
-@@ -2103,3 +2105,7 @@ int __maybe_unused stm32_pinctrl_resume(struct device *dev)
+@@ -2103,3 +2105,7 @@ int __maybe_unused stm32_pinctrl_resume(
  
  	return 0;
  }
@@ -85,8 +79,6 @@ index 5e3e49669728..e9233937a78a 100644
 +
 +MODULE_DESCRIPTION("STM32 core pinctrl driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-index d9f99dc3d2cd..9b8828090214 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 @@ -4,6 +4,7 @@
@@ -97,7 +89,7 @@ index d9f99dc3d2cd..9b8828090214 100644
  #include <linux/of.h>
  #include <linux/platform_device.h>
  
-@@ -2566,6 +2567,7 @@ static const struct of_device_id stm32mp257_pctrl_match[] = {
+@@ -2566,6 +2567,7 @@ static const struct of_device_id stm32mp
  	},
  	{ }
  };
@@ -105,7 +97,7 @@ index d9f99dc3d2cd..9b8828090214 100644
  
  static const struct dev_pm_ops stm32_pinctrl_dev_pm_ops = {
  	 SET_LATE_SYSTEM_SLEEP_PM_OPS(NULL, stm32_pinctrl_resume)
-@@ -2579,9 +2581,8 @@ static struct platform_driver stm32mp257_pinctrl_driver = {
+@@ -2579,9 +2581,8 @@ static struct platform_driver stm32mp257
  		.pm = &stm32_pinctrl_dev_pm_ops,
  	},
  };
@@ -119,6 +111,3 @@ index d9f99dc3d2cd..9b8828090214 100644
 +MODULE_AUTHOR("Alexandre Torgue <alexandre.torgue@foss.st.com>");
 +MODULE_DESCRIPTION("STM32MP257 pinctrl driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

@@ -23,11 +23,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mtd/spi-nor/sfdp.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 846b34e63870..da4632095be5 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -1187,10 +1187,17 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+@@ -1187,10 +1187,17 @@ static int spi_nor_parse_profile1(struct
  	dummy = round_up(dummy, 2);
  
  	/* Update the fast read settings. */
@@ -45,6 +43,3 @@ index 846b34e63870..da4632095be5 100644
  out:
  	kfree(dwords);
  	return ret;
--- 
-2.39.2
-

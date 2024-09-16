@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../platform/verisilicon/hantro_h1_vp8_enc.c  | 24 +------------------
  1 file changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index c841f551e687..5161f6412e7b 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1012,28 +1012,6 @@ static inline size_t sw_hdr_size(struct hantro_ctx *ctx)
+@@ -1012,28 +1012,6 @@ static inline size_t sw_hdr_size(struct
  	return ctx->vp8_enc.boolenc.bytes_written + frame_tag_size(ctx);
  }
  
@@ -51,7 +49,7 @@ index c841f551e687..5161f6412e7b 100644
  static void
  hantro_h1_vp8_enc_set_buffers(struct hantro_dev *vpu, struct hantro_ctx *ctx, u32 qp,
  				  struct v4l2_ctrl_vp8_encode_params *params)
-@@ -1509,7 +1487,7 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+@@ -1509,7 +1487,7 @@ int hantro_h1_vp8_enc_run(struct hantro_
  	vepu_write_relaxed(vpu, H1_REG_ENC_CTRL_ENC_MODE_VP8, H1_REG_ENC_CTRL);
  
  	hantro_h1_vp8_enc_set_params(vpu, ctx, qp, params);
@@ -60,6 +58,3 @@ index c841f551e687..5161f6412e7b 100644
  	hantro_h1_vp8_enc_set_buffers(vpu, ctx, qp, params);
  
  	hantro_h1_set_color_conv(vpu, ctx);
--- 
-2.39.2
-

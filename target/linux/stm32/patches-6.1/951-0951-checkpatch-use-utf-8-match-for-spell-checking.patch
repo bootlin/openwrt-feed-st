@@ -34,8 +34,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  scripts/checkpatch.pl | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index acacba8c6129..b8fded247f2a 100755
 --- a/scripts/checkpatch.pl
 +++ b/scripts/checkpatch.pl
 @@ -3405,9 +3405,10 @@ sub process {
@@ -51,6 +49,3 @@ index acacba8c6129..b8fded247f2a 100755
  				my $ptr = substr($blank, 0, $-[1]) . "^" x length($typo);
  				my $hereptr = "$hereline$ptr\n";
  				my $typo_fix = $spelling_fix{lc($typo)};
--- 
-2.39.2
-

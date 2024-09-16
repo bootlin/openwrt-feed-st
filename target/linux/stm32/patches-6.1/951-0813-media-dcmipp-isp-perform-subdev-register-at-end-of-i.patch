@@ -19,11 +19,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 55 ++++++++++---------
  1 file changed, 30 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index e69b6543afc2..cc7a608f0dcb 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -1098,31 +1098,11 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+@@ -1098,31 +1098,11 @@ static int dcmipp_isp_comp_bind(struct d
  		return -ENOMEM;
  
  	isp->regs = bind_data->regs;
@@ -56,7 +54,7 @@ index e69b6543afc2..cc7a608f0dcb 100644
  	/* Initialize the frame format */
  	isp->sink_fmt = fmt_default;
  	isp->sink_fmt.code = ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
-@@ -1138,17 +1118,42 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+@@ -1138,17 +1118,42 @@ static int dcmipp_isp_comp_bind(struct d
  
  	isp->sd.ctrl_handler = &isp->ctrls;
  	if (isp->ctrls.error) {
@@ -103,6 +101,3 @@ index e69b6543afc2..cc7a608f0dcb 100644
  	return 0;
  }
  
--- 
-2.39.2
-

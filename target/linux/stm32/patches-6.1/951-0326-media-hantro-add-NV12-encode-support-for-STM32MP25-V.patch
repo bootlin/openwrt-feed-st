@@ -12,15 +12,12 @@ Change-Id: I036f7ec25466529d447503b11bf38db555dd1912
  .../media/platform/verisilicon/stm32mp25_venc_hw.c  | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-index 8ad6e651ee87..b95275d6735b 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_venc_hw.c
-@@ -21,6 +21,19 @@
-  */
+@@ -22,6 +22,19 @@
  
  static const struct hantro_fmt stm32mp25_venc_fmts[] = {
-+	{
+ 	{
 +		.fourcc = V4L2_PIX_FMT_NV12,
 +		.codec_mode = HANTRO_MODE_NONE,
 +		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420SP,
@@ -33,9 +30,7 @@ index 8ad6e651ee87..b95275d6735b 100644
 +			.step_height = MB_DIM,
 +		},
 +	},
- 	{
++	{
  		.fourcc = V4L2_PIX_FMT_YUV420M,
  		.codec_mode = HANTRO_MODE_NONE,
--- 
-2.39.2
-
+ 		.enc_fmt = ROCKCHIP_VPU_ENC_FMT_YUV420P,

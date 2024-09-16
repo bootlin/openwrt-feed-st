@@ -18,8 +18,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32-ep.c | 30 ++++++++++++++++++++++
  1 file changed, 30 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-index 949325810134..4b22cc7348db 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32-ep.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
 @@ -12,6 +12,7 @@
@@ -30,7 +28,7 @@ index 949325810134..4b22cc7348db 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include "pcie-designware.h"
-@@ -207,6 +208,8 @@ static void stm32_pcie_perst_assert(struct dw_pcie *pci)
+@@ -207,6 +208,8 @@ static void stm32_pcie_perst_assert(stru
  
  	stm32_pcie_disable_resources(stm32_pcie);
  
@@ -39,7 +37,7 @@ index 949325810134..4b22cc7348db 100644
  	stm32_pcie->link_status = STM32_PCIE_EP_LINK_DISABLED;
  }
  
-@@ -224,9 +227,16 @@ static void stm32_pcie_perst_deassert(struct dw_pcie *pci)
+@@ -224,9 +227,16 @@ static void stm32_pcie_perst_deassert(st
  
  	dev_dbg(dev, "PERST de-asserted by host. Starting link training\n");
  
@@ -56,7 +54,7 @@ index 949325810134..4b22cc7348db 100644
  		return;
  	}
  
-@@ -234,6 +244,7 @@ static void stm32_pcie_perst_deassert(struct dw_pcie *pci)
+@@ -234,6 +244,7 @@ static void stm32_pcie_perst_deassert(st
  	if (ret) {
  		dev_err(dev, "PCIe Cannot establish link: %d\n", ret);
  		stm32_pcie_disable_resources(stm32_pcie);
@@ -64,7 +62,7 @@ index 949325810134..4b22cc7348db 100644
  		return;
  	}
  
-@@ -242,6 +253,7 @@ static void stm32_pcie_perst_deassert(struct dw_pcie *pci)
+@@ -242,6 +253,7 @@ static void stm32_pcie_perst_deassert(st
  		dev_err(dev, "Failed to complete initialization: %d\n", ret);
  		stm32_pcie_disable_link(pci);
  		stm32_pcie_disable_resources(stm32_pcie);
@@ -72,7 +70,7 @@ index 949325810134..4b22cc7348db 100644
  		return;
  	}
  
-@@ -279,9 +291,16 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+@@ -279,9 +291,16 @@ static int stm32_add_pcie_ep(struct stm3
  	if (ret)
  		return ret;
  
@@ -89,7 +87,7 @@ index 949325810134..4b22cc7348db 100644
  		return ret;
  	}
  
-@@ -290,6 +309,7 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+@@ -290,6 +309,7 @@ static int stm32_add_pcie_ep(struct stm3
  	ret = stm32_pcie_enable_resources(stm32_pcie);
  	if (ret) {
  		dev_err(dev, "failed to enable resources: %d\n", ret);
@@ -97,7 +95,7 @@ index 949325810134..4b22cc7348db 100644
  		return ret;
  	}
  
-@@ -297,6 +317,7 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+@@ -297,6 +317,7 @@ static int stm32_add_pcie_ep(struct stm3
  	if (ret) {
  		dev_err(dev, "failed to initialize ep: %d\n", ret);
  		stm32_pcie_disable_resources(stm32_pcie);
@@ -105,7 +103,7 @@ index 949325810134..4b22cc7348db 100644
  		return ret;
  	}
  
-@@ -314,6 +335,7 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+@@ -314,6 +335,7 @@ static int stm32_add_pcie_ep(struct stm3
  		dev_err(dev, "Failed to request PERST IRQ: %d\n", ret);
  		dw_pcie_ep_exit(ep);
  		stm32_pcie_disable_resources(stm32_pcie);
@@ -113,7 +111,7 @@ index 949325810134..4b22cc7348db 100644
  	}
  
  	return ret;
-@@ -371,6 +393,12 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -371,6 +393,12 @@ static int stm32_pcie_probe(struct platf
  
  	platform_set_drvdata(pdev, stm32_pcie);
  
@@ -126,7 +124,7 @@ index 949325810134..4b22cc7348db 100644
  	return stm32_add_pcie_ep(stm32_pcie, pdev);
  }
  
-@@ -385,6 +413,8 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -385,6 +413,8 @@ static int stm32_pcie_remove(struct plat
  
  	stm32_pcie_disable_resources(stm32_pcie);
  
@@ -135,6 +133,3 @@ index 949325810134..4b22cc7348db 100644
  	return 0;
  }
  
--- 
-2.39.2
-

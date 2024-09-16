@@ -18,11 +18,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c3904e3ce9d9..f44ff0bfea72 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1980,6 +1980,8 @@ pcie_rc: pcie@48400000 {
+@@ -1980,6 +1980,8 @@
  						<0 0 0 2 &intc 0 0 GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>,
  						<0 0 0 3 &intc 0 0 GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>,
  						<0 0 0 4 &intc 0 0 GIC_SPI 267 IRQ_TYPE_LEVEL_HIGH>;
@@ -31,6 +29,3 @@ index c3904e3ce9d9..f44ff0bfea72 100644
  				#address-cells = <3>;
  				#size-cells = <2>;
  				ranges = <0x01000000 0 0x10010000 0x10010000 0 0x10000>,
--- 
-2.39.2
-

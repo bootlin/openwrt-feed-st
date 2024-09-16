@@ -20,11 +20,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/iio/adc/stm32-mdf-adc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index b97e7405d09c..e5e26b611084 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
-@@ -646,7 +646,7 @@ static int stm32_mdf_compute_scale(struct device *dev, unsigned int decim,
+@@ -646,7 +646,7 @@ static int stm32_mdf_compute_scale(struc
  {
  	unsigned long max = ARRAY_SIZE(stm32_mdf_log_table);
  	unsigned int prime_factors[16];
@@ -33,6 +31,3 @@ index b97e7405d09c..e5e26b611084 100644
  	int i, j, scale;
  
  	/* Decompose decimation ratio D, as prime number factors, to compute log10(D) */
--- 
-2.39.2
-

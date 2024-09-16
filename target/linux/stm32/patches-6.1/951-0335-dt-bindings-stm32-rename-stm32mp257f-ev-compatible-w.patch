@@ -17,8 +17,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-index 666caa187272..23c9bf185050 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 @@ -160,7 +160,7 @@ properties:
@@ -30,6 +28,3 @@ index 666caa187272..23c9bf185050 100644
            - const: st,stm32mp257
  
  additionalProperties: true
--- 
-2.39.2
-

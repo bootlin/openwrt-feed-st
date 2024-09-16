@@ -17,9 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  1 file changed, 53 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/i3c/st,stm32-i3c-master.yaml
 
-diff --git a/Documentation/devicetree/bindings/i3c/st,stm32-i3c-master.yaml b/Documentation/devicetree/bindings/i3c/st,stm32-i3c-master.yaml
-new file mode 100644
-index 000000000000..6b6331316a6a
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/i3c/st,stm32-i3c-master.yaml
 @@ -0,0 +1,53 @@
@@ -77,6 +74,3 @@ index 000000000000..6b6331316a6a
 +      status = "disabled";
 +    };
 \ No newline at end of file
--- 
-2.39.2
-

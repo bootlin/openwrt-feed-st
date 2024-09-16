@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
-index 036bd1bb5eef..04dbdba02cf0 100644
 --- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
 +++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
 @@ -228,6 +228,7 @@
@@ -31,6 +29,3 @@ index 036bd1bb5eef..04dbdba02cf0 100644
  # CONFIG_PCI is not set
  # CONFIG_PCI_DOMAINS_GENERIC is not set
  # CONFIG_PCI_SYSCALL is not set
--- 
-2.39.2
-

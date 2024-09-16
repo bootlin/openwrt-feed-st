@@ -21,11 +21,9 @@ Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 168 ++++++++++++++++++++++
  1 file changed, 168 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index 695796790abe..d67c908d8256 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -66,6 +66,51 @@ memory@80000000 {
+@@ -66,6 +66,51 @@
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
  	};
@@ -77,7 +75,7 @@ index 695796790abe..d67c908d8256 100644
  };
  
  &arm_wdt {
-@@ -79,6 +124,52 @@ &combophy {
+@@ -79,6 +124,52 @@
  	status = "okay";
  };
  
@@ -130,7 +128,7 @@ index 695796790abe..d67c908d8256 100644
  &eth1 {
  	status = "okay";
  	pinctrl-0 = <&eth1_mdio_pins_a>;
-@@ -151,12 +242,89 @@ &i2c2 {
+@@ -151,12 +242,89 @@
  	/* spare dmas for other usage */
  	/delete-property/dmas;
  	/delete-property/dma-names;
@@ -220,6 +218,3 @@ index 695796790abe..d67c908d8256 100644
  &m33_rproc {
  	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
  	mbox-names = "vq0", "vq1", "shutdown";
--- 
-2.39.2
-

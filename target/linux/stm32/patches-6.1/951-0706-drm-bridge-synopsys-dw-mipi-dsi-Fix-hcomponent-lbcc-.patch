@@ -29,11 +29,9 @@ Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 18 ++++++++++++------
  1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 1593a8900b2e..c9668f9955d7 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -748,13 +748,19 @@ static u32 dw_mipi_dsi_get_hcomponent_lbcc(struct dw_mipi_dsi *dsi,
+@@ -748,13 +748,19 @@ static u32 dw_mipi_dsi_get_hcomponent_lb
  	u32 frac, lbcc, minimum_lbcc;
  	int bpp;
  
@@ -59,6 +57,3 @@ index 1593a8900b2e..c9668f9955d7 100644
  
  	frac = lbcc % mode->clock;
  	lbcc = lbcc / mode->clock;
--- 
-2.39.2
-

@@ -16,8 +16,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/pci/st,stm32-pcie-host.yaml         | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-index 7aaaef7f4e93..c45cebf88932 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -89,6 +89,19 @@ properties:
@@ -56,6 +54,3 @@ index 7aaaef7f4e93..c45cebf88932 100644
 +             wake-gpios = <&gpioh 5 GPIO_ACTIVE_LOW>;
               msi-parent = <&v2m0>;
      };
--- 
-2.39.2
-

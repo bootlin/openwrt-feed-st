@@ -25,8 +25,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32-exti.c | 40 ++++++++++++++++++++++++++++++--
  1 file changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 4357dccc67bd..45a75e4dbcb6 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
 @@ -23,9 +23,22 @@
@@ -54,7 +52,7 @@ index 4357dccc67bd..45a75e4dbcb6 100644
  
  struct stm32_exti_bank {
  	u32 imr_ofst;
-@@ -1014,6 +1027,27 @@ static const struct irq_domain_ops stm32_exti_h_domain_ops = {
+@@ -1026,6 +1039,27 @@ static const struct irq_domain_ops stm32
  	.xlate = irq_domain_xlate_twocell,
  };
  
@@ -82,7 +80,7 @@ index 4357dccc67bd..45a75e4dbcb6 100644
  static void stm32_exti_remove_irq(void *data)
  {
  	struct irq_domain *domain = data;
-@@ -1088,6 +1122,8 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -1100,6 +1134,8 @@ static int stm32_exti_probe(struct platf
  	for (i = 0; i < drv_data->bank_nr; i++)
  		stm32_exti_chip_init(host_data, i, np);
  
@@ -91,6 +89,3 @@ index 4357dccc67bd..45a75e4dbcb6 100644
  	parent_domain = irq_find_host(of_irq_find_parent(np));
  	if (!parent_domain) {
  		dev_err(dev, "GIC interrupt-parent not found\n");
--- 
-2.39.2
-

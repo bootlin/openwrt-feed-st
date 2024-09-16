@@ -19,11 +19,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 288 ++++++++++++++-----------
  1 file changed, 158 insertions(+), 130 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 7dc39ae5da6d..392ab416466e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2394,82 +2394,93 @@ exti1: interrupt-controller@44220000 {
+@@ -2394,82 +2394,93 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -192,7 +190,7 @@ index 7dc39ae5da6d..392ab416466e 100644
  		};
  
  		syscfg: syscon@44230000 {
-@@ -2691,62 +2702,79 @@ exti2: interrupt-controller@46230000 {
+@@ -2691,62 +2702,79 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -327,6 +325,3 @@ index 7dc39ae5da6d..392ab416466e 100644
  		};
  
  		fmc: memory-controller@48200000 {
--- 
-2.39.2
-

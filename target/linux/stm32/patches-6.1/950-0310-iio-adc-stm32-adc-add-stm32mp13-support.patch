@@ -549,7 +549,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  			if (stm32_adc_ic[i].idx != STM32_ADC_INT_CH_VREFINT) {
  				adc->int_ch[i] = chan;
  				break;
-@@ -2438,6 +2575,9 @@ static const struct stm32_adc_cfg stm32h
+@@ -2439,6 +2576,9 @@ static const struct stm32_adc_cfg stm32h
  	.regs = &stm32h7_adc_regspec,
  	.adc_info = &stm32h7_adc_info,
  	.trigs = stm32h7_adc_trigs,
@@ -559,7 +559,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  	.start_conv = stm32h7_adc_start_conv,
  	.stop_conv = stm32h7_adc_stop_conv,
  	.prepare = stm32h7_adc_prepare,
-@@ -2451,6 +2591,9 @@ static const struct stm32_adc_cfg stm32m
+@@ -2452,6 +2592,9 @@ static const struct stm32_adc_cfg stm32m
  	.adc_info = &stm32h7_adc_info,
  	.trigs = stm32h7_adc_trigs,
  	.has_vregready = true,
@@ -569,7 +569,7 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
  	.start_conv = stm32h7_adc_start_conv,
  	.stop_conv = stm32h7_adc_stop_conv,
  	.prepare = stm32h7_adc_prepare,
-@@ -2460,10 +2603,23 @@ static const struct stm32_adc_cfg stm32m
+@@ -2461,10 +2604,23 @@ static const struct stm32_adc_cfg stm32m
  	.ts_vrefint_ns = 4300,
  };
  

@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-index c1d7c83849d8..03dc7c51ac02 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 @@ -49,6 +49,9 @@ properties:
@@ -35,6 +33,3 @@ index c1d7c83849d8..03dc7c51ac02 100644
    "#clock-cells":
      description: Configure the I2S device as MCLK clock provider.
      const: 0
--- 
-2.39.2
-

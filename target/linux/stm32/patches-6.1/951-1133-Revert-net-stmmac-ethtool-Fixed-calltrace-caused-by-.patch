@@ -82,8 +82,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    |  1 -
  3 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index 46944c02b45e..bdbf86cb102a 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
 @@ -247,7 +247,6 @@ struct stmmac_priv {
@@ -94,11 +92,9 @@ index 46944c02b45e..bdbf86cb102a 100644
  	int clk_csr;
  	struct timer_list eee_ctrl_timer;
  	int lpi_irq;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index f03aa8a0b895..35c8dd92d369 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -761,16 +761,10 @@ static int stmmac_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+@@ -761,16 +761,10 @@ static int stmmac_set_wol(struct net_dev
  	if (wol->wolopts) {
  		pr_info("stmmac: wakeup enable\n");
  		device_set_wakeup_enable(priv->device, 1);
@@ -117,11 +113,9 @@ index f03aa8a0b895..35c8dd92d369 100644
  	}
  
  	mutex_lock(&priv->lock);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ae2d47645f21..79bf81923445 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3523,7 +3523,6 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+@@ -3538,7 +3538,6 @@ static int stmmac_request_irq_multi_msi(
  	/* Request the Wake IRQ in case of another line
  	 * is used for WoL
  	 */
@@ -129,6 +123,3 @@ index ae2d47645f21..79bf81923445 100644
  	if (priv->wol_irq > 0 && priv->wol_irq != dev->irq) {
  		int_name = priv->int_name_wol;
  		sprintf(int_name, "%s:%s", dev->name, "wol");
--- 
-2.39.2
-

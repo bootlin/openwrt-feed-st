@@ -28,8 +28,6 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  drivers/memory/stm32-fmc2-ebi.c | 224 +++++++++++++++++++++++++++++++-
  1 file changed, 220 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
-index 1f1f91abd252..893f3935bd52 100644
 --- a/drivers/memory/stm32-fmc2-ebi.c
 +++ b/drivers/memory/stm32-fmc2-ebi.c
 @@ -19,8 +19,14 @@
@@ -90,7 +88,7 @@ index 1f1f91abd252..893f3935bd52 100644
  
  	u32 bcr[FMC2_MAX_EBI_CE];
  	u32 btr[FMC2_MAX_EBI_CE];
-@@ -260,6 +286,33 @@ static int stm32_fmc2_ebi_check_sync_trans(struct stm32_fmc2_ebi *ebi,
+@@ -260,6 +286,33 @@ static int stm32_fmc2_ebi_check_sync_tra
  	return -EINVAL;
  }
  
@@ -124,7 +122,7 @@ index 1f1f91abd252..893f3935bd52 100644
  static int stm32_fmc2_ebi_check_async_trans(struct stm32_fmc2_ebi *ebi,
  					    const struct stm32_fmc2_prop *prop,
  					    int cs)
-@@ -1041,7 +1094,7 @@ static const struct stm32_fmc2_prop stm32_fmc2_mp25_child_props[] = {
+@@ -1041,7 +1094,7 @@ static const struct stm32_fmc2_prop stm3
  		.bprop = true,
  		.reg_type = FMC2_REG_CFGR,
  		.reg_mask = FMC2_CFGR_CCLKEN,
@@ -133,7 +131,7 @@ index 1f1f91abd252..893f3935bd52 100644
  		.set = stm32_fmc2_ebi_set_bit_field,
  	},
  	{
-@@ -1139,7 +1192,7 @@ static const struct stm32_fmc2_prop stm32_fmc2_mp25_child_props[] = {
+@@ -1139,7 +1192,7 @@ static const struct stm32_fmc2_prop stm3
  	{
  		.name = "st,fmc2-ebi-cs-clk-period-ns",
  		.reset_val = FMC2_CFGR_CLKDIV_MAX + 1,
@@ -142,7 +140,7 @@ index 1f1f91abd252..893f3935bd52 100644
  		.calculate = stm32_fmc2_ebi_ns_to_clock_cycles,
  		.set = stm32_fmc2_ebi_mp25_set_clk_period,
  	},
-@@ -1194,6 +1247,110 @@ static const struct stm32_fmc2_prop stm32_fmc2_mp25_child_props[] = {
+@@ -1194,6 +1247,110 @@ static const struct stm32_fmc2_prop stm3
  	},
  };
  
@@ -253,7 +251,7 @@ index 1f1f91abd252..893f3935bd52 100644
  static int stm32_fmc2_ebi_parse_prop(struct stm32_fmc2_ebi *ebi,
  				     struct device_node *dev_node,
  				     const struct stm32_fmc2_prop *prop,
-@@ -1262,6 +1419,9 @@ static int stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+@@ -1262,6 +1419,9 @@ static int stm32_fmc2_ebi_save_setup(str
  	int ret;
  
  	for (cs = 0; cs < FMC2_MAX_EBI_CE; cs++) {
@@ -263,7 +261,7 @@ index 1f1f91abd252..893f3935bd52 100644
  		ret = regmap_read(ebi->regmap, FMC2_BCR(cs), &ebi->bcr[cs]);
  		ret |= regmap_read(ebi->regmap, FMC2_BTR(cs), &ebi->btr[cs]);
  		ret |= regmap_read(ebi->regmap, FMC2_BWTR(cs), &ebi->bwtr[cs]);
-@@ -1291,7 +1451,10 @@ static int stm32_fmc2_ebi_mp25_save_setup(struct stm32_fmc2_ebi *ebi)
+@@ -1291,7 +1451,10 @@ static int stm32_fmc2_ebi_mp25_save_setu
  	if (ret)
  		return ret;
  
@@ -275,7 +273,7 @@ index 1f1f91abd252..893f3935bd52 100644
  }
  
  static void stm32_fmc2_ebi_set_setup(struct stm32_fmc2_ebi *ebi)
-@@ -1299,6 +1462,9 @@ static void stm32_fmc2_ebi_set_setup(struct stm32_fmc2_ebi *ebi)
+@@ -1299,6 +1462,9 @@ static void stm32_fmc2_ebi_set_setup(str
  	unsigned int cs;
  
  	for (cs = 0; cs < FMC2_MAX_EBI_CE; cs++) {
@@ -285,7 +283,7 @@ index 1f1f91abd252..893f3935bd52 100644
  		regmap_write(ebi->regmap, FMC2_BCR(cs), ebi->bcr[cs]);
  		regmap_write(ebi->regmap, FMC2_BTR(cs), ebi->btr[cs]);
  		regmap_write(ebi->regmap, FMC2_BWTR(cs), ebi->bwtr[cs]);
-@@ -1314,7 +1480,9 @@ static void stm32_fmc2_ebi_mp1_set_setup(struct stm32_fmc2_ebi *ebi)
+@@ -1314,7 +1480,9 @@ static void stm32_fmc2_ebi_mp1_set_setup
  static void stm32_fmc2_ebi_mp25_set_setup(struct stm32_fmc2_ebi *ebi)
  {
  	stm32_fmc2_ebi_set_setup(ebi);
@@ -296,7 +294,7 @@ index 1f1f91abd252..893f3935bd52 100644
  }
  
  static void stm32_fmc2_ebi_disable_banks(struct stm32_fmc2_ebi *ebi)
-@@ -1357,6 +1525,9 @@ static int stm32_fmc2_ebi_nwait_used_by_ctrls(struct stm32_fmc2_ebi *ebi)
+@@ -1357,6 +1525,9 @@ static int stm32_fmc2_ebi_nwait_used_by_
  
  static void stm32_fmc2_ebi_enable(struct stm32_fmc2_ebi *ebi)
  {
@@ -306,7 +304,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	regmap_update_bits(ebi->regmap, ebi->data->fmc2_enable_reg,
  			   ebi->data->fmc2_enable_bit,
  			   ebi->data->fmc2_enable_bit);
-@@ -1364,6 +1535,9 @@ static void stm32_fmc2_ebi_enable(struct stm32_fmc2_ebi *ebi)
+@@ -1364,6 +1535,9 @@ static void stm32_fmc2_ebi_enable(struct
  
  static void stm32_fmc2_ebi_disable(struct stm32_fmc2_ebi *ebi)
  {
@@ -316,7 +314,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	regmap_update_bits(ebi->regmap, ebi->data->fmc2_enable_reg,
  			   ebi->data->fmc2_enable_bit, 0);
  }
-@@ -1422,6 +1596,15 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
+@@ -1422,6 +1596,15 @@ static int stm32_fmc2_ebi_parse_dt(struc
  			return -EINVAL;
  		}
  
@@ -332,7 +330,7 @@ index 1f1f91abd252..893f3935bd52 100644
  		if (bank < FMC2_MAX_EBI_CE) {
  			ret = stm32_fmc2_ebi_setup_cs(ebi, child, bank);
  			if (ret) {
-@@ -1490,6 +1673,28 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1490,6 +1673,28 @@ static int stm32_fmc2_ebi_probe(struct p
  		reset_control_deassert(rstc);
  	}
  
@@ -361,7 +359,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	ret = stm32_fmc2_ebi_parse_dt(ebi);
  	if (ret)
  		goto err_release;
-@@ -1505,6 +1710,8 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1505,6 +1710,8 @@ static int stm32_fmc2_ebi_probe(struct p
  err_release:
  	stm32_fmc2_ebi_disable_banks(ebi);
  	stm32_fmc2_ebi_disable(ebi);
@@ -370,7 +368,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	clk_disable_unprepare(ebi->clk);
  
  	return ret;
-@@ -1517,6 +1724,8 @@ static int stm32_fmc2_ebi_remove(struct platform_device *pdev)
+@@ -1517,6 +1724,8 @@ static int stm32_fmc2_ebi_remove(struct
  	of_platform_depopulate(&pdev->dev);
  	stm32_fmc2_ebi_disable_banks(ebi);
  	stm32_fmc2_ebi_disable(ebi);
@@ -379,7 +377,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	clk_disable_unprepare(ebi->clk);
  
  	return 0;
-@@ -1527,6 +1736,8 @@ static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
+@@ -1527,6 +1736,8 @@ static int __maybe_unused stm32_fmc2_ebi
  	struct stm32_fmc2_ebi *ebi = dev_get_drvdata(dev);
  
  	stm32_fmc2_ebi_disable(ebi);
@@ -388,7 +386,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	clk_disable_unprepare(ebi->clk);
  	pinctrl_pm_select_sleep_state(dev);
  
-@@ -1544,6 +1755,8 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+@@ -1544,6 +1755,8 @@ static int __maybe_unused stm32_fmc2_ebi
  	if (ret)
  		return ret;
  
@@ -397,7 +395,7 @@ index 1f1f91abd252..893f3935bd52 100644
  	ebi->data->set_setup(ebi);
  	stm32_fmc2_ebi_enable(ebi);
  
-@@ -1570,6 +1783,9 @@ static const struct stm32_fmc2_ebi_data stm32_fmc2_ebi_mp25_data = {
+@@ -1570,6 +1783,9 @@ static const struct stm32_fmc2_ebi_data
  	.fmc2_enable_bit = FMC2_CFGR_FMC2EN,
  	.set_setup = stm32_fmc2_ebi_mp25_set_setup,
  	.save_setup = stm32_fmc2_ebi_mp25_save_setup,
@@ -407,6 +405,3 @@ index 1f1f91abd252..893f3935bd52 100644
  };
  
  static const struct of_device_id stm32_fmc2_ebi_match[] = {
--- 
-2.39.2
-

@@ -16,11 +16,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 39 ++++++++++++++++++++++++++
  1 file changed, 39 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5f90ff4c9a1a..30d819031448 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2194,5 +2194,44 @@ gpioz: gpio@46200000 {
+@@ -2194,5 +2194,44 @@
  			};
  
  		};
@@ -65,6 +63,3 @@ index 5f90ff4c9a1a..30d819031448 100644
 +		};
  	};
  };
--- 
-2.39.2
-

@@ -24,7 +24,7 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
 
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -380,7 +380,7 @@ config MTD_NAND_TEGRA
+@@ -379,7 +379,7 @@ config MTD_NAND_TEGRA
  
  config MTD_NAND_STM32_FMC2
  	tristate "Support for NAND controller on STM32MP SoCs"

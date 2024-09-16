@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/misc/stm32_omm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-index 3a4639e10d15..ed8f3307859b 100644
 --- a/drivers/misc/stm32_omm.c
 +++ b/drivers/misc/stm32_omm.c
-@@ -392,7 +392,7 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -392,7 +392,7 @@ static int stm32_omm_probe(struct platfo
  		if (!child_access[i] || !of_device_is_available(omm->child_node[i]))
  			continue;
  
@@ -32,6 +30,3 @@ index 3a4639e10d15..ed8f3307859b 100644
  		if (!vdev) {
  			dev_err(dev, "Failed to create Octo Memory Manager child\n");
  			for (j = i; j > 0; --j) {
--- 
-2.39.2
-

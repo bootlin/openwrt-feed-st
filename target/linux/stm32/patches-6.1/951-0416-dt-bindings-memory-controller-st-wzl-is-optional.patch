@@ -11,8 +11,6 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml    | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-index 6584cafbe9e6..cf9b69c59b36 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -138,7 +138,6 @@ patternProperties:
@@ -30,6 +28,3 @@ index 6584cafbe9e6..cf9b69c59b36 100644
 -        st,wzl;
        };
      };
--- 
-2.39.2
-

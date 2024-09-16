@@ -19,9 +19,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  1 file changed, 39 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/rpmsg,intc.yaml
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/rpmsg,intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/rpmsg,intc.yaml
-new file mode 100644
-index 000000000000..59c3e83df6f5
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/interrupt-controller/rpmsg,intc.yaml
 @@ -0,0 +1,39 @@
@@ -64,6 +61,3 @@ index 000000000000..59c3e83df6f5
 +        #interrupt-cells = <1>;
 +        interrupt-controller;
 +    };
--- 
-2.39.2
-

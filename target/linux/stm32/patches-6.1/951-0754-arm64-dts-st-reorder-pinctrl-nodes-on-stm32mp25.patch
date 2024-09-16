@@ -19,11 +19,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 203 ++++++++++++-------------
  1 file changed, 100 insertions(+), 103 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index f9618bf10f7e..6adfb41a1b28 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2474,109 +2474,6 @@ syscfg: syscon@44230000 {
+@@ -2474,109 +2474,6 @@
  			#clock-cells = <1>;
  		};
  
@@ -133,7 +131,7 @@ index f9618bf10f7e..6adfb41a1b28 100644
  		pinctrl: pinctrl@44240000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
-@@ -2726,6 +2623,45 @@ rtc: rtc@46000000 {
+@@ -2726,6 +2623,45 @@
  			status = "disabled";
  		};
  
@@ -179,7 +177,7 @@ index f9618bf10f7e..6adfb41a1b28 100644
  		pinctrl_z: pinctrl@46200000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
-@@ -2745,7 +2681,68 @@ gpioz: gpio@46200000 {
+@@ -2745,7 +2681,68 @@
  				st,bank-ioport = <11>;
  				status = "disabled";
  			};
@@ -248,6 +246,3 @@ index f9618bf10f7e..6adfb41a1b28 100644
  		};
  
  		fmc: memory-controller@48200000 {
--- 
-2.39.2
-

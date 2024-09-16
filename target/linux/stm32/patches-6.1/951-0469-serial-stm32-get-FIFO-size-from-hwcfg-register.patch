@@ -23,8 +23,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/tty/serial/stm32-usart.h |   6 +-
  2 files changed, 94 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 47a235cb60ff..59fc41eeffff 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
 @@ -40,63 +40,64 @@
@@ -130,7 +128,7 @@ index 47a235cb60ff..59fc41eeffff 100644
  	},
  	.cfg = {
  		.uart_enable_bit = 0,
-@@ -104,7 +105,6 @@ static struct stm32_usart_info __maybe_unused stm32h7_info = {
+@@ -104,7 +105,6 @@ static struct stm32_usart_info __maybe_u
  		.has_swap = true,
  		.has_wakeup = true,
  		.has_fifo = true,
@@ -138,7 +136,7 @@ index 47a235cb60ff..59fc41eeffff 100644
  	}
  };
  
-@@ -1689,37 +1689,57 @@ static const struct uart_ops stm32_uart_ops = {
+@@ -1698,37 +1698,57 @@ static const struct uart_ops stm32_uart_
  #endif /* CONFIG_CONSOLE_POLL */
  };
  
@@ -156,24 +154,24 @@ index 47a235cb60ff..59fc41eeffff 100644
 +
 +static const struct stm32_usart_thresh_ratio stm32h7_usart_fifo_thresh_cfg[] = {
 +	{1, 8}, {1, 4}, {1, 2}, {3, 4}, {7, 8}, {1, 1} };
- 
--static void stm32_usart_get_ftcfg(struct platform_device *pdev, const char *p,
--				  int *ftcfg)
++
 +static int stm32_usart_get_thresh_value(u32 fifo_size, int index)
- {
--	u32 bytes, i;
++{
 +	return fifo_size * stm32h7_usart_fifo_thresh_cfg[index].mul /
 +		stm32h7_usart_fifo_thresh_cfg[index].div;
 +}
  
--	/* DT option to get RX & TX FIFO threshold (default to 8 bytes) */
+-static void stm32_usart_get_ftcfg(struct platform_device *pdev, const char *p,
+-				  int *ftcfg)
 +static int stm32_usart_get_ftcfg(struct platform_device *pdev, struct stm32_port *stm32port,
 +				 const char *p, int *ftcfg)
-+{
+ {
+-	u32 bytes, i;
 +	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
 +	u32 bytes, i, cfg8;
 +	int fifo_size;
-+
+ 
+-	/* DT option to get RX & TX FIFO threshold (default to 8 bytes) */
 +	if (WARN_ON(ofs->hwcfgr1 == UNDEF_REG))
 +		return 1;
 +
@@ -217,7 +215,7 @@ index 47a235cb60ff..59fc41eeffff 100644
  }
  
  static void stm32_usart_deinit_port(struct stm32_port *stm32port)
-@@ -1749,7 +1769,6 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+@@ -1758,7 +1778,6 @@ static int stm32_usart_init_port(struct
  	port->flags	= UPF_BOOT_AUTOCONF;
  	port->ops	= &stm32_uart_ops;
  	port->dev	= &pdev->dev;
@@ -225,7 +223,7 @@ index 47a235cb60ff..59fc41eeffff 100644
  	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
  	port->irq = irq;
  	port->rs485_config = stm32_usart_config_rs485;
-@@ -1766,14 +1785,6 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+@@ -1775,14 +1794,6 @@ static int stm32_usart_init_port(struct
  	stm32port->swap = stm32port->info->cfg.has_swap &&
  		of_property_read_bool(pdev->dev.of_node, "rx-tx-swap");
  
@@ -240,7 +238,7 @@ index 47a235cb60ff..59fc41eeffff 100644
  	port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
  	if (IS_ERR(port->membase))
  		return PTR_ERR(port->membase);
-@@ -1796,6 +1807,15 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+@@ -1805,6 +1816,15 @@ static int stm32_usart_init_port(struct
  		goto err_clk;
  	}
  
@@ -256,8 +254,6 @@ index 47a235cb60ff..59fc41eeffff 100644
  	stm32port->gpios = mctrl_gpio_init(&stm32port->port, 0);
  	if (IS_ERR(stm32port->gpios)) {
  		ret = PTR_ERR(stm32port->gpios);
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index b8b6dbbacd60..b5a4afac3793 100644
 --- a/drivers/tty/serial/stm32-usart.h
 +++ b/drivers/tty/serial/stm32-usart.h
 @@ -21,6 +21,7 @@ struct stm32_usart_offsets {
@@ -289,6 +285,3 @@ index b8b6dbbacd60..b5a4afac3793 100644
  
  #define RX_BUF_L 4096		 /* dma rx buffer length     */
  #define RX_BUF_P (RX_BUF_L / 2)	 /* dma rx buffer period     */
--- 
-2.39.2
-

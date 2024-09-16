@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 14 ++++++++++++++
  2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a357891bc12b..b6c6f00c82e9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2060,20 +2060,6 @@ i3c4: i3c@46080000 {
+@@ -2060,20 +2060,6 @@
  				status = "disabled";
  			};
  
@@ -40,8 +38,6 @@ index a357891bc12b..b6c6f00c82e9 100644
  			ltdc: display-controller@48010000 {
  				compatible = "st,stm32mp25-ltdc";
  				reg = <0x48010000 0x400>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 1afcffd195da..1ea99d5102d8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
 @@ -8,6 +8,20 @@
@@ -65,6 +61,3 @@ index 1afcffd195da..1ea99d5102d8 100644
  			vdec: vdec@480d0000 {
  				compatible = "st,stm32mp25-vdec";
  				reg = <0x480d0000 0x3c8>;
--- 
-2.39.2
-

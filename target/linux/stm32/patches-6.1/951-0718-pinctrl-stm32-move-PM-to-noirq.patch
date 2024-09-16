@@ -23,11 +23,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32mp257.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-index 6709bddd9718..588fb5249f9c 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-@@ -2570,7 +2570,7 @@ static const struct of_device_id stm32mp257_pctrl_match[] = {
+@@ -2570,7 +2570,7 @@ static const struct of_device_id stm32mp
  MODULE_DEVICE_TABLE(of, stm32mp257_pctrl_match);
  
  static const struct dev_pm_ops stm32_pinctrl_dev_pm_ops = {
@@ -36,6 +34,3 @@ index 6709bddd9718..588fb5249f9c 100644
  };
  
  static struct platform_driver stm32mp257_pinctrl_driver = {
--- 
-2.39.2
-

@@ -19,9 +19,6 @@ Change-Id: I475a24921b51823fd03b0de6f47d8e7699f07427
  1 file changed, 134 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
-new file mode 100644
-index 000000000000..5f5917bfc28b
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/dma/st,stm32-dma3.yaml
 @@ -0,0 +1,134 @@
@@ -159,6 +156,3 @@ index 000000000000..5f5917bfc28b
 +      #dma-cells = <4>;
 +    };
 +...
--- 
-2.39.2
-

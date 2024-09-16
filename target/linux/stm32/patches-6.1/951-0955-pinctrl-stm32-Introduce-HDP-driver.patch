@@ -24,8 +24,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  3 files changed, 325 insertions(+)
  create mode 100644 drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
 
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index 64af7b1521fb..7884e9a6f765 100644
 --- a/drivers/pinctrl/stm32/Kconfig
 +++ b/drivers/pinctrl/stm32/Kconfig
 @@ -57,4 +57,18 @@ config PINCTRL_STM32MP257
@@ -47,18 +45,13 @@ index 64af7b1521fb..7884e9a6f765 100644
 +	  It permits the observation of up to 16 signals per HDP line.
 +
  endif
-diff --git a/drivers/pinctrl/stm32/Makefile b/drivers/pinctrl/stm32/Makefile
-index 7b17464d8de1..98a1bbc7e16c 100644
 --- a/drivers/pinctrl/stm32/Makefile
 +++ b/drivers/pinctrl/stm32/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_PINCTRL_STM32H743)	+= pinctrl-stm32h743.o
+@@ -11,3 +11,4 @@ obj-$(CONFIG_PINCTRL_STM32H743)	+= pinct
  obj-$(CONFIG_PINCTRL_STM32MP135) += pinctrl-stm32mp135.o
  obj-$(CONFIG_PINCTRL_STM32MP157) += pinctrl-stm32mp157.o
  obj-$(CONFIG_PINCTRL_STM32MP257) += pinctrl-stm32mp257.o
 +obj-$(CONFIG_PINCTRL_STM32_HDP) += pinctrl-stm32-hdp.o
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c b/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
-new file mode 100644
-index 000000000000..d5d65f0d8220
 --- /dev/null
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
 @@ -0,0 +1,310 @@
@@ -372,6 +365,3 @@ index 000000000000..d5d65f0d8220
 +MODULE_AUTHOR("Clément Le Goffic");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Hardware Debug Port driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

@@ -44,8 +44,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-index ab88193ab7f5..56142eb5c3a9 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -76,6 +76,9 @@ properties:
@@ -74,6 +72,3 @@ index ab88193ab7f5..56142eb5c3a9 100644
  
        #address-cells = <2>;
        #size-cells = <1>;
--- 
-2.39.2
-

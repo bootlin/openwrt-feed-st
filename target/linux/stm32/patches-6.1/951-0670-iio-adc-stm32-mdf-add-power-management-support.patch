@@ -19,11 +19,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/adc/stm32-mdf.h        |  2 ++
  4 files changed, 82 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index e5e26b611084..39a4e8541d45 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
-@@ -263,10 +263,12 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+@@ -263,10 +263,12 @@ static const struct regmap_config stm32_
  	.reg_bits = 32,
  	.val_bits = 32,
  	.reg_stride = sizeof(u32),
@@ -37,7 +35,7 @@ index e5e26b611084..39a4e8541d45 100644
  	.fast_io = true,
  };
  
-@@ -1338,21 +1340,31 @@ static int stm32_mdf_adc_remove(struct platform_device *pdev)
+@@ -1338,21 +1340,31 @@ static int stm32_mdf_adc_remove(struct p
  static int stm32_mdf_adc_suspend(struct device *dev)
  {
  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
@@ -74,11 +72,9 @@ index e5e26b611084..39a4e8541d45 100644
  }
  
  static SIMPLE_DEV_PM_OPS(stm32_mdf_adc_pm_ops, stm32_mdf_adc_suspend, stm32_mdf_adc_resume);
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 8918ac7730dc..559b1efc3ad7 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
-@@ -39,12 +39,12 @@ static bool stm32_mdf_readable_reg(struct device *dev, unsigned int reg)
+@@ -39,12 +39,12 @@ static bool stm32_mdf_readable_reg(struc
  
  static bool stm32_mdf_volatile_reg(struct device *dev, unsigned int reg)
  {
@@ -97,7 +93,7 @@ index 8918ac7730dc..559b1efc3ad7 100644
  }
  
  static bool stm32_mdf_writeable_reg(struct device *dev, unsigned int reg)
-@@ -66,7 +66,9 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+@@ -66,7 +66,9 @@ static const struct regmap_config stm32_
  	.readable_reg = stm32_mdf_readable_reg,
  	.volatile_reg = stm32_mdf_volatile_reg,
  	.writeable_reg = stm32_mdf_writeable_reg,
@@ -107,7 +103,7 @@ index 8918ac7730dc..559b1efc3ad7 100644
  };
  
  /*
-@@ -117,8 +119,10 @@ int stm32_mdf_start_mdf(struct stm32_mdf *mdf)
+@@ -117,8 +119,10 @@ int stm32_mdf_start_mdf(struct stm32_mdf
  		if (ret < 0)
  			goto pm_put;
  
@@ -119,7 +115,7 @@ index 8918ac7730dc..559b1efc3ad7 100644
  		if (!(val & MDF_CKG_ACTIVE)) {
  			ret = -EINVAL;
  			dev_err(dev, "MDF clock not active\n");
-@@ -142,7 +146,10 @@ int stm32_mdf_trigger(struct stm32_mdf *mdf)
+@@ -142,7 +146,10 @@ int stm32_mdf_trigger(struct stm32_mdf *
  	struct stm32_mdf_priv *priv = to_stm32_mdf_priv(mdf);
  	int ret;
  
@@ -130,7 +126,7 @@ index 8918ac7730dc..559b1efc3ad7 100644
  	if (ret < 0)
  		return ret;
  
-@@ -572,19 +579,32 @@ static int stm32_mdf_core_resume(struct device *dev)
+@@ -572,19 +579,32 @@ static int stm32_mdf_core_resume(struct
  	int ret;
  
  	ret = pinctrl_pm_select_default_state(dev);
@@ -168,11 +164,9 @@ index 8918ac7730dc..559b1efc3ad7 100644
  }
  
  static int stm32_mdf_core_runtime_suspend(struct device *dev)
-diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
-index 027494b11859..0118409083dd 100644
 --- a/drivers/iio/adc/stm32-mdf-serial.c
 +++ b/drivers/iio/adc/stm32-mdf-serial.c
-@@ -36,12 +36,35 @@ static const struct stm32_mdf_sf_mode stm32_mdf_mode[STM32_MDF_MODE_NB] = {
+@@ -36,12 +36,35 @@ static const struct stm32_mdf_sf_mode st
  	{ "manchester_f", STM32_MDF_MODE_MANCHESTER_F },
  };
  
@@ -208,7 +202,7 @@ index 027494b11859..0118409083dd 100644
  };
  
  int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf)
-@@ -231,25 +254,22 @@ static int stm32_mdf_sitf_remove(struct platform_device *pdev)
+@@ -231,25 +254,22 @@ static int stm32_mdf_sitf_remove(struct
  static int stm32_mdf_sitf_suspend(struct device *dev)
  {
  	struct stm32_mdf_sitf *sitf = dev_get_drvdata(dev);
@@ -241,8 +235,6 @@ index 027494b11859..0118409083dd 100644
  }
  
  static int stm32_mdf_sitf_runtime_suspend(struct device *dev)
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index 6405d8a194d1..a5b96516502e 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -265,6 +265,7 @@ enum stm32_sitf_mode {
@@ -261,6 +253,3 @@ index 6405d8a194d1..a5b96516502e 100644
  };
  
  /*
--- 
-2.39.2
-

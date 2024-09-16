@@ -16,11 +16,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 32 +++++++++++++++++--
  1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 5bb7b39ff3f3..1bca28f1782f 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -80,6 +80,18 @@ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+@@ -80,6 +80,18 @@ static const struct dcmipp_byteproc_pix_
  	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1, MIPI_CSI2_DT_RAW8),
  	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1, MIPI_CSI2_DT_RAW8),
  	PIXMAP_MBUS_BPP(SRGGB8_1X8, 1, MIPI_CSI2_DT_RAW8),
@@ -39,7 +37,7 @@ index 5bb7b39ff3f3..1bca28f1782f 100644
  	PIXMAP_MBUS_BPP(JPEG_1X8, 1, 0x00), /* TODO - DT value to be fixed */
  };
  
-@@ -173,9 +185,23 @@ static void dcmipp_byteproc_adjust_compose(struct v4l2_rect *r,
+@@ -173,9 +185,23 @@ static void dcmipp_byteproc_adjust_compo
  	r->left = 0;
  
  	/* Compose is not possible for JPEG or Bayer formats */
@@ -66,6 +64,3 @@ index 5bb7b39ff3f3..1bca28f1782f 100644
  		r->width = fmt->width;
  		r->height = fmt->height;
  		return;
--- 
-2.39.2
-

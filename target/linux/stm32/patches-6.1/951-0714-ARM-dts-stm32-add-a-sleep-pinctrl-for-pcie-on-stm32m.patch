@@ -17,11 +17,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 51620e7ffa03..1d74df2c9553 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -443,6 +443,12 @@ pins {
+@@ -443,6 +443,12 @@
  		};
  	};
  
@@ -34,6 +32,3 @@ index 51620e7ffa03..1d74df2c9553 100644
  	rtc_out2_rmp_pins_a: rtc-out2-rmp-pins-0 {
  		pins {
  			pinmux = <STM32_PINMUX('I', 8, ANALOG)>; /* RTC_OUT2_RMP */
--- 
-2.39.2
-

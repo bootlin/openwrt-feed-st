@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 +-
  4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157a-ev1.dts b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-index c4f46cae4d13..96aeb870405d 100644
 --- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-@@ -670,7 +670,7 @@ &spi1 {
+@@ -670,7 +670,7 @@
  };
  
  &sram4 {
@@ -32,11 +30,9 @@ index c4f46cae4d13..96aeb870405d 100644
  		reg = <0x0 0x8000>;
  		pool;
  	};
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index bc48a07ba59e..bbbc2eba4fdd 100644
 --- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -673,7 +673,7 @@ &spi1 {
+@@ -673,7 +673,7 @@
  };
  
  &sram4 {
@@ -45,11 +41,9 @@ index bc48a07ba59e..bbbc2eba4fdd 100644
  		reg = <0x0 0x8000>;
  		pool;
  	};
-diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-index ee8f8fd91d93..5094c59fe0de 100644
 --- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-@@ -670,7 +670,7 @@ &spi1 {
+@@ -670,7 +670,7 @@
  };
  
  &sram4 {
@@ -58,11 +52,9 @@ index ee8f8fd91d93..5094c59fe0de 100644
  		reg = <0x0 0x8000>;
  		pool;
  	};
-diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-index b521a44b6cab..9c2fa3b73c8f 100644
 --- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-@@ -674,7 +674,7 @@ &spi1 {
+@@ -674,7 +674,7 @@
  };
  
  &sram4 {
@@ -71,6 +63,3 @@ index b521a44b6cab..9c2fa3b73c8f 100644
  		reg = <0x0 0x8000>;
  		pool;
  	};
--- 
-2.39.2
-

@@ -17,8 +17,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../st/stm32mp257f-dk-ca35tdcid-resmem.dtsi   | 49 ++++++++-----------
  1 file changed, 20 insertions(+), 29 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
-index 889d7067154e..a23386a1a8d0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
 @@ -1,4 +1,4 @@
@@ -36,7 +34,7 @@ index 889d7067154e..a23386a1a8d0 100644
   */
  
  / {
-@@ -17,7 +17,7 @@ reserved-memory {
+@@ -17,7 +17,7 @@
  		ranges;
  
  		/* Internal RAM reserved memory declaration */
@@ -45,7 +43,7 @@ index 889d7067154e..a23386a1a8d0 100644
  			reg = <0x0 0xa000000 0x0 0x20000>;
  			no-map;
  		};
-@@ -42,28 +42,23 @@ bsec_mirror: bsec-mirror@a040000 {
+@@ -42,28 +42,23 @@
  			no-map;
  		};
  
@@ -81,7 +79,7 @@ index 889d7067154e..a23386a1a8d0 100644
  			no-map;
  		};
  
-@@ -74,7 +69,7 @@ pcie_device: pcie-device@10000000 {
+@@ -74,7 +69,7 @@
  		};
  
  		/* Backup RAM reserved memory declaration */
@@ -90,7 +88,7 @@ index 889d7067154e..a23386a1a8d0 100644
  			reg = <0x0 0x42000000 0x0 0x1000>;
  			no-map;
  		};
-@@ -92,25 +87,21 @@ mm_ospi1: mm-ospi@60000000 {
+@@ -92,25 +87,21 @@
  
  		/* DDR reserved memory declaration */
  		tfm_code: tfm-code@80000000 {
@@ -116,7 +114,7 @@ index 889d7067154e..a23386a1a8d0 100644
  			reg = <0x0 0x80a00000 0x0 0x800000>;
  			no-map;
  		};
-@@ -140,12 +131,12 @@ vdev0buffer: vdev0buffer@812fa000 {
+@@ -140,12 +131,12 @@
  		};
  
  		spare1: spare1@81300000 {
@@ -132,7 +130,7 @@ index 889d7067154e..a23386a1a8d0 100644
  			no-map;
  		};
  
-@@ -154,18 +145,18 @@ op_tee: op-tee@82000000 {
+@@ -154,18 +145,18 @@
  			no-map;
  		};
  
@@ -157,6 +155,3 @@ index 889d7067154e..a23386a1a8d0 100644
  			no-map;
  		};
  
--- 
-2.39.2
-

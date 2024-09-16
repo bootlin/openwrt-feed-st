@@ -26,11 +26,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  include/linux/dmaengine.h |  3 ++-
  3 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-index 892e8389232e..baaa1cf06451 100644
 --- a/drivers/dma/dmaengine.c
 +++ b/drivers/dma/dmaengine.c
-@@ -1037,7 +1037,8 @@ static int get_dma_id(struct dma_device *device)
+@@ -1037,7 +1037,8 @@ static int get_dma_id(struct dma_device
  }
  
  static int __dma_async_device_channel_register(struct dma_device *device,
@@ -40,7 +38,7 @@ index 892e8389232e..baaa1cf06451 100644
  {
  	int rc;
  
-@@ -1066,8 +1067,10 @@ static int __dma_async_device_channel_register(struct dma_device *device,
+@@ -1066,8 +1067,10 @@ static int __dma_async_device_channel_re
  	chan->dev->device.parent = device->dev;
  	chan->dev->chan = chan;
  	chan->dev->dev_id = device->dev_id;
@@ -53,7 +51,7 @@ index 892e8389232e..baaa1cf06451 100644
  	rc = device_register(&chan->dev->device);
  	if (rc)
  		goto err_out_ida;
-@@ -1087,11 +1090,12 @@ static int __dma_async_device_channel_register(struct dma_device *device,
+@@ -1087,11 +1090,12 @@ static int __dma_async_device_channel_re
  }
  
  int dma_async_device_channel_register(struct dma_device *device,
@@ -68,7 +66,7 @@ index 892e8389232e..baaa1cf06451 100644
  	if (rc < 0)
  		return rc;
  
-@@ -1245,7 +1249,7 @@ int dma_async_device_register(struct dma_device *device)
+@@ -1245,7 +1249,7 @@ int dma_async_device_register(struct dma
  
  	/* represent channels in sysfs. Probably want devs too */
  	list_for_each_entry(chan, &device->channels, device_node) {
@@ -77,11 +75,9 @@ index 892e8389232e..baaa1cf06451 100644
  		if (rc < 0)
  			goto err_out;
  	}
-diff --git a/drivers/dma/idxd/dma.c b/drivers/dma/idxd/dma.c
-index e0874cb4721c..d938c23fba14 100644
 --- a/drivers/dma/idxd/dma.c
 +++ b/drivers/dma/idxd/dma.c
-@@ -274,7 +274,7 @@ static int idxd_register_dma_channel(struct idxd_wq *wq)
+@@ -274,7 +274,7 @@ static int idxd_register_dma_channel(str
  		desc->txd.tx_submit = idxd_dma_tx_submit;
  	}
  
@@ -90,11 +86,9 @@ index e0874cb4721c..d938c23fba14 100644
  	if (rc < 0) {
  		kfree(idxd_chan);
  		return rc;
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 3576c6e89fea..2cdbeb9f8cd9 100644
 --- a/include/linux/dmaengine.h
 +++ b/include/linux/dmaengine.h
-@@ -1576,7 +1576,8 @@ int dma_async_device_register(struct dma_device *device);
+@@ -1576,7 +1576,8 @@ int dma_async_device_register(struct dma
  int dmaenginem_async_device_register(struct dma_device *device);
  void dma_async_device_unregister(struct dma_device *device);
  int dma_async_device_channel_register(struct dma_device *device,
@@ -104,6 +98,3 @@ index 3576c6e89fea..2cdbeb9f8cd9 100644
  void dma_async_device_channel_unregister(struct dma_device *device,
  					 struct dma_chan *chan);
  void dma_run_dependencies(struct dma_async_tx_descriptor *tx);
--- 
-2.39.2
-

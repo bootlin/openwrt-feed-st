@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/dma/stm32-dma3.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 41e1538aae36..c7c775651611 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -2161,8 +2161,7 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2161,8 +2161,7 @@ static int stm32_dma3_probe(struct platf
  		if (ret == -EPROBE_DEFER)
  			goto err_clk_disable;
  	} else {
@@ -29,6 +27,3 @@ index 41e1538aae36..c7c775651611 100644
  	}
  
  	INIT_LIST_HEAD(&dma_dev->channels);
--- 
-2.39.2
-

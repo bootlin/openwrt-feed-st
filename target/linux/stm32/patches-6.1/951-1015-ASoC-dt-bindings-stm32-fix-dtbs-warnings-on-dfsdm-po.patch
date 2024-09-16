@@ -20,8 +20,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index 1970503389aa..d02814c73a09 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 @@ -242,6 +242,10 @@ patternProperties:
@@ -35,6 +33,3 @@ index 1970503389aa..d02814c73a09 100644
                required:
                  - compatible
                  - "#sound-dai-cells"
--- 
-2.39.2
-

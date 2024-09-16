@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 62 +++++++++++++++++++
  1 file changed, 62 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index a4b3b0286927..4c0cc40cd091 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -21,6 +21,13 @@ pins2 {
+@@ -21,6 +21,13 @@
  		};
  	};
  
@@ -37,7 +35,7 @@ index a4b3b0286927..4c0cc40cd091 100644
  	eth1_rgmii_pins_a: eth1-rgmii-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('A', 15, AF10)>, /* ETH_RGMII_TXD0 */
-@@ -57,6 +64,24 @@ pins4 {
+@@ -57,6 +64,24 @@
  		};
  	};
  
@@ -62,7 +60,7 @@ index a4b3b0286927..4c0cc40cd091 100644
  	eth2_rgmii_pins_a: eth2-rgmii-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('C', 7, AF10)>, /* ETH_RGMII_TXD0 */
-@@ -100,6 +125,26 @@ pins5 {
+@@ -100,6 +125,26 @@
  		};
  	};
  
@@ -89,7 +87,7 @@ index a4b3b0286927..4c0cc40cd091 100644
  	eth3_rgmii_pins_a: eth3-rgmii-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('A', 6, AF14)>, /* ETH_RGMII_TXD0 */
-@@ -136,6 +181,23 @@ pins4 {
+@@ -136,6 +181,23 @@
  		};
  	};
  
@@ -113,6 +111,3 @@ index a4b3b0286927..4c0cc40cd091 100644
  	i2c2_pins_a: i2c2-0 {
  		pins {
  			pinmux = <STM32_PINMUX('B', 5, AF9)>, /* I2C2_SCL */
--- 
-2.39.2
-

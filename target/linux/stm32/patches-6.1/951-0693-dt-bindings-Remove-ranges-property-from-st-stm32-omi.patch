@@ -17,8 +17,6 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  .../devicetree/bindings/memory-controllers/st,stm32-omi.yaml    | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-index 110b670578b3..154bb144884f 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -74,8 +74,6 @@ properties:
@@ -30,6 +28,3 @@ index 110b670578b3..154bb144884f 100644
    power-domains:
      maxItems: 1
  
--- 
-2.39.2
-

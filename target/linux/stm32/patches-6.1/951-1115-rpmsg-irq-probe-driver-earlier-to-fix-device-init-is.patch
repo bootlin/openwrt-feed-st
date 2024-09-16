@@ -25,11 +25,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/irqchip/irq-rpmsg.c | 14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-rpmsg.c b/drivers/irqchip/irq-rpmsg.c
-index fed22dbfa67f..f84e8c163fa3 100644
 --- a/drivers/irqchip/irq-rpmsg.c
 +++ b/drivers/irqchip/irq-rpmsg.c
-@@ -302,7 +302,19 @@ static struct platform_driver irq_rpmsg_plat_driver = {
+@@ -302,7 +302,19 @@ static struct platform_driver irq_rpmsg_
  		.of_match_table	= of_match_ptr(irq_rpmsg_plat_ids),
  	}
  };
@@ -50,6 +48,3 @@ index fed22dbfa67f..f84e8c163fa3 100644
  
  MODULE_DESCRIPTION("RPMsg IRQC Driver");
  MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

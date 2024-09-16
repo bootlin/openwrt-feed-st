@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Makefile | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 0e9486d6994f..50c77e591b33 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1486,7 +1486,7 @@ KBUILD_EXTDTB := $(or $(and $(wildcard $(KBUILD_EXTDTS)), 1), 0)
+@@ -1485,7 +1485,7 @@ KBUILD_EXTDTB := $(or $(and $(wildcard $
  	test ! -e $(dtstree)/$@ -a $(KBUILD_EXTDTB) -eq 1  && ( \
  		echo "Looking for $(patsubst st/%.dtb,%.dtb,$@) into $(KBUILD_EXTDTS)"; \
  		$(MAKE) $(build)=$(stdtstree) src=$(KBUILD_EXTDTS) $(dtstree)/$@ || \
@@ -32,7 +30,7 @@ index 0e9486d6994f..50c77e591b33 100644
  
  %.dtbo: dtbs_prepare
  	$(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-@@ -1494,10 +1494,9 @@ KBUILD_EXTDTB := $(or $(and $(wildcard $(KBUILD_EXTDTS)), 1), 0)
+@@ -1493,10 +1493,9 @@ KBUILD_EXTDTB := $(or $(and $(wildcard $
  PHONY += dtbs dtbs_prepare dtbs_install dtbs_check
  dtbs: dtbs_prepare
  	$(Q)$(MAKE) $(build)=$(stdtstree)
@@ -45,6 +43,3 @@ index 0e9486d6994f..50c77e591b33 100644
  
  # include/config/kernel.release is actually needed when installing DTBs because
  # INSTALL_DTBS_PATH contains $(KERNELRELEASE). However, we do not want to make
--- 
-2.39.2
-

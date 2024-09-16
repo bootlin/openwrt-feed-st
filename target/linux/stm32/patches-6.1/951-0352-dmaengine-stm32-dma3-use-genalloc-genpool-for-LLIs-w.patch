@@ -37,8 +37,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/dma/stm32-dma3.c | 182 +++++++++++++++++++++++++++++----------
  1 file changed, 136 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 1a500279298b..b91918b5fe16 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
 @@ -11,11 +11,13 @@
@@ -81,7 +79,7 @@ index 1a500279298b..b91918b5fe16 100644
  };
  
  static inline struct stm32_dma3_chan *to_stm32_dma3_chan(struct dma_chan *c)
-@@ -555,7 +558,7 @@ static void stm32_dma3_chan_dump_reg(struct stm32_dma3_chan *chan)
+@@ -555,7 +558,7 @@ static void stm32_dma3_chan_dump_reg(str
  
  static void stm32_dma3_chan_dump_hwdesc(struct stm32_dma3_chan *chan, struct stm32_dma3_lli *lli)
  {
@@ -90,7 +88,7 @@ index 1a500279298b..b91918b5fe16 100644
  	dev_dbg(chan2dev(chan), "CTR1: 0x%08x\n", lli->hwdesc->ctr1);
  	dev_dbg(chan2dev(chan), "CTR2: 0x%08x\n", lli->hwdesc->ctr2);
  	dev_dbg(chan2dev(chan), "CBR1: 0x%08x\n", lli->hwdesc->cbr1);
-@@ -564,12 +567,122 @@ static void stm32_dma3_chan_dump_hwdesc(struct stm32_dma3_chan *chan, struct stm
+@@ -564,12 +567,122 @@ static void stm32_dma3_chan_dump_hwdesc(
  	dev_dbg(chan2dev(chan), "CLLR: 0x%08x\n", lli->hwdesc->cllr);
  }
  
@@ -214,7 +212,7 @@ index 1a500279298b..b91918b5fe16 100644
  
  	/*
  	 * If the number of hwdesc to allocate is greater than the maximum address of CLLR_LA,
-@@ -589,16 +702,16 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -589,16 +702,16 @@ static struct stm32_dma3_swdesc *stm32_d
  	 * tab of hwdesc or not ?
  	 * may depend on the @ of next LL constraints
  	 */
@@ -238,7 +236,7 @@ index 1a500279298b..b91918b5fe16 100644
  		       ddata->base + STM32_DMA3_CLBAR(chan->id));
  
  	/* Set LL allocated port (AXI) */
-@@ -608,24 +721,17 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -608,24 +721,17 @@ static struct stm32_dma3_swdesc *stm32_d
  	swdesc->lli_size = count;
  
  	return swdesc;
@@ -266,7 +264,7 @@ index 1a500279298b..b91918b5fe16 100644
  	kfree(swdesc);
  }
  
-@@ -689,11 +795,11 @@ static int stm32_dma3_chan_prep_hwdesc(struct stm32_dma3_chan *chan,
+@@ -689,11 +795,11 @@ static int stm32_dma3_chan_prep_hwdesc(s
  
  	if (is_last) {
  		if (is_cyclic)
@@ -280,7 +278,7 @@ index 1a500279298b..b91918b5fe16 100644
  	}
  
  	/* TODO:
-@@ -1053,7 +1159,7 @@ static int stm32_dma3_chan_get_curr_hwdesc(struct stm32_dma3_swdesc *swdesc, u32
+@@ -1053,7 +1159,7 @@ static int stm32_dma3_chan_get_curr_hwde
  		return swdesc->lli_size - 1;
  
  	for (i = swdesc->lli_size - 1; i >= 0; i--) {
@@ -289,7 +287,7 @@ index 1a500279298b..b91918b5fe16 100644
  		if (lli_offset == next_lli_offset) {
  			if (i > 0)
  				return i - 1;
-@@ -1299,15 +1405,6 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1299,15 +1405,6 @@ static int stm32_dma3_alloc_chan_resourc
  		goto err_put_sync;
  	}
  
@@ -305,7 +303,7 @@ index 1a500279298b..b91918b5fe16 100644
  	/* Take the channel semaphore */
  	if (chan->semaphore_mode) {
  		writel_relaxed(CSEMCR_SEM_MUTEX, ddata->base + STM32_DMA3_CSEMCR(id));
-@@ -1317,17 +1414,13 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1317,17 +1414,13 @@ static int stm32_dma3_alloc_chan_resourc
  		if (ccid != CCIDCFGR_CID1) {
  			dev_err(chan2dev(chan), "not under CID1 control (used by CID%d)\n", ccid);
  			ret = -EPERM;
@@ -324,7 +322,7 @@ index 1a500279298b..b91918b5fe16 100644
  err_put_sync:
  	pm_runtime_put_sync(ddata->dma_dev.dev);
  
-@@ -1349,12 +1442,6 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1349,12 +1442,6 @@ static void stm32_dma3_free_chan_resourc
  	spin_unlock_irqrestore(&chan->vchan.lock, flags);
  
  	vchan_free_chan_resources(to_virt_chan(c));
@@ -337,7 +335,7 @@ index 1a500279298b..b91918b5fe16 100644
  
  	/* Release the channel semaphore */
  	if (chan->semaphore_mode)
-@@ -2008,6 +2095,7 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2008,6 +2095,7 @@ static int stm32_dma3_probe(struct platf
  		return -ENOMEM;
  
  	dma_dev = &ddata->dma_dev;
@@ -345,7 +343,7 @@ index 1a500279298b..b91918b5fe16 100644
  
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
  	ddata->base = devm_ioremap_resource(&pdev->dev, res);
-@@ -2113,6 +2201,10 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2113,6 +2201,10 @@ static int stm32_dma3_probe(struct platf
  	//TODO: pre-allocate any memory needed during transfer setup to avoid
  	//putting to much pressure on the nowait allocator.
  
@@ -356,7 +354,7 @@ index 1a500279298b..b91918b5fe16 100644
  	//TODO: as many vchan as dma_channels or dma_requests ?
  	ddata->chans = devm_kcalloc(&pdev->dev, ddata->dma_channels, sizeof(*ddata->chans),
  				    GFP_KERNEL);
-@@ -2184,8 +2276,6 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2184,8 +2276,6 @@ static int stm32_dma3_probe(struct platf
  		goto err_clk_disable;
  	}
  
@@ -365,6 +363,3 @@ index 1a500279298b..b91918b5fe16 100644
  	verr = readl_relaxed(ddata->base + STM32_DMA3_VERR);
  
  	pm_runtime_set_active(&pdev->dev);
--- 
-2.39.2
-

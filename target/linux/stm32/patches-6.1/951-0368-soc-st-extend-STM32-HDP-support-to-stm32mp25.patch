@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/soc/st/Kconfig | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soc/st/Kconfig b/drivers/soc/st/Kconfig
-index 9a970096d29b..6d9e85261706 100644
 --- a/drivers/soc/st/Kconfig
 +++ b/drivers/soc/st/Kconfig
 @@ -1,9 +1,9 @@
@@ -37,6 +35,3 @@ index 9a970096d29b..6d9e85261706 100644
  	help
  	  The Hardware Debug Port allows the observation of internal signals. By using multiplexers,
  	  up to 16 signals for each of 8-bit output can be observed.
--- 
-2.39.2
-

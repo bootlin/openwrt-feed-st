@@ -20,11 +20,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 75e5ffecfea2..519ea94a06b3 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -268,8 +268,6 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -268,8 +268,6 @@ static int dcmipp_pixelproc_s_ctrl(struc
  	if (pm_runtime_get_if_in_use(pixelproc->dev) == 0)
  		return 0;
  
@@ -33,7 +31,7 @@ index 75e5ffecfea2..519ea94a06b3 100644
  	switch (ctrl->id) {
  	case V4L2_CID_PIXELPROC_GAMMA_CORRECTION:
  		reg_write(pixelproc, DCMIPP_PxGMCR(pixelproc->pipe_id),
-@@ -277,7 +275,6 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -277,7 +275,6 @@ static int dcmipp_pixelproc_s_ctrl(struc
  		break;
  	}
  
@@ -41,7 +39,7 @@ index 75e5ffecfea2..519ea94a06b3 100644
  	pm_runtime_put(pixelproc->dev);
  
  	return ret;
-@@ -878,6 +875,9 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -878,6 +875,9 @@ static int dcmipp_pixelproc_s_stream(str
  
  	reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
  
@@ -51,6 +49,3 @@ index 75e5ffecfea2..519ea94a06b3 100644
  out:
  	mutex_unlock(&pixelproc->lock);
  
--- 
-2.39.2
-

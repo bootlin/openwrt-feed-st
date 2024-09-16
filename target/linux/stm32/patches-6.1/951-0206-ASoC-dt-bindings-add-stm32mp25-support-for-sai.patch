@@ -12,8 +12,6 @@ Change-Id: I9b51bbde99720e7e2d8ec8efabf9a5bfbbb81052
  .../bindings/sound/st,stm32-sai.yaml          | 29 ++++++++++++++++++-
  1 file changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-index 56d206f97a96..79963f6d365c 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
 @@ -20,6 +20,7 @@ properties:
@@ -83,6 +81,3 @@ index 56d206f97a96..79963f6d365c 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.2
-

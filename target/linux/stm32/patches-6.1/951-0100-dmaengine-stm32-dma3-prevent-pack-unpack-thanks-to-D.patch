@@ -26,8 +26,6 @@ Change-Id: I2cb2aabfb20a3e7966c4b874c351c37cabdb72a2
  drivers/dma/stm32-dma3.c | 34 ++++++++++++++++++++++++----------
  1 file changed, 24 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index e088d26aae1d..b91adcfb1e29 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
 @@ -299,6 +299,8 @@ enum g_data_width {
@@ -39,7 +37,7 @@ index e088d26aae1d..b91adcfb1e29 100644
  /* .tr_conf_ext */
  #define STM32_DMA3_DT_SAO		GENMASK(12, 0)	/* CTR3_SAO */
  #define STM32_DMA3_DT_SDEC		BIT(13)		/* CBR1_SDEC */
-@@ -807,16 +809,22 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -807,16 +809,22 @@ static int stm32_dma3_chan_prep_hw(struc
  
  	switch (dir) {
  	case DMA_MEM_TO_DEV:
@@ -68,7 +66,7 @@ index e088d26aae1d..b91adcfb1e29 100644
  		_ctr1 |= FIELD_PREP(CTR1_DBL_1, dbl_max - 1);
  
  		/* TODO: packing is not supported if PFREQ=1 */
-@@ -838,14 +846,20 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -838,14 +846,20 @@ static int stm32_dma3_chan_prep_hw(struc
  	case DMA_DEV_TO_MEM:
  		/* Set source (device) data width and burst */
  		sdw = min_t(u32, sdw, stm32_dma3_get_max_dw(len, src_addr, chan->max_burst));
@@ -93,6 +91,3 @@ index e088d26aae1d..b91adcfb1e29 100644
  		_ctr1 |= FIELD_PREP(CTR1_DBL_1, dbl_max - 1);
  
  		/* TODO: packing is not supported if PFREQ=1 */
--- 
-2.39.2
-

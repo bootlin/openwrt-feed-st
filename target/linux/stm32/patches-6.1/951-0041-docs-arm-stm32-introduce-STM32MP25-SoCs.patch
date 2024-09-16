@@ -12,9 +12,6 @@ Change-Id: Ie4f2dd5d2b2cbf9a517f67940dedf08f14481172
  1 file changed, 19 insertions(+)
  create mode 100644 Documentation/arm/stm32/stm32mp257-overview.rst
 
-diff --git a/Documentation/arm/stm32/stm32mp257-overview.rst b/Documentation/arm/stm32/stm32mp257-overview.rst
-new file mode 100644
-index 000000000000..7e20b0d78aef
 --- /dev/null
 +++ b/Documentation/arm/stm32/stm32mp257-overview.rst
 @@ -0,0 +1,19 @@
@@ -37,6 +34,3 @@ index 000000000000..7e20b0d78aef
 +:Authors:
 +
 +- Alexandre Torgue <alexandre.torgue@st.com>
--- 
-2.39.2
-

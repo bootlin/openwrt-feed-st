@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 31 +++++--------------
  1 file changed, 7 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index fa14b5ae730c..27188b3f5a3a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -552,6 +552,7 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -552,6 +552,7 @@ static int dcmipp_pixelproc_set_selectio
  {
  	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
  	struct v4l2_mbus_framefmt *sink_fmt;
@@ -29,7 +27,7 @@ index fa14b5ae730c..27188b3f5a3a 100644
  	struct v4l2_rect *crop, *compose;
  
  	if (IS_SRC(s->pad))
-@@ -559,10 +560,12 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -559,10 +560,12 @@ static int dcmipp_pixelproc_set_selectio
  
  	if (s->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
  		sink_fmt = &pixelproc->sink_fmt;
@@ -42,7 +40,7 @@ index fa14b5ae730c..27188b3f5a3a 100644
  		crop = v4l2_subdev_get_try_crop(sd, state, s->pad);
  		compose = v4l2_subdev_get_try_compose(sd, state, s->pad);
  	}
-@@ -576,18 +579,6 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -576,18 +579,6 @@ static int dcmipp_pixelproc_set_selectio
  		/* Setting the crop also set the compose identically */
  		*compose = *crop;
  
@@ -61,7 +59,7 @@ index fa14b5ae730c..27188b3f5a3a 100644
  		dev_dbg(pixelproc->dev, "s_selection: crop %ux%u@(%u,%u)\n",
  			crop->width, crop->height, crop->left, crop->top);
  		break;
-@@ -606,18 +597,6 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -606,18 +597,6 @@ static int dcmipp_pixelproc_set_selectio
  
  		*compose = s->r;
  
@@ -80,7 +78,7 @@ index fa14b5ae730c..27188b3f5a3a 100644
  		dev_dbg(pixelproc->dev, "s_selection: compose %ux%u@(%u,%u)\n",
  			s->r.width, s->r.height, s->r.left, s->r.top);
  		break;
-@@ -625,6 +604,10 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -625,6 +604,10 @@ static int dcmipp_pixelproc_set_selectio
  		return -EINVAL;
  	}
  
@@ -91,6 +89,3 @@ index fa14b5ae730c..27188b3f5a3a 100644
  	return 0;
  }
  
--- 
-2.39.2
-

@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 62fbadb189c6..0e2bacad6e3e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -1066,7 +1066,7 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+@@ -1066,7 +1066,7 @@ static int dcmipp_bytecap_comp_bind(stru
  	/* Initialize the video_device struct */
  	vdev = &vcap->vdev;
  	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING |
@@ -33,11 +31,9 @@ index 62fbadb189c6..0e2bacad6e3e 100644
  	vdev->entity.ops = &dcmipp_bytecap_mops;
  	vdev->release = dcmipp_bytecap_release;
  	vdev->fops = &dcmipp_bytecap_fops;
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index a7537aa6712d..7a1968a0e8d8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -1233,7 +1233,7 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+@@ -1233,7 +1233,7 @@ static int dcmipp_pixelcap_comp_bind(str
  	/* Initialize the video_device struct */
  	vdev = &vcap->vdev;
  	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING |
@@ -46,6 +42,3 @@ index a7537aa6712d..7a1968a0e8d8 100644
  	vdev->entity.ops = &dcmipp_pixelcap_mops;
  	vdev->release = dcmipp_pixelcap_release;
  	vdev->fops = &dcmipp_pixelcap_fops;
--- 
-2.39.2
-

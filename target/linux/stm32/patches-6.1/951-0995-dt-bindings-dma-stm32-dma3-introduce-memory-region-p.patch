@@ -20,8 +20,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml     | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index 1ba09cfbd30c..0309848fa308 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -91,6 +91,15 @@ properties:
@@ -40,6 +38,3 @@ index 1ba09cfbd30c..0309848fa308 100644
    power-domains:
      maxItems: 1
  
--- 
-2.39.2
-

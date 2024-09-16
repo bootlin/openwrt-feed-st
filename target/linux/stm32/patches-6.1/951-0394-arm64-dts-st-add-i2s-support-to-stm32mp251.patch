@@ -16,11 +16,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 42 ++++++++++++++++++++++++++
  1 file changed, 42 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 04d954b3bc09..d01b9f640138 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -651,6 +651,20 @@ trigger@1 {
+@@ -651,6 +651,20 @@
  				};
  			};
  
@@ -41,7 +39,7 @@ index 04d954b3bc09..d01b9f640138 100644
  			spi2: spi@400b0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -666,6 +680,20 @@ spi2: spi@400b0000 {
+@@ -666,6 +680,20 @@
  				status = "disabled";
  			};
  
@@ -62,7 +60,7 @@ index 04d954b3bc09..d01b9f640138 100644
  			spi3: spi@400c0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -983,6 +1011,20 @@ usart6: serial@40220000 {
+@@ -983,6 +1011,20 @@
  				status = "disabled";
  			};
  
@@ -83,6 +81,3 @@ index 04d954b3bc09..d01b9f640138 100644
  			spi1: spi@40230000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.2
-

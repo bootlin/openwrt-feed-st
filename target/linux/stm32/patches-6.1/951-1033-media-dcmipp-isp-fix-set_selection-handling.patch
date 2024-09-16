@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 33 +++++--------------
  1 file changed, 9 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 6d742e00d4ca..db2b6bb11cae 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -465,7 +465,7 @@ static int dcmipp_isp_set_selection(struct v4l2_subdev *sd,
+@@ -465,7 +465,7 @@ static int dcmipp_isp_set_selection(stru
  				    struct v4l2_subdev_selection *s)
  {
  	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
@@ -32,7 +30,7 @@ index 6d742e00d4ca..db2b6bb11cae 100644
  	struct v4l2_rect *crop, *compose;
  	unsigned int dec;
  
-@@ -474,10 +474,12 @@ static int dcmipp_isp_set_selection(struct v4l2_subdev *sd,
+@@ -474,10 +474,12 @@ static int dcmipp_isp_set_selection(stru
  
  	if (s->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
  		sink_fmt = &isp->sink_fmt;
@@ -45,7 +43,7 @@ index 6d742e00d4ca..db2b6bb11cae 100644
  		crop = v4l2_subdev_get_try_crop(sd, state, s->pad);
  		compose = v4l2_subdev_get_try_compose(sd, state, s->pad);
  	}
-@@ -490,20 +492,12 @@ static int dcmipp_isp_set_selection(struct v4l2_subdev *sd,
+@@ -490,20 +492,12 @@ static int dcmipp_isp_set_selection(stru
  
  		/* When we set the crop, this impact as well the compose */
  		*compose = s->r;
@@ -70,7 +68,7 @@ index 6d742e00d4ca..db2b6bb11cae 100644
  
  		dev_dbg(isp->dev, "s_selection: crop %ux%u@(%u,%u)\n",
  			crop->width, crop->height, crop->left, crop->top);
-@@ -533,17 +527,8 @@ static int dcmipp_isp_set_selection(struct v4l2_subdev *sd,
+@@ -533,17 +527,8 @@ static int dcmipp_isp_set_selection(stru
  
  		*compose = s->r;
  
@@ -90,6 +88,3 @@ index 6d742e00d4ca..db2b6bb11cae 100644
  
  		dev_dbg(isp->dev, "s_selection: compose %ux%u@(%u,%u)\n",
  			s->r.width, s->r.height, s->r.left, s->r.top);
--- 
-2.39.2
-

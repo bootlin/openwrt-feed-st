@@ -20,8 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Documentation/devicetree/bindings/display/st,stm32-dsi.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-index fb52656c947d..c426a8118c7e 100644
 --- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 +++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 @@ -43,6 +43,9 @@ properties:
@@ -34,6 +32,3 @@ index fb52656c947d..c426a8118c7e 100644
    ports:
      $ref: /schemas/graph.yaml#/properties/ports
  
--- 
-2.39.2
-

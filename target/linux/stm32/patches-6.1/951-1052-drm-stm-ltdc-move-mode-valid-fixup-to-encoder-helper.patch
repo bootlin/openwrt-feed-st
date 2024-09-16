@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 140 ++++++++++++++++++++-----------------
  1 file changed, 77 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 2b459534dd4f..9706cfa91bad 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1003,67 +1003,6 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -1003,67 +1003,6 @@ static void ltdc_crtc_atomic_disable(str
  	mutex_unlock(&ldev->err_lock);
  }
  
@@ -89,7 +87,7 @@ index 2b459534dd4f..9706cfa91bad 100644
  static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
  {
  	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
-@@ -1300,8 +1239,6 @@ static bool ltdc_crtc_get_scanout_position(struct drm_crtc *crtc,
+@@ -1300,8 +1239,6 @@ static bool ltdc_crtc_get_scanout_positi
  }
  
  static const struct drm_crtc_helper_funcs ltdc_crtc_helper_funcs = {
@@ -98,7 +96,7 @@ index 2b459534dd4f..9706cfa91bad 100644
  	.mode_set_nofb = ltdc_crtc_mode_set_nofb,
  	.atomic_flush = ltdc_crtc_atomic_flush,
  	.atomic_enable = ltdc_crtc_atomic_enable,
-@@ -2119,6 +2056,81 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+@@ -2119,6 +2056,81 @@ cleanup:
  	return ret;
  }
  
@@ -180,7 +178,7 @@ index 2b459534dd4f..9706cfa91bad 100644
  static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
  {
  	struct drm_encoder *encoder;
-@@ -2133,6 +2145,8 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+@@ -2133,6 +2145,8 @@ static int ltdc_encoder_init(struct drm_
  
  	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
  
@@ -189,6 +187,3 @@ index 2b459534dd4f..9706cfa91bad 100644
  	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
  	if (ret) {
  		if (ret != -EPROBE_DEFER)
--- 
-2.39.2
-

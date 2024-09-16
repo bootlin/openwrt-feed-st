@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/iio/adc/stm32-mdf.h        |   3 +
  3 files changed, 102 insertions(+), 187 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 2efb636e6d61..8918ac7730dc 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
 @@ -8,6 +8,7 @@
@@ -31,11 +29,10 @@ index 2efb636e6d61..8918ac7730dc 100644
  #include <linux/device.h>
  #include <linux/gcd.h>
  #include <linux/list.h>
-@@ -68,54 +69,30 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
- 	.fast_io = true,
+@@ -69,53 +70,29 @@ static const struct regmap_config stm32_
  };
  
--/*
+ /*
 - * struct stm32_mdf_sck_prov - STM32 MDF serial interface clock provider data
 - * @hw: pointer to hw clock data
 - * @data: pointer to mdf private data
@@ -51,7 +48,7 @@ index 2efb636e6d61..8918ac7730dc 100644
 -	unsigned int id;
 -};
 -
- /*
+-/*
   * struct stm32_mdf_priv - STM32 MDF private data
   * @mdf: mdf common data
   * @pdev: platform device pointer
@@ -86,7 +83,7 @@ index 2efb636e6d61..8918ac7730dc 100644
  #define STM32_MDF_MAX_CCK 2
  
  static inline struct stm32_mdf_priv *to_stm32_mdf_priv(struct stm32_mdf *mdf)
-@@ -188,150 +165,90 @@ int stm32_mdf_stop_mdf(struct stm32_mdf *mdf)
+@@ -188,150 +165,90 @@ int stm32_mdf_stop_mdf(struct stm32_mdf
  }
  EXPORT_SYMBOL_GPL(stm32_mdf_stop_mdf);
  
@@ -152,11 +149,6 @@ index 2efb636e6d61..8918ac7730dc 100644
 -	struct stm32_mdf_priv *priv = prov->data;
 -	unsigned int ratio;
 -	u32 cckdiv, procdiv;
--
--	regmap_read(priv->regmap, MDF_CKGCR_REG, &cckdiv);
--	regmap_read(priv->regmap, MDF_CKGCR_REG, &procdiv);
--	ratio = (FIELD_GET(MDF_CKG_PROCDIV_MASK, procdiv) + 1) *
--		(FIELD_GET(MDF_CKG_CCKDIV_MASK, cckdiv) + 1);
 +	/*
 +	 * The total divider ratio must be split between proc divider and
 +	 * cck divider. Try to maximize cck divider first, to help fulfilling
@@ -165,13 +157,18 @@ index 2efb636e6d61..8918ac7730dc 100644
 +	cckdiv = gcd(ratio, MDF_CCKDIV_MAX);
 +	procdiv = ratio / cckdiv;
  
--	return DIV_ROUND_CLOSEST_ULL((u64)parent_rate, ratio);
--};
+-	regmap_read(priv->regmap, MDF_CKGCR_REG, &cckdiv);
+-	regmap_read(priv->regmap, MDF_CKGCR_REG, &procdiv);
+-	ratio = (FIELD_GET(MDF_CKG_PROCDIV_MASK, procdiv) + 1) *
+-		(FIELD_GET(MDF_CKG_CCKDIV_MASK, cckdiv) + 1);
 +	if (procdiv > MDF_PROCDIV_MAX) {
 +		dev_err(dev, "Proc divider out of range: %d > %d\n", procdiv, MDF_PROCDIV_MAX);
 +		return -EINVAL;
 +	}
  
+-	return DIV_ROUND_CLOSEST_ULL((u64)parent_rate, ratio);
+-};
+-
 -static int stm32_mdf_cck_divider_set_rate(struct clk_hw *hw, unsigned long rate,
 -					  unsigned long parent_rate)
 -{
@@ -299,7 +296,7 @@ index 2efb636e6d61..8918ac7730dc 100644
  };
  
  static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
-@@ -340,14 +257,25 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -340,14 +257,25 @@ static int stm32_mdf_core_register_clock
  	struct device_node *node = pdev->dev.of_node;
  	struct device *dev = &pdev->dev;
  	struct clk_hw_onecell_data *clk_data;
@@ -329,16 +326,14 @@ index 2efb636e6d61..8918ac7730dc 100644
  
  	clk_data = devm_kzalloc(dev, struct_size(clk_data, hws, STM32_MDF_MAX_CCK), GFP_KERNEL);
  	if (!clk_data)
-@@ -370,28 +298,15 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -370,28 +298,15 @@ static int stm32_mdf_core_register_clock
  			return -EINVAL;
  		}
  
 -		gate = &priv->prov[index].gate;
 -		gate->reg = priv->base + MDF_CKGCR_REG;
 -		gate->bit_idx = clk_id ? MDF_CKG_CCK1EN : MDF_CKG_CCK0EN;
-+		clk = to_clk_regmap(mdf_hw[clk_id]);
-+		clk->map = priv->regmap;
- 
+-
 -		div = &priv->prov[index].div;
 -		div->reg = priv->base + MDF_CKGCR_REG;
 -		div->shift = MDF_CKG_CCKDIV_SHIFT;
@@ -354,6 +349,9 @@ index 2efb636e6d61..8918ac7730dc 100644
 -			dev_err(dev, "Failed to register %s clock provider\n", clk_name);
 -			return PTR_ERR(hw);
 -		}
++		clk = to_clk_regmap(mdf_hw[clk_id]);
++		clk->map = priv->regmap;
++
 +		ret = devm_clk_hw_register(dev, mdf_hw[clk_id]);
 +		if (ret)
 +			return dev_err_probe(dev, ret, "Failed to register %s clock provider",
@@ -365,7 +363,7 @@ index 2efb636e6d61..8918ac7730dc 100644
  
  		/* Configure the CCKx clock as output */
  		ckgcr |= clk_id ? MDF_CKG_CCK1DIR : MDF_CKG_CCK0DIR;
-@@ -411,7 +326,8 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -411,7 +326,8 @@ static int stm32_mdf_core_register_clock
  	}
  
  	/* Configure CKGCR register */
@@ -375,7 +373,7 @@ index 2efb636e6d61..8918ac7730dc 100644
  }
  
  static int stm32_mdf_of_cck_get(struct platform_device *pdev, struct stm32_mdf_priv *priv)
-@@ -444,37 +360,33 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -444,37 +360,33 @@ static int stm32_mdf_core_parse_clocks(s
  	struct device *dev = &pdev->dev;
  	struct clk *kclk;
  	int ret;
@@ -401,15 +399,15 @@ index 2efb636e6d61..8918ac7730dc 100644
  	if (priv->cck_freq) {
 -		/* Set CCK0 frequency if CCK0 provider exists */
 -		ret = clk_set_rate(priv->prov[0].div.hw.clk, priv->cck_freq);
-+		ret = stm32_mdf_cck_divider_set_rate(pdev, priv, kclk_rate);
- 		if (ret) {
+-		if (ret) {
 -			dev_err(dev, "Failed to set cck0 rate: %d\n", ret);
 -			return ret;
 -		}
 -
 -		/* Set CCK1 frequency if CCK1 provider exists */
 -		ret = clk_set_rate(priv->prov[1].div.hw.clk, priv->cck_freq);
--		if (ret) {
++		ret = stm32_mdf_cck_divider_set_rate(pdev, priv, kclk_rate);
+ 		if (ret) {
 -			dev_err(dev, "Failed to set cck1 rate: %d\n", ret);
 +			dev_err(dev, "Failed to set cck rate: %d\n", ret);
  			return ret;
@@ -423,11 +421,9 @@ index 2efb636e6d61..8918ac7730dc 100644
  	return 0;
  }
  
-diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
-index 521c4a16d34f..027494b11859 100644
 --- a/drivers/iio/adc/stm32-mdf-serial.c
 +++ b/drivers/iio/adc/stm32-mdf-serial.c
-@@ -96,9 +96,9 @@ static int stm32_mdf_sitf_get_clk(struct device *dev, struct stm32_mdf_sitf *sit
+@@ -96,9 +96,9 @@ static int stm32_mdf_sitf_get_clk(struct
  	sitf->sck = sck;
  
  	if (sitf->sck) {
@@ -439,8 +435,6 @@ index 521c4a16d34f..027494b11859 100644
  			sitf->scksrc = STM32_MDF_SCKSRC_CCK1;
  		else
  			sitf->scksrc = STM32_MDF_SCKSRC_CLK;
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index ab59286a3dbc..6405d8a194d1 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -240,6 +240,9 @@
@@ -453,6 +447,3 @@ index ab59286a3dbc..6405d8a194d1 100644
  enum stm32_sitf_mode {
  	STM32_MDF_MODE_LF_SPI,
  	STM32_MDF_MODE_SPI,
--- 
-2.39.2
-

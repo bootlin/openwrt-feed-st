@@ -16,11 +16,9 @@ Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
  drivers/gpu/drm/stm/ltdc.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 7b9bb560a5a2..a7d2df05eac1 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1917,7 +1917,11 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -1917,7 +1917,11 @@ static int ltdc_get_caps(struct drm_devi
  		ldev->caps.pix_fmt_nb = ARRAY_SIZE(ltdc_drm_fmt_a2);
  		ldev->caps.pix_fmt_flex = true;
  		ldev->caps.non_alpha_only_l1 = false;
@@ -33,6 +31,3 @@ index 7b9bb560a5a2..a7d2df05eac1 100644
  		ldev->caps.nb_irq = 2;
  		ldev->caps.ycbcr_input = true;
  		ldev->caps.ycbcr_output = true;
--- 
-2.39.2
-

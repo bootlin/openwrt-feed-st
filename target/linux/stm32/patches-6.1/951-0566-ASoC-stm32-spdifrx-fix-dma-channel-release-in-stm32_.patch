@@ -30,11 +30,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  sound/soc/stm/stm32_spdifrx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index d399c906bb92..e66382680e09 100644
 --- a/sound/soc/stm/stm32_spdifrx.c
 +++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -943,7 +943,7 @@ static int stm32_spdifrx_remove(struct platform_device *pdev)
+@@ -943,7 +943,7 @@ static int stm32_spdifrx_remove(struct p
  {
  	struct stm32_spdifrx_data *spdifrx = platform_get_drvdata(pdev);
  
@@ -43,6 +41,3 @@ index d399c906bb92..e66382680e09 100644
  		dma_release_channel(spdifrx->ctrl_chan);
  
  	if (spdifrx->dmab)
--- 
-2.39.2
-

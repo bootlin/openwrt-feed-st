@@ -23,8 +23,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  include/uapi/linux/v4l2-controls.h        | 7 +++++++
  2 files changed, 8 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 2a7175f6a092..d4afb01ef02d 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 @@ -1123,6 +1123,7 @@ const char *v4l2_ctrl_get_name(u32 id)
@@ -35,8 +33,6 @@ index 2a7175f6a092..d4afb01ef02d 100644
  
  	/* DV controls */
  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index ae289d829526..6d8c3103b767 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -1190,6 +1190,13 @@ enum v4l2_isp_stat_bin_comp {
@@ -53,6 +49,3 @@ index ae289d829526..6d8c3103b767 100644
  /*  DV-class control IDs defined by V4L2 */
  #define V4L2_CID_DV_CLASS_BASE			(V4L2_CTRL_CLASS_DV | 0x900)
  #define V4L2_CID_DV_CLASS			(V4L2_CTRL_CLASS_DV | 1)
--- 
-2.39.2
-

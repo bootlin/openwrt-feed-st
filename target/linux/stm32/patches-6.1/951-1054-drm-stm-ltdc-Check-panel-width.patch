@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 1f003877a234..54d24b8154f1 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -913,6 +913,10 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -913,6 +913,10 @@ static void ltdc_crtc_atomic_enable(stru
  			return;
  		}
  
@@ -30,7 +28,7 @@ index 1f003877a234..54d24b8154f1 100644
  		rota0_buf = (u32)ldev->rot_mem->base;
  		rota1_buf = (u32)ldev->rot_mem->base + (ldev->rot_mem->size >> 1);
  
-@@ -2115,6 +2119,10 @@ static enum drm_mode_status ltdc_encoder_mode_valid(struct drm_encoder *encoder,
+@@ -2115,6 +2119,10 @@ static enum drm_mode_status ltdc_encoder
  		 */
  		if (ldev->rot_mem->size < mode->hdisplay * mode->vdisplay * 2 * 3)
  			return MODE_MEM;
@@ -41,6 +39,3 @@ index 1f003877a234..54d24b8154f1 100644
  	}
  
  	/* Filter modes according to the max frequency supported by the pads */
--- 
-2.39.2
-

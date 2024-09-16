@@ -27,8 +27,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  create mode 100644 Documentation/i2c/busses/rpmsg_i2c.rst
  create mode 100644 drivers/i2c/busses/i2c-rpmsg.c
 
-diff --git a/Documentation/i2c/busses/index.rst b/Documentation/i2c/busses/index.rst
-index 5e4077b08d86..371126554703 100644
 --- a/Documentation/i2c/busses/index.rst
 +++ b/Documentation/i2c/busses/index.rst
 @@ -29,4 +29,5 @@ I2C Bus Drivers
@@ -37,9 +35,6 @@ index 5e4077b08d86..371126554703 100644
     i2c-via
 +   rpmsg-i2c
     scx200_acb
-diff --git a/Documentation/i2c/busses/rpmsg_i2c.rst b/Documentation/i2c/busses/rpmsg_i2c.rst
-new file mode 100644
-index 000000000000..5fc88946dab0
 --- /dev/null
 +++ b/Documentation/i2c/busses/rpmsg_i2c.rst
 @@ -0,0 +1,51 @@
@@ -94,8 +89,6 @@ index 000000000000..5fc88946dab0
 +
 +	- the slave sends the structure back with the appropriate count and buffer
 +	  value and result is set to ACK
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index e50f9603d189..5573eca52708 100644
 --- a/drivers/i2c/busses/Kconfig
 +++ b/drivers/i2c/busses/Kconfig
 @@ -1457,4 +1457,13 @@ config I2C_VIRTIO
@@ -112,20 +105,15 @@ index e50f9603d189..5573eca52708 100644
 +	  RPMsg as a standard I2C protocol.
 +
  endmenu
-diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index 784a803279d9..c3d1eb8d1df7 100644
 --- a/drivers/i2c/busses/Makefile
 +++ b/drivers/i2c/busses/Makefile
-@@ -153,5 +153,6 @@ obj-$(CONFIG_I2C_XGENE_SLIMPRO) += i2c-xgene-slimpro.o
+@@ -153,5 +153,6 @@ obj-$(CONFIG_I2C_XGENE_SLIMPRO) += i2c-x
  obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
  obj-$(CONFIG_I2C_FSI)		+= i2c-fsi.o
  obj-$(CONFIG_I2C_VIRTIO)	+= i2c-virtio.o
 +obj-$(CONFIG_I2C_RPMSG)		+= i2c-rpmsg.o
  
  ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
-diff --git a/drivers/i2c/busses/i2c-rpmsg.c b/drivers/i2c/busses/i2c-rpmsg.c
-new file mode 100644
-index 000000000000..eff6fd24ed61
 --- /dev/null
 +++ b/drivers/i2c/busses/i2c-rpmsg.c
 @@ -0,0 +1,421 @@
@@ -550,6 +538,3 @@ index 000000000000..eff6fd24ed61
 +MODULE_AUTHOR("Maxime Mere <maxime.mere@st.com>");
 +MODULE_DESCRIPTION("Remote processor messaging I2C driver");
 +MODULE_LICENSE("GPL v2");
--- 
-2.39.2
-

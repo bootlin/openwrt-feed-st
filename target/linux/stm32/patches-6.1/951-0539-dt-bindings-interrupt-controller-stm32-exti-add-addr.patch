@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/interrupt-controller/st,stm32-exti.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
-index 93a0cf78741a..2eff63eb3059 100644
 --- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 @@ -25,6 +25,8 @@ properties:
@@ -34,6 +32,3 @@ index 93a0cf78741a..2eff63eb3059 100644
  
    reg:
      maxItems: 1
--- 
-2.39.2
-

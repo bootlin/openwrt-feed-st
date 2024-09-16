@@ -17,9 +17,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  1 file changed, 147 insertions(+)
  create mode 100644 include/dt-bindings/soc/stm32mp25-hdp.h
 
-diff --git a/include/dt-bindings/soc/stm32mp25-hdp.h b/include/dt-bindings/soc/stm32mp25-hdp.h
-new file mode 100644
-index 000000000000..6f4592a4b5c9
 --- /dev/null
 +++ b/include/dt-bindings/soc/stm32mp25-hdp.h
 @@ -0,0 +1,147 @@
@@ -170,6 +167,3 @@ index 000000000000..6f4592a4b5c9
 +#define HDP7_GPOVAL_7				15
 +
 +#endif /* _DT_BINDINGS_STM32_HDP_H */
--- 
-2.39.2
-

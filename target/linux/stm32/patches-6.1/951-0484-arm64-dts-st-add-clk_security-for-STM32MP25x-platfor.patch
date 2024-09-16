@@ -21,11 +21,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 0a606735144c..e53453664384 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -43,6 +43,14 @@ arm_wdt: watchdog {
+@@ -43,6 +43,14 @@
  		status = "disabled";
  	};
  
@@ -40,6 +38,3 @@ index 0a606735144c..e53453664384 100644
  	firmware {
  		optee {
  			compatible = "linaro,optee-tz";
--- 
-2.39.2
-

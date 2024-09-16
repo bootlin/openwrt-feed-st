@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c      | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 4db4b8934137..feae08de9881 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -783,10 +783,18 @@ static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+@@ -783,10 +783,18 @@ static int dcmipp_byteproc_comp_bind(str
  		return -ENOMEM;
  
  	byteproc->regs = bind_data->regs;
@@ -41,7 +39,7 @@ index 4db4b8934137..feae08de9881 100644
  	/* Initialize ved and sd */
  	ret = dcmipp_ent_sd_register(&byteproc->ved, &byteproc->sd,
  				     bind_data->v4l2_dev,
-@@ -805,14 +813,6 @@ static int dcmipp_byteproc_comp_bind(struct device *comp, struct device *master,
+@@ -805,14 +813,6 @@ static int dcmipp_byteproc_comp_bind(str
  	}
  
  	dev_set_drvdata(comp, &byteproc->ved);
@@ -56,6 +54,3 @@ index 4db4b8934137..feae08de9881 100644
  
  	return 0;
  }
--- 
-2.39.2
-

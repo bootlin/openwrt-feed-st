@@ -20,11 +20,9 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c  | 2 +-
  2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-index cc06e36403b5..0ebb6f2df5c2 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
 +++ b/drivers/media/platform/verisilicon/hantro_g1_h264_dec.c
-@@ -269,6 +269,7 @@ int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+@@ -269,6 +269,7 @@ int hantro_g1_h264_dec_run(struct hantro
  	/* Start decoding! */
  	vdpu_write_relaxed(vpu,
  			   G1_REG_CONFIG_DEC_AXI_RD_ID(0xffu) |
@@ -32,11 +30,9 @@ index cc06e36403b5..0ebb6f2df5c2 100644
  			   G1_REG_CONFIG_DEC_OUT_ENDIAN |
  			   G1_REG_CONFIG_DEC_STRENDIAN_E |
  			   G1_REG_CONFIG_DEC_2CHAN_DIS |
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-index a4e66d16ce3c..b12f090a0b25 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
 +++ b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-@@ -452,7 +452,7 @@ int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+@@ -452,7 +452,7 @@ int hantro_g1_vp8_dec_run(struct hantro_
  
  	hantro_vp8_prob_update(ctx, hdr);
  
@@ -45,6 +41,3 @@ index a4e66d16ce3c..b12f090a0b25 100644
  	      G1_REG_CONFIG_DEC_STRENDIAN_E |
  	      G1_REG_CONFIG_DEC_INSWAP32_E |
  	      G1_REG_CONFIG_DEC_STRSWAP32_E |
--- 
-2.39.2
-

@@ -14,11 +14,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/239736
  drivers/mmc/host/mmci.c | 33 +++++++++++++++++++++++++++++++++
  1 file changed, 33 insertions(+)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 0277481a4396..001f0926c29c 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -308,6 +308,34 @@ static struct variant_data variant_stm32_sdmmcv2 = {
+@@ -308,6 +308,34 @@ static struct variant_data variant_stm32
  	.init			= sdmmc_variant_init,
  };
  
@@ -53,7 +51,7 @@ index 0277481a4396..001f0926c29c 100644
  static struct variant_data variant_qcom = {
  	.fifosize		= 16 * 4,
  	.fifohalfsize		= 8 * 4,
-@@ -2503,6 +2531,11 @@ static const struct amba_id mmci_ids[] = {
+@@ -2503,6 +2531,11 @@ static const struct amba_id mmci_ids[] =
  		.mask	= 0xf0ffffff,
  		.data	= &variant_stm32_sdmmcv2,
  	},
@@ -65,6 +63,3 @@ index 0277481a4396..001f0926c29c 100644
  	/* Qualcomm variants */
  	{
  		.id     = 0x00051180,
--- 
-2.39.2
-

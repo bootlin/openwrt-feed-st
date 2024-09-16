@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 10 +++++++++-
  1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 5ecbef7f8ccb..55df89ba97a0 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -142,6 +142,7 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -142,6 +142,7 @@ static const struct dcmipp_pipeline_conf
  #define	ID_AUX_POSTPROC 6
  #define	ID_AUX_CAPTURE 7
  #define	ID_ISP_STAT_CAPTURE 8
@@ -30,7 +28,7 @@ index 5ecbef7f8ccb..55df89ba97a0 100644
  static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
  	{
  		.name = "dcmipp_input",
-@@ -188,6 +189,11 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+@@ -188,6 +189,11 @@ static const struct dcmipp_ent_config st
  		.init = dcmipp_statcap_ent_init,
  		.release = dcmipp_statcap_ent_release,
  	},
@@ -42,7 +40,7 @@ index 5ecbef7f8ccb..55df89ba97a0 100644
  };
  
  static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
-@@ -205,7 +211,9 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -205,7 +211,9 @@ static const struct dcmipp_ent_link stm3
  	DCMIPP_ENT_LINK(ID_INPUT,	3, ID_AUX_POSTPROC,  0, 0),
  	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
@@ -53,6 +51,3 @@ index 5ecbef7f8ccb..55df89ba97a0 100644
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
--- 
-2.39.2
-

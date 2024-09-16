@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.h | 1 -
  2 files changed, 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 63777b838977..140ff16d40bd 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1275,9 +1275,7 @@ static int ltdc_crtc_enable_vblank(struct drm_crtc *crtc)
+@@ -1275,9 +1275,7 @@ static int ltdc_crtc_enable_vblank(struc
  	DRM_DEBUG_DRIVER("\n");
  
  	if (state->enable) {
@@ -31,7 +29,7 @@ index 63777b838977..140ff16d40bd 100644
  		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
  	} else
  		return -EPERM;
-@@ -1291,9 +1289,7 @@ static void ltdc_crtc_disable_vblank(struct drm_crtc *crtc)
+@@ -1291,9 +1289,7 @@ static void ltdc_crtc_disable_vblank(str
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -41,7 +39,7 @@ index 63777b838977..140ff16d40bd 100644
  
  	if (!ldev->vblank_active && !ldev->crc_active)
  		regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
-@@ -1312,15 +1308,11 @@ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
+@@ -1312,15 +1308,11 @@ static int ltdc_crtc_set_crc_source(stru
  	ldev = crtc_to_ltdc(crtc);
  
  	if (source && strcmp(source, "auto") == 0) {
@@ -65,8 +63,6 @@ index 63777b838977..140ff16d40bd 100644
  
  	def_value = device_property_read_bool(dev, "default-on");
  
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 5913eb2e2fb3..b8883ff995f5 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -54,7 +54,6 @@ struct ltdc_device {
@@ -77,6 +73,3 @@ index 5913eb2e2fb3..b8883ff995f5 100644
  	struct ltdc_caps caps;
  	u32 irq_status;
  	u32 fifo_err;		/* fifo underrun error counter */
--- 
-2.39.2
-

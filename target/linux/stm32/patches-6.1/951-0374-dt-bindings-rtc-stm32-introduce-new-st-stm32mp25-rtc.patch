@@ -25,8 +25,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
-index 71e02604e8de..d3dba2ad54cc 100644
 --- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 +++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 @@ -15,6 +15,7 @@ properties:
@@ -48,6 +46,3 @@ index 71e02604e8de..d3dba2ad54cc 100644
  
      then:
        properties:
--- 
-2.39.2
-

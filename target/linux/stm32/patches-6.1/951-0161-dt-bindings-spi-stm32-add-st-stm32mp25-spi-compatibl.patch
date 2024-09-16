@@ -12,8 +12,6 @@ Change-Id: Iedea1df183b2086754d10b0e82bea34ac0fa5c8a
  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-index 4397d6eb99c8..9817a54fd96f 100644
 --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
 +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
 @@ -38,6 +38,7 @@ properties:
@@ -33,6 +31,3 @@ index 4397d6eb99c8..9817a54fd96f 100644
            delay in nanoseconds inserted between two consecutive data frames.
  
  required:
--- 
-2.39.2
-

@@ -20,11 +20,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 99 ++++++++++++++++++++++++++
  1 file changed, 99 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 00dcc6a39310..8442fd8481bf 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -298,10 +298,49 @@ usart2: serial@400e0000 {
+@@ -298,10 +298,49 @@
  				reg = <0x400e0000 0x400>;
  				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART2>;
@@ -74,7 +72,7 @@ index 00dcc6a39310..8442fd8481bf 100644
  			i2c1: i2c@40120000 {
  				compatible = "st,stm32mp25-i2c";
  				reg = <0x40120000 0x400>;
-@@ -414,6 +453,18 @@ i2c7: i2c@40180000 {
+@@ -414,6 +453,18 @@
  				status = "disabled";
  			};
  
@@ -93,7 +91,7 @@ index 00dcc6a39310..8442fd8481bf 100644
  			spi1: spi@40230000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -459,6 +510,30 @@ spi5: spi@40280000 {
+@@ -459,6 +510,30 @@
  				status = "disabled";
  			};
  
@@ -124,7 +122,7 @@ index 00dcc6a39310..8442fd8481bf 100644
  			spi6: spi@40350000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -489,6 +564,30 @@ spi7: spi@40360000 {
+@@ -489,6 +564,30 @@
  				status = "disabled";
  			};
  
@@ -155,6 +153,3 @@ index 00dcc6a39310..8442fd8481bf 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.2
-

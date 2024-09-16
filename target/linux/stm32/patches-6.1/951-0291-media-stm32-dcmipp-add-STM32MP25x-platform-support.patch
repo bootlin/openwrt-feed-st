@@ -35,8 +35,6 @@ Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index cbddc98141a4..bd9e5c381f83 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -2,4 +2,4 @@
@@ -45,9 +43,6 @@ index cbddc98141a4..bd9e5c381f83 100644
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
 -obj-$(CONFIG_VIDEO_STM32_DCMIPP) += dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o
 +obj-$(CONFIG_VIDEO_STM32_DCMIPP) += dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o dcmipp-isp.o dcmipp-colorconv.o dcmipp-pixelproc.o dcmipp-pixelcap.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
-new file mode 100644
-index 000000000000..9d2710c1f515
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.c
 @@ -0,0 +1,362 @@
@@ -413,9 +408,6 @@ index 000000000000..9d2710c1f515
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h
-new file mode 100644
-index 000000000000..870e55e1f0dc
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-colorconv.h
 @@ -0,0 +1,26 @@
@@ -445,8 +437,6 @@ index 000000000000..870e55e1f0dc
 +
 +#endif
 +
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 7b1ecaf8d4fb..6d46861cdc58 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -7,7 +7,6 @@
@@ -474,7 +464,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	struct clk			*kclk;
  
  	/* The pipeline configuration */
-@@ -130,6 +132,68 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -130,6 +132,68 @@ static const struct dcmipp_pipeline_conf
  	.num_links	= ARRAY_SIZE(stm32mp13_ent_links)
  };
  
@@ -543,7 +533,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  /* -------------------------------------------------------------------------- */
  #define LINK_FLAG_TO_STR(f) ((f) == 0 ? "" :\
  			     (f) == MEDIA_LNK_FL_ENABLED ? "ENABLED" :\
-@@ -290,6 +354,7 @@ static const struct component_master_ops dcmipp_comp_ops = {
+@@ -290,6 +354,7 @@ static const struct component_master_ops
  
  static const struct of_device_id dcmipp_of_match[] = {
  	{ .compatible = "st,stm32mp13-dcmipp", .data = &stm32mp13_pipe_cfg},
@@ -551,7 +541,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	{ /* end node */ },
  };
  MODULE_DEVICE_TABLE(of, dcmipp_of_match);
-@@ -380,6 +445,9 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -380,6 +445,9 @@ static int dcmipp_graph_notify_bound(str
  	struct dcmipp_ent_device *sink;
  	struct device_node *np = dcmipp->dev->of_node;
  	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
@@ -561,7 +551,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  
  	dev_dbg(dcmipp->dev, "Subdev \"%s\" bound\n", subdev->name);
  
-@@ -438,9 +506,53 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -438,9 +506,53 @@ static int dcmipp_graph_notify_bound(str
  			dev_dbg(dcmipp->dev, "DCMIPP is now linked to \"%s\"\n",
  				subdev->name);
  
@@ -615,7 +605,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	return ret;
  }
  
-@@ -492,7 +604,7 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -492,7 +604,7 @@ static int dcmipp_probe(struct platform_
  	struct dcmipp_device *dcmipp;
  	struct component_match *comp_match = NULL;
  	struct resource *res;
@@ -624,7 +614,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	const struct dcmipp_pipeline_config *pipe_cfg;
  	int irq;
  	int ret;
-@@ -566,6 +678,14 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -566,6 +678,14 @@ static int dcmipp_probe(struct platform_
  				     "Unable to get kclk\n");
  	dcmipp->kclk = kclk;
  
@@ -639,7 +629,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	/* Create platform_device for each entity in the topology */
  	dcmipp->subdevs = devm_kcalloc(&pdev->dev, dcmipp->pipe_cfg->num_ents,
  				       sizeof(*dcmipp->subdevs), GFP_KERNEL);
-@@ -620,6 +740,7 @@ static __maybe_unused int dcmipp_runtime_suspend(struct device *dev)
+@@ -620,6 +740,7 @@ static __maybe_unused int dcmipp_runtime
  	struct dcmipp_device *dcmipp = dev_get_drvdata(dev);
  
  	clk_disable_unprepare(dcmipp->kclk);
@@ -647,7 +637,7 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  
  	return 0;
  }
-@@ -629,6 +750,10 @@ static __maybe_unused int dcmipp_runtime_resume(struct device *dev)
+@@ -629,6 +750,10 @@ static __maybe_unused int dcmipp_runtime
  	struct dcmipp_device *dcmipp = dev_get_drvdata(dev);
  	int ret;
  
@@ -658,9 +648,6 @@ index 7b1ecaf8d4fb..6d46861cdc58 100644
  	ret = clk_prepare_enable(dcmipp->kclk);
  	if (ret)
  		dev_err(dev, "%s: Failed to prepare_enable k clock\n", __func__);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-new file mode 100644
-index 000000000000..a7d4161dd811
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -0,0 +1,1009 @@
@@ -1673,9 +1660,6 @@ index 000000000000..a7d4161dd811
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-new file mode 100644
-index 000000000000..23b53286732e
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -0,0 +1,1277 @@
@@ -2956,9 +2940,6 @@ index 000000000000..23b53286732e
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-new file mode 100644
-index 000000000000..6134ed516e36
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -0,0 +1,900 @@
@@ -3862,6 +3843,3 @@ index 000000000000..6134ed516e36
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.2
-

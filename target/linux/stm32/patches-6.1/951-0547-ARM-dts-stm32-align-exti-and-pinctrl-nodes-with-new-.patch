@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp131.dtsi | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp131.dtsi b/arch/arm/boot/dts/stm32mp131.dtsi
-index 9bc052cb5635..604c691719c0 100644
 --- a/arch/arm/boot/dts/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/stm32mp131.dtsi
-@@ -836,7 +836,7 @@ rcc: rcc@50000000 {
+@@ -836,7 +836,7 @@
  		};
  
  		exti: interrupt-controller@5000d000 {
@@ -31,7 +29,7 @@ index 9bc052cb5635..604c691719c0 100644
  			interrupt-controller;
  			#interrupt-cells = <2>;
  			#address-cells = <0>;
-@@ -1696,7 +1696,6 @@ pinctrl: pinctrl@50002000 {
+@@ -1696,7 +1696,6 @@
  			compatible = "st,stm32mp135-pinctrl";
  			ranges = <0 0x50002000 0x8400>;
  			interrupt-parent = <&exti>;
@@ -39,6 +37,3 @@ index 9bc052cb5635..604c691719c0 100644
  			pins-are-numbered;
  
  			gpioa: gpio@50002000 {
--- 
-2.39.2
-

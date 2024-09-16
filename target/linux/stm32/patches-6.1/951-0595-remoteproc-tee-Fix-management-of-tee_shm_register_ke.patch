@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/remoteproc/tee_remoteproc.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
-index bd4808105f4f..514080fdd38b 100644
 --- a/drivers/remoteproc/tee_remoteproc.c
 +++ b/drivers/remoteproc/tee_remoteproc.c
-@@ -106,6 +106,11 @@ int tee_rproc_load_fw(struct tee_rproc *trproc, const struct firmware *fw)
+@@ -106,6 +106,11 @@ int tee_rproc_load_fw(struct tee_rproc *
  	int ret;
  
  	fw_shm = tee_shm_register_kernel_buf(pvt_data.ctx, (void *)fw->data, fw->size);
@@ -36,6 +34,3 @@ index bd4808105f4f..514080fdd38b 100644
  
  	prepare_args(trproc, TA_RPROC_FW_CMD_LOAD_FW, &arg, param, 1);
  
--- 
-2.39.2
-

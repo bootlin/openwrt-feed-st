@@ -26,11 +26,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/iio/adc/stm32-mdf.h      |   4 +
  3 files changed, 176 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index e4466e68c893..84c1f0620afe 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
-@@ -650,18 +650,45 @@ static int stm32_mdf_adc_check_clock_config(struct stm32_mdf_adc *adc, unsigned
+@@ -650,18 +650,45 @@ err:
  	return -EINVAL;
  }
  
@@ -79,7 +77,7 @@ index e4466e68c893..84c1f0620afe 100644
  	}
  
  	decim_ratio = DIV_ROUND_CLOSEST(sck_freq, sample_freq);
-@@ -677,16 +704,22 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev,
+@@ -677,16 +704,22 @@ static int mdf_adc_set_samp_freq(struct
  
  	ret = stm32_mdf_adc_set_filters_config(indio_dev, decim_ratio);
  	if (ret < 0)
@@ -104,7 +102,7 @@ index e4466e68c893..84c1f0620afe 100644
  }
  
  static int stm32_mdf_adc_start_mdf(struct iio_dev *indio_dev)
-@@ -735,7 +768,7 @@ static int stm32_mdf_adc_start_conv(struct iio_dev *indio_dev)
+@@ -735,7 +768,7 @@ static int stm32_mdf_adc_start_conv(stru
  	 * before setting the sampling frequency.
  	 */
  	if (!adc->sample_freq) {
@@ -113,7 +111,7 @@ index e4466e68c893..84c1f0620afe 100644
  		if (ret < 0)
  			goto stop_sitf;
  	}
-@@ -1133,7 +1166,7 @@ static int stm32_mdf_adc_write_raw(struct iio_dev *indio_dev, struct iio_chan_sp
+@@ -1133,7 +1166,7 @@ static int stm32_mdf_adc_write_raw(struc
  		if (ret)
  			return ret;
  
@@ -122,11 +120,9 @@ index e4466e68c893..84c1f0620afe 100644
  		iio_device_release_direct_mode(indio_dev);
  
  		return ret;
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 7f4436739d44..87e1a7858ec7 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
-@@ -81,7 +81,10 @@ static const struct regmap_config stm32_mdf_regmap_cfg = {
+@@ -81,7 +81,10 @@ static const struct regmap_config stm32_
   * @phys_base: mdf registers base physical address
   * @n_active_ch: number of active channels
   * @lock: lock to manage common resources
@@ -149,7 +145,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  };
  
  #define STM32_MDF_MAX_CCK 2
-@@ -128,6 +134,11 @@ int stm32_mdf_core_start_mdf(struct stm32_mdf *mdf)
+@@ -128,6 +134,11 @@ int stm32_mdf_core_start_mdf(struct stm3
  			dev_err(dev, "MDF clock not active\n");
  			goto pm_put;
  		}
@@ -161,7 +157,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  	}
  
  	return 0;
-@@ -171,12 +182,72 @@ int stm32_mdf_core_trigger(struct stm32_mdf *mdf)
+@@ -171,12 +182,72 @@ err:
  }
  EXPORT_SYMBOL_GPL(stm32_mdf_core_trigger);
  
@@ -234,7 +230,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  		ret = regmap_clear_bits(priv->regmap, MDF_CKGCR_REG, MDF_CKG_CKGDEN);
  
  		pm_runtime_put_sync(&priv->pdev->dev);
-@@ -186,6 +257,22 @@ int stm32_mdf_core_stop_mdf(struct stm32_mdf *mdf)
+@@ -186,6 +257,22 @@ int stm32_mdf_core_stop_mdf(struct stm32
  }
  EXPORT_SYMBOL_GPL(stm32_mdf_core_stop_mdf);
  
@@ -257,7 +253,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  static int stm32_mdf_core_cck_divider_set_rate(struct platform_device *pdev,
  					       struct stm32_mdf_priv *priv,
  					       unsigned long parent_rate)
-@@ -204,13 +291,16 @@ static int stm32_mdf_core_cck_divider_set_rate(struct platform_device *pdev,
+@@ -204,13 +291,16 @@ static int stm32_mdf_core_cck_divider_se
  	delta = abs(parent_rate - (ratio * rate));
  
  	delta_ppm = (1000000 * delta) / parent_rate;
@@ -281,7 +277,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  
  	/*
  	 * The total divider ratio must be split between proc divider and
-@@ -228,12 +318,38 @@ static int stm32_mdf_core_cck_divider_set_rate(struct platform_device *pdev,
+@@ -228,12 +318,38 @@ static int stm32_mdf_core_cck_divider_se
  	priv->mdf.fproc = DIV_ROUND_CLOSEST(parent_rate, procdiv);
  
  	/* Configure CKGCR register */
@@ -320,7 +316,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  static unsigned long stm32_mdf_core_cck_divider_recalc_rate(struct clk_hw *hw,
  							    unsigned long parent_rate)
  {
-@@ -255,22 +371,8 @@ static unsigned long stm32_mdf_core_cck_divider_recalc_rate(struct clk_hw *hw,
+@@ -255,22 +371,8 @@ static unsigned long stm32_mdf_core_cck_
  
  static const struct clk_ops clk_cck_ops = {
  	.recalc_rate = stm32_mdf_core_cck_divider_recalc_rate,
@@ -345,7 +341,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  };
  
  static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
-@@ -287,8 +389,10 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -287,8 +389,10 @@ static int stm32_mdf_core_register_clock
  	struct clk_hw *mdf_hw[] = { &clk_cck0.hw, &clk_cck1.hw };
  
  	clk_cck.hw.init = CLK_HW_INIT_FW_NAME("clk_cck", "ker_ck", &clk_cck_ops, 0);
@@ -358,7 +354,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  
  	clk_cck.data = priv;
  
-@@ -380,15 +484,13 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -380,15 +484,13 @@ static int stm32_mdf_core_parse_clocks(s
  	struct device *dev = &pdev->dev;
  	struct clk *kclk;
  	int ret;
@@ -375,7 +371,7 @@ index 7f4436739d44..87e1a7858ec7 100644
  
  	/* CCK0 and CCK1 clocks are optional. Used only in SPI master modes. */
  	ret = stm32_mdf_core_of_cck_get(pdev, priv);
-@@ -396,7 +498,7 @@ static int stm32_mdf_core_parse_clocks(struct platform_device *pdev, struct stm3
+@@ -396,7 +498,7 @@ static int stm32_mdf_core_parse_clocks(s
  		return ret;
  
  	if (priv->cck_freq) {
@@ -384,8 +380,6 @@ index 7f4436739d44..87e1a7858ec7 100644
  		if (ret) {
  			dev_err(dev, "Failed to set cck rate: %d\n", ret);
  			return ret;
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index 95737a1af98f..830e3b64eef8 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -305,6 +305,10 @@ struct stm32_mdf {
@@ -399,6 +393,3 @@ index 95737a1af98f..830e3b64eef8 100644
  
  int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf);
  int stm32_mdf_sitf_stop(struct stm32_mdf_sitf *sitf);
--- 
-2.39.2
-

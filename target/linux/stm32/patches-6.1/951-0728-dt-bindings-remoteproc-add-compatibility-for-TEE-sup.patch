@@ -26,8 +26,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/remoteproc/st,stm32-rproc.yaml    | 18 +++++++++++++++++-
  1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 8b0b3991ec42..255e3dc907d8 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -18,8 +18,14 @@ properties:
@@ -70,6 +68,3 @@ index 8b0b3991ec42..255e3dc907d8 100644
        resets = <&scmi_reset RST_SCMI_MCU>;
        reset-names = "mcu_rst";
        /* Hold boot managed using system config*/
--- 
-2.39.2
-

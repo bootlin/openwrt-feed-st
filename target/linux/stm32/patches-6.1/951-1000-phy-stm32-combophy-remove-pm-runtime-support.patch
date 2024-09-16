@@ -18,8 +18,6 @@ Tested-by: Christian BRUEL <christian.bruel@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 25 ++-----------------------
  1 file changed, 2 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index a8809e348668..7f2566a7869c 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -15,7 +15,6 @@
@@ -30,7 +28,7 @@ index a8809e348668..7f2566a7869c 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include <dt-bindings/phy/phy.h>
-@@ -408,7 +407,7 @@ static int stm32_combophy_suspend_noirq(struct device *dev)
+@@ -408,7 +407,7 @@ static int stm32_combophy_suspend_noirq(
  		enable_irq_wake(combophy->irq_wakeup);
  	}
  
@@ -39,7 +37,7 @@ index a8809e348668..7f2566a7869c 100644
  }
  
  static int stm32_combophy_resume_noirq(struct device *dev)
-@@ -416,12 +415,6 @@ static int stm32_combophy_resume_noirq(struct device *dev)
+@@ -416,12 +415,6 @@ static int stm32_combophy_resume_noirq(s
  	struct stm32_combophy *combophy = dev_get_drvdata(dev);
  	int ret;
  
@@ -52,7 +50,7 @@ index a8809e348668..7f2566a7869c 100644
  	/*
  	 * If clocks was turned off by suspend call for wakeup then needs
  	 * to be turned back ON in resume. In case usb-remote wakeup is not
-@@ -460,8 +453,6 @@ static int stm32_combophy_exit(struct phy *phy)
+@@ -460,8 +453,6 @@ static int stm32_combophy_exit(struct ph
  
  	stm32_combophy_disable_clocks(combophy);
  
@@ -61,7 +59,7 @@ index a8809e348668..7f2566a7869c 100644
  	return 0;
  }
  
-@@ -470,16 +461,9 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -470,16 +461,9 @@ static int stm32_combophy_init(struct ph
  	struct stm32_combophy *combophy = phy_get_drvdata(phy);
  	int ret;
  
@@ -78,7 +76,7 @@ index a8809e348668..7f2566a7869c 100644
  		return ret;
  	}
  
-@@ -487,14 +471,13 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -487,14 +471,13 @@ static int stm32_combophy_init(struct ph
  	if (ret) {
  		dev_err(combophy->dev, "combophy mode not set\n");
  		stm32_combophy_disable_clocks(combophy);
@@ -94,7 +92,7 @@ index a8809e348668..7f2566a7869c 100644
  	}
  
  	combophy->is_init = true;
-@@ -577,10 +560,6 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -577,10 +560,6 @@ static int stm32_combophy_probe(struct p
  						 combophy->irq_wakeup);
  	}
  
@@ -105,6 +103,3 @@ index a8809e348668..7f2566a7869c 100644
  	phy_set_drvdata(combophy->phy, combophy);
  
  	phy_provider = devm_of_phy_provider_register(dev, stm32_combophy_xlate);
--- 
-2.39.2
-

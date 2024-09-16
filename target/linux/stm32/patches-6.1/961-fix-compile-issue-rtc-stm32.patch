@@ -1,7 +1,5 @@
-Index: linux-6.1.89/drivers/rtc/rtc-stm32.c
-===================================================================
---- linux-6.1.89.orig/drivers/rtc/rtc-stm32.c
-+++ linux-6.1.89/drivers/rtc/rtc-stm32.c
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
 @@ -1213,7 +1213,7 @@ static int stm32_rtc_resume(struct devic
  }
  

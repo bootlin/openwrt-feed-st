@@ -19,11 +19,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 134 +++++++++++++++++-------------
  1 file changed, 75 insertions(+), 59 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 58139f82deaf..680fe741cfa6 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -374,68 +374,84 @@ exti: interrupt-controller@5000d000 {
+@@ -374,68 +374,84 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -167,6 +165,3 @@ index 58139f82deaf..680fe741cfa6 100644
  		};
  
  		syscfg: syscon@50020000 {
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 61 +++++++++++++++++---------------------
  1 file changed, 27 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index f3560e20bd4c..4e4e7979983b 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1363,15 +1363,11 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1363,15 +1363,11 @@ static void ltdc_plane_atomic_update(str
  									  plane);
  	struct drm_framebuffer *fb = newstate->fb;
  	u32 lofs = plane->index * LAY_OFS;
@@ -36,7 +34,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  
  	if (!newstate->crtc || !fb) {
  		DRM_DEBUG_DRIVER("fb or crtc NULL");
-@@ -1379,16 +1375,14 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1379,16 +1375,14 @@ static void ltdc_plane_atomic_update(str
  	}
  
  	/* convert src_ from 16:16 format */
@@ -44,14 +42,15 @@ index f3560e20bd4c..4e4e7979983b 100644
 -	src_y = newstate->src_y >> 16;
 -	src_w = newstate->src_w >> 16;
 -	src_h = newstate->src_h >> 16;
-+	drm_rect_init(&src, newstate->src_x >> 16, newstate->src_y >> 16,
-+		      newstate->src_w >> 16, newstate->src_h >> 16);
- 
+-
 -	DRM_DEBUG_DRIVER("plane:%d fb:%d (%dx%d)@(%d,%d) -> (%dx%d)@(%d,%d)\n",
 -			 plane->base.id, fb->base.id,
 -			 src_w, src_h, src_x, src_y,
 -			 newstate->crtc_w, newstate->crtc_h,
 -			 newstate->crtc_x, newstate->crtc_y);
++	drm_rect_init(&src, newstate->src_x >> 16, newstate->src_y >> 16,
++		      newstate->src_w >> 16, newstate->src_h >> 16);
++
 +	drm_rect_init(&dst, newstate->crtc_x, newstate->crtc_y,
 +		      newstate->crtc_w, newstate->crtc_h);
 +
@@ -60,7 +59,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  
  	if (!pm_runtime_active(ddev->dev))
  		return;
-@@ -1400,12 +1394,12 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1400,12 +1394,12 @@ static void ltdc_plane_atomic_update(str
  		ahbp = bpcr & BPCR_AVBP;
  
  		/* Configures the horizontal start and stop position */
@@ -75,7 +74,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  		regmap_write_bits(ldev->regmap, LTDC_L1WVPCR + lofs,
  				  LXWVPCR_WVSTPOS | LXWVPCR_WVSPPOS, val);
  
-@@ -1431,12 +1425,12 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1431,12 +1425,12 @@ static void ltdc_plane_atomic_update(str
  		avbp = bpcr & BPCR_AVBP;
  
  		/* Configures the horizontal start and stop position */
@@ -90,7 +89,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  		regmap_write_bits(ldev->regmap, LTDC_L1WVPCR + lofs,
  				  LXWVPCR_WVSTPOS | LXWVPCR_WVSPPOS, val);
  
-@@ -1497,17 +1491,16 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1497,17 +1491,16 @@ static void ltdc_plane_atomic_update(str
  	paddr = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 0);
  
  	if (plane_rotation & DRM_MODE_REFLECT_X)
@@ -111,7 +110,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  
  	if (plane_rotation & DRM_MODE_REFLECT_Y)
  		/* Compute negative value (signed on 16 bits) for the picth */
-@@ -1519,7 +1512,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1519,7 +1512,7 @@ static void ltdc_plane_atomic_update(str
  	regmap_write_bits(ldev->regmap, LTDC_L1CFBLR + lofs, LXCFBLR_CFBLL | LXCFBLR_CFBP, val);
  
  	/* Configures the frame buffer line number */
@@ -120,7 +119,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  	regmap_write_bits(ldev->regmap, LTDC_L1CFBLNR + lofs, LXCFBLNR_CFBLN, line_number);
  
  	if (ldev->caps.ycbcr_input) {
-@@ -1531,10 +1524,10 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1531,10 +1524,10 @@ static void ltdc_plane_atomic_update(str
  			paddr1 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 1);
  
  			if (plane_rotation & DRM_MODE_REFLECT_X)
@@ -133,7 +132,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  
  			regmap_write(ldev->regmap, LTDC_L1AFBA0R + lofs, paddr1);
  			break;
-@@ -1544,13 +1537,13 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1544,13 +1537,13 @@ static void ltdc_plane_atomic_update(str
  			paddr2 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 2);
  
  			if (plane_rotation & DRM_MODE_REFLECT_X) {
@@ -151,7 +150,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  			}
  
  			regmap_write(ldev->regmap, LTDC_L1AFBA0R + lofs, paddr1);
-@@ -1562,13 +1555,13 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1562,13 +1555,13 @@ static void ltdc_plane_atomic_update(str
  			paddr2 = (u32)drm_fb_dma_get_gem_addr(fb, newstate, 1);
  
  			if (plane_rotation & DRM_MODE_REFLECT_X) {
@@ -169,7 +168,7 @@ index f3560e20bd4c..4e4e7979983b 100644
  			}
  
  			regmap_write(ldev->regmap, LTDC_L1AFBA0R + lofs, paddr1);
-@@ -1590,7 +1583,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1590,7 +1583,7 @@ static void ltdc_plane_atomic_update(str
  				else
  					pitch_in_bytes = fb->pitches[1];
  
@@ -178,6 +177,3 @@ index f3560e20bd4c..4e4e7979983b 100644
  					      (ldev->caps.bus_width >> 3) - 1;
  
  				/* Configure the auxiliary buffer length */
--- 
-2.39.2
-

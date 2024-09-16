@@ -17,8 +17,6 @@ Change-Id: I7af3eb57106eae967c5cfbdb6f803805e37118ab
  drivers/spi/spi-stm32.c | 136 ++++++++++++++++++++++++++++++++++++----
  1 file changed, 124 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index c534ed92004b..89d5e6333c37 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
 @@ -158,6 +158,20 @@
@@ -94,7 +92,7 @@ index c534ed92004b..89d5e6333c37 100644
  
  	unsigned int cur_midi;
  	unsigned int cur_speed;
-@@ -354,6 +378,8 @@ static const struct stm32_spi_regspec stm32f4_spi_regspec = {
+@@ -354,6 +378,8 @@ static const struct stm32_spi_regspec st
  
  	.rx = { STM32F4_SPI_DR },
  	.tx = { STM32F4_SPI_DR },
@@ -103,7 +101,7 @@ index c534ed92004b..89d5e6333c37 100644
  };
  
  static const struct stm32_spi_regspec stm32h7_spi_regspec = {
-@@ -374,6 +400,30 @@ static const struct stm32_spi_regspec stm32h7_spi_regspec = {
+@@ -374,6 +400,30 @@ static const struct stm32_spi_regspec st
  
  	.rx = { STM32H7_SPI_RXDR },
  	.tx = { STM32H7_SPI_TXDR },
@@ -134,11 +132,10 @@ index c534ed92004b..89d5e6333c37 100644
  };
  
  static inline void stm32_spi_set_bits(struct stm32_spi *spi,
-@@ -452,6 +502,28 @@ static int stm32h7_spi_get_bpw_mask(struct stm32_spi *spi)
- 	return SPI_BPW_RANGE_MASK(4, max_bpw);
+@@ -453,6 +503,28 @@ static int stm32h7_spi_get_bpw_mask(stru
  }
  
-+/**
+ /**
 + * stm32mp25_spi_get_bpw_mask - Return bits per word mask
 + * @spi: pointer to the spi controller data structure
 + */
@@ -160,10 +157,11 @@ index c534ed92004b..89d5e6333c37 100644
 +	return SPI_BPW_RANGE_MASK(4, max_bpw);
 +}
 +
- /**
++/**
   * stm32_spi_prepare_mbr - Determine baud rate divisor value
   * @spi: pointer to the spi controller data structure
-@@ -1037,7 +1109,7 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+  * @speed_hz: requested speed
+@@ -1037,7 +1109,7 @@ static int stm32_spi_prepare_msg(struct
  		int ret;
  
  		ret = spi_split_transfers_maxwords(ctrl, msg,
@@ -172,7 +170,7 @@ index c534ed92004b..89d5e6333c37 100644
  						   GFP_KERNEL | GFP_DMA);
  		if (ret)
  			return ret;
-@@ -1102,7 +1174,7 @@ static void stm32_spi_dma_config(struct stm32_spi *spi,
+@@ -1102,7 +1174,7 @@ static void stm32_spi_dma_config(struct
  {
  	enum dma_slave_buswidth buswidth;
  	struct dma_slave_caps caps;
@@ -181,7 +179,7 @@ index c534ed92004b..89d5e6333c37 100644
  	int ret;
  
  	if (spi->cur_bpw <= 8)
-@@ -1112,15 +1184,9 @@ static void stm32_spi_dma_config(struct stm32_spi *spi,
+@@ -1112,15 +1184,9 @@ static void stm32_spi_dma_config(struct
  	else
  		buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
  
@@ -200,7 +198,7 @@ index c534ed92004b..89d5e6333c37 100644
  
  	/* Get the DMA channel caps, and adjust maxburst if possible */
  	ret = dma_get_slave_caps(dma_chan, &caps);
-@@ -1570,7 +1636,7 @@ static void stm32h7_spi_data_idleness(struct stm32_spi *spi, u32 len)
+@@ -1570,7 +1636,7 @@ static void stm32h7_spi_data_idleness(st
   */
  static int stm32h7_spi_number_of_data(struct stm32_spi *spi, u32 nb_words)
  {
@@ -209,7 +207,7 @@ index c534ed92004b..89d5e6333c37 100644
  		writel_relaxed(FIELD_PREP(STM32H7_SPI_CR2_TSIZE, nb_words),
  			       spi->base + STM32H7_SPI_CR2);
  	} else {
-@@ -1877,7 +1943,37 @@ static const struct stm32_spi_cfg stm32h7_spi_cfg = {
+@@ -1877,7 +1943,37 @@ static const struct stm32_spi_cfg stm32h
  	.set_slave_udr = stm32h7_spi_set_slave_udr,
  };
  
@@ -247,7 +245,7 @@ index c534ed92004b..89d5e6333c37 100644
  	{ .compatible = "st,stm32h7-spi", .data = (void *)&stm32h7_spi_cfg },
  	{ .compatible = "st,stm32f4-spi", .data = (void *)&stm32f4_spi_cfg },
  	{},
-@@ -2008,6 +2104,22 @@ static int stm32_spi_probe(struct platform_device *pdev)
+@@ -2008,6 +2104,22 @@ static int stm32_spi_probe(struct platfo
  	if (spi->cfg->has_fifo)
  		spi->fifo_size = spi->cfg->get_fifo_size(spi);
  
@@ -270,6 +268,3 @@ index c534ed92004b..89d5e6333c37 100644
  	ret = spi->cfg->config(spi);
  	if (ret) {
  		dev_err(&pdev->dev, "controller configuration failed: %d\n",
--- 
-2.39.2
-

@@ -17,11 +17,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 7a1968a0e8d8..6cfc7acc101c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -409,8 +409,7 @@ static int dcmipp_pixelcap_try_fmt_vid_cap(struct file *file, void *priv,
+@@ -409,8 +409,7 @@ static int dcmipp_pixelcap_try_fmt_vid_c
  			      hdw_pixel_alignment(format->pixelformat),
  			      &format->height,
  			      DCMIPP_FRAME_MIN_HEIGHT, DCMIPP_FRAME_MAX_HEIGHT,
@@ -31,6 +29,3 @@ index 7a1968a0e8d8..6cfc7acc101c 100644
  	if (format->width != in_w || format->height != in_h)
  		dev_dbg(vcap->dev,
  			"resolution updated: %dx%d -> %dx%d\n",
--- 
-2.39.2
-

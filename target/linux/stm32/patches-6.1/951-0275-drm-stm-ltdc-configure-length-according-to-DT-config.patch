@@ -22,11 +22,9 @@ Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/ltdc.h |  1 +
  2 files changed, 13 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index a7d2df05eac1..61857292e19f 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1496,6 +1496,9 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1496,6 +1496,9 @@ static void ltdc_plane_atomic_update(str
  		}
  	}
  
@@ -59,8 +57,6 @@ index a7d2df05eac1..61857292e19f 100644
  	ldev->pixel_clk = devm_clk_get(dev, "lcd");
  	if (IS_ERR(ldev->pixel_clk)) {
  		if (PTR_ERR(ldev->pixel_clk) != -EPROBE_DEFER)
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 155d8e4a7c6b..a9246bd81bbb 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -56,6 +56,7 @@ struct ltdc_device {
@@ -71,6 +67,3 @@ index 155d8e4a7c6b..a9246bd81bbb 100644
  };
  
  int ltdc_load(struct drm_device *ddev);
--- 
-2.39.2
-

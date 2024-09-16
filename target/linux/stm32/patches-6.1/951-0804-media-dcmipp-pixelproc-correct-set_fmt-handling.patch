@@ -17,11 +17,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 40 +++++++++++++------
  1 file changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 97de33be3967..5de56455db35 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -401,11 +401,11 @@ static int dcmipp_pixelproc_get_fmt(struct v4l2_subdev *sd,
+@@ -401,11 +401,11 @@ static int dcmipp_pixelproc_get_fmt(stru
  
  	if (IS_SINK(fmt->pad))
  		fmt->format = fmt->which == V4L2_SUBDEV_FORMAT_TRY ?
@@ -35,7 +33,7 @@ index 97de33be3967..5de56455db35 100644
  			      pixelproc->src_fmt;
  
  	mutex_unlock(&pixelproc->lock);
-@@ -435,11 +435,35 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -435,11 +435,35 @@ static int dcmipp_pixelproc_set_fmt(stru
  			pad_fmt = &pixelproc->src_fmt;
  
  	} else {
@@ -72,7 +70,7 @@ index 97de33be3967..5de56455db35 100644
  	dev_dbg(pixelproc->dev, "%s: %s format update: old:%dx%d (0x%x, %d, %d, %d, %d) new:%dx%d (0x%x, %d, %d, %d, %d)\n",
  		pixelproc->sd.name,
  		PAD_STR(fmt->pad),
-@@ -466,16 +490,6 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -466,16 +490,6 @@ static int dcmipp_pixelproc_set_fmt(stru
  		pixelproc->compose.left = 0;
  		pixelproc->compose.width = fmt->format.width;
  		pixelproc->compose.height = fmt->format.height;
@@ -89,6 +87,3 @@ index 97de33be3967..5de56455db35 100644
  	}
  
  out:
--- 
-2.39.2
-

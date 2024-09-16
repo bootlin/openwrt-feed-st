@@ -16,8 +16,6 @@ Domain-Review: Gatien CHEVALLIER <gatien.chevallier@st.com>
  drivers/char/hw_random/stm32-rng.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index e0a8025b45db..29c221082588 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -16,11 +16,12 @@
@@ -38,7 +36,7 @@ index e0a8025b45db..29c221082588 100644
  
  #define RNG_SR		0x04
  #define RNG_SR_SEIS	BIT(6)
-@@ -135,7 +136,8 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -135,7 +136,8 @@ static int stm32_rng_init(struct hwrng *
  		uint clock_div = stm32_rng_clock_freq_restrain(rng);
  
  		reg &= ~RNG_NIST_CONFIG_MASK;
@@ -48,6 +46,3 @@ index e0a8025b45db..29c221082588 100644
  		writel_relaxed(reg, priv->base + RNG_CR);
  		reg &= ~RNG_CR_CONDRST;
  		reg |= RNG_CR_CONFLOCK;
--- 
-2.39.2
-

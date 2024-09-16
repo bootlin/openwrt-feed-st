@@ -29,8 +29,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/linux/mfd/stm32-lptimer.h | 32 ++++++++++++++++++++++++--
  2 files changed, 67 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/stm32-lptimer.c b/drivers/mfd/stm32-lptimer.c
-index 746e51a17cc8..a11474f38d72 100644
 --- a/drivers/mfd/stm32-lptimer.c
 +++ b/drivers/mfd/stm32-lptimer.c
 @@ -6,6 +6,7 @@
@@ -41,7 +39,7 @@ index 746e51a17cc8..a11474f38d72 100644
  #include <linux/mfd/stm32-lptimer.h>
  #include <linux/module.h>
  #include <linux/of_platform.h>
-@@ -48,6 +49,40 @@ static int stm32_lptimer_detect_encoder(struct stm32_lptimer *ddata)
+@@ -48,6 +49,40 @@ static int stm32_lptimer_detect_encoder(
  	return 0;
  }
  
@@ -82,7 +80,7 @@ index 746e51a17cc8..a11474f38d72 100644
  static int stm32_lptimer_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
-@@ -74,7 +109,7 @@ static int stm32_lptimer_probe(struct platform_device *pdev)
+@@ -74,7 +109,7 @@ static int stm32_lptimer_probe(struct pl
  	if (IS_ERR(ddata->clk))
  		return PTR_ERR(ddata->clk);
  
@@ -91,7 +89,7 @@ index 746e51a17cc8..a11474f38d72 100644
  	if (ret)
  		return ret;
  
-@@ -85,6 +120,7 @@ static int stm32_lptimer_probe(struct platform_device *pdev)
+@@ -85,6 +120,7 @@ static int stm32_lptimer_probe(struct pl
  
  static const struct of_device_id stm32_lptimer_of_match[] = {
  	{ .compatible = "st,stm32-lptimer", },
@@ -99,8 +97,6 @@ index 746e51a17cc8..a11474f38d72 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_lptimer_of_match);
-diff --git a/include/linux/mfd/stm32-lptimer.h b/include/linux/mfd/stm32-lptimer.h
-index 06d3f11dc3c9..a73dff0cb9ef 100644
 --- a/include/linux/mfd/stm32-lptimer.h
 +++ b/include/linux/mfd/stm32-lptimer.h
 @@ -17,18 +17,26 @@
@@ -169,6 +165,3 @@ index 06d3f11dc3c9..a73dff0cb9ef 100644
  };
  
  #endif
--- 
-2.39.2
-

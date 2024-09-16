@@ -20,8 +20,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  include/linux/tee_remoteproc.h      |  14 ++-
  2 files changed, 83 insertions(+), 65 deletions(-)
 
-diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
-index 239fe0f157cc..b5134ea4dce7 100644
 --- a/drivers/remoteproc/tee_remoteproc.c
 +++ b/drivers/remoteproc/tee_remoteproc.c
 @@ -1,6 +1,6 @@
@@ -50,7 +48,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			 struct tee_param *param, unsigned int num_params)
  {
  	memset(arg, 0, sizeof(*arg));
-@@ -94,7 +93,7 @@ static void prepare_args(struct tee_rproc *trproc, int cmd,
+@@ -94,7 +93,7 @@ static void prepare_args(struct tee_rpro
  
  	param[0] = (struct tee_param) {
  		.attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
@@ -59,7 +57,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  	};
  }
  
-@@ -105,9 +104,9 @@ int tee_rproc_load_fw(struct tee_rproc *trproc, const struct firmware *fw)
+@@ -105,9 +104,9 @@ int tee_rproc_load_fw(struct tee_rproc *
  	struct tee_shm *fw_shm;
  	int ret;
  
@@ -71,7 +69,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			PTR_ERR(fw_shm));
  		return PTR_ERR(fw_shm);
  	}
-@@ -124,9 +123,9 @@ int tee_rproc_load_fw(struct tee_rproc *trproc, const struct firmware *fw)
+@@ -124,9 +123,9 @@ int tee_rproc_load_fw(struct tee_rproc *
  		},
  	};
  
@@ -83,7 +81,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			"TA_RPROC_FW_CMD_LOAD_FW invoke failed TEE err: %x, ret:%x\n",
  			arg.ret, ret);
  		if (!ret)
-@@ -137,7 +136,7 @@ int tee_rproc_load_fw(struct tee_rproc *trproc, const struct firmware *fw)
+@@ -137,7 +136,7 @@ int tee_rproc_load_fw(struct tee_rproc *
  
  	return ret;
  }
@@ -92,7 +90,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  
  int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
  {
-@@ -152,9 +151,9 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+@@ -152,9 +151,9 @@ int rproc_tee_get_rsc_table(struct tee_r
  	param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
  	param[2].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
  
@@ -104,7 +102,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			"TA_RPROC_FW_CMD_GET_RSC_TABLE invoke failed TEE err: %x, ret:%x\n",
  			arg.ret, ret);
  		return -EIO;
-@@ -162,8 +161,9 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+@@ -162,8 +161,9 @@ int rproc_tee_get_rsc_table(struct tee_r
  
  	rsc_size = param[2].u.value.a;
  
@@ -116,7 +114,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  
  	/*
  	 * Store the resource table address that would be updated by the remote
-@@ -171,7 +171,7 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+@@ -171,7 +171,7 @@ int rproc_tee_get_rsc_table(struct tee_r
  	 */
  	trproc->rsc_va = ioremap_wc(param[1].u.value.a, rsc_size);
  	if (IS_ERR_OR_NULL(trproc->rsc_va)) {
@@ -125,7 +123,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			param[1].u.value.a, rsc_size);
  		trproc->rsc_va = NULL;
  		return -ENOMEM;
-@@ -190,13 +190,13 @@ int rproc_tee_get_rsc_table(struct tee_rproc *trproc)
+@@ -190,13 +190,13 @@ int rproc_tee_get_rsc_table(struct tee_r
  
  	return 0;
  }
@@ -141,7 +139,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  
  int tee_rproc_start(struct tee_rproc *trproc)
  {
-@@ -206,9 +206,9 @@ int tee_rproc_start(struct tee_rproc *trproc)
+@@ -206,9 +206,9 @@ int tee_rproc_start(struct tee_rproc *tr
  
  	prepare_args(trproc, TA_RPROC_FW_CMD_START_FW, &arg, param, 0);
  
@@ -153,7 +151,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			"TA_RPROC_FW_CMD_START_FW invoke failed TEE err: %x, ret:%x\n",
  			arg.ret, ret);
  		if (!ret)
-@@ -217,7 +217,7 @@ int tee_rproc_start(struct tee_rproc *trproc)
+@@ -217,7 +217,7 @@ int tee_rproc_start(struct tee_rproc *tr
  
  	return ret;
  }
@@ -162,7 +160,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  
  int tee_rproc_stop(struct tee_rproc *trproc)
  {
-@@ -227,9 +227,9 @@ int tee_rproc_stop(struct tee_rproc *trproc)
+@@ -227,9 +227,9 @@ int tee_rproc_stop(struct tee_rproc *trp
  
  	prepare_args(trproc, TA_RPROC_FW_CMD_STOP_FW, &arg, param, 0);
  
@@ -174,7 +172,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  			"TA_RPROC_FW_CMD_STOP_FW invoke failed TEE err: %x, ret:%x\n",
  			arg.ret, ret);
  		if (!ret)
-@@ -241,15 +241,15 @@ int tee_rproc_stop(struct tee_rproc *trproc)
+@@ -241,15 +241,15 @@ int tee_rproc_stop(struct tee_rproc *trp
  
  	return ret;
  }
@@ -193,7 +191,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  {
  	struct tee_client_device *rproc_tee_device;
  	struct tee_ioctl_open_session_arg sess_arg;
-@@ -257,14 +257,19 @@ struct tee_rproc *tee_rproc_register(struct device *dev, unsigned int fw_id)
+@@ -257,14 +257,19 @@ struct tee_rproc *tee_rproc_register(str
  	struct tee_rproc *trproc;
  	int ret;
  
@@ -216,7 +214,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  	memset(&sess_arg, 0, sizeof(sess_arg));
  
  	/* Open session with rproc_tee load Trusted App */
-@@ -274,50 +279,46 @@ struct tee_rproc *tee_rproc_register(struct device *dev, unsigned int fw_id)
+@@ -274,50 +279,46 @@ struct tee_rproc *tee_rproc_register(str
  	 * TODO: should we replace TEE_IOCTL_LOGIN_PUBLIC by
  	 * TEE_IOCTL_LOGIN_REE_KERNEL?
  	 */
@@ -279,7 +277,7 @@ index 239fe0f157cc..b5134ea4dce7 100644
  
  static int tee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
  {
-@@ -327,36 +328,56 @@ static int tee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
+@@ -327,36 +328,56 @@ static int tee_ctx_match(struct tee_ioct
  
  static int tee_rproc_probe(struct device *dev)
  {
@@ -353,8 +351,6 @@ index 239fe0f157cc..b5134ea4dce7 100644
  MODULE_DESCRIPTION("secure remote processor control driver");
 -MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
  MODULE_LICENSE("GPL");
-diff --git a/include/linux/tee_remoteproc.h b/include/linux/tee_remoteproc.h
-index 5ba0b611679c..7e8db04a8edc 100644
 --- a/include/linux/tee_remoteproc.h
 +++ b/include/linux/tee_remoteproc.h
 @@ -1,6 +1,6 @@
@@ -391,7 +387,7 @@ index 5ba0b611679c..7e8db04a8edc 100644
  int tee_rproc_unregister(struct tee_rproc *trproc);
  
  int tee_rproc_load_fw(struct tee_rproc *trproc, const struct firmware *fw);
-@@ -41,8 +41,7 @@ int tee_rproc_stop(struct tee_rproc *trproc);
+@@ -41,8 +41,7 @@ int tee_rproc_stop(struct tee_rproc *trp
  
  #else
  
@@ -401,7 +397,7 @@ index 5ba0b611679c..7e8db04a8edc 100644
  {
  	return ERR_PTR(-ENODEV);
  }
-@@ -55,8 +54,7 @@ static inline int tee_rproc_unregister(struct tee_rproc *trproc)
+@@ -55,8 +54,7 @@ static inline int tee_rproc_unregister(s
  	return 0;
  }
  
@@ -411,6 +407,3 @@ index 5ba0b611679c..7e8db04a8edc 100644
  {
  	/* This shouldn't be possible */
  	WARN_ON(1);
--- 
-2.39.2
-

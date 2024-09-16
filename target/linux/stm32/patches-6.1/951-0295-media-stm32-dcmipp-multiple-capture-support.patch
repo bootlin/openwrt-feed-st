@@ -13,11 +13,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 53 +++++++++++++++++--
  2 files changed, 95 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 099a3068b699..bf470fc88768 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -447,9 +447,12 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+@@ -447,9 +447,12 @@ static int dcmipp_pipeline_s_stream(stru
  				    int state)
  {
  	struct media_entity *entity = &vcap->vdev.entity;
@@ -31,7 +29,7 @@ index 099a3068b699..bf470fc88768 100644
  
  	/* Start/stop all entities within pipeline */
  	while (1) {
-@@ -464,19 +467,44 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+@@ -464,19 +467,44 @@ static int dcmipp_pipeline_s_stream(stru
  		entity = pad->entity;
  		subdev = media_entity_to_v4l2_subdev(entity);
  
@@ -77,7 +75,7 @@ index 099a3068b699..bf470fc88768 100644
  	return 0;
  }
  
-@@ -500,6 +528,8 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+@@ -500,6 +528,8 @@ static int dcmipp_bytecap_start_streamin
  {
  	struct dcmipp_bytecap_device *vcap = vb2_get_drv_priv(vq);
  	struct media_entity *entity = &vcap->vdev.entity;
@@ -86,7 +84,7 @@ index 099a3068b699..bf470fc88768 100644
  	struct dcmipp_buf *buf, *node;
  	int ret;
  
-@@ -521,8 +551,21 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+@@ -521,8 +551,21 @@ static int dcmipp_bytecap_start_streamin
  		goto err_pm_put;
  	}
  
@@ -110,11 +108,9 @@ index 099a3068b699..bf470fc88768 100644
  	if (ret) {
  		dev_err(vcap->dev, "%s: Failed to start streaming, media pipeline start error (%d)\n",
  			__func__, ret);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 23b53286732e..c90cfc4333f8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -580,9 +580,12 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_pixelcap_device *vcap,
+@@ -580,9 +580,12 @@ static int dcmipp_pipeline_s_stream(stru
  				    int state)
  {
  	struct media_entity *entity = &vcap->vdev.entity;
@@ -128,7 +124,7 @@ index 23b53286732e..c90cfc4333f8 100644
  
  	/* Start/stop all entities within pipeline */
  	while (1) {
-@@ -597,20 +600,45 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_pixelcap_device *vcap,
+@@ -597,20 +600,45 @@ static int dcmipp_pipeline_s_stream(stru
  		entity = pad->entity;
  		subdev = media_entity_to_v4l2_subdev(entity);
  
@@ -176,7 +172,7 @@ index 23b53286732e..c90cfc4333f8 100644
  }
  
  static int dcmipp_start_capture(struct dcmipp_pixelcap_device *vcap,
-@@ -644,6 +672,8 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -644,6 +672,8 @@ static int dcmipp_pixelcap_start_streami
  {
  	struct dcmipp_pixelcap_device *vcap = vb2_get_drv_priv(vq);
  	struct media_entity *entity = &vcap->vdev.entity;
@@ -185,7 +181,7 @@ index 23b53286732e..c90cfc4333f8 100644
  	struct dcmipp_buf *buf, *node;
  	int ret;
  
-@@ -662,8 +692,21 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -662,8 +692,21 @@ static int dcmipp_pixelcap_start_streami
  		goto err_pm_put;
  	}
  
@@ -209,6 +205,3 @@ index 23b53286732e..c90cfc4333f8 100644
  	if (ret) {
  		dev_err(vcap->dev, "%s: Failed to start streaming, media pipeline start error (%d)\n",
  			__func__, ret);
--- 
-2.39.2
-

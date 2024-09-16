@@ -17,11 +17,9 @@ Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 24 +++++++++++++++++++++--
  1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 6630e21515f0..e7d1d4e1dc45 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -184,6 +184,11 @@ &arm_wdt {
+@@ -184,6 +184,11 @@
  	status = "okay";
  };
  
@@ -33,7 +31,7 @@ index 6630e21515f0..e7d1d4e1dc45 100644
  &crc {
  	status = "okay";
  };
-@@ -546,6 +551,16 @@ typec@35 {
+@@ -546,6 +551,16 @@
  			reg = <0x35>;
  			interrupts-extended = <&intc_rpmsg 0>;
  			status = "okay";
@@ -50,7 +48,7 @@ index 6630e21515f0..e7d1d4e1dc45 100644
  		};
  	};
  };
-@@ -713,8 +728,13 @@ &usb3dr {
+@@ -713,8 +728,13 @@
  	status = "okay";
  
  	dwc3: usb@48300000 {
@@ -66,6 +64,3 @@ index 6630e21515f0..e7d1d4e1dc45 100644
 +		};
  	};
  };
--- 
-2.39.2
-

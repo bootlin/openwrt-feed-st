@@ -20,8 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 107 +++++++++++++-----
  1 file changed, 79 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index f1d2bf57ddfd..bdd87f1d4ba9 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -72,11 +72,14 @@ struct dcmipp_buf {
@@ -47,7 +45,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  	struct v4l2_subdev *s_subdev;
  
  	/*
-@@ -592,6 +596,9 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -592,6 +596,9 @@ static int dcmipp_statcap_s_ctrl(struct
  	case V4L2_CID_ISP_STAT_BIN_COMP:
  		vcap->bin_comp = ctrl->val;
  		break;
@@ -57,7 +55,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  	}
  
  	return 0;
-@@ -627,6 +634,16 @@ static const struct v4l2_ctrl_config dcmipp_statcap_ctrls[] = {
+@@ -627,6 +634,16 @@ static const struct v4l2_ctrl_config dcm
  		.step	= 1,
  		.def	= 0,
  		.flags	= 0,
@@ -74,7 +72,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  	}
  };
  
-@@ -678,6 +695,35 @@ static u32 dcmipp_statcap_get_src(u32 location,
+@@ -678,6 +695,35 @@ static u32 dcmipp_statcap_get_src(u32 lo
  	return (location << DCMIPP_P1STXCR_SRC_LOC_SHIFT) | (comp << DCMIPP_P1STXCR_SRC_COMP_SHIFT);
  }
  
@@ -110,7 +108,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
  {
  	struct dcmipp_statcap_device *vcap =
-@@ -716,7 +762,14 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -716,7 +762,14 @@ static irqreturn_t dcmipp_statcap_irq_th
  	switch (vcap->capture_state) {
  	case COLD_START:
  		stat_ready = false;
@@ -126,7 +124,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  		/*
  		 * We've just started, set control registers to capture
  		 * AVERAGES (RGB) and leave
-@@ -755,26 +808,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -755,26 +808,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  				  DCMIPP_P1STXCR_ENABLE);
  
  		/* Accumulators contains the AVERAGES (RGB) */
@@ -154,7 +152,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  		break;
  
  	case PHY_BIN_1_SHA_BIN_2:
-@@ -819,6 +853,11 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -819,6 +853,11 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			avr_bins->bins[i + 6] = reg_read(vcap, DCMIPP_P1STXSR(i));
  		break;
@@ -166,7 +164,7 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  	}
  
  	/* If a full capture cycle has been done, output data to a buffer */
-@@ -828,14 +867,26 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -828,14 +867,26 @@ static irqreturn_t dcmipp_statcap_irq_th
  	spin_unlock_irq(&vcap->irqlock);
  
  	/* Update the capture_state & prev_capture_state */
@@ -200,6 +198,3 @@ index f1d2bf57ddfd..bdd87f1d4ba9 100644
  	}
  
  	return IRQ_HANDLED;
--- 
-2.39.2
-

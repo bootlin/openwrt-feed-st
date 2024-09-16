@@ -32,11 +32,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/rtc/rtc-stm32.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
-index 84c8f6733c7f..59bbf7530d77 100644
 --- a/drivers/rtc/rtc-stm32.c
 +++ b/drivers/rtc/rtc-stm32.c
-@@ -1098,7 +1098,6 @@ static int stm32_rtc_remove(struct platform_device *pdev)
+@@ -1098,7 +1098,6 @@ static int stm32_rtc_remove(struct platf
  	return 0;
  }
  
@@ -44,7 +42,7 @@ index 84c8f6733c7f..59bbf7530d77 100644
  static int stm32_rtc_suspend(struct device *dev)
  {
  	struct stm32_rtc *rtc = dev_get_drvdata(dev);
-@@ -1129,7 +1128,6 @@ static int stm32_rtc_resume(struct device *dev)
+@@ -1129,7 +1128,6 @@ static int stm32_rtc_resume(struct devic
  
  	return ret;
  }
@@ -52,6 +50,3 @@ index 84c8f6733c7f..59bbf7530d77 100644
  
  static const struct dev_pm_ops stm32_rtc_pm_ops = {
  	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(stm32_rtc_suspend, stm32_rtc_resume)
--- 
-2.39.2
-

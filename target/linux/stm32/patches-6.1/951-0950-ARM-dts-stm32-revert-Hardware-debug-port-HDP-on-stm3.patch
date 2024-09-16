@@ -21,11 +21,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 8 --------
  1 file changed, 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index e4c34dd521cd..cb9ba5018a94 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -489,14 +489,6 @@ dts: thermal@50028000 {
+@@ -489,14 +489,6 @@
  			status = "disabled";
  		};
  
@@ -40,6 +38,3 @@ index e4c34dd521cd..cb9ba5018a94 100644
  		pinctrl_z: pinctrl@54004000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.2
-

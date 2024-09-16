@@ -15,8 +15,6 @@ Change-Id: I80f1ad265ec84295ca1f1a65086cb74d6f71021f
  3 files changed, 2416 insertions(+)
  create mode 100644 drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index d532f3c6f670..2656d3d3ae40 100644
 --- a/drivers/pinctrl/stm32/Kconfig
 +++ b/drivers/pinctrl/stm32/Kconfig
 @@ -51,4 +51,10 @@ config PINCTRL_STM32MP157
@@ -30,18 +28,13 @@ index d532f3c6f670..2656d3d3ae40 100644
 +	default MACH_STM32MP25
 +	select PINCTRL_STM32
  endif
-diff --git a/drivers/pinctrl/stm32/Makefile b/drivers/pinctrl/stm32/Makefile
-index 619629ee9944..7b17464d8de1 100644
 --- a/drivers/pinctrl/stm32/Makefile
 +++ b/drivers/pinctrl/stm32/Makefile
-@@ -10,3 +10,4 @@ obj-$(CONFIG_PINCTRL_STM32F769)	+= pinctrl-stm32f769.o
+@@ -10,3 +10,4 @@ obj-$(CONFIG_PINCTRL_STM32F769)	+= pinct
  obj-$(CONFIG_PINCTRL_STM32H743)	+= pinctrl-stm32h743.o
  obj-$(CONFIG_PINCTRL_STM32MP135) += pinctrl-stm32mp135.o
  obj-$(CONFIG_PINCTRL_STM32MP157) += pinctrl-stm32mp157.o
 +obj-$(CONFIG_PINCTRL_STM32MP257) += pinctrl-stm32mp257.o
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-new file mode 100644
-index 000000000000..91dffc12768b
 --- /dev/null
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 @@ -0,0 +1,2409 @@
@@ -2454,6 +2447,3 @@ index 000000000000..91dffc12768b
 +	return platform_driver_register(&stm32mp257_pinctrl_driver);
 +}
 +arch_initcall(stm32mp257_pinctrl_init);
--- 
-2.39.2
-

@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index a6d404a7d1c5..aeefc20b13f5 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 @@ -38,6 +38,9 @@ properties:
@@ -34,6 +32,3 @@ index a6d404a7d1c5..aeefc20b13f5 100644
    dmas:
      minItems: 1
      maxItems: 7
--- 
-2.39.2
-

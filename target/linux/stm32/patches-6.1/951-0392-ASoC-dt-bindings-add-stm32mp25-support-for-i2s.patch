@@ -17,8 +17,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../bindings/sound/st,stm32-i2s.yaml          | 56 +++++++++++++++----
  1 file changed, 46 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-index d3966ae04ad0..1409bb0658b7 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 @@ -17,6 +17,7 @@ properties:
@@ -100,6 +98,3 @@ index d3966ae04ad0..1409bb0658b7 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.2
-

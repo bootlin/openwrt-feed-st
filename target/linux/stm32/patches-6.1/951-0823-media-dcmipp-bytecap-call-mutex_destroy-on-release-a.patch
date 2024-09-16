@@ -18,11 +18,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 8 +++++---
  1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index c35fb56aea03..f5c49aa6c61b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -791,6 +791,7 @@ void dcmipp_bytecap_ent_release(struct dcmipp_ent_device *ved)
+@@ -791,6 +791,7 @@ void dcmipp_bytecap_ent_release(struct d
  	struct dcmipp_bytecap_device *vcap =
  		container_of(ved, struct dcmipp_bytecap_device, ved);
  
@@ -30,7 +28,7 @@ index c35fb56aea03..f5c49aa6c61b 100644
  	media_entity_cleanup(ved->ent);
  	vb2_video_unregister_device(&vcap->vdev);
  }
-@@ -995,7 +996,7 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -995,7 +996,7 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	if (ret) {
  		dev_err(dev, "%s: vb2 queue init failed (err=%d)\n",
  			entity_name, ret);
@@ -39,7 +37,7 @@ index c35fb56aea03..f5c49aa6c61b 100644
  	}
  
  	/* Initialize buffer list and its lock */
-@@ -1035,12 +1036,13 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -1035,12 +1036,13 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	if (ret) {
  		dev_err(dev, "%s: video register failed (err=%d)\n",
  			vcap->vdev.name, ret);
@@ -55,6 +53,3 @@ index c35fb56aea03..f5c49aa6c61b 100644
  	media_entity_cleanup(&vcap->vdev.entity);
  err_clean_pads:
  	dcmipp_pads_cleanup(vcap->ved.pads);
--- 
-2.39.2
-

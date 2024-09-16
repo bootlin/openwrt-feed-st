@@ -17,11 +17,9 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../platform/verisilicon/hantro_h1_h264_enc.c | 35 +++----------------
  1 file changed, 4 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
-index a9f742c733d8..b659534e6467 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
-@@ -192,28 +192,6 @@ static void hantro_h1_h264_enc_set_params(struct hantro_dev *vpu, struct hantro_
+@@ -192,28 +192,6 @@ static void hantro_h1_h264_enc_set_param
  	/* Don't use stabilization */
  	vepu_write_relaxed(vpu, 0, H1_REG_STABILIZATION_OUTPUT);
  
@@ -50,7 +48,7 @@ index a9f742c733d8..b659534e6467 100644
  	/* Disable CIR */
  	vepu_write_relaxed(vpu, 0, H1_REG_CIR_INTRA_CTRL);
  
-@@ -420,6 +398,8 @@ int hantro_h1_h264_enc_run(struct hantro_ctx *ctx)
+@@ -420,6 +398,8 @@ int hantro_h1_h264_enc_run(struct hantro
  	hantro_h1_h264_enc_set_src_img_ctrl(vpu, ctx);
  	hantro_h1_h264_enc_set_buffers(vpu, ctx, params);
  
@@ -59,7 +57,7 @@ index a9f742c733d8..b659534e6467 100644
  	reg = H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP8
  		| H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP16
  		| H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP32
-@@ -428,15 +408,8 @@ int hantro_h1_h264_enc_run(struct hantro_ctx *ctx)
+@@ -428,15 +408,8 @@ int hantro_h1_h264_enc_run(struct hantro
  		| H1_REG_DEVICE_CTRL_MV_OUTPUT_SWAP32;
  	vepu_write(vpu, reg, H1_REG_DEVICE_CTRL);
  
@@ -77,6 +75,3 @@ index a9f742c733d8..b659534e6467 100644
  
  	/* Start the hardware */
  	reg = H1_REG_ENC_CTRL_TIMEOUT_EN
--- 
-2.39.2
-

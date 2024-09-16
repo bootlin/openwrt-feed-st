@@ -15,8 +15,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Documentation/devicetree/bindings/display/st,stm32-lvds.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
-index 107841bedf91..5cf27a61bf86 100644
 --- a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
 +++ b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
 @@ -20,7 +20,7 @@ properties:
@@ -28,6 +26,3 @@ index 107841bedf91..5cf27a61bf86 100644
  
    reg:
      maxItems: 1
--- 
-2.39.2
-

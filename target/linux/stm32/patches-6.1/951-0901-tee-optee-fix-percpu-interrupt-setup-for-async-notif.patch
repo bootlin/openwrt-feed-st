@@ -24,8 +24,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/tee/optee/smc_abi.c       | 104 ++++++++++++++++++------------
  2 files changed, 63 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index c19cb413aa5a..fa50377669de 100644
 --- a/drivers/tee/optee/optee_private.h
 +++ b/drivers/tee/optee/optee_private.h
 @@ -116,6 +116,7 @@ struct optee_pcpu {
@@ -44,8 +42,6 @@ index c19cb413aa5a..fa50377669de 100644
  	struct irq_domain *domain;
  };
  
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index e598751ecd42..f19692ea6fac 100644
 --- a/drivers/tee/optee/smc_abi.c
 +++ b/drivers/tee/optee/smc_abi.c
 @@ -52,6 +52,23 @@
@@ -72,7 +68,7 @@ index e598751ecd42..f19692ea6fac 100644
  /*
   * 1. Convert between struct tee_param and struct optee_msg_param
   *
-@@ -1257,22 +1274,13 @@ static u32 get_async_notif_value(optee_invoke_fn *invoke_fn, bool *value_valid,
+@@ -1257,22 +1274,13 @@ static u32 get_async_notif_value(optee_i
  	return res.a1;
  }
  
@@ -96,7 +92,7 @@ index e598751ecd42..f19692ea6fac 100644
  	do {
  		value = get_async_notif_value(optee->smc.invoke_fn, &value_valid, &value_pending);
  		if (!value_valid)
-@@ -1286,16 +1294,18 @@ static irqreturn_t notif_irq_handler(int irq, void *dev_id)
+@@ -1286,16 +1294,18 @@ static irqreturn_t notif_irq_handler(int
  			optee_notif_send(optee, value);
  	} while (value_pending);
  
@@ -122,7 +118,7 @@ index e598751ecd42..f19692ea6fac 100644
  static irqreturn_t notif_irq_thread_fn(int irq, void *dev_id)
  {
  	struct optee *optee = dev_id;
-@@ -1309,7 +1319,8 @@ static int init_irq(struct optee *optee, u_int irq)
+@@ -1309,7 +1319,8 @@ static int init_irq(struct optee *optee,
  {
  	int rc;
  
@@ -132,7 +128,7 @@ index e598751ecd42..f19692ea6fac 100644
  				  0, "optee_notification", optee);
  	if (rc)
  		return rc;
-@@ -1319,9 +1330,22 @@ static int init_irq(struct optee *optee, u_int irq)
+@@ -1319,9 +1330,22 @@ static int init_irq(struct optee *optee,
  	return 0;
  }
  
@@ -156,7 +152,7 @@ index e598751ecd42..f19692ea6fac 100644
  	struct optee *optee = container_of(optee_smc, struct optee, smc);
  
  	optee_smc_do_bottom_half(optee->ctx);
-@@ -1329,32 +1353,21 @@ static void notif_pcpu_irq_work_fn(struct work_struct *work)
+@@ -1329,32 +1353,21 @@ static void notif_pcpu_irq_work_fn(struc
  
  static int init_pcpu_irq(struct optee *optee, u_int irq)
  {
@@ -173,12 +169,12 @@ index e598751ecd42..f19692ea6fac 100644
  
 -	for_each_present_cpu(cpu) {
 -		struct optee_pcpu *p = per_cpu_ptr(optee_pcpu, cpu);
--
--		p->optee = optee;
--	}
 +	for_each_present_cpu(cpu)
 +		per_cpu_ptr(optee_pcpu, cpu)->optee = optee;
  
+-		p->optee = optee;
+-	}
+-
 -	rc = request_percpu_irq(irq, notif_irq_handler,
 +	rc = request_percpu_irq(irq, notif_pcpu_irq_handler,
  				"optee_pcpu_notification", optee_pcpu);
@@ -194,7 +190,7 @@ index e598751ecd42..f19692ea6fac 100644
  	INIT_WORK(&optee->smc.notif_pcpu_work, notif_pcpu_irq_work_fn);
  	optee->smc.notif_pcpu_wq = create_workqueue("optee_pcpu_notification");
  	if (!optee->smc.notif_pcpu_wq) {
-@@ -1365,12 +1378,20 @@ static int init_pcpu_irq(struct optee *optee, u_int irq)
+@@ -1365,12 +1378,20 @@ static int init_pcpu_irq(struct optee *o
  	optee->smc.optee_pcpu = optee_pcpu;
  	optee->smc.notif_irq = irq;
  
@@ -218,7 +214,7 @@ index e598751ecd42..f19692ea6fac 100644
  	free_percpu_irq(irq, optee_pcpu);
  err_free_pcpu:
  	free_percpu(optee_pcpu);
-@@ -1388,12 +1409,9 @@ static int optee_smc_notif_init_irq(struct optee *optee, u_int irq)
+@@ -1388,12 +1409,9 @@ static int optee_smc_notif_init_irq(stru
  
  static void uninit_pcpu_irq(struct optee *optee)
  {
@@ -233,6 +229,3 @@ index e598751ecd42..f19692ea6fac 100644
  
  	free_percpu_irq(optee->smc.notif_irq, optee->smc.optee_pcpu);
  	free_percpu(optee->smc.optee_pcpu);
--- 
-2.39.2
-

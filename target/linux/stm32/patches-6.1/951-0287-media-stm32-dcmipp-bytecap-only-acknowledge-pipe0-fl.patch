@@ -18,11 +18,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 1384f5a6e9e5..70d2c2dabbcc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -947,7 +947,7 @@ static irqreturn_t dcmipp_bytecap_irq_callback(int irq, void *arg)
+@@ -947,7 +947,7 @@ static irqreturn_t dcmipp_bytecap_irq_ca
  			container_of(arg, struct dcmipp_bytecap_device, ved);
  
  	/* Store interrupt status register */
@@ -31,6 +29,3 @@ index 1384f5a6e9e5..70d2c2dabbcc 100644
  	vcap->it_count++;
  
  	/* Clear interrupt */
--- 
-2.39.2
-

@@ -41,11 +41,9 @@ Tested-by: Maxime MERE <maxime.mere@foss.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 15 ++++++++++-----
  1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 92ed1a97c7af..4e88e522405c 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -765,7 +765,10 @@ static void stm32_cryp_dma_callback(void *param)
+@@ -765,7 +765,10 @@ static void stm32_cryp_dma_callback(void
  	complete(&cryp->dma_completion); /* completion to indicate no timeout */
  
  	dma_sync_sg_for_device(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
@@ -57,7 +55,7 @@ index 92ed1a97c7af..4e88e522405c 100644
  	dma_unmap_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
  
  	reg = stm32_cryp_read(cryp, CRYP_DMACR);
-@@ -856,10 +859,12 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+@@ -856,10 +859,12 @@ static int stm32_cryp_dma_start(struct s
  	struct dma_async_tx_descriptor *tx_in, *tx_out;
  	u32 reg;
  
@@ -74,6 +72,3 @@ index 92ed1a97c7af..4e88e522405c 100644
  	}
  
  	err = dma_map_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
--- 
-2.39.2
-

@@ -16,11 +16,9 @@ Tested-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/remoteproc/stm32_rproc.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 2eb6068e099b..3f38cb7327d0 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -812,7 +812,8 @@ static const struct rproc_ops st_rproc_tee_ops = {
+@@ -812,7 +812,8 @@ static const struct rproc_ops st_rproc_t
  };
  
  static const struct of_device_id stm32_rproc_match[] = {
@@ -30,6 +28,3 @@ index 2eb6068e099b..3f38cb7327d0 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
--- 
-2.39.2
-

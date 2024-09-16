@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index a559c33529a9..0d8dccc58b04 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -231,7 +231,7 @@ dcmipp_0: endpoint {
+@@ -231,7 +231,7 @@
  };
  
  &dsi {
@@ -28,6 +26,3 @@ index a559c33529a9..0d8dccc58b04 100644
  	vdda18-supply = <&scmi_v1v8>;
  	status = "okay";
  
--- 
-2.39.2
-

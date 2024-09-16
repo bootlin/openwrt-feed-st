@@ -26,9 +26,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  create mode 100644 include/dt-bindings/pinctrl/stm32mp15-hdp.h
  create mode 100644 include/dt-bindings/pinctrl/stm32mp25-hdp.h
 
-diff --git a/include/dt-bindings/pinctrl/stm32mp13-hdp.h b/include/dt-bindings/pinctrl/stm32mp13-hdp.h
-new file mode 100644
-index 000000000000..4d233da8e19d
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/stm32mp13-hdp.h
 @@ -0,0 +1,130 @@
@@ -162,9 +159,6 @@ index 000000000000..4d233da8e19d
 +#define HDP7_GPOVAL_7				 "15"
 +
 +#endif /* _DT_BINDINGS_STM32MP13_HDP_H */
-diff --git a/include/dt-bindings/pinctrl/stm32mp15-hdp.h b/include/dt-bindings/pinctrl/stm32mp15-hdp.h
-new file mode 100644
-index 000000000000..b761cd66b005
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/stm32mp15-hdp.h
 @@ -0,0 +1,116 @@
@@ -284,9 +278,6 @@ index 000000000000..b761cd66b005
 +#define HDP7_GPOVAL_7				 "15"
 +
 +#endif /* _DT_BINDINGS_STM32MP15_HDP_H */
-diff --git a/include/dt-bindings/pinctrl/stm32mp25-hdp.h b/include/dt-bindings/pinctrl/stm32mp25-hdp.h
-new file mode 100644
-index 000000000000..3f1bbb6bc34d
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/stm32mp25-hdp.h
 @@ -0,0 +1,144 @@
@@ -434,6 +425,3 @@ index 000000000000..3f1bbb6bc34d
 +#define HDP7_GPOVAL_7				     "15"
 +
 +#endif /* _DT_BINDINGS_STM32MP25_HDP_H */
--- 
-2.39.2
-

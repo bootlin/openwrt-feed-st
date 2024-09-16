@@ -22,11 +22,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/dma/stm32-dma3.c | 24 +++++++++++++-----------
  1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index f9ebd65793c0..d0670366a0c6 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -2021,12 +2021,12 @@ static struct dma_chan *stm32_dma3_of_xlate(struct of_phandle_args *dma_spec, st
+@@ -2021,12 +2021,12 @@ static struct dma_chan *stm32_dma3_of_xl
  	return c;
  }
  
@@ -42,7 +40,7 @@ index f9ebd65793c0..d0670366a0c6 100644
  
  	of_property_read_u32(ddata->dma_dev.dev->of_node, "dma-channel-mask", &mask);
  
-@@ -2042,27 +2042,29 @@ static void stm32_dma3_check_rif(struct stm32_dma3_ddata *ddata)
+@@ -2042,27 +2042,29 @@ static void stm32_dma3_check_rif(struct
  		if (!(ccidcfgr & CCIDCFGR_CFEN)) { /* !CID-filtered */
  			invalid_cid |= BIT(i);
  			if (!(mask & BIT(i)))
@@ -76,7 +74,7 @@ index f9ebd65793c0..d0670366a0c6 100644
  }
  
  static const struct of_device_id stm32_dma3_of_match[] = {
-@@ -2079,7 +2081,7 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2079,7 +2081,7 @@ static int stm32_dma3_probe(struct platf
  	struct stm32_dma3_chan *chan;
  	struct dma_device *dma_dev;
  	struct resource *res;
@@ -85,7 +83,7 @@ index f9ebd65793c0..d0670366a0c6 100644
  	int ret;
  
  	ddata = devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
-@@ -2205,9 +2207,9 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2205,9 +2207,9 @@ static int stm32_dma3_probe(struct platf
  		goto err_clk_disable;
  	}
  
@@ -97,7 +95,7 @@ index f9ebd65793c0..d0670366a0c6 100644
  		dev_err(&pdev->dev, "No channel available, abort registration\n");
  		ret = -ENODEV;
  		goto err_clk_disable;
-@@ -2245,7 +2247,7 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2245,7 +2247,7 @@ static int stm32_dma3_probe(struct platf
  
  		chan = &ddata->chans[i];
  
@@ -106,6 +104,3 @@ index f9ebd65793c0..d0670366a0c6 100644
  			continue;
  
  		chan->vchan.desc_free = stm32_dma3_chan_vdesc_free;
--- 
-2.39.2
-

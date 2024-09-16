@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 32 +++++++++----------
  1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index fd133eb3ee3c..c0546c7db0fc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -264,20 +264,15 @@ struct dcmipp_isp_device {
@@ -48,7 +46,7 @@ index fd133eb3ee3c..c0546c7db0fc 100644
  };
  
  /*
-@@ -487,8 +482,8 @@ static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -487,8 +482,8 @@ static void dcmipp_isp_adjust_fmt(struct
  	/* Only accept code in the pix map table */
  	vpix = dcmipp_isp_pix_map_by_code(fmt->code, pad);
  	if (!vpix)
@@ -59,7 +57,7 @@ index fd133eb3ee3c..c0546c7db0fc 100644
  
  	fmt->width = clamp_t(u32, fmt->width, DCMIPP_FRAME_MIN_WIDTH,
  			     DCMIPP_FRAME_MAX_WIDTH) & ~1;
-@@ -496,8 +491,7 @@ static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -496,8 +491,7 @@ static void dcmipp_isp_adjust_fmt(struct
  			      DCMIPP_FRAME_MAX_HEIGHT);
  
  	if (fmt->field == V4L2_FIELD_ANY || fmt->field == V4L2_FIELD_ALTERNATE)
@@ -69,7 +67,7 @@ index fd133eb3ee3c..c0546c7db0fc 100644
  
  	dcmipp_colorimetry_clamp(fmt);
  }
-@@ -511,7 +505,9 @@ static int dcmipp_isp_init_cfg(struct v4l2_subdev *sd,
+@@ -511,7 +505,9 @@ static int dcmipp_isp_init_cfg(struct v4
  		struct v4l2_mbus_framefmt *mf;
  
  		mf = v4l2_subdev_get_try_format(sd, state, i);
@@ -80,7 +78,7 @@ index fd133eb3ee3c..c0546c7db0fc 100644
  	}
  
  	return 0;
-@@ -1121,8 +1117,10 @@ static int dcmipp_isp_comp_bind(struct device *comp, struct device *master,
+@@ -1121,8 +1117,10 @@ static int dcmipp_isp_comp_bind(struct d
  	isp->dev = comp;
  
  	/* Initialize the frame format */
@@ -93,6 +91,3 @@ index fd133eb3ee3c..c0546c7db0fc 100644
  
  	/* Initialize controls */
  	v4l2_ctrl_handler_init(&isp->ctrls, ARRAY_SIZE(dcmipp_isp_ctrls));
--- 
-2.39.2
-

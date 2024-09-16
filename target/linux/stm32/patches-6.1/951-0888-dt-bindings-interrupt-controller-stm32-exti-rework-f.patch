@@ -19,8 +19,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../interrupt-controller/st,stm32-exti.yaml   | 31 +++----------------
  1 file changed, 5 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
-index 77d36e5f36ea..b4bc1d4132ef 100644
 --- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 @@ -30,8 +30,6 @@ properties:
@@ -75,6 +73,3 @@ index 77d36e5f36ea..b4bc1d4132ef 100644
      };
  
    - |
--- 
-2.39.2
-

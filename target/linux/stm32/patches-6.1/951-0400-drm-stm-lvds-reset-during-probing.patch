@@ -14,8 +14,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index fa14f999b5dc..20caecea5eb4 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -19,6 +19,7 @@
@@ -26,7 +24,7 @@ index fa14f999b5dc..20caecea5eb4 100644
  
  /* LVDS Host registers */
  #define LVDS_CR		0x0000  /* configuration register */
-@@ -1069,6 +1070,7 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1069,6 +1070,7 @@ static int lvds_probe(struct platform_de
  	struct device_node *port1, *port2, *remote;
  	struct stm_lvds *lvds;
  	int ret, dual_link;
@@ -34,7 +32,7 @@ index fa14f999b5dc..20caecea5eb4 100644
  
  	DRM_DEBUG_DRIVER("Probing LVDS driver...\n");
  
-@@ -1105,6 +1107,17 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1105,6 +1107,17 @@ static int lvds_probe(struct platform_de
  		goto err_lvds_probe;
  	}
  
@@ -52,6 +50,3 @@ index fa14f999b5dc..20caecea5eb4 100644
  	port1 = of_graph_get_port_by_id(dev->of_node, 1);
  	port2 = of_graph_get_port_by_id(dev->of_node, 2);
  	dual_link = drm_of_lvds_get_dual_link_pixel_order(port1, port2);
--- 
-2.39.2
-

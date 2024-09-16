@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 119 ++++++++++++++++++++++---------------
  1 file changed, 70 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 344a28623b84..a58f8c4aa870 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -19,6 +19,7 @@
@@ -29,7 +27,7 @@ index 344a28623b84..a58f8c4aa870 100644
  #include <linux/reset.h>
  
  /* LVDS Host registers */
-@@ -570,15 +571,10 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+@@ -570,15 +571,10 @@ static int lvds_pixel_clk_enable(struct
  	struct lvds_phy_info *phy;
  	int ret;
  
@@ -48,7 +46,7 @@ index 344a28623b84..a58f8c4aa870 100644
  		return ret;
  	}
  
-@@ -634,8 +630,7 @@ static void lvds_pixel_clk_disable(struct clk_hw *hw)
+@@ -634,8 +630,7 @@ static void lvds_pixel_clk_disable(struc
  		lvds_clear(lvds, lvds->phy_slave->base + lvds->phy_slave->ofs.PxGCR,
  			   PHY_GCR_DIV_RSTN | PHY_GCR_RSTZ);
  
@@ -58,7 +56,7 @@ index 344a28623b84..a58f8c4aa870 100644
  }
  
  static unsigned long lvds_pixel_clk_recalc_rate(struct clk_hw *hw,
-@@ -1027,9 +1022,9 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+@@ -1027,9 +1022,9 @@ static void lvds_atomic_enable(struct dr
  	struct drm_crtc *crtc;
  	int ret;
  
@@ -71,7 +69,7 @@ index 344a28623b84..a58f8c4aa870 100644
  		return;
  	}
  
-@@ -1061,8 +1056,7 @@ static void lvds_atomic_disable(struct drm_bridge *bridge,
+@@ -1061,8 +1056,7 @@ static void lvds_atomic_disable(struct d
  	 * Do NOT uncomment this line
  	 */
  	//lvds_clear(lvds, lvds->phy_master->base + lvds->phy_master->ofs.PxPLLCR1, PLL_EN);
@@ -81,7 +79,7 @@ index 344a28623b84..a58f8c4aa870 100644
  }
  
  static bool lvds_mode_fixup(struct drm_bridge *bridge,
-@@ -1124,24 +1118,11 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1124,24 +1118,11 @@ static int lvds_probe(struct platform_de
  		return ret;
  	}
  
@@ -107,7 +105,7 @@ index 344a28623b84..a58f8c4aa870 100644
  	}
  
  	reset_control_assert(rstc);
-@@ -1200,48 +1181,46 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1200,48 +1181,46 @@ static int lvds_probe(struct platform_de
  		}
  		break;
  	default:
@@ -173,7 +171,7 @@ index 344a28623b84..a58f8c4aa870 100644
  }
  
  static int lvds_remove(struct platform_device *pdev)
-@@ -1249,6 +1228,7 @@ static int lvds_remove(struct platform_device *pdev)
+@@ -1249,6 +1228,7 @@ static int lvds_remove(struct platform_d
  	struct stm_lvds *lvds = platform_get_drvdata(pdev);
  
  	lvds_pixel_clk_unregister(lvds);
@@ -181,7 +179,7 @@ index 344a28623b84..a58f8c4aa870 100644
  
  	/* Unregister LVDS bridge */
  	drm_bridge_remove(&lvds->lvds_bridge);
-@@ -1256,6 +1236,42 @@ static int lvds_remove(struct platform_device *pdev)
+@@ -1256,6 +1236,42 @@ static int lvds_remove(struct platform_d
  	return 0;
  }
  
@@ -224,7 +222,7 @@ index 344a28623b84..a58f8c4aa870 100644
  static const struct of_device_id lvds_dt_ids[] = {
  	{
  		.compatible = "st,stm32-lvds",
-@@ -1266,6 +1282,11 @@ static const struct of_device_id lvds_dt_ids[] = {
+@@ -1266,6 +1282,11 @@ static const struct of_device_id lvds_dt
  
  MODULE_DEVICE_TABLE(of, lvds_dt_ids);
  
@@ -236,7 +234,7 @@ index 344a28623b84..a58f8c4aa870 100644
  static struct platform_driver lvds_platform_driver = {
  	.probe	  = lvds_probe,
  	.remove	 = lvds_remove,
-@@ -1273,7 +1294,7 @@ static struct platform_driver lvds_platform_driver = {
+@@ -1273,7 +1294,7 @@ static struct platform_driver lvds_platf
  		.name   = "stm32-display-lvds",
  		.owner  = THIS_MODULE,
  		.of_match_table = lvds_dt_ids,
@@ -245,6 +243,3 @@ index 344a28623b84..a58f8c4aa870 100644
  	},
  };
  
--- 
-2.39.2
-

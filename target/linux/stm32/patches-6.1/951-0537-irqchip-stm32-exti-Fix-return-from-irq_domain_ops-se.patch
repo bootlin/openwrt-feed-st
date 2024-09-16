@@ -21,11 +21,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/irqchip/irq-stm32-exti.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 45a75e4dbcb6..46392ba7f98a 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -808,7 +808,7 @@ static int stm32_exti_h_domain_select(struct irq_domain *dm,
+@@ -820,7 +820,7 @@ static int stm32_exti_h_domain_select(st
  
  	ret = of_irq_parse_raw(NULL, &out_irq);
  	if (ret)
@@ -34,6 +32,3 @@ index 45a75e4dbcb6..46392ba7f98a 100644
  
  	return (dm->parent->fwnode == of_node_to_fwnode(out_irq.np));
  }
--- 
-2.39.2
-

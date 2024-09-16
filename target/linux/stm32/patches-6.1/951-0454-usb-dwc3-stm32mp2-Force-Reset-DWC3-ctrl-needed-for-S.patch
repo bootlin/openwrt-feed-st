@@ -17,11 +17,9 @@ Change-Id: I7947fbc3ff1a793ba1973d8d38481b6b5bf53238
  drivers/usb/dwc3/dwc3-stm32.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/usb/dwc3/dwc3-stm32.c b/drivers/usb/dwc3/dwc3-stm32.c
-index 923d5cb8ede1..6861e13f0c17 100644
 --- a/drivers/usb/dwc3/dwc3-stm32.c
 +++ b/drivers/usb/dwc3/dwc3-stm32.c
-@@ -103,6 +103,7 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+@@ -103,6 +103,7 @@ static int stm32_dwc3_probe(struct platf
  	struct regmap *regmap;
  	int ret, irq;
  	bool wakeup_source;
@@ -29,7 +27,7 @@ index 923d5cb8ede1..6861e13f0c17 100644
  
  	dwc3_data = devm_kzalloc(dev, sizeof(*dwc3_data), GFP_KERNEL);
  	if (!dwc3_data)
-@@ -136,6 +137,25 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+@@ -136,6 +137,25 @@ static int stm32_dwc3_probe(struct platf
  	if (!child)
  		return dev_err_probe(dev, -ENODEV, "failed to find dwc3 core node\n");
  
@@ -55,6 +53,3 @@ index 923d5cb8ede1..6861e13f0c17 100644
  	/* check if usb3-phy present, means NO usb2only mode */
  	dwc3_data->usb2only_conf = true;
  	if (of_count_phandle_with_args(child, "usb-phy", NULL) == 2) {
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h | 4 ++--
  3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index 0a09a85ac9d6..5d4dd8d5ea97 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -156,9 +156,10 @@ static __maybe_unused int drv_resume(struct device *dev)
+@@ -156,9 +156,10 @@ static __maybe_unused int drv_resume(str
  static __maybe_unused int drv_runtime_suspend(struct device *dev)
  {
  	struct drm_device *ddev = dev_get_drvdata(dev);
@@ -31,7 +29,7 @@ index 0a09a85ac9d6..5d4dd8d5ea97 100644
  
  	return 0;
  }
-@@ -166,9 +167,10 @@ static __maybe_unused int drv_runtime_suspend(struct device *dev)
+@@ -166,9 +167,10 @@ static __maybe_unused int drv_runtime_su
  static __maybe_unused int drv_runtime_resume(struct device *dev)
  {
  	struct drm_device *ddev = dev_get_drvdata(dev);
@@ -43,11 +41,9 @@ index 0a09a85ac9d6..5d4dd8d5ea97 100644
  }
  
  static const struct dev_pm_ops drv_pm_ops = {
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 174beb4bb940..699e1fb4e4fa 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -2207,19 +2207,17 @@ static int ltdc_get_caps(struct drm_device *ddev)
+@@ -2207,19 +2207,17 @@ static int ltdc_get_caps(struct drm_devi
  	return 0;
  }
  
@@ -70,8 +66,6 @@ index 174beb4bb940..699e1fb4e4fa 100644
  	int ret;
  
  	DRM_DEBUG_DRIVER("\n");
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 8f5c0514eef3..3f6ec497d94d 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -67,7 +67,7 @@ struct ltdc_device {
@@ -84,6 +78,3 @@ index 8f5c0514eef3..3f6ec497d94d 100644
 +int ltdc_resume(struct ltdc_device *ldev);
  
  #endif
--- 
-2.39.2
-

@@ -32,11 +32,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index e9233937a78a..afe2e61cff42 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -357,11 +357,16 @@ static int stm32_gpio_request(struct gpio_chip *chip, unsigned offset)
+@@ -357,11 +357,16 @@ static int stm32_gpio_request(struct gpi
  static void stm32_gpio_free(struct gpio_chip *chip, unsigned offset)
  {
  	struct stm32_gpio_bank *bank = gpiochip_get_data(chip);
@@ -53,6 +51,3 @@ index e9233937a78a..afe2e61cff42 100644
  }
  
  static int stm32_gpio_get(struct gpio_chip *chip, unsigned offset)
--- 
-2.39.2
-

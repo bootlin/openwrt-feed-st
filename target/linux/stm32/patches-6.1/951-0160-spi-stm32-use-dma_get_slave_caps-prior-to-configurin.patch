@@ -13,11 +13,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  drivers/spi/spi-stm32.c | 13 +++++++++++--
  1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 3e6944fd71ba..c534ed92004b 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
-@@ -1091,15 +1091,19 @@ static void stm32_spi_dma_rx_cb(void *data)
+@@ -1091,15 +1091,19 @@ static void stm32_spi_dma_rx_cb(void *da
   * stm32_spi_dma_config - configure dma slave channel depending on current
   *			  transfer bits_per_word.
   * @spi: pointer to the spi controller data structure
@@ -37,7 +35,7 @@ index 3e6944fd71ba..c534ed92004b 100644
  
  	if (spi->cur_bpw <= 8)
  		buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
-@@ -1118,6 +1122,11 @@ static void stm32_spi_dma_config(struct stm32_spi *spi,
+@@ -1118,6 +1122,11 @@ static void stm32_spi_dma_config(struct
  		maxburst = 1;
  	}
  
@@ -49,7 +47,7 @@ index 3e6944fd71ba..c534ed92004b 100644
  	memset(dma_conf, 0, sizeof(struct dma_slave_config));
  	dma_conf->direction = dir;
  	if (dma_conf->direction == DMA_DEV_TO_MEM) { /* RX */
-@@ -1290,7 +1299,7 @@ static int stm32_spi_transfer_one_dma(struct stm32_spi *spi,
+@@ -1290,7 +1299,7 @@ static int stm32_spi_transfer_one_dma(st
  
  	rx_dma_desc = NULL;
  	if (spi->rx_buf && spi->dma_rx) {
@@ -58,7 +56,7 @@ index 3e6944fd71ba..c534ed92004b 100644
  		dmaengine_slave_config(spi->dma_rx, &rx_dma_conf);
  
  		/* Enable Rx DMA request */
-@@ -1306,7 +1315,7 @@ static int stm32_spi_transfer_one_dma(struct stm32_spi *spi,
+@@ -1306,7 +1315,7 @@ static int stm32_spi_transfer_one_dma(st
  
  	tx_dma_desc = NULL;
  	if (spi->tx_buf && spi->dma_tx) {
@@ -67,6 +65,3 @@ index 3e6944fd71ba..c534ed92004b 100644
  		dmaengine_slave_config(spi->dma_tx, &tx_dma_conf);
  
  		tx_dma_desc = dmaengine_prep_slave_sg(
--- 
-2.39.2
-

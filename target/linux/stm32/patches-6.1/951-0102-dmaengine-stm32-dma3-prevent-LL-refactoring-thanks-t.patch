@@ -21,8 +21,6 @@ Change-Id: I865c4da031d3712ea08f52bfb1e1343634b72ba5
  drivers/dma/stm32-dma3.c | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index b91adcfb1e29..f26f3c8511b5 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
 @@ -300,6 +300,7 @@ enum g_data_width {
@@ -33,7 +31,7 @@ index b91adcfb1e29..f26f3c8511b5 100644
  
  /* .tr_conf_ext */
  #define STM32_DMA3_DT_SAO		GENMASK(12, 0)	/* CTR3_SAO */
-@@ -1425,7 +1426,8 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+@@ -1425,7 +1426,8 @@ static struct dma_async_tx_descriptor *s
  	size_t next_size, offset;
  	u32 max_block_size = STM32_DMA3_MAX_BLOCK_SIZE;
  	u32 count, i, ccr, ctr1, ctr2, ctr3;
@@ -43,7 +41,7 @@ index b91adcfb1e29..f26f3c8511b5 100644
  
  	/* TODO: Check if channel is busy ? */
  
-@@ -1504,7 +1506,8 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+@@ -1504,7 +1506,8 @@ static struct dma_async_tx_descriptor *s
  	dma_addr_t sg_addr, dev_addr, src, dst;
  	u32 max_block_size = STM32_DMA3_MAX_BLOCK_SIZE;
  	u32 i, j, count, ccr, ctr1, ctr2, ctr3;
@@ -53,6 +51,3 @@ index b91adcfb1e29..f26f3c8511b5 100644
  	int ret;
  
  	/* TODO: Check if channel is busy ? */
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index b419f522d537..268dbce0b678 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -77,7 +77,7 @@ static const char * const usb3pciphy_src[] = {
+@@ -77,7 +77,7 @@ static const char * const usb3pciphy_src
  };
  
  static const char * const dsiblane_src[] = {
@@ -31,6 +29,3 @@ index b419f522d537..268dbce0b678 100644
  };
  
  static const char * const dsiphy_src[] = {
--- 
-2.39.2
-

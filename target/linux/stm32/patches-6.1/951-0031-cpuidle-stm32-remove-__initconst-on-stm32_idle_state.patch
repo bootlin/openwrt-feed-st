@@ -31,11 +31,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/cpuidle/cpuidle-stm32.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpuidle/cpuidle-stm32.c b/drivers/cpuidle/cpuidle-stm32.c
-index d3413386cc7f..91f89af76a8b 100644
 --- a/drivers/cpuidle/cpuidle-stm32.c
 +++ b/drivers/cpuidle/cpuidle-stm32.c
-@@ -74,7 +74,7 @@ static int stm32_enter_idle(struct cpuidle_device *dev,
+@@ -74,7 +74,7 @@ static int stm32_enter_idle(struct cpuid
  	return index;
  }
  
@@ -44,6 +42,3 @@ index d3413386cc7f..91f89af76a8b 100644
  	{ .compatible = "arm,idle-state",
  	  .data = stm32_enter_idle },
  	{ },
--- 
-2.39.2
-

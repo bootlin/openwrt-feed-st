@@ -31,11 +31,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/dma/stm32/stm32-dma3.c | 35 +++++++++++++++++++++++++++++-----
  1 file changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index da26487e76c4..50e882c6467b 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -397,6 +397,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -397,6 +397,8 @@ static int stm32_dma3_lli_pool_create(st
  	struct device_node *rmem_np;
  	struct reserved_mem *rmem;
  	void *rmem_va;
@@ -44,7 +42,7 @@ index da26487e76c4..50e882c6467b 100644
  	int ret;
  
  	/* Check if a specific pool is specified in device tree for Linked-List Items */
-@@ -408,13 +410,36 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -408,13 +410,36 @@ static int stm32_dma3_lli_pool_create(st
  	if (!rmem)
  		goto no_specific_pool;
  
@@ -83,7 +81,7 @@ index da26487e76c4..50e882c6467b 100644
  				dev_to_node(&pdev->dev));
  	if (ret) {
  		gen_pool_destroy(ddata->gen_pool);
-@@ -422,8 +447,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -422,8 +447,8 @@ static int stm32_dma3_lli_pool_create(st
  		goto no_specific_pool;
  	}
  
@@ -94,7 +92,7 @@ index da26487e76c4..50e882c6467b 100644
  
  no_specific_pool:
  	of_node_put(rmem_np);
-@@ -431,7 +456,7 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -431,7 +456,7 @@ no_specific_pool:
  	/* Fallback pool */
  	ddata->dma_pool = dmam_pool_create(dev_name(&pdev->dev), &pdev->dev,
  					   sizeof(struct stm32_dma3_hwdesc),
@@ -103,6 +101,3 @@ index da26487e76c4..50e882c6467b 100644
  	if (!ddata->gen_pool && !ddata->dma_pool)
  		return -ENOMEM;
  
--- 
-2.39.2
-

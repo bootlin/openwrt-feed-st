@@ -13,8 +13,6 @@ Change-Id: Iee8276ac2b2dd87473714d928c5c087b8a207724
  Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index c520fb367af4..154f74264d4b 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 @@ -21,6 +21,7 @@ properties:
@@ -25,6 +23,3 @@ index c520fb367af4..154f74264d4b 100644
                - st,stm32mp25-a35ss-syscfg
            - const: syscon
        - items:
--- 
-2.39.2
-

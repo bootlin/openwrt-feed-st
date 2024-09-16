@@ -13,11 +13,9 @@ Change-Id: I245ca4148d0fae0fc6ee41b169c201dc88771d6c
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 829a494719fa..b0a056174ebb 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -174,7 +174,7 @@ &arm_wdt {
+@@ -174,7 +174,7 @@
  };
  
  &csi2host {
@@ -26,7 +24,7 @@ index 829a494719fa..b0a056174ebb 100644
  	ports {
  		#address-cells = <1>;
  		#size-cells = <0>;
-@@ -196,7 +196,7 @@ csi2host_source: endpoint {
+@@ -196,7 +196,7 @@
  };
  
  &dcmipp {
@@ -35,7 +33,7 @@ index 829a494719fa..b0a056174ebb 100644
  	port {
  		dcmipp_0: endpoint {
  			remote-endpoint = <&csi2host_source>;
-@@ -287,7 +287,7 @@ imx335: imx335@1a {
+@@ -287,7 +287,7 @@
  		clocks = <&clk_ext_camera>;
  		reset-gpios = <&gpiob 1 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
  		powerdown-gpios = <&gpiob 11 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
@@ -44,6 +42,3 @@ index 829a494719fa..b0a056174ebb 100644
  
  		port {
  			imx335_ep: endpoint {
--- 
-2.39.2
-

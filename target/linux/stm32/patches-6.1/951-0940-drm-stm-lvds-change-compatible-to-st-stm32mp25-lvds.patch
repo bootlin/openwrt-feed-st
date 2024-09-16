@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index dcf7576a406b..a9d48b5f2741 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -1303,7 +1303,7 @@ static int __maybe_unused lvds_runtime_resume(struct device *dev)
+@@ -1303,7 +1303,7 @@ static int __maybe_unused lvds_runtime_r
  
  static const struct of_device_id lvds_dt_ids[] = {
  	{
@@ -29,6 +27,3 @@ index dcf7576a406b..a9d48b5f2741 100644
  		.data = NULL
  	},
  	{ /* sentinel */ }
--- 
-2.39.2
-

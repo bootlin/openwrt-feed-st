@@ -17,8 +17,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 20 +++++++++++++++++++-
  1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 147860f82d0d..9a4ed78a7190 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -15,6 +15,7 @@
@@ -29,7 +27,7 @@ index 147860f82d0d..9a4ed78a7190 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include <dt-bindings/phy/phy.h>
-@@ -391,6 +392,8 @@ static int stm32_combophy_exit(struct phy *phy)
+@@ -391,6 +392,8 @@ static int stm32_combophy_exit(struct ph
  
  	stm32_combophy_disable_clocks(combophy);
  
@@ -38,7 +36,7 @@ index 147860f82d0d..9a4ed78a7190 100644
  	return 0;
  }
  
-@@ -399,9 +402,16 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -399,9 +402,16 @@ static int stm32_combophy_init(struct ph
  	struct stm32_combophy *combophy = phy_get_drvdata(phy);
  	int ret;
  
@@ -55,7 +53,7 @@ index 147860f82d0d..9a4ed78a7190 100644
  		return ret;
  	}
  
-@@ -409,12 +419,15 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -409,12 +419,15 @@ static int stm32_combophy_init(struct ph
  	if (ret) {
  		dev_err(combophy->dev, "combophy mode not set\n");
  		stm32_combophy_disable_clocks(combophy);
@@ -72,7 +70,7 @@ index 147860f82d0d..9a4ed78a7190 100644
  
  	return ret;
  }
-@@ -431,6 +444,7 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -431,6 +444,7 @@ static int stm32_combophy_probe(struct p
  	struct device *dev = &pdev->dev;
  	struct device_node *np = dev->of_node;
  	struct phy_provider *phy_provider;
@@ -80,7 +78,7 @@ index 147860f82d0d..9a4ed78a7190 100644
  
  	combophy = devm_kzalloc(dev, sizeof(*combophy), GFP_KERNEL);
  	if (!combophy)
-@@ -474,6 +488,10 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -474,6 +488,10 @@ static int stm32_combophy_probe(struct p
  		return dev_err_probe(dev, PTR_ERR(combophy->phy),
  				     "failed to create PCIe/USB3 ComboPHY\n");
  
@@ -91,6 +89,3 @@ index 147860f82d0d..9a4ed78a7190 100644
  	phy_set_drvdata(combophy->phy, combophy);
  
  	phy_provider = devm_of_phy_provider_register(dev, stm32_combophy_xlate);
--- 
-2.39.2
-

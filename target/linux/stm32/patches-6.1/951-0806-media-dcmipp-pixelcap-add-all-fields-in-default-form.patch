@@ -17,11 +17,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index d37104d8ce1e..e99598d1dc63 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -202,7 +202,10 @@ static const struct v4l2_pix_format fmt_default = {
+@@ -202,7 +202,10 @@ static const struct v4l2_pix_format fmt_
  	.height = DCMIPP_FMT_HEIGHT_DEFAULT,
  	.pixelformat = V4L2_PIX_FMT_RGB565,
  	.field = V4L2_FIELD_NONE,
@@ -33,6 +31,3 @@ index d37104d8ce1e..e99598d1dc63 100644
  };
  
  struct dcmipp_pixelcap_buffer {
--- 
-2.39.2
-

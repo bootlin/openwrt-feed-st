@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 41 +++++++++++++++++++++++++++++++
  1 file changed, 41 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 6b6746ad7cee..e82266e3e0ad 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -647,6 +647,11 @@ timers6: timer@40004000 {
+@@ -647,6 +647,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM6_ID>;
  				status = "disabled";
  
@@ -33,7 +31,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				timer@5 {
  					compatible = "st,stm32h7-timer-trigger";
  					reg = <5>;
-@@ -668,6 +673,11 @@ timers7: timer@40005000 {
+@@ -668,6 +673,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM7_ID>;
  				status = "disabled";
  
@@ -45,7 +43,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				timer@6 {
  					compatible = "st,stm32h7-timer-trigger";
  					reg = <6>;
-@@ -687,6 +697,11 @@ timers12: timer@40006000 {
+@@ -687,6 +697,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM12_ID>;
  				status = "disabled";
  
@@ -57,7 +55,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -712,6 +727,11 @@ timers13: timer@40007000 {
+@@ -712,6 +727,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM13_ID>;
  				status = "disabled";
  
@@ -69,7 +67,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -737,6 +757,11 @@ timers14: timer@40008000 {
+@@ -737,6 +757,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM14_ID>;
  				status = "disabled";
  
@@ -81,7 +79,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1214,6 +1239,11 @@ timers15: timer@44006000 {
+@@ -1214,6 +1239,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM15_ID>;
  				status = "disabled";
  
@@ -93,7 +91,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1242,11 +1272,17 @@ timers16: timer@44007000 {
+@@ -1242,11 +1272,17 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM16_ID>;
  				status = "disabled";
  
@@ -111,7 +109,7 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				timer@15 {
  					compatible = "st,stm32h7-timer-trigger";
  					reg = <15>;
-@@ -1269,6 +1305,11 @@ timers17: timer@44008000 {
+@@ -1269,6 +1305,11 @@
  				feature-domains = <&etzpc STM32MP1_ETZPC_TIM17_ID>;
  				status = "disabled";
  
@@ -123,6 +121,3 @@ index 6b6746ad7cee..e82266e3e0ad 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
--- 
-2.39.2
-

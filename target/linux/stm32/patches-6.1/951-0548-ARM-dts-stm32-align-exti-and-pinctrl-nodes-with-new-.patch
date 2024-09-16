@@ -18,11 +18,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 548268b5b2cf..6b6746ad7cee 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -240,7 +240,7 @@ pwr_irq: pwr@50001020 {
+@@ -240,7 +240,7 @@
  		};
  
  		exti: interrupt-controller@5000d000 {
@@ -31,7 +29,7 @@ index 548268b5b2cf..6b6746ad7cee 100644
  			interrupt-controller;
  			#interrupt-cells = <2>;
  			#address-cells = <0>;
-@@ -2057,7 +2057,6 @@ pinctrl: pinctrl@50002000 {
+@@ -2057,7 +2057,6 @@
  			compatible = "st,stm32mp157-pinctrl";
  			ranges = <0 0x50002000 0xa400>;
  			interrupt-parent = <&exti>;
@@ -39,7 +37,7 @@ index 548268b5b2cf..6b6746ad7cee 100644
  			hwlocks = <&hsem 0 1>;
  			pins-are-numbered;
  
-@@ -2190,7 +2189,6 @@ pinctrl_z: pinctrl@54004000 {
+@@ -2190,7 +2189,6 @@
  			ranges = <0 0x54004000 0x400>;
  			pins-are-numbered;
  			interrupt-parent = <&exti>;
@@ -47,6 +45,3 @@ index 548268b5b2cf..6b6746ad7cee 100644
  			hwlocks = <&hsem 0 1>;
  
  			gpioz: gpio@54004000 {
--- 
-2.39.2
-

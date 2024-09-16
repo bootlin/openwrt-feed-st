@@ -22,8 +22,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index fb71d574b5a5..1bae7766012e 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 @@ -21,6 +21,7 @@ properties:
@@ -34,6 +32,3 @@ index fb71d574b5a5..1bae7766012e 100644
            - const: syscon
        - items:
            - const: st,stm32-tamp
--- 
-2.39.2
-

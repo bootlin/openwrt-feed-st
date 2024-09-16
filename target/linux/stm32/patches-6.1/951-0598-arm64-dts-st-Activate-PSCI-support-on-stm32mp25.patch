@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi |  1 +
  2 files changed, 43 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5b75b5b2fc8f..67f4749bcd69 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -28,6 +28,45 @@ cpu0: cpu@0 {
+@@ -28,6 +28,45 @@
  			power-domains = <&CPU_PD0>;
  			power-domain-names = "psci";
  		};
@@ -65,7 +63,7 @@ index 5b75b5b2fc8f..67f4749bcd69 100644
  	};
  
  	arm-pmu {
-@@ -156,16 +195,19 @@ psci {
+@@ -156,16 +195,19 @@
  
  		CPU_PD0: power-domain-cpu0 {
  			#power-domain-cells = <0>;
@@ -85,11 +83,9 @@ index 5b75b5b2fc8f..67f4749bcd69 100644
  		};
  	};
  
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 613e736a0be0..dfa0177c9138 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -28,6 +28,7 @@ arm-pmu {
+@@ -28,6 +28,7 @@
  	psci {
  		CPU_PD1: power-domain-cpu1 {
  			#power-domain-cells = <0>;
@@ -97,6 +93,3 @@ index 613e736a0be0..dfa0177c9138 100644
  			power-domains = <&CLUSTER_PD>;
  		};
  	};
--- 
-2.39.2
-

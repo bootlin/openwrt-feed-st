@@ -56,8 +56,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-hash.c | 554 +++++++++++++++++++++++-------
  1 file changed, 431 insertions(+), 123 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index db764e4848a9..52b8980a58b0 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
 @@ -96,6 +96,7 @@
@@ -103,7 +101,7 @@ index db764e4848a9..52b8980a58b0 100644
  	u32			dma_mode;
  	bool			polled;
  
-@@ -235,6 +238,11 @@ static inline void stm32_hash_write(struct stm32_hash_dev *hdev,
+@@ -235,6 +238,11 @@ static inline void stm32_hash_write(stru
  	writel_relaxed(value, hdev->io_base + offset);
  }
  
@@ -115,7 +113,7 @@ index db764e4848a9..52b8980a58b0 100644
  static inline int stm32_hash_wait_busy(struct stm32_hash_dev *hdev)
  {
  	u32 status;
-@@ -248,6 +256,11 @@ static inline int stm32_hash_wait_busy(struct stm32_hash_dev *hdev)
+@@ -248,6 +256,11 @@ static inline int stm32_hash_wait_busy(s
  				   !(status & HASH_SR_BUSY), 10, 10000);
  }
  
@@ -127,7 +125,7 @@ index db764e4848a9..52b8980a58b0 100644
  static void stm32_hash_set_nblw(struct stm32_hash_dev *hdev, int length)
  {
  	u32 reg;
-@@ -285,6 +298,11 @@ static int stm32_hash_write_key(struct stm32_hash_dev *hdev)
+@@ -285,6 +298,11 @@ static int stm32_hash_write_key(struct s
  	return 0;
  }
  
@@ -139,7 +137,7 @@ index db764e4848a9..52b8980a58b0 100644
  static void stm32_hash_write_ctrl(struct stm32_hash_dev *hdev)
  {
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
-@@ -472,9 +490,7 @@ static int stm32_hash_update_cpu(struct stm32_hash_dev *hdev)
+@@ -472,9 +490,7 @@ static int stm32_hash_update_cpu(struct
  {
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
  	struct stm32_hash_state *state = &rctx->state;
@@ -149,7 +147,7 @@ index db764e4848a9..52b8980a58b0 100644
  
  	dev_dbg(hdev->dev, "%s flags %x\n", __func__, state->flags);
  
-@@ -498,34 +514,23 @@ static int stm32_hash_update_cpu(struct stm32_hash_dev *hdev)
+@@ -498,34 +514,23 @@ static int stm32_hash_update_cpu(struct
  		return stm32_hash_xmit_cpu(hdev, state->buffer, bufcnt, 1);
  	}
  
@@ -191,7 +189,7 @@ index db764e4848a9..52b8980a58b0 100644
  	in_desc = dmaengine_prep_slave_sg(hdev->dma_lch, sg, 1,
  					  DMA_MEM_TO_DEV, DMA_PREP_INTERRUPT |
  					  DMA_CTRL_ACK);
-@@ -538,13 +543,12 @@ static int stm32_hash_xmit_dma(struct stm32_hash_dev *hdev,
+@@ -538,13 +543,12 @@ static int stm32_hash_xmit_dma(struct st
  	in_desc->callback = stm32_hash_dma_callback;
  	in_desc->callback_param = hdev;
  
@@ -206,7 +204,7 @@ index db764e4848a9..52b8980a58b0 100644
  			reg |= HASH_CR_MDMAT;
  		else
  			reg &= ~HASH_CR_MDMAT;
-@@ -553,7 +557,6 @@ static int stm32_hash_xmit_dma(struct stm32_hash_dev *hdev,
+@@ -553,7 +557,6 @@ static int stm32_hash_xmit_dma(struct st
  
  	stm32_hash_write(hdev, HASH_CR, reg);
  
@@ -214,7 +212,7 @@ index db764e4848a9..52b8980a58b0 100644
  
  	cookie = dmaengine_submit(in_desc);
  	err = dma_submit_error(cookie);
-@@ -658,18 +661,20 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -658,18 +661,20 @@ static int stm32_hash_dma_send(struct st
  	struct scatterlist sg[1], *tsg;
  	int err = 0, reg, ncp = 0;
  	unsigned int i, len = 0, bufcnt = 0;
@@ -239,7 +237,7 @@ index db764e4848a9..52b8980a58b0 100644
  		err = stm32_hash_hmac_dma_send(hdev);
  		if (err != -EINPROGRESS)
  			return err;
-@@ -680,22 +685,36 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -680,22 +685,36 @@ static int stm32_hash_dma_send(struct st
  		len = sg->length;
  
  		if (sg_is_last(sg) || (bufcnt + sg[0].length) >= rctx->total) {
@@ -291,7 +289,7 @@ index db764e4848a9..52b8980a58b0 100644
  				}
  			}
  		}
-@@ -709,43 +728,67 @@ static int stm32_hash_dma_send(struct stm32_hash_dev *hdev)
+@@ -709,43 +728,67 @@ static int stm32_hash_dma_send(struct st
  
  		err = stm32_hash_xmit_dma(hdev, sg, len, !is_last);
  
@@ -339,17 +337,27 @@ index db764e4848a9..52b8980a58b0 100644
 +				writesl(hdev->io_base + HASH_DIN, buffer,
 +					DIV_ROUND_UP(ncp, sizeof(u32)));
 +			}
++
++			stm32_hash_set_nblw(hdev, ncp);
++			reg = stm32_hash_read(hdev, HASH_STR);
++			reg |= HASH_STR_DCAL;
++			stm32_hash_write(hdev, HASH_STR, reg);
++			err = -EINPROGRESS;
++		}
  
 -		if (ncp) {
 -			memset(buffer + ncp, 0,
 -			       DIV_ROUND_UP(ncp, sizeof(u32)) - ncp);
 -			writesl(hdev->io_base + HASH_DIN, buffer,
 -				DIV_ROUND_UP(ncp, sizeof(u32)));
-+			stm32_hash_set_nblw(hdev, ncp);
-+			reg = stm32_hash_read(hdev, HASH_STR);
-+			reg |= HASH_STR_DCAL;
-+			stm32_hash_write(hdev, HASH_STR, reg);
-+			err = -EINPROGRESS;
++		/*
++		 * The hash processor needs the key to be loaded a second time in order
++		 * to process the HMAC.
++		 */
++		if (hdev->flags & HASH_FLAGS_HMAC) {
++			if (stm32_hash_wait_busy(hdev))
++				return -ETIMEDOUT;
++			err = stm32_hash_hmac_dma_send(hdev);
  		}
 -		stm32_hash_set_nblw(hdev, ncp);
 -		reg = stm32_hash_read(hdev, HASH_STR);
@@ -362,16 +370,6 @@ index db764e4848a9..52b8980a58b0 100644
 -		if (stm32_hash_wait_busy(hdev))
 -			return -ETIMEDOUT;
 -		err = stm32_hash_hmac_dma_send(hdev);
-+		/*
-+		 * The hash processor needs the key to be loaded a second time in order
-+		 * to process the HMAC.
-+		 */
-+		if (hdev->flags & HASH_FLAGS_HMAC) {
-+			if (stm32_hash_wait_busy(hdev))
-+				return -ETIMEDOUT;
-+			err = stm32_hash_hmac_dma_send(hdev);
-+		}
-+
 +		return err;
  	}
  
@@ -383,7 +381,7 @@ index db764e4848a9..52b8980a58b0 100644
  }
  
  static struct stm32_hash_dev *stm32_hash_find_dev(struct stm32_hash_ctx *ctx)
-@@ -768,33 +811,6 @@ static struct stm32_hash_dev *stm32_hash_find_dev(struct stm32_hash_ctx *ctx)
+@@ -768,33 +811,6 @@ static struct stm32_hash_dev *stm32_hash
  	return hdev;
  }
  
@@ -417,7 +415,7 @@ index db764e4848a9..52b8980a58b0 100644
  static int stm32_hash_init(struct ahash_request *req)
  {
  	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
-@@ -805,8 +821,10 @@ static int stm32_hash_init(struct ahash_request *req)
+@@ -805,8 +821,10 @@ static int stm32_hash_init(struct ahash_
  	bool sha3_mode = ctx->flags & HASH_FLAGS_SHA3_MODE;
  
  	rctx->hdev = hdev;
@@ -429,7 +427,7 @@ index db764e4848a9..52b8980a58b0 100644
  
  	if (sha3_mode)
  		state->flags |= HASH_FLAGS_SHA3_MODE;
-@@ -860,6 +878,7 @@ static int stm32_hash_init(struct ahash_request *req)
+@@ -860,6 +878,7 @@ static int stm32_hash_init(struct ahash_
  		dev_err(hdev->dev, "Error, block too large");
  		return -EINVAL;
  	}
@@ -437,7 +435,7 @@ index db764e4848a9..52b8980a58b0 100644
  	rctx->total = 0;
  	rctx->offset = 0;
  	rctx->data_type = HASH_DATA_8_BITS;
-@@ -877,6 +896,9 @@ static int stm32_hash_update_req(struct stm32_hash_dev *hdev)
+@@ -877,6 +896,9 @@ static int stm32_hash_update_req(struct
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(hdev->req);
  	struct stm32_hash_state *state = &rctx->state;
  
@@ -447,7 +445,7 @@ index db764e4848a9..52b8980a58b0 100644
  	if (!(state->flags & HASH_FLAGS_CPU))
  		return stm32_hash_dma_send(hdev);
  
-@@ -890,6 +912,11 @@ static int stm32_hash_final_req(struct stm32_hash_dev *hdev)
+@@ -890,6 +912,11 @@ static int stm32_hash_final_req(struct s
  	struct stm32_hash_state *state = &rctx->state;
  	int buflen = state->bufcnt;
  
@@ -459,7 +457,7 @@ index db764e4848a9..52b8980a58b0 100644
  	if (state->flags & HASH_FLAGS_FINUP)
  		return stm32_hash_update_req(hdev);
  
-@@ -971,16 +998,19 @@ static int stm32_hash_finish(struct ahash_request *req)
+@@ -971,16 +998,19 @@ static int stm32_hash_finish(struct ahas
  static void stm32_hash_finish_req(struct ahash_request *req, int err)
  {
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
@@ -482,7 +480,7 @@ index db764e4848a9..52b8980a58b0 100644
  	crypto_finalize_hash_request(hdev->engine, req, err);
  }
  
-@@ -1033,6 +1063,12 @@ static int stm32_hash_one_request(struct crypto_engine *engine, void *areq)
+@@ -1033,6 +1063,12 @@ static int stm32_hash_one_request(struct
  		if (state->flags & HASH_FLAGS_HMAC)
  			hdev->flags |= HASH_FLAGS_HMAC |
  				       HASH_FLAGS_HMAC_KEY;
@@ -495,7 +493,7 @@ index db764e4848a9..52b8980a58b0 100644
  	}
  
  	if (rctx->op == HASH_OP_UPDATE)
-@@ -1057,6 +1093,275 @@ static int stm32_hash_one_request(struct crypto_engine *engine, void *areq)
+@@ -1057,6 +1093,275 @@ static int stm32_hash_one_request(struct
  	return 0;
  }
  
@@ -771,7 +769,7 @@ index db764e4848a9..52b8980a58b0 100644
  static int stm32_hash_enqueue(struct ahash_request *req, unsigned int op)
  {
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
-@@ -1073,16 +1378,25 @@ static int stm32_hash_update(struct ahash_request *req)
+@@ -1073,16 +1378,25 @@ static int stm32_hash_update(struct ahas
  	struct stm32_hash_request_ctx *rctx = ahash_request_ctx(req);
  	struct stm32_hash_state *state = &rctx->state;
  
@@ -804,7 +802,7 @@ index db764e4848a9..52b8980a58b0 100644
  	}
  
  	return stm32_hash_enqueue(req, HASH_OP_UPDATE);
-@@ -1108,9 +1422,11 @@ static int stm32_hash_finup(struct ahash_request *req)
+@@ -1108,9 +1422,11 @@ static int stm32_hash_finup(struct ahash
  
  	state->flags |= HASH_FLAGS_FINUP;
  
@@ -819,7 +817,7 @@ index db764e4848a9..52b8980a58b0 100644
  
  out:
  	return stm32_hash_final(req);
-@@ -1119,17 +1435,11 @@ static int stm32_hash_finup(struct ahash_request *req)
+@@ -1119,17 +1435,11 @@ out:
  static int stm32_hash_digest(struct ahash_request *req)
  {
  	int ret;
@@ -837,7 +835,7 @@ index db764e4848a9..52b8980a58b0 100644
  	return stm32_hash_finup(req);
  }
  
-@@ -1203,6 +1513,8 @@ static int stm32_hash_cra_init_algs(struct crypto_tfm *tfm, u32 algs_flags)
+@@ -1203,6 +1513,8 @@ static int stm32_hash_cra_init_algs(stru
  		ctx->flags |= algs_flags;
  
  	ctx->enginectx.op.do_one_request = stm32_hash_one_request;
@@ -846,7 +844,7 @@ index db764e4848a9..52b8980a58b0 100644
  
  	return stm32_hash_init_fallback(tfm);
  }
-@@ -1241,14 +1553,9 @@ static irqreturn_t stm32_hash_irq_thread(int irq, void *dev_id)
+@@ -1241,14 +1553,9 @@ static irqreturn_t stm32_hash_irq_thread
  {
  	struct stm32_hash_dev *hdev = dev_id;
  
@@ -864,7 +862,7 @@ index db764e4848a9..52b8980a58b0 100644
  	}
  
  	return IRQ_HANDLED;
-@@ -1957,6 +2264,7 @@ static const struct stm32_hash_pdata stm32_hash_pdata_stm32mp13 = {
+@@ -1957,6 +2264,7 @@ static const struct stm32_hash_pdata stm
  	.algs_info_size	= ARRAY_SIZE(stm32_hash_algs_info_stm32mp13),
  	.has_sr		= true,
  	.has_mdmat	= true,
@@ -872,6 +870,3 @@ index db764e4848a9..52b8980a58b0 100644
  };
  
  static const struct of_device_id stm32_hash_of_match[] = {
--- 
-2.39.2
-

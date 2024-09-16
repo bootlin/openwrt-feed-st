@@ -20,8 +20,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
-index ed23bf94a8e0..59ec8d3b1afc 100644
 --- a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
 +++ b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
 @@ -27,6 +27,9 @@ properties:
@@ -34,6 +32,3 @@ index ed23bf94a8e0..59ec8d3b1afc 100644
  required:
    - compatible
    - reg
--- 
-2.39.2
-

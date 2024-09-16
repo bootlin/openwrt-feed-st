@@ -26,8 +26,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  7 files changed, 365 insertions(+), 24 deletions(-)
  create mode 100644 drivers/media/platform/verisilicon/hantro_h1.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index 0a1c362771b8..cbe975c03dcc 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -7,6 +7,7 @@ hantro-vpu-y += \
@@ -38,11 +36,9 @@ index 0a1c362771b8..cbe975c03dcc 100644
  		hantro_h1_jpeg_enc.o \
  		hantro_h1_vp8_enc.o \
  		hantro_g1.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index d221989b3f95..771676270519 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
-@@ -497,4 +497,7 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx);
+@@ -497,4 +497,7 @@ int hantro_postproc_alloc(struct hantro_
  int hanto_postproc_enum_framesizes(struct hantro_ctx *ctx,
  				   struct v4l2_frmsizeenum *fsize);
  
@@ -50,9 +46,6 @@ index d221989b3f95..771676270519 100644
 +void hantro_h1_set_color_conv(struct hantro_dev *vpu, struct hantro_ctx *ctx);
 +
  #endif /* HANTRO_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_h1.c b/drivers/media/platform/verisilicon/hantro_h1.c
-new file mode 100644
-index 000000000000..4fcc8509dc72
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_h1.c
 @@ -0,0 +1,340 @@
@@ -396,11 +389,9 @@ index 000000000000..4fcc8509dc72
 +
 +	vepu_write(vpu, reg, H1_REG_AXI_CTRL);
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
-index cdae2aa32e0b..7a0595bc77be 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
-@@ -138,15 +138,10 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+@@ -138,15 +138,10 @@ int hantro_h1_jpeg_enc_run(struct hantro
  	hantro_h1_jpeg_enc_set_qtable(vpu, jpeg_ctx.hw_luma_qtable,
  				      jpeg_ctx.hw_chroma_qtable);
  
@@ -419,8 +410,6 @@ index cdae2aa32e0b..7a0595bc77be 100644
  
  	reg = H1_REG_ENC_CTRL_WIDTH(MB_WIDTH(ctx->src_fmt.width))
  		| H1_REG_ENC_CTRL_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 5062ee1c87a2..7f08d5426bd5 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -176,8 +176,17 @@
@@ -443,11 +432,9 @@ index 5062ee1c87a2..7f08d5426bd5 100644
  #define H1_REG_INTRA_AREA_CTRL				0x0e0
  #define H1_REG_CIR_INTRA_CTRL				0x0e4
  #define H1_REG_INTRA_SLICE_BITMAP(i)			(0x0e8 + ((i) * 0x4))
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index f89d6b8f462b..0ccd232cc5c5 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1320,10 +1320,6 @@ static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_c
+@@ -1320,10 +1320,6 @@ static void hantro_h1_vp8_enc_set_params
  	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_FIRST_ROI_AREA);
  	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_SECOND_ROI_AREA);
  	vepu_write_relaxed(vpu, 0, H1_REG_STABILIZATION_OUTPUT);
@@ -458,7 +445,7 @@ index f89d6b8f462b..0ccd232cc5c5 100644
  	vepu_write_relaxed(vpu, 0, H1_REG_CIR_INTRA_CTRL);
  	vepu_write_relaxed(vpu, 0xffffffff, H1_REG_INTRA_AREA_CTRL);
  
-@@ -1511,17 +1507,10 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+@@ -1511,17 +1507,10 @@ int hantro_h1_vp8_enc_run(struct hantro_
  	hantro_h1_vp8_enc_set_src_img_ctrl(vpu, ctx);
  	hantro_h1_vp8_enc_set_buffers(vpu, ctx, qp, params);
  
@@ -479,8 +466,6 @@ index f89d6b8f462b..0ccd232cc5c5 100644
  
  	/* Start the hardware. */
  	reg =     H1_REG_ENC_CTRL_TIMEOUT_EN
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 7ca93babd859..7f23463c580f 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
 @@ -363,12 +363,16 @@ struct hantro_codec_ops {
@@ -500,6 +485,3 @@ index 7ca93babd859..7f23463c580f 100644
  };
  
  extern const struct hantro_variant imx8mm_vpu_g1_variant;
--- 
-2.39.2
-

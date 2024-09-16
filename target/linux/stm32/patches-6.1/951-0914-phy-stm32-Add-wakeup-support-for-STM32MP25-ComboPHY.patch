@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 31 +++++++++++++++++++++++++++--
  1 file changed, 29 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 856bafb86725..e046c5a2021d 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -82,6 +82,7 @@ struct stm32_combophy {
@@ -30,7 +28,7 @@ index 856bafb86725..e046c5a2021d 100644
  };
  
  struct clk_impedance  {
-@@ -385,9 +386,13 @@ static int stm32_combophy_suspend_noirq(struct device *dev)
+@@ -385,9 +386,13 @@ static int stm32_combophy_suspend_noirq(
  	 * wakeup capability. In case usb-remote wakeup is not enabled,
  	 * combo-phy is already turned off by HCD driver using exit callback
  	 */
@@ -45,7 +43,7 @@ index 856bafb86725..e046c5a2021d 100644
  	return pm_runtime_force_suspend(dev);
  }
  
-@@ -408,6 +413,9 @@ static int stm32_combophy_resume_noirq(struct device *dev)
+@@ -408,6 +413,9 @@ static int stm32_combophy_resume_noirq(s
  	 * enabled, clocks already turned ON by HCD driver using init callback
  	 */
  	if (combophy->is_init) {
@@ -55,7 +53,7 @@ index 856bafb86725..e046c5a2021d 100644
  		ret = stm32_combophy_enable_clocks(combophy);
  		if (ret) {
  			dev_err(dev, "can't enable clocks (%d)\n", ret);
-@@ -485,13 +493,18 @@ static const struct phy_ops stm32_combophy_phy_data = {
+@@ -485,13 +493,18 @@ static const struct phy_ops stm32_combop
  	.owner = THIS_MODULE
  };
  
@@ -75,7 +73,7 @@ index 856bafb86725..e046c5a2021d 100644
  
  	combophy = devm_kzalloc(dev, sizeof(*combophy), GFP_KERNEL);
  	if (!combophy)
-@@ -535,6 +548,20 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -535,6 +548,20 @@ static int stm32_combophy_probe(struct p
  		return dev_err_probe(dev, PTR_ERR(combophy->phy),
  				     "failed to create PCIe/USB3 ComboPHY\n");
  
@@ -96,6 +94,3 @@ index 856bafb86725..e046c5a2021d 100644
  	ret = devm_pm_runtime_enable(dev);
  	if (ret)
  		return dev_err_probe(dev, ret, "Failed to enable pm runtime\n");
--- 
-2.39.2
-

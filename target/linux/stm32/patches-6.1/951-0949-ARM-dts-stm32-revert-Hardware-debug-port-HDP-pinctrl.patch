@@ -21,11 +21,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 45 ------------------------
  1 file changed, 45 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 301db3ff6622..46a4ed05fd62 100644
 --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -583,51 +583,6 @@ pins {
+@@ -583,51 +583,6 @@
  		};
  	};
  
@@ -77,6 +75,3 @@ index 301db3ff6622..46a4ed05fd62 100644
  	i2c1_pins_a: i2c1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h |  1 +
  2 files changed, 65 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 92c7a0cda4fd..d53652d21ee5 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -2006,10 +2006,57 @@ static void ltdc_encoder_mode_set(struct drm_encoder *encoder,
+@@ -2006,10 +2006,57 @@ static void ltdc_encoder_mode_set(struct
  		pinctrl_pm_select_default_state(ddev->dev);
  }
  
@@ -105,8 +103,6 @@ index 92c7a0cda4fd..d53652d21ee5 100644
  	if (clk_prepare_enable(ldev->pixel_clk)) {
  		DRM_ERROR("Unable to prepare pixel clock\n");
  		return -ENODEV;
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 87164010fd13..8f5c0514eef3 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -47,6 +47,7 @@ struct ltdc_device {
@@ -117,6 +113,3 @@ index 87164010fd13..8f5c0514eef3 100644
  	struct mutex err_lock;	/* protecting error_status */
  	struct ltdc_caps caps;
  	u32 irq_status;
--- 
-2.39.2
-

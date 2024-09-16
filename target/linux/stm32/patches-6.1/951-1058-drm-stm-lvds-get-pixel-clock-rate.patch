@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 26 +++++++++++++++++++++++++-
  1 file changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index a9d48b5f2741..313fc51ac48d 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -1090,6 +1090,9 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1090,6 +1090,9 @@ static int lvds_probe(struct platform_de
  	struct device_node *port1, *port2, *remote;
  	struct stm_lvds *lvds;
  	struct reset_control *rstc;
@@ -28,7 +26,7 @@ index a9d48b5f2741..313fc51ac48d 100644
  	int ret, dual_link;
  
  	DRM_DEBUG_DRIVER("Probing LVDS driver...\n");
-@@ -1229,9 +1232,30 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1229,9 +1232,30 @@ static int lvds_probe(struct platform_de
  	 * To obtain a continuous display after the probe,
  	 *  the clocks must remain activated
  	 */
@@ -60,6 +58,3 @@ index a9d48b5f2741..313fc51ac48d 100644
  	return 0;
  }
  
--- 
-2.39.2
-

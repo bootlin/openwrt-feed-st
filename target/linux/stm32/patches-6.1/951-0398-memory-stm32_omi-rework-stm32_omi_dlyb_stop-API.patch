@@ -18,11 +18,9 @@ Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
  drivers/memory/stm32-omi.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index c7d352d70f85..199e6d872ac5 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -470,10 +470,8 @@ static u32 stm32_omi_find_byp_cmd(u16 period_ps)
+@@ -470,10 +470,8 @@ static u32 stm32_omi_find_byp_cmd(u16 pe
  
  void stm32_omi_dlyb_stop(struct stm32_omi *omi)
  {
@@ -35,6 +33,3 @@ index c7d352d70f85..199e6d872ac5 100644
  }
  EXPORT_SYMBOL(stm32_omi_dlyb_stop);
  
--- 
-2.39.2
-

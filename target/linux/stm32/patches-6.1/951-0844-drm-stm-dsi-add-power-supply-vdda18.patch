@@ -14,8 +14,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 36 +++++++++++++++++++++++----
  1 file changed, 31 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index cab37225852f..ea94bec66bfb 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -142,6 +142,7 @@ struct dw_mipi_dsi_stm {
@@ -26,7 +24,7 @@ index cab37225852f..ea94bec66bfb 100644
  	struct dw_mipi_dsi_plat_data pdata;
  	unsigned int lane_mbps;
  	u32 format;
-@@ -1100,7 +1101,20 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1100,7 +1101,20 @@ static int dw_mipi_dsi_stm_probe(struct
  
  	ret = regulator_enable(dsi->vdd_supply);
  	if (ret) {
@@ -48,7 +46,7 @@ index cab37225852f..ea94bec66bfb 100644
  		return ret;
  	}
  
-@@ -1108,20 +1122,20 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1108,20 +1122,20 @@ static int dw_mipi_dsi_stm_probe(struct
  	if (IS_ERR(dsi->pllref_clk)) {
  		ret = PTR_ERR(dsi->pllref_clk);
  		dev_err_probe(dev, ret, "Unable to get pll reference clock\n");
@@ -72,7 +70,7 @@ index cab37225852f..ea94bec66bfb 100644
  	}
  
  	dsi->hw_version = dsi_read(dsi, DSI_VERSION) & VERSION;
-@@ -1196,6 +1210,8 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1196,6 +1210,8 @@ static int dw_mipi_dsi_stm_probe(struct
  
  err_dsi_probe:
  	clk_disable_unprepare(dsi->pclk);
@@ -81,7 +79,7 @@ index cab37225852f..ea94bec66bfb 100644
  err_clk_get:
  	regulator_disable(dsi->vdd_supply);
  
-@@ -1221,6 +1237,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+@@ -1221,6 +1237,7 @@ static int __maybe_unused dw_mipi_dsi_st
  	clk_disable_unprepare(dsi->pllref_clk);
  	clk_disable_unprepare(dsi->pclk);
  	regulator_disable(dsi->vdd_supply);
@@ -89,7 +87,7 @@ index cab37225852f..ea94bec66bfb 100644
  
  	return 0;
  }
-@@ -1232,15 +1249,23 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -1232,15 +1249,23 @@ static int __maybe_unused dw_mipi_dsi_st
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -114,7 +112,7 @@ index cab37225852f..ea94bec66bfb 100644
  		DRM_ERROR("Failed to enable pclk: %d\n", ret);
  		return ret;
  	}
-@@ -1249,6 +1274,7 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -1249,6 +1274,7 @@ static int __maybe_unused dw_mipi_dsi_st
  	if (ret) {
  		clk_disable_unprepare(dsi->pclk);
  		regulator_disable(dsi->vdd_supply);
@@ -122,6 +120,3 @@ index cab37225852f..ea94bec66bfb 100644
  		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
  		return ret;
  	}
--- 
-2.39.2
-

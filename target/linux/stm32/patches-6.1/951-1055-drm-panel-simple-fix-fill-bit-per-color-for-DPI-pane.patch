@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++----------
  1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index ff7c9e56c77b..92401e1f5dfe 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -494,18 +494,27 @@ static int panel_dpi_probe(struct device *dev,
+@@ -494,18 +494,27 @@ static int panel_dpi_probe(struct device
  	of_property_read_u32(np, "height-mm", &desc->size.height);
  
  	of_property_read_string(np, "data-mapping", &mapping);
@@ -57,6 +55,3 @@ index ff7c9e56c77b..92401e1f5dfe 100644
  	}
  
  	/* Extract bus_flags from display_timing */
--- 
-2.39.2
-

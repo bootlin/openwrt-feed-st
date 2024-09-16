@@ -25,11 +25,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 41 ++++++++----------------------
  1 file changed, 10 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 3bf33f52219c..d02c08abc6b1 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -351,8 +351,7 @@ static void stm32mp_exti_eoi(struct irq_data *d)
+@@ -351,8 +351,7 @@ static void stm32mp_exti_eoi(struct irq_
  
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -39,7 +37,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  }
  
  static void stm32mp_exti_mask(struct irq_data *d)
-@@ -364,8 +363,7 @@ static void stm32mp_exti_mask(struct irq_data *d)
+@@ -364,8 +363,7 @@ static void stm32mp_exti_mask(struct irq
  	chip_data->mask_cache = stm32mp_exti_clr_bit(d, bank->imr_ofst);
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -49,7 +47,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  }
  
  static void stm32mp_exti_unmask(struct irq_data *d)
-@@ -377,8 +375,7 @@ static void stm32mp_exti_unmask(struct irq_data *d)
+@@ -377,8 +375,7 @@ static void stm32mp_exti_unmask(struct i
  	chip_data->mask_cache = stm32mp_exti_set_bit(d, bank->imr_ofst);
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -59,7 +57,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  }
  
  static int stm32mp_exti_set_type(struct irq_data *d, unsigned int type)
-@@ -416,11 +413,11 @@ static int stm32mp_exti_set_type(struct irq_data *d, unsigned int type)
+@@ -416,11 +413,11 @@ unspinlock:
  unlock:
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -75,7 +73,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  }
  
  static int stm32mp_exti_set_wake(struct irq_data *d, unsigned int on)
-@@ -437,25 +434,7 @@ static int stm32mp_exti_set_wake(struct irq_data *d, unsigned int on)
+@@ -437,25 +434,7 @@ static int stm32mp_exti_set_wake(struct
  
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -102,7 +100,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  }
  
  static int stm32mp_exti_suspend(struct device *dev)
-@@ -523,7 +502,7 @@ static int stm32mp_exti_retrigger(struct irq_data *d)
+@@ -523,7 +502,7 @@ static int stm32mp_exti_retrigger(struct
  static struct irq_chip stm32mp_exti_chip = {
  	.name			= "stm32mp-exti",
  	.irq_eoi		= stm32mp_exti_eoi,
@@ -111,7 +109,7 @@ index 3bf33f52219c..d02c08abc6b1 100644
  	.irq_mask		= stm32mp_exti_mask,
  	.irq_unmask		= stm32mp_exti_unmask,
  	.irq_request_resources	= irq_chip_request_resources_parent,
-@@ -532,7 +511,7 @@ static struct irq_chip stm32mp_exti_chip = {
+@@ -532,7 +511,7 @@ static struct irq_chip stm32mp_exti_chip
  	.irq_set_type		= stm32mp_exti_set_type,
  	.irq_set_wake		= stm32mp_exti_set_wake,
  	.flags			= IRQCHIP_MASK_ON_SUSPEND,
@@ -120,6 +118,3 @@ index 3bf33f52219c..d02c08abc6b1 100644
  };
  
  static struct irq_chip stm32mp_exti_chip_direct = {
--- 
-2.39.2
-

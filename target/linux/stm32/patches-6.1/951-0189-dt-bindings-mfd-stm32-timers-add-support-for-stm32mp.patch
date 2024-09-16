@@ -24,8 +24,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../devicetree/bindings/mfd/st,stm32-timers.yaml    | 13 ++++++++++---
  1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index e2c3c3b44abb..a6d404a7d1c5 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 @@ -21,7 +21,9 @@ maintainers:
@@ -69,6 +67,3 @@ index e2c3c3b44abb..a6d404a7d1c5 100644
  
        reg:
          description: Identify trigger hardware block.
--- 
-2.39.2
-

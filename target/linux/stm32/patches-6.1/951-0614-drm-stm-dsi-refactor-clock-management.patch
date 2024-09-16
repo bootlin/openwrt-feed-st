@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 26 ++++----------------------
  1 file changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index a0481520626c..cab37225852f 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -1111,27 +1111,20 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1111,27 +1111,20 @@ static int dw_mipi_dsi_stm_probe(struct
  		goto err_clk_get;
  	}
  
@@ -48,7 +46,7 @@ index a0481520626c..cab37225852f 100644
  
  	if (dsi->hw_version != HWVER_130 &&
  	    dsi->hw_version != HWVER_131 &&
-@@ -1178,16 +1171,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1178,16 +1171,6 @@ static int dw_mipi_dsi_stm_probe(struct
  		goto err_dsi_probe;
  	}
  
@@ -65,7 +63,7 @@ index a0481520626c..cab37225852f 100644
  	ret = dw_mipi_dsi_clk_register(dsi, dev);
  	if (ret) {
  		DRM_ERROR("Failed to register DSI pixel clock: %d\n", ret);
-@@ -1207,11 +1190,12 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1207,11 +1190,12 @@ static int dw_mipi_dsi_stm_probe(struct
  	}
  
  	clk_disable_unprepare(dsi->pclk);
@@ -79,7 +77,7 @@ index a0481520626c..cab37225852f 100644
  err_clk_get:
  	regulator_disable(dsi->vdd_supply);
  
-@@ -1223,9 +1207,7 @@ static int dw_mipi_dsi_stm_remove(struct platform_device *pdev)
+@@ -1223,9 +1207,7 @@ static int dw_mipi_dsi_stm_remove(struct
  	struct dw_mipi_dsi_stm *dsi = platform_get_drvdata(pdev);
  
  	dw_mipi_dsi_remove(dsi->dsi);
@@ -89,6 +87,3 @@ index a0481520626c..cab37225852f 100644
  
  	return 0;
  }
--- 
-2.39.2
-

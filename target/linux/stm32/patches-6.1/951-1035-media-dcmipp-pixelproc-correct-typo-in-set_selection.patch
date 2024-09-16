@@ -18,11 +18,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index b43e37821a9d..980507602c93 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -589,7 +589,7 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -589,7 +589,7 @@ static int dcmipp_pixelproc_set_selectio
  		if (s->r.height > crop->height)
  			s->r.height = crop->height;
  		else if (s->r.height < (crop->height / DCMIPP_MAX_DOWNSCALE_RATIO))
@@ -31,6 +29,3 @@ index b43e37821a9d..980507602c93 100644
  		s->r.top = 0;
  		s->r.left = 0;
  
--- 
-2.39.2
-

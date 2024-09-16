@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 105 +++++++++++++-----
  1 file changed, 80 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index ab9cfbd071cd..3f1cf739e8b1 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -31,16 +31,12 @@
@@ -52,7 +50,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  	u32 nb_comp_pix[COMP_MAX];
  
  	/*
-@@ -250,17 +249,21 @@ static int dcmipp_statcap_get_nb_comp_pix(struct dcmipp_statcap_device *vcap,
+@@ -250,17 +249,21 @@ static int dcmipp_statcap_get_nb_comp_pi
  					  enum component comp)
  {
  	int nb_comp_pix, comp_divider;
@@ -81,7 +79,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  		/* raw bayer: RGB component not present for all pixels */
  		if (comp == COMP_RED || comp == COMP_BLUE)
  			comp_divider = 4;
-@@ -602,7 +605,21 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -602,7 +605,21 @@ static int dcmipp_statcap_s_ctrl(struct
  
  		/* Update number of pixels per components */
  		for (i = 0; i < COMP_MAX; i++)
@@ -104,7 +102,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  		break;
  	}
  
-@@ -619,6 +636,36 @@ static const struct v4l2_ctrl_config dcmipp_statcap_ctrls[] = {
+@@ -619,6 +636,36 @@ static const struct v4l2_ctrl_config dcm
  		.id	= V4L2_CID_ISP_STAT_REGION,
  		.type	= V4L2_CTRL_TYPE_ISP_STAT_REGION,
  		.name	= "ISP stat region control",
@@ -141,7 +139,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  	}
  };
  
-@@ -667,6 +714,12 @@ static void dcmipp_statcap_buffer_done(struct dcmipp_statcap_device *vcap)
+@@ -667,6 +714,12 @@ static void dcmipp_statcap_buffer_done(s
  	vb2_buffer_done(&cur_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
  }
  
@@ -154,7 +152,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
  {
  	struct dcmipp_statcap_device *vcap =
-@@ -706,7 +759,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -706,7 +759,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_AVERAGE |
@@ -164,7 +162,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  		break;
  
-@@ -715,8 +769,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -715,8 +769,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -175,7 +173,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  
  		if (vcap->prev_capture_state == PHY_BIN_3_SHA_AV_RGB) {
-@@ -731,8 +785,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -731,8 +785,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -186,7 +184,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  
  		/* Accumulators contains the AVERAGES (RGB) */
-@@ -749,8 +803,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -749,8 +803,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -197,7 +195,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  
  		/* Accumulators contains the 1st set of BINS */
-@@ -763,8 +817,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -763,8 +817,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -208,7 +206,7 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  
  		/* Accumulators contains the 2nd set of BINS */
-@@ -777,7 +831,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -777,7 +831,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_AVERAGE |
@@ -218,6 +216,3 @@ index ab9cfbd071cd..3f1cf739e8b1 100644
  				  DCMIPP_P1STXCR_ENABLE);
  
  		/* Accumulators contains the 3rd set of BINS */
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 25 ++++++++++++++++---------
  1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 45dc55341013..ad0efe0e4bc8 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1980,15 +1980,22 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+@@ -1980,15 +1980,22 @@ static struct drm_plane *ltdc_plane_crea
  			       ARRAY_SIZE(ltdc_drm_fmt_ycbcr_cp) * sizeof(*formats));
  			nb_fmt += ARRAY_SIZE(ltdc_drm_fmt_ycbcr_cp);
  		}
@@ -51,6 +49,3 @@ index 45dc55341013..ad0efe0e4bc8 100644
  		}
  	}
  
--- 
-2.39.2
-

@@ -21,11 +21,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 46 ++++++++++++++++++++++++++
  1 file changed, 46 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 395a6b402ab5..018c7298de12 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -230,6 +230,52 @@ syscfg: syscon@44230000 {
+@@ -230,6 +230,52 @@
  			clocks = <&scmi_clk CK_SCMI_SYSCPU1>;
  		};
  
@@ -78,6 +76,3 @@ index 395a6b402ab5..018c7298de12 100644
  		/* Break node order to solve dependency probe issue between pinctrl and exti. */
  
  		pinctrl: pinctrl@44240000 {
--- 
-2.39.2
-

@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 978448591a7e..3552358da2d2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -458,7 +458,8 @@ &m33_rproc {
+@@ -458,7 +458,8 @@
  	mbox-names = "vq0", "vq1", "shutdown";
  	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
  			<&ipc_shmem_1>, <&vdev0vring0>,
@@ -33,6 +31,3 @@ index 978448591a7e..3552358da2d2 100644
  	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
  	status = "okay";
  };
--- 
-2.39.2
-

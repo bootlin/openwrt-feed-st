@@ -19,11 +19,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/dma/stm32-dma3.c | 8 --------
  1 file changed, 8 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index 068a3a755298..f9ebd65793c0 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -1391,10 +1391,6 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1391,10 +1391,6 @@ static int stm32_dma3_alloc_chan_resourc
  	u32 id = chan->id, csemcr, ccid;
  	int ret;
  
@@ -34,7 +32,7 @@ index 068a3a755298..f9ebd65793c0 100644
  	ret = pm_runtime_resume_and_get(ddata->dma_dev.dev);
  	if (ret < 0)
  		return ret;
-@@ -1955,10 +1951,6 @@ static bool stm32_dma3_filter_fn(struct dma_chan *c, void *fn_param)
+@@ -1955,10 +1951,6 @@ static bool stm32_dma3_filter_fn(struct
  		__func__, dma_chan_name(c),
  		conf->req_line, conf->ch_conf, conf->tr_conf, conf->tr_conf_ext);
  
@@ -45,6 +43,3 @@ index 068a3a755298..f9ebd65793c0 100644
  	if (!of_property_read_u32(c->device->dev->of_node, "dma-channel-mask", &mask))
  		if (!(mask & BIT(chan->id)))
  			return false;
--- 
-2.39.2
-

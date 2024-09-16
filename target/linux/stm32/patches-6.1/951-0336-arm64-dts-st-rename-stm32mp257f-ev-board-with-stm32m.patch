@@ -19,8 +19,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  2 files changed, 3 insertions(+), 3 deletions(-)
  rename arch/arm64/boot/dts/st/{stm32mp257f-ev.dts => stm32mp257f-ev1.dts} (98%)
 
-diff --git a/arch/arm64/boot/dts/st/Makefile b/arch/arm64/boot/dts/st/Makefile
-index a873148afe3c..0cc12f2b1dfe 100644
 --- a/arch/arm64/boot/dts/st/Makefile
 +++ b/arch/arm64/boot/dts/st/Makefile
 @@ -1,4 +1,4 @@
@@ -29,24 +27,1135 @@ index a873148afe3c..0cc12f2b1dfe 100644
  	stm32mp257f-dk.dtb \
 -	stm32mp257f-ev.dtb
 +	stm32mp257f-ev1.dtb
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-similarity index 98%
-rename from arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-rename to arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 22f59d4472ad..93e2196154e6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-+++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -17,8 +17,8 @@
- #include "stm32mp257f-ev-ca35tdcid-resmem.dtsi"
- 
- / {
++++ /dev/null
+@@ -1,563 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
+-/*
+- * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+- * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+- */
+-
+-/dts-v1/;
+-
+-#include <dt-bindings/gpio/gpio.h>
+-#include <dt-bindings/input/input.h>
+-#include <dt-bindings/leds/common.h>
+-#include <dt-bindings/regulator/st,stm32mp25-regulator.h>
+-#include "stm32mp257.dtsi"
+-#include "stm32mp25xf.dtsi"
+-#include "stm32mp25-pinctrl.dtsi"
+-#include "stm32mp25xxai-pinctrl.dtsi"
+-#include "stm32mp257f-ev-ca35tdcid-resmem.dtsi"
+-
+-/ {
 -	model = "STMicroelectronics STM32MP257F-EV Evaluation Board";
 -	compatible = "st,stm32mp257f-ev", "st,stm32mp257";
+-
+-	aliases {
+-		ethernet0 = &eth2;
+-		ethernet1 = &eth1;
+-		serial0 = &usart2;
+-		serial1 = &usart6;
+-	};
+-
+-	chosen {
+-		stdout-path = "serial0:115200n8";
+-	};
+-
+-	clocks {
+-		clk_ext_camera: clk-ext-camera {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <24000000>;
+-		};
+-
+-		pad_clk: pad-clk {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <100000000>;
+-		};
+-	};
+-
+-	gpio-keys {
+-		compatible = "gpio-keys";
+-
+-		button-user-2 {
+-			label = "User-2";
+-			linux,code = <BTN_2>;
+-			gpios = <&gpiog 8 GPIO_ACTIVE_HIGH>;
+-			status = "okay";
+-		};
+-	};
+-
+-	gpio-leds {
+-		compatible = "gpio-leds";
+-
+-		led-blue {
+-			function = LED_FUNCTION_HEARTBEAT;
+-			color = <LED_COLOR_ID_BLUE>;
+-			gpios = <&gpioj 7 GPIO_ACTIVE_HIGH>;
+-			linux,default-trigger = "heartbeat";
+-			default-state = "off";
+-		};
+-	};
+-
+-	memory@80000000 {
+-		device_type = "memory";
+-		reg = <0x0 0x80000000 0x1 0x0>;
+-	};
+-
+-	panel_dsi_backlight: panel-dsi-backlight {
+-		compatible = "gpio-backlight";
+-		gpios = <&gpioi 5 GPIO_ACTIVE_LOW>;
+-		default-on;
+-		default-brightness-level = <0>;
+-		status = "disabled";
+-	};
+-
+-	panel_lvds: panel-lvds {
+-		compatible = "edt,etml0700z9ndha", "panel-lvds";
+-		enable-gpios = <&gpiog 15 GPIO_ACTIVE_HIGH>;
+-		backlight = <&panel_lvds_backlight>;
+-		status = "okay";
+-
+-		width-mm = <156>;
+-		height-mm = <92>;
+-		data-mapping = "vesa-24";
+-
+-		panel-timing {
+-			clock-frequency = <54000000>;
+-			hactive = <1024>;
+-			vactive = <600>;
+-			hfront-porch = <150>;
+-			hback-porch = <150>;
+-			hsync-len = <21>;
+-			vfront-porch = <24>;
+-			vback-porch = <24>;
+-			vsync-len = <21>;
+-		};
+-
+-		port {
+-			lvds_panel_in: endpoint {
+-				remote-endpoint = <&lvds_out0>;
+-			};
+-		};
+-	};
+-
+-	panel_lvds_backlight: panel-lvds-backlight {
+-		compatible = "gpio-backlight";
+-		gpios = <&gpioi 5 GPIO_ACTIVE_HIGH>;
+-		default-on;
+-		default-brightness-level = <0>;
+-		status = "okay";
+-	};
+-};
+-
+-&arm_wdt {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+-&combophy {
+-	clocks = <&rcc CK_BUS_USB3PCIEPHY>, <&rcc CK_KER_USB3PCIEPHY>, <&pad_clk>;
+-	clock-names = "apb-clk", "ker-clk", "pad-clk";
+-	status = "okay";
+-};
+-
+-&csi2host {
+-	status = "okay";
+-	ports {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		port@0 {
+-			reg = <0>;
+-			csi2host_sink: endpoint {
+-				remote-endpoint = <&imx335_ep>;
+-				data-lanes = <0 1>;
+-				bus-type = <4>;
+-			};
+-		};
+-		port@1 {
+-			reg = <1>;
+-			csi2host_source: endpoint {
+-				remote-endpoint = <&dcmipp_0>;
+-			};
+-		};
+-	};
+-};
+-
+-&dcmipp {
+-	status = "okay";
+-	port {
+-		dcmipp_0: endpoint {
+-			remote-endpoint = <&csi2host_source>;
+-			bus-type = <4>;
+-		};
+-	};
+-};
+-
+-&dsi {
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	status = "disabled";
+-
+-	ports {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		port@0 {
+-			reg = <0>;
+-			dsi_in: endpoint {
+-				remote-endpoint = <&ltdc_ep1_out>;
+-			};
+-		};
+-
+-		port@1 {
+-			reg = <1>;
+-			dsi_out1: endpoint {
+-				remote-endpoint = <&panel_in_dsi>;
+-			};
+-		};
+-
+-		port@2 {
+-			reg = <2>;
+-			dsi_out2: endpoint {
+-				remote-endpoint = <&adv7535_in>;
+-			};
+-		};
+-	};
+-
+-	panel_dsi: panel-dsi@0 {
+-		compatible = "raydium,rm68200";
+-		reg = <0>;
+-		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
+-		backlight = <&panel_dsi_backlight >;
+-		status = "disabled";
+-
+-		port {
+-			panel_in_dsi: endpoint {
+-				remote-endpoint = <&dsi_out1>;
+-			};
+-		};
+-	};
+-};
+-
+-&eth1 {
+-	status = "okay";
+-	pinctrl-0 = <&eth1_mdio_pins_a>;
+-	pinctrl-names = "default";
+-	phy-mode = "rgmii";
+-	max-speed = <1000>;
+-	st,eth-clk-sel;
+-
+-	fixed_link: fixed-link {
+-		speed = <1000>;
+-		full-duplex;
+-	};
+-
+-	mdio1 {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		compatible = "snps,dwmac-mdio";
+-
+-		phy1_eth1: ethernet-phy@4 {
+-			compatible = "ethernet-phy-id001c.c916",
+-				     "ethernet-phy-ieee802.3-c22";
+-			realtek,eee-disable;
+-			reg = <4>;
+-		};
+-
+-		phy2_eth1: ethernet-phy@5 {
+-			compatible = "ethernet-phy-id001c.c916",
+-				     "ethernet-phy-ieee802.3-c22";
+-			reset-gpios =  <&gpioj 9 GPIO_ACTIVE_LOW>;
+-			reset-assert-us = <10000>;
+-			reset-deassert-us = <300>;
+-			realtek,eee-disable;
+-			reg = <5>;
+-		};
+-	};
+-};
+-
+-&eth2 {
+-	status = "okay";
+-	pinctrl-0 = <&eth2_rgmii_pins_a>;
+-	pinctrl-names = "default";
+-	phy-mode = "rgmii-id";
+-	max-speed = <1000>;
+-	phy-handle = <&phy1_eth2>;
+-	st,eth-ptp-from-rcc;
+-
+-	mdio1 {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		compatible = "snps,dwmac-mdio";
+-		phy1_eth2: ethernet-phy@1 {
+-			compatible = "ethernet-phy-id001c.c916";
+-			reset-gpios =  <&gpiog 6 GPIO_ACTIVE_LOW>;
+-			reset-assert-us = <10000>;
+-			reset-deassert-us = <300>;
+-			realtek,eee-disable;
+-			reg = <1>;
+-		};
+-	};
+-};
+-
+-&i2c2 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&i2c2_pins_a>;
+-	pinctrl-1 = <&i2c2_sleep_pins_a>;
+-	i2c-scl-rising-time-ns = <185>;
+-	i2c-scl-falling-time-ns = <20>;
+-	clock-frequency = <100000>;
+-	status = "okay";
+-	/* spare dmas for other usage */
+-	/delete-property/dmas;
+-	/delete-property/dma-names;
+-
+-	imx335: imx335@1a {
+-		compatible = "sony,imx335";
+-		reg = <0x1a>;
+-		clocks = <&clk_ext_camera>;
+-		reset-gpios = <&gpioi 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+-		powerdown-gpios = <&gpioi 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+-		status = "okay";
+-
+-		port {
+-			imx335_ep: endpoint {
+-				remote-endpoint = <&csi2host_sink>;
+-				clock-lanes = <0>;
+-				data-lanes = <1 2>;
+-				link-frequencies = /bits/ 64 <594000000>;
+-			};
+-		};
+-	};
+-
+-	adv7535: hdmi@3d {
+-		compatible = "adi,adv7535";
+-		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
+-		reg-names = "main", "cec", "edid", "packet";
+-		status = "disabled";
+-		adi,dsi-lanes = <4>;
+-		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
+-
+-		port {
+-			adv7535_in: endpoint {
+-				remote-endpoint = <&dsi_out2>;
+-			};
+-		};
+-	};
+-
+-	ili2511: ili2511@41 {
+-		compatible = "ilitek,ili251x";
+-		reg = <0x41>;
+-		interrupt-parent = <&gpioi>;
+-		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
+-		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
+-		status = "okay";
+-	};
+-
+-	gt9147: goodix-ts@5d {
+-		compatible = "goodix,gt9147";
+-		reg = <0x5d>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&goodix_pins_a>;
+-		panel = <&panel_dsi>;
+-		interrupt-parent = <&gpioi>;
+-		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
+-		status = "disabled";
+-	};
+-};
+-
+-&ipcc1 {
+-	status = "okay";
+-};
+-
+-&ltdc {
+-	status = "okay";
+-
+-	port {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		ltdc_ep0_out: endpoint@0 {
+-			reg = <0>;
+-			remote-endpoint = <&lvds_in>;
+-		};
+-
+-		ltdc_ep1_out: endpoint@1 {
+-			reg = <1>;
+-			remote-endpoint = <&dsi_in>;
+-		};
+-	};
+-};
+-
+-&lvds {
+-	status = "okay";
+-
+-	ports {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		port@0 {
+-			reg = <0>;
+-			lvds_in: endpoint {
+-				remote-endpoint = <&ltdc_ep0_out>;
+-			};
+-		};
+-
+-		port@1 {
+-			reg = <1>;
+-			lvds_out0: endpoint {
+-				remote-endpoint = <&lvds_panel_in>;
+-			};
+-		};
+-	};
+-};
+-
+-&m33_rproc {
+-	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
+-	mbox-names = "vq0", "vq1", "shutdown";
+-	memory-region = <&ipc_shmem_1>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
+-	status = "okay";
+-};
+-
+-&m_can1 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&m_can1_pins_a>;
+-	pinctrl-1 = <&m_can1_sleep_pins_a>;
+-	status = "okay";
+-};
+-
+-&m_can3 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&m_can3_pins_a>;
+-	pinctrl-1 = <&m_can3_sleep_pins_a>;
+-	status = "okay";
+-};
+-
+-&mlahb {
+-	intc_rpmsg: interrupt-controller@0 {
+-		compatible = "rpmsg,intc";
+-		reg = <0 0>;
+-		#interrupt-cells = <1>;
+-		interrupt-controller;
+-	};
+-
+-	i2c_rpmsg: i2c@1 {
+-		compatible = "rpmsg,i2c-controller";
+-		reg = <1 0>;
+-		rpmsg,dev-id = "rpmsg_i2c";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		status = "okay";
+-	};
+-};
+-
+-&pcie_rc {
+-	pinctrl-names = "default", "init";
+-	pinctrl-0 = <&pcie_pins_a>;
+-	pinctrl-1 = <&pcie_init_pins_a>;
+-	reset-gpios = <&gpioj 8 GPIO_ACTIVE_LOW>;
+-	status = "okay";
+-};
+-
+-&rtc {
+-	status = "okay";
+-};
+-
+-&scmi_regu {
+-	scmi_v3v3: voltd-v3v3 {
+-		reg = <VOLTD_SCMI_STPMIC2_BUCK7>;
+-		regulator-name = "v3v3";
+-	};
+-	scmi_vdd_emmc: voltd-vdd-emmc {
+-		reg = <VOLTD_SCMI_STPMIC2_LDO2>;
+-		regulator-name = "vdd_emmc";
+-	};
+-	scmi_vdd_sdcard: voltd-vdd-sdcard {
+-		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
+-		regulator-name = "vdd_sdcard";
+-	};
+-	scmi_vddio1: voltd-vddio1 {
+-		regulator-min-microvolt = <1800000>;
+-		regulator-max-microvolt = <3300000>;
+-	};
+-};
+-
+-&sdmmc1 {
+-	pinctrl-names = "default", "opendrain", "sleep";
+-	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+-	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
+-	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+-	cd-gpios = <&gpiod 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+-	disable-wp;
+-	st,neg-edge;
+-	bus-width = <4>;
+-	vmmc-supply = <&scmi_vdd_sdcard>;
+-	vqmmc-supply = <&scmi_vddio1>;
+-	status = "okay";
+-};
+-
+-&sdmmc2 {
+-	pinctrl-names = "default", "opendrain", "sleep";
+-	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>;
+-	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_a>;
+-	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_a>;
+-	non-removable;
+-	no-sd;
+-	no-sdio;
+-	st,neg-edge;
+-	bus-width = <8>;
+-	vmmc-supply = <&scmi_vdd_emmc>;
+-	vqmmc-supply = <&scmi_vddio2>;
+-	mmc-ddr-1_8v;
+-	mmc-hs200-1_8v;
+-	status = "okay";
+-};
+-
+-&sdmmc3 {
+-	pinctrl-names = "default", "opendrain", "sleep";
+-	pinctrl-0 = <&sdmmc3_b4_pins_a>;
+-	pinctrl-1 = <&sdmmc3_b4_od_pins_a>;
+-	pinctrl-2 = <&sdmmc3_b4_sleep_pins_a>;
+-	broken-cd;
+-	disable-wp;
+-	st,neg-edge;
+-	bus-width = <4>;
+-	vmmc-supply = <&scmi_v3v3>;
+-	status = "disabled";
+-};
+-
+-&spi3 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&spi3_pins_a>;
+-	pinctrl-1 = <&spi3_sleep_pins_a>;
+-	status = "disabled";
+-};
+-
+-&spi8 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&spi8_pins_a>;
+-	pinctrl-1 = <&spi8_sleep_pins_a>;
+-	status = "disabled";
+-};
+-
+-&switch0 {
+-	status = "okay";
+-	pinctrl-0 = <&eth1_rgmii_pins_a>, <&eth3_rgmii_pins_a>;
+-	pinctrl-names = "default";
+-	phy-mode = "rgmii";
+-	st,ethsw-internal-125;
+-};
+-
+-&usart2 {
+-	pinctrl-names = "default", "idle", "sleep";
+-	pinctrl-0 = <&usart2_pins_a>;
+-	pinctrl-1 = <&usart2_idle_pins_a>;
+-	pinctrl-2 = <&usart2_sleep_pins_a>;
+-	/delete-property/dmas;
+-	/delete-property/dma-names;
+-	status = "okay";
+-};
+-
+-&usart6 {
+-	pinctrl-names = "default", "idle", "sleep";
+-	pinctrl-0 = <&usart6_pins_a>;
+-	pinctrl-1 = <&usart6_idle_pins_a>;
+-	pinctrl-2 = <&usart6_sleep_pins_a>;
+-	uart-has-rtscts;
+-	status = "disabled";
+-};
+-
+-&usb2_phy1 {
+-	status = "okay";
+-};
+-
+-&usb2_phy2 {
+-	status = "okay";
+-};
+-
+-&usbh {
+-	status = "okay";
+-
+-	usbh_ohci: usb@482e0000 {
+-		status = "disabled";
+-	};
+-};
+-
+-&usb3dr {
+-	status = "okay";
+-
+-	dwc3: usb@48300000 {
+-		maximum-speed = "high-speed";
+-		dr_mode = "peripheral";
+-	};
+-};
+--- /dev/null
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -0,0 +1,563 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++#include <dt-bindings/regulator/st,stm32mp25-regulator.h>
++#include "stm32mp257.dtsi"
++#include "stm32mp25xf.dtsi"
++#include "stm32mp25-pinctrl.dtsi"
++#include "stm32mp25xxai-pinctrl.dtsi"
++#include "stm32mp257f-ev-ca35tdcid-resmem.dtsi"
++
++/ {
 +	model = "STMicroelectronics STM32MP257F-EV1 Evaluation Board";
 +	compatible = "st,stm32mp257f-ev1", "st,stm32mp257";
- 
- 	aliases {
- 		ethernet0 = &eth2;
--- 
-2.39.2
-
++
++	aliases {
++		ethernet0 = &eth2;
++		ethernet1 = &eth1;
++		serial0 = &usart2;
++		serial1 = &usart6;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	clocks {
++		clk_ext_camera: clk-ext-camera {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
++		};
++
++		pad_clk: pad-clk {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		button-user-2 {
++			label = "User-2";
++			linux,code = <BTN_2>;
++			gpios = <&gpiog 8 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		led-blue {
++			function = LED_FUNCTION_HEARTBEAT;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&gpioj 7 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			default-state = "off";
++		};
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x0 0x80000000 0x1 0x0>;
++	};
++
++	panel_dsi_backlight: panel-dsi-backlight {
++		compatible = "gpio-backlight";
++		gpios = <&gpioi 5 GPIO_ACTIVE_LOW>;
++		default-on;
++		default-brightness-level = <0>;
++		status = "disabled";
++	};
++
++	panel_lvds: panel-lvds {
++		compatible = "edt,etml0700z9ndha", "panel-lvds";
++		enable-gpios = <&gpiog 15 GPIO_ACTIVE_HIGH>;
++		backlight = <&panel_lvds_backlight>;
++		status = "okay";
++
++		width-mm = <156>;
++		height-mm = <92>;
++		data-mapping = "vesa-24";
++
++		panel-timing {
++			clock-frequency = <54000000>;
++			hactive = <1024>;
++			vactive = <600>;
++			hfront-porch = <150>;
++			hback-porch = <150>;
++			hsync-len = <21>;
++			vfront-porch = <24>;
++			vback-porch = <24>;
++			vsync-len = <21>;
++		};
++
++		port {
++			lvds_panel_in: endpoint {
++				remote-endpoint = <&lvds_out0>;
++			};
++		};
++	};
++
++	panel_lvds_backlight: panel-lvds-backlight {
++		compatible = "gpio-backlight";
++		gpios = <&gpioi 5 GPIO_ACTIVE_HIGH>;
++		default-on;
++		default-brightness-level = <0>;
++		status = "okay";
++	};
++};
++
++&arm_wdt {
++	timeout-sec = <32>;
++	status = "okay";
++};
++
++&combophy {
++	clocks = <&rcc CK_BUS_USB3PCIEPHY>, <&rcc CK_KER_USB3PCIEPHY>, <&pad_clk>;
++	clock-names = "apb-clk", "ker-clk", "pad-clk";
++	status = "okay";
++};
++
++&csi2host {
++	status = "okay";
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			csi2host_sink: endpoint {
++				remote-endpoint = <&imx335_ep>;
++				data-lanes = <0 1>;
++				bus-type = <4>;
++			};
++		};
++		port@1 {
++			reg = <1>;
++			csi2host_source: endpoint {
++				remote-endpoint = <&dcmipp_0>;
++			};
++		};
++	};
++};
++
++&dcmipp {
++	status = "okay";
++	port {
++		dcmipp_0: endpoint {
++			remote-endpoint = <&csi2host_source>;
++			bus-type = <4>;
++		};
++	};
++};
++
++&dsi {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "disabled";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dsi_in: endpoint {
++				remote-endpoint = <&ltdc_ep1_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dsi_out1: endpoint {
++				remote-endpoint = <&panel_in_dsi>;
++			};
++		};
++
++		port@2 {
++			reg = <2>;
++			dsi_out2: endpoint {
++				remote-endpoint = <&adv7535_in>;
++			};
++		};
++	};
++
++	panel_dsi: panel-dsi@0 {
++		compatible = "raydium,rm68200";
++		reg = <0>;
++		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
++		backlight = <&panel_dsi_backlight >;
++		status = "disabled";
++
++		port {
++			panel_in_dsi: endpoint {
++				remote-endpoint = <&dsi_out1>;
++			};
++		};
++	};
++};
++
++&eth1 {
++	status = "okay";
++	pinctrl-0 = <&eth1_mdio_pins_a>;
++	pinctrl-names = "default";
++	phy-mode = "rgmii";
++	max-speed = <1000>;
++	st,eth-clk-sel;
++
++	fixed_link: fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++
++	mdio1 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy1_eth1: ethernet-phy@4 {
++			compatible = "ethernet-phy-id001c.c916",
++				     "ethernet-phy-ieee802.3-c22";
++			realtek,eee-disable;
++			reg = <4>;
++		};
++
++		phy2_eth1: ethernet-phy@5 {
++			compatible = "ethernet-phy-id001c.c916",
++				     "ethernet-phy-ieee802.3-c22";
++			reset-gpios =  <&gpioj 9 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <10000>;
++			reset-deassert-us = <300>;
++			realtek,eee-disable;
++			reg = <5>;
++		};
++	};
++};
++
++&eth2 {
++	status = "okay";
++	pinctrl-0 = <&eth2_rgmii_pins_a>;
++	pinctrl-names = "default";
++	phy-mode = "rgmii-id";
++	max-speed = <1000>;
++	phy-handle = <&phy1_eth2>;
++	st,eth-ptp-from-rcc;
++
++	mdio1 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++		phy1_eth2: ethernet-phy@1 {
++			compatible = "ethernet-phy-id001c.c916";
++			reset-gpios =  <&gpiog 6 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <10000>;
++			reset-deassert-us = <300>;
++			realtek,eee-disable;
++			reg = <1>;
++		};
++	};
++};
++
++&i2c2 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c2_pins_a>;
++	pinctrl-1 = <&i2c2_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <185>;
++	i2c-scl-falling-time-ns = <20>;
++	clock-frequency = <100000>;
++	status = "okay";
++	/* spare dmas for other usage */
++	/delete-property/dmas;
++	/delete-property/dma-names;
++
++	imx335: imx335@1a {
++		compatible = "sony,imx335";
++		reg = <0x1a>;
++		clocks = <&clk_ext_camera>;
++		reset-gpios = <&gpioi 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		powerdown-gpios = <&gpioi 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		status = "okay";
++
++		port {
++			imx335_ep: endpoint {
++				remote-endpoint = <&csi2host_sink>;
++				clock-lanes = <0>;
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <594000000>;
++			};
++		};
++	};
++
++	adv7535: hdmi@3d {
++		compatible = "adi,adv7535";
++		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
++		reg-names = "main", "cec", "edid", "packet";
++		status = "disabled";
++		adi,dsi-lanes = <4>;
++		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
++
++		port {
++			adv7535_in: endpoint {
++				remote-endpoint = <&dsi_out2>;
++			};
++		};
++	};
++
++	ili2511: ili2511@41 {
++		compatible = "ilitek,ili251x";
++		reg = <0x41>;
++		interrupt-parent = <&gpioi>;
++		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
++		status = "okay";
++	};
++
++	gt9147: goodix-ts@5d {
++		compatible = "goodix,gt9147";
++		reg = <0x5d>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&goodix_pins_a>;
++		panel = <&panel_dsi>;
++		interrupt-parent = <&gpioi>;
++		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++		status = "disabled";
++	};
++};
++
++&ipcc1 {
++	status = "okay";
++};
++
++&ltdc {
++	status = "okay";
++
++	port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ltdc_ep0_out: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&lvds_in>;
++		};
++
++		ltdc_ep1_out: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&dsi_in>;
++		};
++	};
++};
++
++&lvds {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			lvds_in: endpoint {
++				remote-endpoint = <&ltdc_ep0_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			lvds_out0: endpoint {
++				remote-endpoint = <&lvds_panel_in>;
++			};
++		};
++	};
++};
++
++&m33_rproc {
++	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
++	mbox-names = "vq0", "vq1", "shutdown";
++	memory-region = <&ipc_shmem_1>, <&vdev0vring0>,
++			<&vdev0vring1>, <&vdev0buffer>;
++	status = "okay";
++};
++
++&m_can1 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&m_can1_pins_a>;
++	pinctrl-1 = <&m_can1_sleep_pins_a>;
++	status = "okay";
++};
++
++&m_can3 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&m_can3_pins_a>;
++	pinctrl-1 = <&m_can3_sleep_pins_a>;
++	status = "okay";
++};
++
++&mlahb {
++	intc_rpmsg: interrupt-controller@0 {
++		compatible = "rpmsg,intc";
++		reg = <0 0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++	};
++
++	i2c_rpmsg: i2c@1 {
++		compatible = "rpmsg,i2c-controller";
++		reg = <1 0>;
++		rpmsg,dev-id = "rpmsg_i2c";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "okay";
++	};
++};
++
++&pcie_rc {
++	pinctrl-names = "default", "init";
++	pinctrl-0 = <&pcie_pins_a>;
++	pinctrl-1 = <&pcie_init_pins_a>;
++	reset-gpios = <&gpioj 8 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
++
++&rtc {
++	status = "okay";
++};
++
++&scmi_regu {
++	scmi_v3v3: voltd-v3v3 {
++		reg = <VOLTD_SCMI_STPMIC2_BUCK7>;
++		regulator-name = "v3v3";
++	};
++	scmi_vdd_emmc: voltd-vdd-emmc {
++		reg = <VOLTD_SCMI_STPMIC2_LDO2>;
++		regulator-name = "vdd_emmc";
++	};
++	scmi_vdd_sdcard: voltd-vdd-sdcard {
++		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
++		regulator-name = "vdd_sdcard";
++	};
++	scmi_vddio1: voltd-vddio1 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++	};
++};
++
++&sdmmc1 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc1_b4_pins_a>;
++	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
++	cd-gpios = <&gpiod 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++	disable-wp;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&scmi_vdd_sdcard>;
++	vqmmc-supply = <&scmi_vddio1>;
++	status = "okay";
++};
++
++&sdmmc2 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>;
++	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_a>;
++	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_a>;
++	non-removable;
++	no-sd;
++	no-sdio;
++	st,neg-edge;
++	bus-width = <8>;
++	vmmc-supply = <&scmi_vdd_emmc>;
++	vqmmc-supply = <&scmi_vddio2>;
++	mmc-ddr-1_8v;
++	mmc-hs200-1_8v;
++	status = "okay";
++};
++
++&sdmmc3 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc3_b4_pins_a>;
++	pinctrl-1 = <&sdmmc3_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc3_b4_sleep_pins_a>;
++	broken-cd;
++	disable-wp;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&scmi_v3v3>;
++	status = "disabled";
++};
++
++&spi3 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi3_pins_a>;
++	pinctrl-1 = <&spi3_sleep_pins_a>;
++	status = "disabled";
++};
++
++&spi8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi8_pins_a>;
++	pinctrl-1 = <&spi8_sleep_pins_a>;
++	status = "disabled";
++};
++
++&switch0 {
++	status = "okay";
++	pinctrl-0 = <&eth1_rgmii_pins_a>, <&eth3_rgmii_pins_a>;
++	pinctrl-names = "default";
++	phy-mode = "rgmii";
++	st,ethsw-internal-125;
++};
++
++&usart2 {
++	pinctrl-names = "default", "idle", "sleep";
++	pinctrl-0 = <&usart2_pins_a>;
++	pinctrl-1 = <&usart2_idle_pins_a>;
++	pinctrl-2 = <&usart2_sleep_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "okay";
++};
++
++&usart6 {
++	pinctrl-names = "default", "idle", "sleep";
++	pinctrl-0 = <&usart6_pins_a>;
++	pinctrl-1 = <&usart6_idle_pins_a>;
++	pinctrl-2 = <&usart6_sleep_pins_a>;
++	uart-has-rtscts;
++	status = "disabled";
++};
++
++&usb2_phy1 {
++	status = "okay";
++};
++
++&usb2_phy2 {
++	status = "okay";
++};
++
++&usbh {
++	status = "okay";
++
++	usbh_ohci: usb@482e0000 {
++		status = "disabled";
++	};
++};
++
++&usb3dr {
++	status = "okay";
++
++	dwc3: usb@48300000 {
++		maximum-speed = "high-speed";
++		dr_mode = "peripheral";
++	};
++};

@@ -33,15 +33,12 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  include/linux/pm_domain.h   |  38 ++++++++++
  2 files changed, 172 insertions(+)
 
-diff --git a/drivers/base/power/common.c b/drivers/base/power/common.c
-index 72115917e0bd..299496e1381d 100644
 --- a/drivers/base/power/common.c
 +++ b/drivers/base/power/common.c
-@@ -167,6 +167,115 @@ struct device *dev_pm_domain_attach_by_name(struct device *dev,
- }
+@@ -168,6 +168,115 @@ struct device *dev_pm_domain_attach_by_n
  EXPORT_SYMBOL_GPL(dev_pm_domain_attach_by_name);
  
-+/**
+ /**
 + * dev_pm_domain_attach_list - Associate a device with its PM domains.
 + * @dev: The device used to lookup the PM domains for.
 + * @data: The data used for attaching to the PM domains.
@@ -150,14 +147,14 @@ index 72115917e0bd..299496e1381d 100644
 +}
 +EXPORT_SYMBOL_GPL(dev_pm_domain_attach_list);
 +
- /**
++/**
   * dev_pm_domain_detach - Detach a device from its PM domain.
   * @dev: Device to detach.
-@@ -187,6 +296,31 @@ void dev_pm_domain_detach(struct device *dev, bool power_off)
- }
+  * @power_off: Used to indicate whether we should power off the device.
+@@ -188,6 +297,31 @@ void dev_pm_domain_detach(struct device
  EXPORT_SYMBOL_GPL(dev_pm_domain_detach);
  
-+/**
+ /**
 + * dev_pm_domain_detach_list - Detach a list of PM domains.
 + * @list: The list of PM domains to detach.
 + *
@@ -182,18 +179,16 @@ index 72115917e0bd..299496e1381d 100644
 +}
 +EXPORT_SYMBOL_GPL(dev_pm_domain_detach_list);
 +
- /**
++/**
   * dev_pm_domain_start - Start the device through its PM domain.
   * @dev: Device to start.
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index ebc351698090..4c753ca6d13e 100644
+  *
 --- a/include/linux/pm_domain.h
 +++ b/include/linux/pm_domain.h
-@@ -18,6 +18,33 @@
- #include <linux/spinlock.h>
+@@ -19,6 +19,33 @@
  #include <linux/cpumask.h>
  
-+/*
+ /*
 + * Flags to control the behaviour when attaching a device to its PM domains.
 + *
 + * PD_FLAG_NO_DEV_LINK:		As the default behaviour creates a device-link
@@ -220,10 +215,11 @@ index ebc351698090..4c753ca6d13e 100644
 +	u32 num_pds;
 +};
 +
- /*
++/*
   * Flags to control the behaviour of a genpd.
   *
-@@ -415,7 +442,11 @@ struct device *dev_pm_domain_attach_by_id(struct device *dev,
+  * These flags may be set in the struct generic_pm_domain's flags field by a
+@@ -415,7 +442,11 @@ struct device *dev_pm_domain_attach_by_i
  					  unsigned int index);
  struct device *dev_pm_domain_attach_by_name(struct device *dev,
  					    const char *name);
@@ -235,7 +231,7 @@ index ebc351698090..4c753ca6d13e 100644
  int dev_pm_domain_start(struct device *dev);
  void dev_pm_domain_set(struct device *dev, struct dev_pm_domain *pd);
  #else
-@@ -433,7 +464,14 @@ static inline struct device *dev_pm_domain_attach_by_name(struct device *dev,
+@@ -433,7 +464,14 @@ static inline struct device *dev_pm_doma
  {
  	return NULL;
  }
@@ -250,6 +246,3 @@ index ebc351698090..4c753ca6d13e 100644
  static inline int dev_pm_domain_start(struct device *dev)
  {
  	return 0;
--- 
-2.39.2
-

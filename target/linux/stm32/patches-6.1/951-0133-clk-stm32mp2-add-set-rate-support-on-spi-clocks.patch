@@ -19,11 +19,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 385d9f0c2c06..f18a934803cf 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -845,9 +845,9 @@ static CLK_STM32_GATE(ck_icn_p_spi6, "ck_icn_apb2", 0, GATE_SPI6);
+@@ -845,9 +845,9 @@ static CLK_STM32_GATE(ck_icn_p_spi6, "ck
  static CLK_STM32_GATE(ck_icn_p_spi7, "ck_icn_apb2", 0, GATE_SPI7);
  static CLK_STM32_GATE(ck_icn_p_spi8, "ck_icn_ls_mcu", 0, GATE_SPI8);
  
@@ -36,6 +34,3 @@ index 385d9f0c2c06..f18a934803cf 100644
  static CLK_STM32_GATE(ck_ker_spi4, "ck_flexgen_17", 0, GATE_SPI4);
  static CLK_STM32_GATE(ck_ker_spi5, "ck_flexgen_17", 0, GATE_SPI5);
  static CLK_STM32_GATE(ck_ker_spi6, "ck_flexgen_18", 0, GATE_SPI6);
--- 
-2.39.2
-

@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 4faffb2f939d..b6c316f47cb5 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -95,6 +95,7 @@ struct dcmipp_pipeline_config {
@@ -33,7 +31,7 @@ index 4faffb2f939d..b6c316f47cb5 100644
  };
  
  /* --------------------------------------------------------------------------
-@@ -130,11 +131,13 @@ static const struct dcmipp_ent_link stm32mp13_ent_links[] = {
+@@ -130,11 +131,13 @@ static const struct dcmipp_ent_link stm3
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
@@ -48,7 +46,7 @@ index 4faffb2f939d..b6c316f47cb5 100644
  };
  
  #define	ID_MAIN_ISP 3
-@@ -218,11 +221,13 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -218,11 +221,13 @@ static const struct dcmipp_ent_link stm3
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
@@ -63,7 +61,7 @@ index 4faffb2f939d..b6c316f47cb5 100644
  };
  
  /* -------------------------------------------------------------------------- */
-@@ -575,6 +580,7 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -575,6 +580,7 @@ static int dcmipp_probe(struct platform_
  		sizeof(dcmipp->mdev.model));
  	snprintf(dcmipp->mdev.bus_info, sizeof(dcmipp->mdev.bus_info),
  		 "platform:%s", DCMIPP_PDEV_NAME);
@@ -71,6 +69,3 @@ index 4faffb2f939d..b6c316f47cb5 100644
  	dcmipp->mdev.dev = &pdev->dev;
  	dcmipp->mdev.ops = &dcmipp_media_ops;
  	media_device_init(&dcmipp->mdev);
--- 
-2.39.2
-

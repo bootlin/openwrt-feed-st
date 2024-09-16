@@ -14,8 +14,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/189712
  Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index 6f846d69c5e1..fb71d574b5a5 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 @@ -16,6 +16,7 @@ properties:
@@ -26,6 +24,3 @@ index 6f846d69c5e1..fb71d574b5a5 100644
                - st,stm32mp151-pwr-mcu
                - st,stm32-syscfg
                - st,stm32-power-config
--- 
-2.39.2
-

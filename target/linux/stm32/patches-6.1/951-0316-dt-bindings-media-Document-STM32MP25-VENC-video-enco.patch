@@ -13,9 +13,6 @@ Change-Id: I340093ae379258ba6b73fd9b28eb32c1a2c51e09
  1 file changed, 63 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
-new file mode 100644
-index 000000000000..15eba8d95391
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
 @@ -0,0 +1,63 @@
@@ -82,6 +79,3 @@ index 000000000000..15eba8d95391
 +        clock-names = "venc-clk";
 +        clocks = <&rcc CK_BUS_VENC>;
 +    };
--- 
-2.39.2
-

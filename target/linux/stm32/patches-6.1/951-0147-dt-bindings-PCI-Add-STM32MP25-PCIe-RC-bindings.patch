@@ -19,9 +19,6 @@ Tested-by: Christian BRUEL <christian.bruel@st.com>
  1 file changed, 120 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-new file mode 100644
-index 000000000000..9cc8849d2966
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -0,0 +1,120 @@
@@ -145,6 +142,3 @@ index 000000000000..9cc8849d2966
 +             reset-names = "pcie";
 +             msi-parent = <&v2m0>;
 +    };
--- 
-2.39.2
-

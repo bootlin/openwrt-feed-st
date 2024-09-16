@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 7 -------
  1 file changed, 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 20caecea5eb4..27c685256251 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -1188,12 +1188,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1188,12 +1188,6 @@ static int lvds_probe(struct platform_de
  		goto err_lvds_probe;
  	}
  
@@ -32,7 +30,7 @@ index 20caecea5eb4..27c685256251 100644
  	lvds->lvds_bridge.funcs = &lvds_bridge_funcs;
  	lvds->lvds_bridge.of_node = dev->of_node;
  
-@@ -1203,7 +1197,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1203,7 +1197,6 @@ static int lvds_probe(struct platform_de
  
  
  err_lvds_probe:
@@ -40,6 +38,3 @@ index 20caecea5eb4..27c685256251 100644
  	clk_disable_unprepare(lvds->pclk);
  
  	return ret;
--- 
-2.39.2
-

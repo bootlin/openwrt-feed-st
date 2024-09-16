@@ -13,8 +13,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 90 ++++++++++++++++++--------------------
  1 file changed, 43 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 41482dd699fb..dcf7576a406b 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -266,7 +266,6 @@ struct stm_lvds {
@@ -25,7 +23,7 @@ index 41482dd699fb..dcf7576a406b 100644
  	struct clk_hw lvds_ck_px;	/* Pixel clock */
  	u32 pixel_clock_rate;		/* Pixel clock rate */
  	struct {
-@@ -575,12 +574,13 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+@@ -575,12 +574,13 @@ static int lvds_pixel_clk_enable(struct
  	struct lvds_phy_info *phy;
  	int ret;
  
@@ -44,7 +42,7 @@ index 41482dd699fb..dcf7576a406b 100644
  
  	/*
  	 * In case we are operating in dual link, PHY Slv is set before PHY
-@@ -595,7 +595,7 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+@@ -595,7 +595,7 @@ static int lvds_pixel_clk_enable(struct
  		ret = lvds_pll_enable(lvds, phy);
  		if (ret) {
  			DRM_ERROR("Unable to enable PHY PLL Slv: %d\n", ret);
@@ -53,7 +51,7 @@ index 41482dd699fb..dcf7576a406b 100644
  		}
  	}
  
-@@ -609,11 +609,18 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+@@ -609,11 +609,18 @@ static int lvds_pixel_clk_enable(struct
  		ret = lvds_pll_enable(lvds, phy);
  		if (ret) {
  			DRM_ERROR("Unable to enable PHY PLL Mst: %d\n", ret);
@@ -73,7 +71,7 @@ index 41482dd699fb..dcf7576a406b 100644
  }
  
  static void lvds_pixel_clk_disable(struct clk_hw *hw)
-@@ -634,7 +641,8 @@ static void lvds_pixel_clk_disable(struct clk_hw *hw)
+@@ -634,7 +641,8 @@ static void lvds_pixel_clk_disable(struc
  		lvds_clear(lvds, lvds->phy_slave->base + lvds->phy_slave->ofs.PxGCR,
  			   PHY_GCR_DIV_RSTN | PHY_GCR_RSTZ);
  
@@ -83,7 +81,7 @@ index 41482dd699fb..dcf7576a406b 100644
  }
  
  static unsigned long lvds_pixel_clk_recalc_rate(struct clk_hw *hw,
-@@ -1026,10 +1034,12 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+@@ -1026,10 +1034,12 @@ static void lvds_atomic_enable(struct dr
  	struct drm_crtc *crtc;
  	int ret;
  
@@ -100,7 +98,7 @@ index 41482dd699fb..dcf7576a406b 100644
  	}
  
  	connector = drm_atomic_get_new_connector_for_encoder(state,
-@@ -1063,27 +1073,9 @@ static void lvds_atomic_disable(struct drm_bridge *bridge,
+@@ -1063,27 +1073,9 @@ static void lvds_atomic_disable(struct d
  	pm_runtime_put(lvds->dev);
  }
  
@@ -128,7 +126,7 @@ index 41482dd699fb..dcf7576a406b 100644
  	.atomic_enable = lvds_atomic_enable,
  	.atomic_disable = lvds_atomic_disable,
  	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-@@ -1134,16 +1126,19 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1134,16 +1126,19 @@ static int lvds_probe(struct platform_de
  		return  PTR_ERR(lvds->vdda18_supply);
  	}
  
@@ -156,7 +154,7 @@ index 41482dd699fb..dcf7576a406b 100644
  
  	port1 = of_graph_get_port_by_id(dev->of_node, 1);
  	port2 = of_graph_get_port_by_id(dev->of_node, 2);
-@@ -1216,13 +1211,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1216,13 +1211,6 @@ static int lvds_probe(struct platform_de
  		return ret;
  	}
  
@@ -170,7 +168,7 @@ index 41482dd699fb..dcf7576a406b 100644
  	ret = lvds_pixel_clk_register(lvds);
  	if (ret) {
  		DRM_ERROR("Failed to register LVDS pixel clock: %d\n", ret);
-@@ -1232,10 +1220,18 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1232,10 +1220,18 @@ static int lvds_probe(struct platform_de
  	lvds->lvds_bridge.funcs = &lvds_bridge_funcs;
  	lvds->lvds_bridge.of_node = dev->of_node;
  
@@ -190,6 +188,3 @@ index 41482dd699fb..dcf7576a406b 100644
  	return 0;
  }
  
--- 
-2.39.2
-

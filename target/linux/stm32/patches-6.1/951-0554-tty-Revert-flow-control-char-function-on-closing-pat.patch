@@ -19,11 +19,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/tty/n_tty.c | 13 +++++++++----
  1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 4dff2f34e2d0..ad83ce5f03cb 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
-@@ -1434,10 +1434,15 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, unsigned char c,
+@@ -1434,10 +1434,15 @@ static void n_tty_receive_char_closing(s
  		c = tolower(c);
  
  	if (I_IXON(tty)) {
@@ -43,6 +41,3 @@ index 4dff2f34e2d0..ad83ce5f03cb 100644
  			start_tty(tty);
  			process_echoes(tty);
  		}
--- 
-2.39.2
-

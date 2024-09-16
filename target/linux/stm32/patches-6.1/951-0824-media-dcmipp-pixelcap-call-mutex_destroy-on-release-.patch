@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c      | 8 +++++---
  1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 4e36d33f296f..f6c892fd74ca 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -918,6 +918,7 @@ void dcmipp_pixelcap_ent_release(struct dcmipp_ent_device *ved)
+@@ -918,6 +918,7 @@ void dcmipp_pixelcap_ent_release(struct
  	struct dcmipp_pixelcap_device *vcap =
  		container_of(ved, struct dcmipp_pixelcap_device, ved);
  
@@ -30,7 +28,7 @@ index 4e36d33f296f..f6c892fd74ca 100644
  	media_entity_cleanup(ved->ent);
  	vb2_video_unregister_device(&vcap->vdev);
  }
-@@ -1123,7 +1124,7 @@ dcmipp_pixelcap_ent_init(struct device *dev, const char *entity_name,
+@@ -1123,7 +1124,7 @@ dcmipp_pixelcap_ent_init(struct device *
  	if (ret) {
  		dev_err(dev, "%s: vb2 queue init failed (err=%d)\n",
  			entity_name, ret);
@@ -39,7 +37,7 @@ index 4e36d33f296f..f6c892fd74ca 100644
  	}
  
  	/* Initialize buffer list and its lock */
-@@ -1163,12 +1164,13 @@ dcmipp_pixelcap_ent_init(struct device *dev, const char *entity_name,
+@@ -1163,12 +1164,13 @@ dcmipp_pixelcap_ent_init(struct device *
  	if (ret) {
  		dev_err(dev, "%s: video register failed (err=%d)\n",
  			vcap->vdev.name, ret);
@@ -55,6 +53,3 @@ index 4e36d33f296f..f6c892fd74ca 100644
  	media_entity_cleanup(&vcap->vdev.entity);
  err_clean_pads:
  	dcmipp_pads_cleanup(vcap->ved.pads);
--- 
-2.39.2
-

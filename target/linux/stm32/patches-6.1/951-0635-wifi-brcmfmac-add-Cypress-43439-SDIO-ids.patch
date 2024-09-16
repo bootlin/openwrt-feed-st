@@ -16,11 +16,9 @@ Signed-off-by: Marek Vasut <marex@denx.de>
  include/linux/mmc/sdio_ids.h                              | 5 ++++-
  2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-index e300278ea38c..02b7d0a639c8 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-@@ -962,6 +962,9 @@ int brcmf_sdiod_probe(struct brcmf_sdio_dev *sdiodev)
+@@ -962,6 +962,9 @@ out:
  #define BRCMF_SDIO_DEVICE(dev_id)	\
  	{SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, dev_id)}
  
@@ -30,7 +28,7 @@ index e300278ea38c..02b7d0a639c8 100644
  /* devices we support, null terminated */
  static const struct sdio_device_id brcmf_sdmmc_ids[] = {
  	BRCMF_SDIO_DEVICE(SDIO_DEVICE_ID_BROADCOM_43143),
-@@ -983,9 +986,10 @@ static const struct sdio_device_id brcmf_sdmmc_ids[] = {
+@@ -983,9 +986,10 @@ static const struct sdio_device_id brcmf
  	BRCMF_SDIO_DEVICE(SDIO_DEVICE_ID_BROADCOM_4359),
  	BRCMF_SDIO_DEVICE(SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373),
  	BRCMF_SDIO_DEVICE(SDIO_DEVICE_ID_BROADCOM_CYPRESS_43012),
@@ -42,8 +40,6 @@ index e300278ea38c..02b7d0a639c8 100644
  	{ /* end: all zeroes */ }
  };
  MODULE_DEVICE_TABLE(sdio, brcmf_sdmmc_ids);
-diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 0e4ef9c5127a..bf3c95d8eb8a 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -74,10 +74,13 @@
@@ -61,6 +57,3 @@ index 0e4ef9c5127a..bf3c95d8eb8a 100644
  #define SDIO_VENDOR_ID_MARVELL			0x02df
  #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
  #define SDIO_DEVICE_ID_MARVELL_8688_WLAN	0x9104
--- 
-2.39.2
-

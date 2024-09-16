@@ -13,11 +13,9 @@ Change-Id: Ia48218ad567ac715285dcf0b79a37e598e34e11b
  drivers/bus/stm32_sys_bus.h |  1 +
  2 files changed, 51 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bus/stm32_sys_bus.c b/drivers/bus/stm32_sys_bus.c
-index 7444d75c97d6..c94ed57ce8c4 100644
 --- a/drivers/bus/stm32_sys_bus.c
 +++ b/drivers/bus/stm32_sys_bus.c
-@@ -166,10 +166,59 @@ static int stm32_rifsc_get_access_by_node(struct sys_bus_data *pdata, struct dev
+@@ -166,10 +166,59 @@ static int stm32_rifsc_get_access_by_nod
  	return stm32_rifsc_get_access_by_id(id);
  }
  
@@ -78,8 +76,6 @@ index 7444d75c97d6..c94ed57ce8c4 100644
  	u32 reg_offset, reg_id, sec_reg_value, cid_reg_value;
  
  	if (id >= STM32MP25_RIFSC_ENTRIES)
-diff --git a/drivers/bus/stm32_sys_bus.h b/drivers/bus/stm32_sys_bus.h
-index 1e1260947700..8e5a3bba2cff 100644
 --- a/drivers/bus/stm32_sys_bus.h
 +++ b/drivers/bus/stm32_sys_bus.h
 @@ -8,5 +8,6 @@
@@ -89,6 +85,3 @@ index 1e1260947700..8e5a3bba2cff 100644
 +int stm32_rifsc_check_access_by_id(u32 id);
  
  #endif /* __ARCH_ARM_MACH_STM32MP25_SYSTEM_BUS */
--- 
-2.39.2
-

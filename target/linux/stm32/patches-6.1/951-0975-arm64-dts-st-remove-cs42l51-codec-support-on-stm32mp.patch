@@ -19,11 +19,9 @@ Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 80 +----------------------
  1 file changed, 1 insertion(+), 79 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0d8dccc58b04..978448591a7e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -165,11 +165,7 @@ panel_lvds_backlight: panel-lvds-backlight {
+@@ -165,11 +165,7 @@
  	sound {
  		compatible = "audio-graph-card";
  		label = "STM32MP25-DK";
@@ -36,7 +34,7 @@ index 0d8dccc58b04..978448591a7e 100644
  		status = "okay";
  	};
  
-@@ -380,39 +376,6 @@ ili2511: ili2511@41 {
+@@ -380,39 +376,6 @@
  		reset-gpios = <&gpioi 0 GPIO_ACTIVE_LOW>;
  		status = "okay";
  	};
@@ -76,7 +74,7 @@ index 0d8dccc58b04..978448591a7e 100644
  };
  
  &i2c8 {
-@@ -593,47 +556,6 @@ &rtc {
+@@ -593,47 +556,6 @@
  	status = "okay";
  };
  
@@ -124,6 +122,3 @@ index 0d8dccc58b04..978448591a7e 100644
  &scmi_regu {
  	scmi_vddio1: regulator@0 {
  		regulator-min-microvolt = <1800000>;
--- 
-2.39.2
-

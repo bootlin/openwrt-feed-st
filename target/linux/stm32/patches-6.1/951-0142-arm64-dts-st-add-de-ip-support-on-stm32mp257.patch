@@ -22,8 +22,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304909
  arch/arm64/boot/dts/st/stm32mp257.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-index 8c6b078584ec..9f3e137196fb 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
 @@ -8,6 +8,26 @@
@@ -53,6 +51,3 @@ index 8c6b078584ec..9f3e137196fb 100644
  		};
  	};
  };
--- 
-2.39.2
-

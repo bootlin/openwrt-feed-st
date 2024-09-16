@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
-index 1adf97e32dbc..0229f9cb95ef 100644
 --- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
 +++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
 @@ -35,6 +35,9 @@ properties:
@@ -34,6 +32,3 @@ index 1adf97e32dbc..0229f9cb95ef 100644
    port:
      $ref: /schemas/graph.yaml#/properties/port
      description: |
--- 
-2.39.2
-

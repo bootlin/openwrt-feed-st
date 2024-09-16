@@ -12,8 +12,6 @@ Change-Id: Ia5acfd0b076263d11ecce451dfe98f39dc0f65c1
  drivers/tty/serial/stm32-usart.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index 6370dc33e694..3c427f4d6350 100644
 --- a/drivers/tty/serial/stm32-usart.h
 +++ b/drivers/tty/serial/stm32-usart.h
 @@ -195,7 +195,7 @@ struct stm32_usart_info {
@@ -25,6 +23,3 @@ index 6370dc33e694..3c427f4d6350 100644
  
  #define RX_BUF_L 4096		 /* dma rx buffer length     */
  #define RX_BUF_P (RX_BUF_L / 2)	 /* dma rx buffer period     */
--- 
-2.39.2
-

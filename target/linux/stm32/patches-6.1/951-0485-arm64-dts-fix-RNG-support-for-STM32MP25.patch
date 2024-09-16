@@ -19,11 +19,9 @@ Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index e53453664384..5316e7e2dac5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1778,9 +1778,10 @@ hash: hash@42010000 {
+@@ -1778,9 +1778,10 @@
  			};
  
  			rng: rng@42020000 {
@@ -36,6 +34,3 @@ index e53453664384..5316e7e2dac5 100644
  				resets = <&rcc RNG_R>;
  				feature-domains = <&rifsc STM32MP25_RIFSC_RNG_ID>;
  				power-domains = <&CLUSTER_PD>;
--- 
-2.39.2
-

@@ -25,11 +25,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5f9c773b4f50..c3904e3ce9d9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2314,7 +2314,7 @@ gpiok: gpio@442e0000 {
+@@ -2314,7 +2314,7 @@
  		};
  
  		rtc: rtc@46000000 {
@@ -38,6 +36,3 @@ index 5f9c773b4f50..c3904e3ce9d9 100644
  			reg = <0x46000000 0x400>;
  			clocks = <&scmi_clk CK_SCMI_RTC>,
  				 <&scmi_clk CK_SCMI_RTCCK>;
--- 
-2.39.2
-

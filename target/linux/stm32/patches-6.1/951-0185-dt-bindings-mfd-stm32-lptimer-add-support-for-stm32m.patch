@@ -21,8 +21,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  .../bindings/mfd/st,stm32-lptimer.yaml        | 20 ++++++++++++++-----
  1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-index 0dcd4da3621c..e6adc37c59b9 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 @@ -21,7 +21,9 @@ maintainers:
@@ -80,6 +78,3 @@ index 0dcd4da3621c..e6adc37c59b9 100644
  
        reg:
          description: Identify trigger hardware block.
--- 
-2.39.2
-

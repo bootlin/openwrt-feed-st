@@ -15,8 +15,6 @@ Tested-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml        | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 484ca03e53e7..57e02b51443f 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -16,7 +16,9 @@ maintainers:
@@ -30,6 +28,3 @@ index 484ca03e53e7..57e02b51443f 100644
  
    reg:
      description:
--- 
-2.39.2
-

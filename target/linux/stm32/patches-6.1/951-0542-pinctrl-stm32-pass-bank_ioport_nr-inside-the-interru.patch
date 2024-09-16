@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 14ac98a955ec..a8895379644b 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -82,8 +82,11 @@
@@ -38,7 +36,7 @@ index 14ac98a955ec..a8895379644b 100644
  
  #define SYSCFG_IRQMUX_MASK GENMASK(3, 0)
  
-@@ -647,7 +650,8 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+@@ -647,7 +650,8 @@ static int stm32_gpio_domain_alloc(struc
  	parent_fwspec.fwnode = d->parent->fwnode;
  	parent_fwspec.param_count = 2;
  	parent_fwspec.param[0] = fwspec->param[0];
@@ -48,6 +46,3 @@ index 14ac98a955ec..a8895379644b 100644
  
  	irq_domain_set_hwirq_and_chip(d, virq, hwirq, &stm32_gpio_irq_chip,
  				      bank);
--- 
-2.39.2
-

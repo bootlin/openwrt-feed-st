@@ -12,11 +12,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  drivers/misc/stm32_omm.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-index 571ddab511a1..215d6835960b 100644
 --- a/drivers/misc/stm32_omm.c
 +++ b/drivers/misc/stm32_omm.c
-@@ -270,7 +270,6 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -270,7 +270,6 @@ static int stm32_omm_probe(struct platfo
  	struct device_node *child;
  	struct device_node *child_node[OMM_CHILD_NB];
  	struct stm32_omm *omm;
@@ -24,7 +22,7 @@ index 571ddab511a1..215d6835960b 100644
  	int ret;
  	u8 child_access_granted = 0;
  	u8 i, j;
-@@ -282,8 +281,7 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -282,8 +281,7 @@ static int stm32_omm_probe(struct platfo
  
  	omm->nb_child = 0;
  
@@ -34,7 +32,7 @@ index 571ddab511a1..215d6835960b 100644
  	if (IS_ERR(omm->io_base))
  		return PTR_ERR(omm->io_base);
  
-@@ -298,7 +296,6 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -298,7 +296,6 @@ static int stm32_omm_probe(struct platfo
  		}
  
  		if (!of_device_is_compatible(child, "st,stm32mp25-omi")) {
@@ -42,6 +40,3 @@ index 571ddab511a1..215d6835960b 100644
  			continue;
  		}
  
--- 
-2.39.2
-

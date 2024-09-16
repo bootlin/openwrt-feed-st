@@ -13,11 +13,9 @@ Change-Id: I34ac9aa6635c89c4b8cec4c67fde2d2f15874be2
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 87 ++++++++++++++++++++++-
  1 file changed, 86 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 3d384e24133e..76d983a70dd2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -45,6 +45,30 @@ clk_ext_cec: clk-ext-cec {
+@@ -45,6 +45,30 @@
  		};
  	};
  
@@ -48,7 +46,7 @@ index 3d384e24133e..76d983a70dd2 100644
  	gpio-keys {
  		compatible = "gpio-keys";
  
-@@ -130,7 +154,7 @@ sound {
+@@ -130,7 +154,7 @@
  			"Playback" , "MCLK",
  			"Capture" , "MCLK",
  			"MICL" , "Mic Bias";
@@ -57,10 +55,12 @@ index 3d384e24133e..76d983a70dd2 100644
  		status = "okay";
  	};
  
-@@ -424,6 +448,67 @@ lvds_out0: endpoint {
+@@ -422,6 +446,67 @@
+ 			};
+ 		};
  	};
- };
- 
++};
++
 +&mdf1 {
 +	pinctrl-names = "default", "sleep";
 +	pinctrl-0 = <&mdf_cck0_pins_a>;
@@ -120,11 +120,6 @@ index 3d384e24133e..76d983a70dd2 100644
 +			};
 +		};
 +	};
-+};
-+
+ };
+ 
  &mlahb {
- 	intc_rpmsg: interrupt-controller@1 {
- 		compatible = "rpmsg,intc";
--- 
-2.39.2
-

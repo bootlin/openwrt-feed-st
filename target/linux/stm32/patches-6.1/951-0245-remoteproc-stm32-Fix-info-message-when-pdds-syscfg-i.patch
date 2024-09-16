@@ -20,11 +20,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index e913d48db6fc..aa29f6422659 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -975,7 +975,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+@@ -975,7 +975,7 @@ static int stm32_rproc_parse_dt(struct p
  
  	err = stm32_rproc_get_syscon(np, "st,syscfg-pdds", &ddata->pdds);
  	if (err)
@@ -33,6 +31,3 @@ index e913d48db6fc..aa29f6422659 100644
  
  	*auto_boot = of_property_read_bool(np, "st,auto-boot");
  
--- 
-2.39.2
-

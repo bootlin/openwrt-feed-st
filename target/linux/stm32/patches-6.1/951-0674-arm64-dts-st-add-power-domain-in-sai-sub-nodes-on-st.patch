@@ -17,11 +17,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 177402265372..691fbf73e080 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1368,6 +1368,7 @@ sai1a: audio-controller@40290004 {
+@@ -1368,6 +1368,7 @@
  					clocks = <&rcc CK_KER_SAI1>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 73 0x43 0x21 0>;
@@ -29,7 +27,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  
-@@ -1378,6 +1379,7 @@ sai1b: audio-controller@40290024 {
+@@ -1378,6 +1379,7 @@
  					clocks = <&rcc CK_KER_SAI1>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 74 0x43 0x12 0>;
@@ -37,7 +35,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  			};
-@@ -1403,6 +1405,7 @@ sai2a: audio-controller@402a0004 {
+@@ -1403,6 +1405,7 @@
  					clocks = <&rcc CK_KER_SAI2>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 75 0x43 0x21 0>;
@@ -45,7 +43,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  
-@@ -1413,6 +1416,7 @@ sai2b: audio-controller@402a0024 {
+@@ -1413,6 +1416,7 @@
  					clocks = <&rcc CK_KER_SAI2>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 76 0x43 0x12 0>;
@@ -53,7 +51,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  			};
-@@ -1438,6 +1442,7 @@ sai3a: audio-controller@402b0004 {
+@@ -1438,6 +1442,7 @@
  					clocks = <&rcc CK_KER_SAI3>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 77 0x43 0x21 0>;
@@ -61,7 +59,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  
-@@ -1448,6 +1453,7 @@ sai3b: audio-controller@502b0024 {
+@@ -1448,6 +1453,7 @@
  					clocks = <&rcc CK_KER_SAI3>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 78 0x43 0x12 0>;
@@ -69,7 +67,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  			};
-@@ -1533,6 +1539,7 @@ sai4a: audio-controller@40340004 {
+@@ -1533,6 +1539,7 @@
  					clocks = <&rcc CK_KER_SAI4>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 79 0x63 0x21 0>;
@@ -77,7 +75,7 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  
-@@ -1543,6 +1550,7 @@ sai4b: audio-controller@40340024 {
+@@ -1543,6 +1550,7 @@
  					clocks = <&rcc CK_KER_SAI4>;
  					clock-names = "sai_ck";
  					dmas = <&hpdma 80 0x43 0x12 0>;
@@ -85,6 +83,3 @@ index 177402265372..691fbf73e080 100644
  					status = "disabled";
  				};
  			};
--- 
-2.39.2
-

@@ -18,8 +18,6 @@ Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/lvds.c | 17 ++++++++++++-----
  1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index da68234d6caa..d8a578992605 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -264,6 +264,7 @@ struct stm_lvds {
@@ -30,7 +28,7 @@ index da68234d6caa..d8a578992605 100644
  	struct clk_hw lvds_ck_px;	/* Pixel clock */
  	u32 pixel_clock_rate;		/* Pixel clock rate */
  	struct {
-@@ -1025,6 +1026,13 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+@@ -1025,6 +1026,13 @@ static void lvds_atomic_enable(struct dr
  		return;
  	}
  
@@ -44,7 +42,7 @@ index da68234d6caa..d8a578992605 100644
  	connector = drm_atomic_get_new_connector_for_encoder(state,
  							     bridge->encoder);
  	crtc = drm_atomic_get_new_connector_state(state, connector)->crtc;
-@@ -1074,7 +1082,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1074,7 +1082,6 @@ static int lvds_probe(struct platform_de
  	struct device_node *port1, *port2, *remote;
  	struct stm_lvds *lvds;
  	struct reset_control *rstc;
@@ -52,7 +50,7 @@ index da68234d6caa..d8a578992605 100644
  	int ret, dual_link;
  
  	DRM_DEBUG_DRIVER("Probing LVDS driver...\n");
-@@ -1193,14 +1200,14 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1193,14 +1200,14 @@ static int lvds_probe(struct platform_de
  		goto err_lvds_probe;
  	}
  
@@ -71,6 +69,3 @@ index da68234d6caa..d8a578992605 100644
  	if (ret) {
  		DRM_ERROR("Could not set parent clock: %d\n", ret);
  		goto err_lvds_clk_parent;
--- 
-2.39.2
-

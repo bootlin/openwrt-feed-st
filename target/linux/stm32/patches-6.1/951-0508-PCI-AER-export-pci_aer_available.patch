@@ -16,8 +16,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/pcie/aer.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 5426f450ce91..825a4d49ca9e 100644
 --- a/drivers/pci/pcie/aer.c
 +++ b/drivers/pci/pcie/aer.c
 @@ -118,6 +118,7 @@ bool pci_aer_available(void)
@@ -28,6 +26,3 @@ index 5426f450ce91..825a4d49ca9e 100644
  
  #ifdef CONFIG_PCIE_ECRC
  
--- 
-2.39.2
-

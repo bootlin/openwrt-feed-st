@@ -37,8 +37,6 @@ Change-Id: Ic79638b94b43918e3ec53caeac1428e0d90ad8a7
  drivers/mtd/hyperbus/hyperbus-stm32.c | 95 +++++++++++++++++++++------
  1 file changed, 74 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index 5bfccad8d480..967147dc498e 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
 @@ -7,6 +7,8 @@
@@ -50,7 +48,7 @@ index 5bfccad8d480..967147dc498e 100644
  struct stm32_hyperbus {
  	struct device *dev;
  	struct hyperbus_ctlr ctlr;
-@@ -26,7 +28,12 @@ static void stm32_hyperbus_copy_from(struct hyperbus_device *hbdev, void *to,
+@@ -26,7 +28,12 @@ static void stm32_hyperbus_copy_from(str
  		container_of(hbdev, struct stm32_hyperbus, hbdev);
  	struct stm32_omi *omi = hyperbus->omi;
  
@@ -63,7 +61,7 @@ index 5bfccad8d480..967147dc498e 100644
  }
  
  static void stm32_hyperbus_set_mode(struct stm32_hyperbus *hyperbus, u8 mode)
-@@ -56,6 +63,8 @@ static u16 stm32_hyperbus_read16(struct hyperbus_device *hbdev, unsigned long ad
+@@ -56,6 +63,8 @@ static u16 stm32_hyperbus_read16(struct
  	void __iomem *regs_base = omi->regs_base;
  	u16 data;
  
@@ -72,7 +70,7 @@ index 5bfccad8d480..967147dc498e 100644
  	stm32_hyperbus_set_mode(hyperbus, CR_FMODE_INDR);
  	writel(addr, regs_base + OSPI_AR);
  	stm32_omi_tx_poll(omi, (u8 *)&data, 2, true);
-@@ -68,6 +77,9 @@ static u16 stm32_hyperbus_read16(struct hyperbus_device *hbdev, unsigned long ad
+@@ -68,6 +77,9 @@ static u16 stm32_hyperbus_read16(struct
  
  	stm32_hyperbus_set_mode(hyperbus, CR_FMODE_MM);
  
@@ -82,7 +80,7 @@ index 5bfccad8d480..967147dc498e 100644
  	return data;
  }
  
-@@ -79,6 +91,8 @@ static void stm32_hyperbus_write16(struct hyperbus_device *hbdev,
+@@ -79,6 +91,8 @@ static void stm32_hyperbus_write16(struc
  	struct stm32_omi *omi = hyperbus->omi;
  	void __iomem *regs_base = omi->regs_base;
  
@@ -91,7 +89,7 @@ index 5bfccad8d480..967147dc498e 100644
  	stm32_hyperbus_set_mode(hyperbus, CR_FMODE_INDW);
  	writel(addr, regs_base + OSPI_AR);
  	stm32_omi_tx_poll(omi, (u8 *)&data, 2, false);
-@@ -90,6 +104,9 @@ static void stm32_hyperbus_write16(struct hyperbus_device *hbdev,
+@@ -90,6 +104,9 @@ static void stm32_hyperbus_write16(struc
  		__func__, data, addr >> 1);
  
  	stm32_hyperbus_set_mode(hyperbus, CR_FMODE_MM);
@@ -101,7 +99,7 @@ index 5bfccad8d480..967147dc498e 100644
  }
  
  static int stm32_hyperbus_check_transfert(struct stm32_omi *omi)
-@@ -210,14 +227,21 @@ static int __maybe_unused stm32_hyperbus_suspend(struct device *dev)
+@@ -210,14 +227,21 @@ static int __maybe_unused stm32_hyperbus
  	struct stm32_omi *omi = hyperbus->omi;
  	void __iomem *regs_base = omi->regs_base;
  	u32 cr;
@@ -125,7 +123,7 @@ index 5bfccad8d480..967147dc498e 100644
  }
  
  static int __maybe_unused stm32_hyperbus_resume(struct device *dev)
-@@ -226,13 +250,21 @@ static int __maybe_unused stm32_hyperbus_resume(struct device *dev)
+@@ -226,13 +250,21 @@ static int __maybe_unused stm32_hyperbus
  	struct stm32_omi *omi = hyperbus->omi;
  	int ret;
  
@@ -149,7 +147,7 @@ index 5bfccad8d480..967147dc498e 100644
  	return 0;
  }
  
-@@ -255,8 +287,10 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -255,8 +287,10 @@ static int stm32_hyperbus_probe(struct p
  		return -ENOMEM;
  
  	hyperbus->omi = omi;
@@ -161,7 +159,7 @@ index 5bfccad8d480..967147dc498e 100644
  
  	/* mandatory for HyperFlash */
  	if (!omi->mm_size) {
-@@ -270,11 +304,13 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -270,11 +304,13 @@ static int stm32_hyperbus_probe(struct p
  		return -EINVAL;
  	}
  
@@ -179,7 +177,7 @@ index 5bfccad8d480..967147dc498e 100644
  
  	if (omi->rstc) {
  		reset_control_assert(omi->rstc);
-@@ -285,19 +321,19 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -285,19 +321,19 @@ static int stm32_hyperbus_probe(struct p
  	flash = of_get_next_child(parent->of_node, NULL);
  	if (!flash) {
  		dev_warn(&pdev->dev, "No flash node found\n");
@@ -202,7 +200,7 @@ index 5bfccad8d480..967147dc498e 100644
  	}
  	hyperbus->flash_freq = value;
  
-@@ -308,23 +344,31 @@ static int stm32_hyperbus_probe(struct platform_device *pdev)
+@@ -308,23 +344,31 @@ static int stm32_hyperbus_probe(struct p
  
  	hyperbus->wzl = of_property_read_bool(flash, "st,wzl");
  
@@ -242,7 +240,7 @@ index 5bfccad8d480..967147dc498e 100644
  
  	return ret;
  }
-@@ -333,9 +377,18 @@ static int stm32_hyperbus_remove(struct platform_device *pdev)
+@@ -333,9 +377,18 @@ static int stm32_hyperbus_remove(struct
  {
  	struct stm32_hyperbus *hyperbus = platform_get_drvdata(pdev);
  	struct stm32_omi *omi = hyperbus->omi;
@@ -262,6 +260,3 @@ index 5bfccad8d480..967147dc498e 100644
  
  	return 0;
  }
--- 
-2.39.2
-

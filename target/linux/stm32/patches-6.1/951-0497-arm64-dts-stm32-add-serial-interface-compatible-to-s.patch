@@ -19,11 +19,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5da4ce6c1975..a61bde9805fa 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1607,39 +1607,57 @@ mdf1: mdf@404d0000 {
+@@ -1607,39 +1607,57 @@
  				clocks = <&rcc CK_KER_MDF1>;
  				clock-names = "ker_ck";
  				clock-ranges;
@@ -81,6 +79,3 @@ index 5da4ce6c1975..a61bde9805fa 100644
  				};
  
  				filter0: filter@84 {
--- 
-2.39.2
-

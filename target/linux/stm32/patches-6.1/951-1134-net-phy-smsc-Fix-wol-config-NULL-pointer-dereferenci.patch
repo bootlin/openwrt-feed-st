@@ -31,11 +31,9 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  drivers/net/phy/smsc.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
-index ec48a9fca826..0d08f1739f3c 100644
 --- a/drivers/net/phy/smsc.c
 +++ b/drivers/net/phy/smsc.c
-@@ -108,6 +108,9 @@ static int smsc_phy_config_wol(struct phy_device *phydev)
+@@ -108,6 +108,9 @@ static int smsc_phy_config_wol(struct ph
  	int i, wol_ctrl, wol_filter;
  	u16 pwd[3] = {0, 0, 0};
  
@@ -45,6 +43,3 @@ index ec48a9fca826..0d08f1739f3c 100644
  	/* Write @MAC in LAN8742_MMD3_MAC_ADDRA/B/C registers */
  	const u8 *mac_addr = phydev->attached_dev->dev_addr;
  	/* Store the device address for the magic packet */
--- 
-2.39.2
-

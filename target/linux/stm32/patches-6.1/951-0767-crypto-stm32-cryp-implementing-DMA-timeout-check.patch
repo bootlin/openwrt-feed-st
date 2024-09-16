@@ -22,8 +22,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 22 ++++++++++++++++++++--
  1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index d4e62bce024a..92ed1a97c7af 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
 @@ -186,6 +186,7 @@ struct stm32_cryp {
@@ -34,7 +32,7 @@ index d4e62bce024a..92ed1a97c7af 100644
  
  	struct dma_chan         *dma_lch_in;
  	struct dma_chan         *dma_lch_out;
-@@ -761,6 +762,8 @@ static void stm32_cryp_dma_callback(void *param)
+@@ -761,6 +762,8 @@ static void stm32_cryp_dma_callback(void
  	int ret;
  	u32 reg;
  
@@ -43,7 +41,7 @@ index d4e62bce024a..92ed1a97c7af 100644
  	dma_sync_sg_for_device(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
  	dma_unmap_sg(cryp->dev, cryp->in_sg, cryp->in_sg_len, DMA_TO_DEVICE);
  	dma_unmap_sg(cryp->dev, cryp->out_sg, cryp->out_sg_len, DMA_FROM_DEVICE);
-@@ -885,6 +888,7 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+@@ -885,6 +888,7 @@ static int stm32_cryp_dma_start(struct s
  		return -EINVAL;
  	}
  
@@ -51,7 +49,7 @@ index d4e62bce024a..92ed1a97c7af 100644
  	tx_out->callback = stm32_cryp_dma_callback;
  	tx_out->callback_param = cryp;
  
-@@ -913,6 +917,12 @@ static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
+@@ -913,6 +917,12 @@ static int stm32_cryp_dma_start(struct s
  	reg = stm32_cryp_read(cryp, CRYP_DMACR);
  	stm32_cryp_write(cryp, CRYP_DMACR, reg | DMACR_DOEN | DMACR_DIEN);
  
@@ -64,7 +62,7 @@ index d4e62bce024a..92ed1a97c7af 100644
  	return 0;
  }
  
-@@ -1613,14 +1623,20 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+@@ -1613,14 +1623,20 @@ static int stm32_cryp_cipher_one_req(str
  	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(
  			crypto_skcipher_reqtfm(req));
  	struct stm32_cryp *cryp = ctx->cryp;
@@ -87,7 +85,7 @@ index d4e62bce024a..92ed1a97c7af 100644
  }
  
  static int stm32_cryp_prepare_aead_req(struct crypto_engine *engine, void *areq)
-@@ -2134,6 +2150,8 @@ static int stm32_cryp_dma_init(struct stm32_cryp *cryp)
+@@ -2134,6 +2150,8 @@ static int stm32_cryp_dma_init(struct st
  		return err;
  	}
  
@@ -96,6 +94,3 @@ index d4e62bce024a..92ed1a97c7af 100644
  	return 0;
  }
  
--- 
-2.39.2
-

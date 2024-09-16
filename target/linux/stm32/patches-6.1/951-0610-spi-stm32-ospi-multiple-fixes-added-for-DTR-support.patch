@@ -24,8 +24,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/spi/spi-stm32-ospi.c | 711 +++++++++++++++++++++++++----------
  1 file changed, 512 insertions(+), 199 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index b9f71ee4cf32..4881dbeadc48 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -8,14 +8,20 @@
@@ -61,7 +59,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	 * 2 flash access
  	 */
  	struct mutex lock;
-@@ -52,13 +58,15 @@ static int stm32_ospi_tx_dma(struct stm32_ospi *ospi,
+@@ -52,13 +58,15 @@ static int stm32_ospi_tx_dma(struct stm3
  {
  	struct dma_async_tx_descriptor *desc;
  	struct stm32_omi *omi = ospi->omi;
@@ -78,7 +76,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  
  	if (op->data.dir == SPI_MEM_DATA_IN) {
  		dma_dir = DMA_DEV_TO_MEM;
-@@ -68,8 +76,16 @@ static int stm32_ospi_tx_dma(struct stm32_ospi *ospi,
+@@ -68,8 +76,16 @@ static int stm32_ospi_tx_dma(struct stm3
  		dma_ch = omi->dma_chtx;
  	}
  
@@ -96,7 +94,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	 * (DMA-able: in vmalloc | kmap | virt_addr_valid)
  	 */
  	err = spi_controller_dma_map_mem_op_data(ospi->ctrl, op, &sgt);
-@@ -110,13 +126,24 @@ static int stm32_ospi_tx_dma(struct stm32_ospi *ospi,
+@@ -110,13 +126,24 @@ out:
  out_unmap:
  	spi_controller_dma_unmap_mem_op_data(ospi->ctrl, op, &sgt);
  
@@ -121,7 +119,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  
  	if (!op->data.nbytes)
  		return 0;
-@@ -125,7 +152,7 @@ static int stm32_ospi_tx(struct stm32_ospi *ospi, const struct spi_mem_op *op)
+@@ -125,7 +152,7 @@ static int stm32_ospi_tx(struct stm32_os
  		return stm32_ospi_tx_mm(ospi, op);
  	else if (((op->data.dir == SPI_MEM_DATA_IN && omi->dma_chrx) ||
  		 (op->data.dir == SPI_MEM_DATA_OUT && omi->dma_chtx)) &&
@@ -130,7 +128,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  		if (!stm32_ospi_tx_dma(ospi, op))
  			return 0;
  
-@@ -134,8 +161,28 @@ static int stm32_ospi_tx(struct stm32_ospi *ospi, const struct spi_mem_op *op)
+@@ -134,8 +161,28 @@ static int stm32_ospi_tx(struct stm32_os
  	else
  		buf = (u8 *)op->data.buf.out;
  
@@ -161,7 +159,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  }
  
  static int stm32_ospi_wait_poll_status(struct stm32_ospi *ospi,
-@@ -176,7 +223,7 @@ static void stm32_ospi_set_prescaler(struct stm32_ospi *ospi, u32 presc)
+@@ -176,7 +223,7 @@ static void stm32_ospi_set_prescaler(str
  	void __iomem *regs_base = omi->regs_base;
  	u32 dcr2;
  
@@ -170,7 +168,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	dcr2 = readl_relaxed(regs_base + OSPI_DCR2);
  	dcr2 &= ~DCR2_PRESC_MASK;
  	dcr2 |= FIELD_PREP(DCR2_PRESC_MASK, presc);
-@@ -190,40 +237,60 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -190,40 +237,60 @@ static int stm32_ospi_send(struct spi_de
  	struct stm32_omi *omi = ospi->omi;
  	void __iomem *regs_base = omi->regs_base;
  	u32 ccr, cr, tcr = 0;
@@ -253,7 +251,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  
  	if (op->addr.nbytes) {
  		ccr |= FIELD_PREP(CCR_ADMODE_MASK,
-@@ -235,23 +302,26 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -235,23 +302,26 @@ static int stm32_ospi_send(struct spi_de
  		tcr |= TCR_SSHIFT;
  
  	if (op->dummy.buswidth && op->dummy.nbytes) {
@@ -286,7 +284,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  
  	if (omi->fmode == CR_FMODE_APM)
  		err_poll_status = stm32_ospi_wait_poll_status(ospi, op);
-@@ -268,7 +338,7 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -268,7 +338,7 @@ static int stm32_ospi_send(struct spi_de
  	if (err || err_poll_status || omi->fmode == CR_FMODE_MM)
  		goto abort;
  
@@ -295,7 +293,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	err = stm32_omi_wait_cmd(omi);
  	if (err)
  		goto abort;
-@@ -279,13 +349,294 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -279,13 +349,294 @@ abort:
  	timeout = stm32_omi_abort(omi);
  	writel_relaxed(FCR_CTCF | FCR_CSMF, regs_base + OSPI_FCR);
  
@@ -591,7 +589,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  static int stm32_ospi_poll_status(struct spi_mem *mem,
  				  const struct spi_mem_op *op,
  				  u16 mask, u16 match,
-@@ -303,15 +654,16 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -303,15 +654,16 @@ static int stm32_ospi_poll_status(struct
  		return ret;
  
  	mutex_lock(&ospi->lock);
@@ -611,7 +609,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -334,9 +686,11 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -334,9 +686,11 @@ static int stm32_ospi_exec_op(struct spi
  	else
  		omi->fmode = CR_FMODE_INDW;
  
@@ -625,7 +623,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -351,7 +705,7 @@ static int stm32_ospi_dirmap_create(struct spi_mem_dirmap_desc *desc)
+@@ -351,7 +705,7 @@ static int stm32_ospi_dirmap_create(stru
  	if (desc->info.op_tmpl.data.dir == SPI_MEM_DATA_OUT)
  		return -EOPNOTSUPP;
  
@@ -634,7 +632,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	if (!omi->mm_base && desc->info.op_tmpl.data.dir == SPI_MEM_DATA_IN)
  		return -EOPNOTSUPP;
  
-@@ -375,7 +729,8 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -375,7 +729,8 @@ static ssize_t stm32_ospi_dirmap_read(st
  		return ret;
  
  	mutex_lock(&ospi->lock);
@@ -644,7 +642,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	 * spi_mem_op template with offs, len and *buf in  order to get
  	 * all needed transfer information into struct spi_mem_op
  	 */
-@@ -392,9 +747,11 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -392,9 +747,11 @@ static ssize_t stm32_ospi_dirmap_read(st
  	else
  		omi->fmode = CR_FMODE_INDR;
  
@@ -658,7 +656,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -442,7 +799,7 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -442,7 +799,7 @@ static int stm32_ospi_transfer_one_messa
  			op.dummy.nbytes = transfer->len;
  			dummy_bytes = transfer->len;
  
@@ -667,7 +665,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  			if (list_is_last(&transfer->transfer_list, &msg->transfers)) {
  				ret = -EINVAL;
  				goto end_of_transfer;
-@@ -465,6 +822,10 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -465,6 +822,10 @@ static int stm32_ospi_transfer_one_messa
  			op.data.buf.out = transfer->tx_buf;
  		}
  
@@ -678,7 +676,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  		ret = stm32_ospi_send(spi, &op);
  		if (ret)
  			goto end_of_transfer;
-@@ -486,127 +847,6 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -486,127 +847,6 @@ end_of_transfer:
  	return ret;
  }
  
@@ -806,7 +804,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  static int stm32_ospi_setup(struct spi_device *spi)
  {
  	struct spi_controller *ctrl = spi->master;
-@@ -614,7 +854,6 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -614,7 +854,6 @@ static int stm32_ospi_setup(struct spi_d
  	struct stm32_omi *omi = ospi->omi;
  	struct stm32_ospi_flash *flash;
  	void __iomem *regs_base = omi->regs_base;
@@ -814,7 +812,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	int ret;
  
  	if (ctrl->busy)
-@@ -628,7 +867,6 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -628,7 +867,6 @@ static int stm32_ospi_setup(struct spi_d
  		return ret;
  
  	flash = &ospi->flash[spi->chip_select];
@@ -822,7 +820,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	flash->presc = DIV_ROUND_UP(omi->clk_rate, spi->max_speed_hz) - 1;
  	flash->spi = spi;
  
-@@ -637,54 +875,102 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -637,54 +875,102 @@ static int stm32_ospi_setup(struct spi_d
  	ospi->cr_reg = CR_APMS | 3 << CR_FTHRES_SHIFT | CR_EN;
  	writel_relaxed(ospi->cr_reg, regs_base + OSPI_CR);
  
@@ -949,7 +947,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  };
  
  static int stm32_ospi_probe(struct platform_device *pdev)
-@@ -695,6 +981,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -695,6 +981,7 @@ static int stm32_ospi_probe(struct platf
  	struct stm32_ospi *ospi;
  	struct stm32_omi *omi = dev_get_drvdata(parent);
  	struct dma_slave_config dma_cfg;
@@ -957,7 +955,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	int ret;
  
  	ctrl = devm_spi_alloc_master(dev, sizeof(*ospi));
-@@ -726,6 +1013,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -726,6 +1013,7 @@ static int stm32_ospi_probe(struct platf
  	ctrl->setup = stm32_ospi_setup;
  	ctrl->bus_num = -1;
  	ctrl->mem_ops = &stm32_ospi_mem_ops;
@@ -965,7 +963,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	ctrl->use_gpio_descriptors = true;
  	ctrl->transfer_one_message = stm32_ospi_transfer_one_message;
  	ctrl->num_chipselect = STM32_OMI_MAX_NORCHIP;
-@@ -745,6 +1033,31 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -745,6 +1033,31 @@ static int stm32_ospi_probe(struct platf
  		reset_control_deassert(omi->rstc);
  	}
  
@@ -997,7 +995,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	ret = spi_register_master(ctrl);
  	if (ret)
  		goto err_spi_register;
-@@ -755,7 +1068,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -755,7 +1068,7 @@ static int stm32_ospi_probe(struct platf
  	return 0;
  
  err_spi_register:
@@ -1006,7 +1004,7 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	writel_relaxed(0, omi->regs_base + OSPI_CR);
  	mutex_destroy(&ospi->lock);
  	pm_runtime_put_sync_suspend(omi->dev);
-@@ -774,7 +1087,7 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+@@ -774,7 +1087,7 @@ static int stm32_ospi_remove(struct plat
  		return ret;
  
  	spi_unregister_master(ospi->ctrl);
@@ -1015,6 +1013,3 @@ index b9f71ee4cf32..4881dbeadc48 100644
  	writel_relaxed(0, omi->regs_base + OSPI_CR);
  	stm32_omi_dlyb_stop(omi);
  	mutex_destroy(&ospi->lock);
--- 
-2.39.2
-

@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 140ff16d40bd..2be0b1a4898f 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -2601,6 +2601,7 @@ int ltdc_parse_device_tree(struct device *dev)
+@@ -2601,6 +2601,7 @@ int ltdc_parse_device_tree(struct device
  int ltdc_get_clk(struct device *dev, struct ltdc_device *ldev)
  {
  	struct device_node *node;
@@ -28,7 +26,7 @@ index 140ff16d40bd..2be0b1a4898f 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -2638,6 +2639,18 @@ int ltdc_get_clk(struct device *dev, struct ltdc_device *ldev)
+@@ -2638,6 +2639,18 @@ int ltdc_get_clk(struct device *dev, str
  			}
  			of_node_put(node);
  		}
@@ -47,6 +45,3 @@ index 140ff16d40bd..2be0b1a4898f 100644
  	}
  
  	return 0;
--- 
-2.39.2
-

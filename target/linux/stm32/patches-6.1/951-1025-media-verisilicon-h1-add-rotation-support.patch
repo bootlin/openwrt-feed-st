@@ -23,8 +23,6 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../platform/verisilicon/hantro_h1_regs.h     |  1 +
  5 files changed, 85 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index aff55bd16f00..4ec404441be8 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -236,6 +236,7 @@ struct hantro_dev {
@@ -43,7 +41,7 @@ index aff55bd16f00..4ec404441be8 100644
  
  	const struct hantro_codec_ops *codec_ops;
  	struct hantro_postproc_ctx postproc;
-@@ -502,5 +504,7 @@ int hanto_postproc_enum_framesizes(struct hantro_ctx *ctx,
+@@ -502,5 +504,7 @@ int hanto_postproc_enum_framesizes(struc
  
  void hantro_h1_set_axi_ctrl(struct hantro_dev *vpu, struct hantro_ctx *ctx);
  void hantro_h1_set_color_conv(struct hantro_dev *vpu, struct hantro_ctx *ctx);
@@ -51,11 +49,9 @@ index aff55bd16f00..4ec404441be8 100644
 +
  
  #endif /* HANTRO_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index 100dd524f2ad..afc7bcdda56e 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -285,6 +285,38 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
+@@ -285,6 +285,38 @@ static int hantro_try_ctrl(struct v4l2_c
  		if (dec_params->profile != 0)
  			return -EINVAL;
  	}
@@ -94,7 +90,7 @@ index 100dd524f2ad..afc7bcdda56e 100644
  	return 0;
  }
  
-@@ -338,6 +370,11 @@ static const struct v4l2_ctrl_ops hantro_vp9_ctrl_ops = {
+@@ -338,6 +370,11 @@ static const struct v4l2_ctrl_ops hantro
  	.s_ctrl = hantro_vp9_s_ctrl,
  };
  
@@ -106,7 +102,7 @@ index 100dd524f2ad..afc7bcdda56e 100644
  #define HANTRO_JPEG_ACTIVE_MARKERS	(V4L2_JPEG_ACTIVE_MARKER_APP0 | \
  					 V4L2_JPEG_ACTIVE_MARKER_COM | \
  					 V4L2_JPEG_ACTIVE_MARKER_DQT | \
-@@ -533,7 +570,11 @@ static int hantro_ctrls_setup(struct hantro_dev *vpu,
+@@ -533,7 +570,11 @@ static int hantro_ctrls_setup(struct han
  {
  	int i, num_ctrls = ARRAY_SIZE(controls);
  
@@ -119,7 +115,7 @@ index 100dd524f2ad..afc7bcdda56e 100644
  
  	for (i = 0; i < num_ctrls; i++) {
  		if (!(allowed_codecs & controls[i].codec))
-@@ -548,6 +589,7 @@ static int hantro_ctrls_setup(struct hantro_dev *vpu,
+@@ -548,6 +589,7 @@ static int hantro_ctrls_setup(struct han
  			v4l2_ctrl_handler_free(&ctx->ctrl_handler);
  			return ctx->ctrl_handler.error;
  		}
@@ -127,11 +123,9 @@ index 100dd524f2ad..afc7bcdda56e 100644
  	}
  	return v4l2_ctrl_handler_setup(&ctx->ctrl_handler);
  }
-diff --git a/drivers/media/platform/verisilicon/hantro_h1.c b/drivers/media/platform/verisilicon/hantro_h1.c
-index 6e800f98c79b..55390f6a97d0 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1.c
-@@ -342,3 +342,40 @@ void hantro_h1_set_axi_ctrl(struct hantro_dev *vpu, struct hantro_ctx *ctx)
+@@ -342,3 +342,40 @@ void hantro_h1_set_axi_ctrl(struct hantr
  
  	vepu_write(vpu, reg, H1_REG_AXI_CTRL);
  }
@@ -172,8 +166,6 @@ index 6e800f98c79b..55390f6a97d0 100644
 +		| H1_REG_IN_IMG_CTRL_ROTATION(hantro_rotation(ctx->rotation));
 +	vepu_write_relaxed(vpu, reg, H1_REG_IN_IMG_CTRL);
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
-index 7a0595bc77be..3ae5dace2d63 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
 @@ -15,28 +15,6 @@
@@ -205,8 +197,6 @@ index 7a0595bc77be..3ae5dace2d63 100644
  static void hantro_h1_jpeg_enc_set_buffers(struct hantro_dev *vpu,
  					   struct hantro_ctx *ctx,
  					   struct vb2_buffer *src_buf,
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 95367833582f..2a75c0afd798 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -61,6 +61,7 @@
@@ -217,6 +207,3 @@ index 95367833582f..2a75c0afd798 100644
  #define H1_REG_ENC_CTRL0				0x040
  #define    H1_REG_ENC_CTRL0_INIT_QP(x)			((x) << 26)
  #define    H1_REG_ENC_CTRL0_SLICE_ALPHA(x)		((x) << 22)
--- 
-2.39.2
-

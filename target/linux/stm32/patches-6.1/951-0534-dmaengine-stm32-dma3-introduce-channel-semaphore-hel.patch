@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32-dma3.c | 59 ++++++++++++++++++++++++++++++++--------
  1 file changed, 48 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index d0040a44d813..9d5560540630 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
 @@ -383,6 +383,7 @@ struct stm32_dma3_chan {
@@ -32,7 +30,7 @@ index d0040a44d813..9d5560540630 100644
  	struct stm32_dma3_dt_conf dt_config;
  	struct dma_slave_config dma_config;
  	u8 config_set;
-@@ -1430,13 +1431,56 @@ static irqreturn_t stm32_dma3_chan_irq(int irq, void *devid)
+@@ -1430,13 +1431,56 @@ static irqreturn_t stm32_dma3_chan_irq(i
  	return IRQ_HANDLED;
  }
  
@@ -90,7 +88,7 @@ index d0040a44d813..9d5560540630 100644
  	int ret;
  
  	ret = pm_runtime_resume_and_get(ddata->dma_dev.dev);
-@@ -1451,16 +1495,9 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1451,16 +1495,9 @@ static int stm32_dma3_alloc_chan_resourc
  
  	/* Take the channel semaphore */
  	if (chan->semaphore_mode) {
@@ -109,7 +107,7 @@ index d0040a44d813..9d5560540630 100644
  	}
  
  	return 0;
-@@ -1489,7 +1526,7 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1489,7 +1526,7 @@ static void stm32_dma3_free_chan_resourc
  
  	/* Release the channel semaphore */
  	if (chan->semaphore_mode)
@@ -118,6 +116,3 @@ index d0040a44d813..9d5560540630 100644
  
  	pm_runtime_put_sync(ddata->dma_dev.dev);
  
--- 
-2.39.2
-

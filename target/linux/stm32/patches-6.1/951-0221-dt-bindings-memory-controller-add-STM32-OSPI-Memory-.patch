@@ -16,9 +16,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  1 file changed, 200 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-new file mode 100644
-index 000000000000..5aca4a8d46d2
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -0,0 +1,200 @@
@@ -222,6 +219,3 @@ index 000000000000..5aca4a8d46d2
 +        st,tacc-ns = <48>;
 +      };
 +    };
--- 
-2.39.2
-

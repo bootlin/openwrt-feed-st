@@ -17,8 +17,6 @@ Change-Id: Idad512702897622e00c903a456e82e0af11fac93
  drivers/pci/controller/dwc/pcie-stm32.c | 36 +++++++++++++++++++++++++
  1 file changed, 36 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index f2e496807d46..44a15b952213 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -24,6 +24,7 @@ struct stm32_pcie {
@@ -29,7 +27,7 @@ index f2e496807d46..44a15b952213 100644
  };
  
  static const struct of_device_id stm32_pcie_of_match[] = {
-@@ -31,6 +32,35 @@ static const struct of_device_id stm32_pcie_of_match[] = {
+@@ -31,6 +32,35 @@ static const struct of_device_id stm32_p
  	{},
  };
  
@@ -65,7 +63,7 @@ index f2e496807d46..44a15b952213 100644
  static int stm32_pcie_start_link(struct dw_pcie *pci)
  {
  	struct stm32_pcie *stm32_pcie = to_stm32_pcie(pci);
-@@ -71,6 +101,7 @@ static void stm32_pcie_stop_link(struct dw_pcie *pci)
+@@ -71,6 +101,7 @@ static void stm32_pcie_stop_link(struct
  }
  
  static const struct dw_pcie_host_ops stm32_pcie_host_ops = {
@@ -73,7 +71,7 @@ index f2e496807d46..44a15b952213 100644
  };
  
  static const struct dw_pcie_ops dw_pcie_ops = {
-@@ -155,6 +186,11 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -155,6 +186,11 @@ static int stm32_pcie_probe(struct platf
  		return dev_err_probe(dev, PTR_ERR(stm32_pcie->rst),
  				     "Failed to get PCIe reset\n");
  
@@ -85,6 +83,3 @@ index f2e496807d46..44a15b952213 100644
  	stm32_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
  	if (IS_ERR(stm32_pcie->reset_gpio))
  		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 24 +++++++++----------
  1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 5af583fd6315..861b74c4fff0 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -72,18 +72,18 @@ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+@@ -72,18 +72,18 @@ static const struct dcmipp_byteproc_pix_
  	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1, MIPI_CSI2_DT_RAW8),
  	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1, MIPI_CSI2_DT_RAW8),
  	PIXMAP_MBUS_BPP(SRGGB8_1X8, 1, MIPI_CSI2_DT_RAW8),
@@ -53,6 +51,3 @@ index 5af583fd6315..861b74c4fff0 100644
  	PIXMAP_MBUS_BPP(JPEG_1X8, 1, 0x00), /* TODO - DT value to be fixed */
  };
  
--- 
-2.39.2
-

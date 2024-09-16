@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/i2c/busses/i2c-rpmsg.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rpmsg.c b/drivers/i2c/busses/i2c-rpmsg.c
-index 9f1bb4435a5b..33f59975c4d0 100644
 --- a/drivers/i2c/busses/i2c-rpmsg.c
 +++ b/drivers/i2c/busses/i2c-rpmsg.c
-@@ -124,7 +124,7 @@ static int rpmsg_i2c_write(struct rpmsg_i2c_dev *ri2c_dev, struct i2c_msg *msg)
+@@ -124,7 +124,7 @@ static int rpmsg_i2c_write(struct rpmsg_
  
  	dev_dbg(&rpdev->dev, "%s: %x (len=%d)", __func__, r_msg->addr, r_msg->count);
  	ri2c_dev->is_write = true;
@@ -30,7 +28,7 @@ index 9f1bb4435a5b..33f59975c4d0 100644
  
  	ret = rpmsg_send(rpdev->ept, r_msg, msg_size);
  	if (ret) {
-@@ -161,7 +161,7 @@ static int rpmsg_i2c_read(struct rpmsg_i2c_dev *ri2c_dev, struct i2c_msg *msg)
+@@ -161,7 +161,7 @@ static int rpmsg_i2c_read(struct rpmsg_i
  	r_msg->result = 0;
  
  	ri2c_dev->is_read = true;
@@ -39,7 +37,7 @@ index 9f1bb4435a5b..33f59975c4d0 100644
  
  	dev_dbg(&rpdev->dev, "%s: %x (len=%d)", __func__, r_msg->addr, r_msg->count);
  
-@@ -291,6 +291,7 @@ static int rpmsg_i2c_probe(struct rpmsg_device *rpdev)
+@@ -291,6 +291,7 @@ static int rpmsg_i2c_probe(struct rpmsg_
  	adap->algo = &rpmsg_i2c_algo;
  	adap->dev.parent = ri2c_dev->dev;
  	adap->dev.of_node = ri2c_dev->dev->of_node;
@@ -47,6 +45,3 @@ index 9f1bb4435a5b..33f59975c4d0 100644
  
  	/* match between proc id and service name */
  	dev_info(&rpdev->dev, "new channel: 0x%x -> 0x%x!\n",
--- 
-2.39.2
-

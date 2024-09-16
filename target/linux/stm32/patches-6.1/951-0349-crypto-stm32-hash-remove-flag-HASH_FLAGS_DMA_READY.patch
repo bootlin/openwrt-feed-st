@@ -20,8 +20,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/crypto/stm32/stm32-hash.c | 21 ++++++++-------------
  1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-hash.c b/drivers/crypto/stm32/stm32-hash.c
-index f5db56e98376..0d7d71b6585d 100644
 --- a/drivers/crypto/stm32/stm32-hash.c
 +++ b/drivers/crypto/stm32/stm32-hash.c
 @@ -84,12 +84,11 @@
@@ -42,7 +40,7 @@ index f5db56e98376..0d7d71b6585d 100644
  #define HASH_FLAGS_FINAL		BIT(15)
  #define HASH_FLAGS_FINUP		BIT(16)
  #define HASH_FLAGS_ALGO_MASK		GENMASK(20, 17)
-@@ -585,8 +584,6 @@ static void stm32_hash_dma_callback(void *param)
+@@ -585,8 +584,6 @@ static void stm32_hash_dma_callback(void
  	struct stm32_hash_dev *hdev = param;
  
  	complete(&hdev->dma_completion);
@@ -51,7 +49,7 @@ index f5db56e98376..0d7d71b6585d 100644
  }
  
  static int stm32_hash_hmac_dma_send(struct stm32_hash_dev *hdev)
-@@ -1249,11 +1246,9 @@ static irqreturn_t stm32_hash_irq_thread(int irq, void *dev_id)
+@@ -1249,11 +1246,9 @@ static irqreturn_t stm32_hash_irq_thread
  			hdev->flags &= ~HASH_FLAGS_OUTPUT_READY;
  			goto finish;
  		}
@@ -66,6 +64,3 @@ index f5db56e98376..0d7d71b6585d 100644
  	}
  
  	return IRQ_HANDLED;
--- 
-2.39.2
-

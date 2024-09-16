@@ -20,8 +20,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../bindings/mailbox/st,stm32-ipcc.yaml         | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
-index 2c8b47285aa3..2ea07e8f8d77 100644
 --- a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
 +++ b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
 @@ -11,6 +11,8 @@ description:
@@ -59,6 +57,3 @@ index 2c8b47285aa3..2ea07e8f8d77 100644
 +    mbox_clt2 {
 +      mboxes = <&ipcc 0x102>, <&ipcc 103>;
 +    };
--- 
-2.39.2
-

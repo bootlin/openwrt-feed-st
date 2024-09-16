@@ -20,8 +20,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-index 57688866f2f5..7aaaef7f4e93 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -83,6 +83,9 @@ properties:
@@ -34,6 +32,3 @@ index 57688866f2f5..7aaaef7f4e93 100644
    feature-domains:
      maxItems: 1
  
--- 
-2.39.2
-

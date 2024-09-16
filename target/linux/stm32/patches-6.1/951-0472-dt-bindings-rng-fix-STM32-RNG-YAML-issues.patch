@@ -19,8 +19,6 @@ Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 16d7440fb369..59abdc85a9fb 100644
 --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 @@ -4,7 +4,7 @@
@@ -45,6 +43,3 @@ index 16d7440fb369..59abdc85a9fb 100644
  
    reg:
      maxItems: 1
--- 
-2.39.2
-

@@ -18,11 +18,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  include/memory/stm32-omi.h | 1 +
  2 files changed, 8 insertions(+)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 72eda1807a11..9fda9ab80012 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -435,6 +435,7 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -435,6 +435,7 @@ static int stm32_omi_probe(struct platfo
  	u8 spi_flash_count = 0;
  	u8 child_count = 0;
  	int ret;
@@ -30,7 +28,7 @@ index 72eda1807a11..9fda9ab80012 100644
  
  	/*
  	 * Flash subnodes sanity check:
-@@ -446,6 +447,11 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -446,6 +447,11 @@ static int stm32_omi_probe(struct platfo
  		if (of_device_is_compatible(child, "cfi-flash"))
  			hyperflash_count++;
  
@@ -42,7 +40,7 @@ index 72eda1807a11..9fda9ab80012 100644
  		if (of_device_is_compatible(child, "jedec,spi-nor") ||
  		    of_device_is_compatible(child, "spi-nand") ||
  		    of_device_is_compatible(child, "st,octal-bus"))
-@@ -480,6 +486,7 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -480,6 +486,7 @@ static int stm32_omi_probe(struct platfo
  	if (!omi)
  		return -ENOMEM;
  
@@ -50,8 +48,6 @@ index 72eda1807a11..9fda9ab80012 100644
  	omi->regs_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
  	if (IS_ERR(omi->regs_base))
  		return PTR_ERR(omi->regs_base);
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index 8ebd788e07ad..5799e3640398 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -175,6 +175,7 @@ struct stm32_omi {
@@ -62,6 +58,3 @@ index 8ebd788e07ad..5799e3640398 100644
  
  	int (*check_transfer)(struct stm32_omi *omi);
  };
--- 
-2.39.2
-

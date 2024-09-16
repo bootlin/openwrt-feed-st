@@ -22,8 +22,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
-index 0d90c587f4e3..67a4414287f1 100644
 --- a/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
 +++ b/Documentation/devicetree/bindings/media/st,stm32-csi2host.yaml
 @@ -32,6 +32,9 @@ properties:
@@ -36,6 +34,3 @@ index 0d90c587f4e3..67a4414287f1 100644
    ports:
      $ref: /schemas/graph.yaml#/properties/ports
  
--- 
-2.39.2
-

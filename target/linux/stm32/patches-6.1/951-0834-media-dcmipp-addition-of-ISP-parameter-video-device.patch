@@ -26,8 +26,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  2 files changed, 551 insertions(+)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index 05ebf0789ad0..cb5d819f2ada 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -1,5 +1,6 @@
@@ -37,9 +35,6 @@ index 05ebf0789ad0..cb5d819f2ada 100644
 +stm32-dcmipp-y += dcmipp-isp-params.o
  
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
-new file mode 100644
-index 000000000000..ceb5ab6eb324
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 @@ -0,0 +1,550 @@
@@ -593,6 +588,3 @@ index 000000000000..ceb5ab6eb324
 +
 +	return ERR_PTR(ret);
 +}
--- 
-2.39.2
-

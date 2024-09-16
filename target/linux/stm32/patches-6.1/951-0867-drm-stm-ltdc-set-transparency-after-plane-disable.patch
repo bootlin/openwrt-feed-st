@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 699e1fb4e4fa..3d79df9b5656 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1752,6 +1752,9 @@ static void ltdc_plane_atomic_disable(struct drm_plane *plane,
+@@ -1752,6 +1752,9 @@ static void ltdc_plane_atomic_disable(st
  	/* Disable layer */
  	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_MASK, 0);
  
@@ -29,6 +27,3 @@ index 699e1fb4e4fa..3d79df9b5656 100644
  	/* Commit shadow registers = update plane at next vblank */
  	if (ldev->caps.plane_reg_shadow)
  		regmap_write_bits(ldev->regmap, LTDC_L1RCR + lofs,
--- 
-2.39.2
-

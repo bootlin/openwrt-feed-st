@@ -19,8 +19,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c         | 13 -------------
  4 files changed, 28 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 22ccd81efd60..62fbadb189c6 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 @@ -142,7 +142,6 @@ struct dcmipp_bytecap_device {
@@ -31,7 +29,7 @@ index 22ccd81efd60..62fbadb189c6 100644
  
  	u32 cmier;
  	u32 cmsr2;
-@@ -693,17 +692,6 @@ static void dcmipp_bytecap_stop_streaming(struct vb2_queue *vq)
+@@ -693,17 +692,6 @@ static void dcmipp_bytecap_stop_streamin
  
  	pm_runtime_put(vcap->cdev);
  
@@ -49,7 +47,7 @@ index 22ccd81efd60..62fbadb189c6 100644
  	if (vcap->errors_count)
  		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d, limit=%d, nactive=%d), underrun=%d, buffers=%d\n",
  			 vcap->errors_count, vcap->overrun_count, vcap->limit_count,
-@@ -1073,7 +1061,6 @@ static int dcmipp_bytecap_comp_bind(struct device *comp, struct device *master,
+@@ -1073,7 +1061,6 @@ static int dcmipp_bytecap_comp_bind(stru
  	dev_set_drvdata(comp, &vcap->ved);
  	vcap->dev = comp;
  	vcap->regs = bind_data->regs;
@@ -57,8 +55,6 @@ index 22ccd81efd60..62fbadb189c6 100644
  	vcap->cdev = master;
  
  	/* Initialize the video_device struct */
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 4b4c2d1e26f7..d7294f7daa25 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -86,7 +86,6 @@ struct dcmipp_bind_data {
@@ -69,11 +65,9 @@ index 4b4c2d1e26f7..d7294f7daa25 100644
  	void __iomem			*regs;
  };
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 4082d3a549dc..7150c7533646 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -263,7 +263,6 @@ static int dcmipp_comp_bind(struct device *master)
+@@ -263,7 +263,6 @@ static int dcmipp_comp_bind(struct devic
  
  	/* Bind subdevices */
  	bind_data.v4l2_dev = &dcmipp->v4l2_dev;
@@ -81,8 +75,6 @@ index 4082d3a549dc..7150c7533646 100644
  	bind_data.regs = dcmipp->regs;
  	ret = component_bind_all(master, &bind_data);
  	if (ret)
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index dadffb20c105..a7537aa6712d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -183,7 +183,6 @@ struct dcmipp_pixelcap_device {
@@ -93,7 +85,7 @@ index dadffb20c105..a7537aa6712d 100644
  
  	u32 pipe_id;
  
-@@ -839,17 +838,6 @@ static void dcmipp_pixelcap_stop_streaming(struct vb2_queue *vq)
+@@ -839,17 +838,6 @@ static void dcmipp_pixelcap_stop_streami
  
  	pm_runtime_put(vcap->cdev);
  
@@ -111,7 +103,7 @@ index dadffb20c105..a7537aa6712d 100644
  	if (vcap->errors_count)
  		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d), buffers=%d\n",
  			 vcap->errors_count, vcap->overrun_count,
-@@ -1240,7 +1228,6 @@ static int dcmipp_pixelcap_comp_bind(struct device *comp, struct device *master,
+@@ -1240,7 +1228,6 @@ static int dcmipp_pixelcap_comp_bind(str
  	dev_set_drvdata(comp, &vcap->ved);
  	vcap->dev = comp;
  	vcap->regs = bind_data->regs;
@@ -119,6 +111,3 @@ index dadffb20c105..a7537aa6712d 100644
  	vcap->cdev = master;
  
  	/* Initialize the video_device struct */
--- 
-2.39.2
-

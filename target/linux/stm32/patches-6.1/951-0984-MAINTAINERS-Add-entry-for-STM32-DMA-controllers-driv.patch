@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  MAINTAINERS | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0692d14ccf25..322338f4e3fc 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -19742,6 +19742,15 @@ F:	Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -19756,6 +19756,15 @@ F:	Documentation/devicetree/bindings/iio
  F:	Documentation/devicetree/bindings/sound/st,stm32-*.yaml
  F:	sound/soc/stm/
  
@@ -37,6 +35,3 @@ index 0692d14ccf25..322338f4e3fc 100644
  STM32 TAMP DRIVERS
  M:	Siméon Marijon <simeon.marijon@foss.st.com>
  S:	Maintained
--- 
-2.39.2
-

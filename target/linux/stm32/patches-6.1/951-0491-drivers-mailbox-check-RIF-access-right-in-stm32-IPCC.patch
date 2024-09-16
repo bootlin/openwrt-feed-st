@@ -22,8 +22,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/mailbox/stm32-ipcc.c | 76 +++++++++++++++++++++++++++++++-----
  1 file changed, 67 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index 42698088161d..ce8dfc5a30c5 100644
 --- a/drivers/mailbox/stm32-ipcc.c
 +++ b/drivers/mailbox/stm32-ipcc.c
 @@ -25,8 +25,17 @@
@@ -61,7 +59,7 @@ index 42698088161d..ce8dfc5a30c5 100644
  };
  
  static inline void stm32_ipcc_set_bits(spinlock_t *lock, void __iomem *reg,
-@@ -235,6 +247,31 @@ static void stm32_ipcc_shutdown(struct mbox_chan *link)
+@@ -235,6 +247,31 @@ static void stm32_ipcc_shutdown(struct m
  	clk_disable_unprepare(ipcc->clk);
  }
  
@@ -93,7 +91,7 @@ index 42698088161d..ce8dfc5a30c5 100644
  static const struct mbox_chan_ops stm32_ipcc_ops = {
  	.send_data	= stm32_ipcc_send_data,
  	.startup	= stm32_ipcc_startup,
-@@ -244,13 +281,19 @@ static const struct mbox_chan_ops stm32_ipcc_ops = {
+@@ -244,13 +281,19 @@ static const struct mbox_chan_ops stm32_
  static struct mbox_chan *stm32_ipcc_xlate(struct mbox_controller *mbox,
  					  const struct of_phandle_args *sp)
  {
@@ -114,7 +112,7 @@ index 42698088161d..ce8dfc5a30c5 100644
  	chnl->mbox = &mbox->chans[ind];
  	chnl->chan = ind;
  	chnl->irq_ctx = !!(sp->args[0] & STM32_IPCC_CH_HIGH_PRIO_MASK);
-@@ -263,14 +306,14 @@ static struct mbox_chan *stm32_ipcc_xlate(struct mbox_controller *mbox,
+@@ -263,14 +306,14 @@ static struct mbox_chan *stm32_ipcc_xlat
  
  static int stm32_ipcc_probe(struct platform_device *pdev)
  {
@@ -132,7 +130,7 @@ index 42698088161d..ce8dfc5a30c5 100644
  
  	if (!np) {
  		dev_err(dev, "No DT found\n");
-@@ -329,7 +372,26 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -329,7 +372,26 @@ static int stm32_ipcc_probe(struct platf
  		}
  	}
  
@@ -160,7 +158,7 @@ index 42698088161d..ce8dfc5a30c5 100644
  	stm32_ipcc_set_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XMR,
  			    RX_BIT_MASK | TX_BIT_MASK);
  	stm32_ipcc_set_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XCR,
-@@ -346,10 +408,6 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -346,10 +408,6 @@ static int stm32_ipcc_probe(struct platf
  		}
  	}
  
@@ -171,6 +169,3 @@ index 42698088161d..ce8dfc5a30c5 100644
  	ipcc->controller.dev = dev;
  	ipcc->controller.txdone_irq = true;
  	ipcc->controller.ops = &stm32_ipcc_ops;
--- 
-2.39.2
-

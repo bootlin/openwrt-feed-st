@@ -23,8 +23,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 136 ++++++++----------
  3 files changed, 86 insertions(+), 110 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 861b74c4fff0..d2507f327ec7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -52,39 +52,37 @@
@@ -91,11 +89,9 @@ index 861b74c4fff0..d2507f327ec7 100644
  };
  
  static const struct dcmipp_byteproc_pix_map *dcmipp_byteproc_pix_map_by_code(u32 code)
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-index 5ddd6ab8a7c3..61e56d72f4bf 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-@@ -99,7 +99,7 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+@@ -99,7 +99,7 @@ static const struct dcmipp_inp_pix_map d
  	PIXMAP_SINK_SRC_PRCR_SWAP(YVYU8_2X8, YVYU8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
  	PIXMAP_SINK_SRC_PRCR_SWAP(VYUY8_2X8, VYUY8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
  	/* GREY */
@@ -104,7 +100,7 @@ index 5ddd6ab8a7c3..61e56d72f4bf 100644
  	/* Raw Bayer */
  	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR8_1X8, SBGGR8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
  	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG8_1X8, SGBRG8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
-@@ -118,7 +118,7 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+@@ -118,7 +118,7 @@ static const struct dcmipp_inp_pix_map d
  	PIXMAP_SINK_SRC_PRCR_SWAP(SGRBG14_1X14, SGRBG14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
  	PIXMAP_SINK_SRC_PRCR_SWAP(SRGGB14_1X14, SRGGB14_1X14, RAW14, 0, MIPI_CSI2_DT_RAW14),
  	/* JPEG */
@@ -113,7 +109,7 @@ index 5ddd6ab8a7c3..61e56d72f4bf 100644
  };
  
  /*
-@@ -431,11 +431,7 @@ static int dcmipp_inp_configure_csi(struct dcmipp_inp_device *par, int enable)
+@@ -431,11 +431,7 @@ static int dcmipp_inp_configure_csi(stru
  	reg_clear(par, DCMIPP_P0FSCR,
  		  DCMIPP_P0FSCR_DTMODE_MASK | DCMIPP_P0FSCR_DTIDA_MASK);
  
@@ -126,8 +122,6 @@ index 5ddd6ab8a7c3..61e56d72f4bf 100644
  	if (!vpix->dt)
  		reg_set(par, DCMIPP_P0FSCR,
  			DCMIPP_P0FSCR_DTMODE_ALLDT << DCMIPP_P0FSCR_DTMODE_SHIFT);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index dfea34512714..2234b7513ad5 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 @@ -75,58 +75,48 @@
@@ -217,7 +211,7 @@ index dfea34512714..2234b7513ad5 100644
  	unsigned int size;
  
  	if (IS_SRC(pad)) {
-@@ -138,15 +128,15 @@ dcmipp_isp_pix_map_by_index(unsigned int i, unsigned int pad)
+@@ -138,15 +128,15 @@ dcmipp_isp_pix_map_by_index(unsigned int
  	}
  
  	if (i >= size)
@@ -237,7 +231,7 @@ index dfea34512714..2234b7513ad5 100644
  	unsigned int size;
  	unsigned int i;
  
-@@ -159,11 +149,11 @@ dcmipp_isp_pix_map_by_code(u32 code, unsigned int pad)
+@@ -159,11 +149,11 @@ dcmipp_isp_pix_map_by_code(u32 code, uns
  	}
  
  	for (i = 0; i < size; i++) {
@@ -252,7 +246,7 @@ index dfea34512714..2234b7513ad5 100644
  }
  
  struct dcmipp_isp_device {
-@@ -208,11 +198,8 @@ static inline unsigned int dcmipp_isp_compute_decimation(unsigned int orig,
+@@ -208,11 +198,8 @@ static inline unsigned int dcmipp_isp_co
  
  static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
  {
@@ -265,7 +259,7 @@ index dfea34512714..2234b7513ad5 100644
  		fmt->code = IS_SRC(pad) ? ISP_MEDIA_BUS_SRC_FMT_DEFAULT :
  					  ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
  
-@@ -248,13 +235,13 @@ static int dcmipp_isp_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -248,13 +235,13 @@ static int dcmipp_isp_enum_mbus_code(str
  				     struct v4l2_subdev_state *state,
  				     struct v4l2_subdev_mbus_code_enum *code)
  {
@@ -283,7 +277,7 @@ index dfea34512714..2234b7513ad5 100644
  
  	return 0;
  }
-@@ -263,14 +250,11 @@ static int dcmipp_isp_enum_frame_size(struct v4l2_subdev *sd,
+@@ -263,14 +250,11 @@ static int dcmipp_isp_enum_frame_size(st
  				      struct v4l2_subdev_state *state,
  				      struct v4l2_subdev_frame_size_enum *fse)
  {
@@ -299,7 +293,7 @@ index dfea34512714..2234b7513ad5 100644
  		return -EINVAL;
  
  	fse->min_width = DCMIPP_FRAME_MIN_WIDTH;
-@@ -551,35 +535,33 @@ static const struct v4l2_subdev_pad_ops dcmipp_isp_pad_ops = {
+@@ -551,35 +535,33 @@ static const struct v4l2_subdev_pad_ops
  
  static void dcmipp_isp_config_demosaicing(struct dcmipp_isp_device *isp)
  {
@@ -353,6 +347,3 @@ index dfea34512714..2234b7513ad5 100644
  			val = DCMIPP_P1DMCR_TYPE_RGGB << DCMIPP_P1DMCR_TYPE_SHIFT;
  
  		val |= DCMIPP_P1DMCR_ENABLE;
--- 
-2.39.2
-

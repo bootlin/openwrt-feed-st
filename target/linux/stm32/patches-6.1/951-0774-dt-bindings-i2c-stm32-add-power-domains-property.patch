@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-index 482368d55a8b..fd8ae5122566 100644
 --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 @@ -93,6 +93,9 @@ properties:
@@ -34,6 +32,3 @@ index 482368d55a8b..fd8ae5122566 100644
    dmas:
      items:
        - description: RX DMA Channel phandle
--- 
-2.39.2
-

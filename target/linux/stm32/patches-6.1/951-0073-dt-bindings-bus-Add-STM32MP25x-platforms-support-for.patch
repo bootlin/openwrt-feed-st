@@ -22,8 +22,6 @@ Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
  Documentation/devicetree/bindings/bus/st,sys-bus.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/bus/st,sys-bus.yaml b/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
-index 1138febcbf52..ef876ebc8370 100644
 --- a/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
 +++ b/Documentation/devicetree/bindings/bus/st,sys-bus.yaml
 @@ -21,6 +21,7 @@ properties:
@@ -34,6 +32,3 @@ index 1138febcbf52..ef876ebc8370 100644
  
    reg:
      maxItems: 1
--- 
-2.39.2
-

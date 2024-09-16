@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 50 ++++++++++++++++++++++++++
  1 file changed, 50 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a2f19c235b9f..5b75b5b2fc8f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -515,6 +515,11 @@ timers6: timer@40040000 {
+@@ -515,6 +515,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -33,7 +31,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				timer@5 {
  					compatible = "st,stm32mp25-timer-trigger";
  					reg = <5>;
-@@ -535,6 +540,11 @@ timers7: timer@40050000 {
+@@ -535,6 +540,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -45,7 +43,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				timer@6 {
  					compatible = "st,stm32mp25-timer-trigger";
  					reg = <6>;
-@@ -555,6 +565,11 @@ timers12: timer@40060000 {
+@@ -555,6 +565,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -57,7 +55,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -581,6 +596,11 @@ timers13: timer@40070000 {
+@@ -581,6 +596,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -69,7 +67,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -607,6 +627,11 @@ timers14: timer@40080000 {
+@@ -607,6 +627,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -81,7 +79,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -993,6 +1018,11 @@ timers10: timer@401c0000 {
+@@ -993,6 +1018,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -93,7 +91,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -1019,6 +1049,11 @@ timers11: timer@401d0000 {
+@@ -1019,6 +1049,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -105,7 +103,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -1174,6 +1209,11 @@ timers15: timer@40250000 {
+@@ -1174,6 +1209,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -117,7 +115,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -1200,6 +1240,11 @@ timers16: timer@40260000 {
+@@ -1200,6 +1240,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -129,7 +127,7 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
-@@ -1226,6 +1271,11 @@ timers17: timer@40270000 {
+@@ -1226,6 +1271,11 @@
  				power-domains = <&CLUSTER_PD>;
  				status = "disabled";
  
@@ -141,6 +139,3 @@ index a2f19c235b9f..5b75b5b2fc8f 100644
  				pwm {
  					compatible = "st,stm32mp25-pwm";
  					#pwm-cells = <3>;
--- 
-2.39.2
-

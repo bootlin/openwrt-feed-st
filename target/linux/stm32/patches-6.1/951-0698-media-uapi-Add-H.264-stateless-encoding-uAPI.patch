@@ -23,11 +23,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/uapi/linux/videodev2.h            |  2 +
  4 files changed, 150 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index 5f21c0a70dc5..afd76a2ff476 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -550,6 +550,48 @@ validate_vp9_frame(struct v4l2_ctrl_vp9_frame *frame)
+@@ -550,6 +550,48 @@ validate_vp9_frame(struct v4l2_ctrl_vp9_
  	return 0;
  }
  
@@ -76,7 +74,7 @@ index 5f21c0a70dc5..afd76a2ff476 100644
  /*
   * Compound controls validation requires setting unused fields/flags to zero
   * in order to properly detect unchanged controls with v4l2_ctrl_type_op_equal's
-@@ -934,6 +976,12 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+@@ -934,6 +976,12 @@ static int std_validate_compound(const s
  	case V4L2_CTRL_TYPE_ISP_STAT_REGION:
  		break;
  
@@ -89,7 +87,7 @@ index 5f21c0a70dc5..afd76a2ff476 100644
  	default:
  		return -EINVAL;
  	}
-@@ -1627,6 +1675,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+@@ -1627,6 +1675,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(s
  	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
  		elem_size = sizeof(struct v4l2_ctrl_vp8_encode_params);
  		break;
@@ -102,8 +100,6 @@ index 5f21c0a70dc5..afd76a2ff476 100644
  	default:
  		if (type < V4L2_CTRL_COMPOUND_TYPES)
  			elem_size = sizeof(s32);
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 0a0421906086..42f0b8b23362 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 @@ -1197,6 +1197,9 @@ const char *v4l2_ctrl_get_name(u32 id)
@@ -116,7 +112,7 @@ index 0a0421906086..42f0b8b23362 100644
  	/* Colorimetry controls */
  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
-@@ -1552,6 +1555,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+@@ -1552,6 +1555,12 @@ void v4l2_ctrl_fill(u32 id, const char *
  	case V4L2_CID_ISP_STAT_REGION:
  		*type = V4L2_CTRL_TYPE_ISP_STAT_REGION;
  		break;
@@ -129,8 +125,6 @@ index 0a0421906086..42f0b8b23362 100644
  	default:
  		*type = V4L2_CTRL_TYPE_INTEGER;
  		break;
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 3c749d044580..9899d46c9bad 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -1664,6 +1664,91 @@ struct v4l2_ctrl_h264_decode_params {
@@ -225,8 +219,6 @@ index 3c749d044580..9899d46c9bad 100644
  
  /* Stateless FWHT control, used by the vicodec driver */
  
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index a9399978de3c..4c2445e1090c 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
 @@ -1856,6 +1856,8 @@ enum v4l2_ctrl_type {
@@ -238,6 +230,3 @@ index a9399978de3c..4c2445e1090c 100644
  
  	V4L2_CTRL_TYPE_FWHT_PARAMS	    = 0x0220,
  	V4L2_CTRL_TYPE_VP8_FRAME            = 0x0240,
--- 
-2.39.2
-

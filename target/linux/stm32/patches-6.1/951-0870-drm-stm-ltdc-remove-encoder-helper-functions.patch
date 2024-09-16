@@ -14,11 +14,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354668
  drivers/gpu/drm/stm/ltdc.c | 157 ++++++++++++-------------------------
  1 file changed, 51 insertions(+), 106 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 494bfb688cbd..539a87cdd663 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -945,6 +945,13 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -945,6 +945,13 @@ static void ltdc_crtc_atomic_enable(stru
  		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_VBR);
  
  	drm_crtc_vblank_on(crtc);
@@ -32,7 +30,7 @@ index 494bfb688cbd..539a87cdd663 100644
  }
  
  static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
-@@ -953,6 +960,7 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -953,6 +960,7 @@ static void ltdc_crtc_atomic_disable(str
  	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
  	struct drm_device *ddev = crtc->dev;
  	int layer_index = 0;
@@ -40,7 +38,7 @@ index 494bfb688cbd..539a87cdd663 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -969,6 +977,12 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -969,6 +977,12 @@ static void ltdc_crtc_atomic_disable(str
  	if (!ldev->caps.plane_reg_shadow)
  		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
  
@@ -53,7 +51,7 @@ index 494bfb688cbd..539a87cdd663 100644
  	pm_runtime_put_sync_suspend(ddev->dev);
  
  	/*  clear interrupt error counters */
-@@ -1050,11 +1064,20 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -1050,11 +1064,20 @@ static void ltdc_crtc_mode_set_nofb(stru
  	struct drm_encoder *encoder = NULL, *en_iter;
  	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
  	int orientation = DRM_MODE_PANEL_ORIENTATION_UNKNOWN;
@@ -74,7 +72,7 @@ index 494bfb688cbd..539a87cdd663 100644
  	/* get encoder from crtc */
  	drm_for_each_encoder(en_iter, ddev)
  		if (en_iter->crtc == crtc) {
-@@ -1074,14 +1097,37 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+@@ -1074,14 +1097,37 @@ static void ltdc_crtc_mode_set_nofb(stru
  	if (connector)
  		orientation = connector->display_info.panel_orientation;
  
@@ -117,7 +115,7 @@ index 494bfb688cbd..539a87cdd663 100644
  	DRM_DEBUG_DRIVER("CRTC:%d mode:%s\n", crtc->base.id, mode->name);
  	DRM_DEBUG_DRIVER("Video mode: %dx%d", mode->hdisplay, mode->vdisplay);
  	DRM_DEBUG_DRIVER(" hfp %d hbp %d hsl %d vfp %d vbp %d vsl %d\n",
-@@ -2028,105 +2074,6 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+@@ -2028,105 +2074,6 @@ cleanup:
  	return ret;
  }
  
@@ -223,7 +221,7 @@ index 494bfb688cbd..539a87cdd663 100644
  static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
  {
  	struct drm_encoder *encoder;
-@@ -2141,8 +2088,6 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+@@ -2141,8 +2088,6 @@ static int ltdc_encoder_init(struct drm_
  
  	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
  
@@ -232,6 +230,3 @@ index 494bfb688cbd..539a87cdd663 100644
  	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
  	if (ret) {
  		if (ret != -EPROBE_DEFER)
--- 
-2.39.2
-

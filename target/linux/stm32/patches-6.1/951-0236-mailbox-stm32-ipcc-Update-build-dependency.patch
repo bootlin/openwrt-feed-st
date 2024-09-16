@@ -12,8 +12,6 @@ Change-Id: Ie5a473ce4217a7f5888b7713b363338134360576
  drivers/mailbox/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 05d6fae800e3..e639c8ca4c42 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -232,7 +232,7 @@ config BCM_FLEXRM_MBOX
@@ -25,6 +23,3 @@ index 05d6fae800e3..e639c8ca4c42 100644
  	help
  	  Mailbox implementation for STMicroelectonics STM32 family chips
  	  with hardware for Inter-Processor Communication Controller (IPCC)
--- 
-2.39.2
-

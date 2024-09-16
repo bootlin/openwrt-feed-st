@@ -17,11 +17,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/242890
  drivers/mmc/host/mmci_stm32_sdmmc.c | 4 ++--
  3 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index 0859652f8a54..0277481a4396 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -270,6 +270,7 @@ static struct variant_data variant_stm32_sdmmc = {
+@@ -270,6 +270,7 @@ static struct variant_data variant_stm32
  	.datactrl_any_blocksz	= true,
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(12, 5),
@@ -29,7 +27,7 @@ index 0859652f8a54..0277481a4396 100644
  	.use_sdio_irq		= true,
  	.busy_timeout		= true,
  	.busy_detect		= true,
-@@ -297,6 +298,7 @@ static struct variant_data variant_stm32_sdmmcv2 = {
+@@ -297,6 +298,7 @@ static struct variant_data variant_stm32
  	.datactrl_any_blocksz	= true,
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(16, 5),
@@ -37,8 +35,6 @@ index 0859652f8a54..0277481a4396 100644
  	.use_sdio_irq		= true,
  	.dma_lli		= true,
  	.busy_timeout		= true,
-diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
-index a710cd686cb2..b0de8262a4bc 100644
 --- a/drivers/mmc/host/mmci.h
 +++ b/drivers/mmc/host/mmci.h
 @@ -227,8 +227,6 @@
@@ -58,8 +54,6 @@ index a710cd686cb2..b0de8262a4bc 100644
  	void (*init)(struct mmci_host *host);
  };
  
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 2932339d224e..4fc63e569bca 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
 @@ -15,7 +15,6 @@
@@ -70,7 +64,7 @@ index 2932339d224e..4fc63e569bca 100644
  
  #define DLYB_CR			0x0
  #define DLYB_CR_DEN		BIT(0)
-@@ -69,7 +68,8 @@ static int sdmmc_idma_validate_data(struct mmci_host *host,
+@@ -69,7 +68,8 @@ static int sdmmc_idma_validate_data(stru
  	idma->use_bounce_buffer = false;
  	for_each_sg(data->sg, sg, data->sg_len - 1, i) {
  		if (!IS_ALIGNED(sg->offset, sizeof(u32)) ||
@@ -80,6 +74,3 @@ index 2932339d224e..4fc63e569bca 100644
  			dev_dbg(mmc_dev(host->mmc),
  				"unaligned scatterlist: ofst:%x length:%d\n",
  				data->sg->offset, data->sg->length);
--- 
-2.39.2
-

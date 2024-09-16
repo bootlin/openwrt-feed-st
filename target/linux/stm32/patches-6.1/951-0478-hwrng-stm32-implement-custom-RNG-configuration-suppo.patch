@@ -27,8 +27,6 @@ Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
  drivers/char/hw_random/stm32-rng.c | 73 ++++++++++++++++++++++++------
  1 file changed, 58 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index a54e59ff97b3..836d9aa8e1cb 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -19,9 +19,16 @@
@@ -71,7 +69,7 @@ index a54e59ff97b3..836d9aa8e1cb 100644
  	bool	has_cond_reset;
  };
  
-@@ -262,23 +273,37 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -262,23 +273,37 @@ static int stm32_rng_init(struct hwrng *
  	if (err)
  		return err;
  
@@ -116,7 +114,7 @@ index a54e59ff97b3..836d9aa8e1cb 100644
  		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
  							(!(reg & RNG_CR_CONDRST)),
  							10, 50000);
-@@ -287,13 +312,28 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -287,13 +312,28 @@ static int stm32_rng_init(struct hwrng *
  				"%s: timeout %x!\n", __func__, reg);
  			return -EINVAL;
  		}
@@ -125,18 +123,18 @@ index a54e59ff97b3..836d9aa8e1cb 100644
 +		/* Handle all RNG versions by checking if conditional reset should be set */
 +		if (priv->data->has_cond_reset)
 +			reg |= RNG_CR_CONDRST;
- 
--	/* clear error indicators */
--	writel_relaxed(0, priv->base + RNG_SR);
++
 +		if (priv->ced)
 +			reg &= ~RNG_CR_CED;
 +		else
 +			reg |= RNG_CR_CED;
  
+-	/* clear error indicators */
+-	writel_relaxed(0, priv->base + RNG_SR);
++		writel_relaxed(reg, priv->base + RNG_CR);
+ 
 -	reg |= RNG_CR_RNGEN;
 -	writel_relaxed(reg, priv->base + RNG_CR);
-+		writel_relaxed(reg, priv->base + RNG_CR);
-+
 +		if (priv->data->has_cond_reset)
 +			reg &= ~RNG_CR_CONDRST;
 +
@@ -150,7 +148,7 @@ index a54e59ff97b3..836d9aa8e1cb 100644
  
  	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, reg,
  						reg & RNG_SR_DRDY,
-@@ -372,6 +412,9 @@ static const struct dev_pm_ops stm32_rng_pm_ops = {
+@@ -372,6 +412,9 @@ static const struct dev_pm_ops stm32_rng
  
  static const struct stm32_rng_data stm32mp13_rng_data = {
  	.has_cond_reset = true,
@@ -160,6 +158,3 @@ index a54e59ff97b3..836d9aa8e1cb 100644
  };
  
  static const struct stm32_rng_data stm32_rng_data = {
--- 
-2.39.2
-

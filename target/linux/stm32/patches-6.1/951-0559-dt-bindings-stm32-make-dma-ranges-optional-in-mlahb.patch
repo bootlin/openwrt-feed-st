@@ -30,8 +30,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
-index ecb28e90fd11..f16652ffc62f 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
 @@ -48,7 +48,7 @@ required:
@@ -43,6 +41,3 @@ index ecb28e90fd11..f16652ffc62f 100644
  
  unevaluatedProperties: false
  
--- 
-2.39.2
-

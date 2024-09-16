@@ -15,8 +15,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/bridge/sii902x.c | 32 ++++++++++++++++++++++----------
  1 file changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-index 36b25e25ebb1..8f58c698a976 100644
 --- a/drivers/gpu/drm/bridge/sii902x.c
 +++ b/drivers/gpu/drm/bridge/sii902x.c
 @@ -177,6 +177,7 @@ struct sii902x {
@@ -27,7 +25,7 @@ index 36b25e25ebb1..8f58c698a976 100644
  	bool sink_is_hdmi;
  	/*
  	 * Mutex protects audio and video functions from interfering
-@@ -1107,7 +1108,6 @@ static int sii902x_probe(struct i2c_client *client,
+@@ -1107,7 +1108,6 @@ static int sii902x_probe(struct i2c_clie
  	struct device *dev = &client->dev;
  	struct device_node *endpoint;
  	struct sii902x *sii902x;
@@ -35,7 +33,7 @@ index 36b25e25ebb1..8f58c698a976 100644
  	int ret;
  
  	ret = i2c_check_functionality(client->adapter,
-@@ -1158,11 +1158,27 @@ static int sii902x_probe(struct i2c_client *client,
+@@ -1158,11 +1158,27 @@ static int sii902x_probe(struct i2c_clie
  
  	mutex_init(&sii902x->mutex);
  
@@ -66,7 +64,7 @@ index 36b25e25ebb1..8f58c698a976 100644
  }
  
  static void sii902x_remove(struct i2c_client *client)
-@@ -1181,8 +1197,6 @@ static int sii902x_pm_suspend(struct device *dev)
+@@ -1181,8 +1197,6 @@ static int sii902x_pm_suspend(struct dev
  	struct i2c_client *client = to_i2c_client(dev);
  	struct sii902x *sii902x = i2c_get_clientdata(client);
  
@@ -75,7 +73,7 @@ index 36b25e25ebb1..8f58c698a976 100644
  	if (sii902x->reset_gpio)
  		gpiod_set_value(sii902x->reset_gpio, 1);
  
-@@ -1205,12 +1219,10 @@ static int sii902x_pm_resume(struct device *dev)
+@@ -1205,12 +1219,10 @@ static int sii902x_pm_resume(struct devi
  	};
  	int ret;
  
@@ -89,7 +87,7 @@ index 36b25e25ebb1..8f58c698a976 100644
  		return ret;
  	}
  
-@@ -1221,7 +1233,7 @@ static int sii902x_pm_resume(struct device *dev)
+@@ -1221,7 +1233,7 @@ static int sii902x_pm_resume(struct devi
  
  	ret = i2c_transfer(client->adapter, &msg, 1);
  	if (ret < 0)
@@ -98,6 +96,3 @@ index 36b25e25ebb1..8f58c698a976 100644
  
  	if (client->irq > 0)
  		regmap_update_bits(sii902x->regmap, SII902X_INT_ENABLE,
--- 
-2.39.2
-

@@ -18,8 +18,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml    | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 255e3dc907d8..d73c5f06d940 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -117,10 +117,10 @@ properties:
@@ -52,6 +50,3 @@ index 255e3dc907d8..d73c5f06d940 100644
 +      st,syscfg-cm-state = <&tamp 0x148 0xFFFFFFFF>;
      };
  ...
--- 
-2.39.2
-

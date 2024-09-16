@@ -17,9 +17,6 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  1 file changed, 90 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/stm32-ttt.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/stm32-ttt.yaml b/Documentation/devicetree/bindings/net/stm32-ttt.yaml
-new file mode 100644
-index 000000000000..d45db83a4283
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/net/stm32-ttt.yaml
 @@ -0,0 +1,90 @@
@@ -113,6 +110,3 @@ index 000000000000..d45db83a4283
 +    };
 +
 +...
--- 
-2.39.2
-

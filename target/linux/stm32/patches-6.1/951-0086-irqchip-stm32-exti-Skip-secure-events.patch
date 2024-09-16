@@ -22,8 +22,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/irqchip/irq-stm32-exti.c | 21 +++++++++++++++++++++
  1 file changed, 21 insertions(+)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 849d1215fb03..4357dccc67bd 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
 @@ -36,6 +36,7 @@ struct stm32_exti_bank {
@@ -48,7 +46,7 @@ index 849d1215fb03..4357dccc67bd 100644
  	struct stm32_exti_chip_data *chips_data;
  	const struct stm32_exti_drv_data *drv_data;
  	struct hwspinlock *hwlock;
-@@ -76,6 +79,7 @@ static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
+@@ -76,6 +79,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x14,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -56,7 +54,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank *stm32f4xx_exti_banks[] = {
-@@ -96,6 +100,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b1 = {
+@@ -96,6 +100,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x88,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -64,7 +62,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
-@@ -107,6 +112,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
+@@ -107,6 +112,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x98,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -72,7 +70,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
-@@ -118,6 +124,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
+@@ -118,6 +124,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0xA8,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -80,7 +78,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank *stm32h7xx_exti_banks[] = {
-@@ -140,6 +147,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b1 = {
+@@ -140,6 +147,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x0C,
  	.fpr_ofst	= 0x10,
  	.trg_ofst	= 0x3EC,
@@ -88,7 +86,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank stm32mp1_exti_b2 = {
-@@ -151,6 +159,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
+@@ -151,6 +159,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x2C,
  	.fpr_ofst	= 0x30,
  	.trg_ofst	= 0x3E8,
@@ -96,7 +94,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank stm32mp1_exti_b3 = {
-@@ -162,6 +171,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
+@@ -162,6 +171,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x4C,
  	.fpr_ofst	= 0x50,
  	.trg_ofst	= 0x3E4,
@@ -104,7 +102,7 @@ index 849d1215fb03..4357dccc67bd 100644
  };
  
  static const struct stm32_exti_bank *stm32mp1_exti_banks[] = {
-@@ -812,6 +822,12 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -824,6 +834,12 @@ static int stm32_exti_h_domain_alloc(str
  	bank  = hwirq / IRQS_PER_BANK;
  	chip_data = &host_data->chips_data[bank];
  
@@ -117,7 +115,7 @@ index 849d1215fb03..4357dccc67bd 100644
  	event_trg = readl_relaxed(host_data->base + chip_data->reg_bank->trg_ofst);
  	chip = (event_trg & BIT(hwirq % IRQS_PER_BANK)) ?
  	       &stm32_exti_h_chip : &stm32_exti_h_chip_direct;
-@@ -908,6 +924,10 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
+@@ -920,6 +936,10 @@ stm32_exti_chip_data *stm32_exti_chip_in
  	if (stm32_bank->emr_ofst != UNDEF_REG)
  		writel_relaxed(0, base + stm32_bank->emr_ofst);
  
@@ -128,7 +126,7 @@ index 849d1215fb03..4357dccc67bd 100644
  	pr_info("%pOF: bank%d\n", node, bank_idx);
  
  	return chip_data;
-@@ -1027,6 +1047,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -1039,6 +1059,7 @@ static int stm32_exti_probe(struct platf
  		return -ENOMEM;
  
  	platform_set_drvdata(pdev, host_data);
@@ -136,6 +134,3 @@ index 849d1215fb03..4357dccc67bd 100644
  
  	/* check for optional hwspinlock which may be not available yet */
  	ret = of_hwspin_lock_get_id(np, 0);
--- 
-2.39.2
-

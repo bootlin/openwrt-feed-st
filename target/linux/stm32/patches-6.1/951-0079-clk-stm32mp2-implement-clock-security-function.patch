@@ -19,8 +19,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 518 +++++++++++++++++-------------
  1 file changed, 298 insertions(+), 220 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index b0083428dbe4..385d9f0c2c06 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -19,10 +19,43 @@
@@ -67,7 +65,7 @@ index b0083428dbe4..385d9f0c2c06 100644
  static const char * const adc12_src[] = {
  	"ck_flexgen_46", "ck_icn_ls_mcu"
  };
-@@ -821,10 +854,6 @@ static CLK_STM32_GATE(ck_ker_spi6, "ck_flexgen_18", 0, GATE_SPI6);
+@@ -821,10 +854,6 @@ static CLK_STM32_GATE(ck_ker_spi6, "ck_f
  static CLK_STM32_GATE(ck_ker_spi7, "ck_flexgen_18", 0, GATE_SPI7);
  static CLK_STM32_GATE(ck_ker_spi8, "ck_flexgen_37", 0, GATE_SPI8);
  
@@ -78,7 +76,7 @@ index b0083428dbe4..385d9f0c2c06 100644
  /* STM500 */
  static CLK_STM32_GATE(ck_icn_s_stm500, "ck_icn_ls_mcu", 0, GATE_STM500);
  
-@@ -925,224 +954,272 @@ static CLK_STM32_GATE(ck_icn_p_vref, "ck_icn_apb3", 0, GATE_VREF);
+@@ -925,224 +954,272 @@ static CLK_STM32_GATE(ck_icn_p_vref, "ck
  static CLK_STM32_GATE(ck_icn_p_wwdg1, "ck_icn_apb3", 0, GATE_WWDG1);
  static CLK_STM32_GATE(ck_icn_p_wwdg2, "ck_icn_ls_mcu", 0, GATE_WWDG2);
  
@@ -567,7 +565,7 @@ index b0083428dbe4..385d9f0c2c06 100644
  };
  
  u16 stm32mp25_cpt_gate[GATE_NB];
-@@ -1165,6 +1242,7 @@ static struct stm32_rcc_match_data stm32mp25_data = {
+@@ -1165,6 +1242,7 @@ static struct stm32_rcc_match_data stm32
  	.num_clocks	= ARRAY_SIZE(stm32mp25_clock_cfg),
  	.maxbinding	= STM32MP25_LAST_CLK,
  	.clock_data	= &stm32mp25_clock_data,
@@ -575,6 +573,3 @@ index b0083428dbe4..385d9f0c2c06 100644
  	.reset_us	= 2,
  #ifdef CONFIG_DEBUG_FS
  	.clock_summary	= &clock_summary_mp25,
--- 
-2.39.2
-

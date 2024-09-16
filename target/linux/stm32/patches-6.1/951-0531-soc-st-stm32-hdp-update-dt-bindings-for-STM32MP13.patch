@@ -22,8 +22,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/dt-bindings/soc/stm32mp13-hdp.h | 26 ++++++++++++-------------
  1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/dt-bindings/soc/stm32mp13-hdp.h b/include/dt-bindings/soc/stm32mp13-hdp.h
-index 091c1c83587a..4e0d0ade40d7 100644
 --- a/include/dt-bindings/soc/stm32mp13-hdp.h
 +++ b/include/dt-bindings/soc/stm32mp13-hdp.h
 @@ -1,7 +1,7 @@
@@ -113,6 +111,3 @@ index 091c1c83587a..4e0d0ade40d7 100644
  #define HDP7_GPOVAL_7				15
  
  #endif /* _DT_BINDINGS_STM32_HDP_H */
--- 
-2.39.2
-

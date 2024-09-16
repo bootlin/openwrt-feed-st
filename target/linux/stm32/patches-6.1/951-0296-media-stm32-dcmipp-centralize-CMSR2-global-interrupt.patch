@@ -24,11 +24,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c  | 4 ++--
  4 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index bf470fc88768..22ccd81efd60 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -985,9 +985,10 @@ static irqreturn_t dcmipp_bytecap_irq_callback(int irq, void *arg)
+@@ -985,9 +985,10 @@ static irqreturn_t dcmipp_bytecap_irq_ca
  {
  	struct dcmipp_bytecap_device *vcap =
  			container_of(arg, struct dcmipp_bytecap_device, ved);
@@ -40,8 +38,6 @@ index bf470fc88768..22ccd81efd60 100644
  	vcap->it_count++;
  
  	/* Clear interrupt */
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 8f60a8594323..4b4c2d1e26f7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -121,6 +121,7 @@ struct dcmipp_ent_device {
@@ -52,8 +48,6 @@ index 8f60a8594323..4b4c2d1e26f7 100644
  	irq_handler_t thread_fn;
  };
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index c963f38c3958..40f2d94fb25d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -38,6 +38,7 @@
@@ -64,7 +58,7 @@ index c963f38c3958..40f2d94fb25d 100644
  #define DCMIPP_P0HWCFGR (0x400)
  #define DCMIPP_VERR (0xFF4)
  
-@@ -418,10 +419,15 @@ static irqreturn_t dcmipp_irq_callback(int irq, void *arg)
+@@ -418,10 +419,15 @@ static irqreturn_t dcmipp_irq_callback(i
  	struct dcmipp_ent_device *ved;
  	irqreturn_t ret = IRQ_HANDLED;
  	unsigned int i;
@@ -80,11 +74,9 @@ index c963f38c3958..40f2d94fb25d 100644
  		if (ved->handler)
  			ved->handler_ret = ved->handler(irq, ved);
  		else if (ved->thread_fn)
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index c90cfc4333f8..dadffb20c105 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -1139,9 +1139,9 @@ static irqreturn_t dcmipp_pixelcap_irq_callback(int irq, void *arg)
+@@ -1139,9 +1139,9 @@ static irqreturn_t dcmipp_pixelcap_irq_c
  {
  	struct dcmipp_pixelcap_device *vcap =
  			container_of(arg, struct dcmipp_pixelcap_device, ved);
@@ -96,6 +88,3 @@ index c90cfc4333f8..dadffb20c105 100644
  
  	vcap->it_count++;
  
--- 
-2.39.2
-

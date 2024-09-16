@@ -17,11 +17,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 25 ++++++++++++++-----
  1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 85972feafef9..fd133eb3ee3c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -603,16 +603,29 @@ static int dcmipp_isp_set_fmt(struct v4l2_subdev *sd,
+@@ -603,16 +603,29 @@ static int dcmipp_isp_set_fmt(struct v4l
  
  	dcmipp_isp_adjust_fmt(&fmt->format, fmt->pad);
  
@@ -57,6 +55,3 @@ index 85972feafef9..fd133eb3ee3c 100644
  
  	dev_dbg(isp->dev, "%s: %s format update: old:%dx%d (0x%x, %d, %d, %d, %d) new:%dx%d (0x%x, %d, %d, %d, %d)\n",
  		isp->sd.name,
--- 
-2.39.2
-

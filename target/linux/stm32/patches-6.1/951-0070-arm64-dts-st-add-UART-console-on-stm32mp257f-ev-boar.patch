@@ -18,8 +18,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts     | 11 +++++++
  2 files changed, 42 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 5bd27767fbf5..d34a1d5e79c0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 @@ -5,3 +5,34 @@
@@ -57,11 +55,9 @@ index 5bd27767fbf5..d34a1d5e79c0 100644
 +		};
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index e402e5244031..d21d060efd5d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -17,6 +17,7 @@ / {
+@@ -17,6 +17,7 @@
  	compatible = "st,stm32mp257f-ev", "st,stm32mp257";
  
  	aliases {
@@ -69,7 +65,7 @@ index e402e5244031..d21d060efd5d 100644
  	};
  
  	chosen {
-@@ -33,3 +34,13 @@ &arm_wdt {
+@@ -33,3 +34,13 @@
  	timeout-sec = <32>;
  	status = "okay";
  };
@@ -83,6 +79,3 @@ index e402e5244031..d21d060efd5d 100644
 +	/delete-property/dma-names;
 +	status = "okay";
 +};
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 12 ++++++++----
  1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index 6fc0ae20c8bd..c7d68a09b9c9 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -463,9 +463,17 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -463,9 +463,17 @@ static int otm8009a_probe(struct mipi_ds
  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
  			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
  
@@ -37,7 +35,7 @@ index 6fc0ae20c8bd..c7d68a09b9c9 100644
  	ctx->bl_dev = devm_backlight_device_register(dev, dev_name(dev),
  						     dev, ctx,
  						     &otm8009a_backlight_ops,
-@@ -490,10 +498,6 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -490,10 +498,6 @@ static int otm8009a_probe(struct mipi_ds
  		return ret;
  	}
  
@@ -48,6 +46,3 @@ index 6fc0ae20c8bd..c7d68a09b9c9 100644
  	return 0;
  }
  
--- 
-2.39.2
-

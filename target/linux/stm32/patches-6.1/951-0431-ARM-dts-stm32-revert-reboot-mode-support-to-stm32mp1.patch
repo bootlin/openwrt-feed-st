@@ -16,11 +16,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 13 -------------
  1 file changed, 13 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 3c41c59cef26..2d4b00cf0c7d 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1952,19 +1952,6 @@ i2c6: i2c@5c009000 {
+@@ -1952,19 +1952,6 @@
  		tamp: tamp@5c00a000 {
  			compatible = "st,stm32-tamp", "syscon", "simple-mfd";
  			reg = <0x5c00a000 0x400>;
@@ -40,6 +38,3 @@ index 3c41c59cef26..2d4b00cf0c7d 100644
  		};
  
  		/*
--- 
-2.39.2
-

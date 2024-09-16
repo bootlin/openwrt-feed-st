@@ -31,15 +31,11 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  3 files changed, 417 insertions(+), 2 deletions(-)
  create mode 100644 tools/counter/counter_watch_events.c
 
-diff --git a/tools/counter/Build b/tools/counter/Build
-index 33f4a51d715e..4bbadb7ec93a 100644
 --- a/tools/counter/Build
 +++ b/tools/counter/Build
 @@ -1 +1,2 @@
  counter_example-y += counter_example.o
 +counter_watch_events-y += counter_watch_events.o
-diff --git a/tools/counter/Makefile b/tools/counter/Makefile
-index 8843f0fa6119..09b1d28d5493 100644
 --- a/tools/counter/Makefile
 +++ b/tools/counter/Makefile
 @@ -12,9 +12,10 @@ endif
@@ -73,9 +69,6 @@ index 8843f0fa6119..09b1d28d5493 100644
  
  install: $(ALL_PROGRAMS)
  	install -d -m 755 $(DESTDIR)$(bindir);		\
-diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
-new file mode 100644
-index 000000000000..3898fe7e35ec
 --- /dev/null
 +++ b/tools/counter/counter_watch_events.c
 @@ -0,0 +1,406 @@
@@ -485,6 +478,3 @@ index 000000000000..3898fe7e35ec
 +
 +	return rc;
 +}
--- 
-2.39.2
-

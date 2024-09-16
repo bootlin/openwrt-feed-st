@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pinctrl/pinctrl-stmfx.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-stmfx.c b/drivers/pinctrl/pinctrl-stmfx.c
-index 388c2ff655f5..b3166235a38c 100644
 --- a/drivers/pinctrl/pinctrl-stmfx.c
 +++ b/drivers/pinctrl/pinctrl-stmfx.c
 @@ -6,6 +6,7 @@
@@ -33,7 +31,7 @@ index 388c2ff655f5..b3166235a38c 100644
  #include <linux/interrupt.h>
  #include <linux/mfd/stmfx.h>
  #include <linux/module.h>
-@@ -615,6 +616,23 @@ static int stmfx_pinctrl_gpio_function_enable(struct stmfx_pinctrl *pctl)
+@@ -615,6 +616,23 @@ static int stmfx_pinctrl_gpio_function_e
  	return stmfx_function_enable(pctl->stmfx, func);
  }
  
@@ -57,7 +55,7 @@ index 388c2ff655f5..b3166235a38c 100644
  static int stmfx_pinctrl_probe(struct platform_device *pdev)
  {
  	struct stmfx *stmfx = dev_get_drvdata(pdev->dev.parent);
-@@ -696,6 +714,8 @@ static int stmfx_pinctrl_probe(struct platform_device *pdev)
+@@ -696,6 +714,8 @@ static int stmfx_pinctrl_probe(struct pl
  	pctl->irq_chip.irq_request_resources = stmfx_gpio_irq_request_resources;
  	pctl->irq_chip.irq_release_resources = stmfx_gpio_irq_release_resources;
  	pctl->irq_chip.flags = IRQCHIP_IMMUTABLE;
@@ -66,6 +64,3 @@ index 388c2ff655f5..b3166235a38c 100644
  
  	girq = &pctl->gpio_chip.irq;
  	gpio_irq_chip_set_chip(girq, &pctl->irq_chip);
--- 
-2.39.2
-

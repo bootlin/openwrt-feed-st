@@ -18,11 +18,9 @@ Tested-by: Pascal PAILLET <p.paillet@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 7 +++++++
  2 files changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0c0f08a3a77c..a559c33529a9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -86,6 +86,13 @@ button-user-2 {
+@@ -86,6 +86,13 @@
  			gpios = <&gpioc 11 GPIO_ACTIVE_HIGH>;
  			status = "okay";
  		};
@@ -36,11 +34,9 @@ index 0c0f08a3a77c..a559c33529a9 100644
  	};
  
  	gpio-leds {
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index f950cabbd5dd..add5615244d5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -64,6 +64,13 @@ button-user-1 {
+@@ -64,6 +64,13 @@
  			gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
  			status = "okay";
  		};
@@ -54,6 +50,3 @@ index f950cabbd5dd..add5615244d5 100644
  	};
  
  	gpio-leds {
--- 
-2.39.2
-

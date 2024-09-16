@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 33 +++++++++++++++++++--------------
  1 file changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index ebf64983574d..cc2e0598259c 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -306,10 +306,11 @@ struct stm32_dma3_ddata {
@@ -34,7 +32,7 @@ index ebf64983574d..cc2e0598259c 100644
  };
  
  static inline struct stm32_dma3_ddata *to_stm32_dma3_ddata(struct stm32_dma3_chan *chan)
-@@ -556,14 +557,13 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -556,14 +557,13 @@ static struct stm32_dma3_swdesc *stm32_d
  		return NULL;
  	}
  	swdesc->lli_size = count;
@@ -51,7 +49,7 @@ index ebf64983574d..cc2e0598259c 100644
  
  	return swdesc;
  }
-@@ -1910,23 +1910,28 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1910,23 +1910,28 @@ static int stm32_dma3_probe(struct platf
  		ddata->dma_requests = FIELD_GET(G_MAX_REQ_ID, hwcfgr) + 1;
  	}
  
@@ -90,6 +88,3 @@ index ebf64983574d..cc2e0598259c 100644
  
  	ret = stm32_dma3_lli_pool_create(pdev, ddata);
  	if (ret)
--- 
-2.39.2
-

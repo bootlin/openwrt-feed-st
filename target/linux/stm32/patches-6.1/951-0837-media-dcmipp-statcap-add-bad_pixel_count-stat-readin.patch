@@ -19,8 +19,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c  | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 5d21e8e41486..ddd5896bfaeb 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -29,6 +29,9 @@
@@ -33,7 +31,7 @@ index 5d21e8e41486..ddd5896bfaeb 100644
  #define DCMIPP_P1STXCR(a)	(0x850 + ((a) * 0x4))
  #define DCMIPP_P1STXCR_ENABLE		BIT(0)
  #define DCMIPP_P1STXCR_BINS_SHIFT	2
-@@ -720,6 +723,10 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -720,6 +723,10 @@ static irqreturn_t dcmipp_statcap_irq_th
  
  	spin_lock_irq(&vcap->irqlock);
  
@@ -44,6 +42,3 @@ index 5d21e8e41486..ddd5896bfaeb 100644
  	/*
  	 * This is the core function for statistic extraction, within the
  	 * irq thread, on EACH VSYNC we update the shadow registers to
--- 
-2.39.2
-

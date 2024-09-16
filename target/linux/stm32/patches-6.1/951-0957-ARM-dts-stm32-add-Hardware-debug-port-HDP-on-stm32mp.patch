@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index cb9ba5018a94..c3d8cf0127b7 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -489,6 +489,13 @@ dts: thermal@50028000 {
+@@ -489,6 +489,13 @@
  			status = "disabled";
  		};
  
@@ -38,6 +36,3 @@ index cb9ba5018a94..c3d8cf0127b7 100644
  		pinctrl_z: pinctrl@54004000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.2
-

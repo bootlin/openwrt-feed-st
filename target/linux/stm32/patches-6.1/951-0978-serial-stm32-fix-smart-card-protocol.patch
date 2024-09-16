@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/tty/serial/stm32-usart.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 59fc41eeffff..54d8a8081f0d 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -1041,8 +1041,7 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+@@ -1041,8 +1041,7 @@ static irqreturn_t stm32_usart_interrupt
  	struct tty_port *tport = &port->state->port;
  	struct stm32_port *stm32_port = to_stm32_port(port);
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
@@ -29,8 +27,5 @@ index 59fc41eeffff..54d8a8081f0d 100644
 -	u32 cr3;
 +	u32 sr, cr3;
  	unsigned int size;
+ 	irqreturn_t ret = IRQ_NONE;
  
- 	sr = readl_relaxed(port->membase + ofs->isr);
--- 
-2.39.2
-

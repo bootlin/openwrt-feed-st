@@ -29,11 +29,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32-dma3.c | 36 +++++++++++++++++++++++++++++++-----
  1 file changed, 31 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma3.c b/drivers/dma/stm32-dma3.c
-index f4222c68650a..243bddea2c7f 100644
 --- a/drivers/dma/stm32-dma3.c
 +++ b/drivers/dma/stm32-dma3.c
-@@ -572,6 +572,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -572,6 +572,8 @@ static int stm32_dma3_lli_pool_create(st
  	struct device_node *rmem_np;
  	struct reserved_mem *rmem;
  	void *rmem_va;
@@ -42,7 +40,7 @@ index f4222c68650a..243bddea2c7f 100644
  	int ret;
  
  	/* Check if a specific pool is specified in device tree for Linked-List Items */
-@@ -583,13 +585,37 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -583,13 +585,37 @@ static int stm32_dma3_lli_pool_create(st
  	if (!rmem)
  		goto no_specific_pool;
  
@@ -82,7 +80,7 @@ index f4222c68650a..243bddea2c7f 100644
  				dev_to_node(&pdev->dev));
  	if (ret) {
  		gen_pool_destroy(ddata->gen_pool);
-@@ -597,8 +623,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -597,8 +623,8 @@ static int stm32_dma3_lli_pool_create(st
  		goto no_specific_pool;
  	}
  
@@ -93,7 +91,7 @@ index f4222c68650a..243bddea2c7f 100644
  
  no_specific_pool:
  	of_node_put(rmem_np);
-@@ -606,7 +632,7 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -606,7 +632,7 @@ no_specific_pool:
  	/* Fallback pool */
  	ddata->dma_pool = dmam_pool_create(dev_name(&pdev->dev), &pdev->dev,
  					   sizeof(struct stm32_dma3_hwdesc),
@@ -102,6 +100,3 @@ index f4222c68650a..243bddea2c7f 100644
  	if (!ddata->gen_pool && !ddata->dma_pool)
  		return -ENOMEM;
  
--- 
-2.39.2
-

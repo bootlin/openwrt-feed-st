@@ -18,8 +18,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/tty/serial/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 12f685168aef..71951b543d4c 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -1410,7 +1410,7 @@ config SERIAL_STM32
@@ -31,6 +29,3 @@ index 12f685168aef..71951b543d4c 100644
  	select SERIAL_CORE_CONSOLE
  	select SERIAL_EARLYCON
  
--- 
-2.39.2
-

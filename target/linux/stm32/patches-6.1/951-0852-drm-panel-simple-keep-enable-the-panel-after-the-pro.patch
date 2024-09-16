@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/panel/panel-simple.c | 11 ++++++++---
  1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 094b5217cd8f..ff7c9e56c77b 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -324,6 +324,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+@@ -324,6 +324,7 @@ static int panel_simple_unprepare(struct
  	if (!p->prepared)
  		return 0;
  
@@ -27,7 +25,7 @@ index 094b5217cd8f..ff7c9e56c77b 100644
  	pm_runtime_mark_last_busy(panel->dev);
  	ret = pm_runtime_put_autosuspend(panel->dev);
  	if (ret < 0)
-@@ -589,8 +590,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+@@ -589,8 +590,7 @@ static int panel_simple_probe(struct dev
  	if (IS_ERR(panel->supply))
  		return PTR_ERR(panel->supply);
  
@@ -37,7 +35,7 @@ index 094b5217cd8f..ff7c9e56c77b 100644
  	if (IS_ERR(panel->enable_gpio))
  		return dev_err_probe(dev, PTR_ERR(panel->enable_gpio),
  				     "failed to request GPIO\n");
-@@ -684,11 +684,16 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+@@ -684,11 +684,16 @@ static int panel_simple_probe(struct dev
  	 * fully enabling the panel.
  	 */
  	pm_runtime_enable(dev);
@@ -55,6 +53,3 @@ index 094b5217cd8f..ff7c9e56c77b 100644
  	err = drm_panel_of_backlight(&panel->base);
  	if (err) {
  		dev_err_probe(dev, err, "Could not find backlight\n");
--- 
-2.39.2
-

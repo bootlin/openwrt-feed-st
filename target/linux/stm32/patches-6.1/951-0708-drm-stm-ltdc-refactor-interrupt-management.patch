@@ -14,8 +14,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 28 +++++++++-------------------
  1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 0d9a94d93b8a..2749b5ed127f 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
 @@ -187,6 +187,7 @@
@@ -26,7 +24,7 @@ index 0d9a94d93b8a..2749b5ed127f 100644
  
  #define CPSR_CYPOS	GENMASK(15, 0)	/* Current Y position */
  
-@@ -831,12 +832,11 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -831,12 +832,11 @@ static void ltdc_crtc_atomic_enable(stru
  	/* Sets the background color value */
  	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
  
@@ -43,7 +41,7 @@ index 0d9a94d93b8a..2749b5ed127f 100644
  
  	/* Commit shadow registers = update planes at next vblank */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -860,13 +860,8 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -860,13 +860,8 @@ static void ltdc_crtc_atomic_disable(str
  	for (layer_index = 0; layer_index < ldev->caps.nb_layers; layer_index++)
  		regmap_write_bits(ldev->regmap, LTDC_L1CR + layer_index * LAY_OFS, LXCR_MASK, 0);
  
@@ -75,6 +73,3 @@ index 0d9a94d93b8a..2749b5ed127f 100644
  
  	DRM_DEBUG_DRIVER("ltdc hw version 0x%08x\n", ldev->caps.hw_version);
  
--- 
-2.39.2
-

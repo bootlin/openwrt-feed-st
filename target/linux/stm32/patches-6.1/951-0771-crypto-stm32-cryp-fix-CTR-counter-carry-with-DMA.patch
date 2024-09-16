@@ -21,11 +21,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 74fb762af804..50ea93038680 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -1633,6 +1633,17 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+@@ -1633,6 +1633,17 @@ static int stm32_cryp_cipher_one_req(str
  	if (!cryp)
  		return -ENODEV;
  
@@ -43,6 +41,3 @@ index 74fb762af804..50ea93038680 100644
  	if (cryp->flags & FLG_IN_OUT_DMA)
  		err = stm32_cryp_dma_start(cryp);
  	else
--- 
-2.39.2
-

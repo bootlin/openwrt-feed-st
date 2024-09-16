@@ -21,8 +21,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/pci/st,stm32-pcie-ep.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-ep.yaml
-index a9ae3a08fe70..03ee45f2960a 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-ep.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-ep.yaml
 @@ -56,6 +56,9 @@ properties:
@@ -35,6 +33,3 @@ index a9ae3a08fe70..03ee45f2960a 100644
    feature-domains:
      maxItems: 1
  
--- 
-2.39.2
-

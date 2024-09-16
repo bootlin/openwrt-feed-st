@@ -15,8 +15,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../bindings/display/st,stm32-dsi.yaml        | 42 +++++++++++++++----
  1 file changed, 34 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-index c488308d7be1..fb52656c947d 100644
 --- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 +++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 @@ -13,12 +13,11 @@ maintainers:
@@ -84,6 +82,3 @@ index c488308d7be1..fb52656c947d 100644
  required:
    - "#address-cells"
    - "#size-cells"
--- 
-2.39.2
-

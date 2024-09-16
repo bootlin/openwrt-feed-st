@@ -19,11 +19,9 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  arch/arm/boot/dts/stm32mp15xf.dtsi | 4 ++--
  4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp13xc.dtsi b/arch/arm/boot/dts/stm32mp13xc.dtsi
-index 6afc7103aec7..aa4ce81c74d1 100644
 --- a/arch/arm/boot/dts/stm32mp13xc.dtsi
 +++ b/arch/arm/boot/dts/stm32mp13xc.dtsi
-@@ -13,8 +13,8 @@ cryp: crypto@54002000 {
+@@ -13,8 +13,8 @@
  				interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CRYP1>;
  				resets = <&rcc CRYP1_R>;
@@ -34,11 +32,9 @@ index 6afc7103aec7..aa4ce81c74d1 100644
  				dma-names = "in", "out";
  				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP_ID>;
  				status = "disabled";
-diff --git a/arch/arm/boot/dts/stm32mp13xf.dtsi b/arch/arm/boot/dts/stm32mp13xf.dtsi
-index 6afc7103aec7..aa4ce81c74d1 100644
 --- a/arch/arm/boot/dts/stm32mp13xf.dtsi
 +++ b/arch/arm/boot/dts/stm32mp13xf.dtsi
-@@ -13,8 +13,8 @@ cryp: crypto@54002000 {
+@@ -13,8 +13,8 @@
  				interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CRYP1>;
  				resets = <&rcc CRYP1_R>;
@@ -49,11 +45,9 @@ index 6afc7103aec7..aa4ce81c74d1 100644
  				dma-names = "in", "out";
  				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP_ID>;
  				status = "disabled";
-diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
-index 39197bc5ff19..f5c26b7f3e87 100644
 --- a/arch/arm/boot/dts/stm32mp15xc.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
-@@ -15,8 +15,8 @@ cryp1: cryp@54001000 {
+@@ -15,8 +15,8 @@
  				interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CRYP1>;
  				resets = <&rcc CRYP1_R>;
@@ -64,11 +58,9 @@ index 39197bc5ff19..f5c26b7f3e87 100644
  				dma-names = "in", "out";
  				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP1_ID>;
  				status = "disabled";
-diff --git a/arch/arm/boot/dts/stm32mp15xf.dtsi b/arch/arm/boot/dts/stm32mp15xf.dtsi
-index e73f46d17122..9f8dc6cbe5ec 100644
 --- a/arch/arm/boot/dts/stm32mp15xf.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15xf.dtsi
-@@ -15,8 +15,8 @@ cryp1: cryp@54001000 {
+@@ -15,8 +15,8 @@
  				interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CRYP1>;
  				resets = <&rcc CRYP1_R>;
@@ -79,6 +71,3 @@ index e73f46d17122..9f8dc6cbe5ec 100644
  				dma-names = "in", "out";
  				feature-domains = <&etzpc STM32MP1_ETZPC_CRYP1_ID>;
  				status = "disabled";
--- 
-2.39.2
-

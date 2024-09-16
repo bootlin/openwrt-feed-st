@@ -12,11 +12,9 @@ Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 79aea8039e8d..4955dd9c11ec 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -66,6 +66,26 @@ scmi_vddio1: regulator@0 {
+@@ -66,6 +66,26 @@
  		regulator-min-microvolt = <1800000>;
  		regulator-max-microvolt = <3300000>;
  	};
@@ -43,6 +41,3 @@ index 79aea8039e8d..4955dd9c11ec 100644
  	scmi_vdd_sdcard: regulator@23 {
  		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
  		regulator-name = "vdd_sdcard";
--- 
-2.39.2
-

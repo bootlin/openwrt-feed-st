@@ -21,8 +21,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 130 ++++++++++++++++++
  1 file changed, 130 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 0881a03b8b5e..b8bc0eda65df 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 @@ -6,6 +6,136 @@
@@ -162,6 +160,3 @@ index 0881a03b8b5e..b8bc0eda65df 100644
  	i2c2_pins_a: i2c2-0 {
  		pins {
  			pinmux = <STM32_PINMUX('B', 5, AF9)>, /* I2C2_SCL */
--- 
-2.39.2
-

@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c       | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index eb50de90125c..ff50150f72f8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -13,6 +13,7 @@
@@ -38,7 +36,7 @@ index eb50de90125c..ff50150f72f8 100644
  	struct v4l2_mbus_framefmt sink_fmt;
  	struct v4l2_mbus_framefmt src_fmt;
  	bool streaming;
-@@ -253,12 +255,10 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -253,12 +255,10 @@ static int dcmipp_pixelproc_s_ctrl(struc
  			     struct dcmipp_pixelproc_device, ctrls);
  	int ret = 0;
  
@@ -54,7 +52,7 @@ index eb50de90125c..ff50150f72f8 100644
  
  	switch (ctrl->id) {
  	case V4L2_CID_PIXELPROC_GAMMA_CORRECTION:
-@@ -267,8 +267,9 @@ static int dcmipp_pixelproc_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -267,8 +267,9 @@ static int dcmipp_pixelproc_s_ctrl(struc
  		break;
  	}
  
@@ -65,7 +63,7 @@ index eb50de90125c..ff50150f72f8 100644
  	return ret;
  };
  
-@@ -824,6 +825,7 @@ dcmipp_pixelproc_comp_bind(struct device *comp, struct device *master,
+@@ -824,6 +825,7 @@ dcmipp_pixelproc_comp_bind(struct device
  
  	pixelproc->regs = bind_data->regs;
  	pixelproc->dev = comp;
@@ -73,6 +71,3 @@ index eb50de90125c..ff50150f72f8 100644
  
  	/* Initialize the lock */
  	mutex_init(&pixelproc->lock);
--- 
-2.39.2
-

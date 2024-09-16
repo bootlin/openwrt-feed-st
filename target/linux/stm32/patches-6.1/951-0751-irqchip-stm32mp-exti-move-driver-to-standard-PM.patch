@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 81 ++++++++----------------------
  1 file changed, 20 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index d066d15f561f..30ed2ef9226d 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -13,12 +13,11 @@
@@ -56,7 +54,7 @@ index d066d15f561f..30ed2ef9226d 100644
  static const struct stm32mp_exti_bank stm32mp_exti_b1 = {
  	.imr_ofst	= 0x80,
  	.rtsr_ofst	= 0x00,
-@@ -460,19 +456,15 @@ static void stm32mp_exti_ack(struct irq_data *d)
+@@ -460,19 +456,15 @@ static void stm32mp_exti_ack(struct irq_
  		irq_chip_ack_parent(d);
  }
  
@@ -81,7 +79,7 @@ index d066d15f561f..30ed2ef9226d 100644
  	}
  
  	return 0;
-@@ -498,49 +490,20 @@ static void stm32mp_exti_resume_gpio_mux(struct stm32mp_exti_host_data *host_dat
+@@ -498,49 +490,20 @@ static void stm32mp_exti_resume_gpio_mux
  	}
  }
  
@@ -139,7 +137,7 @@ index d066d15f561f..30ed2ef9226d 100644
  }
  
  static int stm32mp_exti_retrigger(struct irq_data *d)
-@@ -882,12 +845,6 @@ static void stm32mp_exti_remove_irq(void *data)
+@@ -882,12 +845,6 @@ static void stm32mp_exti_remove_irq(void
  		irq_domain_free_fwnode(fwnode);
  }
  
@@ -152,7 +150,7 @@ index d066d15f561f..30ed2ef9226d 100644
  static int stm32mp_exti_probe(struct platform_device *pdev)
  {
  	int ret, i;
-@@ -903,7 +860,7 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -903,7 +860,7 @@ static int stm32mp_exti_probe(struct pla
  	if (!host_data)
  		return -ENOMEM;
  
@@ -161,7 +159,7 @@ index d066d15f561f..30ed2ef9226d 100644
  	host_data->dev = dev;
  
  	if (of_device_is_compatible(np, "syscon"))
-@@ -1012,8 +969,6 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -1012,8 +969,6 @@ static int stm32mp_exti_probe(struct pla
  			return ret;
  	}
  
@@ -170,7 +168,7 @@ index d066d15f561f..30ed2ef9226d 100644
  	return 0;
  }
  
-@@ -1024,12 +979,16 @@ static const struct of_device_id stm32mp_exti_ids[] = {
+@@ -1024,12 +979,16 @@ static const struct of_device_id stm32mp
  };
  MODULE_DEVICE_TABLE(of, stm32mp_exti_ids);
  
@@ -188,6 +186,3 @@ index d066d15f561f..30ed2ef9226d 100644
  	},
  };
  
--- 
-2.39.2
-

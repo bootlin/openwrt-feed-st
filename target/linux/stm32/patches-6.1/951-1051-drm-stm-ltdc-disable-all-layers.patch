@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index ad0efe0e4bc8..2b459534dd4f 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -972,6 +972,10 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -972,6 +972,10 @@ static void ltdc_crtc_atomic_disable(str
  	/* immediately commit disable of layers before switching off LTDC */
  	if (!ldev->caps.plane_reg_shadow)
  		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
@@ -30,6 +28,3 @@ index ad0efe0e4bc8..2b459534dd4f 100644
  
  	/* Disable LTDC */
  	regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
--- 
-2.39.2
-

@@ -28,8 +28,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 55 +++++++++++++++++++++++++++++++
  1 file changed, 55 insertions(+)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index b969d550e90a..17f87ace450d 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -11,6 +11,7 @@
@@ -48,7 +46,7 @@ index b969d550e90a..17f87ace450d 100644
  };
  
  static const enum counter_function stm32_count_functions[] = {
-@@ -111,12 +113,18 @@ static int stm32_count_function_write(struct counter_device *counter,
+@@ -111,12 +113,18 @@ static int stm32_count_function_write(st
  		sms = TIM_SMCR_SMS_SLAVE_MODE_DISABLED;
  		break;
  	case COUNTER_FUNCTION_QUADRATURE_X2_A:
@@ -67,7 +65,7 @@ index b969d550e90a..17f87ace450d 100644
  		sms = TIM_SMCR_SMS_ENCODER_MODE_3;
  		break;
  	default:
-@@ -388,6 +396,49 @@ static struct counter_count stm32_counts = {
+@@ -388,6 +396,49 @@ static struct counter_count stm32_counts
  	.num_ext = ARRAY_SIZE(stm32_count_ext)
  };
  
@@ -117,7 +115,7 @@ index b969d550e90a..17f87ace450d 100644
  static int stm32_timer_cnt_probe(struct platform_device *pdev)
  {
  	struct stm32_timers *ddata = dev_get_drvdata(pdev->dev.parent);
-@@ -409,6 +460,10 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+@@ -409,6 +460,10 @@ static int stm32_timer_cnt_probe(struct
  	priv->clk = ddata->clk;
  	priv->max_arr = ddata->max_arr;
  
@@ -128,6 +126,3 @@ index b969d550e90a..17f87ace450d 100644
  	counter->name = dev_name(dev);
  	counter->parent = dev;
  	counter->ops = &stm32_timer_cnt_ops;
--- 
-2.39.2
-

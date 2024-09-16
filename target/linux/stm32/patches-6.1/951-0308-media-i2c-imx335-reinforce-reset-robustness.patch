@@ -20,11 +20,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/i2c/imx335.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index f47bac41fcd7..8ffc29850a6c 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -941,6 +941,7 @@ static int imx335_power_on(struct device *dev)
+@@ -941,6 +941,7 @@ static int imx335_power_on(struct device
  	struct imx335 *imx335 = to_imx335(sd);
  	int ret;
  
@@ -32,7 +30,7 @@ index f47bac41fcd7..8ffc29850a6c 100644
  	gpiod_set_value_cansleep(imx335->powerdown_gpio, 1);
  	/*
  	 * Spec says that T-low (timing between power on and rise of reset)
-@@ -955,7 +956,8 @@ static int imx335_power_on(struct device *dev)
+@@ -955,7 +956,8 @@ static int imx335_power_on(struct device
  		goto error_reset;
  	}
  
@@ -42,6 +40,3 @@ index f47bac41fcd7..8ffc29850a6c 100644
  
  	return 0;
  
--- 
-2.39.2
-

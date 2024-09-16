@@ -20,9 +20,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  2 files changed, 48 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml b/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
-new file mode 100644
-index 000000000000..b6074416d29b
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/i2c/i2c-rpmsg.yaml
 @@ -0,0 +1,46 @@
@@ -72,8 +69,6 @@ index 000000000000..b6074416d29b
 +            reg = <0x20>;
 +        };
 +    };
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index bf5cde9703d9..a23441d7e7f4 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
 @@ -1095,6 +1095,8 @@ patternProperties:
@@ -85,6 +80,3 @@ index bf5cde9703d9..a23441d7e7f4 100644
    "^samsung,.*":
      description: Samsung Semiconductor
    "^samtec,.*":
--- 
-2.39.2
-

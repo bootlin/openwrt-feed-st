@@ -29,8 +29,6 @@ Tested-by: Antonio Maria BORNEO <antonio.borneo@st.com>
  drivers/irqchip/irq-stm32-exti.c | 61 ++++++++++++++++++++------------
  1 file changed, 39 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index dc14895c04f5..849d1215fb03 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
 @@ -14,6 +14,7 @@
@@ -58,7 +56,7 @@ index dc14895c04f5..849d1215fb03 100644
  
  static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
  	.imr_ofst	= 0x00,
-@@ -634,50 +636,65 @@ static void stm32_exti_h_ack(struct irq_data *d)
+@@ -646,50 +648,65 @@ static void stm32_exti_h_ack(struct irq_
  		irq_chip_ack_parent(d);
  }
  
@@ -142,7 +140,7 @@ index dc14895c04f5..849d1215fb03 100644
  }
  
  static int stm32_exti_h_retrigger(struct irq_data *d)
-@@ -857,8 +874,6 @@ stm32_exti_host_data *stm32_exti_host_init(const struct stm32_exti_drv_data *dd,
+@@ -869,8 +886,6 @@ stm32_exti_host_data *stm32_exti_host_in
  		goto free_chips_data;
  	}
  
@@ -151,7 +149,7 @@ index dc14895c04f5..849d1215fb03 100644
  	return host_data;
  
  free_chips_data:
-@@ -992,7 +1007,7 @@ static void stm32_exti_remove_irq(void *data)
+@@ -1004,7 +1019,7 @@ static void stm32_exti_remove_irq(void *
  
  static int stm32_exti_remove(struct platform_device *pdev)
  {
@@ -160,7 +158,7 @@ index dc14895c04f5..849d1215fb03 100644
  	return 0;
  }
  
-@@ -1011,6 +1026,8 @@ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -1023,6 +1038,8 @@ static int stm32_exti_probe(struct platf
  	if (!host_data)
  		return -ENOMEM;
  
@@ -169,6 +167,3 @@ index dc14895c04f5..849d1215fb03 100644
  	/* check for optional hwspinlock which may be not available yet */
  	ret = of_hwspin_lock_get_id(np, 0);
  	if (ret == -EPROBE_DEFER)
--- 
-2.39.2
-

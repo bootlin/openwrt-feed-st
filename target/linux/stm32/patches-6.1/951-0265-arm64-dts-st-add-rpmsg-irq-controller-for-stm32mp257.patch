@@ -19,11 +19,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev.dts | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-index 0eef86003ff8..ac481a699db4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev.dts
-@@ -165,6 +165,15 @@ &m33_rproc {
+@@ -165,6 +165,15 @@
  	status = "okay";
  };
  
@@ -39,6 +37,3 @@ index 0eef86003ff8..ac481a699db4 100644
  &pcie_rc {
  	pinctrl-names = "default", "init";
  	pinctrl-0 = <&pcie_pins_a>;
--- 
-2.39.2
-

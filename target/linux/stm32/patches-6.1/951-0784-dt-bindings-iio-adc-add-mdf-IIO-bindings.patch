@@ -15,8 +15,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/iio/adc/st,stm32-mdf-adc.yaml    | 120 ++++++++++++++----
  1 file changed, 95 insertions(+), 25 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
-index 49db9e3ffdbd..c95efe3ff8ef 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
 @@ -31,12 +31,13 @@ properties:
@@ -63,13 +61,6 @@ index 49db9e3ffdbd..c95efe3ff8ef 100644
 -            description:
 -              From common IIO binding. Used to pipe external sigma delta
 -              modulator or internal ADC output to MDF channel.
--
--        required:
--          - compatible
--          - "#sound-dai-cells"
--          - io-channels
--
--    additionalProperties: false
 +    allOf:
 +      - if:
 +          properties:
@@ -143,7 +134,13 @@ index 49db9e3ffdbd..c95efe3ff8ef 100644
 +                - compatible
 +                - "#sound-dai-cells"
 +                - io-channels
-+
+ 
+-        required:
+-          - compatible
+-          - "#sound-dai-cells"
+-          - io-channels
+-
+-    additionalProperties: false
 +              additionalProperties: false
  
  examples:
@@ -172,6 +169,3 @@ index 49db9e3ffdbd..c95efe3ff8ef 100644
      };
  
  ...
--- 
-2.39.2
-

@@ -15,11 +15,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 56 ++++++++++++++++++++++
  1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index b13d4f273109..19393d47aa20 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -185,6 +185,62 @@ &cryp1 {
+@@ -185,6 +185,62 @@
  	status = "okay";
  };
  
@@ -82,6 +80,3 @@ index b13d4f273109..19393d47aa20 100644
  &csi2host {
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_v1v8>;
--- 
-2.39.2
-

@@ -23,11 +23,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/linux/mfd/stm32-timers.h | 10 ++++++++++
  2 files changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
-index 44ed2fce0319..725cb42eb1f1 100644
 --- a/drivers/mfd/stm32-timers.c
 +++ b/drivers/mfd/stm32-timers.c
-@@ -172,6 +172,32 @@ static void stm32_timers_get_arr_size(struct stm32_timers *ddata)
+@@ -172,6 +172,32 @@ static void stm32_timers_get_arr_size(st
  	regmap_write(ddata->regmap, TIM_ARR, arr);
  }
  
@@ -60,7 +58,7 @@ index 44ed2fce0319..725cb42eb1f1 100644
  static int stm32_timers_dma_probe(struct device *dev,
  				   struct stm32_timers *ddata)
  {
-@@ -243,7 +269,9 @@ static int stm32_timers_probe(struct platform_device *pdev)
+@@ -243,7 +269,9 @@ static int stm32_timers_probe(struct pla
  	if (IS_ERR(ddata->clk))
  		return PTR_ERR(ddata->clk);
  
@@ -71,7 +69,7 @@ index 44ed2fce0319..725cb42eb1f1 100644
  
  	ret = stm32_timers_dma_probe(dev, ddata);
  	if (ret) {
-@@ -276,6 +304,7 @@ static int stm32_timers_remove(struct platform_device *pdev)
+@@ -276,6 +304,7 @@ static int stm32_timers_remove(struct pl
  
  static const struct of_device_id stm32_timers_of_match[] = {
  	{ .compatible = "st,stm32-timers", },
@@ -79,8 +77,6 @@ index 44ed2fce0319..725cb42eb1f1 100644
  	{ /* end node */ },
  };
  MODULE_DEVICE_TABLE(of, stm32_timers_of_match);
-diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
-index 1b94325febb3..f580c378545e 100644
 --- a/include/linux/mfd/stm32-timers.h
 +++ b/include/linux/mfd/stm32-timers.h
 @@ -33,6 +33,10 @@
@@ -121,6 +117,3 @@ index 1b94325febb3..f580c378545e 100644
  	struct regmap *regmap;
  	u32 max_arr;
  	struct stm32_timers_dma dma; /* Only to be used by the parent */
--- 
-2.39.2
-

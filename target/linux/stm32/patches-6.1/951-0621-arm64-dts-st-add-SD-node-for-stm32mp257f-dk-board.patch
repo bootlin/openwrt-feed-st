@@ -17,8 +17,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 26 +++++++++++++++++++++++
  1 file changed, 26 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0a0f2377b423..dc3a4fe587d5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 @@ -6,6 +6,7 @@
@@ -29,7 +27,7 @@ index 0a0f2377b423..dc3a4fe587d5 100644
  #include "stm32mp257.dtsi"
  #include "stm32mp25xf.dtsi"
  #include "stm32mp25-pinctrl.dtsi"
-@@ -27,3 +28,28 @@ memory@80000000 {
+@@ -27,3 +28,28 @@
  		reg = <0x0 0x80000000 0x1 0x0>;
  	};
  };
@@ -58,6 +56,3 @@ index 0a0f2377b423..dc3a4fe587d5 100644
 +	vqmmc-supply = <&scmi_vddio1>;
 +	status = "okay";
 +};
--- 
-2.39.2
-

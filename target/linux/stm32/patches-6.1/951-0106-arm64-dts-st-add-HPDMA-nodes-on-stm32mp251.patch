@@ -23,11 +23,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/303303
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 69 ++++++++++++++++++++++++++
  1 file changed, 69 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 3bd96a86aef7..8ae33779e6b8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -152,6 +152,75 @@ soc@0 {
+@@ -152,6 +152,75 @@
  		interrupt-parent = <&intc>;
  		ranges = <0x0 0x0 0x0 0x80000000>;
  
@@ -103,6 +101,3 @@ index 3bd96a86aef7..8ae33779e6b8 100644
  		rifsc: rifsc@42080000 {
  			compatible = "st,stm32mp25-sys-bus";
  			reg = <0x42080000 0x1000>;
--- 
-2.39.2
-

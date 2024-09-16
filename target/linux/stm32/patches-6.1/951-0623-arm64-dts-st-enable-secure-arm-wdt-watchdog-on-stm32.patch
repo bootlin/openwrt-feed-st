@@ -18,11 +18,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index f83308f8f9a5..e4226e365a7b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -30,6 +30,11 @@ memory@80000000 {
+@@ -30,6 +30,11 @@
  	};
  };
  
@@ -34,6 +32,3 @@ index f83308f8f9a5..e4226e365a7b 100644
  &scmi_regu {
  	scmi_vddio1: voltd-vddio1 {
  		regulator-min-microvolt = <1800000>;
--- 
-2.39.2
-

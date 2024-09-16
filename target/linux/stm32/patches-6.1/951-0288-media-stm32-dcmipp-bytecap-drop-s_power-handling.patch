@@ -18,11 +18,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 70d2c2dabbcc..099a3068b699 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -470,9 +470,6 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+@@ -470,9 +470,6 @@ static int dcmipp_pipeline_s_stream(stru
  				__func__, subdev->name,
  				state ? "start" : "stop", ret);
  
@@ -32,6 +30,3 @@ index 70d2c2dabbcc..099a3068b699 100644
  			return ret;
  		}
  
--- 
-2.39.2
-

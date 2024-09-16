@@ -33,11 +33,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp15xd.dtsi | 14 --------------
  3 files changed, 19 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 680fe741cfa6..e4c34dd521cd 100644
 --- a/arch/arm/boot/dts/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -32,6 +32,25 @@ cpu0: cpu@0 {
+@@ -32,6 +32,25 @@
  	cpu0_opp_table: cpu0-opp-table {
  		compatible = "operating-points-v2";
  		opp-shared;
@@ -63,8 +61,6 @@ index 680fe741cfa6..e4c34dd521cd 100644
  	};
  
  	intc: interrupt-controller@a0021000 {
-diff --git a/arch/arm/boot/dts/stm32mp15xa.dtsi b/arch/arm/boot/dts/stm32mp15xa.dtsi
-index f63812ce358e..cc6456e71be9 100644
 --- a/arch/arm/boot/dts/stm32mp15xa.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15xa.dtsi
 @@ -3,11 +3,3 @@
@@ -79,8 +75,6 @@ index f63812ce358e..cc6456e71be9 100644
 -			opp-supported-hw = <0x1>;
 -		};
 -};
-diff --git a/arch/arm/boot/dts/stm32mp15xd.dtsi b/arch/arm/boot/dts/stm32mp15xd.dtsi
-index e5378976b716..d8a14c55b2d0 100644
 --- a/arch/arm/boot/dts/stm32mp15xd.dtsi
 +++ b/arch/arm/boot/dts/stm32mp15xd.dtsi
 @@ -4,20 +4,6 @@
@@ -104,6 +98,3 @@ index e5378976b716..d8a14c55b2d0 100644
  &cpu_thermal {
  	trips {
  		cpu-crit {
--- 
-2.39.2
-

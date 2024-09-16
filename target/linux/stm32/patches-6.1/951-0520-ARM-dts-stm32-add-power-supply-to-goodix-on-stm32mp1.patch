@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/stm32mp157f-ev1.dts | 2 ++
  4 files changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp157a-ev1.dts b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-index 4564d837f324..c4f46cae4d13 100644
 --- a/arch/arm/boot/dts/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157a-ev1.dts
-@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+@@ -495,6 +495,8 @@
  		panel = <&panel_dsi>;
  		pinctrl-0 = <&goodix_pins>;
  		pinctrl-names = "default";
@@ -31,11 +29,9 @@ index 4564d837f324..c4f46cae4d13 100644
  		status = "okay";
  
  		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index f8fa8b3caf9b..4f16f8f359a5 100644
 --- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+@@ -495,6 +495,8 @@
  		panel = <&panel_dsi>;
  		pinctrl-0 = <&goodix_pins>;
  		pinctrl-names = "default";
@@ -44,11 +40,9 @@ index f8fa8b3caf9b..4f16f8f359a5 100644
  		status = "okay";
  
  		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
-diff --git a/arch/arm/boot/dts/stm32mp157d-ev1.dts b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-index e0338e6fd51e..ee8f8fd91d93 100644
 --- a/arch/arm/boot/dts/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157d-ev1.dts
-@@ -495,6 +495,8 @@ gt9147: goodix-ts@5d {
+@@ -495,6 +495,8 @@
  		panel = <&panel_dsi>;
  		pinctrl-0 = <&goodix_pins>;
  		pinctrl-names = "default";
@@ -57,11 +51,9 @@ index e0338e6fd51e..ee8f8fd91d93 100644
  		status = "okay";
  
  		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
-diff --git a/arch/arm/boot/dts/stm32mp157f-ev1.dts b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-index bf58f5098c07..61a52c4d7b83 100644
 --- a/arch/arm/boot/dts/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/stm32mp157f-ev1.dts
-@@ -496,6 +496,8 @@ gt9147: goodix-ts@5d {
+@@ -496,6 +496,8 @@
  		panel = <&panel_dsi>;
  		pinctrl-0 = <&goodix_pins>;
  		pinctrl-names = "default";
@@ -70,6 +62,3 @@ index bf58f5098c07..61a52c4d7b83 100644
  		status = "okay";
  
  		interrupts = <14 IRQ_TYPE_EDGE_RISING>;
--- 
-2.39.2
-

@@ -31,8 +31,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/rng/st,stm32-rng.yaml | 20 ++++++++++++++++++-
  1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 591af796a5eb..301d2f588a05 100644
 --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 @@ -24,7 +24,7 @@ properties:
@@ -69,6 +67,3 @@ index 591af796a5eb..301d2f588a05 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.2
-

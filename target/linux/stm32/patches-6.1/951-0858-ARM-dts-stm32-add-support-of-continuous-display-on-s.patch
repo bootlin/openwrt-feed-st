@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/stm32mp135f-dk.dts | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp135f-dk.dts b/arch/arm/boot/dts/stm32mp135f-dk.dts
-index 9d955ec583cf..f30a5618a1d8 100644
 --- a/arch/arm/boot/dts/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
-@@ -97,7 +97,7 @@ panel_backlight: panel-backlight {
+@@ -97,7 +97,7 @@
  		compatible = "gpio-backlight";
  		gpios = <&gpioe 12 GPIO_ACTIVE_HIGH>;
  		default-on;
@@ -27,7 +25,7 @@ index 9d955ec583cf..f30a5618a1d8 100644
  		status = "okay";
  	};
  
-@@ -423,6 +423,7 @@ &ltdc {
+@@ -423,6 +423,7 @@
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&ltdc_pins_a>;
  	pinctrl-1 = <&ltdc_sleep_pins_a>;
@@ -35,6 +33,3 @@ index 9d955ec583cf..f30a5618a1d8 100644
  	status = "okay";
  
  	port {
--- 
-2.39.2
-

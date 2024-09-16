@@ -20,8 +20,6 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/bus/stm32_sys_bus.c | 323 ++++++++++++++++++++++++++++++++++++
  1 file changed, 323 insertions(+)
 
-diff --git a/drivers/bus/stm32_sys_bus.c b/drivers/bus/stm32_sys_bus.c
-index c94ed57ce8c4..0ee643d9a86d 100644
 --- a/drivers/bus/stm32_sys_bus.c
 +++ b/drivers/bus/stm32_sys_bus.c
 @@ -5,6 +5,7 @@
@@ -358,7 +356,7 @@ index c94ed57ce8c4..0ee643d9a86d 100644
  static int stm32_sys_bus_get_periph_id(struct sys_bus_data *pdata, struct device_node *np, u32 *id)
  {
  	int err;
-@@ -333,6 +643,10 @@ static int stm32_sys_bus_probe(struct platform_device *pdev)
+@@ -333,6 +643,10 @@ static int stm32_sys_bus_probe(struct pl
  
  	platform_set_drvdata(pdev, pdata);
  
@@ -369,7 +367,7 @@ index c94ed57ce8c4..0ee643d9a86d 100644
  	stm32_sys_bus_populate(pdata);
  
  	/* Populate all available nodes */
-@@ -342,16 +656,25 @@ static int stm32_sys_bus_probe(struct platform_device *pdev)
+@@ -342,16 +656,25 @@ static int stm32_sys_bus_probe(struct pl
  static const struct stm32_sys_bus_match_data stm32mp15_sys_bus_data = {
  	.max_entries = STM32MP15_ETZPC_ENTRIES,
  	.sys_bus_get_access = stm32_etzpc_get_access,
@@ -395,6 +393,3 @@ index c94ed57ce8c4..0ee643d9a86d 100644
  };
  
  static const struct of_device_id stm32_sys_bus_of_match[] = {
--- 
-2.39.2
-

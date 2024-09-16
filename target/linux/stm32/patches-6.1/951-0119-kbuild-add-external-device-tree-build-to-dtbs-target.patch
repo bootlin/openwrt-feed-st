@@ -35,11 +35,9 @@ Subject: [PATCH 0119/1141]     kbuild: add external device tree build to dtbs
  Makefile | 32 +++++++++++++++++++++++++++++---
  1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index c5345f3ebed0..0e9486d6994f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1461,17 +1461,43 @@ ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+@@ -1460,17 +1460,43 @@ ifneq ($(wildcard $(srctree)/arch/$(SRCA
  dtstree := arch/$(SRCARCH)/boot/dts
  endif
  
@@ -86,6 +84,3 @@ index c5345f3ebed0..0e9486d6994f 100644
  
  # include/config/kernel.release is actually needed when installing DTBs because
  # INSTALL_DTBS_PATH contains $(KERNELRELEASE). However, we do not want to make
--- 
-2.39.2
-

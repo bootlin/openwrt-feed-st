@@ -18,11 +18,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm/boot/dts/stm32mp135f-dk.dts | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp135f-dk.dts b/arch/arm/boot/dts/stm32mp135f-dk.dts
-index db551ee63a34..9d955ec583cf 100644
 --- a/arch/arm/boot/dts/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/stm32mp135f-dk.dts
-@@ -440,35 +440,35 @@ &rtc {
+@@ -440,35 +440,35 @@
  };
  
  &scmi_regu {
@@ -66,6 +64,3 @@ index db551ee63a34..9d955ec583cf 100644
  		reg = <VOLTD_SCMI_STPMIC1_PWR_SW2>;
  		regulator-name = "v3v3_sw";
  	};
--- 
-2.39.2
-

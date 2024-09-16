@@ -21,8 +21,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
  create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index a5dcc7293a83..006d9bfbb0f6 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
 @@ -396,6 +396,11 @@ config COMMON_CLK_STM32MP157
@@ -37,16 +35,11 @@ index a5dcc7293a83..006d9bfbb0f6 100644
  config COMMON_CLK_STM32F
  	def_bool COMMON_CLK && (MACH_STM32F429 || MACH_STM32F469 || MACH_STM32F746)
  	help
-diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
-index 95bd2230bba0..ee592f562e86 100644
 --- a/drivers/clk/stm32/Makefile
 +++ b/drivers/clk/stm32/Makefile
 @@ -1 +1,2 @@
  obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
 +obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25.o clk-stm32-core.o reset-stm32.o
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-new file mode 100644
-index 000000000000..b0083428dbe4
 --- /dev/null
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -0,0 +1,1952 @@
@@ -2002,9 +1995,6 @@ index 000000000000..b0083428dbe4
 +};
 +
 +#endif
-diff --git a/drivers/clk/stm32/stm32mp25_rcc.h b/drivers/clk/stm32/stm32mp25_rcc.h
-new file mode 100644
-index 000000000000..0e223ee55886
 --- /dev/null
 +++ b/drivers/clk/stm32/stm32mp25_rcc.h
 @@ -0,0 +1,4977 @@
@@ -6985,6 +6975,3 @@ index 000000000000..0e223ee55886
 +#define RCC_VERR_MAJREV_SHIFT			4
 +
 +#endif /* STM32MP25_RCC_H */
--- 
-2.39.2
-

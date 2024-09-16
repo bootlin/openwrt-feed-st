@@ -19,11 +19,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-index ea0e21d371df..c841f551e687 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-@@ -1208,7 +1208,7 @@ static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_c
+@@ -1208,7 +1208,7 @@ static void hantro_h1_vp8_enc_set_params
  	u32 deq;
  	u32 tmp;
  	u32 reg;
@@ -32,7 +30,7 @@ index ea0e21d371df..c841f551e687 100644
  
  	vepu_write_relaxed(vpu, 0, H1_REG_STR_HDR_REM_MSB);
  	vepu_write_relaxed(vpu, 0, H1_REG_STR_HDR_REM_LSB);
-@@ -1220,7 +1220,12 @@ static void hantro_h1_vp8_enc_set_params(struct hantro_dev *vpu, struct hantro_c
+@@ -1220,7 +1220,12 @@ static void hantro_h1_vp8_enc_set_params
  
  	inter_favor = 128 - ctx->vp8_enc.prob_intra;
  	if (inter_favor >= 0)
@@ -46,7 +44,7 @@ index ea0e21d371df..c841f551e687 100644
  
  	reg |= H1_REG_ENC_CTRL2_INTRA16X16_MODE(qp * 1024 / 128);
  	vepu_write_relaxed(vpu, reg, H1_REG_ENC_CTRL2);//in VEPU_REG_INTRA_INTER_MODE
-@@ -1515,7 +1520,6 @@ int hantro_h1_vp8_enc_run(struct hantro_ctx *ctx)
+@@ -1515,7 +1520,6 @@ int hantro_h1_vp8_enc_run(struct hantro_
  	/* Start the hardware. */
  	reg =     H1_REG_ENC_CTRL_TIMEOUT_EN
  		| H1_REG_ENC_CTRL_MV_WRITE //for VEPU_REG_MV_WRITE_EN in VEPU_REG_INTERRUPT
@@ -54,6 +52,3 @@ index ea0e21d371df..c841f551e687 100644
  		| H1_REG_ENC_CTRL_WIDTH(MB_WIDTH(ctx->src_fmt.width))
  		| H1_REG_ENC_CTRL_HEIGHT(MB_HEIGHT(ctx->src_fmt.height))
  		| H1_REG_ENC_CTRL_ENC_MODE_VP8
--- 
-2.39.2
-

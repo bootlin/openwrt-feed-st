@@ -30,8 +30,6 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  Documentation/devicetree/bindings/misc/st,stm32-omm.yaml | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
-index 1e539f671354..0560bb50830d 100644
 --- a/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 +++ b/Documentation/devicetree/bindings/misc/st,stm32-omm.yaml
 @@ -102,6 +102,9 @@ properties:
@@ -67,6 +65,3 @@ index 1e539f671354..0560bb50830d 100644
 +        power-domains = <&CLUSTER_PD>;
        };
      };
--- 
-2.39.2
-

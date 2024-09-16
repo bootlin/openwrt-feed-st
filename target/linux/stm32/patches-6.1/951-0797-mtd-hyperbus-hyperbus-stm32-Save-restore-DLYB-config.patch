@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mtd/hyperbus/hyperbus-stm32.c | 17 +++++++++++++++--
  1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index 9b88eda14495..4622998d00f2 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
 @@ -19,6 +19,7 @@ struct stm32_hyperbus {
@@ -33,7 +31,7 @@ index 9b88eda14495..4622998d00f2 100644
  	bool wzl;
  };
  
-@@ -145,8 +146,6 @@ static int stm32_hyperbus_calibrate(struct hyperbus_device *hbdev)
+@@ -145,8 +146,6 @@ static int stm32_hyperbus_calibrate(stru
  
  	prescaler = FIELD_GET(DCR2_PRESC_MASK,
  			      readl(regs_base + OSPI_DCR2));
@@ -42,7 +40,7 @@ index 9b88eda14495..4622998d00f2 100644
  
  	if (hyperbus->real_flash_freq <= STM32_DLYB_FREQ_THRESHOLD) {
  		bypass_mode = true;
-@@ -205,6 +204,9 @@ static void stm32_hyperbus_init(struct stm32_hyperbus *hyperbus)
+@@ -205,6 +204,9 @@ static void stm32_hyperbus_init(struct s
  	if (prescaler > 255)
  		prescaler = 255;
  
@@ -52,7 +50,7 @@ index 9b88eda14495..4622998d00f2 100644
  	writel_relaxed(FIELD_PREP(DCR2_PRESC_MASK, prescaler), regs_base + OSPI_DCR2);
  	hyperbus->real_flash_freq = omi->clk_rate / (prescaler + 1);
  
-@@ -239,6 +241,9 @@ static int __maybe_unused stm32_hyperbus_suspend(struct device *dev)
+@@ -239,6 +241,9 @@ static int __maybe_unused stm32_hyperbus
  	if (ret < 0)
  		return ret;
  
@@ -62,7 +60,7 @@ index 9b88eda14495..4622998d00f2 100644
  	cr = readl_relaxed(regs_base + OSPI_CR);
  	cr &= ~CR_EN;
  	writel_relaxed(cr, regs_base + OSPI_CR);
-@@ -266,8 +271,16 @@ static int __maybe_unused stm32_hyperbus_resume(struct device *dev)
+@@ -266,8 +271,16 @@ static int __maybe_unused stm32_hyperbus
  	if (ret < 0)
  		return ret;
  
@@ -79,6 +77,3 @@ index 9b88eda14495..4622998d00f2 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
--- 
-2.39.2
-

@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/linux/counter.h | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/counter.h b/include/linux/counter.h
-index b63746637de2..9e378c98bc87 100644
 --- a/include/linux/counter.h
 +++ b/include/linux/counter.h
-@@ -602,6 +602,9 @@ struct counter_array {
+@@ -601,6 +601,9 @@ struct counter_array {
  #define COUNTER_COMP_FLOOR(_read, _write) \
  	COUNTER_COMP_COUNT_U64("floor", _read, _write)
  
@@ -34,6 +32,3 @@ index b63746637de2..9e378c98bc87 100644
  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
  { \
  	.type = COUNTER_COMP_SIGNAL_POLARITY, \
--- 
-2.39.2
-
