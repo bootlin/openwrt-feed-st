@@ -5,7 +5,7 @@
  config USB_STM32_USBH
  	tristate "STM32 USB2 Host Glue support"
 -	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on (ARCH_STM32 && CONFIG_ARM64) || COMPILE_TEST
++	depends on (ARCH_STM32 && ARM64) || COMPILE_TEST
  	select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
  	select USB_EHCI_HCD_PLATFORM if USB_EHCI_HCD
  	help
