@@ -43,6 +43,7 @@ jobs:
         run: cd openwrt; ./scripts/feeds install -a -f
       - name: Configure
         run: |
+          rm -rf openwrt/tmp/info/.packageinfo-kernel_linux
           printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}_DEVICE_${{ matrix.profile }}=y\\n" > openwrt/.config
           make -C openwrt defconfig
       - name: Build
