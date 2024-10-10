@@ -108,6 +108,14 @@ $ ./scripts/feeds install -a -f
 ```
 (Some overriding warnings can occur, if you used `-f` please ignore them).
 
+### Clean tmp/ directory
+
+It's a workaround to fix a package scan issue. More details available in commit [ab360e2](https://github.com/bootlin/openwrt-feed-st/commit/ab360e2).
+
+```bash
+$ rm -rf tmp/
+```
+
 ### Configure and build
 
 Run `make menuconfig`
