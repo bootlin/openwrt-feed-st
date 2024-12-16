@@ -11,7 +11,7 @@ FEATURES:=boot-part emmc ext4 gpio rtc usb
 SUBTARGETS:=stm32mp1 stm32mp2
 CPU_TYPE:=
 
-KERNEL_PATCHVER:=6.1
+KERNEL_PATCHVER:=6.6
 
 include $(INCLUDE_DIR)/target.mk
 

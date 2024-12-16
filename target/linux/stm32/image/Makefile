@@ -20,6 +20,7 @@ define Build/boot-img-ext4
 	$(SED) 's/@DEVICE@/$(DEVICE_NAME)/' $@.boot/extlinux/extlinux.conf
 	$(SED) 's/@DTS@/$(DEVICE_DTS)/' $@.boot/extlinux/extlinux.conf
 	$(SED) 's/@ROOT@/PARTUUID=$(shell echo $(IMG_PART_DISKGUID) | sed 's/00$$/05/')/' $@.boot/extlinux/extlinux.conf
+	$(SED) 's/@BOOTARGS@/$(BOOTARGS)/' $@.boot/extlinux/extlinux.conf
 
 	make_ext4fs -J -L kernel -l $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
 		$(if $(SOURCE_DATE_EPOCH),-T $(SOURCE_DATE_EPOCH)) \
@@ -40,20 +41,22 @@ define Device/Default
   IMAGE/factory.img.gz := boot-img-ext4 | sdcard-img | gzip
   IMAGE/sysupgrade.img.gz := boot-img-ext4 | sdcard-img | gzip | append-metadata
   KERNEL := kernel-bin
+  DEVICE_DTS_DIR:= $(DTS_DIR)/st
   ENV_SIZE := 0x200000
   DEVICE_PACKAGES := $(WIFI_PACKAGES) $(USB_PACKAGES) -mtd
+  BOOTARGS := fw_devlink=on
 endef
 
 define Device/stm32mp1
   KERNEL_NAME := zImage
   KERNEL_IMG := zImage
-  DEVICE_DTS_DIR:= $(DTS_DIR)
+  DEVICE_PACKAGES += kmod-phy-stm32-usbphyc
 endef
 
 define Device/stm32mp2
   KERNEL_NAME := Image.gz
   KERNEL_IMG := Image.gz
-  DEVICE_DTS_DIR:= $(DTS_DIR)/st
+  BOOTARGS += console=ttySTM0,115200n8
   DEVICE_PACKAGES += kmod-usb-stm32-usbh
 endef
 
