@@ -18,12 +18,12 @@ PKG_MAINTAINER:=Thomas Richard <thomas.richard@bootlin.com>
 
 OPTEE_USE_INTREE_DTC:=1
 
-include optee-os.mk
+include $(INCLUDE_DIR)/kernel.mk
+include $(INCLUDE_DIR)/optee-os.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Optee-os/Default
   BUILD_TARGET:=stm32
-  OPTEE_IMAGE:=tee-header_v2.bin tee-pager_v2.bin tee-pageable_v2.bin
 endef
 
 define Optee-os/stm32mp1
@@ -66,12 +66,9 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/out/arm-plat-$(PLAT)/core/tee-header_v2.bin \
-		$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-header_v2.bin
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/out/arm-plat-$(PLAT)/core/tee-pager_v2.bin \
-		$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pager_v2.bin
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/out/arm-plat-$(PLAT)/core/tee-pageable_v2.bin \
-		$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pageable_v2.bin
+	$(foreach img,$(OPTEE_IMAGE), \
+		$(CP) $(PKG_BUILD_DIR)/out/arm-plat-$(PLAT)/core/$(img) $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-$(img); \
+	)
 endef
 
 $(eval $(call BuildPackage/Optee-os))
