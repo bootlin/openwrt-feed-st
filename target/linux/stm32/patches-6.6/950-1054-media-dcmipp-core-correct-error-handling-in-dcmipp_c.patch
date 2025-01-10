@@ -1,0 +1,37 @@
+From 64826ec1da010af08f038f91384c747c1c0daaae Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 23 Mar 2024 21:40:27 +0100
+Subject: [PATCH] media: dcmipp: core: correct error handling in
+ dcmipp_create_subdevs
+
+Correct error handling within the dcmipp_create_subdevs by properly
+decrementing the i counter when releasing the subdeves.
+
+Change-Id: I17db415d8c745c706257e196b202e6cfd0f55902
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374622
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index cfe539cd20ea..ea511b8e4abd 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -264,7 +264,7 @@ static int dcmipp_create_subdevs(struct dcmipp_device *dcmipp)
+ 	return 0;
+ 
+ err_init_entity:
+-	while (i > 0)
++	while (i-- > 0)
+ 		dcmipp->pipe_cfg->ents[i - 1].release(dcmipp->entity[i - 1]);
+ 	return ret;
+ }
+-- 
+2.39.5
+

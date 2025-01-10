@@ -1,0 +1,126 @@
+From 50e52b1cd35300e2bb0ae7253c1cd872312d24b2 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 28 Oct 2022 16:27:34 +0200
+Subject: [PATCH] mfd: stm32-timers: add support for stm32mp25
+
+Add support for STM32MP25 SoC. Use newly introduced compatible, to handle
+new features.
+Identification and hardware configuration registers allow to read the
+timer version and capabilities (counter width, number of channels...).
+So, rework the probe to avoid touching ARR register by simply read the
+counter width when available. This may avoid messing with a possibly
+running timer.
+Also add useful bit fields to stm32-timers header file.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I18f8ab9f504a91912dca432bb117f9bf11d1965d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278651
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/mfd/stm32-timers.c       | 31 ++++++++++++++++++++++++++++++-
+ include/linux/mfd/stm32-timers.h | 10 ++++++++++
+ 2 files changed, 40 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
+index 732a28db80fa..0f9f7b9bf980 100644
+--- a/drivers/mfd/stm32-timers.c
++++ b/drivers/mfd/stm32-timers.c
+@@ -173,6 +173,32 @@ static void stm32_timers_get_arr_size(struct stm32_timers *ddata)
+ 	regmap_write(ddata->regmap, TIM_ARR, arr);
+ }
+ 
++static int stm32_timers_probe_hwcfgr(struct device *dev, struct stm32_timers *ddata)
++{
++	u32 val;
++
++	ddata->ipidr = (uintptr_t)device_get_match_data(dev);
++	if (!ddata->ipidr) {
++		/* fallback to legacy method for probing counter width */
++		stm32_timers_get_arr_size(ddata);
++		return 0;
++	}
++
++	regmap_read(ddata->regmap, TIM_IPIDR, &val);
++	/* Sanity check on IP identification register */
++	if (val != ddata->ipidr) {
++		dev_err(dev, "Unexpected identification: %u\n", val);
++		return -EINVAL;
++	}
++
++	regmap_read(ddata->regmap, TIM_HWCFGR2, &val);
++	/* Counter width in bits, max reload value is BIT(width) - 1 */
++	ddata->max_arr = BIT(FIELD_GET(TIM_HWCFGR2_CNT_WIDTH, val)) - 1;
++	dev_dbg(dev, "TIM width: %ld\n", FIELD_GET(TIM_HWCFGR2_CNT_WIDTH, val));
++
++	return 0;
++}
++
+ static int stm32_timers_dma_probe(struct device *dev,
+ 				   struct stm32_timers *ddata)
+ {
+@@ -243,7 +269,9 @@ static int stm32_timers_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ddata->clk))
+ 		return PTR_ERR(ddata->clk);
+ 
+-	stm32_timers_get_arr_size(ddata);
++	ret = stm32_timers_probe_hwcfgr(dev, ddata);
++	if (ret)
++		return ret;
+ 
+ 	ret = stm32_timers_dma_probe(dev, ddata);
+ 	if (ret) {
+@@ -276,6 +304,7 @@ static int stm32_timers_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id stm32_timers_of_match[] = {
+ 	{ .compatible = "st,stm32-timers", },
++	{ .compatible = "st,stm32mp25-timers", .data = (void *)STM32MP25_TIM_IPIDR },
+ 	{ /* end node */ },
+ };
+ MODULE_DEVICE_TABLE(of, stm32_timers_of_match);
+diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
+index 1b94325febb3..f580c378545e 100644
+--- a/include/linux/mfd/stm32-timers.h
++++ b/include/linux/mfd/stm32-timers.h
+@@ -33,6 +33,10 @@
+ #define TIM_DMAR	0x4C	/* DMA register for transfer */
+ #define TIM_TISEL	0x68	/* Input Selection         */
+ 
++#define TIM_HWCFGR2	0x3EC	/* hardware configuration 2 Reg (MP25)	*/
++#define TIM_HWCFGR1	0x3F0	/* hardware configuration 1 Reg (MP25)	*/
++#define TIM_IPIDR	0x3F8	/* IP identification Reg (MP25)		*/
++
+ #define TIM_CR1_CEN	BIT(0)	/* Counter Enable	   */
+ #define TIM_CR1_DIR	BIT(4)  /* Counter Direction	   */
+ #define TIM_CR1_ARPE	BIT(7)	/* Auto-reload Preload Ena */
+@@ -78,6 +82,9 @@
+ #define TIM_BDTR_BKF(x)	(0xf << (16 + (x) * 4))
+ #define TIM_DCR_DBA	GENMASK(4, 0)	/* DMA base addr */
+ #define TIM_DCR_DBL	GENMASK(12, 8)	/* DMA burst len */
++#define TIM_HWCFGR1_NB_OF_CC	GENMASK(3, 0)	/* Capture/compare channels */
++#define TIM_HWCFGR1_NB_OF_DT	GENMASK(7, 4)	/* Complementary outputs & dead-time generators */
++#define TIM_HWCFGR2_CNT_WIDTH	GENMASK(15, 8)	/* Counter width */
+ 
+ #define MAX_TIM_PSC		0xFFFF
+ #define MAX_TIM_ICPSC		0x3
+@@ -91,6 +98,8 @@
+ #define TIM_BDTR_BKF_MASK	0xF
+ #define TIM_BDTR_BKF_SHIFT(x)	(16 + (x) * 4)
+ 
++#define STM32MP25_TIM_IPIDR	0x00120002
++
+ enum stm32_timers_dmas {
+ 	STM32_TIMERS_DMA_CH1,
+ 	STM32_TIMERS_DMA_CH2,
+@@ -120,6 +129,7 @@ struct stm32_timers_dma {
+ 
+ struct stm32_timers {
+ 	struct clk *clk;
++	u32 ipidr;
+ 	struct regmap *regmap;
+ 	u32 max_arr;
+ 	struct stm32_timers_dma dma; /* Only to be used by the parent */
+-- 
+2.39.5
+

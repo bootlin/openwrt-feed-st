@@ -1,0 +1,28 @@
+From fd5bbde05cc6066b8df740efc37ebcff4ff83559 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 15 Nov 2023 18:05:21 +0100
+Subject: [PATCH] dt-bindings: stm32: document stm32mp257f-dk board
+
+Add new entry for stm32mp257f-dk board.
+
+Change-Id: I65d8e5a8559b32cb82e00a401a66ffb74d198ce8
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index a8cc79fbe96b..722507ae1aa2 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -174,6 +174,7 @@ properties:
+       - description: ST STM32MP257 based Boards
+         items:
+           - enum:
++              - st,stm32mp257f-dk
+               - st,stm32mp257f-ev1
+           - const: st,stm32mp257
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,45 @@
+From f1bc1b5d21c56596159c08374b1097478903c6d2 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Thu, 19 Sep 2019 15:23:15 +0200
+Subject: [PATCH] usb: dwc2: platform: Add irq wakeup support
+
+OTG controller could be used as a wakeup source. This patch adds OTG
+irq wake up support.
+
+Change-Id: I7f6b8569019afa483c1f595012bb485958cb9258
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/158675
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ drivers/usb/dwc2/platform.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index 7b84416dfc2b..e313fbe8b7b4 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -689,6 +689,9 @@ static int __maybe_unused dwc2_suspend(struct device *dev)
+ 		dwc2->phy_off_for_suspend = true;
+ 	}
+ 
++	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++		enable_irq_wake(dwc2->irq);
++
+ 	return ret;
+ }
+ 
+@@ -697,6 +700,9 @@ static int __maybe_unused dwc2_resume(struct device *dev)
+ 	struct dwc2_hsotg *dwc2 = dev_get_drvdata(dev);
+ 	int ret = 0;
+ 
++	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++		disable_irq_wake(dwc2->irq);
++
+ 	if (dwc2->phy_off_for_suspend && dwc2->ll_hw_enabled) {
+ 		ret = __dwc2_lowlevel_hw_enable(dwc2);
+ 		if (ret)
+-- 
+2.39.5
+

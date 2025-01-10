@@ -1,0 +1,74 @@
+From 673cedba4ec1b1a85e6853439429c4e48a571823 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 29 Jul 2024 11:37:35 +0200
+Subject: [PATCH] ASoC: stm32: mdf: add MDF support to stm32mp235f
+
+The MDF peripheral supports only four instances of filter and serial
+interfaces on STM32MP235F Soc. The driver cannot rely on identification
+register on STM32MP235F, so the number of filters has to be specified
+and managed through a dedicated compatible "st,stm32mp23-mdf".
+
+Change-Id: Ibf52590088cc3c54ad8acc277268124f4c257b9c
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395653
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/iio/adc/stm32-mdf-core.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
+index 87e1a7858ec7..7cb8873f5b21 100644
+--- a/drivers/iio/adc/stm32-mdf-core.c
++++ b/drivers/iio/adc/stm32-mdf-core.c
+@@ -102,6 +102,7 @@ struct stm32_mdf_priv {
+ };
+ 
+ #define STM32_MDF_MAX_CCK 2
++#define STM32_MDF_MP23_FILTER_NB 4
+ 
+ static inline struct stm32_mdf_priv *to_stm32_mdf_priv(struct stm32_mdf *mdf)
+ {
+@@ -571,12 +572,24 @@ static int stm32_mdf_core_parse_of(struct platform_device *pdev, struct stm32_md
+ 	return ret;
+ }
+ 
++static const struct of_device_id stm32_mdf_of_match[] = {
++	{ .compatible = "st,stm32mp25-mdf" },
++	{ .compatible = "st,stm32mp23-mdf", .data = (void *)STM32_MDF_MP23_FILTER_NB },
++	{}
++};
++MODULE_DEVICE_TABLE(of, stm32_mdf_of_match);
++
+ static int stm32_mdf_core_identification(struct platform_device *pdev, struct stm32_mdf_priv *priv)
+ {
+ 	struct stm32_mdf *mdf = &priv->mdf;
+ 	u32 val;
+ 	int ret;
+ 
++	/* If filter number is explicitly defined, don't check identification registers */
++	mdf->nbf = (uintptr_t)device_get_match_data(&pdev->dev);
++	if (mdf->nbf)
++		return 0;
++
+ 	ret = regmap_read(priv->regmap, MDF_IPIDR_REG, &val);
+ 	if (ret)
+ 		return ret;
+@@ -738,12 +751,6 @@ static const struct dev_pm_ops stm32_mdf_core_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(stm32_mdf_core_runtime_suspend, stm32_mdf_core_runtime_resume, NULL)
+ };
+ 
+-static const struct of_device_id stm32_mdf_of_match[] = {
+-	{ .compatible = "st,stm32mp25-mdf" },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, stm32_mdf_of_match);
+-
+ static struct platform_driver stm32_mdf_driver = {
+ 	.probe = stm32_mdf_core_probe,
+ 	.remove = stm32_mdf_core_remove,
+-- 
+2.39.5
+

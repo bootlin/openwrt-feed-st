@@ -1,0 +1,122 @@
+From 0d915fd18b22650e0e575cc2fe7532dca5c8dfb1 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Fri, 24 May 2024 10:47:14 +0530
+Subject: [PATCH] usb: dwc2: Add address remapping support for stm32mp21
+
+enable AXI DMA translation for otg controller
+by updating syscfg-otgarcr register
+
+Change-Id: Ic98da44a938ac53de8e3f3dc5ea91b1d5630a909
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381992
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/dwc2/core.h     |  3 +++
+ drivers/usb/dwc2/hw.h       |  1 +
+ drivers/usb/dwc2/params.c   |  1 +
+ drivers/usb/dwc2/platform.c | 27 +++++++++++++++++++++++++++
+ 4 files changed, 32 insertions(+)
+
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 9ffa08647e27..9da9d436314b 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -473,10 +473,13 @@ struct dwc2_core_params {
+ 	bool activate_stm_id_vb_detection;
+ 	bool activate_stm32_bvaloval_en;
+ 	bool activate_ingenic_overcurrent_detection;
++	bool activate_stm32_otgarcr_en;
+ 	bool ipg_isoc_en;
+ 	u16 max_packet_count;
+ 	u32 max_transfer_size;
+ 	u32 ahbcfg;
++	unsigned int stm32_syscfg_otgarcr_reg_off;
++	struct regmap *stm32_regmap;
+ 
+ 	/* GREFCLK parameters */
+ 	u32 ref_clk_per;
+diff --git a/drivers/usb/dwc2/hw.h b/drivers/usb/dwc2/hw.h
+index f52fe22aa8e5..8be7c84cf617 100644
+--- a/drivers/usb/dwc2/hw.h
++++ b/drivers/usb/dwc2/hw.h
+@@ -209,6 +209,7 @@
+ #define GGPIO_STM32_OTG_GCCFG_IDEN	BIT(22)
+ #define GGPIO_STM32_OTG_GCCFG_VBVALOVAL	BIT(23)
+ #define GGPIO_STM32_OTG_GCCFG_IDPULLUP_DIS	BIT(28)
++#define STM32_SYSCFG_OTGARCR_OFFSET_AREN_MASK	BIT(0)
+ 
+ #define GUID				HSOTG_REG(0x003c)
+ #define GSNPSID				HSOTG_REG(0x0040)
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index f104c0cece09..be22d4202966 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -283,6 +283,7 @@ static void dwc2_set_stm32mp21_hsotg_params(struct dwc2_hsotg *hsotg)
+ 	p->besl = false;
+ 	p->hird_threshold_en = false;
+ 	p->activate_stm32_bvaloval_en = true;
++	p->activate_stm32_otgarcr_en = true;
+ }
+ 
+ const struct of_device_id dwc2_of_match_table[] = {
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index 5c888f00d080..6ff383d941d0 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -12,10 +12,12 @@
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/of.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_data/s3c-hsotg.h>
++#include <linux/regmap.h>
+ #include <linux/reset.h>
+ 
+ #include <linux/usb/of.h>
+@@ -443,6 +445,7 @@ int dwc2_check_core_version(struct dwc2_hsotg *hsotg)
+  */
+ static int dwc2_driver_probe(struct platform_device *dev)
+ {
++	struct device_node *node = dev->dev.of_node;
+ 	struct dwc2_hsotg *hsotg;
+ 	struct resource *res;
+ 	int retval;
+@@ -543,6 +546,30 @@ static int dwc2_driver_probe(struct platform_device *dev)
+ 	if (retval)
+ 		goto error;
+ 
++	if (hsotg->params.activate_stm32_otgarcr_en) {
++		hsotg->params.stm32_regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
++		if (IS_ERR(hsotg->params.stm32_regmap)) {
++			retval = dev_err_probe(&dev->dev, PTR_ERR(hsotg->params.stm32_regmap),
++					       "no st,syscfg node found\n");
++			goto error;
++		}
++
++		retval = of_property_read_u32_index(node, "st,syscfg", 1,
++						    &hsotg->params.stm32_syscfg_otgarcr_reg_off);
++		if (retval) {
++			retval = dev_err_probe(&dev->dev, retval, "can't get otgarcr offset\n");
++			goto error;
++		}
++		dev_vdbg(&dev->dev, "syscfg-otgarcr-reg offset 0x%x\n",
++			 hsotg->params.stm32_syscfg_otgarcr_reg_off);
++	}
++
++	if (dev->dev.dma_range_map && hsotg->params.activate_stm32_otgarcr_en) {
++		regmap_set_bits(hsotg->params.stm32_regmap,
++				hsotg->params.stm32_syscfg_otgarcr_reg_off,
++				STM32_SYSCFG_OTGARCR_OFFSET_AREN_MASK);
++	}
++
+ 	if (hsotg->params.activate_stm_id_vb_detection) {
+ 		u32 ggpio;
+ 
+-- 
+2.39.5
+

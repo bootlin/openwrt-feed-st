@@ -1,0 +1,99 @@
+From 9349f9c1a92f841b0ec8763416e7915590785988 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 7 Jun 2023 18:20:41 +0200
+Subject: [PATCH] arm64: dts: st: Activate PSCI support on stm32mp25
+
+Add the PSCI idle state associated to the power domains.
+
+Change-Id: Id8c42ee2dde22f16af9cf824ff60c00c8f966000
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 42 ++++++++++++++++++++++++++
+ arch/arm64/boot/dts/st/stm32mp253.dtsi |  1 +
+ 2 files changed, 43 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 30d0a2b85f1f..3cebbec05ccd 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -28,6 +28,45 @@ cpu0: cpu@0 {
+ 			power-domain-names = "psci";
+ 			#cooling-cells = <2>;
+ 		};
++
++		idle-states {
++			entry-method = "psci";
++
++			CPU_PWRDN: cpu-power-down {
++				compatible = "arm,idle-state";
++				arm,psci-suspend-param = <0x00000001>;
++				local-timer-stop;
++				entry-latency-us = <300>;
++				exit-latency-us = <500>;
++				min-residency-us = <1000>;
++			};
++		};
++
++		domain-idle-states {
++			STOP1: domain-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x00000011>;
++				entry-latency-us = <400>;
++				exit-latency-us = <1200>;
++				min-residency-us = <1500>;
++			};
++
++			LP_STOP1: domain-lp-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x0000021>;
++				entry-latency-us = <500>;
++				exit-latency-us = <2000>;
++				min-residency-us = <3000>;
++			};
++
++			LPLV_STOP1: domain-lplv-stop1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x00000211>;
++				entry-latency-us = <500>;
++				exit-latency-us = <3000>;
++				min-residency-us = <4000>;
++			};
++		};
+ 	};
+ 
+ 	arm-pmu {
+@@ -154,16 +193,19 @@ psci {
+ 
+ 		CPU_PD0: power-domain-cpu0 {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&CPU_PWRDN>;
+ 			power-domains = <&CLUSTER_PD>;
+ 		};
+ 
+ 		CLUSTER_PD: power-domain-cluster {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&STOP1>, <&LP_STOP1>;
+ 			power-domains = <&RET_PD>;
+ 		};
+ 
+ 		RET_PD: power-domain-retention {
+ 			#power-domain-cells = <0>;
++			domain-idle-states = <&LPLV_STOP1>;
+ 		};
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index d40cdeccc1d9..5e1725e11a65 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -28,6 +28,7 @@ arm-pmu {
+ 	psci {
+ 		CPU_PD1: power-domain-cpu1 {
+ 			#power-domain-cells = <0>;
++			domain-idle-states =  <&CPU_PWRDN>;
+ 			power-domains = <&CLUSTER_PD>;
+ 		};
+ 	};
+-- 
+2.39.5
+

@@ -1,0 +1,32 @@
+From 24acacc1fd46a9b408dfda27ad72b41d8f99044d Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 22 May 2024 17:31:39 +0200
+Subject: [PATCH] arm64: dts: st: enable Ethernet on stm32mp257f-dk board
+
+Enable Ethernet node on stm32mp257f-dk board
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I392a9699a9b612835493aa2e3ff066593ed3095c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381796
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index a92908a1a819..b05d55890dcd 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -290,7 +290,7 @@ dsi_out1: endpoint {
+ };
+ 
+ &eth1 {
+-	status = "disabled";
++	status = "okay";
+ 	pinctrl-0 = <&eth1_rgmii_pins_b>;
+ 	pinctrl-1 = <&eth1_rgmii_sleep_pins_b>;
+ 	pinctrl-names = "default", "sleep";
+-- 
+2.39.5
+

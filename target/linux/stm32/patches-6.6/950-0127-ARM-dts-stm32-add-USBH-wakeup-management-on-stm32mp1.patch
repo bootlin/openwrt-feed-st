@@ -1,0 +1,40 @@
+From 8c55ab18b7a71b7ca36dae0d89d89e2e5bf79252 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 7 Jul 2021 15:45:56 +0200
+Subject: [PATCH] ARM: dts: stm32: add USBH wakeup management on stm32mp131
+
+USBH OHCI & EHCI can be used to wakeup from stop mode on stm32mp131.
+Add wakeup-source property and attach USBH OHCI and EHCI to "pd_core"
+power domain.
+
+Change-Id: Ib43f793e0dd8754b7be80d3fb60db9315f19004e
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 2d007199ab9e..bfe2f3fb087c 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1390,6 +1390,8 @@ usbh_ohci: usb@5800c000 {
+ 			clocks = <&usbphyc>, <&rcc USBH>;
+ 			resets = <&rcc USBH_R>;
+ 			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++			power-domains = <&pd_core>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1400,6 +1402,8 @@ usbh_ehci: usb@5800d000 {
+ 			resets = <&rcc USBH_R>;
+ 			interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
+ 			companion = <&usbh_ohci>;
++			power-domains = <&pd_core>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.39.5
+

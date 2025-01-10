@@ -1,0 +1,37 @@
+From 0eb51541e631f7396815ba07d644923760fa2fc1 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 15 Apr 2024 15:49:16 +0200
+Subject: [PATCH] irqchip/stm32-exti: Fix minor indentation issue
+
+Commit 046a6ee2343b ("irqchip: Bulk conversion to
+generic_handle_domain_irq()") incorrectly added a leading space character
+in the line indentation.
+
+Use only TAB for indentation, removing the leading space.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ie29cb73a92bdce9b012224dbe8892293b22aa240
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383178
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 26a5193d0ae4..3b35f138ed3d 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -322,7 +322,7 @@ static void stm32_irq_handler(struct irq_desc *desc)
+ 		while ((pending = stm32_exti_pending(gc))) {
+ 			for_each_set_bit(n, &pending, IRQS_PER_BANK)
+ 				generic_handle_domain_irq(domain, irq_base + n);
+- 		}
++		}
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+-- 
+2.39.5
+

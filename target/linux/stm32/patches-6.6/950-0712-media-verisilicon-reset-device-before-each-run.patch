@@ -1,0 +1,32 @@
+From e8440033bcf023670dd3c7d571785eb09fca5357 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 16 Aug 2022 12:04:53 +0200
+Subject: [PATCH] media: verisilicon: reset device before each run
+
+Reset device before each processing to ensure that no
+register programming remains from the previous processing.
+Workaround for encoder stalled after first encoding.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Change-Id: Ideeab1edbb4a64878231a2b34c3a1b34ce3af4a2
+---
+ drivers/media/platform/verisilicon/hantro_drv.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
+index e27f2e12e1c4..b6ea6ad2568f 100644
+--- a/drivers/media/platform/verisilicon/hantro_drv.c
++++ b/drivers/media/platform/verisilicon/hantro_drv.c
+@@ -186,6 +186,9 @@ static void device_run(void *priv)
+ 
+ 	v4l2_m2m_buf_copy_metadata(src, dst, true);
+ 
++	if (ctx->codec_ops->reset)
++		ctx->codec_ops->reset(ctx);
++
+ 	if (ctx->codec_ops->run(ctx))
+ 		goto err_cancel_job;
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,123 @@
+From cde5eeac704a16d6f3139dc076b5f0fc748cc35c Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 7 Aug 2024 14:03:02 +0200
+Subject: [PATCH] iio: adc: stm32-mdf: add settling time management
+
+Add settling time management through "settling-time-us" DT property.
+This property is required especially for single shot conversion, to
+guarantee the accuracy of read data.
+
+Change-Id: I1858f6247699390e6c3f5bb7eea7912f6aee6417
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397594
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/stm32-mdf-adc.c | 34 +++++++++++++++++++++++++++++++++
+ drivers/iio/adc/stm32-mdf.h     |  1 +
+ 2 files changed, 35 insertions(+)
+
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index 8e499379f4b1..c7e433a59176 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -70,6 +70,8 @@ struct stm32_mdf_dev_data {
+  * @fl_id: filter index
+  * @decim_ratio: total decimation ratio
+  * @decim_cic: CIC filter decimation ratio
++ * @stu: settling time in micro seconds
++ * @nbdis: number of samples to discard
+  * @bufi: dma buffer current position
+  * @buf_sz: dma buffer size
+  * @buffer: buffer pointer for raw conversion
+@@ -104,6 +106,8 @@ struct stm32_mdf_adc {
+ 	unsigned int fl_id;
+ 	unsigned int decim_ratio;
+ 	unsigned int decim_cic;
++	unsigned int stu;
++	unsigned int nbdis;
+ 	unsigned int bufi;
+ 	unsigned int buf_sz;
+ 	unsigned int dflt_max;
+@@ -524,6 +528,7 @@ static int stm32_mdf_adc_apply_filters_config(struct stm32_mdf_adc *adc, unsigne
+ 				adc_inter->datsrc = adc->datsrc;
+ 				adc_inter->cicmode = adc->cicmode;
+ 				adc_inter->decim_cic = adc->decim_cic;
++				adc_inter->nbdis = adc->nbdis;
+ 				adc_inter->hpf_cutoff = adc->hpf_cutoff;
+ 
+ 				stm32_mdf_adc_apply_filters_config(adc_inter, scale);
+@@ -542,6 +547,14 @@ static int stm32_mdf_adc_apply_filters_config(struct stm32_mdf_adc *adc, unsigne
+ 	if (ret)
+ 		return ret;
+ 
++	/* Configure NBDIS */
++	if (adc->nbdis) {
++		ret = regmap_update_bits(adc->regmap, MDF_DFLTCR_REG, MDF_DFLTCR_NBDIS_MASK,
++					 MDF_DFLTCR_NBDIS(adc->nbdis));
++		if (ret)
++			return ret;
++	}
++
+ 	/* Configure CICR */
+ 	msk = MDF_SITFCR_SCKSRC_MASK | MDF_DFLTCICR_CICMOD_MASK |
+ 	      MDF_DFLTCICR_MCICD_MASK | MDF_DFLTCICR_SCALE_MASK;
+@@ -766,6 +779,16 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+ 		dev_dbg(dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
+ 			delta_ppm, sck_freq / decim_ratio, sample_freq);
+ 
++	adc->nbdis = DIV_ROUND_UP(adc->stu * sample_freq, 1000000);
++	if (adc->nbdis > MDF_DFLTCR_NBDIS_MAX) {
++		dev_warn(dev, "NBDIS [%u] too large. Force to [%lu]\n",
++			 adc->nbdis, MDF_DFLTCR_NBDIS_MAX);
++		adc->nbdis = MDF_DFLTCR_NBDIS_MAX;
++	} else {
++		dev_dbg(dev, "Settling time [%u] us. NBDIS set to [%u] samples\n",
++			adc->stu, adc->nbdis);
++	}
++
+ 	ret = stm32_mdf_adc_set_filters_config(indio_dev, decim_ratio);
+ 	if (ret < 0)
+ 		goto err;
+@@ -1144,6 +1167,7 @@ static int stm32_mdf_channel_parse_of(struct iio_dev *indio_dev, struct fwnode_h
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+ 	struct iio_backend *backend;
+ 	int ret;
++	u32 stu = 0;
+ 
+ 	ret = fwnode_property_read_u32(node, "reg", &ch->channel);
+ 	if (ret < 0) {
+@@ -1151,6 +1175,16 @@ static int stm32_mdf_channel_parse_of(struct iio_dev *indio_dev, struct fwnode_h
+ 		return ret;
+ 	}
+ 
++	/* settling-time-us is optional */
++	if (fwnode_property_present(node, "settling-time-us")) {
++		ret = fwnode_property_read_u32(node, "settling-time-us", &stu);
++		if (ret < 0) {
++			dev_err(&indio_dev->dev, "Failed to read settling time: [%d]\n", ret);
++			return ret;
++		}
++	}
++	adc->stu = stu;
++
+ 	if (adc->dev_data->type == STM32_MDF_IIO) {
+ 		backend = devm_iio_backend_fwnode_get(&indio_dev->dev, NULL, node);
+ 		if (IS_ERR(backend))
+diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
+index 71c51b0b4814..7e403c26d4dc 100644
+--- a/drivers/iio/adc/stm32-mdf.h
++++ b/drivers/iio/adc/stm32-mdf.h
+@@ -91,6 +91,7 @@
+ #define MDF_DFLTCR_SNPSFMT BIT(16)
+ #define MDF_DFLTCR_NBDIS_MASK GENMASK(27, 20)
+ #define MDF_DFLTCR_NBDIS(v) FIELD_PREP(MDF_DFLTCR_NBDIS_MASK, v)
++#define MDF_DFLTCR_NBDIS_MAX FIELD_MAX(MDF_DFLTCR_NBDIS_MASK)
+ #define MDF_DFLTCR_DFLTRUN BIT(30)
+ #define MDF_DFLTCR_ACTIVE BIT(31)
+ 
+-- 
+2.39.5
+

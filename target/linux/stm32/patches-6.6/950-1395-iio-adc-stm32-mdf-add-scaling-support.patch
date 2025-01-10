@@ -1,0 +1,487 @@
+From f3ad8b897fe6a41ae18f08ecf812b88f1b145a72 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 31 Jul 2024 10:31:47 +0200
+Subject: [PATCH] iio: adc: stm32-mdf: add scaling support
+
+Add scaling support to MDF peripheral.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I4d93dd33ae148c4497537b24eaafdc2b1c2ce2c1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397592
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/Kconfig         |   1 +
+ drivers/iio/adc/stm32-mdf-adc.c | 279 +++++++++++++++++++++++++-------
+ 2 files changed, 223 insertions(+), 57 deletions(-)
+
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 46c8650bac23..82d907cec4b3 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -1128,6 +1128,7 @@ config STM32_MDF_ADC
+ 	select STM32_MDF_CORE
+ 	select IIO_BUFFER
+ 	select IIO_BUFFER_HW_CONSUMER
++	select IIO_BACKEND
+ 	help
+ 	  Select this option to support ADCSigma delta modulator for
+ 	  STMicroelectronics STM32 Multi-function digital filter.
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index 054479e06c6c..8e499379f4b1 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -10,6 +10,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/iio/adc/stm32-mdf-adc.h>
++#include <linux/iio/backend.h>
+ #include <linux/iio/buffer.h>
+ #include <linux/iio/hw-consumer.h>
+ #include <linux/iio/sysfs.h>
+@@ -56,6 +57,7 @@ struct stm32_mdf_dev_data {
+  * @regmap: regmap pointer for register read/write
+  * @node: pointer to filter node
+  * @dma_chan: filter dma channel pointer
++ * @backend: backend handles array
+  * @dev_data: mdf device data pointer
+  * @sitf: pointer to serial interface feeding the filter
+  * @completion: completion for conversion
+@@ -71,6 +73,7 @@ struct stm32_mdf_dev_data {
+  * @bufi: dma buffer current position
+  * @buf_sz: dma buffer size
+  * @buffer: buffer pointer for raw conversion
++ * @dflt_max: dflt maximum output
+  * @cicmode: cic filter order
+  * @hpf_cutoff: high pass filter cut-off frequency
+  * @delay: microphone delay
+@@ -88,6 +91,7 @@ struct stm32_mdf_adc {
+ 	struct regmap *regmap;
+ 	struct fwnode_handle *node;
+ 	struct dma_chan *dma_chan;
++	struct iio_backend **backend;
+ 	const struct stm32_mdf_dev_data *dev_data;
+ 	struct stm32_mdf_sitf *sitf;
+ 	struct completion completion;
+@@ -102,6 +106,7 @@ struct stm32_mdf_adc {
+ 	unsigned int decim_cic;
+ 	unsigned int bufi;
+ 	unsigned int buf_sz;
++	unsigned int dflt_max;
+ 	u32 *buffer;
+ 	u32 cicmode;
+ 	u32 hpf_cutoff;
+@@ -116,7 +121,8 @@ struct stm32_mdf_adc {
+ 
+ struct stm32_mdf_scales {
+ 	unsigned int scale;
+-	int gain;
++	int gain_db;
++	int gain_lin;
+ };
+ 
+ struct stm32_mdf_log10 {
+@@ -207,47 +213,47 @@ static const unsigned int stm32_mdf_cic_max_decim_sitf[] = {
+ 
+ /* Gain (dB) x 10 according to scale value in hex */
+ static const struct stm32_mdf_scales stm32_mdf_scale_table[] = {
+-	{0x20, -482},
+-	{0x21, -446},
+-	{0x22, -421},
+-	{0x23, -386},
+-	{0x24, -361},
+-	{0x25, -326},
+-	{0x26, -301},
+-	{0x27, -266},
+-	{0x28, -241},
+-	{0x29, -206},
+-	{0x2A, -181},
+-	{0x2B, -145},
+-	{0x2C, -120},
+-	{0x2D, -85},
+-	{0x2E, -60},
+-	{0x2F, -25},
+-	{0x00, 0},
+-	{0x01, 35},
+-	{0x02, 60},
+-	{0x03, 95},
+-	{0x04, 120},
+-	{0x05, 156},
+-	{0x06, 181},
+-	{0x07, 216},
+-	{0x08, 241},
+-	{0x09, 276},
+-	{0x0A, 301},
+-	{0x0B, 336},
+-	{0x0C, 361},
+-	{0x0D, 396},
+-	{0x0E, 421},
+-	{0x0F, 457},
+-	{0x10, 482},
+-	{0x11, 517},
+-	{0x12, 542},
+-	{0x13, 577},
+-	{0x14, 602},
+-	{0x15, 637},
+-	{0x16, 662},
+-	{0x17, 697},
+-	{0x18, 722},
++	{0x20, -482, -2558},
++	{0x21, -446, -1706},
++	{0x22, -421, -1280},
++	{0x23, -386, -853},
++	{0x24, -361, -640},
++	{0x25, -326, -427},
++	{0x26, -301, -320},
++	{0x27, -266, -213},
++	{0x28, -241, -160},
++	{0x29, -206, -107},
++	{0x2A, -181, -80},
++	{0x2B, -145, -53},
++	{0x2C, -120, -40},
++	{0x2D, -85,  -27},
++	{0x2E, -60,  -20},
++	{0x2F, -25,  -13},
++	{0x00, 0,    10},
++	{0x01, 35,   15},
++	{0x02, 60,   20},
++	{0x03, 95,   30},
++	{0x04, 120,  40},
++	{0x05, 156,  60},
++	{0x06, 181,  80},
++	{0x07, 216,  120},
++	{0x08, 241,  160},
++	{0x09, 276,  240},
++	{0x0A, 301,  320},
++	{0x0B, 336,  480},
++	{0x0C, 361,  640},
++	{0x0D, 396,  960},
++	{0x0E, 421,  1280},
++	{0x0F, 457,  1920},
++	{0x10, 482,  2560},
++	{0x11, 517,  3840},
++	{0x12, 542,  5120},
++	{0x13, 577,  7680},
++	{0x14, 602,  10240},
++	{0x15, 637,  15360},
++	{0x16, 662,  20480},
++	{0x17, 697,  30720},
++	{0x18, 722,  40960},
+ };
+ 
+ /* Prime number 1000 x log10 table */
+@@ -563,7 +569,8 @@ static int stm32_mdf_adc_set_filters_config(struct iio_dev *indio_dev, unsigned
+ 	struct device *dev = &indio_dev->dev;
+ 	unsigned int decim_cic, decim_rsflt = 1;
+ 	unsigned int data_size = STM32_MDF_DATA_RES, order = adc->cicmode;
+-	int i, log, scale, max_scale;
++	u64 max;
++	int i, d, log, scale, max_scale, gain_lin;
+ 
+ 	if (!adc->rsflt_bypass) {
+ 		decim_rsflt = 4;
+@@ -618,14 +625,57 @@ static int stm32_mdf_adc_set_filters_config(struct iio_dev *indio_dev, unsigned
+ 	max_scale = DIV_ROUND_CLOSEST(max_scale, 100);
+ 	i = ARRAY_SIZE(stm32_mdf_scale_table) - 1;
+ 	while (i > 0) {
+-		if (stm32_mdf_scale_table[i].gain < max_scale)
++		if (stm32_mdf_scale_table[i].gain_db < max_scale)
+ 			break;
+ 		i--;
+ 	};
+ 	scale = stm32_mdf_scale_table[i].scale;
++	gain_lin = stm32_mdf_scale_table[i].gain_lin;
++
++	dev_dbg(dev, "Set scale to [%d]dB: [0x%x]\n", stm32_mdf_scale_table[i].gain_db / 10, scale);
++
+ 	adc->decim_cic = decim_cic;
+ 
+-	dev_dbg(dev, "Set scale to [%d] dB: [0x%x]\n", stm32_mdf_scale_table[i].gain / 10, scale);
++	/*
++	 * Calculate maximum DFLT output filter
++	 * max = K * G
++	 * - Fastsinc (order 0):	G = 2 * d^2 * gain_lin
++	 * - Sinc order 1 to 5:		G = d^N * gain_lin
++	 * - RSFLT off:			K = 1, d = decim
++	 * - RSFLT on:			K = 2.98, d = decim_cic
++	 * N = CIC filter order, decim = total decimation ratio, decim_cic = CIC decimation ratio
++	 * gain_lin is multiplied by a 10 factor in stm32_mdf_scale_table, and K with a 100 factor.
++	 */
++	if (adc->rsflt_bypass) {
++		d = decim;
++		max = 100;
++	} else {
++		d = decim_cic;
++		max = 298;
++	}
++
++	if (order) {
++		i = 0;
++		while (i < order) {
++			max *= d;
++			i++;
++		}
++	} else {
++		max *= 2 * d * d;
++	}
++
++	if (gain_lin > 0) {
++		max *= gain_lin;
++		max /= 1000;
++	}
++	if (gain_lin < 0) {
++		max /= -gain_lin;
++		max /= 10;
++	}
++
++	adc->dflt_max = max;
++
++	dev_dbg(dev, "DFLT maximum output [%d]\n", adc->dflt_max);
+ 
+ 	return stm32_mdf_adc_apply_filters_config(adc, scale);
+ }
+@@ -931,14 +981,28 @@ static void stm32_mdf_adc_dma_stop(struct iio_dev *indio_dev)
+ static int stm32_mdf_adc_postenable(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	int i = 0;
+ 	int ret;
+ 
+ 	/* Reset adc buffer index */
+ 	adc->bufi = 0;
+ 
++	if (adc->backend) {
++		while (adc->backend[i]) {
++			ret = iio_backend_enable(adc->backend[i]);
++			if (ret < 0) {
++				while (--i > 0)
++					iio_backend_disable(adc->backend[i]);
++
++				return ret;
++			}
++			i++;
++		}
++	}
++
+ 	ret = stm32_mdf_adc_start_mdf(indio_dev);
+ 	if (ret < 0)
+-		return ret;
++		goto err_start;
+ 
+ 	stm32_mdf_adc_filter_set_mode(adc, true);
+ 
+@@ -972,6 +1036,14 @@ static int stm32_mdf_adc_postenable(struct iio_dev *indio_dev)
+ 	stm32_mdf_adc_dma_stop(indio_dev);
+ err_dma:
+ 	stm32_mdf_adc_stop_mdf(indio_dev);
++err_start:
++	i = 0;
++	if (adc->backend) {
++		while (adc->backend[i]) {
++			iio_backend_disable(adc->backend[i]);
++			i++;
++		}
++	}
+ 
+ 	return ret;
+ }
+@@ -979,6 +1051,7 @@ static int stm32_mdf_adc_postenable(struct iio_dev *indio_dev)
+ static int stm32_mdf_adc_predisable(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	int i = 0;
+ 
+ 	stm32_mdf_adc_stop_conv(indio_dev);
+ 
+@@ -991,6 +1064,13 @@ static int stm32_mdf_adc_predisable(struct iio_dev *indio_dev)
+ 
+ 	stm32_mdf_adc_stop_mdf(indio_dev);
+ 
++	if (adc->backend) {
++		while (adc->backend[i]) {
++			iio_backend_disable(adc->backend[i]);
++			i++;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1061,11 +1141,23 @@ static int stm32_mdf_dma_request(struct device *dev, struct iio_dev *indio_dev)
+ static int stm32_mdf_channel_parse_of(struct iio_dev *indio_dev, struct fwnode_handle *node,
+ 				      struct iio_chan_spec *ch)
+ {
++	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	struct iio_backend *backend;
+ 	int ret;
+ 
+ 	ret = fwnode_property_read_u32(node, "reg", &ch->channel);
+-	if (ret < 0)
+-		dev_err(&indio_dev->dev, "Missing channel index %d\n", ret);
++	if (ret < 0) {
++		dev_err(&indio_dev->dev, "Failed to read channel index: [%d]\n", ret);
++		return ret;
++	}
++
++	if (adc->dev_data->type == STM32_MDF_IIO) {
++		backend = devm_iio_backend_fwnode_get(&indio_dev->dev, NULL, node);
++		if (IS_ERR(backend))
++			return dev_err_probe(&indio_dev->dev, PTR_ERR(backend),
++					     "Failed to get backend\n");
++		adc->backend[ch->scan_index] = backend;
++	}
+ 
+ 	return ret;
+ }
+@@ -1076,26 +1168,29 @@ static int stm32_mdf_adc_chan_init_one(struct iio_dev *indio_dev, struct fwnode_
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+ 	int ret;
+ 
++	ch->type = IIO_VOLTAGE;
++	ch->indexed = 1;
++	ch->scan_index = idx;
++
+ 	if (adc->dev_data->type == STM32_MDF_IIO) {
+ 		ret = stm32_mdf_channel_parse_of(indio_dev, node, ch);
+ 		if (ret < 0) {
+ 			dev_err(&indio_dev->dev, "Failed to parse channel [%d]\n", idx);
+ 			return ret;
+ 		}
++
++		ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_SCALE) |
++					 BIT(IIO_CHAN_INFO_OFFSET);
++		ch->scan_type.shift = 8;
+ 	}
+ 
+-	if (adc->dev_data->type == STM32_MDF_AUDIO)
++	if (adc->dev_data->type == STM32_MDF_AUDIO) {
+ 		ch->ext_info = stm32_mdf_adc_audio_ext_info;
++		ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
++	}
+ 
+-	ch->type = IIO_VOLTAGE;
+-	ch->indexed = 1;
+-	ch->scan_index = idx;
+-
+-	ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
+ 	ch->info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+ 	ch->scan_type.sign = 's';
+-	if (adc->dev_data->type == STM32_MDF_IIO)
+-		ch->scan_type.shift = 8;
+ 	ch->scan_type.realbits = STM32_MDF_DATA_RES;
+ 	ch->scan_type.storagebits = 32;
+ 
+@@ -1222,6 +1317,9 @@ static int stm32_mdf_adc_read_raw(struct iio_dev *indio_dev, struct iio_chan_spe
+ 				  int *val, int *val2, long mask)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	int idx = chan->scan_index;
++	int max = BIT(STM32_MDF_DATA_RES - 1) - 1;
++	int scale, offset;
+ 	int ret;
+ 
+ 	switch (mask) {
+@@ -1230,18 +1328,79 @@ static int stm32_mdf_adc_read_raw(struct iio_dev *indio_dev, struct iio_chan_spe
+ 		if (ret)
+ 			return ret;
+ 
++		if (adc->backend) {
++			ret = iio_backend_enable(adc->backend[idx]);
++			if (ret)
++				goto err_release_direct_mode;
++		}
++
+ 		ret = stm32_mdf_adc_single_conv(indio_dev, chan, val);
++		if (ret)
++			goto err_backend_disable;
++
++		if (adc->backend)
++			iio_backend_disable(adc->backend[idx]);
+ 
+ 		iio_device_release_direct_mode(indio_dev);
++
+ 		return IIO_VAL_INT;
+ 
+ 	case IIO_CHAN_INFO_SAMP_FREQ:
+ 		*val = adc->sample_freq;
+ 
++		return IIO_VAL_INT;
++
++	case IIO_CHAN_INFO_SCALE:
++		/*
++		 * Vconv = (raw>>shift + offset) * scale.
++		 * scale = Vref * k / 2^res (denominator is managed through FRACTIONAL_LOG2 type)
++		 * k correspond to the ratio between max resolution and actual filter maximum
++		 * k = max / dflt_max
++		 * max = 2^(res - 1) - 1
++		 * max_dflt = D^N * gain_lin * gain_rsflt
++		 * scale = Vref * max / dflt_max
++		 */
++		if (adc->backend) {
++			ret = iio_backend_read_scale(adc->backend[idx], chan, &scale, NULL);
++			if (ret < 0)
++				return ret;
++
++			*val = div_u64((u64)scale * max, adc->dflt_max);
++
++			*val2 = chan->scan_type.realbits;
++			if (chan->differential)
++				*val *= 2;
++		} else {
++			return -EPERM;
++		}
++
++		return IIO_VAL_FRACTIONAL_LOG2;
++
++	case IIO_CHAN_INFO_OFFSET:
++		if (adc->backend) {
++			ret = iio_backend_read_offset(adc->backend[idx], chan, &offset, NULL);
++			if (ret < 0)
++				return ret;
++
++			*val = offset;
++			if (!chan->differential)
++				*val += adc->dflt_max;
++		} else {
++			return -EPERM;
++		}
++
+ 		return IIO_VAL_INT;
+ 	}
+ 
+ 	return -EINVAL;
++
++err_backend_disable:
++	if (adc->backend)
++		iio_backend_disable(adc->backend[idx]);
++err_release_direct_mode:
++	iio_device_release_direct_mode(indio_dev);
++
++	return ret;
+ }
+ 
+ static const struct iio_info stm32_mdf_info_audio = {
+@@ -1357,7 +1516,12 @@ static int stm32_mdf_adc_init(struct device *dev, struct iio_dev *indio_dev)
+ 			}
+ 		}
+ 
+-		ch = devm_kzalloc(&indio_dev->dev, num_ch * sizeof(*ch), GFP_KERNEL);
++		adc->backend = devm_kcalloc(&indio_dev->dev, num_ch, sizeof(*adc->backend),
++					    GFP_KERNEL);
++		if (!adc->backend)
++			return -ENOMEM;
++
++		ch = devm_kcalloc(&indio_dev->dev, num_ch, sizeof(*ch), GFP_KERNEL);
+ 		if (!ch)
+ 			return -ENOMEM;
+ 
+@@ -1809,3 +1973,4 @@ module_platform_driver(stm32_mdf_adc_driver);
+ MODULE_DESCRIPTION("STM32 MDF sigma delta ADC");
+ MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(IIO_BACKEND);
+-- 
+2.39.5
+

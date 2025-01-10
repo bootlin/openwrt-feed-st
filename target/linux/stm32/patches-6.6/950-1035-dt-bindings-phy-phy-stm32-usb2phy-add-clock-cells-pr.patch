@@ -1,0 +1,58 @@
+From 3c5a0d2b6cb59e48bc4f8aa21e7b09f8e6d302c9 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 6 Feb 2024 14:29:20 +0530
+Subject: [PATCH] dt-bindings: phy: phy-stm32-usb2phy: add #clock-cells
+ property
+
+stm32-usb2phy provides a unique clock called ck_usb2phyXXXX_48m.
+STM32 USBH ohci-ctrl needs a 48Mhz clock for accessing registers, hence
+this clock is needed during suspend sequence even after ohci-ctrl turns
+off usb2phy for data transfers. usb2phy as clock provider to ohci-ctrl
+allows to keep this clock (and hence PLL) ON till ohci driver needs to
+access the ohci registers during suspend sequence.
+
+Change-Id: I70899f619c5cf56c5715db0d8a8fd50079e4b172
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370807
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
+index baf351793234..2b2222e4af3b 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
+@@ -144,6 +144,10 @@ properties:
+     maximum: 1
+     default: 0
+ 
++  "#clock-cells":
++    description: number of clock cells for ck_usb2phyXXXX_48m consumer
++    const: 0
++
+ required:
+   - compatible
+   - "#phy-cells"
+@@ -151,6 +155,7 @@ required:
+   - resets
+   - vdd33-supply
+   - st,syscfg
++  - "#clock-cells"
+ 
+ additionalProperties: false
+ 
+@@ -163,6 +168,7 @@ examples:
+     usb2_phy2: usb-phy {
+         compatible      = "st,stm32mp25-usb2phy";
+         #phy-cells      = <0>;
++        #clock-cells    = <0>;
+         st,syscfg       = <&syscfg 0x2800>;
+         clocks          = <&rcc CK_KER_USB2PHY2>;
+         resets          = <&rcc USB2PHY2_R>;
+-- 
+2.39.5
+

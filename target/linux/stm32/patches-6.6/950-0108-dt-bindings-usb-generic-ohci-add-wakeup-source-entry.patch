@@ -1,0 +1,35 @@
+From 8a14ec04614b92fbfd261f9b21dae1958fdf439c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 16 Jul 2021 14:53:51 +0200
+Subject: [PATCH] dt-bindings: usb: generic-ohci: add wakeup-source entry
+
+Add wakeup-source entry to indicate this device has wakeup capabilities.
+
+Change-Id: I96be15f456bd86c8c4ccb61f8c3a9ac1d0f61fbe
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/214512
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/usb/generic-ohci.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/generic-ohci.yaml b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
+index b9576015736b..9f553049ab6d 100644
+--- a/Documentation/devicetree/bindings/usb/generic-ohci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
+@@ -133,6 +133,11 @@ properties:
+       The associated ISP1301 device. Necessary for the UDC controller for
+       connecting to the USB physical layer.
+ 
++  wakeup-source:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Indicate this device has wakeup capabilities.
++
+ required:
+   - compatible
+   - reg
+-- 
+2.39.5
+

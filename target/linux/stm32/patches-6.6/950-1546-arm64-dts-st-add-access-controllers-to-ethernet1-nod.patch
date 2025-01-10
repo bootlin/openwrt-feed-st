@@ -1,0 +1,29 @@
+From a4b960e4f944f7a29351c80cebfd5632e0ae3659 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Mon, 21 Oct 2024 17:14:46 +0200
+Subject: [PATCH] arm64: dts: st: add access controllers to ethernet1 node on
+ stm32mp21
+
+Change-Id: I34e828510e11cafd53dab8bd6f6378faa07638f2
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/412935
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index dc2f14cea6cf..748f66f9decf 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2621,6 +2621,7 @@ eth1: eth1@482c0000 {
+ 			snps,rxqos = <7>;
+ 			snps,axi-config = <&stmmac_axi_config_1>;
+ 			snps,tso;
++			access-controllers = <&rifsc 60>;
+ 			power-domains = <&CLUSTER_PD>;
+ 			wakeup-source;
+ 			status = "disabled";
+-- 
+2.39.5
+

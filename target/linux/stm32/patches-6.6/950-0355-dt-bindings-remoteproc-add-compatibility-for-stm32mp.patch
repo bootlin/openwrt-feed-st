@@ -1,0 +1,39 @@
+From f23298dcddbd3519fe51214ec20e30854825380e Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 2 Sep 2020 11:17:37 +0200
+Subject: [PATCH] dt-bindings: remoteproc: add compatibility for stm32mp25
+ platform support
+
+add the support of signed and non-signed firmware for the stm32MP25
+platforms
+
+Change-Id: I5bff9fc4479feee1571dbfe00cfa6a41bf4d0875
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml   | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index 6af821b15736..c5de5b1438c4 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -19,10 +19,13 @@ properties:
+     enum:
+       - st,stm32mp1-m4
+       - st,stm32mp1-m4-tee
++      - st,stm32mp2-m33
++      - st,stm32mp2-m33-tee
+     description:
+-      Use "st,stm32mp1-m4" for the Cortex-M4 coprocessor management by non-secure context
+-      Use "st,stm32mp1-m4-tee" for the Cortex-M4 coprocessor management by secure context
+-
++      Use "st,stm32mp1-m4" for the stm32mp15 Cortex-M4 coprocessor management by Linux
++      Use "st,stm32mp1-m4-tee" for the stm32mp15 Cortex-M4 coprocessor management by OPTEE
++      Use "st,stm32mp2-m33" for the stm32mp2 Cortex-M33 coprocessor management by Linux
++      Use "st,stm32mp2-m33-tee" for the stm32mp2 Cortex-M33 coprocessor management by OPTEE
+   reg:
+     description:
+       Address ranges of the RETRAM and MCU SRAM memories used by the remote
+-- 
+2.39.5
+

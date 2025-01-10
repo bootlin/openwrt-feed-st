@@ -1,0 +1,125 @@
+From 2da7ed7e0bec653da2fe8d84446e3e99ef2bac9d Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 4 Aug 2023 15:01:49 +0200
+Subject: [PATCH] ARM: dts: stm32: populate all timer counter nodes on
+ stm32mp15
+
+Counter driver originally had support limited to quadrature interface and
+simple counter. It has evolved, so add remaining counter nodes in stm32
+timer nodes.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I626261f863dee73f88e4b35b4524fa6939dc8dc2
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 41 ++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 14ba8c8dd624..a6128c258cc2 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -637,6 +637,11 @@ timers6: timer@40004000 {
+ 				access-controllers = <&etzpc 20>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				timer@5 {
+ 					compatible = "st,stm32h7-timer-trigger";
+ 					reg = <5>;
+@@ -658,6 +663,11 @@ timers7: timer@40005000 {
+ 				access-controllers = <&etzpc 21>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				timer@6 {
+ 					compatible = "st,stm32h7-timer-trigger";
+ 					reg = <6>;
+@@ -677,6 +687,11 @@ timers12: timer@40006000 {
+ 				access-controllers = <&etzpc 22>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+@@ -702,6 +717,11 @@ timers13: timer@40007000 {
+ 				access-controllers = <&etzpc 23>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+@@ -727,6 +747,11 @@ timers14: timer@40008000 {
+ 				access-controllers = <&etzpc 24>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+@@ -1204,6 +1229,11 @@ timers15: timer@44006000 {
+ 				access-controllers = <&etzpc 54>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+@@ -1232,11 +1262,17 @@ timers16: timer@44007000 {
+ 				access-controllers = <&etzpc 55>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+ 					status = "disabled";
+ 				};
++
+ 				timer@15 {
+ 					compatible = "st,stm32h7-timer-trigger";
+ 					reg = <15>;
+@@ -1259,6 +1295,11 @@ timers17: timer@44008000 {
+ 				access-controllers = <&etzpc 56>;
+ 				status = "disabled";
+ 
++				counter {
++					compatible = "st,stm32-timer-counter";
++					status = "disabled";
++				};
++
+ 				pwm {
+ 					compatible = "st,stm32-pwm";
+ 					#pwm-cells = <3>;
+-- 
+2.39.5
+

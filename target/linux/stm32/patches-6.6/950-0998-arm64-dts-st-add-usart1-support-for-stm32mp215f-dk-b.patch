@@ -1,0 +1,51 @@
+From 10ae4fd231006f9423fa9931e08501f3586ed3b9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 10 Apr 2024 09:26:46 +0200
+Subject: [PATCH] arm64: dts: st: add usart1 support for stm32mp215f-dk board
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add USART1 node for stm32mp215f-dk board.
+USART1 will be used for Bluetooth.
+
+Change-Id: I540f5f8a39098d50bb0f94f9013edef2308153a4
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372686
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 48d785de2e5b..045c1b59f73e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -17,6 +17,7 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &usart2;
++		serial3 = &usart1;
+ 	};
+ 
+ 	chosen {
+@@ -50,3 +51,13 @@ &usart2 {
+ 	/delete-property/dma-names;
+ 	status = "okay";
+ };
++
++/* Bluetooth */
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	uart-has-rtscts;
++	status = "disabled";
++};
+-- 
+2.39.5
+

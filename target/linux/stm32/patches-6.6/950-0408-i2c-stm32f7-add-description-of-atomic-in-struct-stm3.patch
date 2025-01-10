@@ -1,0 +1,29 @@
+From 1734bf20ccb65599c923930bb425931d65ba6bc4 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 23 Oct 2023 10:50:15 +0200
+Subject: [PATCH] i2c: stm32f7: add description of atomic in struct
+ stm32f7_i2c_dev
+
+Add missing description of the atomic boolean in struct stm32f7_i2c_dev.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+---
+ drivers/i2c/busses/i2c-stm32f7.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index 887d55ae4096..e9c0bb381c6d 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -325,6 +325,7 @@ struct stm32f7_i2c_alert {
+  * @dnf_dt: value of digital filter requested via dt
+  * @dnf: value of digital filter to apply
+  * @alert: SMBus alert specific data
++ * @atomic: boolean indicating that current transfer is atomic
+  */
+ struct stm32f7_i2c_dev {
+ 	struct i2c_adapter adap;
+-- 
+2.39.5
+

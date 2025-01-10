@@ -1,0 +1,307 @@
+From 90cb491fe4d3ef18bba59d7472349b2da3a80c4a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 3 Jun 2024 12:07:16 +0200
+Subject: [PATCH] media: stm32: dcmipp: correct pixelproc/pixelcap mbus
+
+Adapt mbus formats exposed by the src pad of pixelproc subdev.
+Until now all pixel packer supported formats were exposed as
+MBUS by the pixelproc subdev however not all formats are
+available as MBUS.
+MBUS are here to represent formats at hardware level, while
+PIX_FMT represent how data are stored within the memory.
+We should thus consider that all formats prior to pixelpacker
+are 24bits (RGB or YUV) and pixelpacker transform this into
+all supported formats.
+Pixel-packer handling is thus moved into the pixelcap video
+capture device, which correspond to the hardware since we should
+consider the pixelpacker as the "DMA" performing write into
+the memory.
+
+Change-Id: I8904d3178e0da40d8c6575a1b9212cc6f39f5f55
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384899
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 70 ++++++++++++----
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 82 +++----------------
+ 2 files changed, 64 insertions(+), 88 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index 68908abc2be3..289e063ed136 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -53,6 +53,27 @@
+ #define DCMIPP_PxFCTCR(id)	(((id) == 1) ? DCMIPP_P1FCTCR : DCMIPP_P2FCTCR)
+ #define DCMIPP_PxFCTCR_CPTMODE	BIT(2)
+ #define DCMIPP_PxFCTCR_CPTREQ	BIT(3)
++
++#define DCMIPP_P1PPCR	0x9c0
++#define DCMIPP_P2PPCR	0xdc0
++#define DCMIPP_PxPPCR(id) (((id) == 1) ? DCMIPP_P1PPCR :\
++			   DCMIPP_P2PPCR)
++#define DCMIPP_PxPPCR_FORMAT_SHIFT	0
++#define DCMIPP_PxPPCR_FORMAT_MASK	GENMASK(3, 0)
++#define DCMIPP_PxPPCR_FORMAT_RGB888	0x0
++#define DCMIPP_PxPPCR_FORMAT_RGB565	0x1
++#define DCMIPP_PxPPCR_FORMAT_ARGB8888	0x2
++#define DCMIPP_PxPPCR_FORMAT_RGBA8888	0x3
++#define DCMIPP_PxPPCR_FORMAT_Y8		0x4
++#define DCMIPP_PxPPCR_FORMAT_YUV444	0x5
++#define DCMIPP_PxPPCR_FORMAT_YUYV	0x6
++#define DCMIPP_P1PPCR_FORMAT_NV61	0x7
++#define DCMIPP_P1PPCR_FORMAT_NV21	0x8
++#define DCMIPP_P1PPCR_FORMAT_YV12	0x9
++#define DCMIPP_PxPPCR_FORMAT_UYVY	0xa
++
++#define DCMIPP_PxPPCR_SWAPRB		BIT(4)
++
+ #define DCMIPP_P1PPM0AR1	0x9c4
+ #define DCMIPP_P2PPM0AR1	0xdc4
+ #define DCMIPP_PxPPM0AR1(id)	(((id) == 1) ? DCMIPP_P1PPM0AR1 :\
+@@ -74,35 +95,37 @@ struct dcmipp_pixelcap_pix_map {
+ 	unsigned int code;
+ 	u32 pixelformat;
+ 	u32 plane_nb;
++	unsigned int ppcr_fmt;
++	unsigned int swap_uv;
+ };
+ 
+-#define PIXMAP_MBUS_PFMT(mbus, fmt, nb_plane)		\
++#define PIXMAP_MBUS_PFMT(mbus, fmt, nb_plane, pp_code, swap)		\
+ 	{						\
+ 		.code = MEDIA_BUS_FMT_##mbus,		\
+ 		.pixelformat = V4L2_PIX_FMT_##fmt,	\
+ 		.plane_nb = nb_plane,			\
++		.ppcr_fmt = pp_code,			\
++		.swap_uv = swap,			\
+ 	}
+ 
+ static const struct dcmipp_pixelcap_pix_map dcmipp_pixelcap_pix_map_list[] = {
+ 	/* Coplanar formats are supported on main & aux pipe */
+-	PIXMAP_MBUS_PFMT(RGB565_2X8_LE, RGB565, 1),
+-	PIXMAP_MBUS_PFMT(YUYV8_2X8, YUYV, 1),
+-	PIXMAP_MBUS_PFMT(YVYU8_2X8, YVYU, 1),
+-	PIXMAP_MBUS_PFMT(UYVY8_2X8, UYVY, 1),
+-	PIXMAP_MBUS_PFMT(VYUY8_2X8, VYUY, 1),
+-	PIXMAP_MBUS_PFMT(Y8_1X8, GREY, 1),
+-	PIXMAP_MBUS_PFMT(RGB888_1X24, RGB24, 1),
+-	PIXMAP_MBUS_PFMT(BGR888_1X24, BGR24, 1),
+-	PIXMAP_MBUS_PFMT(ARGB8888_1X32, ARGB32, 1),
+-	PIXMAP_MBUS_PFMT(AYUV8_1X32, AYUV32, 1),
++	PIXMAP_MBUS_PFMT(RGB888_1X24, RGB565, 1, DCMIPP_PxPPCR_FORMAT_RGB565, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, YUYV, 1, DCMIPP_PxPPCR_FORMAT_YUYV, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, YVYU, 1, DCMIPP_PxPPCR_FORMAT_YUYV, 1),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, UYVY, 1, DCMIPP_PxPPCR_FORMAT_UYVY, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, VYUY, 1, DCMIPP_PxPPCR_FORMAT_UYVY, 1),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, GREY, 1, DCMIPP_PxPPCR_FORMAT_Y8, 0),
++	PIXMAP_MBUS_PFMT(RGB888_1X24, RGB24, 1, DCMIPP_PxPPCR_FORMAT_RGB888, 1),
++	PIXMAP_MBUS_PFMT(RGB888_1X24, BGR24, 1, DCMIPP_PxPPCR_FORMAT_RGB888, 0),
+ 
+ 	/* Semiplanar & planar formats (plane_nb > 1) are only supported on main pipe */
+-	PIXMAP_MBUS_PFMT(YUYV8_1_5X8, NV12, 2),   /* FIXME no mbus code for NV12 */
+-	PIXMAP_MBUS_PFMT(YVYU8_1_5X8, NV21, 2),   /* FIXME no mbus code for NV21 */
+-	PIXMAP_MBUS_PFMT(YUYV8_1X16, NV16, 2),    /* FIXME no mbus code for NV16 */
+-	PIXMAP_MBUS_PFMT(YVYU8_1X16, NV61, 2),    /* FIXME no mbus code for NV61 */
+-	PIXMAP_MBUS_PFMT(UYVY8_1_5X8, YUV420, 3), /* FIXME no mbus code for YUV420 */
+-	PIXMAP_MBUS_PFMT(VYUY8_1_5X8, YVU420, 3), /* FIXME no mbus code for YVU420 */
++	PIXMAP_MBUS_PFMT(YUV8_1X24, NV12, 2, DCMIPP_P1PPCR_FORMAT_NV21, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, NV21, 2, DCMIPP_P1PPCR_FORMAT_NV21, 1),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, NV16, 2, DCMIPP_P1PPCR_FORMAT_NV61, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, NV61, 2, DCMIPP_P1PPCR_FORMAT_NV61, 1),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, YUV420, 3, DCMIPP_P1PPCR_FORMAT_YV12, 0),
++	PIXMAP_MBUS_PFMT(YUV8_1X24, YVU420, 3, DCMIPP_P1PPCR_FORMAT_YV12, 1),
+ };
+ 
+ static const struct dcmipp_pixelcap_pix_map *
+@@ -493,7 +516,9 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ {
+ 	struct dcmipp_pixelcap_device *vcap = vb2_get_drv_priv(vq);
+ 	struct media_entity *entity = &vcap->vdev.entity;
++	const struct dcmipp_pixelcap_pix_map *vpix;
+ 	struct dcmipp_buf *buf, *node;
++	unsigned int ppcr = 0;
+ 	int ret;
+ 
+ 	vcap->sequence = 0;
+@@ -518,6 +543,17 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ 	if (ret)
+ 		goto err_media_pipeline_stop;
+ 
++	/* Configure the Pixel Packer */
++	vpix = dcmipp_pixelcap_pix_map_by_pixelformat(vcap->format.pixelformat);
++	if (!vpix)
++		goto err_media_pipeline_stop;
++
++	ppcr = vpix->ppcr_fmt;
++	if (vpix->swap_uv)
++		ppcr |= DCMIPP_PxPPCR_SWAPRB;
++
++	reg_write(vcap, DCMIPP_PxPPCR(vcap->pipe_id), ppcr);
++
+ 	/* Enable interruptions */
+ 	vcap->cmier |= DCMIPP_CMIER_PxALL(vcap->pipe_id);
+ 	spin_lock(&vcap->vdev.v4l2_dev->lock);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 21fa26d76f37..df66df36cc36 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -94,71 +94,29 @@
+ #define DCMIPP_P1YUVBR1	0x994
+ #define DCMIPP_P1YUVBR2	0x998
+ 
+-#define DCMIPP_P1PPCR	0x9C0
+-#define DCMIPP_P2PPCR	0xDC0
+-#define DCMIPP_PxPPCR(id) (((id) == 1) ? DCMIPP_P1PPCR :\
+-			   DCMIPP_P2PPCR)
+-#define DCMIPP_PxPPCR_FORMAT_SHIFT	0
+-#define DCMIPP_PxPPCR_FORMAT_MASK	GENMASK(3, 0)
+-#define DCMIPP_PxPPCR_FORMAT_RGB888	0x0
+-#define DCMIPP_PxPPCR_FORMAT_RGB565	0x1
+-#define DCMIPP_PxPPCR_FORMAT_ARGB8888	0x2
+-#define DCMIPP_PxPPCR_FORMAT_RGBA8888	0x3
+-#define DCMIPP_PxPPCR_FORMAT_Y8		0x4
+-#define DCMIPP_PxPPCR_FORMAT_YUV444	0x5
+-#define DCMIPP_PxPPCR_FORMAT_YUYV	0x6
+-#define DCMIPP_P1PPCR_FORMAT_NV61	0x7
+-#define DCMIPP_P1PPCR_FORMAT_NV21	0x8
+-#define DCMIPP_P1PPCR_FORMAT_YV12	0x9
+-#define DCMIPP_PxPPCR_FORMAT_UYVY	0xa
+-
+-#define DCMIPP_PxPPCR_SWAPRB		BIT(4)
+-
+ #define IS_SINK(pad) (!(pad))
+ #define IS_SRC(pad)  ((pad))
+ #define PAD_STR(pad) (IS_SRC((pad))) ? "src" : "sink"
+ 
+-#define PIXELPROC_MEDIA_BUS_SRC_FMT_DEFAULT MEDIA_BUS_FMT_RGB565_2X8_LE
+-#define PIXELPROC_MEDIA_BUS_SINK_FMT_DEFAULT MEDIA_BUS_FMT_RGB888_1X24
++#define PIXELPROC_MEDIA_BUS_FMT_DEFAULT MEDIA_BUS_FMT_RGB888_1X24
+ 
+ struct dcmipp_pixelproc_pix_map {
+ 	unsigned int code;
+-	unsigned int ppcr_fmt;
+-	unsigned int swap_uv;
+ };
+ 
+-#define PIXMAP_MBUS_PPCR_SWAPUV(mbus, pp_code, swap)	\
++#define PIXMAP_MBUS(mbus)	\
+ 		{						\
+ 			.code = MEDIA_BUS_FMT_##mbus,		\
+-			.ppcr_fmt = pp_code,	\
+-			.swap_uv = swap,	\
+ 		}
+ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_sink_pix_map_list[] = {
+-	PIXMAP_MBUS_PPCR_SWAPUV(RGB888_1X24, 0, 0),
+-	PIXMAP_MBUS_PPCR_SWAPUV(YUV8_1X24, 0, 0),
++	/* ISP output formats */
++	PIXMAP_MBUS(RGB888_1X24),
++	PIXMAP_MBUS(YUV8_1X24),
+ };
+ 
+ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_src_pix_map_list[] = {
+-	PIXMAP_MBUS_PPCR_SWAPUV(RGB888_1X24, DCMIPP_PxPPCR_FORMAT_RGB888, 1),
+-	PIXMAP_MBUS_PPCR_SWAPUV(BGR888_1X24, DCMIPP_PxPPCR_FORMAT_RGB888, 0),
+-	PIXMAP_MBUS_PPCR_SWAPUV(RGB565_2X8_LE, DCMIPP_PxPPCR_FORMAT_RGB565, 0),
+-	PIXMAP_MBUS_PPCR_SWAPUV(YUYV8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 0),
+-	PIXMAP_MBUS_PPCR_SWAPUV(YVYU8_2X8, DCMIPP_PxPPCR_FORMAT_YUYV, 1),
+-	PIXMAP_MBUS_PPCR_SWAPUV(UYVY8_2X8, DCMIPP_PxPPCR_FORMAT_UYVY, 0),
+-	PIXMAP_MBUS_PPCR_SWAPUV(VYUY8_2X8, DCMIPP_PxPPCR_FORMAT_UYVY, 1),
+-	PIXMAP_MBUS_PPCR_SWAPUV(Y8_1X8, DCMIPP_PxPPCR_FORMAT_Y8, 0),
+-	/* FIXME no mbus code for semiplanar (NV12) */
+-	PIXMAP_MBUS_PPCR_SWAPUV(YUYV8_1_5X8, DCMIPP_P1PPCR_FORMAT_NV21, 0),
+-	/* FIXME no mbus code for semiplanar (NV21) */
+-	PIXMAP_MBUS_PPCR_SWAPUV(YVYU8_1_5X8, DCMIPP_P1PPCR_FORMAT_NV21, 1),
+-	/* FIXME no mbus code for semiplanar (NV16)*/
+-	PIXMAP_MBUS_PPCR_SWAPUV(YUYV8_1X16,  DCMIPP_P1PPCR_FORMAT_NV61, 0),
+-	/* FIXME no mbus code for semiplanar (NV61)*/
+-	PIXMAP_MBUS_PPCR_SWAPUV(YVYU8_1X16,  DCMIPP_P1PPCR_FORMAT_NV61, 1),
+-	/* FIXME no mbus code for planar (I420/YU12)*/
+-	PIXMAP_MBUS_PPCR_SWAPUV(UYVY8_1_5X8, DCMIPP_P1PPCR_FORMAT_YV12, 0),
+-	/* FIXME no mbus code for planar (YV12)*/
+-	PIXMAP_MBUS_PPCR_SWAPUV(VYUY8_1_5X8, DCMIPP_P1PPCR_FORMAT_YV12, 1),
++	PIXMAP_MBUS(RGB888_1X24),
++	PIXMAP_MBUS(YUV8_1X24),
+ };
+ 
+ /* Macro for negative coefficient, 11 bits coded */
+@@ -465,7 +423,7 @@ struct dcmipp_pixelproc_device {
+ static const struct v4l2_mbus_framefmt fmt_default = {
+ 	.width = DCMIPP_FMT_WIDTH_DEFAULT,
+ 	.height = DCMIPP_FMT_HEIGHT_DEFAULT,
+-	.code = PIXELPROC_MEDIA_BUS_SINK_FMT_DEFAULT,
++	.code = PIXELPROC_MEDIA_BUS_FMT_DEFAULT,
+ 	.field = V4L2_FIELD_NONE,
+ 	.colorspace = V4L2_COLORSPACE_REC709,
+ 	.ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT,
+@@ -554,8 +512,7 @@ static void dcmipp_pixelproc_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+ 	/* Only accept code in the pix map table */
+ 	vpix = dcmipp_pixelproc_pix_map_by_code(fmt->code, pad);
+ 	if (!vpix)
+-		fmt->code = IS_SRC(pad) ? PIXELPROC_MEDIA_BUS_SRC_FMT_DEFAULT :
+-					  PIXELPROC_MEDIA_BUS_SINK_FMT_DEFAULT;
++		fmt->code = PIXELPROC_MEDIA_BUS_FMT_DEFAULT;
+ 
+ 	fmt->width = clamp_t(u32, fmt->width, DCMIPP_FRAME_MIN_WIDTH,
+ 			     DCMIPP_FRAME_MAX_WIDTH);
+@@ -584,8 +541,6 @@ static int dcmipp_pixelproc_init_cfg(struct v4l2_subdev *sd,
+ 
+ 		mf = v4l2_subdev_state_get_format(state, i);
+ 		*mf = fmt_default;
+-		mf->code = IS_SRC(i) ? PIXELPROC_MEDIA_BUS_SRC_FMT_DEFAULT :
+-				       PIXELPROC_MEDIA_BUS_SINK_FMT_DEFAULT;
+ 
+ 		if (IS_SINK(i)) {
+ 			*v4l2_subdev_state_get_crop(state, i) = r;
+@@ -666,9 +621,9 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+ 
+ 		if (fmt->format.code >= MEDIA_BUS_FMT_Y8_1X8 &&
+ 		    fmt->format.code < MEDIA_BUS_FMT_SBGGR8_1X8)
+-			src_pad_fmt->code = MEDIA_BUS_FMT_YUYV8_2X8;
++			src_pad_fmt->code = MEDIA_BUS_FMT_YUV8_1X24;
+ 		else
+-			src_pad_fmt->code = MEDIA_BUS_FMT_RGB565_2X8_LE;
++			src_pad_fmt->code = MEDIA_BUS_FMT_RGB888_1X24;
+ 
+ 		crop->top = 0;
+ 		crop->left = 0;
+@@ -1039,13 +994,11 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
+ 	struct v4l2_mbus_framefmt *sink_fmt, *src_fmt;
+-	const struct dcmipp_pixelproc_pix_map *vpix;
+ 	struct v4l2_rect *compose, *crop;
+ 	struct v4l2_subdev_state *state;
+ 	struct v4l2_subdev *s_subdev;
+ 	struct media_pad *pad;
+ 	int ret = 0;
+-	unsigned int val;
+ 
+ 	/* Get source subdev */
+ 	pad = media_pad_remote_pad_first(&sd->entity.pads[0]);
+@@ -1092,19 +1045,6 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 			goto out;
+ 	}
+ 
+-	/* Setup the PixelPacker based on the src pad format */
+-	vpix = dcmipp_pixelproc_pix_map_by_code(src_fmt->code, 1);
+-	if (!vpix) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	val = vpix->ppcr_fmt;
+-	if (vpix->swap_uv)
+-		val |= DCMIPP_PxPPCR_SWAPRB;
+-
+-	reg_write(pixelproc, DCMIPP_PxPPCR(pixelproc->pipe_id), val);
+-
+ 	/* Apply customized values from user when stream starts. */
+ 	ret =  v4l2_ctrl_handler_setup(pixelproc->sd.ctrl_handler);
+ 	if (ret < 0) {
+-- 
+2.39.5
+

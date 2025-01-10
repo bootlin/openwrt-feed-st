@@ -1,0 +1,36 @@
+From b068ba1751ae96cab3d18a895e8a42aceba5584f Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Tue, 13 Aug 2024 16:47:29 +0200
+Subject: [PATCH] clk: stm32mp25: update USB RIFSC resources for STM32MP25
+
+Fixes USB2PHY2 RIFSC resource.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I62ce07691f38d3fdefca1df253663635f681655b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398259
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 2298970e7bc7..5886b0cf54b0 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -2029,8 +2029,8 @@ static const struct clock_config stm32mp25_clock_cfg[] = {
+ 	STM32_COMPOSITE_CFG(CK_KER_ADC12, ck_ker_adc12, SEC_RIFSC(58)),
+ 	STM32_COMPOSITE_CFG(CK_KER_ADC3, ck_ker_adc3, SEC_RIFSC(59)),
+ 	STM32_COMPOSITE_CFG(CK_KER_USB2PHY1, ck_ker_usb2phy1, SEC_RIFSC(63)),
+-	STM32_GATE_CFG(CK_KER_USB2PHY2, ck_ker_usb2phy2, SEC_RIFSC(63)),
+-	STM32_COMPOSITE_CFG(CK_KER_USB2PHY2EN, ck_ker_usb2phy2_en, SEC_RIFSC(63)),
++	STM32_GATE_CFG(CK_KER_USB2PHY2, ck_ker_usb2phy2, SEC_RIFSC(66)),
++	STM32_COMPOSITE_CFG(CK_KER_USB2PHY2EN, ck_ker_usb2phy2_en, SEC_RIFSC(66)),
+ 	STM32_COMPOSITE_CFG(CK_KER_USB3PCIEPHY, ck_ker_usb3pciephy, SEC_RIFSC(67)),
+ 	STM32_COMPOSITE_CFG(CK_KER_DSIBLANE, clk_lanebyte, SEC_RIFSC(81)),
+ 	STM32_COMPOSITE_CFG(CK_KER_DSIPHY, clk_phy_dsi, SEC_RIFSC(81)),
+-- 
+2.39.5
+

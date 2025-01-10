@@ -1,0 +1,101 @@
+From 275c7fa0c24ab8a8c6c3ab3639ba980734267694 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 25 Aug 2023 09:40:13 +0200
+Subject: [PATCH] dt-bindings: st,stm32-syscon: add properties for
+ st,stm32-tamp-nvram
+
+st,stm32-tamp-nvram requires some specific properties from its parent
+st,stm32-syscon.
+
+Change-Id: I05f9807afdf105e0701a5042cc125eb9ceb6e725
+(cherry picked from commit 86e3bf64a98dcc3ed758b5a61aa502c6e95e8b6e)
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ .../bindings/arm/stm32/st,stm32-syscon.yaml   | 52 ++++++++++++++-----
+ 1 file changed, 39 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index d083d8ad48b7..456b8417b32a 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -1,10 +1,10 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/arm/stm32/st,stm32-syscon.yaml#
+-$schema: http://devicetree.org/meta-schemas/core.yaml#
++$id: "http://devicetree.org/schemas/arm/stm32/st,stm32-syscon.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ 
+-title: STMicroelectronics STM32 Platforms System Controller
++title: STMicroelectronics STM32 Platforms System Controller bindings
+ 
+ maintainers:
+   - Alexandre Torgue <alexandre.torgue@foss.st.com>
+@@ -22,6 +22,7 @@ properties:
+               - st,stm32mp151-pwr-mcu
+               - st,stm32mp157-syscfg
+               - st,stm32mp25-syscfg
++              - st,stm32mp25-a35ssc-m33
+           - const: syscon
+       - items:
+           - const: st,stm32-tamp
+@@ -34,20 +35,45 @@ properties:
+   clocks:
+     maxItems: 1
+ 
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++  ranges: true
++
++patternProperties:
++  "^nvram@[0-9a-f]+$":
++    type: object
++    $ref: /schemas/nvmem/st,stm32-tamp-nvram.yaml#
++
+ required:
+   - compatible
+   - reg
+ 
+-if:
+-  properties:
+-    compatible:
+-      contains:
+-        enum:
+-          - st,stm32mp157-syscfg
+-          - st,stm32f4-gcan
+-then:
+-  required:
+-    - clocks
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - st,stm32mp157-syscfg
++              - st,stm32f4-gcan
++    then:
++      required:
++        - clocks
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - st,stm32-tamp
++    then:
++      required:
++        - '#address-cells'
++        - '#size-cells'
++        - ranges
+ 
+ additionalProperties: false
+ 
+-- 
+2.39.5
+

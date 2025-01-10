@@ -1,0 +1,66 @@
+From fb8120727f9bf5ce78594af4c3794aef98efbea0 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Thu, 18 Nov 2021 16:45:24 +0100
+Subject: [PATCH] arm64: dts: st: add stm32mp257f-dk board support
+
+Add STM32MP257F Discovery board support. It embeds a STM32MP257FAL SoC,
+with 4GB of LPDDR4, 2*USB typeA, 1*USB3 typeC, 1*ETH, wifi/BT combo,
+DSI HDMI, LVDS connector ...
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I0a4005af45523dc18f7c63bbc97aeb39e7926bcd
+---
+ arch/arm64/boot/dts/st/Makefile           |  4 ++-
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 30 +++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+
+diff --git a/arch/arm64/boot/dts/st/Makefile b/arch/arm64/boot/dts/st/Makefile
+index 881fe1296c58..0cc12f2b1dfe 100644
+--- a/arch/arm64/boot/dts/st/Makefile
++++ b/arch/arm64/boot/dts/st/Makefile
+@@ -1,2 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-dtb-$(CONFIG_ARCH_STM32) += stm32mp257f-ev1.dtb
++dtb-$(CONFIG_ARCH_STM32) += \
++	stm32mp257f-dk.dtb \
++	stm32mp257f-ev1.dtb
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+new file mode 100644
+index 000000000000..e909f9494f47
+--- /dev/null
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp257.dtsi"
++#include "stm32mp25xf.dtsi"
++#include "stm32mp25-pinctrl.dtsi"
++#include "stm32mp25xxak-pinctrl.dtsi"
++#include "stm32mp257f-dk-ca35tdcid-resmem.dtsi"
++
++/ {
++	model = "STMicroelectronics STM32MP257F-DK Discovery Board";
++	compatible = "st,stm32mp257f-dk", "st,stm32mp257";
++
++	aliases {
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x0 0x80000000 0x1 0x0>;
++	};
++};
+-- 
+2.39.5
+

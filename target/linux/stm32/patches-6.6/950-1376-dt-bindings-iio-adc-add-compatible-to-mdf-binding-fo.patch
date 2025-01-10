@@ -1,0 +1,35 @@
+From 1c1a7d71160d23dada5ab96084cc794b41ad330b Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 30 Jul 2024 15:16:21 +0200
+Subject: [PATCH] dt-bindings: iio: adc: add compatible to mdf binding for
+ stm32mp23
+
+Add dedicated "st,stm32mp23-mdf" compatible for the STM32MP23 series
+that does not support the same number of filter instances.
+
+Change-Id: I99e8d580766bb7bddb6a26718ca75e833d2570ff
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396004
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+index 5dbf0a3d39bd..e4209e42db47 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+@@ -17,6 +17,7 @@ properties:
+   compatible:
+     enum:
+       - st,stm32mp25-mdf
++      - st,stm32mp23-mdf
+ 
+   reg:
+     minItems: 1
+-- 
+2.39.5
+

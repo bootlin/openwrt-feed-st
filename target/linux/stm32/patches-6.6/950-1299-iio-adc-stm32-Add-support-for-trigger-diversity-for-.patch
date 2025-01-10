@@ -1,0 +1,90 @@
+From 632d3aa149449157b928811edf0bf1842d0f9d04 Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore-ext@st.com>
+Date: Tue, 16 Jul 2024 11:22:29 +0200
+Subject: [PATCH] iio: adc: stm32: Add support for trigger diversity for ADC on
+ STM32MP2X
+
+Remove the "trig_id" attribute from the common data in adc-core driver.
+Add a condition in adc driver to check if the property "st,adc-trigger-sel"
+is present in ADC node and retrieve the index value of trigger
+configuration to use if available.
+
+Change-Id: I668db2c50367a5616244b4df1d14a2ef86cbce4e
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393468
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/stm32-adc-core.c | 4 ----
+ drivers/iio/adc/stm32-adc-core.h | 2 --
+ drivers/iio/adc/stm32-adc.c      | 9 +++++++--
+ 3 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+index b924b39b65ed..aa60ed819b36 100644
+--- a/drivers/iio/adc/stm32-adc-core.c
++++ b/drivers/iio/adc/stm32-adc-core.c
+@@ -827,10 +827,6 @@ static int stm32_adc_probe_identification(struct platform_device *pdev,
+ 		 */
+ 		if (priv->nb_irqs > priv->nb_adc_max)
+ 			priv->nb_irqs = priv->nb_adc_max;
+-
+-		/* Identifies ADC3 trigger list, e.g. stm32mp25_adc3_trigs */
+-		if (priv->nb_adc_max == 1)
+-			priv->common.trig_id = 1;
+ 	}
+ 
+ 	val = readl_relaxed(priv->common.base + STM32MP1_ADC_VERR);
+diff --git a/drivers/iio/adc/stm32-adc-core.h b/drivers/iio/adc/stm32-adc-core.h
+index dbcf8528f64f..1f7a039fd8e8 100644
+--- a/drivers/iio/adc/stm32-adc-core.h
++++ b/drivers/iio/adc/stm32-adc-core.h
+@@ -289,7 +289,6 @@ enum stm32h7_adc_dmngt {
+  * @rate:		clock rate used for analog circuitry
+  * @vref_mv:		vref voltage (mv)
+  * @lock:		spinlock
+- * @trig_id:		identifies HW trigger list (diversity added since stm32mp25)
+  */
+ struct stm32_adc_common {
+ 	void __iomem			*base;
+@@ -297,7 +296,6 @@ struct stm32_adc_common {
+ 	unsigned long			rate;
+ 	int				vref_mv;
+ 	spinlock_t			lock;		/* lock for common register */
+-	int				trig_id;
+ };
+ 
+ #endif
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 54843f364bd5..c364e03d0182 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -2959,6 +2959,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	irqreturn_t (*handler)(int irq, void *p) = NULL;
+ 	struct stm32_adc *adc;
+ 	bool timestamping = false;
++	u32 trig_id = 0;
+ 	int ret;
+ 
+ 	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*adc));
+@@ -3011,9 +3012,13 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (adc->cfg->trigs[adc->common->trig_id])
+-		adc->trigs = adc->cfg->trigs[adc->common->trig_id];
++	if (device_property_present(&pdev->dev, "st,adc-trigger-sel")) {
++		ret = device_property_read_u32(dev, "st,adc-trigger-sel", &trig_id);
++		if (ret)
++			return ret;
++	}
+ 
++	adc->trigs = adc->cfg->trigs[trig_id];
+ 	if (!adc->trigs) {
+ 		dev_err(&pdev->dev, "Can't get trigger list\n");
+ 		return -EINVAL;
+-- 
+2.39.5
+

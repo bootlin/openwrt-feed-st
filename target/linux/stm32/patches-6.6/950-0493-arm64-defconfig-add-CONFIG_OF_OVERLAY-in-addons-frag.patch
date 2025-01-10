@@ -1,0 +1,25 @@
+From 900ac5ffcbddb75f9727d39635c73fc46c450157 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 24 Jul 2023 17:51:04 +0200
+Subject: [PATCH] arm64: defconfig: add CONFIG_OF_OVERLAY in addons fragment
+
+Enable CONFIG_OF_OVERLAY to have dt symbols and overlay available.
+
+Change-Id: If437fd669cf243c65b65599dd133c686566b458d
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index d8793272beb0..feab323c9053 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -1,3 +1,4 @@
+ #  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-defconfig-addons.config -o fragment-02-defconfig-addons.config
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_OF_OVERLAY=y
+ CONFIG_REGULATOR_ARM_SCMI=y
+-- 
+2.39.5
+

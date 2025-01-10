@@ -1,0 +1,47 @@
+From 7a9624179c513f5f54758b0fbe942b628b7c0cac Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 11 Apr 2024 16:56:38 +0200
+Subject: [PATCH] arm64: dts: st: add ospi1 node for stm32mp21
+
+Add ospi1 node for stm32mp21.
+
+Change-Id: I10a8da96b8b036c3e140920f33d9e9d18a295a1c
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375011
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 2d48bf6fb94e..9125dd859d7a 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -422,6 +422,20 @@ uart7: serial@40370000 {
+ 				status = "disabled";
+ 			};
+ 
++			ospi1: spi@40430000 {
++				compatible = "st,stm32mp25-omi";
++				reg = <0x40430000 0x400>;
++				interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 2 0x62 0x00003121>,
++				       <&hpdma 2 0x42 0x00003112>;
++				dma-names = "tx", "rx";
++				st,syscfg-dlyb = <&syscfg 0x1000>;
++				clocks = <&scmi_clk CK_SCMI_OSPI1>;
++				resets = <&scmi_reset RST_SCMI_OSPI1>, <&scmi_reset RST_SCMI_OSPI1DLL>;
++				access-controllers = <&rifsc 74>;
++				status = "disabled";
++			};
++
+ 			crc: crc@404c0000 {
+ 				compatible = "st,stm32f7-crc";
+ 				reg = <0x404c0000 0x400>;
+-- 
+2.39.5
+

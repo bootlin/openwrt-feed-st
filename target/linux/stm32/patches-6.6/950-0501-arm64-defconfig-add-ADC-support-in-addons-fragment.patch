@@ -1,0 +1,33 @@
+From a7ce9d0819ee83b9c91d97e2120b0c03bdb56b31 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 22 Feb 2024 10:56:21 +0100
+Subject: [PATCH] arm64: defconfig: add ADC support in addons fragment
+
+Enable STM32MP25 ADC driver, as module (same as in multiv7 defconfig).
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ib61ef9e9e2876fe35b8b7577a58601034d1167c7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361157
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index b973951e7918..f5c948849d34 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -3,6 +3,8 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_REMOTEPROC=y
++CONFIG_STM32_ADC=m
++CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_RPROC=y
+ CONFIG_TEE_REMOTEPROC=y
+ CONFIG_USB_HIDDEV=y
+-- 
+2.39.5
+

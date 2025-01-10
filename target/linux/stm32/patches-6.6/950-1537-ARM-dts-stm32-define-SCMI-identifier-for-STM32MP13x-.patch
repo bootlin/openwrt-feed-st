@@ -1,0 +1,35 @@
+From 3440cb10c1ea4c18aa79d9e7aca3ba6cab08cbf5 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 15 Oct 2024 11:35:20 +0200
+Subject: [PATCH] ARM: dts: stm32: define SCMI identifier for STM32MP13x SoC
+
+Add the missing include in Soc STM32MP131 dtsi file to support the
+define VOLTD_SCMI_REG11, VOLTD_SCMI_REG18, VOLTD_SCMI_USB33.
+
+Fixes: fb266d2d80b4 ("ARM: dts: stm32: STM32MP13x SoC exposes SCMI regulators")
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I664bfea275b190630b1e19b5fcc0c179eabe23ee
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411364
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index ea975ae06e2f..e555717c0048 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -5,6 +5,7 @@
+  */
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/stm32mp13-clks.h>
++#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
+ #include <dt-bindings/reset/stm32mp13-resets.h>
+ #include <dt-bindings/thermal/thermal.h>
+ 
+-- 
+2.39.5
+

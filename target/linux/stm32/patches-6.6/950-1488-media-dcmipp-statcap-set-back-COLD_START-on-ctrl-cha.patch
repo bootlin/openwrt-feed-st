@@ -1,0 +1,85 @@
+From ba27fb95da4db595cbf6d2a53f40c3d83e362a66 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 30 Sep 2024 14:28:07 +0200
+Subject: [PATCH] media: dcmipp: statcap: set back COLD_START on ctrl change
+
+Ensure that the state is back to COLD_START whenever changing a ctrl
+(profile/stat area/average/bins) and protect variables access within the
+spinlock.
+Whenever going back to COLD_START, clear the stat local_buf in order
+to avoid mixing up statistics gathered in different modes.
+
+Change-Id: Ic9f4353f748ec6e350af172dad1f63328f91df7f
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407889
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c        | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index d6899acba7a7..fddc8b637db1 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -480,16 +480,26 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 			(region->width[0] << DCMIPP_P1STSZR_HSIZE_SHIFT) |
+ 			(region->height[0] << DCMIPP_P1STSZR_VSIZE_SHIFT) |
+ 			DCMIPP_P1STSZR_ENABLE);
++		vcap->capture_state = COLD_START;
+ 		spin_unlock_irq(&vcap->irqlock);
+ 		break;
+ 	case V4L2_CID_ISP_STAT_AVG_FILTER:
++		spin_lock_irq(&vcap->irqlock);
+ 		vcap->avg_filter = ctrl->val;
++		vcap->capture_state = COLD_START;
++		spin_unlock_irq(&vcap->irqlock);
+ 		break;
+ 	case V4L2_CID_ISP_STAT_BIN_COMP:
++		spin_lock_irq(&vcap->irqlock);
+ 		vcap->bin_comp = ctrl->val;
++		vcap->capture_state = COLD_START;
++		spin_unlock_irq(&vcap->irqlock);
+ 		break;
+ 	case V4L2_CID_ISP_STAT_PROFILE:
++		spin_lock_irq(&vcap->irqlock);
+ 		vcap->stat_profile = ctrl->val;
++		vcap->capture_state = COLD_START;
++		spin_unlock_irq(&vcap->irqlock);
+ 		break;
+ 	}
+ 
+@@ -658,6 +668,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	switch (vcap->capture_state) {
+ 	case COLD_START:
+ 		vcap->stat_ready = false;
++		memset(&vcap->local_buf, 0, sizeof(vcap->local_buf));
+ 		/*
+ 		 * All stats profile starts from the PRE statistics, except the
+ 		 * AVERAGE POST
+@@ -769,8 +780,6 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	if (vcap->stat_ready)
+ 		dcmipp_statcap_buffer_done(vcap);
+ 
+-	spin_unlock_irq(&vcap->irqlock);
+-
+ 	/* Update the capture_state & prev_capture_state */
+ 	switch (vcap->stat_profile) {
+ 	case V4L2_STAT_PROFILE_FULL:
+@@ -794,6 +803,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 		break;
+ 	}
+ 
++	spin_unlock_irq(&vcap->irqlock);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+-- 
+2.39.5
+

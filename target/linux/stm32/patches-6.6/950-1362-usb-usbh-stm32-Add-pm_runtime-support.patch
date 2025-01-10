@@ -1,0 +1,42 @@
+From f76757003feb791eb3ad3ca8a682ac8fa8c0d728 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Mon, 9 Sep 2024 14:28:04 +0530
+Subject: [PATCH] usb: usbh-stm32: Add pm_runtime support
+
+Add pm_runtime enable and pm_runtime_resume_and_get in probe function.
+This will prevent the platform to automatically enter low power mode
+at runtime, when PSCI OSI (S2Idle) feature will be enabled.
+
+Change-Id: Ifadc43397818e2096258da85cf52e91e1c6ea51f
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403009
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/host/usbh-stm32.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/usb/host/usbh-stm32.c b/drivers/usb/host/usbh-stm32.c
+index 0451b728e00d..d4b1776f0c20 100644
+--- a/drivers/usb/host/usbh-stm32.c
++++ b/drivers/usb/host/usbh-stm32.c
+@@ -139,6 +139,14 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return dev_err_probe(&pdev->dev, ret, "failed to add ehci/ohci devices\n");
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to enable pm runtime\n");
++
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "pm runtime resume failed\n");
++
+ 	platform_set_drvdata(pdev, usbh_data);
+ 
+ 	return 0;
+-- 
+2.39.5
+

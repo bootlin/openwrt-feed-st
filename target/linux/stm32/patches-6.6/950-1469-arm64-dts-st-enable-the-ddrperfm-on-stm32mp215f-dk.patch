@@ -1,0 +1,40 @@
+From b671ddb1cabef19cc919b23b998c6bc08dfe30fe Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Thu, 25 Jul 2024 11:46:12 +0200
+Subject: [PATCH] arm64: dts: st: enable the ddrperfm on stm32mp215f-dk
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The DDR performance monitor is present on stm32mp215f-dk board.
+
+Change-Id: I235903eeb94c3ed0ba1ca77ffe8afe7e68430790
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395154
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 092451a88d7c..0df30b51949e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -217,6 +217,11 @@ dcmipp_0: endpoint {
+ 	};
+ };
+ 
++&ddrperfm {
++	st,dram-type = <0>;
++	status = "okay";
++};
++
+ &eth1 {
+ 	status = "okay";
+ 	pinctrl-0 = <&eth1_rmii_pins_a>;
+-- 
+2.39.5
+

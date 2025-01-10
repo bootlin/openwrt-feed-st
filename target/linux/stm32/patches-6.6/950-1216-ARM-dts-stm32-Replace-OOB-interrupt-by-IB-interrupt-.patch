@@ -1,0 +1,44 @@
+From 7a6faec4483c0707a3d53f2217c976b726b8ce7d Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 4 Jun 2024 11:05:01 +0200
+Subject: [PATCH] ARM: dts: stm32: Replace OOB interrupt by IB interrupt for
+ WIFI on stm32mp157f-dk2
+
+Enabling SDIO IRQ signalling on this interface instead of out-of-band
+interrupt from brcmfmac
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Signed-off-by: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Change-Id: Ica21aa09fbc80f3c1ef56e18d0326700c0f722b9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/385029
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index 0ea199baa5dc..146453a0084a 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -125,6 +125,7 @@ &sdmmc2 {
+ 	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
+ 	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
+ 	non-removable;
++	cap-sdio-irq;
+ 	st,neg-edge;
+ 	bus-width = <4>;
+ 	vmmc-supply = <&v3v3>;
+@@ -136,9 +137,6 @@ &sdmmc2 {
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
+-		interrupt-parent = <&gpiod>;
+-		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
+-		interrupt-names = "host-wake";
+ 	};
+ };
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,38 @@
+From 0859b91381cbfe8129c73946eb3e5a1d4dbf36cd Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 21 Apr 2021 13:24:44 +0200
+Subject: [PATCH] arm64: defconfig: enable RPMSG modules in addons fragment
+
+This patch adds in built-in the rpmsg virtio and
+rpmsg drivers used by STM32MP SOCs.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I5b52a3ea7a55acbc231fdc27e14a14bc01d1fa87
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310427
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 7569c44d182d..76bb401fba31 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -20,7 +20,10 @@ CONFIG_PWM_STM32=m
+ CONFIG_PWM_STM32_LP=m
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_REMOTEPROC=y
+-CONFIG_RTC_DRV_STM32=y
++CONFIG_RPMSG_CHAR=m
++CONFIG_RPMSG_CTRL=m
++CONFIG_RPMSG_TTY=m
++CONFIG_RPMSG_VIRTIO=mCONFIG_RTC_DRV_STM32=y
+ CONFIG_SND_SOC_STM32_I2S=m
+ CONFIG_SND_SOC_STM32_MDF=m
+ CONFIG_SND_SOC_STM32_SAI=m
+-- 
+2.39.5
+

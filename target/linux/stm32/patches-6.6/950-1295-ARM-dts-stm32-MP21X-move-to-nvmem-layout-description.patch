@@ -1,0 +1,60 @@
+From 6b923d6410343a6d3cd08a53211e2d14bab87619 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:20:11 +0200
+Subject: [PATCH] ARM: dts: stm32: MP21X move to nvmem layout description
+
+Legacy description is not any more supported by st,stm32mp25-tamp-nvram
+driver
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: I3c1997183a18f2193508d006a2dc3b99e03f512d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397669
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 29878db1e79b..219f12ba1535 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2188,18 +2188,20 @@ tamp: tamp@46010000 {
+ 
+ 			nvram: nvram@46010100 {
+ 				compatible = "st,stm32mp25-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+ 				reg = <0x46010100 0x0 0x200>;
+-
+-				boot_mode: tamp-bkp@180 {
+-					reg = <0x180 0x4>;
+-				};
+-				rsc_tbl_addr: tamp-bkp@184 {
+-					reg = <0x184 0x4>;
+-				};
+-				rsc_tbl_size: tamp-bkp@188 {
+-					reg = <0x188 0x4>;
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					boot_mode: tamp-bkp@180 {
++						reg = <0x180 0x4>;
++					};
++					rsc_tbl_addr: tamp-bkp@184 {
++						reg = <0x184 0x4>;
++					};
++					rsc_tbl_size: tamp-bkp@188 {
++						reg = <0x188 0x4>;
++					};
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

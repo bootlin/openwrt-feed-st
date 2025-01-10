@@ -1,0 +1,35 @@
+From 8e3e16c61f833e37e6e8f12523ce16a1f450f745 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 22 Jul 2021 11:39:34 +0200
+Subject: [PATCH] usb: dwc2: hcd: initialize hsotg->test_mode upon
+ USB_PORT_FEAT_TEST
+
+Set hsotg->test_mode upon SetPortFeature - USB_PORT_FEAT_TEST, as done in
+gadget part, to avoid, in case of using usb role switch, disconnect on
+USB_ROLE_NONE (unattach of PIDVID board).
+
+Change-Id: I4cd9f2d4cceacbfb94162f95c32808e1145bdbc1
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/214916
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/usb/dwc2/hcd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index 40be338278bc..de8073538cc6 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -3724,6 +3724,7 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
+ 			hprt0 &= ~HPRT0_TSTCTL_MASK;
+ 			hprt0 |= (windex >> 8) << HPRT0_TSTCTL_SHIFT;
+ 			dwc2_writel(hsotg, hprt0, HPRT0);
++			hsotg->test_mode = windex >> 8;
+ 			break;
+ 
+ 		default:
+-- 
+2.39.5
+

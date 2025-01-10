@@ -1,0 +1,37 @@
+From 6f18fa97aaf2c816ec656c243641703888457335 Mon Sep 17 00:00:00 2001
+From: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Date: Thu, 27 Jun 2024 09:32:50 +0200
+Subject: [PATCH] arm64: dts: st: Add cluster Power domain for GPU
+
+GPU power domain is exported by SCMI and a generic driver.
+For OSI the GPU is also in CLUSTER_PD (to avoid Stop1/LP-Stop1
+when GPU is running / detected with pm runtime framework)
+
+Change-Id: I41d0969d3dd5f34d41652837cd29df0c47338fb2
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/389526
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp255.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index 861431eafe3b..23a38b96bc6e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -65,7 +65,7 @@ gpu: gpu@48280000 {
+ 		resets = <&rcc GPU_R>;
+ 		clock-names = "bus", "core";
+ 		clocks = <&rcc CK_BUS_GPU>, <&rcc CK_KER_GPU>;
+-		power-domains = <&scmi_devpd PD_SCMI_GPU>;
++		power-domains = <&scmi_devpd PD_SCMI_GPU>, <&CLUSTER_PD>;
+ 		access-controllers = <&rifsc 79>;
+ 		status = "disabled";
+ 	};
+-- 
+2.39.5
+

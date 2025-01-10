@@ -1,0 +1,37 @@
+From 1682c3220c734effe57d45c954324027136e9c2b Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Mon, 4 Nov 2024 09:20:42 +0100
+Subject: [PATCH] arm64: dts: st: move stm32mp23 dk board on new SDMMC1 slew
+ rate
+
+Move stm32mp23 dk board on new SDMMC1 slew rate.
+
+Change-Id: I271d0b968d7554e74583fa0acb80a67e699894e8
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/415854
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+index 655ed73e6be3..6bc923b7f28f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+@@ -621,8 +621,8 @@ scmi_vdd_sdcard: regulator@23 {
+ 
+ &sdmmc1 {
+ 	pinctrl-names = "default", "opendrain", "sleep";
+-	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+-	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
++	pinctrl-0 = <&sdmmc1_b4_pins_b>;
++	pinctrl-1 = <&sdmmc1_b4_od_pins_b>;
+ 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+ 	cd-gpios = <&gpiod 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ 	disable-wp;
+-- 
+2.39.5
+

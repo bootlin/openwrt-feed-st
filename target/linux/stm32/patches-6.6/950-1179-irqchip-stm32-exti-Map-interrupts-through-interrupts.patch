@@ -1,0 +1,90 @@
+From bdbcb799b4869de107227d91fb77ed0b539e183b Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 15 Apr 2024 15:49:18 +0200
+Subject: [PATCH] irqchip/stm32-exti: Map interrupts through
+ interrupts-extended
+
+The mapping of EXTI events to its parent interrupt controller is both SoC
+and instance dependent.
+
+The current implementation requires adding a new mapping table to the
+driver's code and a new compatible for each new EXTI instance.
+
+Check for the presence of the optional interrupts-extended property and use
+it to map EXTI events to the parent's interrupts.
+
+For old device trees without the optional interrupts-extended property, the
+driver's behavior is unchanged, thus keeps backward compatibility.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I9f5ba4891d78bbb1ca7ac0b4136faf5015e3e705
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383180
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 3b35f138ed3d..40960987986e 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -58,9 +58,11 @@ struct stm32_exti_chip_data {
+ 
+ struct stm32_exti_host_data {
+ 	void __iomem *base;
++	struct device *dev;
+ 	struct stm32_exti_chip_data *chips_data;
+ 	const struct stm32_exti_drv_data *drv_data;
+ 	struct hwspinlock *hwlock;
++	bool dt_has_irqs_desc; /* skip internal desc_irqs array and get it from DT */
+ };
+ 
+ static struct stm32_exti_host_data *stm32_host_data;
+@@ -731,6 +733,23 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+ 
+ 	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
+ 
++	if (host_data->dt_has_irqs_desc) {
++		struct of_phandle_args out_irq;
++		int ret;
++
++		ret = of_irq_parse_one(host_data->dev->of_node, hwirq, &out_irq);
++		if (ret)
++			return ret;
++		/* we only support one parent, so far */
++		if (of_node_to_fwnode(out_irq.np) != dm->parent->fwnode)
++			return -EINVAL;
++
++		of_phandle_args_to_fwspec(out_irq.np, out_irq.args,
++					  out_irq.args_count, &p_fwspec);
++
++		return irq_domain_alloc_irqs_parent(dm, virq, 1, &p_fwspec);
++	}
++
+ 	if (!host_data->drv_data->desc_irqs)
+ 		return -EINVAL;
+ 
+@@ -916,6 +935,8 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	if (!host_data)
+ 		return -ENOMEM;
+ 
++	host_data->dev = dev;
++
+ 	/* check for optional hwspinlock which may be not available yet */
+ 	ret = of_hwspin_lock_get_id(np, 0);
+ 	if (ret == -EPROBE_DEFER)
+@@ -975,6 +996,9 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	if (of_property_read_bool(np, "interrupts-extended"))
++		host_data->dt_has_irqs_desc = true;
++
+ 	stm32_exti_h_syscore_init(host_data);
+ 
+ 	return 0;
+-- 
+2.39.5
+

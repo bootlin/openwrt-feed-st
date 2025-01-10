@@ -1,0 +1,174 @@
+From dc9d876018c650f0bb9cd6d1f83a05a53ea7a264 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 28 Jun 2024 16:07:19 +0200
+Subject: [PATCH] drm/stm: ltdc: Check the security of layer 2.
+
+If layer 2 is secure then its registers are not accessible
+(reduce mapping of ltdc registers to common registers and
+layers 0 and 1 registers).
+Do not expose this layer to the user (do not create a plan)
+
+Change-Id: If63e9658a7546cde051ae5ff432e1ec33f7d357f
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390728
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 69 +++++++++++++++++++++++++++++++++++---
+ drivers/gpu/drm/stm/ltdc.h |  4 +++
+ 2 files changed, 68 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index d5d84e7f124d..401915f5e9e8 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -8,6 +8,7 @@
+  *          Mickael Reulier <mickael.reulier@st.com>
+  */
+ 
++#include <linux/bus/stm32_firewall_device.h>
+ #include <linux/clk.h>
+ #include <linux/component.h>
+ #include <linux/delay.h>
+@@ -2204,8 +2205,12 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+ static int ltdc_get_caps(struct drm_device *ddev)
+ {
+ 	struct ltdc_device *ldev = ddev->dev_private;
++	struct device *dev = ddev->dev;
++	struct device_node *np;
++	struct stm32_firewall *fwl = (struct stm32_firewall *)ldev->firewall;
+ 	u32 bus_width_log2, lcr, gc2r, lxc1r;
+ 	const struct ltdc_plat_data *pdata = of_device_get_match_data(ddev->dev);
++	int ret, i;
+ 
+ 	/*
+ 	 * at least 1 layer must be managed & the number of layers
+@@ -2215,6 +2220,58 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 
+ 	ldev->caps.nb_layers = clamp((int)lcr, 1, LTDC_MAX_LAYER);
+ 
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp21-ltdc") ||
++	    of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc")) {
++		/* get firewall access */
++		ret = stm32_firewall_get_firewall(dev->of_node, &ldev->firewall[0], 1);
++		if (ret)
++			return ret;
++
++		np = of_get_child_by_name(dev->of_node, "l0l1");
++		if (np) {
++			ret = stm32_firewall_get_firewall(np, &ldev->firewall[1], 1);
++			if (ret)
++				return ret;
++		}
++
++		np = of_get_child_by_name(dev->of_node, "l2");
++		if (np) {
++			ret = stm32_firewall_get_firewall(np, &ldev->firewall[2], 1);
++			if (ret)
++				return ret;
++		}
++
++		np = of_get_child_by_name(dev->of_node, "rot");
++		if (np) {
++			ret = stm32_firewall_get_firewall(np, &ldev->firewall[3], 1);
++			if (ret)
++				return ret;
++		}
++
++		for (i = 0; i < LTDC_MAX_FIREWALL; i++) {
++			DRM_DEBUG_DRIVER("Get firewall: id %d name %s\n",
++					 fwl[i].firewall_id, fwl[i].entry);
++			/* check id of firewall */
++			if (fwl[i].firewall_id != 0) {
++				ret = stm32_firewall_grant_access_by_id(fwl, fwl[i].firewall_id);
++				if (ret) {
++					/*
++					 * Check the security of layer 2.
++					 * Do not expose this layer to the user
++					 * (do not create a plan)
++					 * if this one is reserved for secure application.
++					 */
++					if (!strcmp("l2", fwl[i].entry)) {
++						ldev->caps.nb_layers--;
++					} else {
++						stm32_firewall_release_access(fwl);
++						return ret;
++					}
++				}
++			}
++		}
++	}
++
+ 	/* set data bus width */
+ 	regmap_read(ldev->regmap, LTDC_GC2R, &gc2r);
+ 	bus_width_log2 = (gc2r & GC2R_BW) >> 4;
+@@ -2294,7 +2351,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 			ldev->caps.crtc_rotation = false;
+ 		ldev->caps.fifo_threshold = true;
+ 
+-		for (int i = 0; i < lcr; i++) {
++		for (int i = 0; i < ldev->caps.nb_layers; i++) {
+ 			/* read 1st register of layer's configuration */
+ 			regmap_read(ldev->regmap, LTDC_L1C1R + i * LAY_OFS, &lxc1r);
+ 
+@@ -2305,6 +2362,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 		}
+ 		break;
+ 	default:
++		DRM_ERROR("hardware identifier (0x%08x) not supported!\n", ldev->caps.hw_version);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -2444,11 +2502,8 @@ int ltdc_load(struct drm_device *ddev)
+ 	}
+ 
+ 	ret = ltdc_get_caps(ddev);
+-	if (ret) {
+-		DRM_ERROR("hardware identifier (0x%08x) not supported!\n",
+-			  ldev->caps.hw_version);
++	if (ret)
+ 		goto err;
+-	}
+ 
+ 	/* Disable all interrupts */
+ 	regmap_clear_bits(ldev->regmap, LTDC_IER, IER_MASK);
+@@ -2534,10 +2589,14 @@ int ltdc_load(struct drm_device *ddev)
+ void ltdc_unload(struct drm_device *ddev)
+ {
+ 	struct device *dev = ddev->dev;
++	struct ltdc_device *ldev = ddev->dev_private;
++	struct stm32_firewall *fwl = (struct stm32_firewall *)ldev->firewall;
+ 	int nb_endpoints, i;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
++	stm32_firewall_release_access(fwl);
++
+ 	nb_endpoints = of_graph_get_endpoint_count(dev->of_node);
+ 
+ 	for (i = 0; i < nb_endpoints; i++)
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index b8883ff995f5..595cc1803ea2 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -12,6 +12,9 @@
+ #define _LTDC_H_
+ 
+ #define LTDC_MAX_LAYER	4
++#define LTDC_MAX_FIREWALL	4
++
++#include <linux/bus/stm32_firewall_device.h>
+ 
+ struct ltdc_caps {
+ 	u32 hw_version;		/* hardware version */
+@@ -69,6 +72,7 @@ struct ltdc_device {
+ 	u32 crc;
+ 	u32 max_burst_length;
+ 	struct reserved_mem *rot_mem;
++	struct stm32_firewall firewall[LTDC_MAX_FIREWALL];
+ };
+ 
+ int ltdc_parse_device_tree(struct device *dev);
+-- 
+2.39.5
+

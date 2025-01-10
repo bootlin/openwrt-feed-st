@@ -1,0 +1,43 @@
+From edfa27a80fdb5ecb7b0df88e51353723d3fd81c6 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 25 Sep 2023 11:17:06 +0200
+Subject: [PATCH] Revert "tty: Use flow-control char function on closing path"
+
+This reverts commit 65534736d9a5cab5340ae8819e1394b6325e8390.
+
+This series seems to introduce some regressions on tty buffer.
+Revert it temporary.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Iad02769f7f2fca7f20c5a1c544ad59c3698ca03d
+---
+ drivers/tty/n_tty.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index e05341b85c59..f6a32e19337d 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -1456,10 +1456,15 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c,
+ 		c = tolower(c);
+ 
+ 	if (I_IXON(tty)) {
+-		if (!n_tty_receive_char_flow_ctrl(tty, c, lookahead_done) &&
+-		    tty->flow.stopped && !tty->flow.tco_stopped && I_IXANY(tty) &&
+-		    c != INTR_CHAR(tty) && c != QUIT_CHAR(tty) &&
+-		    c != SUSP_CHAR(tty)) {
++		if (c == STOP_CHAR(tty)) {
++			if (!lookahead_done)
++				stop_tty(tty);
++		} else if (c == START_CHAR(tty) && lookahead_done) {
++			return;
++		} else if (c == START_CHAR(tty) ||
++			 (tty->flow.stopped && !tty->flow.tco_stopped && I_IXANY(tty) &&
++			  c != INTR_CHAR(tty) && c != QUIT_CHAR(tty) &&
++			  c != SUSP_CHAR(tty))) {
+ 			start_tty(tty);
+ 			process_echoes(tty);
+ 		}
+-- 
+2.39.5
+

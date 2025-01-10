@@ -1,0 +1,69 @@
+From a8d95395327632d07a0dade2c7eb1177bf7c43e6 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 6 Feb 2024 12:51:50 +0100
+Subject: [PATCH] arm64: dts: add imx335 supplies properties in
+ stm32mp257f-ev1.dts
+
+The imx335 now requires supplies hence provide fixed-regulator
+based supplies.
+
+Change-Id: I8303f44072bd25aaf05cd1c42c5c02cecb2782f3
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361979
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 27 ++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 780f11588588..abb5ba7218a1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -81,6 +81,30 @@ hdmi_connector_in: endpoint {
+ 		};
+ 	};
+ 
++	imx335_2v9: imx335-2v9 {
++		compatible = "regulator-fixed";
++		regulator-name = "imx335-avdd";
++		regulator-min-microvolt = <2900000>;
++		regulator-max-microvolt = <2900000>;
++		regulator-always-on;
++	};
++
++	imx335_1v8: imx335-1v8 {
++		compatible = "regulator-fixed";
++		regulator-name = "imx335-ovdd";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
++
++	imx335_1v2: imx335-1v2 {
++		compatible = "regulator-fixed";
++		regulator-name = "imx335-dvdd";
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1200000>;
++		regulator-always-on;
++	};
++
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+@@ -295,6 +319,9 @@ imx335: imx335@1a {
+ 		compatible = "sony,imx335";
+ 		reg = <0x1a>;
+ 		clocks = <&clk_ext_camera>;
++		avdd-supply = <&imx335_2v9>;
++		ovdd-supply = <&imx335_1v8>;
++		dvdd-supply = <&imx335_1v2>;
+ 		reset-gpios = <&gpioi 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+ 		powerdown-gpios = <&gpioi 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+ 		status = "okay";
+-- 
+2.39.5
+

@@ -1,0 +1,58 @@
+From e63fa628209b362ddc6a8881314bd9a2d2b5c8f7 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 3 Jan 2024 09:41:46 +0100
+Subject: [PATCH] dt-bindings: remoteproc: st,stm32-rproc: Rename
+ st,syscfg-m4-state property
+
+Renaname the property to reuse it for the stm32mp2. the new name is
+"st,syscfg-cm-state".
+
+Change-Id: I87347049d59ecffbaabeb8f003d747a60089251a
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/348530
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml    | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index c5de5b1438c4..79e623d24cae 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -120,10 +120,10 @@ properties:
+           - description: The offset of the power setting register
+           - description: The field mask of the PDDS selection
+ 
+-  st,syscfg-m4-state:
++  st,syscfg-cm-state:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+     description: |
+-      Reference to the tamp register which exposes the Cortex-M4 state.
++      Reference to the register which exposes the Cortex-M state.
+     items:
+       - items:
+           - description: Phandle of syscon block with the tamp register
+@@ -200,7 +200,7 @@ examples:
+       /* Hold boot managed using system config*/
+       st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+       st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+-      st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
++      st,syscfg-cm-state = <&tamp 0x148 0xFFFFFFFF>;
+     };
+   - |
+     #include <dt-bindings/reset/stm32mp1-resets.h>
+@@ -213,7 +213,7 @@ examples:
+       resets = <&scmi MCU_R>, <&scmi MCU_HOLD_BOOT_R>;
+       reset-names = "mcu_rst", "hold_boot";
+       st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+-      st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
++      st,syscfg-cm-state = <&tamp 0x148 0xFFFFFFFF>;
+     };
+   - |
+     #include <dt-bindings/reset/stm32mp1-resets.h>
+-- 
+2.39.5
+

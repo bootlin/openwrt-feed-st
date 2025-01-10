@@ -1,0 +1,70 @@
+From 4e2658f485e269bab542c95cb2d03380b59a6651 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Tue, 21 May 2024 16:15:27 +0200
+Subject: [PATCH] arm64: dts: st: add cryp1 on stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add cryp1 node for stm32mp21xc and stm32mp21xf with DMA support.
+
+Change-Id: I22415818b62ab7c0f28fc48c27acefd59a37c639
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381377
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp21xc.dtsi | 14 +++++++++++++-
+ arch/arm64/boot/dts/st/stm32mp21xf.dtsi | 14 +++++++++++++-
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
+index 39507a7564c8..99bb8761530c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
+@@ -4,5 +4,17 @@
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
+ 
+-/ {
++&rifsc {
++	cryp1: crypto@42030000 {
++		compatible = "st,stm32mp1-cryp";
++		reg = <0x42030000 0x400>;
++		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc CK_BUS_CRYP1>;
++		resets = <&rcc CRYP1_R>;
++		dmas = <&hpdma 4 0x40 0x3021>,
++		       <&hpdma 5 0x43 0x3012>;
++		dma-names = "in", "out";
++		access-controllers = <&rifsc 98>;
++		status = "disabled";
++	};
+ };
+diff --git a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
+index 39507a7564c8..99bb8761530c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
+@@ -4,5 +4,17 @@
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
+ 
+-/ {
++&rifsc {
++	cryp1: crypto@42030000 {
++		compatible = "st,stm32mp1-cryp";
++		reg = <0x42030000 0x400>;
++		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc CK_BUS_CRYP1>;
++		resets = <&rcc CRYP1_R>;
++		dmas = <&hpdma 4 0x40 0x3021>,
++		       <&hpdma 5 0x43 0x3012>;
++		dma-names = "in", "out";
++		access-controllers = <&rifsc 98>;
++		status = "disabled";
++	};
+ };
+-- 
+2.39.5
+

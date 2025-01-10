@@ -1,0 +1,36 @@
+From d68bf321af80b45d3445e775300ace7575416744 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 13 Sep 2024 13:36:54 +0200
+Subject: [PATCH] media: stm32: dcmipp: add RGB24 support in bytecap
+
+Add possibility to capture from RGB888_1X24 into RGB24 via
+the dump pipe (bytecap).
+
+Change-Id: I9fbd3d3a8d92c7ec4da66c1dab59e73e58e7447f
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404343
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index b7eb9a05dfc2..4a38d7bb477e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -57,6 +57,7 @@ struct dcmipp_bytecap_pix_map {
+ static const struct dcmipp_bytecap_pix_map dcmipp_bytecap_pix_map_list[] = {
+ 	PIXMAP_MBUS_PFMT(RGB565_2X8_LE, RGB565),
+ 	PIXMAP_MBUS_PFMT(RGB565_1X16, RGB565),
++	PIXMAP_MBUS_PFMT(RGB888_1X24, RGB24),
+ 	PIXMAP_MBUS_PFMT(YUYV8_2X8, YUYV),
+ 	PIXMAP_MBUS_PFMT(YUYV8_1X16, YUYV),
+ 	PIXMAP_MBUS_PFMT(YVYU8_2X8, YVYU),
+-- 
+2.39.5
+

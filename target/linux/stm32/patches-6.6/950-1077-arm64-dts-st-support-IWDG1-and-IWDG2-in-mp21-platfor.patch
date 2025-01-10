@@ -1,0 +1,55 @@
+From 4fab666c26ecdd7c9f76ea8e7451911deea168a4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 30 Apr 2024 17:31:49 +0200
+Subject: [PATCH] arm64: dts: st: support IWDG1 and IWDG2 in mp21 platforms
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Support IWDG1 and IWDG2 nodes in mp21.
+
+Change-Id: I6a6836f74621b9b516adcf7f457bf682850c9738
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377545
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index cea08f7be05b..e5256330e808 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -444,6 +444,26 @@ crc: crc@404c0000 {
+ 				status = "disabled";
+ 			};
+ 
++			iwdg1: watchdog@44010000 {
++				compatible = "st,stm32mp1-iwdg";
++				reg = <0x44010000 0x400>;
++				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_IWDG1>, <&scmi_clk CK_SCMI_LSI>;
++				clock-names = "pclk", "lsi";
++				access-controllers = <&rifsc 100>;
++				status = "disabled";
++			};
++
++			iwdg2: watchdog@44020000 {
++				compatible = "st,stm32mp1-iwdg";
++				reg = <0x44020000 0x400>;
++				interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_IWDG2>, <&scmi_clk CK_SCMI_LSI>;
++				clock-names = "pclk", "lsi";
++				access-controllers = <&rifsc 101>;
++				status = "disabled";
++			};
++
+ 			spi6: spi@46020000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-- 
+2.39.5
+

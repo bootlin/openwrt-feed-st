@@ -1,0 +1,51 @@
+From 96201093e3cc6ca8bd10944d8ca13db7aa51a1ad Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 21 Jun 2023 14:47:53 +0200
+Subject: [PATCH] arm64: dts: st: use nvmem cells to store resource table in
+ stm32mp251.dtsi
+
+The stm32_rproc driver gets the resources tables size and address in
+tamp register thanks to the NVMEM API.
+
+Change-Id: Ib3c5b9f29b13955c2aead3047c3355adbd3ef27c
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/326926
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/356774
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5131a4457f11..460bca3fc7c6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2558,6 +2558,12 @@ nvram: nvram@46010100 {
+ 				boot_mode: tamp-bkp@180 {
+ 					reg = <0x180 0x4>;
+ 				};
++				rsc_tbl_addr: tamp-bkp@184 {
++					reg = <0x184 0x4>;
++				};
++				rsc_tbl_size: tamp-bkp@188 {
++					reg = <0x188 0x4>;
++				};
+ 			};
+ 
+ 			reboot_mode: reboot-mode {
+@@ -2872,6 +2878,8 @@ m33_rproc: m33@0 {
+ 			st,syscfg-cm-state = <&pwr 0x204 0x0000000c>;
+ 			interrupt-parent = <&intc>;
+ 			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++			nvmem-cells = <&rsc_tbl_addr>, <&rsc_tbl_size>;
++			nvmem-cell-names = "rsc-tbl-addr", "rsc-tbl-size";
+ 
+ 			status = "disabled";
+ 		};
+-- 
+2.39.5
+

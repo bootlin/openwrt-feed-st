@@ -1,0 +1,42 @@
+From 0c8196824d424201d03117a820cd5a9c61bf0a67 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Wed, 18 Sep 2024 14:25:07 +0200
+Subject: [PATCH] arm64: dts: st: configure ipcc2 as a wakeup source for
+ Cortex-M0
+
+Define IPCC2 as a wakeup source.
+
+Change-Id: Ied272e56f6edee5638f56316e87edf84fc0b3533
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407623
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 59f937aeb300..f306064d4b03 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2988,10 +2988,11 @@ ipcc2: mailbox@46250000 {
+ 			#mbox-cells = <1>;
+ 			reg = <0x46250000 0x400>;
+ 			st,proc-id = <1>;
+-			interrupts = <GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>,
+-				     <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti2 34 0>,
++					      <&intc GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "rx", "tx";
+ 			clocks = <&scmi_clk CK_SCMI_IPCC2>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.39.5
+

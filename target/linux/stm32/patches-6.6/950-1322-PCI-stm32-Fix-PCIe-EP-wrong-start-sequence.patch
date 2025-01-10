@@ -1,0 +1,73 @@
+From 6269f0512f66b90ea06d7d62c8c1d524f76497eb Mon Sep 17 00:00:00 2001
+From: Ram Dayal <ram.dayal@st.com>
+Date: Wed, 24 Jul 2024 08:27:11 +0200
+Subject: [PATCH] PCI: stm32: Fix PCIe EP wrong start sequence
+
+Start the PCIe EP link using the PERST IRQ instead
+of manual device binding for better synchronization.
+
+Change-Id: I6762b1679de6097161f48cb16a0c5a75abd4bc78
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/394856
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Christian BRUEL <christian.bruel@foss.st.com>
+---
+ drivers/pci/controller/dwc/pcie-stm32-ep.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
+index cbd873933cd2..4e2870b89046 100644
+--- a/drivers/pci/controller/dwc/pcie-stm32-ep.c
++++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
+@@ -102,13 +102,6 @@ static int stm32_pcie_start_link(struct dw_pcie *pci)
+ 		return ret;
+ 	}
+ 
+-	ret = dw_pcie_ep_init_complete(ep);
+-	if (ret) {
+-		dev_err(pci->dev, "Failed to complete initialization: %d\n", ret);
+-		stm32_pcie_disable_link(pci);
+-		return ret;
+-	}
+-
+ 	dw_pcie_ep_linkup(ep);
+ 
+ 	stm32_pcie->link_status = STM32_PCIE_EP_LINK_ENABLED;
+@@ -249,25 +242,24 @@ static void stm32_pcie_perst_deassert(struct dw_pcie *pci)
+ 		return;
+ 	}
+ 
+-	ret = stm32_pcie_enable_link(pci);
++	ret = dw_pcie_ep_init_complete(ep);
+ 	if (ret) {
+-		dev_err(dev, "PCIe Cannot establish link: %d\n", ret);
++		dev_err(dev, "Failed to complete initialization: %d\n", ret);
+ 		stm32_pcie_disable_resources(stm32_pcie);
+ 		pm_runtime_put_sync(dev);
+ 		return;
+ 	}
+ 
+-	ret = dw_pcie_ep_init_complete(ep);
++	dw_pcie_ep_init_notify(ep);
++
++	ret = stm32_pcie_enable_link(pci);
+ 	if (ret) {
+-		dev_err(dev, "Failed to complete initialization: %d\n", ret);
+-		stm32_pcie_disable_link(pci);
++		dev_err(dev, "PCIe Cannot establish link: %d\n", ret);
+ 		stm32_pcie_disable_resources(stm32_pcie);
+ 		pm_runtime_put_sync(dev);
+ 		return;
+ 	}
+ 
+-	dw_pcie_ep_init_notify(ep);
+-
+ 	stm32_pcie->link_status = STM32_PCIE_EP_LINK_ENABLED;
+ }
+ 
+-- 
+2.39.5
+

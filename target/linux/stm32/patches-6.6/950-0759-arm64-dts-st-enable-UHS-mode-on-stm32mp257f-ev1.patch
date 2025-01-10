@@ -1,0 +1,32 @@
+From 950526daf1e503ea09d3b39ab47e0bd42e3e35ed Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 31 Oct 2023 14:46:16 +0100
+Subject: [PATCH] arm64: dts: st: enable UHS mode on stm32mp257f-ev1
+
+SDMMC1 node is now supporting UHS modes on stm32mp257f-ev1.
+
+Change-Id: I68e58a022973876a578c06d5602f18f1235eecde
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 6bc9c22ced6e..87809acb83a2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -552,6 +552,11 @@ &sdmmc1 {
+ 	bus-width = <4>;
+ 	vmmc-supply = <&scmi_vdd_sdcard>;
+ 	vqmmc-supply = <&scmi_vddio1>;
++	sd-uhs-sdr12;
++	sd-uhs-sdr25;
++	sd-uhs-sdr50;
++	sd-uhs-ddr50;
++	sd-uhs-sdr104;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,36 @@
+From d876646b662a02f5431184c036e9d04d100fc2d0 Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore@foss.st.com>
+Date: Wed, 9 Oct 2024 11:17:13 +0200
+Subject: [PATCH] dt-bindings: serial: stm32: update clocks property
+
+Update "clocks" property to support 2 clocks in stm32 serial binding.
+
+Change-Id: I917344433d258618a2689ff48a223943f14f5843
+Signed-off-by: Cheick Traore <cheick.traore@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/410081
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 2ed526139269..f15535998d83 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -23,7 +23,7 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    maxItems: 1
++    maxItems: 2
+ 
+   resets:
+     maxItems: 1
+-- 
+2.39.5
+

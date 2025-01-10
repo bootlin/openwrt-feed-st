@@ -1,0 +1,36 @@
+From 1b8e612174cf6a2ac7a44198103a5631d36951cf Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Thu, 21 Sep 2023 16:28:28 +0200
+Subject: [PATCH] ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
+
+Need to enable MCP23S08 I/O expanders to manage Ethernet phy
+reset in STM32MP135F-DK board
+STMMAC driver defer is not silent, need to put this config in
+built-in to avoid huge of Ethernet messages
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: Icbc2a7af499874101cd2fe0f7b7d05629554df4b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347392
+Tested-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 8754890c6be1..ff3a00b323c8 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -458,6 +458,7 @@ CONFIG_SPI_XILINX=y
+ CONFIG_SPI_SPIDEV=y
+ CONFIG_SPMI=y
+ CONFIG_PINCTRL_AS3722=y
++CONFIG_PINCTRL_MCP23S08=y
+ CONFIG_PINCTRL_MICROCHIP_SGPIO=y
+ CONFIG_PINCTRL_OCELOT=y
+ CONFIG_PINCTRL_PALMAS=y
+-- 
+2.39.5
+

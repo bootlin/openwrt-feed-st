@@ -1,0 +1,50 @@
+From 57679544318dd7d2d233f74ebc82d5963626b5ff Mon Sep 17 00:00:00 2001
+From: Nuno Sa <nuno.sa@analog.com>
+Date: Tue, 9 Jul 2024 13:14:29 +0200
+Subject: [PATCH] iio: backend: print message in case op is not implemented
+
+For APIs that have a return value, -EOPNOTSUPP is returned in case the
+backend does not support the functionality. However, for APIs that do
+not have a return value we are left in silence. Hence, at least print a
+debug message in case the callback is not implemented by the backend.
+
+Change-Id: Ib94cbfc485ace5f004c88826dc111974800ea59c
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://patch.msgid.link/20240709-dev-iio-backend-add-debugfs-v1-2-fb4b8f2373c7@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397583
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/iio/industrialio-backend.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index e01b7be8e693..3afdce7da1b5 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -40,6 +40,7 @@
+ #include <linux/mutex.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
++#include <linux/stringify.h>
+ #include <linux/types.h>
+ 
+ #include <linux/iio/backend.h>
+@@ -111,6 +112,9 @@ static DEFINE_MUTEX(iio_back_lock);
+ 	__ret = iio_backend_check_op(__back, op);		\
+ 	if (!__ret)						\
+ 		__back->ops->op(__back, ##args);		\
++	else							\
++		dev_dbg(__back->dev, "Op(%s) not implemented\n",\
++			__stringify(op));			\
+ }
+ 
+ /**
+-- 
+2.39.5
+

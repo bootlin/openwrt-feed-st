@@ -1,0 +1,49 @@
+From 07b947bceab616961a17cc4f16a4b25caf4c77cd Mon Sep 17 00:00:00 2001
+From: Cheick Oumar TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 7 Mar 2024 15:36:46 +0100
+Subject: [PATCH] mfd: stmfx: Remove .of_compatible from stmfx_cells for idd
+ and ts
+
+idd and ts features are not described in stmfx bindings. Remove the
+.of_compatible field from relative mfd_cells to avoid having to add
+corresponding disabled node in device trees using stmfx:
+		stmfx_idd: idd {
+			status = "disabled";
+		};
+		stmfx_ts: stmfx_ts {
+			status = "disabled";
+		};
+Then, the warning "Failed to locate of_node [id: -1]" won't appear anymore.
+.of_compatible could be added as soon as idd or ts bindings are described
+and drivers available.
+
+Change-Id: I9ff399420317071139184fffcb37c99402df573b
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Cheick Oumar TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365314
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/mfd/stmfx.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
+index c02cbd9c2f5d..7257f706ffb4 100644
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -81,13 +81,11 @@ static struct mfd_cell stmfx_cells[] = {
+ 		.num_resources = ARRAY_SIZE(stmfx_pinctrl_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-idd",
+ 		.name = "stmfx-idd",
+ 		.resources = stmfx_idd_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_idd_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-ts",
+ 		.name = "stmfx-ts",
+ 		.resources = stmfx_ts_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_ts_resources),
+-- 
+2.39.5
+

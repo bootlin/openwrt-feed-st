@@ -1,0 +1,62 @@
+From 4d5fa559ae4a31f1ce8c2ff3ba845500e28827ca Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 13 Sep 2024 15:49:21 +0200
+Subject: [PATCH] media: stm32: dcmipp: consider alignment in link_validate of
+ pixelcap
+
+Depending on the format / frame size and dcmipp HW constraint, the mbus
+width and actual in-memory frame width might be different.  Such check
+are already done within pixelcap during configuration however this
+was not taken into consideration at link_validate time, leading to
+failure to start the pipe due to mismatch in width.
+Add this adjustment within link_validate prior to compare mbus & vidcap
+width.
+
+Change-Id: I91429f54936203b00ad63e941433c8837b05ff26
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404422
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c         | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index f51ae8a592ab..07af6e39e274 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -993,16 +993,25 @@ static int dcmipp_pixelcap_link_validate(struct media_link *link)
+ 		.pad = link->source->index,
+ 	};
+ 	int ret, i;
++	u32 width_aligned;
+ 
+ 	ret = v4l2_subdev_call(source_sd, pad, get_fmt, NULL, &source_fmt);
+ 	if (ret < 0)
+ 		return 0;
+ 
+-	if (source_fmt.format.width != vcap->format.width ||
++	/*
++	 * Depending on the format & pixelpacker constraints, vcap width is
++	 * different from mbus width.  Compute expected vcap width based on
++	 * mbus width
++	 */
++	width_aligned = round_up(source_fmt.format.width,
++				 1 << hdw_pixel_alignment(vcap->format.pixelformat));
++
++	if (width_aligned != vcap->format.width ||
+ 	    source_fmt.format.height != vcap->format.height) {
+ 		dev_err(vcap->dev, "Wrong width or height %ux%u (%ux%u expected)\n",
+ 			vcap->format.width, vcap->format.height,
+-			source_fmt.format.width, source_fmt.format.height);
++			width_aligned, source_fmt.format.height);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.39.5
+

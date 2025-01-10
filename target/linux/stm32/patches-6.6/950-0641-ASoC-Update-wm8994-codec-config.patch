@@ -1,0 +1,35 @@
+From b1f3318a0f09f56be9fee5ed24d95751d9dfddb4 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Wed, 26 Jul 2017 11:50:29 +0200
+Subject: [PATCH] ASoC: Update wm8994 codec config
+
+Allow selection of Wolson wm8994 codec from defconfig.
+
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
+Change-Id: Iaf5cddb0d0af22730a8c564c19e8645ed17ef545
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357318
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f1e1dbc509f6..905873ebff59 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -2208,7 +2208,7 @@ config SND_SOC_WM8993
+ 	depends on I2C
+ 
+ config SND_SOC_WM8994
+-	tristate
++	tristate "Wolfson Microelectronics WM8994 codec"
+ 
+ config SND_SOC_WM8995
+ 	tristate
+-- 
+2.39.5
+

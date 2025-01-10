@@ -1,0 +1,34 @@
+From a4c731c92aaec68e74fc07e6dd484725a3b58aec Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 22 Feb 2024 16:47:17 +0100
+Subject: [PATCH] pwm: stm32: add support for stm32mp25
+
+Add support for STM32MP25 SoC. Use newly introduced compatible to handle
+new features along with registers and bits diversity.
+The MFD part of the driver fills in ipidr, so it is used to check the
+hardware configuration register, when available to gather the number
+of PWM channels and complementary outputs.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I7c5e5d39689dfed82a2aec7b62ede3eda41a19ce
+---
+ drivers/pwm/pwm-stm32.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+index f3fb7e240455..362e71e9a71f 100644
+--- a/drivers/pwm/pwm-stm32.c
++++ b/drivers/pwm/pwm-stm32.c
+@@ -606,6 +606,9 @@ static int stm32_pwm_detect_channels(struct stm32_pwm *priv, struct stm32_timers
+ 		 */
+ 		npwm = FIELD_GET(TIM_HWCFGR1_NB_OF_CC, val);
+ 
++		regmap_read(priv->regmap, TIM_CCER, &ccer);
++		*num_enabled = hweight32(ccer & TIM_CCER_CCXE);
++
+ 		return npwm < MAX_PWM_OUTPUT ? npwm : MAX_PWM_OUTPUT;
+ 	}
+ 
+-- 
+2.39.5
+

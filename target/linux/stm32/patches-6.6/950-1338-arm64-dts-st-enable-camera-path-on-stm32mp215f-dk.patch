@@ -1,0 +1,53 @@
+From b7ca68cb5486e7dda404dd62a996b053e42dc155 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 14 Aug 2024 11:26:06 +0200
+Subject: [PATCH] arm64: dts: st: enable camera path on stm32mp215f-dk
+
+Enable the imx335/csi/dcmipp camera path on the stm32mp215f-dk
+board.
+
+Change-Id: Ibc50d3c434493076dab09efc3f974a364de4a656
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398444
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index fd76d8de1b61..4dbf9eb49b83 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -142,7 +142,7 @@ &cryp1 {
+ &csi {
+ 	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_vdda_1v8>;
+-	status = "disabled";
++	status = "okay";
+ 	ports {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -164,7 +164,7 @@ csi_source: endpoint {
+ };
+ 
+ &dcmipp {
+-	status = "disabled";
++	status = "okay";
+ 	port {
+ 		dcmipp_0: endpoint {
+ 			remote-endpoint = <&csi_source>;
+@@ -222,7 +222,7 @@ imx335: imx335@1a {
+ 		clocks = <&clk_ext_camera>;
+ 		reset-gpios = <&gpiod 5 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+ 		powerdown-gpios = <&gpiod 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		port {
+ 			imx335_ep: endpoint {
+-- 
+2.39.5
+

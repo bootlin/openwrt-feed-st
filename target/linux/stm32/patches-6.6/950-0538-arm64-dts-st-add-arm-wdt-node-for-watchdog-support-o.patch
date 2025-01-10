@@ -1,0 +1,35 @@
+From 48dfeb4a4b509d2953b79b9e3352626979789983 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Fri, 3 Feb 2023 08:49:38 +0100
+Subject: [PATCH] arm64: dts: st: add arm-wdt node for watchdog support on
+ stm32mp251
+
+Add the node to use the ARM SMC watchdog support. It will
+use a dedicated smc-id to configure and kick the watchdog.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: I08b49d5e2f9d666ceffa1f4d21b9eb36ac1028fd
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 2b9c08190809..21b537143661 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -28,6 +28,12 @@ arm-pmu {
+ 		interrupt-parent = <&intc>;
+ 	};
+ 
++	arm_wdt: watchdog {
++		compatible = "arm,smc-wdt";
++		arm,smc-id = <0xb200005a>;
++		status = "disabled";
++	};
++
+ 	clocks {
+ 		ck_flexgen_08: ck-flexgen-08 {
+ 			#clock-cells = <0>;
+-- 
+2.39.5
+

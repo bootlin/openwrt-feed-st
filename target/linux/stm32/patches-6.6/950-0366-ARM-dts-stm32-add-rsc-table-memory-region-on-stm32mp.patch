@@ -1,0 +1,140 @@
+From 5d265784309bc03116ee1c9cc73b954bad4cea80 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 15 Dec 2022 16:53:36 +0100
+Subject: [PATCH] ARM: dts: stm32: add rsc table memory region on
+ stm32mp157x-ed1 boards
+
+Add the mcu_rsc_table region to support the resource table and the trace
+buffer allocation in the MCU SRAM3 for signed firmware. by default the
+MCU SRAM3 is shared between the Cortex-A and the cortex-M.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I0bac87f365aafa51e10a2144dbfa033dc1a74fe3
+---
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts  | 8 +++++++-
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts  | 8 +++++++-
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts  | 8 +++++++-
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts  | 8 +++++++-
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 2 +-
+ 5 files changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index 3f0ce0f75705..747b9e7f4e53 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
++		mcu_rsc_table: mcu-rsc-table@10048000 {
++			compatible = "shared-dma-pool";
++			reg = <0x10048000 0x8000>;
++			no-map;
++		};
++
+ 		mcuram: mcuram@30000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x30000000 0x40000>;
+@@ -330,7 +336,7 @@ &ipcc {
+ 
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
++			<&vdev0vring1>, <&vdev0buffer>, <&mcu_rsc_table>;
+ 	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index d129b47f80f7..bf65ed58e0af 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
++		mcu_rsc_table: mcu-rsc-table@10048000 {
++			compatible = "shared-dma-pool";
++			reg = <0x10048000 0x8000>;
++			no-map;
++		};
++
+ 		mcuram: mcuram@30000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x30000000 0x40000>;
+@@ -334,7 +340,7 @@ &ipcc {
+ 
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
++			<&vdev0vring1>, <&vdev0buffer>, <&mcu_rsc_table>;
+ 	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 52f1499a2cc5..2a032189bd37 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
++		mcu_rsc_table: mcu-rsc-table@10048000 {
++			compatible = "shared-dma-pool";
++			reg = <0x10048000 0x8000>;
++			no-map;
++		};
++
+ 		mcuram: mcuram@30000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x30000000 0x40000>;
+@@ -330,7 +336,7 @@ &ipcc {
+ 
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
++			<&vdev0vring1>, <&vdev0buffer>, <&mcu_rsc_table>;
+ 	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index 4b1c7006cbdc..ea897a29f09a 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
++		mcu_rsc_table: mcu-rsc-table@10048000 {
++			compatible = "shared-dma-pool";
++			reg = <0x10048000 0x8000>;
++			no-map;
++		};
++
+ 		mcuram: mcuram@30000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x30000000 0x40000>;
+@@ -334,7 +340,7 @@ &ipcc {
+ 
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
++			<&vdev0vring1>, <&vdev0buffer>, <&mcu_rsc_table>;
+ 	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 2d83b679f3ba..6c098e94d123 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -50,7 +50,7 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
+-		mcu_rsc_table: mcu_rsc_table@10048000 {
++		mcu_rsc_table: mcu-rsc-table@10048000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x10048000 0x8000>;
+ 			no-map;
+-- 
+2.39.5
+

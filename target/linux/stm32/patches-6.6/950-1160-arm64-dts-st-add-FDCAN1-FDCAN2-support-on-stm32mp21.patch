@@ -1,0 +1,67 @@
+From ca68403d863a9587a9a34dc8985b84fc36b1518a Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 29 May 2024 12:38:17 +0200
+Subject: [PATCH] arm64: dts: st: add FDCAN1/FDCAN2 support on stm32mp21
+
+Update the device-tree to add support for FDCAN
+FDCAN modules are compliant with ISO 11898-1: 2015
+and CAN FD protocol specification version 1.0
+In addition, the first CAN module FDCAN1 supports time
+triggered CAN (TTCAN), specified in ISO 11898-4, including
+event synchronized time-triggered communication, global system
+time, and clock drift compensation. The FDCAN1 contains
+additional registers, specific to the time triggered feature.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I469cbdf69560f70babf62892ac53a60bd8d49d8b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383629
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp213.dtsi | 32 ++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+index 2c25134e8803..8544c1bc672c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+@@ -58,3 +58,35 @@ mtl_tx_setup_2: tx-queues-config {
+ 		};
+ 	};
+ };
++
++&rifsc {
++	m_can1: can@402d0000 {
++		compatible = "bosch,m_can";
++		reg = <0x402d0000 0x400>, <0x40310000 0x1400>;
++		reg-names = "m_can", "message_ram";
++		interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "int0", "int1";
++		clocks = <&rcc CK_BUS_FDCAN>, <&rcc CK_KER_FDCAN>;
++		clock-names = "hclk", "cclk";
++		bosch,mram-cfg = <0x0 0 0 32 0 0 2 2>;
++		access-controllers = <&rifsc 56>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++	};
++
++	m_can2: can@402e0000 {
++		compatible = "bosch,m_can";
++		reg = <0x402e0000 0x400>, <0x40310000 0x2800>;
++		reg-names = "m_can", "message_ram";
++		interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "int0", "int1";
++		clocks = <&rcc CK_BUS_FDCAN>, <&rcc CK_KER_FDCAN>;
++		clock-names = "hclk", "cclk";
++		bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
++		access-controllers = <&rifsc 56>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++	};
++};
+-- 
+2.39.5
+

@@ -1,0 +1,77 @@
+From 0b8437e06f17cdb33973ecb7f669842959159cbb Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 12 Mar 2024 08:49:53 +0100
+Subject: [PATCH] ARM: dts: stm32: Enable wifi and bluetooth on stm32mp157x-dk2
+
+This patch enable wifi (sdmmc2)
+and bluetooth (usart2) on stm32mp157c-dk2.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I906006485121dd35dd92a036b1e7f52cfdce04a7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365942
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 4 +---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+index 17db8ef2bf58..832a73307333 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+@@ -124,7 +124,7 @@ &sdmmc2 {
+ 	mmc-pwrseq = <&wifi_pwrseq>;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	status = "disabled";
++	status = "okay";
+ 
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+@@ -132,7 +132,6 @@ brcmf: bcrmf@1 {
+ 		interrupt-parent = <&gpiod>;
+ 		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
+ 		interrupt-names = "host-wake";
+-		status = "disabled";
+ 	};
+ };
+ 
+@@ -151,6 +150,5 @@ bluetooth {
+ 		max-speed = <3000000>;
+ 		vbat-supply = <&v3v3>;
+ 		vddio-supply = <&v3v3>;
+-		status = "disabled";
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index 89ff32a4d7c3..9eb7ffec3822 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -124,7 +124,7 @@ &sdmmc2 {
+ 	mmc-pwrseq = <&wifi_pwrseq>;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	status = "disabled";
++	status = "okay";
+ 
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+@@ -132,7 +132,6 @@ brcmf: bcrmf@1 {
+ 		interrupt-parent = <&gpiod>;
+ 		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
+ 		interrupt-names = "host-wake";
+-		status = "disabled";
+ 	};
+ };
+ 
+@@ -151,6 +150,5 @@ bluetooth {
+ 		max-speed = <3000000>;
+ 		vbat-supply = <&v3v3>;
+ 		vddio-supply = <&v3v3>;
+-		status = "disabled";
+ 	};
+ };
+-- 
+2.39.5
+

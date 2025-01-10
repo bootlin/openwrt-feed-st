@@ -1,0 +1,86 @@
+From 9211ee51b933c292a03581c23bdf8c5854299471 Mon Sep 17 00:00:00 2001
+From: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Date: Wed, 11 Sep 2024 10:10:10 +0200
+Subject: [PATCH] arm64: dts: st: enable buttons for stm32mp21
+
+Enable buttons for stm32mp21
+
+Change-Id: I9ce727ea49883aabdbfa916ecf4f0367b69c24f5
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397433
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi    |  3 ++-
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 26 +++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 95ffbd289d40..134417d9ff86 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -76,7 +76,7 @@ replicator_out_port1: endpoint {
+ 	};
+ 
+ 	firmware {
+-		optee {
++		optee: optee {
+ 			compatible = "linaro,optee-tz";
+ 			method = "smc";
+ 			interrupt-parent = <&intc>;
+@@ -137,6 +137,7 @@ intc: interrupt-controller@4ac00000 {
+ 		      <0x0 0x4ac20000 0x0 0x2000>,
+ 		      <0x0 0x4ac40000 0x0 0x2000>,
+ 		      <0x0 0x4ac60000 0x0 0x2000>;
++		#address-cells = <1>;
+ 	};
+ 
+ 	psci {
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index ed758c07833c..092451a88d7c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -8,6 +8,7 @@
+ 
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/leds/common.h>
++#include <dt-bindings/input/input.h>
+ #include "stm32mp215.dtsi"
+ #include "stm32mp21xf.dtsi"
+ #include "stm32mp21-pinctrl.dtsi"
+@@ -73,6 +74,31 @@ dmic1_endpoint: endpoint {
+ 		};
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		button-user-1 {
++			label = "User-1";
++			linux,code = <BTN_1>;
++			gpios = <&gpioc 4 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++
++		button-user-2 {
++			label = "User-2";
++			linux,code = <BTN_2>;
++			gpios = <&gpiof 7 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++
++		button-wake-up {
++			label = "wake-up";
++			linux,code = <KEY_WAKEUP>;
++			interrupts-extended = <&optee 0>;
++			status = "okay";
++		};
++	};
++
+ 	gpio-leds {
+ 		compatible = "gpio-leds";
+ 
+-- 
+2.39.5
+

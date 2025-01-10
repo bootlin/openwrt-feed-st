@@ -1,0 +1,91 @@
+From 6902919e050d375d7b60066120a04392cfe41e06 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 2 May 2024 10:54:12 +0200
+Subject: [PATCH] media: stm32: dcmipp: correct pm_runtime handling in statcap
+
+pm_runtime_put was missing in the s_ctrl handler of the statcap subdev
+hence rework the error handling of this function and add pm_runtime_put
+call to ensure a proper clock usage reference counting.
+
+Change-Id: I4f6c2f6cee3755037141b902b5d6ab09c778a2dd
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377695
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 43e8e6010f3d..610a85b022bc 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -403,7 +403,7 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	struct v4l2_ctrl_isp_stat_region *region;
+ 	struct v4l2_subdev_selection sel;
+ 	struct media_pad *pad;
+-	int ret;
++	int ret = 0;
+ 
+ 	dev_dbg(vcap->dev, ">> %s: ctrl->id = 0x%x\n", __func__, ctrl->id);
+ 
+@@ -415,8 +415,10 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		/* Get pointer to the source subdev (if case of not yet set */
+ 		if (!vcap->s_subdev) {
+ 			pad = media_pad_remote_pad_first(&entity->pads[0]);
+-			if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
+-				return -EIO;
++			if (!pad || !is_media_entity_v4l2_subdev(pad->entity)) {
++				ret = -EIO;
++				goto out;
++			}
+ 			vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 		}
+ 
+@@ -424,7 +426,8 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		if (region->nb_regions > DCMIPP_NB_STAT_REGION) {
+ 			dev_dbg(vcap->dev, "Unsupported number of stat region: %d vs max=%d\n",
+ 				region->nb_regions, DCMIPP_NB_STAT_REGION);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+ 		/* Get frame information */
+@@ -434,7 +437,7 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		ret = v4l2_subdev_call(vcap->s_subdev, pad, get_selection, NULL, &sel);
+ 		if (ret < 0) {
+ 			dev_err(vcap->dev, "Failed to get frame size\n");
+-			return ret;
++			goto out;
+ 		}
+ 
+ 		if (!region->nb_regions ||
+@@ -450,7 +453,8 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 			   (region->left[0] + region->width[0]) > sel.r.width ||
+ 			   (region->top[0] + region->height[0]) > sel.r.height) {
+ 			dev_err(vcap->dev, "Invalid or stat region not fitting into frame\n");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+ 		spin_lock_irq(&vcap->irqlock);
+@@ -485,7 +489,10 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		break;
+ 	}
+ 
+-	return 0;
++out:
++	pm_runtime_put(vcap->dev);
++
++	return ret;
+ };
+ 
+ static const struct v4l2_ctrl_ops dcmipp_statcap_ctrl_ops = {
+-- 
+2.39.5
+

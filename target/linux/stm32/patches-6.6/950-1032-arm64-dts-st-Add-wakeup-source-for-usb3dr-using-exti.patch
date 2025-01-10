@@ -1,0 +1,46 @@
+From 7de500e2106e2aaed39ea76a5b4f80e7a848ee5b Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Tue, 23 Jan 2024 17:56:39 +0530
+Subject: [PATCH] arm64: dts: st: Add wakeup source for usb3dr using exti on
+ stm32mp25
+
+Remote-wakeup capable device connected to USB3DR can act as a
+source to wakeup system from low-power state on mp25 platform
+Enable exti-intr connected to utmi_suspend_n and utmi_l1_suspend_n
+output of USB3DR as wakeup-source
+
+Change-Id: I2bdc2dbbe2b685137261c4159f2c60d7e976c04c
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370799
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 15c2835ff496..f8303a3e1438 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2296,6 +2296,8 @@ usb3dr: usb@48300000 {
+ 				ranges = <0x48300000 0x48300000 0x100000>;
+ 				access-controllers = <&rifsc 66>;
+ 				power-domains = <&CLUSTER_PD>;
++				wakeup-source;
++				interrupts-extended = <&exti1 44 IRQ_TYPE_EDGE_RISING>;
+ 				status = "disabled";
+ 
+ 				dwc3: usb@48300000 {
+@@ -2308,6 +2310,7 @@ dwc3: usb@48300000 {
+ 					resets = <&rcc USB3DR_R>;
+ 					phys = <&usb2_phy2>;
+ 					phy-names = "usb2-phy";
++					wakeup-source;
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,145 @@
+From 59eb9bb866ff2a41e68210a5ea2164c9843c1213 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 7 Feb 2024 09:09:42 +0100
+Subject: [PATCH] arm64: dts: overall rename & enabling of csi node name /
+ label in stm32mp25*
+
+Renaming of the csi label & node name from csi2host into csi
+
+Change-Id: I2324041294f981826093e284414761d45f51ef61
+Fixes: b097edc26c00 ("arm64: dts: st: add the csi2host interface in stm32mp251.dtsi")
+Fixes: 94610d7bdf9d ("arm64: dts: st: enable camera pipeline on stm32mp257f-dk board")
+Fixes: 7105dc1c70d9 ("arm64: dts: st: enable IMX335/CSI2HOST/DCMIPP camera pipe on stm32mp257f-ev1")
+Fixes: 1bc41f60a670 ("arm64: dts: st: enable camera pipeline on stm32mp257f-dk board")
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361978
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi     |  4 ++--
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts  | 10 +++++-----
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 14 +++++++-------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 460bca3fc7c6..2a3c8f7bc902 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2087,8 +2087,8 @@ ltdc: display-controller@48010000 {
+ 				status = "disabled";
+ 			};
+ 
+-			csi2host: csi2host@48020000 {
+-				compatible = "st,stm32-csi2host";
++			csi: csi@48020000 {
++				compatible = "st,stm32mp25-csi";
+ 				reg = <0x48020000 0x2000>;
+ 				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
+ 				resets = <&rcc CSI_R>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index a40a938b532a..8ae1beb0e2b1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -179,14 +179,14 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
+-&csi2host {
++&csi {
+ 	status = "disabled";
+ 	ports {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		port@0 {
+ 			reg = <0>;
+-			csi2host_sink: endpoint {
++			csi_sink: endpoint {
+ 				remote-endpoint = <&imx335_ep>;
+ 				data-lanes = <0 1>;
+ 				bus-type = <4>;
+@@ -194,7 +194,7 @@ csi2host_sink: endpoint {
+ 		};
+ 		port@1 {
+ 			reg = <1>;
+-			csi2host_source: endpoint {
++			csi_source: endpoint {
+ 				remote-endpoint = <&dcmipp_0>;
+ 			};
+ 		};
+@@ -205,7 +205,7 @@ &dcmipp {
+ 	status = "disabled";
+ 	port {
+ 		dcmipp_0: endpoint {
+-			remote-endpoint = <&csi2host_source>;
++			remote-endpoint = <&csi_source>;
+ 			bus-type = <4>;
+ 		};
+ 	};
+@@ -299,7 +299,7 @@ imx335: imx335@1a {
+ 
+ 		port {
+ 			imx335_ep: endpoint {
+-				remote-endpoint = <&csi2host_sink>;
++				remote-endpoint = <&csi_sink>;
+ 				clock-lanes = <0>;
+ 				data-lanes = <1 2>;
+ 				link-frequencies = /bits/ 64 <594000000>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 25ca3c396948..780f11588588 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -155,14 +155,14 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
+-&csi2host {
+-	status = "disabled";
++&csi {
++	status = "okay";
+ 	ports {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		port@0 {
+ 			reg = <0>;
+-			csi2host_sink: endpoint {
++			csi_sink: endpoint {
+ 				remote-endpoint = <&imx335_ep>;
+ 				data-lanes = <0 1>;
+ 				bus-type = <4>;
+@@ -170,7 +170,7 @@ csi2host_sink: endpoint {
+ 		};
+ 		port@1 {
+ 			reg = <1>;
+-			csi2host_source: endpoint {
++			csi_source: endpoint {
+ 				remote-endpoint = <&dcmipp_0>;
+ 			};
+ 		};
+@@ -181,7 +181,7 @@ &dcmipp {
+ 	status = "disabled";
+ 	port {
+ 		dcmipp_0: endpoint {
+-			remote-endpoint = <&csi2host_source>;
++			remote-endpoint = <&csi_source>;
+ 			bus-type = <4>;
+ 		};
+ 	};
+@@ -297,11 +297,11 @@ imx335: imx335@1a {
+ 		clocks = <&clk_ext_camera>;
+ 		reset-gpios = <&gpioi 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+ 		powerdown-gpios = <&gpioi 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		port {
+ 			imx335_ep: endpoint {
+-				remote-endpoint = <&csi2host_sink>;
++				remote-endpoint = <&csi_sink>;
+ 				clock-lanes = <0>;
+ 				data-lanes = <1 2>;
+ 				link-frequencies = /bits/ 64 <594000000>;
+-- 
+2.39.5
+

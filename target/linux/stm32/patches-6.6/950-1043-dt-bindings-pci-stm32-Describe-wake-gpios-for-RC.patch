@@ -1,0 +1,62 @@
+From 0b2eff0a72f2c7fd4628bd1c47f692b4cffce9ed Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 4 Jan 2024 17:30:56 +0100
+Subject: [PATCH] dt-bindings: pci: stm32: Describe wake-gpios for RC
+
+Add binding documentation for optional wake-gpios on pcie nodes
+
+Change-Id: I2f69e5a4016f82468aa957508a96717b3986fd26
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373822
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../bindings/pci/st,stm32-pcie-host.yaml         | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+index 106bbd89c1eb..13e82fb87e02 100644
+--- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
++++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+@@ -89,6 +89,19 @@ properties:
+   access-controllers:
+     maxItems: 1
+ 
++  wake-gpios:
++    description: GPIO controlled connection to WAKE# input signal
++    maxItems: 1
++
++  wakeup-source: true
++
++if:
++  required:
++     - wakeup-source
++then:
++  required:
++     - wake-gpios
++
+   st,limit_mrrs:
+     type: boolean
+     description: If present limit downstream MRRS to 256B
+@@ -109,6 +122,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/gpio/gpio.h>
+     #include <dt-bindings/phy/phy.h>
+     #include <dt-bindings/clock/st,stm32mp25-rcc.h>
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -143,5 +157,7 @@ examples:
+              phy-names = "pcie-phy";
+              resets = <&rcc PCIE_R>;
+              reset-names = "pcie";
++             wakeup-source;
++             wake-gpios = <&gpioh 5 GPIO_ACTIVE_LOW | GPIO_PULL_UP>;
+              msi-parent = <&v2m0>;
+     };
+-- 
+2.39.5
+

@@ -1,0 +1,46 @@
+From 5e2376d89c7c50ad031bc394bfba868d21f08b11 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 16 Feb 2024 17:07:56 +0100
+Subject: [PATCH] arm64: dts: st: add sdmmc1 node in stm32mp215 SoC file
+
+The SDMMC1 peripheral is used for SD-cards (default on ST boards), or
+eMMC cards. For the moment it uses the fixed clock ck_flexgen_51, until
+clock driver is available.
+
+Change-Id: I247835b48a76962d575dd82978ca38d764fd0077
+Signed-off-by: Nicolas Le Bayon <nicolas.le.bayon@st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361912
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Francois CHOLEAU <francois.choleau@st.com>
+Domain-Review: Francois CHOLEAU <francois.choleau@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index c0ec2428a409..ae36892c231b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -127,6 +127,18 @@ uart4: serial@40100000 {
+ 				status = "disabled";
+ 			};
+ 
++			sdmmc1: mmc@48220000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48220000 0x400>, <0x44230400 0x8>;
++				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&ck_flexgen_51>;
++				clock-names = "apb_pclk";
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		syscfg: syscon@44230000 {
+-- 
+2.39.5
+

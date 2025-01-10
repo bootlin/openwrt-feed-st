@@ -1,0 +1,36 @@
+From accfcb1ae2181c3385e345306ab3060dc70065d4 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Wed, 2 Oct 2024 11:01:14 +0200
+Subject: [PATCH] arm64: defconfig: addition of MAILBOX_CDEV in fragment-02
+
+Addition of the MAILBOX CDEV driver within
+fragment-02-defconfig-addons.config.
+
+Change-Id: Ic4c432236aef7f2a3aa53ac1703854a5189c8ad1
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408602
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index cb29b8e38d06..ba2f06db3cf4 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -44,6 +44,7 @@ CONFIG_IIO_RESCALE=m
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_JFFS2_FS=y
++CONFIG_MAILBOX_CDEV=y
+ CONFIG_MEDIA_TEST_SUPPORT=y
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+-- 
+2.39.5
+

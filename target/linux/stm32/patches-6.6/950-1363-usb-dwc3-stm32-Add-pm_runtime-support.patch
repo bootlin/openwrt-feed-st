@@ -1,0 +1,42 @@
+From f2c398cb189f726806a167cd04ea42837811db7e Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Mon, 9 Sep 2024 14:41:47 +0530
+Subject: [PATCH] usb: dwc3-stm32: Add pm_runtime support
+
+Add pm_runtime enable and pm_runtime_resume_and_get in probe function.
+This will prevent the platform to automatically enter low power mode
+at runtime, when PSCI OSI (S2Idle) feature will be enabled.
+
+Change-Id: I561fae26c2d1ad2052c6987f15b6648e4080fd82
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403010
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/usb/dwc3/dwc3-stm32.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-stm32.c b/drivers/usb/dwc3/dwc3-stm32.c
+index e56f46d6459b..85fd649bd48f 100644
+--- a/drivers/usb/dwc3/dwc3-stm32.c
++++ b/drivers/usb/dwc3/dwc3-stm32.c
+@@ -195,6 +195,14 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "failed to add dwc3 core\n");
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to enable pm runtime\n");
++
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "pm runtime resume failed\n");
++
+ 	platform_set_drvdata(pdev, dwc3_data);
+ 
+ 	if (wakeup_source)
+-- 
+2.39.5
+

@@ -1,0 +1,38 @@
+From da74018c7fe59d2efb426554cd637cccfa1c2178 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Tue, 6 Apr 2021 17:36:29 +0200
+Subject: [PATCH] Fixup! arm64: dts: st: Add remoteproc node on stm32mp251
+
+The cortex-M33 is able to access to the first 2GB, reflect this capability
+in the size of the dma-ranges.
+
+Change-Id: I9c4379aa508f4663edb16b518a672bedf8832576
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347949
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/356771
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index cfe601b126bf..5131a4457f11 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2860,7 +2860,8 @@ mlahb: ahb@1 {
+ 		compatible = "st,mlahb", "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		ranges = <0x0 0x0 0x0 0>;
++		ranges = <0x0 0x0 0x0 0xfffffffc>;
++		dma-ranges = <0x0 0x0 0x0 0xfffffffc>;
+ 
+ 		m33_rproc: m33@0 {
+ 			compatible = "st,stm32mp2-m33";
+-- 
+2.39.5
+

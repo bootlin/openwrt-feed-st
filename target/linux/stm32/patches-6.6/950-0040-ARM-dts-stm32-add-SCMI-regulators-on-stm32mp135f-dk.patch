@@ -1,0 +1,39 @@
+From 8be2ebb5fa4b33cd962cae3abe9242d287c518a7 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 17 Jan 2024 16:06:13 +0100
+Subject: [PATCH] ARM: dts: stm32: add SCMI regulators on stm32mp135f-dk
+
+Add scmi regulators on stm32mp135f-dk.
+
+Change-Id: I5e5bac0f17539fb7f12b003e433c63e0d6dbe33c
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index cc83798f1266..5eda7f4cec74 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -165,6 +165,18 @@ &rtc {
+ };
+ 
+ &scmi_regu {
++	scmi_vddcpu: regulator@6 {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK1>;
++		regulator-name = "vddcpu";
++	};
++	scmi_vdd: regulator@8 {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK3>;
++		regulator-name = "vdd";
++	};
++	scmi_vddcore: regulator@9 {
++		reg = <VOLTD_SCMI_STPMIC1_BUCK4>;
++		regulator-name = "vddcore";
++	};
+ 	scmi_vdd_adc: regulator@10 {
+ 		reg = <VOLTD_SCMI_STPMIC1_LDO1>;
+ 		regulator-name = "vdd_adc";
+-- 
+2.39.5
+

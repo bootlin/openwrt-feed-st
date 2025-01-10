@@ -1,0 +1,70 @@
+From 50f1ac546051310db747b79e99c7e62b1c918dfb Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Thu, 12 Oct 2023 11:57:01 +0200
+Subject: [PATCH] clk: stm32mp25-syscfg: implement resume of stm32mp25-syscfg
+ clocks
+
+Restore MUXs after a suspend.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I459cf84527d092520117b71767180e756314bfac
+---
+ drivers/clk/stm32/clk-stm32mp25-syscfg.c | 36 +++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25-syscfg.c b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
+index ad8b8c961fed..caa7ea44b732 100644
+--- a/drivers/clk/stm32/clk-stm32mp25-syscfg.c
++++ b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
+@@ -16,13 +16,47 @@ static const char * const clk_pix_ltdc_src[] = {
+ 	"txbyteclk", "clk_pix_lvds", "ck_ker_ltdc"
+ };
+ 
++static u8 clk_regmap_mux_get_parent(struct clk_hw *hw)
++{
++	return clk_regmap_mux_ops.get_parent(hw);
++}
++
++static int clk_regmap_mux_set_parent(struct clk_hw *hw, u8 index)
++{
++	return clk_regmap_mux_ops.set_parent(hw, index);
++}
++
++static int clk_regmap_mux_determine_rate(struct clk_hw *hw,
++					 struct clk_rate_request *req)
++{
++	return clk_regmap_mux_ops.determine_rate(hw, req);
++}
++
++#ifdef CONFIG_PM_SLEEP
++static void clk_regmap_mux_pm_restore(struct clk_hw *hw)
++{
++	int index = clk_hw_get_parent_index(hw);
++
++	clk_regmap_mux_set_parent(hw, index);
++}
++#endif
++
++static const struct clk_ops clk_syscfg_mux_ops = {
++	.get_parent = clk_regmap_mux_get_parent,
++	.set_parent = clk_regmap_mux_set_parent,
++	.determine_rate = clk_regmap_mux_determine_rate,
++#ifdef CONFIG_PM_SLEEP
++	.restore_context = clk_regmap_mux_pm_restore,
++#endif
++};
++
+ static struct clk_regmap clk_pix_ltdc = {
+ 	.data = &(struct clk_regmap_mux_data){
+ 		.offset = SYSCFG_DISPLAYCLKCR,
+ 		.mask = 0x3,
+ 		.shift = 0,
+ 	},
+-	.hw.init = CLK_HW_INIT_PARENTS("clk_pix_ltdc", clk_pix_ltdc_src, &clk_regmap_mux_ops,
++	.hw.init = CLK_HW_INIT_PARENTS("clk_pix_ltdc", clk_pix_ltdc_src, &clk_syscfg_mux_ops,
+ 				       CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT),
+ };
+ 
+-- 
+2.39.5
+

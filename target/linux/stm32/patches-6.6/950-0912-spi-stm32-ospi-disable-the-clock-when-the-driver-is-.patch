@@ -1,0 +1,94 @@
+From 24d96f1db292aec161f4f0bc92cae5a5c925e092 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 19 Mar 2024 18:42:43 +0100
+Subject: [PATCH] spi: stm32-ospi: disable the clock when the driver is unbind
+
+Disable the clock when the driver is unbind and manage error cases
+at probe time.
+
+Change-Id: I02d4404a7346ae0dd929d168a9e056ca8c4b9344
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369134
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/spi/spi-stm32-ospi.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
+index 93154e826bbe..7c6a43d227e7 100644
+--- a/drivers/spi/spi-stm32-ospi.c
++++ b/drivers/spi/spi-stm32-ospi.c
+@@ -1073,7 +1073,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+ 
+ 	ret = pm_runtime_resume_and_get(omi->dev);
+ 	if (ret < 0)
+-		return ret;
++		goto err_pm_enable;
+ 
+ 	if (omi->rstc) {
+ 		reset_control_assert(omi->rstc);
+@@ -1090,13 +1090,14 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+ 			dev_err(ospi->dev, "could not retrieve reg property: %d\n",
+ 				ret);
+ 			of_node_put(child);
+-			return ret;
++			goto err_pm_resume;
+ 		}
+ 
+ 		if (cs >= STM32_OMI_MAX_NORCHIP) {
+ 			dev_err(ospi->dev, "invalid reg value: %d\n", cs);
+ 			of_node_put(child);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_pm_resume;
+ 		}
+ 
+ 		if (of_device_is_compatible(child, "jedec,spi-nor")) {
+@@ -1113,20 +1114,24 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = spi_register_master(ctrl);
+-	if (ret)
+-		goto err_spi_register;
++	if (ret) {
++		/* Disable ospi */
++		writel_relaxed(0, omi->regs_base + OSPI_CR);
++		goto err_pm_resume;
++	}
+ 
+ 	pm_runtime_mark_last_busy(omi->dev);
+ 	pm_runtime_put_autosuspend(omi->dev);
+ 
+ 	return 0;
+ 
+-err_spi_register:
+-	/* Disable ospi */
+-	writel_relaxed(0, omi->regs_base + OSPI_CR);
+-	mutex_destroy(&ospi->lock);
++err_pm_resume:
+ 	pm_runtime_put_sync_suspend(omi->dev);
+ 
++err_pm_enable:
++	pm_runtime_force_suspend(omi->dev);
++	mutex_destroy(&ospi->lock);
++
+ 	return ret;
+ }
+ 
+@@ -1146,7 +1151,7 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+ 	stm32_omi_dlyb_stop(omi);
+ 	mutex_destroy(&ospi->lock);
+ 	pm_runtime_put_sync_suspend(omi->dev);
+-	pm_runtime_disable(omi->dev);
++	pm_runtime_force_suspend(omi->dev);
+ 
+ 	return 0;
+ }
+-- 
+2.39.5
+

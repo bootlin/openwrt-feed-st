@@ -1,0 +1,35 @@
+From 4e12860e26609475979817904be8ed4aff04950d Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 12 Jan 2024 14:47:59 +0100
+Subject: [PATCH] arm64: dts: st: add power supplies to csi on stm32mp257f-dk
+ board
+
+CSI need two power supplies: v1v8 & vddcore
+
+Change-Id: Ia166bae741e51788e66420f5ca15349a17fc9c3e
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364815
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 0ce3a7e9f573..6b952b419199 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -207,6 +207,8 @@ &cryp1 {
+ };
+ 
+ &csi {
++	vdd-supply =  <&scmi_vddcore>;
++	vdda18-supply = <&scmi_v1v8>;
+ 	status = "disabled";
+ 	ports {
+ 		#address-cells = <1>;
+-- 
+2.39.5
+

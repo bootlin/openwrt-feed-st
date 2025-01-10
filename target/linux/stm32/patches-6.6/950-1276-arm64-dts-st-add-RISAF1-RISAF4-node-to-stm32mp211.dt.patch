@@ -1,0 +1,44 @@
+From 17fb939be47b8a4aed5bc0365b299800ed5dbdb9 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 26 Jun 2024 10:50:52 +0200
+Subject: [PATCH] arm64: dts: st: add RISAF1 & RISAF4 node to stm32mp211.dtsi
+
+Add RISAF 1 & 4 node to this device tree SoC file.
+
+Change-Id: Ice88c8efdd17bdb61e454035c55817dc708f4d26
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390727
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 353ac85c38a1..4992fbca8ba5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1763,6 +1763,20 @@ usbotg_hs: usb@48300000 {
+ 			};
+ 		};
+ 
++		risaf1: risaf@420a0000 {
++			compatible = "st,stm32mp25-risaf";
++			reg = <0x420a0000 0x0 0x1000>;
++			clocks = <&rcc CK_BUS_BKPSRAM>;
++			st,mem-map = <0x0 0x42000000 0x0 0x2000>;
++		};
++
++		risaf4: risaf@420d0000 {
++			compatible = "st,stm32mp25-risaf-enc";
++			reg = <0x420d0000 0x0 0x1000>;
++			clocks = <&rcc CK_BUS_RISAF4>;
++			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
++		};
++
+ 		hdp: pinctrl@44090000 {
+ 			compatible = "st,stm32mp-hdp";
+ 			reg = <0x44090000 0x0 0x400>;
+-- 
+2.39.5
+

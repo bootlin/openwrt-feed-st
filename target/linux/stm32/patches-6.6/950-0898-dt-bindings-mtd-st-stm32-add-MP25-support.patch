@@ -1,0 +1,74 @@
+From b32e48e8e8549b27d7585bdfa4d3240ad9354d95 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Mon, 19 Feb 2024 15:05:03 +0100
+Subject: [PATCH] dt-bindings: mtd: st,stm32: add MP25 support
+
+Add a compatible string to support MP25 SoC.
+
+FMC2 IP supports up to 4 chip select. On MP1 SoC, only 2 of them are
+available when on MP25 SoC, the 4 chip select are available.
+
+Change-Id: Iecc3b4c5b2306c0ae1ca32814c5dca94df3afc21
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20240219140505.85794-2-christophe.kerello@foss.st.com
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366510
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 25 ++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+index e72cb5bacaf0..b8ef9ba88e92 100644
+--- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+@@ -14,10 +14,11 @@ properties:
+     enum:
+       - st,stm32mp15-fmc2
+       - st,stm32mp1-fmc2-nfc
++      - st,stm32mp25-fmc2-nfc
+ 
+   reg:
+     minItems: 6
+-    maxItems: 7
++    maxItems: 12
+ 
+   interrupts:
+     maxItems: 1
+@@ -92,6 +93,28 @@ allOf:
+             - description: Chip select 1 command
+             - description: Chip select 1 address space
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: st,stm32mp25-fmc2-nfc
++    then:
++      properties:
++        reg:
++          items:
++            - description: Chip select 0 data
++            - description: Chip select 0 command
++            - description: Chip select 0 address space
++            - description: Chip select 1 data
++            - description: Chip select 1 command
++            - description: Chip select 1 address space
++            - description: Chip select 2 data
++            - description: Chip select 2 command
++            - description: Chip select 2 address space
++            - description: Chip select 3 data
++            - description: Chip select 3 command
++            - description: Chip select 3 address space
++
+ required:
+   - compatible
+   - reg
+-- 
+2.39.5
+

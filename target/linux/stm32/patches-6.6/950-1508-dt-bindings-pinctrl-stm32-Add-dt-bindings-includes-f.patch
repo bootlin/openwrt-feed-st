@@ -1,0 +1,152 @@
+From 07bfbbc0128c7674381177c8f3696cffdc845980 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Fri, 27 Sep 2024 12:24:02 +0200
+Subject: [PATCH] dt-bindings: pinctrl: stm32: Add dt-bindings includes for
+ stm32mp21 platform
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Introduce helpers to choose the signal to monitor through the HDP pin.
+
+Change-Id: Ie5fbc2dcd8d635c63e031dc56c2459ba656352d9
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407346
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ include/dt-bindings/pinctrl/stm32mp21-hdp.h | 121 ++++++++++++++++++++
+ 1 file changed, 121 insertions(+)
+ create mode 100644 include/dt-bindings/pinctrl/stm32mp21-hdp.h
+
+diff --git a/include/dt-bindings/pinctrl/stm32mp21-hdp.h b/include/dt-bindings/pinctrl/stm32mp21-hdp.h
+new file mode 100644
+index 000000000000..48fdb7f27e90
+--- /dev/null
++++ b/include/dt-bindings/pinctrl/stm32mp21-hdp.h
+@@ -0,0 +1,121 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * Copyright (C) STMicroelectronics 2024 - All Rights Reserved
++ * Author: Clément Le Goffic <clement.legoffic@foss.st.com> for STMicroelectronics.
++ */
++
++#ifndef _DT_BINDINGS_STM32MP21_HDP_H
++#define _DT_BINDINGS_STM32MP21_HDP_H
++
++/* define a macro for each function a HDP pin can transmit */
++#define HDP0_PWR_PWRWAKE_SYS			     "0"
++#define HDP0_CPU2_SLEEP_DEEP			     "1"
++#define HDP0_BSEC_OUT_TST_SDR_UNLOCK_OR_DISABLE_SCAN "2"
++#define HDP0_BSEC_OUT_NIDENM			     "3"
++#define HDP0_BSEC_OUT_NIDENA			     "4"
++#define HDP0_CPU2_STATE_0			     "5"
++#define HDP0_RCC_PWRDS_SYS			     "6"
++#define HDP0_DDRSS_CSYSREQ_DDRC			     "8"
++#define HDP0_DDRSS_DFI_PHYUPD_REQ		     "9"
++#define HDP0_PLL1_LOCK				     "10"
++#define HDP0_D2_GBL_PER_CLK_BUS_REQ		     "11"
++#define HDP0_USB0				     "12"
++#define HDP0_USB8				     "13"
++#define HDP0_SDMMC1_DLL_LOCK			     "14"
++#define HDP0_GPOVAL_0				     "15"
++
++#define HDP1_PWR_PWRWAKE_CPU2			     "0"
++#define HDP1_CPU2_HALTED			     "1"
++#define HDP1_CPU2_STATE_1			     "2"
++#define HDP1_BSEC_OUT_DBGENM			     "3"
++#define HDP1_BSEC_OUT_DBGENA			     "4"
++#define HDP1_EXTI1_SYS_WAKEUP			     "5"
++#define HDP1_RCC_PWRDS_CPU2			     "6"
++#define HDP1_DDRSS_CSYSACK_DDRC			     "8"
++#define HDP1_DDRSS_DFI_PHYMSTR_REQ		     "9"
++#define HDP1_PLL2_LOCK				     "10"
++#define HDP1_D2_GBL_PER_DMA_REQ			     "11"
++#define HDP1_USB1				     "12"
++#define HDP1_USB9				     "13"
++#define HDP1_SDMMC2_DLL_LOCK			     "14"
++#define HDP1_GPOVAL_1				     "15"
++
++#define HDP2_PWR_PWRWAKE_CPU1			     "0"
++#define HDP2_CPU2_RXEV				     "1"
++#define HDP2_BSEC_OUT_SHDBGEN			     "4"
++#define HDP2_EXTI1_CPU2_WAKEUP			     "5"
++#define HDP2_RCC_PWRDS_CPU1			     "6"
++#define HDP2_DDRSS_CACTIVE_DDRC			     "8"
++#define HDP2_DDRSS_DFI_LP_REQ			     "9"
++#define HDP2_HPDMA1_CLK_BUS_REQ			     "11"
++#define HDP2_USB2				     "12"
++#define HDP2_USB10				     "13"
++#define HDP2_SDMMC3_DLL_LOCK			     "14"
++#define HDP2_GPOVAL_2				     "15"
++
++#define HDP3_PWR_SEL_VTH_VDDCPU			     "0"
++#define HDP3_CPU2_TXEV				     "1"
++#define HDP3_CPU1_NPMUIRQ0			     "2"
++#define HDP3_CPU1_NFIQOUT0			     "3"
++#define HDP3_BSEC_OUT_DDBGEN			     "4"
++#define HDP3_EXTI1_CPU1_WAKEUP			     "5"
++#define HDP3_DDRSS_MCDCG_EN			     "8"
++#define HDP3_DDRSS_DFI_FREQ_0			     "9"
++#define HDP3_PLL4_LOCK				     "10"
++#define HDP3_HPDMA2_CLK_BUS_REQ			     "11"
++#define HDP3_USB3				     "12"
++#define HDP3_USB11				     "13"
++#define HDP3_D1_STATE_0				     "14"
++#define HDP3_GPOVAL_3				     "15"
++
++#define HDP4_PWR_SEL_VTH_VDDCORE		     "0"
++#define HDP4_CPU2_SLEEPING			     "1"
++#define HDP4_CPU1_EVENTO			     "2"
++#define HDP4_BSEC_OUT_SPNIDENA			     "4"
++#define HDP4_EXTI2_SYS_WAKEUP			     "5"
++#define HDP4_DDRSS_DPHYCG_EN			     "8"
++#define HDP4_DDRSS_OBSP0			     "9"
++#define HDP4_PLL5_LOCK				     "10"
++#define HDP4_HPDMA3_CLK_BUS_REQ			     "11"
++#define HDP4_USB4				     "12"
++#define HDP4_USB12				     "13"
++#define HDP4_D1_STATE_1				     "14"
++#define HDP4_GPOVAL_4				     "15"
++
++#define HDP5_CPU1_STANDBY_WFIL2			     "0"
++#define HDP5_CPU1_NIRQOUT0			     "3"
++#define HDP5_BSEC_OUT_SPIDENA			     "4"
++#define HDP5_DDRCTRL_DFI_INIT_START		     "8"
++#define HDP5_DDRSS_OBSP1			     "9"
++#define HDP5_PLL6_LOCK				     "10"
++#define HDP5_USB5				     "12"
++#define HDP5_USB13				     "13"
++#define HDP5_D1_STATE_2				     "14"
++#define HDP5_GPOVAL_5				     "15"
++
++#define HDP6_CPU1_NAXIERRIRQ			     "3"
++#define HDP6_BSEC_OUT_SPNIDENM			     "4"
++#define HDP6_EXTI2_CPU2_WAKEUP			     "5"
++#define HDP6_DDRSS_DFI_INIT_COMPLETE		     "8"
++#define HDP6_DDRSS_OBSP2			     "9"
++#define HDP6_D2_STATE_0				     "10"
++#define HDP6_PLL7_LOCK				     "11"
++#define HDP6_USB6				     "12"
++#define HDP6_OCTOSPI1_DLL_LOCK			     "13"
++#define HDP6_CPU1_STATE_0			     "14"
++#define HDP6_GPOVAL_6				     "15"
++
++#define HDP7_CPU1_STANDBY_WFI0			     "0"
++#define HDP7_CPU1_STANDBY_WFE0			     "1"
++#define HDP7_CPU1_HALTED0			     "2"
++#define HDP7_BSEC_OUT_SPIDENM			     "4"
++#define HDP7_EXTI2_CPU1_WAKEUP			     "5"
++#define HDP7_DDRSS_DFI_CTRLUPD_REQ		     "8"
++#define HDP7_DDRSS_OBSP3			     "9"
++#define HDP7_D2_STATE_1				     "10"
++#define HDP7_PLL8_LOCK				     "11"
++#define HDP7_USB7				     "12"
++#define HDP7_CPU1_STATE_1			     "14"
++#define HDP7_GPOVAL_7				     "15"
++
++#endif /* _DT_BINDINGS_STM32MP21_HDP_H */
+-- 
+2.39.5
+

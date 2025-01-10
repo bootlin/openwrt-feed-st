@@ -1,0 +1,58 @@
+From 6e2475d22db81142fe1a50331c827cffb4c308ca Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 15 Apr 2024 15:49:17 +0200
+Subject: [PATCH] dt-bindings: interrupt-controller: stm32-exti: Add irq
+ mapping to parent
+
+The mapping of EXTI events to its parent interrupt controller is both SoC
+and instance dependent.
+
+The current implementation requires adding a new mapping table to the
+driver's code and a new compatible for each new EXTI instance.
+
+To avoid that use the interrupts-extended property to list, for each EXTI
+event, the associated parent interrupt.
+
+Co-developed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Icf53aeb923ef8b6bd749ea51c701ca0eaa327b88
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383179
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ .../interrupt-controller/st,stm32-exti.yaml     | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+index 00c10a8258f1..9967e57b449b 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+@@ -89,8 +89,23 @@ examples:
+         reg = <0x5000d000 0x400>;
+     };
+ 
++  - |
+     //Example 2
+-    exti2: interrupt-controller@40013c00 {
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    exti2: interrupt-controller@5000d000 {
++        compatible = "st,stm32mp1-exti", "syscon";
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        reg = <0x5000d000 0x400>;
++        interrupts-extended =
++            <&intc GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
++            <0>,
++            <&intc GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++    };
++
++  - |
++    //Example 3
++    exti3: interrupt-controller@40013c00 {
+         compatible = "st,stm32-exti";
+         interrupt-controller;
+         #interrupt-cells = <2>;
+-- 
+2.39.5
+

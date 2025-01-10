@@ -1,0 +1,71 @@
+From 27e1b0a9f9efc5504b67b15b2f2a750231ab744f Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 4 Feb 2022 12:53:45 +0100
+Subject: [PATCH] ARM: dts: stm32: add gc2145 entry within the stm32mp135f-dk
+
+This adds the gc2145 node within the stm32mp135f-dk and link
+the GC2145 to the ST_MIPID02 instead of the OV5640.
+Remove the remote-endpoint property within the ov5640 node in
+order to avoid a dtc warning due to non directional graph node
+connection.
+The property will be added at runtime by u-boot whenever the
+camera is detected.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I455619d2b3e2a35a449472cb5078cf3513cc013e
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index bee31f257c43..4e14ee918dc8 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -265,7 +265,7 @@ port@0 {
+ 				mipid02_0: endpoint {
+ 					data-lanes = <1 2>;
+ 					lane-polarities = <0 0 0>;
+-					remote-endpoint = <&ov5640_0>;
++					remote-endpoint = <&gc2145_ep>;
+ 				};
+ 			};
+ 			port@2 {
+@@ -282,6 +282,26 @@ mipid02_2: endpoint {
+ 		};
+ 	};
+ 
++	gc2145: gc2145@3c {
++		compatible = "galaxycore,gc2145";
++		reg = <0x3c>;
++		clocks = <&clk_ext_camera>;
++		IOVDD-supply = <&scmi_v3v3_sw>;
++		AVDD-supply = <&scmi_v3v3_sw>;
++		DVDD-supply = <&scmi_v3v3_sw>;
++		powerdown-gpios = <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
++		reset-gpios = <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
++		status = "disabled";
++
++		port {
++			gc2145_ep: endpoint {
++				remote-endpoint = <&mipid02_0>;
++				clock-lanes = <0>;
++				data-lanes = <1 2>;
++			};
++		};
++	};
++
+ 	ov5640: camera@3c {
+ 		compatible = "ovti,ov5640";
+ 		reg = <0x3c>;
+@@ -294,7 +314,7 @@ ov5640: camera@3c {
+ 
+ 		port {
+ 			ov5640_0: endpoint {
+-				remote-endpoint = <&mipid02_0>;
++				/*remote-endpoint = <&mipid02_0>;*/
+ 				clock-lanes = <0>;
+ 				data-lanes = <1 2>;
+ 			};
+-- 
+2.39.5
+

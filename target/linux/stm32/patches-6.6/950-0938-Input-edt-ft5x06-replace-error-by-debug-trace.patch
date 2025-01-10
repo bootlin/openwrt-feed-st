@@ -1,0 +1,45 @@
+From 9ba2c35e9fad6c5d6853e11dde7b3185f6ff66a6 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 6 Dec 2018 09:28:09 +0100
+Subject: [PATCH] Input: edt-ft5x06 - replace error by debug trace
+
+This driver support ft6236 & ft6336 touchscreen. Disco panel embedded one
+of this touchscreen. Due to the DT, the driver will be called twice. One of
+touchscreen will be probe succefully & other one failed. For this use-case,
+it is not really an error.
+
+NOT_UPSTREAMABLE
+
+Change-Id: I043bf43ef1dd317231396dc0951f3d928a3bbab1
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/113565
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/139812
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228189
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372055
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/input/touchscreen/edt-ft5x06.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+index 71246d2449b1..53af040348e9 100644
+--- a/drivers/input/touchscreen/edt-ft5x06.c
++++ b/drivers/input/touchscreen/edt-ft5x06.c
+@@ -1287,7 +1287,7 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client)
+ 
+ 	error = edt_ft5x06_ts_identify(client, tsdata);
+ 	if (error) {
+-		dev_err(&client->dev, "touchscreen probe failed\n");
++		dev_dbg(&client->dev, "touchscreen probe failed\n");
+ 		return error;
+ 	}
+ 
+-- 
+2.39.5
+

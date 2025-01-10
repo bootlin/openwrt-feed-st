@@ -1,0 +1,33 @@
+From 77180a2b57a607c4027ffbaa70de352eb65cac23 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Fri, 3 Feb 2023 08:55:36 +0100
+Subject: [PATCH] arm64: dts: st: enable secure arm-wdt watchdog on
+ stm32mp257f-ev1
+
+Enable the watchdog and define the default timeout to 32 seconds.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: Ic418ff54c4a58d46084ffcbd9ad16ea9dfa9d972
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 10300f60025b..0d03388d30e6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -30,6 +30,11 @@ memory@80000000 {
+ 	};
+ };
+ 
++&arm_wdt {
++	timeout-sec = <32>;
++	status = "okay";
++};
++
+ &usart2 {
+ 	pinctrl-names = "default", "idle", "sleep";
+ 	pinctrl-0 = <&usart2_pins_a>;
+-- 
+2.39.5
+

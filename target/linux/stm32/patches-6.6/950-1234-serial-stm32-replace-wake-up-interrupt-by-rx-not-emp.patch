@@ -1,0 +1,109 @@
+From 44ce75c566bdfadcc2fcc07c1f5f514bb1e72767 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 21 Apr 2022 11:08:55 +0200
+Subject: [PATCH] serial: stm32: replace wake up interrupt by rx not empty
+ interrupt
+
+On stm32mp25 usart, "wake up" interrupt is no longer available.
+So we replace it by a "rx not empty" interrupt that will raise an irq when
+the first character will be available in rx fifo/register.
+This interrupt will be disabled after system wake up.
+
+As MP25 shares the same compatible than STM32H7/MP1x, this change will also
+impact the behavior of theses soc.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ia7d18e22b3d17ab8710ce1a6462a5fdda2404a15
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/386174
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 36 ++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index fc1cc819d1ab..d366274423ba 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1029,11 +1029,12 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+ 	struct tty_port *tport = &port->state->port;
+ 	struct stm32_port *stm32_port = to_stm32_port(port);
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+-	u32 sr, cr3;
++	u32 sr, cr1, cr3;
+ 	unsigned int size;
+ 	irqreturn_t ret = IRQ_NONE;
+ 
+ 	sr = readl_relaxed(port->membase + ofs->isr);
++	cr1 = readl_relaxed(port->membase + ofs->cr1);
+ 	cr3 = readl_relaxed(port->membase + ofs->cr3);
+ 
+ 	if (!stm32_port->hw_flow_control &&
+@@ -1050,13 +1051,10 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+-	if ((sr & USART_SR_WUF) && ofs->icr != UNDEF_REG) {
+-		/* Clear wake up flag and disable wake up interrupt */
+-		writel_relaxed(USART_ICR_WUCF,
+-			       port->membase + ofs->icr);
+-		stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_WUFIE);
+-		if (irqd_is_wakeup_set(irq_get_irq_data(port->irq)))
+-			pm_wakeup_event(tport->tty->dev, 0);
++	if (irqd_is_wakeup_set(irq_get_irq_data(port->irq)) &&
++	    (cr1 & USART_CR1_RXNEIE) && (sr & USART_SR_RXNE)) {
++		stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_RXNEIE);
++		pm_wakeup_event(tport->tty->dev, 0);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+@@ -1576,12 +1574,6 @@ static void stm32_usart_set_termios(struct uart_port *port,
+ 		cr1 &= ~(USART_CR1_DEDT_MASK | USART_CR1_DEAT_MASK);
+ 	}
+ 
+-	/* Configure wake up from low power on start bit detection */
+-	if (stm32_port->wakeup_src) {
+-		cr3 &= ~USART_CR3_WUS_MASK;
+-		cr3 |= USART_CR3_WUS_START_BIT;
+-	}
+-
+ 	writel_relaxed(cr3, port->membase + ofs->cr3);
+ 	writel_relaxed(cr2, port->membase + ofs->cr2);
+ 	writel_relaxed(cr1, port->membase + ofs->cr1);
+@@ -2315,12 +2307,14 @@ static int __maybe_unused stm32_usart_serial_en_wakeup(struct uart_port *port,
+ 		return 0;
+ 
+ 	/*
+-	 * Enable low-power wake-up and wake-up irq if argument is set to
+-	 * "enable", disable low-power wake-up and wake-up irq otherwise
++	 * Enable low-power wake-up and irq on any character received if argument
++	 * is set to "enable", disable low-power wake-up and irq otherwise.
+ 	 */
+ 	if (enable) {
+-		stm32_usart_set_bits(port, ofs->cr1, USART_CR1_UESM);
+-		stm32_usart_set_bits(port, ofs->cr3, USART_CR3_WUFIE);
++		stm32_usart_clr_bits(port, ofs->cr1, stm32_port->cr1_irq);
++		if (stm32_port->cr3_irq)
++			stm32_usart_clr_bits(port, ofs->cr3, stm32_port->cr3_irq);
++		stm32_usart_set_bits(port, ofs->cr1, USART_CR1_UESM | USART_CR1_RXNEIE);
+ 		mctrl_gpio_enable_irq_wake(stm32_port->gpios);
+ 
+ 		/*
+@@ -2348,8 +2342,10 @@ static int __maybe_unused stm32_usart_serial_en_wakeup(struct uart_port *port,
+ 				return ret;
+ 		}
+ 		mctrl_gpio_disable_irq_wake(stm32_port->gpios);
+-		stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_UESM);
+-		stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_WUFIE);
++		stm32_usart_clr_bits(port, ofs->cr1, USART_CR1_UESM | USART_CR1_RXNEIE);
++		stm32_usart_set_bits(port, ofs->cr1, stm32_port->cr1_irq);
++		if (stm32_port->cr3_irq)
++			stm32_usart_set_bits(port, ofs->cr3, stm32_port->cr3_irq);
+ 	}
+ 
+ 	return 0;
+-- 
+2.39.5
+

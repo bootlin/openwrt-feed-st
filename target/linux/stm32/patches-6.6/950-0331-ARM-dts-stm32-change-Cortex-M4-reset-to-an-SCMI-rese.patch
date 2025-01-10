@@ -1,0 +1,130 @@
+From ccfee29b1c396b60687a2b6fbba08ae003793b4f Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 14 Dec 2022 15:33:22 +0100
+Subject: [PATCH] ARM: dts: stm32: change Cortex-M4 reset to an SCMI reset on
+ stm32mp15 boards
+
+Use the SCMI server to control the CortexM4 reset and hold boot.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I2b05e9aba5de97bdb1082fcf1a4f12c382873a39
+---
+ arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi | 7 +++++++
+ arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi | 7 +++++++
+ arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi | 7 +++++++
+ arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi | 7 +++++++
+ arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi | 7 +++++++
+ arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi | 7 +++++++
+ 6 files changed, 42 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
+index 673b736cc67b..fade2775f7a0 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
+@@ -45,6 +45,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &mdma1 {
+ 	resets = <&scmi_reset RST_SCMI_MDMA>;
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
+index 791a3903fe95..b4b95f87b15c 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
+@@ -45,6 +45,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &mdma1 {
+ 	resets = <&scmi_reset RST_SCMI_MDMA>;
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
+index 147bf910de71..b1110357ff38 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
+@@ -43,6 +43,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &m_can1 {
+ 	clocks = <&scmi_clk CK_SCMI_HSE>, <&rcc FDCAN_K>;
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
+index 9d090771d08d..ae374b77f152 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
+@@ -50,6 +50,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &mdma1 {
+ 	resets = <&scmi_reset RST_SCMI_MDMA>;
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
+index f9cafd954076..14a94405fe7f 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
+@@ -50,6 +50,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &mdma1 {
+ 	resets = <&scmi_reset RST_SCMI_MDMA>;
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
+index 2414e09d4aaa..135ef35e1db1 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
+@@ -48,6 +48,13 @@ &iwdg2 {
+ 	clocks = <&rcc IWDG2>, <&scmi_clk CK_SCMI_LSI>;
+ };
+ 
++&m4_rproc {
++	resets = <&scmi_reset RST_SCMI_MCU>,
++		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
++	reset-names = "mcu_rst", "hold_boot";
++	/delete-property/ st,syscfg-holdboot;
++};
++
+ &m_can1 {
+ 	clocks = <&scmi_clk CK_SCMI_HSE>, <&rcc FDCAN_K>;
+ };
+-- 
+2.39.5
+

@@ -1,0 +1,68 @@
+From 2db1518e3272c3618bd8839cbdbd7a13c802e7c0 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 25 Nov 2023 19:20:53 +0100
+Subject: [PATCH] media: i2c: st-mipid02: use mipi-csi macro for data-type
+
+Use MIPI data-type macros.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+(cherry picked from commit 290f9b3406d748eda5a20562df4a2c45a9c1b0dd)
+---
+ drivers/media/i2c/st-mipid02.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+index dab14787116b..963209c9a7fb 100644
+--- a/drivers/media/i2c/st-mipid02.c
++++ b/drivers/media/i2c/st-mipid02.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/of_graph.h>
+ #include <linux/regulator/consumer.h>
++#include <media/mipi-csi2.h>
+ #include <media/v4l2-async.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-device.h>
+@@ -160,17 +161,17 @@ static u8 data_type_from_code(__u32 code)
+ 	case MEDIA_BUS_FMT_SGBRG8_1X8:
+ 	case MEDIA_BUS_FMT_SGRBG8_1X8:
+ 	case MEDIA_BUS_FMT_SRGGB8_1X8:
+-		return 0x2a;
++		return MIPI_CSI2_DT_RAW8;
+ 	case MEDIA_BUS_FMT_SBGGR10_1X10:
+ 	case MEDIA_BUS_FMT_SGBRG10_1X10:
+ 	case MEDIA_BUS_FMT_SGRBG10_1X10:
+ 	case MEDIA_BUS_FMT_SRGGB10_1X10:
+-		return 0x2b;
++		return MIPI_CSI2_DT_RAW10;
+ 	case MEDIA_BUS_FMT_SBGGR12_1X12:
+ 	case MEDIA_BUS_FMT_SGBRG12_1X12:
+ 	case MEDIA_BUS_FMT_SGRBG12_1X12:
+ 	case MEDIA_BUS_FMT_SRGGB12_1X12:
+-		return 0x2c;
++		return MIPI_CSI2_DT_RAW12;
+ 	case MEDIA_BUS_FMT_YUYV8_1X16:
+ 	case MEDIA_BUS_FMT_YVYU8_1X16:
+ 	case MEDIA_BUS_FMT_UYVY8_1X16:
+@@ -179,13 +180,13 @@ static u8 data_type_from_code(__u32 code)
+ 	case MEDIA_BUS_FMT_YVYU8_2X8:
+ 	case MEDIA_BUS_FMT_UYVY8_2X8:
+ 	case MEDIA_BUS_FMT_VYUY8_2X8:
+-		return 0x1e;
++		return MIPI_CSI2_DT_YUV422_8B;
+ 	case MEDIA_BUS_FMT_BGR888_1X24:
+-		return 0x24;
++		return MIPI_CSI2_DT_RGB888;
+ 	case MEDIA_BUS_FMT_RGB565_1X16:
+ 	case MEDIA_BUS_FMT_RGB565_2X8_LE:
+ 	case MEDIA_BUS_FMT_RGB565_2X8_BE:
+-		return 0x22;
++		return MIPI_CSI2_DT_RGB565;
+ 	default:
+ 		return 0;
+ 	}
+-- 
+2.39.5
+

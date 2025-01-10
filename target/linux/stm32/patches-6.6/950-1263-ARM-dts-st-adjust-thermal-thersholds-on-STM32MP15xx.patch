@@ -1,0 +1,68 @@
+From 9fe17e6b44c8fb70b57c0c8b0426d845d0eebc39 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 2 Jul 2024 10:10:28 +0200
+Subject: [PATCH] ARM: dts: st: adjust thermal thersholds on STM32MP15xx
+
+Rules established by STMicroelectronics:
+-Tcritical = Tj - (sensor tolerance). With Tj the junction temperature.
+-Tlimitation = 90% of Tcritical.
+
+Which gives for STM32MP15 series:
+--------------------
+- STM32MP15xA, STM32MP15xC:     Tcritical = 125-5 = 120C
+- STM32MP15xD, STM32MP15xF:     Tcritical = 105-5 = 100C
+
+- STM32MP15xA, STM32MP15xC:     Tlimitation = NA
+                                (already at nominal voltage)
+- STM32MP15xD, STM32MP15xF:     Tlimitaion = 90C
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I8948119907aec06fa2334fa81c79349601c93cfd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390963
+Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi  | 2 +-
+ arch/arm/boot/dts/st/stm32mp15xd.dtsi | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index d70480b0c4d7..518043b9efdf 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -149,7 +149,7 @@ cpu_thermal: cpu-thermal {
+ 			trips {
+ 				cpu-crit {
+ 					temperature = <120000>;
+-					hysteresis = <0>;
++					hysteresis = <1000>;
+ 					type = "critical";
+ 				};
+ 			};
+diff --git a/arch/arm/boot/dts/st/stm32mp15xd.dtsi b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
+index d19f609355c6..a5feeec2e4cd 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xd.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
+@@ -7,13 +7,13 @@
+ &cpu_thermal {
+ 	trips {
+ 		cpu-crit {
+-			temperature = <105000>;
+-			hysteresis = <0>;
++			temperature = <100000>;
++			hysteresis = <1000>;
+ 			type = "critical";
+ 		};
+ 
+ 		cpu_alert: cpu-alert {
+-			temperature = <95000>;
++			temperature = <90000>;
+ 			hysteresis = <10000>;
+ 			type = "passive";
+ 		};
+-- 
+2.39.5
+

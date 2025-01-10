@@ -1,0 +1,37 @@
+From 9a4309f946280ac4e94d66858731ef37c82be602 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 28 Mar 2024 13:43:45 +0100
+Subject: [PATCH] arm: configs: multi_v7_addons: Enable IRQ in debugfs for
+ stm32mp1
+
+Add and enable CONFIG_GENERIC_IRQ_DEBUGFS in multi_v7 addons
+fragment file.
+
+Change-Id: I184c329fd4cc6bcdcd09c72201c31ae7d21026f2
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397123
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 4ae834ca6c50..fe5c37b26475 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -24,6 +24,7 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_FUTEX=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+ CONFIG_GDB_SCRIPTS=y
++CONFIG_GENERIC_IRQ_DEBUGFS=y
+ CONFIG_HIGHMEM=y
+ CONFIG_HWSPINLOCK=y
+ CONFIG_HWSPINLOCK_STM32=y
+-- 
+2.39.5
+

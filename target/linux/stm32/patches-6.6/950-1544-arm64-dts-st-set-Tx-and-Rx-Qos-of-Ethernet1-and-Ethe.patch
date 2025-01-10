@@ -1,0 +1,83 @@
+From 2e0a67ea1379904043199a5df51044c3d7fef4f1 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Mon, 21 Oct 2024 14:49:15 +0200
+Subject: [PATCH] arm64: dts: st: set Tx and Rx Qos of Ethernet1 and Ethernet2
+ on stm32mp2x
+
+All QoS IP priorities are managed through SYSCFG_ICNQPCR register.
+Except Ethernet QoS which is managed inside a dedicated
+register (ETH_DMACxRXCR) in Ethernet IP.
+The QoS value is currently 0 (hardware default value),
+which is the problem.
+Bandwidth regulator is enabled. When DDR bandwidth
+reaches a certain level, low QoS priorities have their bandwidth
+even more decreased.
+As ethernet QoS is configured to 0, this is the first one impacted.
+Configure the Ethernet QoS to 7.
+
+Change-Id: I9d4d510fe988f0ee18399518eef8614ca30fa347
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/412933
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 2 ++
+ arch/arm64/boot/dts/st/stm32mp213.dtsi | 2 ++
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 2 ++
+ arch/arm64/boot/dts/st/stm32mp233.dtsi | 2 ++
+ 4 files changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index c2a16c960f99..edcc72708e28 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2615,6 +2615,8 @@ eth1: eth1@482c0000 {
+ 			st,syscon = <&syscfg 0x3000 0xffffffff>;
+ 			snps,mixed-burst;
+ 			snps,pbl = <2>;
++			snps,txqos = <7>;
++			snps,rxqos = <7>;
+ 			snps,axi-config = <&stmmac_axi_config_1>;
+ 			snps,tso;
+ 			status = "disabled";
+diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+index a601265e3b6e..f0fa2487c359 100644
+--- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+@@ -28,6 +28,8 @@ eth2: eth2@482d0000 {
+ 			st,syscon = <&syscfg 0x3400 0xffffffff>;
+ 			snps,mixed-burst;
+ 			snps,pbl = <2>;
++			snps,txqos = <7>;
++			snps,rxqos = <7>;
+ 			snps,axi-config = <&stmmac_axi_config_2>;
+ 			snps,tso;
+ 			access-controllers = <&rifsc 61>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index 7d320d762171..08b816a70ed6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -2035,6 +2035,8 @@ eth1: eth1@482c0000 {
+ 				st,syscon = <&syscfg 0x3000 0xffffffff>;
+ 				snps,mixed-burst;
+ 				snps,pbl = <2>;
++				snps,txqos = <7>;
++				snps,rxqos = <7>;
+ 				snps,axi-config = <&stmmac_axi_config_1>;
+ 				snps,tso;
+ 				access-controllers = <&rifsc 60>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp233.dtsi b/arch/arm64/boot/dts/st/stm32mp233.dtsi
+index b0528fd92a5f..952cda24cf76 100644
+--- a/arch/arm64/boot/dts/st/stm32mp233.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp233.dtsi
+@@ -138,6 +138,8 @@ eth2: eth2@482d0000 {
+ 		st,syscon = <&syscfg 0x3400 0xffffffff>;
+ 		snps,mixed-burst;
+ 		snps,pbl = <2>;
++		snps,txqos = <7>;
++		snps,rxqos = <7>;
+ 		snps,axi-config = <&stmmac_axi_config_2>;
+ 		snps,tso;
+ 		access-controllers = <&rifsc 61>;
+-- 
+2.39.5
+

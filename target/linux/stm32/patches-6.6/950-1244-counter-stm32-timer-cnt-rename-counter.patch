@@ -1,0 +1,39 @@
+From 49475ef8713410f963a83bb8b209c3b430454e3e Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 7 Mar 2024 14:32:58 +0100
+Subject: [PATCH] counter: stm32-timer-cnt: rename counter
+
+The STM32 timer may count on various sources or channels. The counter
+isn't specifically counting on channe1 1. So rename it to avoid a
+confusion.
+
+Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Link: https://lore.kernel.org/r/20240307133306.383045-3-fabrice.gasnier@foss.st.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+(cherry picked from commit 017edec6629109d14e8d0caf2539998f7912ec80)
+Change-Id: I29c2540452260bfd6b5eebc3019c4c8589a08858
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388142
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index 7ddcb32be843..32784f62944b 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -302,7 +302,7 @@ static struct counter_synapse stm32_count_synapses[] = {
+ 
+ static struct counter_count stm32_counts = {
+ 	.id = 0,
+-	.name = "Channel 1 Count",
++	.name = "STM32 Timer Counter",
+ 	.functions_list = stm32_count_functions,
+ 	.num_functions = ARRAY_SIZE(stm32_count_functions),
+ 	.synapses = stm32_count_synapses,
+-- 
+2.39.5
+

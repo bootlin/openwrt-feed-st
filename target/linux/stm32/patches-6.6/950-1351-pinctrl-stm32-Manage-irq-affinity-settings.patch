@@ -1,0 +1,37 @@
+From 865a7b9b16b147b65516b83f8fcd2beaacc4a913 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 28 Mar 2024 12:27:51 +0100
+Subject: [PATCH] pinctrl: stm32: Manage irq affinity settings
+
+Trying to set the affinity of the interrupt associated to stm32
+pinctrl results in a write error because stmf32 pinctrl was not
+managing the set of the irq smp affinity. It is resolved by
+adding the .irq_set_affinity to the stm32_gpio_irq_chip struct and
+fill it with a function to manage affinity.
+
+Change-Id: I32cb2ca38936f114874abc404cab76bc64f93c14
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/401704
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index ee84c40757a3..327730550b3e 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -610,6 +610,7 @@ static struct irq_chip stm32_gpio_irq_chip = {
+ 	.irq_set_wake	= irq_chip_set_wake_parent,
+ 	.irq_request_resources = stm32_gpio_irq_request_resources,
+ 	.irq_release_resources = stm32_gpio_irq_release_resources,
++	.irq_set_affinity = IS_ENABLED(CONFIG_SMP) ? irq_chip_set_affinity_parent : NULL,
+ };
+ 
+ static int stm32_gpio_domain_select(struct irq_domain *dm,
+-- 
+2.39.5
+

@@ -1,0 +1,32 @@
+From 665420dbad2aed0618c2cfa191b7ecacd9bf805f Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 11 Sep 2024 09:18:11 +0200
+Subject: [PATCH] ARM: dts: stm32: add wakeup property to ethernet on
+ stm32mp15x
+
+Add wakeup-source property to specify that ethernet can wakeup platform
+(with magic packet: WoL)
+
+Change-Id: I90aa279840960cb9654c371e1663a19c9d4b173b
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404478
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index fb628b91036f..d0ae364f5661 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -2094,6 +2094,7 @@ ethernet0: ethernet@5800a000 {
+ 				snps,axi-config = <&stmmac_axi_config_0>;
+ 				snps,tso;
+ 				power-domains = <&pd_core>;
++				wakeup-source;
+ 				access-controllers = <&etzpc 94>;
+ 				status = "disabled";
+ 
+-- 
+2.39.5
+

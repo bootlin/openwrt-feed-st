@@ -1,0 +1,4528 @@
+From d21f01c9658f64554aa0f42ec51fa59713674f63 Mon Sep 17 00:00:00 2001
+From: Nicolas Le Bayon <nicolas.le.bayon@st.com>
+Date: Wed, 20 Dec 2023 14:36:02 +0100
+Subject: [PATCH] clk: stm32: introduce clocks for STM32MP21 platform
+
+This driver is intended for the STM32MP21 clock family.
+
+Signed-off-by: Nicolas Le Bayon <nicolas.le.bayon@st.com>
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I0f5a2dfb0eeec74b43c53db3d8fc56ed99f933de
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361136
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/stm32/Kconfig         |    8 +
+ drivers/clk/stm32/Makefile        |    1 +
+ drivers/clk/stm32/clk-stm32mp21.c | 2708 +++++++++++++++++++++++++++++
+ drivers/clk/stm32/stm32mp21_rcc.h | 1753 +++++++++++++++++++
+ 4 files changed, 4470 insertions(+)
+ create mode 100644 drivers/clk/stm32/clk-stm32mp21.c
+ create mode 100644 drivers/clk/stm32/stm32mp21_rcc.h
+
+diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
+index e2e7212ef91d..a9aaf83a16cf 100644
+--- a/drivers/clk/stm32/Kconfig
++++ b/drivers/clk/stm32/Kconfig
+@@ -25,6 +25,14 @@ config COMMON_CLK_STM32MP157
+ 	help
+ 	  Support for stm32mp15x SoC family clocks.
+ 
++config COMMON_CLK_STM32MP215
++	bool "Clock driver for stm32m21x clocks"
++	depends on ARM64 || COMPILE_TEST
++	select COMMON_CLK_REGMAP
++	default y
++	help
++	  Support for stm32mp25x SoC family clocks
++
+ config COMMON_CLK_STM32MP257
+ 	bool "Clock driver for stm32mp25x clocks"
+ 	depends on ARM64 || COMPILE_TEST
+diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
+index f563d2f683e7..950e9a2ef58d 100644
+--- a/drivers/clk/stm32/Makefile
++++ b/drivers/clk/stm32/Makefile
+@@ -1,4 +1,5 @@
+ obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
+ obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o reset-stm32.o
++obj-$(CONFIG_COMMON_CLK_STM32MP215)	+= clk-stm32mp21.o clk-stm32-core.o reset-stm32.o
+ obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25.o clk-stm32-core.o reset-stm32.o
+ obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25-syscfg.o
+diff --git a/drivers/clk/stm32/clk-stm32mp21.c b/drivers/clk/stm32/clk-stm32mp21.c
+new file mode 100644
+index 000000000000..642b92d39bba
+--- /dev/null
++++ b/drivers/clk/stm32/clk-stm32mp21.c
+@@ -0,0 +1,2708 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
++ * Author: Gabriel Fernandez <gabriel.fernandez@foss.st.com> for STMicroelectronics.
++ */
++
++#include <linux/bus/stm32_firewall_device.h>
++#include <linux/clk.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++
++#include "clk-stm32-core.h"
++#include "reset-stm32.h"
++#include "stm32mp21_rcc.h"
++
++#include <dt-bindings/clock/st,stm32mp21-rcc.h>
++#include <dt-bindings/reset/st,stm32mp21-rcc.h>
++
++/* Clock security definition */
++#define SECF_NONE		-1
++
++#define RCC_REG_SIZE	32
++#define RCC_SECCFGR(x)	(((x) / RCC_REG_SIZE) * 0x4 + RCC_SECCFGR0)
++#define RCC_CIDCFGR(x)	((x) * 0x8 + RCC_R0CIDCFGR)
++#define RCC_SEMCR(x)	((x) * 0x8 + RCC_R0SEMCR)
++#define RCC_CID1	1
++
++/* Register: RIFSC_CIDCFGR */
++#define RCC_CIDCFGR_CFEN	BIT(0)
++#define RCC_CIDCFGR_SEM_EN	BIT(1)
++#define RCC_CIDCFGR_SEMWLC1_EN	BIT(17)
++#define RCC_CIDCFGR_SCID_MASK	GENMASK(6, 4)
++
++/* Register: RIFSC_SEMCR */
++#define RCC_SEMCR_SEMCID_MASK	GENMASK(6, 4)
++
++#define STM32MP21_RIFRCC_DBG_ID		73
++#define STM32MP21_RIFRCC_MCO1_ID	108
++#define STM32MP21_RIFRCC_MCO2_ID	109
++#define STM32MP21_RIFRCC_OSPI1_ID	110
++
++#define SEC_RIFSC_FLAG		BIT(31)
++#define SEC_RIFRCC(_id)		(STM32MP21_RIFRCC_##_id##_ID)
++#define SEC_RIFSC(_id)		((_id) | SEC_RIFSC_FLAG)
++
++enum {
++	HSE,
++	HSI,
++	MSI,
++	LSE,
++	LSI,
++	HSE_DIV2,
++	ICN_HS_MCU,
++	ICN_LS_MCU,
++	ICN_SDMMC,
++	ICN_DDR,
++	ICN_DISPLAY,
++	ICN_HSL,
++	ICN_NIC,
++	FLEXGEN_07,
++	FLEXGEN_08,
++	FLEXGEN_09,
++	FLEXGEN_10,
++	FLEXGEN_11,
++	FLEXGEN_12,
++	FLEXGEN_13,
++	FLEXGEN_14,
++	FLEXGEN_16,
++	FLEXGEN_17,
++	FLEXGEN_18,
++	FLEXGEN_19,
++	FLEXGEN_20,
++	FLEXGEN_21,
++	FLEXGEN_22,
++	FLEXGEN_23,
++	FLEXGEN_24,
++	FLEXGEN_25,
++	FLEXGEN_26,
++	FLEXGEN_27,
++	FLEXGEN_29,
++	FLEXGEN_30,
++	FLEXGEN_31,
++	FLEXGEN_33,
++	FLEXGEN_36,
++	FLEXGEN_37,
++	FLEXGEN_38,
++	FLEXGEN_39,
++	FLEXGEN_40,
++	FLEXGEN_41,
++	FLEXGEN_42,
++	FLEXGEN_43,
++	FLEXGEN_44,
++	FLEXGEN_45,
++	FLEXGEN_46,
++	FLEXGEN_47,
++	FLEXGEN_48,
++	FLEXGEN_50,
++	FLEXGEN_51,
++	FLEXGEN_52,
++	FLEXGEN_53,
++	FLEXGEN_54,
++	FLEXGEN_55,
++	FLEXGEN_56,
++	FLEXGEN_57,
++	FLEXGEN_58,
++	FLEXGEN_61,
++	FLEXGEN_62,
++	FLEXGEN_63,
++	ICN_APB1,
++	ICN_APB2,
++	ICN_APB3,
++	ICN_APB4,
++	ICN_APB5,
++	ICN_APBDBG,
++	TIMG1,
++	TIMG2,
++};
++
++static const struct clk_parent_data adc1_src[] = {
++	{ .index = FLEXGEN_46 },
++	{ .index = ICN_LS_MCU },
++};
++
++static const struct clk_parent_data adc2_src[] = {
++	{ .index = FLEXGEN_47 },
++	{ .index = ICN_LS_MCU },
++	{ .index = FLEXGEN_46 },
++};
++
++static const struct clk_parent_data usb2phy1_src[] = {
++	{ .index = FLEXGEN_57 },
++	{ .index = HSE_DIV2 },
++};
++
++static const struct clk_parent_data usb2phy2_src[] = {
++	{ .index = FLEXGEN_58 },
++	{ .index = HSE_DIV2 },
++};
++
++static const struct clk_parent_data dts_src[] = {
++	{ .index = HSI },
++	{ .index = HSE },
++	{ .index = MSI },
++};
++
++static const struct clk_parent_data mco1_src[] = {
++	{ .index = FLEXGEN_61 },
++};
++
++static const struct clk_parent_data mco2_src[] = {
++	{ .index = FLEXGEN_62 },
++};
++
++enum enum_mux_cfg {
++	MUX_ADC1,
++	MUX_ADC2,
++	MUX_DTS,
++	MUX_MCO1,
++	MUX_MCO2,
++	MUX_USB2PHY1,
++	MUX_USB2PHY2,
++#ifdef CONFIG_DEBUG_FS
++	MUX_MUXSEL0,
++	MUX_MUXSEL1,
++	MUX_MUXSEL2,
++	MUX_MUXSEL3,
++	MUX_MUXSEL4,
++	MUX_MUXSEL5,
++	MUX_MUXSEL6,
++	MUX_MUXSEL7,
++	MUX_RTC,
++	MUX_XBARSEL,
++#endif
++	MUX_NB
++};
++
++#define MUX_CFG(id, _offset, _shift, _witdh)	\
++	[id] = {				\
++		.offset		= (_offset),	\
++		.shift		= (_shift),	\
++		.width		= (_witdh),	\
++	}
++
++static const struct stm32_mux_cfg stm32mp21_muxes[MUX_NB] = {
++	MUX_CFG(MUX_ADC1,		RCC_ADC1CFGR,		12,	1),
++	MUX_CFG(MUX_ADC2,		RCC_ADC2CFGR,		12,	2),
++	MUX_CFG(MUX_DTS,		RCC_DTSCFGR,		12,	2),
++	MUX_CFG(MUX_MCO1,		RCC_MCO1CFGR,		0,	1),
++	MUX_CFG(MUX_MCO2,		RCC_MCO2CFGR,		0,	1),
++	MUX_CFG(MUX_USB2PHY1,		RCC_USB2PHY1CFGR,	15,	1),
++	MUX_CFG(MUX_USB2PHY2,		RCC_USB2PHY2CFGR,	15,	1),
++#ifdef CONFIG_DEBUG_FS
++	MUX_CFG(MUX_MUXSEL0,		RCC_MUXSELCFGR,		0,	2),
++	MUX_CFG(MUX_MUXSEL1,		RCC_MUXSELCFGR,		4,	2),
++	MUX_CFG(MUX_MUXSEL2,		RCC_MUXSELCFGR,		8,	2),
++	MUX_CFG(MUX_MUXSEL3,		RCC_MUXSELCFGR,		12,	2),
++	MUX_CFG(MUX_MUXSEL4,		RCC_MUXSELCFGR,		16,	2),
++	MUX_CFG(MUX_MUXSEL5,		RCC_MUXSELCFGR,		20,	2),
++	MUX_CFG(MUX_MUXSEL6,		RCC_MUXSELCFGR,		24,	2),
++	MUX_CFG(MUX_MUXSEL7,		RCC_MUXSELCFGR,		28,	2),
++	MUX_CFG(MUX_RTC,		RCC_BDCR,		16,	2),
++	MUX_CFG(MUX_XBARSEL,		RCC_XBAR0CFGR,		0,	4),
++#endif
++};
++
++enum enum_gate_cfg {
++	GATE_ADC1,
++	GATE_ADC2,
++	GATE_CCB,
++	GATE_CRC,
++	GATE_CRYP1,
++	GATE_CRYP2,
++	GATE_CSI,
++	GATE_DCMIPP,
++	GATE_DCMIPSSI,
++	GATE_DTS,
++	GATE_ETH1,
++	GATE_ETH1MAC,
++	GATE_ETH1RX,
++	GATE_ETH1STP,
++	GATE_ETH1TX,
++	GATE_ETH2,
++	GATE_ETH2MAC,
++	GATE_ETH2RX,
++	GATE_ETH2STP,
++	GATE_ETH2TX,
++	GATE_FDCAN,
++	GATE_HASH1,
++	GATE_HASH2,
++	GATE_HDP,
++	GATE_I2C1,
++	GATE_I2C2,
++	GATE_I2C3,
++	GATE_I3C1,
++	GATE_I3C2,
++	GATE_I3C3,
++	GATE_IWDG1,
++	GATE_IWDG2,
++	GATE_IWDG3,
++	GATE_IWDG4,
++	GATE_LPTIM1,
++	GATE_LPTIM2,
++	GATE_LPTIM3,
++	GATE_LPTIM4,
++	GATE_LPTIM5,
++	GATE_LPUART1,
++	GATE_LTDC,
++	GATE_MCO1,
++	GATE_MCO2,
++	GATE_MDF1,
++	GATE_OTG,
++	GATE_PKA,
++	GATE_RNG1,
++	GATE_RNG2,
++	GATE_SAES,
++	GATE_SAI1,
++	GATE_SAI2,
++	GATE_SAI3,
++	GATE_SAI4,
++	GATE_SDMMC1,
++	GATE_SDMMC2,
++	GATE_SDMMC3,
++	GATE_SERC,
++	GATE_SPDIFRX,
++	GATE_SPI1,
++	GATE_SPI2,
++	GATE_SPI3,
++	GATE_SPI4,
++	GATE_SPI5,
++	GATE_SPI6,
++	GATE_TIM1,
++	GATE_TIM10,
++	GATE_TIM11,
++	GATE_TIM12,
++	GATE_TIM13,
++	GATE_TIM14,
++	GATE_TIM15,
++	GATE_TIM16,
++	GATE_TIM17,
++	GATE_TIM2,
++	GATE_TIM3,
++	GATE_TIM4,
++	GATE_TIM5,
++	GATE_TIM6,
++	GATE_TIM7,
++	GATE_TIM8,
++	GATE_UART4,
++	GATE_UART5,
++	GATE_UART7,
++	GATE_USART1,
++	GATE_USART2,
++	GATE_USART3,
++	GATE_USART6,
++	GATE_USB2PHY1,
++	GATE_USB2PHY2,
++	GATE_USBH,
++	GATE_VREF,
++	GATE_WWDG1,
++#ifdef CONFIG_DEBUG_FS
++	GATE_BKPSRAM,
++	GATE_BSEC,
++	GATE_DBG,
++	GATE_DDRCAPB,
++	GATE_DDRCFG,
++	GATE_DDRCP,
++	GATE_DDRPHYC,
++	GATE_DDRPHYCAPB,
++	GATE_ETR,
++	GATE_FMC,
++	GATE_GPIOA,
++	GATE_GPIOB,
++	GATE_GPIOC,
++	GATE_GPIOD,
++	GATE_GPIOE,
++	GATE_GPIOF,
++	GATE_GPIOG,
++	GATE_GPIOH,
++	GATE_GPIOI,
++	GATE_GPIOZ,
++	GATE_HPDMA1,
++	GATE_HPDMA2,
++	GATE_HPDMA3,
++	GATE_HSE,
++	GATE_HSEDIV2,
++	GATE_HSI,
++	GATE_IPCC1,
++	GATE_LSE,
++	GATE_LSI,
++	GATE_MSI,
++	GATE_OSPI1,
++	GATE_PLL1,
++	GATE_PLL2,
++	GATE_PLL4,
++	GATE_PLL5,
++	GATE_PLL6,
++	GATE_PLL7,
++	GATE_PLL8,
++	GATE_RETRAM,
++	GATE_RTC,
++	GATE_RTCCK,
++	GATE_SRAM1,
++	GATE_STGEN,
++	GATE_STM,
++	GATE_SYSCPU1,
++	GATE_SYSRAM,
++	GATE_TRACE,
++#endif
++	GATE_NB
++};
++
++#define GATE_CFG(id, _offset, _bit_idx, _offset_clr)	\
++	[id] = {					\
++		.offset		= (_offset),		\
++		.bit_idx	= (_bit_idx),		\
++		.set_clr	= (_offset_clr),	\
++	}
++
++static const struct stm32_gate_cfg stm32mp21_gates[GATE_NB] = {
++	GATE_CFG(GATE_ADC1,		RCC_ADC1CFGR,		1,	0),
++	GATE_CFG(GATE_ADC2,		RCC_ADC2CFGR,		1,	0),
++	GATE_CFG(GATE_CRC,		RCC_CRCCFGR,		1,	0),
++	GATE_CFG(GATE_CRYP1,		RCC_CRYP1CFGR,		1,	0),
++	GATE_CFG(GATE_CRYP2,		RCC_CRYP2CFGR,		1,	0),
++	GATE_CFG(GATE_CCB,		RCC_CCBCFGR,		1,	0),
++	GATE_CFG(GATE_CSI,		RCC_CSICFGR,		1,	0),
++	GATE_CFG(GATE_DCMIPP,		RCC_DCMIPPCFGR,		1,	0),
++	GATE_CFG(GATE_DCMIPSSI,		RCC_DCMIPSSICFGR,	1,	0),
++	GATE_CFG(GATE_DTS,		RCC_DTSCFGR,		1,	0),
++	GATE_CFG(GATE_ETH1,		RCC_ETH1CFGR,		5,	0),
++	GATE_CFG(GATE_ETH1MAC,		RCC_ETH1CFGR,		1,	0),
++	GATE_CFG(GATE_ETH1RX,		RCC_ETH1CFGR,		10,	0),
++	GATE_CFG(GATE_ETH1STP,		RCC_ETH1CFGR,		4,	0),
++	GATE_CFG(GATE_ETH1TX,		RCC_ETH1CFGR,		8,	0),
++	GATE_CFG(GATE_ETH2,		RCC_ETH2CFGR,		5,	0),
++	GATE_CFG(GATE_ETH2MAC,		RCC_ETH2CFGR,		1,	0),
++	GATE_CFG(GATE_ETH2RX,		RCC_ETH2CFGR,		10,	0),
++	GATE_CFG(GATE_ETH2STP,		RCC_ETH2CFGR,		4,	0),
++	GATE_CFG(GATE_ETH2TX,		RCC_ETH2CFGR,		8,	0),
++	GATE_CFG(GATE_FDCAN,		RCC_FDCANCFGR,		1,	0),
++	GATE_CFG(GATE_HASH1,		RCC_HASH1CFGR,		1,	0),
++	GATE_CFG(GATE_HASH2,		RCC_HASH2CFGR,		1,	0),
++	GATE_CFG(GATE_HDP,		RCC_HDPCFGR,		1,	0),
++	GATE_CFG(GATE_I2C1,		RCC_I2C1CFGR,		1,	0),
++	GATE_CFG(GATE_I2C2,		RCC_I2C2CFGR,		1,	0),
++	GATE_CFG(GATE_I2C3,		RCC_I2C3CFGR,		1,	0),
++	GATE_CFG(GATE_I3C1,		RCC_I3C1CFGR,		1,	0),
++	GATE_CFG(GATE_I3C2,		RCC_I3C2CFGR,		1,	0),
++	GATE_CFG(GATE_I3C3,		RCC_I3C3CFGR,		1,	0),
++	GATE_CFG(GATE_IWDG1,		RCC_IWDG1CFGR,		1,	0),
++	GATE_CFG(GATE_IWDG2,		RCC_IWDG2CFGR,		1,	0),
++	GATE_CFG(GATE_IWDG3,		RCC_IWDG3CFGR,		1,	0),
++	GATE_CFG(GATE_IWDG4,		RCC_IWDG4CFGR,		1,	0),
++	GATE_CFG(GATE_LPTIM1,		RCC_LPTIM1CFGR,		1,	0),
++	GATE_CFG(GATE_LPTIM2,		RCC_LPTIM2CFGR,		1,	0),
++	GATE_CFG(GATE_LPTIM3,		RCC_LPTIM3CFGR,		1,	0),
++	GATE_CFG(GATE_LPTIM4,		RCC_LPTIM4CFGR,		1,	0),
++	GATE_CFG(GATE_LPTIM5,		RCC_LPTIM5CFGR,		1,	0),
++	GATE_CFG(GATE_LPUART1,		RCC_LPUART1CFGR,	1,	0),
++	GATE_CFG(GATE_LTDC,		RCC_LTDCCFGR,		1,	0),
++	GATE_CFG(GATE_MCO1,		RCC_MCO1CFGR,		8,	0),
++	GATE_CFG(GATE_MCO2,		RCC_MCO2CFGR,		8,	0),
++	GATE_CFG(GATE_MDF1,		RCC_MDF1CFGR,		1,	0),
++	GATE_CFG(GATE_OTG,		RCC_OTGCFGR,		1,	0),
++	GATE_CFG(GATE_PKA,		RCC_PKACFGR,		1,	0),
++	GATE_CFG(GATE_RNG1,		RCC_RNG1CFGR,		1,	0),
++	GATE_CFG(GATE_RNG2,		RCC_RNG2CFGR,		1,	0),
++	GATE_CFG(GATE_SAES,		RCC_SAESCFGR,		1,	0),
++	GATE_CFG(GATE_SAI1,		RCC_SAI1CFGR,		1,	0),
++	GATE_CFG(GATE_SAI2,		RCC_SAI2CFGR,		1,	0),
++	GATE_CFG(GATE_SAI3,		RCC_SAI3CFGR,		1,	0),
++	GATE_CFG(GATE_SAI4,		RCC_SAI4CFGR,		1,	0),
++	GATE_CFG(GATE_SDMMC1,		RCC_SDMMC1CFGR,		1,	0),
++	GATE_CFG(GATE_SDMMC2,		RCC_SDMMC2CFGR,		1,	0),
++	GATE_CFG(GATE_SDMMC3,		RCC_SDMMC3CFGR,		1,	0),
++	GATE_CFG(GATE_SERC,		RCC_SERCCFGR,		1,	0),
++	GATE_CFG(GATE_SPDIFRX,		RCC_SPDIFRXCFGR,	1,	0),
++	GATE_CFG(GATE_SPI1,		RCC_SPI1CFGR,		1,	0),
++	GATE_CFG(GATE_SPI2,		RCC_SPI2CFGR,		1,	0),
++	GATE_CFG(GATE_SPI3,		RCC_SPI3CFGR,		1,	0),
++	GATE_CFG(GATE_SPI4,		RCC_SPI4CFGR,		1,	0),
++	GATE_CFG(GATE_SPI5,		RCC_SPI5CFGR,		1,	0),
++	GATE_CFG(GATE_SPI6,		RCC_SPI6CFGR,		1,	0),
++	GATE_CFG(GATE_TIM1,		RCC_TIM1CFGR,		1,	0),
++	GATE_CFG(GATE_TIM10,		RCC_TIM10CFGR,		1,	0),
++	GATE_CFG(GATE_TIM11,		RCC_TIM11CFGR,		1,	0),
++	GATE_CFG(GATE_TIM12,		RCC_TIM12CFGR,		1,	0),
++	GATE_CFG(GATE_TIM13,		RCC_TIM13CFGR,		1,	0),
++	GATE_CFG(GATE_TIM14,		RCC_TIM14CFGR,		1,	0),
++	GATE_CFG(GATE_TIM15,		RCC_TIM15CFGR,		1,	0),
++	GATE_CFG(GATE_TIM16,		RCC_TIM16CFGR,		1,	0),
++	GATE_CFG(GATE_TIM17,		RCC_TIM17CFGR,		1,	0),
++	GATE_CFG(GATE_TIM2,		RCC_TIM2CFGR,		1,	0),
++	GATE_CFG(GATE_TIM3,		RCC_TIM3CFGR,		1,	0),
++	GATE_CFG(GATE_TIM4,		RCC_TIM4CFGR,		1,	0),
++	GATE_CFG(GATE_TIM5,		RCC_TIM5CFGR,		1,	0),
++	GATE_CFG(GATE_TIM6,		RCC_TIM6CFGR,		1,	0),
++	GATE_CFG(GATE_TIM7,		RCC_TIM7CFGR,		1,	0),
++	GATE_CFG(GATE_TIM8,		RCC_TIM8CFGR,		1,	0),
++	GATE_CFG(GATE_UART4,		RCC_UART4CFGR,		1,	0),
++	GATE_CFG(GATE_UART5,		RCC_UART5CFGR,		1,	0),
++	GATE_CFG(GATE_UART7,		RCC_UART7CFGR,		1,	0),
++	GATE_CFG(GATE_USART1,		RCC_USART1CFGR,		1,	0),
++	GATE_CFG(GATE_USART2,		RCC_USART2CFGR,		1,	0),
++	GATE_CFG(GATE_USART3,		RCC_USART3CFGR,		1,	0),
++	GATE_CFG(GATE_USART6,		RCC_USART6CFGR,		1,	0),
++	GATE_CFG(GATE_USB2PHY1,		RCC_USB2PHY1CFGR,	1,	0),
++	GATE_CFG(GATE_USB2PHY2,		RCC_USB2PHY2CFGR,	1,	0),
++	GATE_CFG(GATE_USBH,		RCC_USBHCFGR,		1,	0),
++	GATE_CFG(GATE_VREF,		RCC_VREFCFGR,		1,	0),
++	GATE_CFG(GATE_WWDG1,		RCC_WWDG1CFGR,		1,	0),
++#ifdef CONFIG_DEBUG_FS
++	GATE_CFG(GATE_BKPSRAM,		RCC_BKPSRAMCFGR,	1,	0),
++	GATE_CFG(GATE_BSEC,		RCC_BSECCFGR,		1,	0),
++	GATE_CFG(GATE_DBG,		RCC_DBGCFGR,		8,	0),
++	GATE_CFG(GATE_DDRCAPB,		RCC_DDRCAPBCFGR,	1,	0),
++	GATE_CFG(GATE_DDRCFG,		RCC_DDRCFGR,		1,	0),
++	GATE_CFG(GATE_DDRCP,		RCC_DDRCPCFGR,		1,	0),
++	GATE_CFG(GATE_DDRPHYC,		RCC_DDRPHYCCFGR,	1,	0),
++	GATE_CFG(GATE_DDRPHYCAPB,	RCC_DDRPHYCAPBCFGR,	1,	0),
++	GATE_CFG(GATE_ETR,		RCC_ETRCFGR,		1,	0),
++	GATE_CFG(GATE_FMC,		RCC_FMCCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOA,		RCC_GPIOACFGR,		1,	0),
++	GATE_CFG(GATE_GPIOB,		RCC_GPIOBCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOC,		RCC_GPIOCCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOD,		RCC_GPIODCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOE,		RCC_GPIOECFGR,		1,	0),
++	GATE_CFG(GATE_GPIOF,		RCC_GPIOFCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOG,		RCC_GPIOGCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOH,		RCC_GPIOHCFGR,		1,	0),
++	GATE_CFG(GATE_GPIOI,		RCC_GPIOICFGR,		1,	0),
++	GATE_CFG(GATE_GPIOZ,		RCC_GPIOZCFGR,		1,	0),
++	GATE_CFG(GATE_HPDMA1,		RCC_HPDMA1CFGR,		1,	0),
++	GATE_CFG(GATE_HPDMA2,		RCC_HPDMA2CFGR,		1,	0),
++	GATE_CFG(GATE_HPDMA3,		RCC_HPDMA3CFGR,		1,	0),
++	GATE_CFG(GATE_HSE,		RCC_OCENSETR,		8,	1),
++	GATE_CFG(GATE_HSEDIV2,		RCC_OCENSETR,		5,	1),
++	GATE_CFG(GATE_HSI,		RCC_OCENSETR,		0,	1),
++	GATE_CFG(GATE_IPCC1,		RCC_IPCC1CFGR,		1,	0),
++	GATE_CFG(GATE_LSE,		RCC_BDCR,		0,	0),
++	GATE_CFG(GATE_LSI,		RCC_LSICR,		0,	0),
++	GATE_CFG(GATE_MSI,		RCC_OCENSETR,		2,	1),
++	GATE_CFG(GATE_OSPI1,		RCC_OSPI1CFGR,		1,	0),
++	GATE_CFG(GATE_PLL1,		RCC_PLL2CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL2,		RCC_PLL2CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL4,		RCC_PLL4CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL5,		RCC_PLL5CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL6,		RCC_PLL6CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL7,		RCC_PLL7CFGR1,		8,	0),
++	GATE_CFG(GATE_PLL8,		RCC_PLL8CFGR1,		8,	0),
++	GATE_CFG(GATE_RETRAM,		RCC_RETRAMCFGR,		1,	0),
++	GATE_CFG(GATE_RTC,		RCC_RTCCFGR,		1,	0),
++	GATE_CFG(GATE_RTCCK,		RCC_BDCR,		20,	0),
++	GATE_CFG(GATE_SRAM1,		RCC_SRAM1CFGR,		1,	0),
++	GATE_CFG(GATE_STM,		RCC_STMCFGR,		1,	0),
++	GATE_CFG(GATE_SYSCPU1,		RCC_SYSCPU1CFGR,	1,	0),
++	GATE_CFG(GATE_SYSRAM,		RCC_SYSRAMCFGR,		1,	0),
++#endif
++};
++
++#ifdef CONFIG_DEBUG_FS
++enum enum_div_cfg {
++	DIV_APB1,
++	DIV_APB2,
++	DIV_APB3,
++	DIV_APB4,
++	DIV_APB5,
++	DIV_APBDBG,
++	DIV_LSMCU,
++	DIV_RTC,
++	DIV_NB
++};
++
++static const struct clk_div_table apb_div_table[] = {
++	{ 0, 1 }, { 1, 2 }, { 2, 4 }, { 3, 8 }, { 4, 16 },
++	{ 5, 16 }, { 6, 16 }, { 7, 16 }, { 0 },
++};
++
++#define DIV_CFG(_id, _offset, _shift, _width, _table)\
++	[(_id)] = {\
++		.offset	= (_offset),\
++		.shift	= (_shift),\
++		.width	= (_width),\
++		.table	= (_table),\
++	}
++
++static const struct stm32_div_cfg stm32mp21_dividers[DIV_NB] = {
++	DIV_CFG(DIV_APB1,	RCC_APB1DIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_APB2,	RCC_APB2DIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_APB3,	RCC_APB3DIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_APB4,	RCC_APB4DIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_APB5,	RCC_APB5DIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_APBDBG,	RCC_APBDBGDIVR,	0, 3, apb_div_table),
++	DIV_CFG(DIV_LSMCU,	RCC_LSMCUDIVR,	0, 1, NULL),
++	DIV_CFG(DIV_RTC,	RCC_RTCDIVR,	0, 6, NULL),
++};
++#endif
++
++#define CLK_HW_INIT_INDEX(_name, _parent, _ops, _flags)		\
++	(&(struct clk_init_data) {					\
++		.flags		= _flags,				\
++		.name		= _name,				\
++		.parent_data	= (const struct clk_parent_data[]) {	\
++					{ .index = _parent },		\
++				  },					\
++		.num_parents	= 1,					\
++		.ops		= _ops,					\
++	})
++
++/* ADC */
++static struct clk_stm32_gate ck_icn_p_adc1 = {
++	.gate_id = GATE_ADC1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_adc1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_composite ck_ker_adc1 = {
++	.gate_id = GATE_ADC1,
++	.mux_id = MUX_ADC1,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_adc1", adc1_src, &clk_stm32_composite_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_adc2 = {
++	.gate_id = GATE_ADC2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_adc2", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_composite ck_ker_adc2 = {
++	.gate_id = GATE_ADC2,
++	.mux_id = MUX_ADC2,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_adc2", adc2_src, &clk_stm32_composite_ops, 0),
++};
++
++/* CSI-HOST */
++static struct clk_stm32_gate ck_icn_p_csi = {
++	.gate_id = GATE_CSI,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_csi", ICN_APB4, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_csi = {
++	.gate_id = GATE_CSI,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_csi", FLEXGEN_29, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_csitxesc = {
++	.gate_id = GATE_CSI,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_csitxesc", FLEXGEN_30, &clk_stm32_gate_ops, 0),
++};
++
++/* CSI-PHY */
++static struct clk_stm32_gate ck_ker_csiphy = {
++	.gate_id = GATE_CSI,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_csiphy", FLEXGEN_31, &clk_stm32_gate_ops, 0),
++};
++
++/* DCMIPP */
++static struct clk_stm32_gate ck_icn_p_dcmipp = {
++	.gate_id = GATE_DCMIPP,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_dcmipp", ICN_APB4, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_dcmipssi = {
++	.gate_id = GATE_DCMIPSSI,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_dcmipssi", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* CRC */
++static struct clk_stm32_gate ck_icn_p_crc = {
++	.gate_id = GATE_CRC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_crc", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* CRYP */
++static struct clk_stm32_gate ck_icn_p_cryp1 = {
++	.gate_id = GATE_CRYP1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_cryp1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_cryp2 = {
++	.gate_id = GATE_CRYP2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_cryp2", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_ccb = {
++	.gate_id = GATE_CCB,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_ccb", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* DBG & TRACE*/
++/* Trace and debug clocks are managed by SCMI */
++
++/* LTDC */
++static struct clk_stm32_gate ck_icn_p_ltdc = {
++	.gate_id = GATE_LTDC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_ltdc", ICN_APB4, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_ltdc = {
++	.gate_id = GATE_LTDC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_ltdc", FLEXGEN_27, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++/* DTS */
++static struct clk_stm32_composite ck_ker_dts = {
++	.gate_id = GATE_DTS,
++	.mux_id = MUX_DTS,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_dts", dts_src,
++					    &clk_stm32_composite_ops, 0),
++};
++
++/* ETHERNET */
++static struct clk_stm32_gate ck_icn_p_eth1 = {
++	.gate_id = GATE_ETH1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_eth1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1stp = {
++	.gate_id = GATE_ETH1STP,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1stp", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1 = {
++	.gate_id = GATE_ETH1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1", FLEXGEN_54, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1ptp = {
++	.gate_id = GATE_ETH1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1ptp", FLEXGEN_56, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1mac = {
++	.gate_id = GATE_ETH1MAC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1mac", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1tx = {
++	.gate_id = GATE_ETH1TX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1tx", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth1rx = {
++	.gate_id = GATE_ETH1RX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth1rx", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_eth2 = {
++	.gate_id = GATE_ETH2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_eth2", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2stp = {
++	.gate_id = GATE_ETH2STP,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2stp", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2 = {
++	.gate_id = GATE_ETH2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2", FLEXGEN_55, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2ptp = {
++	.gate_id = GATE_ETH2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2ptp", FLEXGEN_56, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2mac = {
++	.gate_id = GATE_ETH2MAC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2mac", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2tx = {
++	.gate_id = GATE_ETH2TX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2tx", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_eth2rx = {
++	.gate_id = GATE_ETH2RX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_eth2rx", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* FDCAN */
++static struct clk_stm32_gate ck_icn_p_fdcan = {
++	.gate_id = GATE_FDCAN,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_fdcan", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_fdcan = {
++	.gate_id = GATE_FDCAN,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_fdcan", FLEXGEN_26, &clk_stm32_gate_ops, 0),
++};
++
++/* HASH */
++static struct clk_stm32_gate ck_icn_p_hash1 = {
++	.gate_id = GATE_HASH1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_hash1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_hash2 = {
++	.gate_id = GATE_HASH2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_hash2", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* HDP */
++static struct clk_stm32_gate ck_icn_p_hdp = {
++	.gate_id = GATE_HDP,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_hdp", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++/* I2C */
++static struct clk_stm32_gate ck_icn_p_i2c1 = {
++	.gate_id = GATE_I2C1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i2c1", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_i2c2 = {
++	.gate_id = GATE_I2C2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i2c2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_i2c3 = {
++	.gate_id = GATE_I2C3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i2c3", ICN_APB5, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i2c1 = {
++	.gate_id = GATE_I2C1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i2c1", FLEXGEN_13, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i2c2 = {
++	.gate_id = GATE_I2C2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i2c2", FLEXGEN_13, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i2c3 = {
++	.gate_id = GATE_I2C3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i2c3", FLEXGEN_38, &clk_stm32_gate_ops, 0),
++};
++
++/* I3C */
++static struct clk_stm32_gate ck_icn_p_i3c1 = {
++	.gate_id = GATE_I3C1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i3c1", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_i3c2 = {
++	.gate_id = GATE_I3C2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i3c2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_i3c3 = {
++	.gate_id = GATE_I3C3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_i3c3", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i3c1 = {
++	.gate_id = GATE_I3C1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i3c1", FLEXGEN_14, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i3c2 = {
++	.gate_id = GATE_I3C2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i3c2", FLEXGEN_14, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_i3c3 = {
++	.gate_id = GATE_I3C3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i3c3", FLEXGEN_36, &clk_stm32_gate_ops, 0),
++};
++
++/* IWDG */
++static struct clk_stm32_gate ck_icn_p_iwdg1 = {
++	.gate_id = GATE_IWDG1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_iwdg1", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_iwdg2 = {
++	.gate_id = GATE_IWDG2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_iwdg2", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_iwdg3 = {
++	.gate_id = GATE_IWDG3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_iwdg3", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_iwdg4 = {
++	.gate_id = GATE_IWDG4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_iwdg4", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++/* LPTIM */
++static struct clk_stm32_gate ck_icn_p_lptim1 = {
++	.gate_id = GATE_LPTIM1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lptim1", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_lptim2 = {
++	.gate_id = GATE_LPTIM2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lptim2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_lptim3 = {
++	.gate_id = GATE_LPTIM3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lptim3", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_lptim4 = {
++	.gate_id = GATE_LPTIM4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lptim4", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_lptim5 = {
++	.gate_id = GATE_LPTIM5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lptim5", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lptim1 = {
++	.gate_id = GATE_LPTIM1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim1", FLEXGEN_07, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lptim2 = {
++	.gate_id = GATE_LPTIM2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim2", FLEXGEN_07, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lptim3 = {
++	.gate_id = GATE_LPTIM3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim3", FLEXGEN_40, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lptim4 = {
++	.gate_id = GATE_LPTIM4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim4", FLEXGEN_41, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lptim5 = {
++	.gate_id = GATE_LPTIM5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim5", FLEXGEN_42, &clk_stm32_gate_ops, 0),
++};
++
++/* LPUART */
++static struct clk_stm32_gate ck_icn_p_lpuart1 = {
++	.gate_id = GATE_LPUART1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_lpuart1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_lpuart1 = {
++	.gate_id = GATE_LPUART1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lpuart1", FLEXGEN_39, &clk_stm32_gate_ops, 0),
++};
++
++/* MCO1 & MCO2 */
++static struct clk_stm32_composite ck_mco1 = {
++	.gate_id = GATE_MCO1,
++	.mux_id = MUX_MCO1,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_mco1", mco1_src, &clk_stm32_composite_ops, 0),
++};
++
++static struct clk_stm32_composite ck_mco2 = {
++	.gate_id = GATE_MCO2,
++	.mux_id = MUX_MCO2,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_mco2", mco2_src, &clk_stm32_composite_ops, 0),
++};
++
++/* MDF */
++static struct clk_stm32_gate ck_icn_p_mdf1 = {
++	.gate_id = GATE_MDF1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_mdf1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_mdf1 = {
++	.gate_id = GATE_MDF1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_mdf1", FLEXGEN_21, &clk_stm32_gate_ops, 0),
++};
++
++/* OTG */
++static struct clk_stm32_gate ck_icn_m_otg = {
++	.gate_id = GATE_OTG,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_otg", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* PKA */
++static struct clk_stm32_gate ck_icn_p_pka = {
++	.gate_id = GATE_PKA,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_pka", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* RNG */
++static struct clk_stm32_gate ck_icn_p_rng1 = {
++	.gate_id = GATE_RNG1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_rng1", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_rng2 = {
++	.gate_id = GATE_RNG2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_rng2", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* SAES */
++static struct clk_stm32_gate ck_icn_p_saes = {
++	.gate_id = GATE_SAES,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_saes", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
++};
++
++/* SAI */
++static struct clk_stm32_gate ck_icn_p_sai1 = {
++	.gate_id = GATE_SAI1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_sai1", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_sai2 = {
++	.gate_id = GATE_SAI2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_sai2", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_sai3 = {
++	.gate_id = GATE_SAI3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_sai3", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_sai4 = {
++	.gate_id = GATE_SAI4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_sai4", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_sai1 = {
++	.gate_id = GATE_SAI1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sai1", FLEXGEN_22, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_sai2 = {
++	.gate_id = GATE_SAI2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sai2", FLEXGEN_23, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_sai3 = {
++	.gate_id = GATE_SAI3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sai3", FLEXGEN_24, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_sai4 = {
++	.gate_id = GATE_SAI4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sai4", FLEXGEN_25, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++/* SDMMC */
++static struct clk_stm32_gate ck_icn_m_sdmmc1 = {
++	.gate_id = GATE_SDMMC1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_sdmmc1", ICN_SDMMC, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_m_sdmmc2 = {
++	.gate_id = GATE_SDMMC2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_sdmmc2", ICN_SDMMC, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_m_sdmmc3 = {
++	.gate_id = GATE_SDMMC3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_sdmmc3", ICN_SDMMC, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_sdmmc1 = {
++	.gate_id = GATE_SDMMC1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sdmmc1", FLEXGEN_51, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_sdmmc2 = {
++	.gate_id = GATE_SDMMC2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sdmmc2", FLEXGEN_52, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_sdmmc3 = {
++	.gate_id = GATE_SDMMC3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_sdmmc3", FLEXGEN_53, &clk_stm32_gate_ops, 0),
++};
++
++/* SERC */
++static struct clk_stm32_gate ck_icn_p_serc = {
++	.gate_id = GATE_SERC,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_serc", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++/* SPDIF */
++static struct clk_stm32_gate ck_icn_p_spdifrx = {
++	.gate_id = GATE_SPDIFRX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spdifrx", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_spdifrx = {
++	.gate_id = GATE_SPDIFRX,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spdifrx", FLEXGEN_12, &clk_stm32_gate_ops, 0),
++};
++
++/* SPI */
++static struct clk_stm32_gate ck_icn_p_spi1 = {
++	.gate_id = GATE_SPI1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi1", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_spi2 = {
++	.gate_id = GATE_SPI2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_spi3 = {
++	.gate_id = GATE_SPI3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi3", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_spi4 = {
++	.gate_id = GATE_SPI4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi4", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_spi5 = {
++	.gate_id = GATE_SPI5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi5", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_spi6 = {
++	.gate_id = GATE_SPI6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_spi6", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_spi1 = {
++	.gate_id = GATE_SPI1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi1", FLEXGEN_16, &clk_stm32_gate_ops,
++				     CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_spi2 = {
++	.gate_id = GATE_SPI2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi2", FLEXGEN_10, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_spi3 = {
++	.gate_id = GATE_SPI3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi3", FLEXGEN_11, &clk_stm32_gate_ops,
++				       CLK_SET_RATE_PARENT),
++};
++
++static struct clk_stm32_gate ck_ker_spi4 = {
++	.gate_id = GATE_SPI4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi4", FLEXGEN_17, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_spi5 = {
++	.gate_id = GATE_SPI5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi5", FLEXGEN_17, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_spi6 = {
++	.gate_id = GATE_SPI6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi6", FLEXGEN_37, &clk_stm32_gate_ops, 0),
++};
++
++/* Timers */
++static struct clk_stm32_gate ck_icn_p_tim2 = {
++	.gate_id = GATE_TIM2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim3 = {
++	.gate_id = GATE_TIM3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim3", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim4 = {
++	.gate_id = GATE_TIM4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim4", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim5 = {
++	.gate_id = GATE_TIM5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim5", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim6 = {
++	.gate_id = GATE_TIM6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim6", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim7 = {
++	.gate_id = GATE_TIM7,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim7", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim10 = {
++	.gate_id = GATE_TIM10,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim10", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim11 = {
++	.gate_id = GATE_TIM11,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim11", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim12 = {
++	.gate_id = GATE_TIM12,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim12", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim13 = {
++	.gate_id = GATE_TIM13,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim13", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim14 = {
++	.gate_id = GATE_TIM14,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim14", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim1 = {
++	.gate_id = GATE_TIM1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim1", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim8 = {
++	.gate_id = GATE_TIM8,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim8", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim15 = {
++	.gate_id = GATE_TIM15,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim15", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim16 = {
++	.gate_id = GATE_TIM16,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim16", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_tim17 = {
++	.gate_id = GATE_TIM17,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_tim17", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim2 = {
++	.gate_id = GATE_TIM2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim2", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim3 = {
++	.gate_id = GATE_TIM3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim3", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim4 = {
++	.gate_id = GATE_TIM4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim4", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim5 = {
++	.gate_id = GATE_TIM5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim5", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim6 = {
++	.gate_id = GATE_TIM6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim6", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim7 = {
++	.gate_id = GATE_TIM7,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim7", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim10 = {
++	.gate_id = GATE_TIM10,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim10", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim11 = {
++	.gate_id = GATE_TIM11,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim11", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim12 = {
++	.gate_id = GATE_TIM12,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim12", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim13 = {
++	.gate_id = GATE_TIM13,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim13", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim14 = {
++	.gate_id = GATE_TIM14,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim14", TIMG1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim1 = {
++	.gate_id = GATE_TIM1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim1", TIMG2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim8 = {
++	.gate_id = GATE_TIM8,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim8", TIMG2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim15 = {
++	.gate_id = GATE_TIM15,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim15", TIMG2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim16 = {
++	.gate_id = GATE_TIM16,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim16", TIMG2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_tim17 = {
++	.gate_id = GATE_TIM17,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_tim17", TIMG2, &clk_stm32_gate_ops, 0),
++};
++
++/* UART/USART */
++static struct clk_stm32_gate ck_icn_p_usart2 = {
++	.gate_id = GATE_USART2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_usart2", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_usart3 = {
++	.gate_id = GATE_USART3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_usart3", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_uart4 = {
++	.gate_id = GATE_UART4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_uart4", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_uart5 = {
++	.gate_id = GATE_UART5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_uart5", ICN_APB1, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_usart1 = {
++	.gate_id = GATE_USART1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_usart1", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_usart6 = {
++	.gate_id = GATE_USART6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_usart6", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_p_uart7 = {
++	.gate_id = GATE_UART7,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_uart7", ICN_APB2, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_usart2 = {
++	.gate_id = GATE_USART2,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_usart2", FLEXGEN_08, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_uart4 = {
++	.gate_id = GATE_UART4,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_uart4", FLEXGEN_08, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_usart3 = {
++	.gate_id = GATE_USART3,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_usart3", FLEXGEN_09, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_uart5 = {
++	.gate_id = GATE_UART5,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_uart5", FLEXGEN_09, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_usart1 = {
++	.gate_id = GATE_USART1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_usart1", FLEXGEN_18, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_usart6 = {
++	.gate_id = GATE_USART6,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_usart6", FLEXGEN_19, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_ker_uart7 = {
++	.gate_id = GATE_UART7,
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_uart7", FLEXGEN_20, &clk_stm32_gate_ops, 0),
++};
++
++/* USB2PHY1 */
++static struct clk_stm32_composite ck_ker_usb2phy1 = {
++	.gate_id = GATE_USB2PHY1,
++	.mux_id = MUX_USB2PHY1,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_usb2phy1", usb2phy1_src,
++					    &clk_stm32_composite_ops, 0),
++};
++
++/* USBH */
++static struct clk_stm32_gate ck_icn_m_usbhehci = {
++	.gate_id = GATE_USBH,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_usbhehci", ICN_HSL, &clk_stm32_gate_ops, 0),
++};
++
++static struct clk_stm32_gate ck_icn_m_usbhohci = {
++	.gate_id = GATE_USBH,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_m_usbhohci", ICN_HSL, &clk_stm32_gate_ops, 0),
++};
++
++/* USB2PHY2 */
++static struct clk_stm32_composite ck_ker_usb2phy2_en = {
++	.gate_id = GATE_USB2PHY2,
++	.mux_id = MUX_USB2PHY2,
++	.div_id = NO_STM32_DIV,
++	.hw.init = CLK_HW_INIT_PARENTS_DATA("ck_ker_usb2phy2_en", usb2phy2_src,
++					    &clk_stm32_composite_ops, 0),
++};
++
++/* VREF */
++static struct clk_stm32_gate ck_icn_p_vref = {
++	.gate_id = GATE_VREF,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_vref", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++/* WWDG */
++static struct clk_stm32_gate ck_icn_p_wwdg1 = {
++	.gate_id = GATE_WWDG1,
++	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_wwdg1", ICN_APB3, &clk_stm32_gate_ops, 0),
++};
++
++static int stm32_rcc_get_access(void __iomem *base, u32 index)
++{
++	u32 seccfgr, cidcfgr, semcr;
++	int bit, cid;
++
++	bit = index % RCC_REG_SIZE;
++
++	seccfgr = readl(base + RCC_SECCFGR(index));
++	if (seccfgr & BIT(bit))
++		return -EACCES;
++
++	cidcfgr = readl(base + RCC_CIDCFGR(index));
++	if (!(cidcfgr & RCC_CIDCFGR_CFEN))
++		/* CID filtering is turned off: access granted */
++		return 0;
++
++	if (!(cidcfgr & RCC_CIDCFGR_SEM_EN)) {
++		/* Static CID mode */
++		cid = FIELD_GET(RCC_CIDCFGR_SCID_MASK, cidcfgr);
++		if (cid != RCC_CID1)
++			return -EACCES;
++		return 0;
++	}
++
++	/* Pass-list with semaphore mode */
++	if (!(cidcfgr & RCC_CIDCFGR_SEMWLC1_EN))
++		return -EACCES;
++
++	semcr = readl(base + RCC_SEMCR(index));
++
++	cid = FIELD_GET(RCC_SEMCR_SEMCID_MASK, semcr);
++	if (cid != RCC_CID1)
++		return -EACCES;
++
++	return 0;
++}
++
++static int stm32mp21_check_security(struct device_node *np, void __iomem *base,
++				    const struct clock_config *cfg)
++{
++	int ret = 0;
++
++	if (cfg->sec_id != SECF_NONE) {
++		struct stm32_firewall firewall;
++		u32 index = (u32)cfg->sec_id;
++
++		if (index & SEC_RIFSC_FLAG) {
++			ret = stm32_firewall_get_firewall(np, &firewall, 1);
++			if (ret)
++				return ret;
++			ret = stm32_firewall_grant_access_by_id(&firewall, index & ~SEC_RIFSC_FLAG);
++		} else {
++			ret = stm32_rcc_get_access(base, cfg->sec_id & ~SEC_RIFSC_FLAG);
++		}
++	}
++
++	return ret;
++}
++
++static const struct clock_config stm32mp21_clock_cfg[] = {
++	STM32_GATE_CFG(CK_BUS_ETH1, ck_icn_p_eth1, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_BUS_ETH2, ck_icn_p_eth2, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_BUS_ADC1, ck_icn_p_adc1, SEC_RIFSC(58)),
++	STM32_GATE_CFG(CK_BUS_ADC2, ck_icn_p_adc2, SEC_RIFSC(59)),
++	STM32_GATE_CFG(CK_BUS_CRC, ck_icn_p_crc, SEC_RIFSC(109)),
++	STM32_GATE_CFG(CK_BUS_MDF1, ck_icn_p_mdf1, SEC_RIFSC(54)),
++	STM32_GATE_CFG(CK_BUS_HASH1, ck_icn_p_hash1, SEC_RIFSC(96)),
++	STM32_GATE_CFG(CK_BUS_HASH2, ck_icn_p_hash2, SEC_RIFSC(97)),
++	STM32_GATE_CFG(CK_BUS_RNG1, ck_icn_p_rng1, SEC_RIFSC(92)),
++	STM32_GATE_CFG(CK_BUS_RNG2, ck_icn_p_rng2, SEC_RIFSC(93)),
++	STM32_GATE_CFG(CK_BUS_CRYP1, ck_icn_p_cryp1, SEC_RIFSC(98)),
++	STM32_GATE_CFG(CK_BUS_CRYP2, ck_icn_p_cryp2, SEC_RIFSC(99)),
++	STM32_GATE_CFG(CK_BUS_CCB, ck_icn_p_ccb, SEC_RIFSC(91)),
++	STM32_GATE_CFG(CK_BUS_SAES, ck_icn_p_saes, SEC_RIFSC(95)),
++	STM32_GATE_CFG(CK_BUS_PKA, ck_icn_p_pka, SEC_RIFSC(94)),
++	STM32_GATE_CFG(CK_BUS_LPUART1, ck_icn_p_lpuart1, SEC_RIFSC(40)),
++	STM32_GATE_CFG(CK_BUS_LPTIM3, ck_icn_p_lptim3, SEC_RIFSC(19)),
++	STM32_GATE_CFG(CK_BUS_LPTIM4, ck_icn_p_lptim4, SEC_RIFSC(20)),
++	STM32_GATE_CFG(CK_BUS_LPTIM5, ck_icn_p_lptim5, SEC_RIFSC(21)),
++	STM32_GATE_CFG(CK_BUS_SDMMC1, ck_icn_m_sdmmc1, SEC_RIFSC(76)),
++	STM32_GATE_CFG(CK_BUS_SDMMC2, ck_icn_m_sdmmc2, SEC_RIFSC(77)),
++	STM32_GATE_CFG(CK_BUS_SDMMC3, ck_icn_m_sdmmc3, SEC_RIFSC(78)),
++	STM32_GATE_CFG(CK_BUS_USBHOHCI, ck_icn_m_usbhohci, SEC_RIFSC(63)),
++	STM32_GATE_CFG(CK_BUS_USBHEHCI, ck_icn_m_usbhehci, SEC_RIFSC(63)),
++	STM32_GATE_CFG(CK_BUS_OTG, ck_icn_m_otg, SEC_RIFSC(63)),
++	STM32_GATE_CFG(CK_BUS_TIM2, ck_icn_p_tim2, SEC_RIFSC(1)),
++	STM32_GATE_CFG(CK_BUS_TIM3, ck_icn_p_tim3, SEC_RIFSC(2)),
++	STM32_GATE_CFG(CK_BUS_TIM4, ck_icn_p_tim4, SEC_RIFSC(3)),
++	STM32_GATE_CFG(CK_BUS_TIM5, ck_icn_p_tim5, SEC_RIFSC(4)),
++	STM32_GATE_CFG(CK_BUS_TIM6, ck_icn_p_tim6, SEC_RIFSC(5)),
++	STM32_GATE_CFG(CK_BUS_TIM7, ck_icn_p_tim7, SEC_RIFSC(6)),
++	STM32_GATE_CFG(CK_BUS_TIM10, ck_icn_p_tim10, SEC_RIFSC(8)),
++	STM32_GATE_CFG(CK_BUS_TIM11, ck_icn_p_tim11, SEC_RIFSC(9)),
++	STM32_GATE_CFG(CK_BUS_TIM12, ck_icn_p_tim12, SEC_RIFSC(10)),
++	STM32_GATE_CFG(CK_BUS_TIM13, ck_icn_p_tim13, SEC_RIFSC(11)),
++	STM32_GATE_CFG(CK_BUS_TIM14, ck_icn_p_tim14, SEC_RIFSC(12)),
++	STM32_GATE_CFG(CK_BUS_LPTIM1, ck_icn_p_lptim1, SEC_RIFSC(17)),
++	STM32_GATE_CFG(CK_BUS_LPTIM2, ck_icn_p_lptim2, SEC_RIFSC(18)),
++	STM32_GATE_CFG(CK_BUS_SPI2, ck_icn_p_spi2, SEC_RIFSC(23)),
++	STM32_GATE_CFG(CK_BUS_SPI3, ck_icn_p_spi3, SEC_RIFSC(24)),
++	STM32_GATE_CFG(CK_BUS_SPDIFRX, ck_icn_p_spdifrx, SEC_RIFSC(30)),
++	STM32_GATE_CFG(CK_BUS_USART2, ck_icn_p_usart2, SEC_RIFSC(32)),
++	STM32_GATE_CFG(CK_BUS_USART3, ck_icn_p_usart3, SEC_RIFSC(33)),
++	STM32_GATE_CFG(CK_BUS_UART4, ck_icn_p_uart4, SEC_RIFSC(34)),
++	STM32_GATE_CFG(CK_BUS_UART5, ck_icn_p_uart5, SEC_RIFSC(35)),
++	STM32_GATE_CFG(CK_BUS_I2C1, ck_icn_p_i2c1, SEC_RIFSC(41)),
++	STM32_GATE_CFG(CK_BUS_I2C2, ck_icn_p_i2c2, SEC_RIFSC(42)),
++	STM32_GATE_CFG(CK_BUS_I2C3, ck_icn_p_i2c3, SEC_RIFSC(43)),
++	STM32_GATE_CFG(CK_BUS_I3C1, ck_icn_p_i3c1, SEC_RIFSC(114)),
++	STM32_GATE_CFG(CK_BUS_I3C2, ck_icn_p_i3c2, SEC_RIFSC(115)),
++	STM32_GATE_CFG(CK_BUS_I3C3, ck_icn_p_i3c3, SEC_RIFSC(116)),
++	STM32_GATE_CFG(CK_BUS_TIM1, ck_icn_p_tim1, SEC_RIFSC(0)),
++	STM32_GATE_CFG(CK_BUS_TIM8, ck_icn_p_tim8, SEC_RIFSC(7)),
++	STM32_GATE_CFG(CK_BUS_TIM15, ck_icn_p_tim15, SEC_RIFSC(13)),
++	STM32_GATE_CFG(CK_BUS_TIM16, ck_icn_p_tim16, SEC_RIFSC(14)),
++	STM32_GATE_CFG(CK_BUS_TIM17, ck_icn_p_tim17, SEC_RIFSC(15)),
++	STM32_GATE_CFG(CK_BUS_SAI1, ck_icn_p_sai1, SEC_RIFSC(49)),
++	STM32_GATE_CFG(CK_BUS_SAI2, ck_icn_p_sai2, SEC_RIFSC(50)),
++	STM32_GATE_CFG(CK_BUS_SAI3, ck_icn_p_sai3, SEC_RIFSC(51)),
++	STM32_GATE_CFG(CK_BUS_SAI4, ck_icn_p_sai4, SEC_RIFSC(52)),
++	STM32_GATE_CFG(CK_BUS_USART1, ck_icn_p_usart1, SEC_RIFSC(31)),
++	STM32_GATE_CFG(CK_BUS_USART6, ck_icn_p_usart6, SEC_RIFSC(36)),
++	STM32_GATE_CFG(CK_BUS_UART7, ck_icn_p_uart7, SEC_RIFSC(37)),
++	STM32_GATE_CFG(CK_BUS_FDCAN, ck_icn_p_fdcan, SEC_RIFSC(56)),
++	STM32_GATE_CFG(CK_BUS_SPI1, ck_icn_p_spi1, SEC_RIFSC(22)),
++	STM32_GATE_CFG(CK_BUS_SPI4, ck_icn_p_spi4, SEC_RIFSC(25)),
++	STM32_GATE_CFG(CK_BUS_SPI5, ck_icn_p_spi5, SEC_RIFSC(26)),
++	STM32_GATE_CFG(CK_BUS_SPI6, ck_icn_p_spi6, SEC_RIFSC(27)),
++	STM32_GATE_CFG(CK_BUS_IWDG1, ck_icn_p_iwdg1, SEC_RIFSC(98)),
++	STM32_GATE_CFG(CK_BUS_IWDG2, ck_icn_p_iwdg2, SEC_RIFSC(99)),
++	STM32_GATE_CFG(CK_BUS_IWDG3, ck_icn_p_iwdg3, SEC_RIFSC(100)),
++	STM32_GATE_CFG(CK_BUS_IWDG4, ck_icn_p_iwdg4, SEC_RIFSC(101)),
++	STM32_GATE_CFG(CK_BUS_WWDG1, ck_icn_p_wwdg1, SEC_RIFSC(103)),
++	STM32_GATE_CFG(CK_BUS_VREF, ck_icn_p_vref, SEC_RIFSC(106)),
++	STM32_GATE_CFG(CK_BUS_SERC, ck_icn_p_serc, SEC_RIFSC(110)),
++	STM32_GATE_CFG(CK_BUS_HDP, ck_icn_p_hdp, SEC_RIFSC(57)),
++	STM32_GATE_CFG(CK_BUS_LTDC, ck_icn_p_ltdc, SEC_RIFSC(80)),
++	STM32_GATE_CFG(CK_BUS_CSI, ck_icn_p_csi, SEC_RIFSC(86)),
++	STM32_GATE_CFG(CK_BUS_DCMIPP, ck_icn_p_dcmipp, SEC_RIFSC(87)),
++	STM32_GATE_CFG(CK_BUS_DCMIPSSI, ck_icn_p_dcmipssi, SEC_RIFSC(87)),
++	STM32_GATE_CFG(CK_KER_TIM2, ck_ker_tim2, SEC_RIFSC(1)),
++	STM32_GATE_CFG(CK_KER_TIM3, ck_ker_tim3, SEC_RIFSC(2)),
++	STM32_GATE_CFG(CK_KER_TIM4, ck_ker_tim4, SEC_RIFSC(3)),
++	STM32_GATE_CFG(CK_KER_TIM5, ck_ker_tim5, SEC_RIFSC(4)),
++	STM32_GATE_CFG(CK_KER_TIM6, ck_ker_tim6, SEC_RIFSC(5)),
++	STM32_GATE_CFG(CK_KER_TIM7, ck_ker_tim7, SEC_RIFSC(6)),
++	STM32_GATE_CFG(CK_KER_TIM10, ck_ker_tim10, SEC_RIFSC(8)),
++	STM32_GATE_CFG(CK_KER_TIM11, ck_ker_tim11, SEC_RIFSC(9)),
++	STM32_GATE_CFG(CK_KER_TIM12, ck_ker_tim12, SEC_RIFSC(10)),
++	STM32_GATE_CFG(CK_KER_TIM13, ck_ker_tim13, SEC_RIFSC(11)),
++	STM32_GATE_CFG(CK_KER_TIM14, ck_ker_tim14, SEC_RIFSC(12)),
++	STM32_GATE_CFG(CK_KER_TIM1, ck_ker_tim1, SEC_RIFSC(0)),
++	STM32_GATE_CFG(CK_KER_TIM8, ck_ker_tim8, SEC_RIFSC(7)),
++	STM32_GATE_CFG(CK_KER_TIM15, ck_ker_tim15, SEC_RIFSC(13)),
++	STM32_GATE_CFG(CK_KER_TIM16, ck_ker_tim16, SEC_RIFSC(14)),
++	STM32_GATE_CFG(CK_KER_TIM17, ck_ker_tim17, SEC_RIFSC(15)),
++	STM32_GATE_CFG(CK_KER_LPTIM1, ck_ker_lptim1, SEC_RIFSC(17)),
++	STM32_GATE_CFG(CK_KER_LPTIM2, ck_ker_lptim2, SEC_RIFSC(18)),
++	STM32_GATE_CFG(CK_KER_USART2, ck_ker_usart2, SEC_RIFSC(32)),
++	STM32_GATE_CFG(CK_KER_UART4, ck_ker_uart4, SEC_RIFSC(34)),
++	STM32_GATE_CFG(CK_KER_USART3, ck_ker_usart3, SEC_RIFSC(33)),
++	STM32_GATE_CFG(CK_KER_UART5, ck_ker_uart5, SEC_RIFSC(35)),
++	STM32_GATE_CFG(CK_KER_SPI2, ck_ker_spi2, SEC_RIFSC(23)),
++	STM32_GATE_CFG(CK_KER_SPI3, ck_ker_spi3, SEC_RIFSC(24)),
++	STM32_GATE_CFG(CK_KER_SPDIFRX, ck_ker_spdifrx, SEC_RIFSC(30)),
++	STM32_GATE_CFG(CK_KER_I2C1, ck_ker_i2c1, SEC_RIFSC(41)),
++	STM32_GATE_CFG(CK_KER_I2C2, ck_ker_i2c2, SEC_RIFSC(42)),
++	STM32_GATE_CFG(CK_KER_I3C1, ck_ker_i3c1, SEC_RIFSC(114)),
++	STM32_GATE_CFG(CK_KER_I3C2, ck_ker_i3c2, SEC_RIFSC(115)),
++	STM32_GATE_CFG(CK_KER_I2C3, ck_ker_i2c3, SEC_RIFSC(43)),
++	STM32_GATE_CFG(CK_KER_I3C3, ck_ker_i3c3, SEC_RIFSC(116)),
++	STM32_GATE_CFG(CK_KER_SPI1, ck_ker_spi1, SEC_RIFSC(22)),
++	STM32_GATE_CFG(CK_KER_SPI4, ck_ker_spi4, SEC_RIFSC(25)),
++	STM32_GATE_CFG(CK_KER_SPI5, ck_ker_spi5, SEC_RIFSC(26)),
++	STM32_GATE_CFG(CK_KER_SPI6, ck_ker_spi6, SEC_RIFSC(27)),
++	STM32_GATE_CFG(CK_KER_USART1, ck_ker_usart1, SEC_RIFSC(31)),
++	STM32_GATE_CFG(CK_KER_USART6, ck_ker_usart6, SEC_RIFSC(36)),
++	STM32_GATE_CFG(CK_KER_UART7, ck_ker_uart7, SEC_RIFSC(37)),
++	STM32_GATE_CFG(CK_KER_MDF1, ck_ker_mdf1, SEC_RIFSC(54)),
++	STM32_GATE_CFG(CK_KER_SAI1, ck_ker_sai1, SEC_RIFSC(49)),
++	STM32_GATE_CFG(CK_KER_SAI2, ck_ker_sai2, SEC_RIFSC(50)),
++	STM32_GATE_CFG(CK_KER_SAI3, ck_ker_sai3, SEC_RIFSC(51)),
++	STM32_GATE_CFG(CK_KER_SAI4, ck_ker_sai4, SEC_RIFSC(52)),
++	STM32_GATE_CFG(CK_KER_FDCAN, ck_ker_fdcan, SEC_RIFSC(56)),
++	STM32_GATE_CFG(CK_KER_CSI, ck_ker_csi, SEC_RIFSC(86)),
++	STM32_GATE_CFG(CK_KER_CSITXESC, ck_ker_csitxesc, SEC_RIFSC(86)),
++	STM32_GATE_CFG(CK_KER_CSIPHY, ck_ker_csiphy, SEC_RIFSC(86)),
++	STM32_GATE_CFG(CK_KER_LPUART1, ck_ker_lpuart1, SEC_RIFSC(40)),
++	STM32_GATE_CFG(CK_KER_LPTIM3, ck_ker_lptim3, SEC_RIFSC(19)),
++	STM32_GATE_CFG(CK_KER_LPTIM4, ck_ker_lptim4, SEC_RIFSC(20)),
++	STM32_GATE_CFG(CK_KER_LPTIM5, ck_ker_lptim5, SEC_RIFSC(21)),
++	STM32_GATE_CFG(CK_KER_SDMMC1, ck_ker_sdmmc1, SEC_RIFSC(76)),
++	STM32_GATE_CFG(CK_KER_SDMMC2, ck_ker_sdmmc2, SEC_RIFSC(77)),
++	STM32_GATE_CFG(CK_KER_SDMMC3, ck_ker_sdmmc3, SEC_RIFSC(78)),
++	STM32_GATE_CFG(CK_KER_ETH1, ck_ker_eth1, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_ETH1_STP, ck_ker_eth1stp, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_KER_ETH2, ck_ker_eth2, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_ETH2_STP, ck_ker_eth2stp, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_KER_ETH1PTP, ck_ker_eth1ptp, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_KER_ETH2PTP, ck_ker_eth2ptp, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_ETH1_MAC, ck_ker_eth1mac, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_ETH1_TX, ck_ker_eth1tx, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_ETH1_RX, ck_ker_eth1rx, SEC_RIFSC(60)),
++	STM32_GATE_CFG(CK_ETH2_MAC, ck_ker_eth2mac, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_ETH2_TX, ck_ker_eth2tx, SEC_RIFSC(61)),
++	STM32_GATE_CFG(CK_ETH2_RX, ck_ker_eth2rx, SEC_RIFSC(61)),
++	STM32_COMPOSITE_CFG(CK_MCO1, ck_mco1, SEC_RIFRCC(MCO1)),
++	STM32_COMPOSITE_CFG(CK_MCO2, ck_mco2, SEC_RIFRCC(MCO2)),
++	STM32_COMPOSITE_CFG(CK_KER_ADC1, ck_ker_adc1, SEC_RIFSC(58)),
++	STM32_COMPOSITE_CFG(CK_KER_ADC2, ck_ker_adc2, SEC_RIFSC(59)),
++	STM32_COMPOSITE_CFG(CK_KER_USB2PHY1, ck_ker_usb2phy1, SEC_RIFSC(63)),
++	STM32_COMPOSITE_CFG(CK_KER_USB2PHY2EN, ck_ker_usb2phy2_en, SEC_RIFSC(63)),
++	STM32_COMPOSITE_CFG(CK_KER_DTS, ck_ker_dts, SEC_RIFSC(107)),
++	STM32_GATE_CFG(CK_KER_LTDC, ck_ker_ltdc, SEC_RIFSC(80)),
++};
++
++#define RESET_MP21(id, _offset, _bit_idx, _set_clr)	\
++	[id] = &(struct stm32_reset_cfg){		\
++		.offset		= (_offset),		\
++		.bit_idx	= (_bit_idx),		\
++		.set_clr	= (_set_clr),		\
++	}
++
++static const struct stm32_reset_cfg *stm32mp21_reset_cfg[STM32MP21_LAST_RESET] = {
++	RESET_MP21(TIM1_R,		RCC_TIM1CFGR,		0,	0),
++	RESET_MP21(TIM2_R,		RCC_TIM2CFGR,		0,	0),
++	RESET_MP21(TIM3_R,		RCC_TIM3CFGR,		0,	0),
++	RESET_MP21(TIM4_R,		RCC_TIM4CFGR,		0,	0),
++	RESET_MP21(TIM5_R,		RCC_TIM5CFGR,		0,	0),
++	RESET_MP21(TIM6_R,		RCC_TIM6CFGR,		0,	0),
++	RESET_MP21(TIM7_R,		RCC_TIM7CFGR,		0,	0),
++	RESET_MP21(TIM8_R,		RCC_TIM8CFGR,		0,	0),
++	RESET_MP21(TIM10_R,		RCC_TIM10CFGR,		0,	0),
++	RESET_MP21(TIM11_R,		RCC_TIM11CFGR,		0,	0),
++	RESET_MP21(TIM12_R,		RCC_TIM12CFGR,		0,	0),
++	RESET_MP21(TIM13_R,		RCC_TIM13CFGR,		0,	0),
++	RESET_MP21(TIM14_R,		RCC_TIM14CFGR,		0,	0),
++	RESET_MP21(TIM15_R,		RCC_TIM15CFGR,		0,	0),
++	RESET_MP21(TIM16_R,		RCC_TIM16CFGR,		0,	0),
++	RESET_MP21(TIM17_R,		RCC_TIM17CFGR,		0,	0),
++	RESET_MP21(LPTIM1_R,		RCC_LPTIM1CFGR,		0,	0),
++	RESET_MP21(LPTIM2_R,		RCC_LPTIM2CFGR,		0,	0),
++	RESET_MP21(LPTIM3_R,		RCC_LPTIM3CFGR,		0,	0),
++	RESET_MP21(LPTIM4_R,		RCC_LPTIM4CFGR,		0,	0),
++	RESET_MP21(LPTIM5_R,		RCC_LPTIM5CFGR,		0,	0),
++	RESET_MP21(SPI1_R,		RCC_SPI1CFGR,		0,	0),
++	RESET_MP21(SPI2_R,		RCC_SPI2CFGR,		0,	0),
++	RESET_MP21(SPI3_R,		RCC_SPI3CFGR,		0,	0),
++	RESET_MP21(SPI4_R,		RCC_SPI4CFGR,		0,	0),
++	RESET_MP21(SPI5_R,		RCC_SPI5CFGR,		0,	0),
++	RESET_MP21(SPI6_R,		RCC_SPI6CFGR,		0,	0),
++	RESET_MP21(SPDIFRX_R,		RCC_SPDIFRXCFGR,	0,	0),
++	RESET_MP21(USART1_R,		RCC_USART1CFGR,		0,	0),
++	RESET_MP21(USART2_R,		RCC_USART2CFGR,		0,	0),
++	RESET_MP21(USART3_R,		RCC_USART3CFGR,		0,	0),
++	RESET_MP21(UART4_R,		RCC_UART4CFGR,		0,	0),
++	RESET_MP21(UART5_R,		RCC_UART5CFGR,		0,	0),
++	RESET_MP21(USART6_R,		RCC_USART6CFGR,		0,	0),
++	RESET_MP21(UART7_R,		RCC_UART7CFGR,		0,	0),
++	RESET_MP21(LPUART1_R,		RCC_LPUART1CFGR,	0,	0),
++	RESET_MP21(I2C1_R,		RCC_I2C1CFGR,		0,	0),
++	RESET_MP21(I2C2_R,		RCC_I2C2CFGR,		0,	0),
++	RESET_MP21(I2C3_R,		RCC_I2C3CFGR,		0,	0),
++	RESET_MP21(SAI1_R,		RCC_SAI1CFGR,		0,	0),
++	RESET_MP21(SAI2_R,		RCC_SAI2CFGR,		0,	0),
++	RESET_MP21(SAI3_R,		RCC_SAI3CFGR,		0,	0),
++	RESET_MP21(SAI4_R,		RCC_SAI4CFGR,		0,	0),
++	RESET_MP21(MDF1_R,		RCC_MDF1CFGR,		0,	0),
++	RESET_MP21(FDCAN_R,		RCC_FDCANCFGR,		0,	0),
++	RESET_MP21(HDP_R,		RCC_HDPCFGR,		0,	0),
++	RESET_MP21(ADC1_R,		RCC_ADC1CFGR,		0,	0),
++	RESET_MP21(ADC2_R,		RCC_ADC2CFGR,		0,	0),
++	RESET_MP21(ETH1_R,		RCC_ETH1CFGR,		0,	0),
++	RESET_MP21(ETH2_R,		RCC_ETH2CFGR,		0,	0),
++	RESET_MP21(OTG_R,		RCC_OTGCFGR,		0,	0),
++	RESET_MP21(USBH_R,		RCC_USBHCFGR,		0,	0),
++	RESET_MP21(USB2PHY1_R,		RCC_USB2PHY1CFGR,	0,	0),
++	RESET_MP21(USB2PHY2_R,		RCC_USB2PHY2CFGR,	0,	0),
++	RESET_MP21(SDMMC1_R,		RCC_SDMMC1CFGR,		0,	0),
++	RESET_MP21(SDMMC1DLL_R,		RCC_SDMMC1CFGR,		16,	0),
++	RESET_MP21(SDMMC2_R,		RCC_SDMMC2CFGR,		0,	0),
++	RESET_MP21(SDMMC2DLL_R,		RCC_SDMMC2CFGR,		16,	0),
++	RESET_MP21(SDMMC3_R,		RCC_SDMMC3CFGR,		0,	0),
++	RESET_MP21(SDMMC3DLL_R,		RCC_SDMMC3CFGR,		16,	0),
++	RESET_MP21(LTDC_R,		RCC_LTDCCFGR,		0,	0),
++	RESET_MP21(CSI_R,		RCC_CSICFGR,		0,	0),
++	RESET_MP21(DCMIPP_R,		RCC_DCMIPPCFGR,		0,	0),
++	RESET_MP21(DCMIPSSI_R,		RCC_DCMIPSSICFGR,	0,	0),
++	RESET_MP21(WWDG1_R,		RCC_WWDG1CFGR,		0,	0),
++	RESET_MP21(VREF_R,		RCC_VREFCFGR,		0,	0),
++	RESET_MP21(DTS_R,		RCC_DTSCFGR,		0,	0),
++	RESET_MP21(CRC_R,		RCC_CRCCFGR,		0,	0),
++	RESET_MP21(SERC_R,		RCC_SERCCFGR,		0,	0),
++	RESET_MP21(I3C1_R,		RCC_I3C1CFGR,		0,	0),
++	RESET_MP21(I3C2_R,		RCC_I3C2CFGR,		0,	0),
++	RESET_MP21(IWDG2_KER_R,		RCC_IWDGC1CFGSETR,	18,	1),
++	RESET_MP21(IWDG4_KER_R,		RCC_IWDGC2CFGSETR,	18,	1),
++	RESET_MP21(RNG1_R,		RCC_RNG1CFGR,		0,	0),
++	RESET_MP21(RNG2_R,		RCC_RNG2CFGR,		0,	0),
++	RESET_MP21(PKA_R,		RCC_PKACFGR,		0,	0),
++	RESET_MP21(SAES_R,		RCC_SAESCFGR,		0,	0),
++	RESET_MP21(HASH1_R,		RCC_HASH1CFGR,		0,	0),
++	RESET_MP21(HASH2_R,		RCC_HASH2CFGR,		0,	0),
++	RESET_MP21(CRYP1_R,		RCC_CRYP1CFGR,		0,	0),
++	RESET_MP21(CRYP2_R,		RCC_CRYP2CFGR,		0,	0),
++};
++
++static u16 stm32mp21_cpt_gate[GATE_NB];
++
++static struct clk_stm32_clock_data stm32mp21_clock_data = {
++	.gate_cpt	= stm32mp21_cpt_gate,
++	.gates		= stm32mp21_gates,
++	.muxes		= stm32mp21_muxes,
++#ifdef CONFIG_DEBUG_FS
++	.dividers	= stm32mp21_dividers,
++#endif
++};
++
++static struct clk_stm32_reset_data stm32mp21_reset_data = {
++	.reset_lines	= stm32mp21_reset_cfg,
++	.nr_lines	= ARRAY_SIZE(stm32mp21_reset_cfg),
++	.reset_us	= 2,
++};
++
++static struct clock_summary clock_summary_mp21;
++
++static const struct stm32_rcc_match_data stm32mp21_data = {
++	.tab_clocks	= stm32mp21_clock_cfg,
++	.num_clocks	= ARRAY_SIZE(stm32mp21_clock_cfg),
++	.maxbinding	= STM32MP21_LAST_CLK,
++	.clock_data	= &stm32mp21_clock_data,
++	.reset_data	= &stm32mp21_reset_data,
++	.check_security = &stm32mp21_check_security,
++#ifdef CONFIG_DEBUG_FS
++	.clock_summary	= &clock_summary_mp21,
++#endif
++};
++
++static const struct of_device_id stm32mp21_match_data[] = {
++	{ .compatible = "st,stm32mp21-rcc", .data = &stm32mp21_data, },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, stm32mp21_match_data);
++
++static int stm32mp21_rcc_clocks_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	void __iomem *base;
++
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (WARN_ON(IS_ERR(base)))
++		return PTR_ERR(base);
++
++	return stm32_rcc_init(dev, stm32mp21_match_data, base);
++}
++
++#ifdef CONFIG_PM_SLEEP
++static int stm32_rcc_suspend(struct device *dev)
++{
++	clk_save_context();
++
++	return 0;
++}
++
++static int stm32_rcc_resume(struct device *dev)
++{
++	clk_restore_context();
++
++	return 0;
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops stm32_rcc_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_rcc_suspend, stm32_rcc_resume)
++};
++
++static struct platform_driver stm32mp21_rcc_clocks_driver = {
++	.driver	= {
++		.name = "stm32mp21_rcc",
++		.of_match_table = stm32mp21_match_data,
++		.pm = &stm32_rcc_pm_ops,
++	},
++	.probe = stm32mp21_rcc_clocks_probe,
++};
++
++static int __init stm32mp21_clocks_init(void)
++{
++	return platform_driver_register(&stm32mp21_rcc_clocks_driver);
++}
++
++core_initcall(stm32mp21_clocks_init);
++
++#ifdef CONFIG_DEBUG_FS
++
++static bool cs_stm32_gate_is_enabled(struct clk_stm32_clock_data *data, struct clk_summary *c)
++{
++	return stm32_gate_is_enabled(data->base, data, c->gate_id);
++}
++
++static u8 cs_stm32_mux_get_parent(struct clk_stm32_clock_data *data, struct clk_summary *c)
++{
++	return stm32_mux_get_parent(data->base, data, c->mux_id);
++}
++
++static unsigned long cs_stm32_div_get_rate(struct clk_stm32_clock_data *data,
++					   struct clk_summary *c,
++					   unsigned long parent_rate)
++{
++	return stm32_divider_get_rate(data->base, data, c->div_id, parent_rate);
++}
++
++static unsigned long cs_stm32_get_rate_by_name(struct clk_stm32_clock_data *data,
++					       struct clk_summary *c,
++					       unsigned long parent_rate)
++{
++	struct clk *clk = __clk_lookup(c->name);
++
++	if (clk)
++		return clk_get_rate(clk);
++
++	return 0;
++}
++
++static unsigned long cs_hsediv2_recalc_rate(struct clk_stm32_clock_data *data,
++					    struct clk_summary *c,
++					    unsigned long parent_rate)
++{
++	void __iomem *addr = data->base + RCC_OCENSETR;
++
++	if ((readl(addr) & RCC_OCENSETR_HSEDIV2BYP) != 0U)
++		return parent_rate;
++
++	return parent_rate / 2;
++}
++
++/* PLL configuration registers offsets from RCC_PLLxCFGR1 */
++#define RCC_OFFSET_PLLXCFGR1	0x00
++#define RCC_OFFSET_PLLXCFGR2	0x04
++#define RCC_OFFSET_PLLXCFGR3	0x08
++#define RCC_OFFSET_PLLXCFGR4	0x0C
++#define RCC_OFFSET_PLLXCFGR5	0x10
++#define RCC_OFFSET_PLLXCFGR6	0x18
++#define RCC_OFFSET_PLLXCFGR7	0x1C
++
++struct cs_pll {
++	u32 offset;
++};
++
++static unsigned long clk_get_pll_fvco(struct clk_stm32_clock_data *data, u32 offset_base,
++				      unsigned long prate)
++{
++	void __iomem *pllxcfgr1 = data->base + offset_base;
++	void __iomem *pllxcfgr2 = pllxcfgr1 + RCC_OFFSET_PLLXCFGR2;
++	void __iomem *pllxcfgr3 = pllxcfgr1 + RCC_OFFSET_PLLXCFGR3;
++	unsigned long fvco = 0UL;
++	u32 fracin, fbdiv, refdiv;
++
++	fracin = readl(pllxcfgr3) & RCC_PLLxCFGR3_FRACIN_MASK;
++	fbdiv = (readl(pllxcfgr2) & RCC_PLLxCFGR2_FBDIV_MASK) >>
++		RCC_PLLxCFGR2_FBDIV_SHIFT;
++
++	refdiv = readl(pllxcfgr2) & RCC_PLLxCFGR2_FREFDIV_MASK;
++
++	if (fracin != 0U) {
++		unsigned long long numerator, denominator;
++
++		numerator = ((unsigned long long)fbdiv << 24) + fracin;
++		fvco = prate * numerator;
++		denominator = (unsigned long long)refdiv << 24;
++		do_div(fvco, denominator);
++
++	} else {
++		fvco = (u64)prate * fbdiv;
++		do_div(fvco, refdiv);
++	}
++
++	return fvco;
++}
++
++static unsigned long cs_stm32_pll_recalc_rate(struct clk_stm32_clock_data *data,
++					      struct clk_summary *c,
++					      unsigned long prate)
++{
++	struct cs_pll *cfg = c->data;
++	void __iomem *pllxcfgr1 = data->base + cfg->offset;
++	void __iomem *pllxcfgr4 = pllxcfgr1 + RCC_OFFSET_PLLXCFGR4;
++	void __iomem *pllxcfgr6 = pllxcfgr1 + RCC_OFFSET_PLLXCFGR6;
++	void __iomem *pllxcfgr7 = pllxcfgr1 + RCC_OFFSET_PLLXCFGR7;
++	unsigned long dfout;
++	u32 postdiv1, postdiv2;
++
++	postdiv1 = readl(pllxcfgr6) & RCC_PLLxCFGR6_POSTDIV1_MASK;
++	postdiv2 = readl(pllxcfgr7) & RCC_PLLxCFGR7_POSTDIV2_MASK;
++
++	if ((readl(pllxcfgr4) & RCC_PLLxCFGR4_BYPASS) != 0U) {
++		dfout = prate;
++	} else {
++		if (postdiv1 == 0U || postdiv2 == 0U)
++			dfout = prate;
++		else
++			dfout = clk_get_pll_fvco(data, cfg->offset, prate) /
++						 (postdiv1 * postdiv2);
++	}
++
++	return dfout;
++}
++
++struct cs_flexgen {
++	u32 channel;
++};
++
++static bool cs_flexgen_is_enabled(struct clk_stm32_clock_data *data, struct clk_summary *c)
++{
++	struct cs_flexgen *cfg = c->data;
++
++	return !!(readl(data->base + RCC_FINDIV0CFGR + (0x4 * cfg->channel)) &
++		RCC_FINDIV0CFGR_FINDIV0EN);
++}
++
++static u8 cs_flexgen_get_parent(struct clk_stm32_clock_data *data, struct clk_summary *c)
++{
++	struct cs_flexgen *cfg = c->data;
++	void __iomem *address = data->base + RCC_XBAR0CFGR + (cfg->channel * 4);
++
++	return readl(address) & RCC_XBAR0CFGR_XBAR0SEL_MASK;
++}
++
++static unsigned long cs_flexgen_recalc_rate(struct clk_stm32_clock_data *data,
++					    struct clk_summary *c,
++					    unsigned long prate)
++{
++	struct cs_flexgen *cfg = c->data;
++	u8 channel = cfg->channel;
++	u32 prediv, findiv;
++	unsigned long freq = prate;
++
++	prediv = readl(data->base + RCC_PREDIV0CFGR + (0x4 * channel)) &
++		       RCC_PREDIV0CFGR_PREDIV0_MASK;
++
++	findiv = readl(data->base + RCC_FINDIV0CFGR + (0x4 * channel)) &
++		       RCC_FINDIV0CFGR_FINDIV0_MASK;
++
++	if (freq == 0)
++		return 0;
++
++	switch (prediv) {
++	case 0x0:
++		break;
++
++	case 0x1:
++		freq /= 2;
++		break;
++
++	case 0x3:
++		freq /= 4;
++		break;
++
++	case 0x3FF:
++		freq /= 1024;
++		break;
++	}
++
++	freq /= (findiv + 1);
++
++	return freq;
++}
++
++struct cs_stm32_timer {
++	u32 apbdiv;
++	u32 timpre;
++};
++
++#define APB_DIV_MASK 0x07
++#define TIM_PRE_MASK 0x01
++
++static unsigned long cs_stm32_timer_recalc_rate(struct clk_stm32_clock_data *data,
++						struct clk_summary *c,
++						unsigned long parent_rate)
++{
++	struct cs_stm32_timer *tim = c->data;
++	u32 prescaler, timpre;
++
++	prescaler = readl(data->base + tim->apbdiv) & APB_DIV_MASK;
++
++	timpre = readl(data->base + tim->timpre) & TIM_PRE_MASK;
++
++	if (prescaler == 0U)
++		return parent_rate;
++
++	return parent_rate * (timpre + 1U) * 2U;
++}
++
++#define CS_CLOCK(_name) (&cs_##_name)
++
++#define CS_OSC_EXT(_name, _gate_id)						\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= _gate_id,					\
++		.mux_id		= NO_STM32_MUX,					\
++		.div_id		= NO_STM32_DIV,					\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.get_rate	= cs_stm32_get_rate_by_name,			\
++		.nb_parents	= 0,					\
++	}
++
++#define CS_OSC_INT(_name, _gate_id) CS_OSC_EXT(_name, _gate_id)
++
++#define CS_HSE_DIV2(_name, _parent, _gate_id)					\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= _gate_id,					\
++		.mux_id		= NO_STM32_MUX,					\
++		.div_id		= NO_STM32_DIV,					\
++		.get_rate	= cs_hsediv2_recalc_rate,			\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.nb_parents	= 1,						\
++		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
++	}
++
++#define CS_GATE(_name, _parent, _gate)						\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= (_gate),					\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.nb_parents	= 1,						\
++		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
++	}
++
++#define CS_DIV(_name, _parent, _div)\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= NO_STM32_GATE,				\
++		.mux_id		= NO_STM32_MUX,					\
++		.div_id		= (_div),					\
++		.get_rate	= cs_stm32_div_get_rate,			\
++		.nb_parents	= 1,						\
++		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
++	}
++
++#define CS_GATE_MUX(_name, _parents, _gate, _mux)				\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= (_gate),					\
++		.mux_id		= (_mux),					\
++		.div_id		= NO_STM32_DIV,					\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.get_parent	= cs_stm32_mux_get_parent,			\
++		.nb_parents	= ARRAY_SIZE(_parents),				\
++		.clks		= _parents,					\
++	}
++
++#define CS_GATE_DIV(_name, _parent, _gate, _div)				\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= (_gate),					\
++		.mux_id		= NO_STM32_MUX,					\
++		.div_id		= (_div),					\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.get_rate	= cs_stm32_div_get_rate,			\
++		.nb_parents	= 1,						\
++		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
++	}
++
++#define CS_PLL(_name, _parents, _gate, _mux, _offset)				\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= (_gate),					\
++		.mux_id		= (_mux),					\
++		.div_id		= NO_STM32_DIV,					\
++		.data		=  &(struct cs_pll) {				\
++			.offset		= _offset,				\
++		},								\
++		.is_enabled	= cs_stm32_gate_is_enabled,			\
++		.get_rate	= cs_stm32_pll_recalc_rate,			\
++		.get_parent	= cs_stm32_mux_get_parent,			\
++		.nb_parents	= ARRAY_SIZE(_parents),				\
++		.clks		= _parents,					\
++	}
++
++#define CS_EXT(_name)								\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.gate_id	= NO_STM32_GATE,				\
++		.mux_id		= NO_STM32_MUX,					\
++		.div_id		= NO_STM32_DIV,					\
++		.get_rate	= cs_stm32_get_rate_by_name,			\
++		.nb_parents	= 0,						\
++	}
++
++#define CS_FLEXGEN(_name, _channel)						\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.data		=  &(struct cs_flexgen) {			\
++			.channel		= _channel,			\
++		},								\
++		.is_enabled	= cs_flexgen_is_enabled,			\
++		.get_rate	= cs_flexgen_recalc_rate,			\
++		.get_parent	= cs_flexgen_get_parent,			\
++		.nb_parents	= ARRAY_SIZE(cs_flexgen_src),			\
++		.clks		= cs_flexgen_src,				\
++	}
++
++#define CS_STM32_TIMER(_name, _parent, _apbdiv, _timpre)			\
++	static struct clk_summary cs_##_name = {				\
++		.name		= #_name,					\
++		.data		=  &(struct cs_stm32_timer) {			\
++			.apbdiv		= _apbdiv,				\
++			.timpre		= _timpre,				\
++		},								\
++		.get_rate	= cs_stm32_timer_recalc_rate,			\
++		.nb_parents	= 1,						\
++		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
++	}
++
++CS_OSC_INT(hsi_ck, GATE_HSI);
++CS_OSC_INT(lsi_ck, GATE_LSI);
++CS_OSC_INT(msi_ck, GATE_MSI);
++CS_OSC_EXT(hse_ck, GATE_HSE);
++CS_OSC_EXT(lse_ck, GATE_LSE);
++
++CS_EXT(spdifsymb);
++CS_EXT(i2sckin);
++
++CS_EXT(ck_obs0);
++CS_EXT(ck_obs1);
++
++CS_HSE_DIV2(hse_div2_ck, hse_ck, GATE_HSEDIV2);
++CS_DIV(ck_hse_rtc, hse_ck, DIV_RTC);
++
++static struct clk_summary *cs_pll_src[] = {
++	CS_CLOCK(hsi_ck), CS_CLOCK(hse_ck), CS_CLOCK(msi_ck)
++};
++
++CS_EXT(ck_cpu1);
++
++CS_PLL(ck_pll2, cs_pll_src, GATE_PLL2, MUX_MUXSEL6, RCC_PLL2CFGR1);
++CS_PLL(ck_pll4, cs_pll_src, GATE_PLL4, MUX_MUXSEL0, RCC_PLL4CFGR1);
++CS_PLL(ck_pll5, cs_pll_src, GATE_PLL5, MUX_MUXSEL1, RCC_PLL5CFGR1);
++CS_PLL(ck_pll6, cs_pll_src, GATE_PLL6, MUX_MUXSEL2, RCC_PLL6CFGR1);
++CS_PLL(ck_pll7, cs_pll_src, GATE_PLL7, MUX_MUXSEL3, RCC_PLL7CFGR1);
++CS_PLL(ck_pll8, cs_pll_src, GATE_PLL8, MUX_MUXSEL4, RCC_PLL8CFGR1);
++
++static struct clk_summary *cs_flexgen_src[] = {
++	CS_CLOCK(ck_pll4), CS_CLOCK(ck_pll5), CS_CLOCK(ck_pll6),
++	CS_CLOCK(ck_pll7), CS_CLOCK(ck_pll8),
++	CS_CLOCK(hsi_ck), CS_CLOCK(hse_ck), CS_CLOCK(msi_ck),
++	CS_CLOCK(hsi_ck), CS_CLOCK(hse_ck), CS_CLOCK(msi_ck),
++	CS_CLOCK(spdifsymb), CS_CLOCK(i2sckin),
++	CS_CLOCK(lsi_ck), CS_CLOCK(lse_ck)
++};
++
++CS_FLEXGEN(ck_icn_hs_mcu, 0);
++
++CS_DIV(ck_icn_ls_mcu, ck_icn_hs_mcu, DIV_LSMCU);
++
++CS_FLEXGEN(ck_icn_sdmmc, 1);
++CS_FLEXGEN(ck_icn_ddr, 2);
++CS_FLEXGEN(ck_icn_display, 3);
++CS_FLEXGEN(ck_icn_hsl, 4);
++CS_FLEXGEN(ck_icn_nic, 5);
++CS_FLEXGEN(ck_flexgen_07, 7);
++CS_FLEXGEN(ck_flexgen_08, 8);
++CS_FLEXGEN(ck_flexgen_09, 9);
++CS_FLEXGEN(ck_flexgen_10, 10);
++CS_FLEXGEN(ck_flexgen_11, 11);
++CS_FLEXGEN(ck_flexgen_12, 12);
++CS_FLEXGEN(ck_flexgen_13, 13);
++CS_FLEXGEN(ck_flexgen_14, 14);
++CS_FLEXGEN(ck_flexgen_16, 16);
++CS_FLEXGEN(ck_flexgen_17, 17);
++CS_FLEXGEN(ck_flexgen_18, 18);
++CS_FLEXGEN(ck_flexgen_19, 19);
++CS_FLEXGEN(ck_flexgen_20, 20);
++CS_FLEXGEN(ck_flexgen_21, 21);
++CS_FLEXGEN(ck_flexgen_22, 22);
++CS_FLEXGEN(ck_flexgen_23, 23);
++CS_FLEXGEN(ck_flexgen_24, 24);
++CS_FLEXGEN(ck_flexgen_25, 25);
++CS_FLEXGEN(ck_flexgen_26, 26);
++CS_FLEXGEN(ck_flexgen_27, 27);
++CS_FLEXGEN(ck_flexgen_29, 29);
++CS_FLEXGEN(ck_flexgen_30, 30);
++CS_FLEXGEN(ck_flexgen_31, 31);
++CS_FLEXGEN(ck_flexgen_33, 33);
++CS_FLEXGEN(ck_flexgen_36, 36);
++CS_FLEXGEN(ck_flexgen_37, 37);
++CS_FLEXGEN(ck_flexgen_38, 38);
++CS_FLEXGEN(ck_flexgen_39, 39);
++CS_FLEXGEN(ck_flexgen_40, 40);
++CS_FLEXGEN(ck_flexgen_41, 41);
++CS_FLEXGEN(ck_flexgen_42, 42);
++CS_FLEXGEN(ck_flexgen_43, 43);
++CS_FLEXGEN(ck_flexgen_44, 44);
++CS_FLEXGEN(ck_flexgen_45, 45);
++CS_FLEXGEN(ck_flexgen_46, 46);
++CS_FLEXGEN(ck_flexgen_47, 47);
++CS_FLEXGEN(ck_flexgen_48, 48);
++CS_FLEXGEN(ck_flexgen_50, 50);
++CS_FLEXGEN(ck_flexgen_51, 51);
++CS_FLEXGEN(ck_flexgen_52, 52);
++CS_FLEXGEN(ck_flexgen_53, 53);
++CS_FLEXGEN(ck_flexgen_54, 54);
++CS_FLEXGEN(ck_flexgen_55, 55);
++CS_FLEXGEN(ck_flexgen_56, 56);
++CS_FLEXGEN(ck_flexgen_57, 57);
++CS_FLEXGEN(ck_flexgen_58, 58);
++CS_FLEXGEN(ck_flexgen_61, 61);
++CS_FLEXGEN(ck_flexgen_62, 62);
++CS_FLEXGEN(ck_flexgen_63, 63);
++
++CS_DIV(ck_icn_apb1, ck_icn_ls_mcu, DIV_APB1);
++CS_DIV(ck_icn_apb2, ck_icn_ls_mcu, DIV_APB2);
++CS_DIV(ck_icn_apb3, ck_icn_ls_mcu, DIV_APB3);
++CS_DIV(ck_icn_apb4, ck_icn_ls_mcu, DIV_APB4);
++CS_DIV(ck_icn_apb5, ck_icn_ls_mcu, DIV_APB5);
++CS_GATE_DIV(ck_icn_apbdbg, ck_icn_ls_mcu, GATE_DBG, DIV_APBDBG);
++
++CS_STM32_TIMER(ck_timg1, ck_icn_apb1, RCC_APB1DIVR, RCC_TIMG1PRER);
++CS_STM32_TIMER(ck_timg2, ck_icn_apb2, RCC_APB2DIVR, RCC_TIMG2PRER);
++
++CS_GATE(ck_icn_s_sysram, ck_icn_hs_mcu, GATE_SYSRAM);
++CS_GATE(ck_icn_s_retram, ck_icn_hs_mcu, GATE_RETRAM);
++CS_GATE(ck_icn_s_sram1, ck_icn_hs_mcu, GATE_SRAM1);
++CS_GATE(ck_icn_s_ospi1, ck_icn_hs_mcu, GATE_OSPI1);
++CS_GATE(ck_icn_p_otfd1, ck_icn_hs_mcu, GATE_OSPI1);
++CS_GATE(ck_icn_s_bkpsram, ck_icn_ls_mcu, GATE_BKPSRAM);
++CS_GATE(ck_icn_p_ddrphyc, ck_icn_ls_mcu, GATE_DDRPHYCAPB);
++CS_GATE(ck_icn_p_syscpu1, ck_icn_ls_mcu, GATE_SYSCPU1);
++CS_GATE(ck_icn_p_hpdma1, ck_icn_ls_mcu, GATE_HPDMA1);
++CS_GATE(ck_icn_p_hpdma2, ck_icn_ls_mcu, GATE_HPDMA2);
++CS_GATE(ck_icn_p_hpdma3, ck_icn_ls_mcu, GATE_HPDMA3);
++CS_GATE(ck_icn_p_ipcc1, ck_icn_ls_mcu, GATE_IPCC1);
++CS_GATE(ck_icn_p_crc, ck_icn_ls_mcu, GATE_CRC);
++CS_GATE(ck_icn_p_hash1, ck_icn_ls_mcu, GATE_HASH1);
++CS_GATE(ck_icn_p_hash2, ck_icn_ls_mcu, GATE_HASH2);
++CS_GATE(ck_icn_p_rng1, ck_icn_ls_mcu, GATE_RNG1);
++CS_GATE(ck_icn_p_rng2, ck_icn_ls_mcu, GATE_RNG1);
++CS_GATE(ck_icn_p_cryp1, ck_icn_ls_mcu, GATE_CRYP1);
++CS_GATE(ck_icn_p_cryp2, ck_icn_ls_mcu, GATE_CRYP2);
++CS_GATE(ck_icn_p_ccb, ck_icn_ls_mcu, GATE_CCB);
++CS_GATE(ck_icn_p_saes, ck_icn_ls_mcu, GATE_SAES);
++CS_GATE(ck_icn_p_pka, ck_icn_ls_mcu, GATE_PKA);
++CS_GATE(ck_icn_p_gpioa, ck_icn_ls_mcu, GATE_GPIOA);
++CS_GATE(ck_icn_p_gpiob, ck_icn_ls_mcu, GATE_GPIOB);
++CS_GATE(ck_icn_p_gpioc, ck_icn_ls_mcu, GATE_GPIOC);
++CS_GATE(ck_icn_p_gpiod, ck_icn_ls_mcu, GATE_GPIOD);
++CS_GATE(ck_icn_p_gpioe, ck_icn_ls_mcu, GATE_GPIOE);
++CS_GATE(ck_icn_p_gpiof, ck_icn_ls_mcu, GATE_GPIOF);
++CS_GATE(ck_icn_p_gpiog, ck_icn_ls_mcu, GATE_GPIOG);
++CS_GATE(ck_icn_p_gpioh, ck_icn_ls_mcu, GATE_GPIOH);
++CS_GATE(ck_icn_p_gpioi, ck_icn_ls_mcu, GATE_GPIOI);
++CS_GATE(ck_icn_p_gpioz, ck_icn_ls_mcu, GATE_GPIOZ);
++CS_GATE(ck_icn_p_rtc, ck_icn_ls_mcu, GATE_RTC);
++CS_GATE(ck_icn_s_stm, ck_icn_ls_mcu, GATE_STM);
++CS_GATE(ck_icn_p_fmc, ck_icn_ls_mcu, GATE_FMC);
++CS_GATE(ck_icn_p_eth1, ck_icn_ls_mcu, GATE_ETH1);
++CS_GATE(ck_icn_p_eth2, ck_icn_ls_mcu, GATE_ETH2);
++CS_GATE(ck_icn_p_adc1, ck_icn_ls_mcu, GATE_ADC1);
++CS_GATE(ck_icn_p_adc2, ck_icn_ls_mcu, GATE_ADC2);
++CS_GATE(ck_icn_p_mdf1, ck_icn_ls_mcu, GATE_MDF1);
++CS_GATE(ck_icn_p_lpuart1, ck_icn_ls_mcu, GATE_LPUART1);
++CS_GATE(ck_icn_p_lptim3, ck_icn_ls_mcu, GATE_LPTIM3);
++CS_GATE(ck_icn_p_lptim4, ck_icn_ls_mcu, GATE_LPTIM4);
++CS_GATE(ck_icn_p_lptim5, ck_icn_ls_mcu, GATE_LPTIM5);
++CS_GATE(ck_icn_p_risaf4, ck_icn_ls_mcu, GATE_DDRCP);
++CS_GATE(ck_icn_m_otg, ck_icn_ls_mcu, GATE_OTG);
++CS_GATE(ck_icn_p_dcmipssi, ck_icn_ls_mcu, GATE_DCMIPSSI);
++CS_GATE(ck_icn_m_sdmmc1, ck_icn_sdmmc, GATE_SDMMC1);
++CS_GATE(ck_icn_m_sdmmc2, ck_icn_sdmmc, GATE_SDMMC2);
++CS_GATE(ck_icn_m_sdmmc3, ck_icn_sdmmc, GATE_SDMMC3);
++CS_GATE(ck_icn_s_ddr, ck_icn_ddr, GATE_DDRCP);
++CS_GATE(ck_icn_m_usbhohci, ck_icn_hsl, GATE_USBH);
++CS_GATE(ck_icn_m_usbhehci, ck_icn_hsl, GATE_USBH);
++CS_GATE(ck_icn_p_tim2, ck_icn_apb1, GATE_TIM2);
++CS_GATE(ck_icn_p_tim3, ck_icn_apb1, GATE_TIM3);
++CS_GATE(ck_icn_p_tim4, ck_icn_apb1, GATE_TIM4);
++CS_GATE(ck_icn_p_tim5, ck_icn_apb1, GATE_TIM5);
++CS_GATE(ck_icn_p_tim6, ck_icn_apb1, GATE_TIM6);
++CS_GATE(ck_icn_p_tim7, ck_icn_apb1, GATE_TIM7);
++CS_GATE(ck_icn_p_tim10, ck_icn_apb1, GATE_TIM10);
++CS_GATE(ck_icn_p_tim11, ck_icn_apb1, GATE_TIM11);
++CS_GATE(ck_icn_p_tim12, ck_icn_apb1, GATE_TIM12);
++CS_GATE(ck_icn_p_tim13, ck_icn_apb1, GATE_TIM13);
++CS_GATE(ck_icn_p_tim14, ck_icn_apb1, GATE_TIM14);
++CS_GATE(ck_icn_p_lptim1, ck_icn_apb1, GATE_LPTIM1);
++CS_GATE(ck_icn_p_lptim2, ck_icn_apb1, GATE_LPTIM2);
++CS_GATE(ck_icn_p_spi2, ck_icn_apb1, GATE_SPI2);
++CS_GATE(ck_icn_p_spi3, ck_icn_apb1, GATE_SPI3);
++CS_GATE(ck_icn_p_spdifrx, ck_icn_apb1, GATE_SPDIFRX);
++CS_GATE(ck_icn_p_usart2, ck_icn_apb1, GATE_USART2);
++CS_GATE(ck_icn_p_usart3, ck_icn_apb1, GATE_USART3);
++CS_GATE(ck_icn_p_uart4, ck_icn_apb1, GATE_UART4);
++CS_GATE(ck_icn_p_uart5, ck_icn_apb1, GATE_UART5);
++CS_GATE(ck_icn_p_i2c1, ck_icn_apb1, GATE_I2C1);
++CS_GATE(ck_icn_p_i2c2, ck_icn_apb1, GATE_I2C2);
++CS_GATE(ck_icn_p_i2c3, ck_icn_apb1, GATE_I2C3);
++CS_GATE(ck_icn_p_i3c1, ck_icn_apb1, GATE_I3C1);
++CS_GATE(ck_icn_p_i3c2, ck_icn_apb1, GATE_I3C2);
++CS_GATE(ck_icn_p_i3c3, ck_icn_apb1, GATE_I3C3);
++CS_GATE(ck_icn_p_tim1, ck_icn_apb2, GATE_TIM1);
++CS_GATE(ck_icn_p_tim8, ck_icn_apb2, GATE_TIM8);
++CS_GATE(ck_icn_p_tim15, ck_icn_apb2, GATE_TIM15);
++CS_GATE(ck_icn_p_tim16, ck_icn_apb2, GATE_TIM16);
++CS_GATE(ck_icn_p_tim17, ck_icn_apb2, GATE_TIM17);
++CS_GATE(ck_icn_p_sai1, ck_icn_apb2, GATE_SAI1);
++CS_GATE(ck_icn_p_sai2, ck_icn_apb2, GATE_SAI2);
++CS_GATE(ck_icn_p_sai3, ck_icn_apb2, GATE_SAI3);
++CS_GATE(ck_icn_p_sai4, ck_icn_apb2, GATE_SAI4);
++CS_GATE(ck_icn_p_usart1, ck_icn_apb2, GATE_USART1);
++CS_GATE(ck_icn_p_usart6, ck_icn_apb2, GATE_USART6);
++CS_GATE(ck_icn_p_uart7, ck_icn_apb2, GATE_UART7);
++CS_GATE(ck_icn_p_fdcan, ck_icn_apb2, GATE_FDCAN);
++CS_GATE(ck_icn_p_spi1, ck_icn_apb2, GATE_SPI1);
++CS_GATE(ck_icn_p_spi4, ck_icn_apb2, GATE_SPI4);
++CS_GATE(ck_icn_p_spi5, ck_icn_apb2, GATE_SPI5);
++CS_GATE(ck_icn_p_spi6, ck_icn_apb2, GATE_SPI6);
++CS_GATE(ck_icn_p_bsec, ck_icn_apb3, GATE_BSEC);
++CS_GATE(ck_icn_p_iwdg1, ck_icn_apb3, GATE_IWDG1);
++CS_GATE(ck_icn_p_iwdg2, ck_icn_apb3, GATE_IWDG2);
++CS_GATE(ck_icn_p_iwdg3, ck_icn_apb3, GATE_IWDG3);
++CS_GATE(ck_icn_p_iwdg4, ck_icn_apb3, GATE_IWDG4);
++CS_GATE(ck_icn_p_wwdg1, ck_icn_apb3, GATE_WWDG1);
++CS_GATE(ck_icn_p_vref, ck_icn_apb3, GATE_VREF);
++CS_GATE(ck_icn_p_dts, ck_icn_apb3, GATE_DTS);
++CS_GATE(ck_icn_p_serc, ck_icn_apb3, GATE_SERC);
++CS_GATE(ck_icn_p_hdp, ck_icn_apb3, GATE_HDP);
++CS_GATE(ck_icn_p_ltdc, ck_icn_apb4, GATE_LTDC);
++CS_GATE(ck_icn_p_csi2, ck_icn_apb4, GATE_CSI);
++CS_GATE(ck_icn_p_dcmipp, ck_icn_apb4, GATE_DCMIPP);
++CS_GATE(ck_icn_p_ddrc, ck_icn_apb4, GATE_DDRCAPB);
++CS_GATE(ck_icn_p_ddrcfg, ck_icn_apb4, GATE_DDRCFG);
++CS_GATE(ck_icn_p_stgen, ck_icn_apb4, GATE_STGEN);
++CS_GATE(ck_sys_dbg, ck_icn_apbdbg, GATE_DBG);
++CS_GATE(ck_icn_p_stm, ck_icn_apbdbg, GATE_STM);
++CS_GATE(ck_icn_p_etr, ck_icn_apbdbg, GATE_ETR);
++CS_GATE(ck_ker_tim2, ck_timg1, GATE_TIM2);
++CS_GATE(ck_ker_tim3, ck_timg1, GATE_TIM3);
++CS_GATE(ck_ker_tim4, ck_timg1, GATE_TIM4);
++CS_GATE(ck_ker_tim5, ck_timg1, GATE_TIM5);
++CS_GATE(ck_ker_tim6, ck_timg1, GATE_TIM6);
++CS_GATE(ck_ker_tim7, ck_timg1, GATE_TIM7);
++CS_GATE(ck_ker_tim10, ck_timg1, GATE_TIM10);
++CS_GATE(ck_ker_tim11, ck_timg1, GATE_TIM11);
++CS_GATE(ck_ker_tim12, ck_timg1, GATE_TIM12);
++CS_GATE(ck_ker_tim13, ck_timg1, GATE_TIM13);
++CS_GATE(ck_ker_tim14, ck_timg1, GATE_TIM14);
++CS_GATE(ck_ker_tim1, ck_timg2, GATE_TIM1);
++CS_GATE(ck_ker_tim8, ck_timg2, GATE_TIM8);
++CS_GATE(ck_ker_tim15, ck_timg2, GATE_TIM15);
++CS_GATE(ck_ker_tim16, ck_timg2, GATE_TIM16);
++CS_GATE(ck_ker_tim17, ck_timg2, GATE_TIM17);
++CS_GATE(ck_ker_lptim1, ck_flexgen_07, GATE_LPTIM1);
++CS_GATE(ck_ker_lptim2, ck_flexgen_07, GATE_LPTIM2);
++CS_GATE(ck_ker_usart2, ck_flexgen_08, GATE_USART2);
++CS_GATE(ck_ker_uart4, ck_flexgen_08, GATE_UART4);
++CS_GATE(ck_ker_usart3, ck_flexgen_09, GATE_USART3);
++CS_GATE(ck_ker_uart5, ck_flexgen_09, GATE_UART5);
++CS_GATE(ck_ker_spi2, ck_flexgen_10, GATE_SPI2);
++CS_GATE(ck_ker_spi3, ck_flexgen_11, GATE_SPI3);
++CS_GATE(ck_ker_spdifrx, ck_flexgen_12, GATE_SPDIFRX);
++CS_GATE(ck_ker_i2c1, ck_flexgen_13, GATE_I2C1);
++CS_GATE(ck_ker_i2c2, ck_flexgen_13, GATE_I2C2);
++CS_GATE(ck_ker_i3c1, ck_flexgen_14, GATE_I3C1);
++CS_GATE(ck_ker_i3c2, ck_flexgen_14, GATE_I3C2);
++CS_GATE(ck_ker_spi1, ck_flexgen_16, GATE_SPI1);
++CS_GATE(ck_ker_spi4, ck_flexgen_17, GATE_SPI4);
++CS_GATE(ck_ker_spi5, ck_flexgen_17, GATE_SPI5);
++CS_GATE(ck_ker_usart1, ck_flexgen_18, GATE_USART1);
++CS_GATE(ck_ker_usart6, ck_flexgen_19, GATE_USART6);
++CS_GATE(ck_ker_uart7, ck_flexgen_20, GATE_UART7);
++CS_GATE(ck_ker_mdf1, ck_flexgen_21, GATE_MDF1);
++CS_GATE(ck_ker_sai1, ck_flexgen_22, GATE_SAI1);
++CS_GATE(ck_ker_sai2, ck_flexgen_24, GATE_SAI2);
++CS_GATE(ck_ker_sai3, ck_flexgen_25, GATE_SAI3);
++CS_GATE(ck_ker_sai4, ck_flexgen_25, GATE_SAI4);
++CS_GATE(ck_ker_fdcan, ck_flexgen_26, GATE_FDCAN);
++CS_GATE(ck_ker_csi2, ck_flexgen_29, GATE_CSI);
++CS_GATE(ck_ker_csi2txesc, ck_flexgen_30, GATE_CSI);
++CS_GATE(ck_ker_csi2phy, ck_flexgen_31, GATE_CSI);
++CS_GATE(ck_ker_stgen, ck_flexgen_33, GATE_STGEN);
++CS_GATE(ck_ker_i3c3, ck_flexgen_36, GATE_I3C3);
++CS_GATE(ck_ker_spi6, ck_flexgen_37, GATE_SPI6);
++CS_GATE(ck_ker_i2c3, ck_flexgen_38, GATE_I2C3);
++CS_GATE(ck_ker_lpuart1, ck_flexgen_39, GATE_LPUART1);
++CS_GATE(ck_ker_lptim3, ck_flexgen_40, GATE_LPTIM3);
++CS_GATE(ck_ker_lptim4, ck_flexgen_41, GATE_LPTIM4);
++CS_GATE(ck_ker_lptim5, ck_flexgen_42, GATE_LPTIM5);
++CS_GATE(ck_ker_tsdbg, ck_flexgen_43, GATE_DBG);
++CS_GATE(ck_ker_tpiu, ck_flexgen_44, GATE_TRACE);
++CS_GATE(ck_icn_m_etr, ck_flexgen_45, GATE_ETR);
++CS_GATE(ck_sys_atb, ck_flexgen_45, GATE_DBG);
++CS_GATE(ck_ker_ospi1, ck_flexgen_48, GATE_OSPI1);
++CS_GATE(ck_ker_fmc, ck_flexgen_50, GATE_FMC);
++CS_GATE(ck_ker_sdmmc1, ck_flexgen_51, GATE_SDMMC1);
++CS_GATE(ck_ker_sdmmc2, ck_flexgen_52, GATE_SDMMC2);
++CS_GATE(ck_ker_sdmmc3, ck_flexgen_53, GATE_SDMMC3);
++CS_GATE(ck_ker_eth1, ck_flexgen_54, GATE_ETH1);
++CS_GATE(ck_ker_eth2, ck_flexgen_55, GATE_ETH2);
++CS_GATE(ck_ker_eth1ptp, ck_flexgen_56, GATE_ETH1);
++CS_GATE(ck_ker_eth2ptp, ck_flexgen_56, GATE_ETH2);
++CS_GATE(ck_ker_eth1stp, ck_icn_ls_mcu, GATE_ETH1STP);
++CS_GATE(ck_ker_eth2stp, ck_icn_ls_mcu, GATE_ETH2STP);
++CS_GATE(ck_ker_ltdc, ck_flexgen_27, GATE_LTDC);
++
++static struct clk_summary *cs_adc1_src[] = {
++	CS_CLOCK(ck_flexgen_46), CS_CLOCK(ck_icn_ls_mcu)
++};
++
++static struct clk_summary *cs_adc2_src[] = {
++	CS_CLOCK(ck_flexgen_47), CS_CLOCK(ck_icn_ls_mcu), CS_CLOCK(ck_flexgen_46)
++};
++
++static struct clk_summary *cs_usb2phy1_src[] = {
++	CS_CLOCK(ck_flexgen_57), CS_CLOCK(hse_div2_ck)
++};
++
++static struct clk_summary *cs_usb2phy2_src[] = {
++	CS_CLOCK(ck_flexgen_58), CS_CLOCK(hse_div2_ck)
++};
++
++static struct clk_summary *cs_dts_src[] = {
++	CS_CLOCK(hsi_ck), CS_CLOCK(hse_ck), CS_CLOCK(msi_ck)
++};
++
++static struct clk_summary *cs_rtc_src[] = {
++	NULL, CS_CLOCK(lse_ck), CS_CLOCK(lsi_ck), CS_CLOCK(ck_hse_rtc)
++};
++
++static struct clk_summary *cs_mco1_src[] = {
++	CS_CLOCK(ck_flexgen_61), CS_CLOCK(ck_obs0)
++};
++
++static struct clk_summary *cs_mco2_src[] = {
++	CS_CLOCK(ck_flexgen_62), CS_CLOCK(ck_obs1)
++};
++
++CS_GATE_MUX(ck_mco1, cs_mco1_src, GATE_MCO1, MUX_MCO1);
++CS_GATE_MUX(ck_mco2, cs_mco2_src, GATE_MCO2, MUX_MCO2);
++CS_GATE_MUX(ck_ker_adc1, cs_adc1_src, GATE_ADC1, MUX_ADC1);
++CS_GATE_MUX(ck_ker_adc2, cs_adc2_src, GATE_ADC2, MUX_ADC2);
++CS_GATE_MUX(ck_ker_usb2phy1, cs_usb2phy1_src, GATE_USB2PHY1, MUX_USB2PHY1);
++CS_GATE_MUX(ck_ker_usb2phy2_en, cs_usb2phy2_src, GATE_USB2PHY2, MUX_USB2PHY2);
++CS_GATE_MUX(ck_ker_dts, cs_dts_src, GATE_DTS, MUX_DTS);
++CS_GATE_MUX(ck_rtc, cs_rtc_src, GATE_RTCCK, MUX_RTC);
++
++static struct clk_summary *stm32mp21_clock_summary[] = {
++	CS_CLOCK(hsi_ck),
++	CS_CLOCK(lsi_ck),
++	CS_CLOCK(msi_ck),
++	CS_CLOCK(hse_ck),
++	CS_CLOCK(lse_ck),
++	CS_CLOCK(spdifsymb),
++	CS_CLOCK(i2sckin),
++	CS_CLOCK(hse_div2_ck),
++	CS_CLOCK(ck_hse_rtc),
++	CS_CLOCK(ck_cpu1),
++	CS_CLOCK(ck_pll2),
++	CS_CLOCK(ck_pll4),
++	CS_CLOCK(ck_pll5),
++	CS_CLOCK(ck_pll6),
++	CS_CLOCK(ck_pll7),
++	CS_CLOCK(ck_pll8),
++	CS_CLOCK(ck_icn_hs_mcu),
++	CS_CLOCK(ck_icn_sdmmc),
++	CS_CLOCK(ck_icn_ddr),
++	CS_CLOCK(ck_icn_display),
++	CS_CLOCK(ck_icn_hsl),
++	CS_CLOCK(ck_icn_nic),
++	CS_CLOCK(ck_flexgen_07),
++	CS_CLOCK(ck_flexgen_08),
++	CS_CLOCK(ck_flexgen_09),
++	CS_CLOCK(ck_flexgen_10),
++	CS_CLOCK(ck_flexgen_11),
++	CS_CLOCK(ck_flexgen_12),
++	CS_CLOCK(ck_flexgen_13),
++	CS_CLOCK(ck_flexgen_14),
++	CS_CLOCK(ck_flexgen_16),
++	CS_CLOCK(ck_flexgen_17),
++	CS_CLOCK(ck_flexgen_18),
++	CS_CLOCK(ck_flexgen_19),
++	CS_CLOCK(ck_flexgen_20),
++	CS_CLOCK(ck_flexgen_21),
++	CS_CLOCK(ck_flexgen_22),
++	CS_CLOCK(ck_flexgen_23),
++	CS_CLOCK(ck_flexgen_24),
++	CS_CLOCK(ck_flexgen_25),
++	CS_CLOCK(ck_flexgen_26),
++	CS_CLOCK(ck_flexgen_27),
++	CS_CLOCK(ck_flexgen_29),
++	CS_CLOCK(ck_flexgen_30),
++	CS_CLOCK(ck_flexgen_31),
++	CS_CLOCK(ck_flexgen_33),
++	CS_CLOCK(ck_flexgen_36),
++	CS_CLOCK(ck_flexgen_37),
++	CS_CLOCK(ck_flexgen_38),
++	CS_CLOCK(ck_flexgen_39),
++	CS_CLOCK(ck_flexgen_40),
++	CS_CLOCK(ck_flexgen_41),
++	CS_CLOCK(ck_flexgen_42),
++	CS_CLOCK(ck_flexgen_43),
++	CS_CLOCK(ck_flexgen_44),
++	CS_CLOCK(ck_flexgen_45),
++	CS_CLOCK(ck_flexgen_46),
++	CS_CLOCK(ck_flexgen_47),
++	CS_CLOCK(ck_flexgen_48),
++	CS_CLOCK(ck_flexgen_50),
++	CS_CLOCK(ck_flexgen_51),
++	CS_CLOCK(ck_flexgen_52),
++	CS_CLOCK(ck_flexgen_53),
++	CS_CLOCK(ck_flexgen_54),
++	CS_CLOCK(ck_flexgen_55),
++	CS_CLOCK(ck_flexgen_56),
++	CS_CLOCK(ck_flexgen_57),
++	CS_CLOCK(ck_flexgen_58),
++	CS_CLOCK(ck_flexgen_61),
++	CS_CLOCK(ck_flexgen_62),
++	CS_CLOCK(ck_flexgen_63),
++	CS_CLOCK(ck_icn_ls_mcu),
++	CS_CLOCK(ck_icn_apb1),
++	CS_CLOCK(ck_icn_apb2),
++	CS_CLOCK(ck_icn_apb3),
++	CS_CLOCK(ck_icn_apb4),
++	CS_CLOCK(ck_icn_apb5),
++	CS_CLOCK(ck_icn_apbdbg),
++	CS_CLOCK(ck_timg1),
++	CS_CLOCK(ck_timg2),
++	CS_CLOCK(ck_icn_s_sysram),
++	CS_CLOCK(ck_icn_s_retram),
++	CS_CLOCK(ck_icn_s_sram1),
++	CS_CLOCK(ck_icn_s_ospi1),
++	CS_CLOCK(ck_icn_p_otfd1),
++	CS_CLOCK(ck_icn_s_bkpsram),
++	CS_CLOCK(ck_icn_p_ddrphyc),
++	CS_CLOCK(ck_icn_p_syscpu1),
++	CS_CLOCK(ck_icn_p_hpdma1),
++	CS_CLOCK(ck_icn_p_hpdma2),
++	CS_CLOCK(ck_icn_p_hpdma3),
++	CS_CLOCK(ck_icn_p_ipcc1),
++	CS_CLOCK(ck_icn_p_crc),
++	CS_CLOCK(ck_icn_p_hash1),
++	CS_CLOCK(ck_icn_p_hash2),
++	CS_CLOCK(ck_icn_p_rng1),
++	CS_CLOCK(ck_icn_p_rng2),
++	CS_CLOCK(ck_icn_p_cryp1),
++	CS_CLOCK(ck_icn_p_cryp2),
++	CS_CLOCK(ck_icn_p_ccb),
++	CS_CLOCK(ck_icn_p_saes),
++	CS_CLOCK(ck_icn_p_pka),
++	CS_CLOCK(ck_icn_p_gpioa),
++	CS_CLOCK(ck_icn_p_gpiob),
++	CS_CLOCK(ck_icn_p_gpioc),
++	CS_CLOCK(ck_icn_p_gpiod),
++	CS_CLOCK(ck_icn_p_gpioe),
++	CS_CLOCK(ck_icn_p_gpiof),
++	CS_CLOCK(ck_icn_p_gpiog),
++	CS_CLOCK(ck_icn_p_gpioh),
++	CS_CLOCK(ck_icn_p_gpioi),
++	CS_CLOCK(ck_icn_p_gpioz),
++	CS_CLOCK(ck_icn_p_rtc),
++	CS_CLOCK(ck_icn_s_stm),
++	CS_CLOCK(ck_icn_p_fmc),
++	CS_CLOCK(ck_icn_p_eth1),
++	CS_CLOCK(ck_icn_p_eth2),
++	CS_CLOCK(ck_icn_p_adc1),
++	CS_CLOCK(ck_icn_p_adc2),
++	CS_CLOCK(ck_icn_p_mdf1),
++	CS_CLOCK(ck_icn_p_lpuart1),
++	CS_CLOCK(ck_icn_p_lptim3),
++	CS_CLOCK(ck_icn_p_lptim4),
++	CS_CLOCK(ck_icn_p_lptim5),
++	CS_CLOCK(ck_icn_p_risaf4),
++	CS_CLOCK(ck_icn_m_otg),
++	CS_CLOCK(ck_icn_p_dcmipssi),
++	CS_CLOCK(ck_icn_m_sdmmc1),
++	CS_CLOCK(ck_icn_m_sdmmc2),
++	CS_CLOCK(ck_icn_m_sdmmc3),
++	CS_CLOCK(ck_icn_s_ddr),
++	CS_CLOCK(ck_icn_m_usbhohci),
++	CS_CLOCK(ck_icn_m_usbhehci),
++	CS_CLOCK(ck_icn_p_tim2),
++	CS_CLOCK(ck_icn_p_tim3),
++	CS_CLOCK(ck_icn_p_tim4),
++	CS_CLOCK(ck_icn_p_tim5),
++	CS_CLOCK(ck_icn_p_tim6),
++	CS_CLOCK(ck_icn_p_tim7),
++	CS_CLOCK(ck_icn_p_tim10),
++	CS_CLOCK(ck_icn_p_tim11),
++	CS_CLOCK(ck_icn_p_tim12),
++	CS_CLOCK(ck_icn_p_tim13),
++	CS_CLOCK(ck_icn_p_tim14),
++	CS_CLOCK(ck_icn_p_lptim1),
++	CS_CLOCK(ck_icn_p_lptim2),
++	CS_CLOCK(ck_icn_p_spi2),
++	CS_CLOCK(ck_icn_p_spi3),
++	CS_CLOCK(ck_icn_p_spdifrx),
++	CS_CLOCK(ck_icn_p_usart2),
++	CS_CLOCK(ck_icn_p_usart3),
++	CS_CLOCK(ck_icn_p_uart4),
++	CS_CLOCK(ck_icn_p_uart5),
++	CS_CLOCK(ck_icn_p_i2c1),
++	CS_CLOCK(ck_icn_p_i2c2),
++	CS_CLOCK(ck_icn_p_i2c3),
++	CS_CLOCK(ck_icn_p_i3c1),
++	CS_CLOCK(ck_icn_p_i3c2),
++	CS_CLOCK(ck_icn_p_i3c3),
++	CS_CLOCK(ck_icn_p_tim1),
++	CS_CLOCK(ck_icn_p_tim8),
++	CS_CLOCK(ck_icn_p_tim15),
++	CS_CLOCK(ck_icn_p_tim16),
++	CS_CLOCK(ck_icn_p_tim17),
++	CS_CLOCK(ck_icn_p_sai1),
++	CS_CLOCK(ck_icn_p_sai2),
++	CS_CLOCK(ck_icn_p_sai3),
++	CS_CLOCK(ck_icn_p_sai4),
++	CS_CLOCK(ck_icn_p_usart1),
++	CS_CLOCK(ck_icn_p_usart6),
++	CS_CLOCK(ck_icn_p_uart7),
++	CS_CLOCK(ck_icn_p_fdcan),
++	CS_CLOCK(ck_icn_p_spi1),
++	CS_CLOCK(ck_icn_p_spi4),
++	CS_CLOCK(ck_icn_p_spi5),
++	CS_CLOCK(ck_icn_p_spi6),
++	CS_CLOCK(ck_icn_p_bsec),
++	CS_CLOCK(ck_icn_p_iwdg1),
++	CS_CLOCK(ck_icn_p_iwdg2),
++	CS_CLOCK(ck_icn_p_iwdg3),
++	CS_CLOCK(ck_icn_p_iwdg4),
++	CS_CLOCK(ck_icn_p_wwdg1),
++	CS_CLOCK(ck_icn_p_vref),
++	CS_CLOCK(ck_icn_p_dts),
++	CS_CLOCK(ck_icn_p_serc),
++	CS_CLOCK(ck_icn_p_hdp),
++	CS_CLOCK(ck_icn_p_ltdc),
++	CS_CLOCK(ck_icn_p_csi2),
++	CS_CLOCK(ck_icn_p_dcmipp),
++	CS_CLOCK(ck_icn_p_ddrc),
++	CS_CLOCK(ck_icn_p_ddrcfg),
++	CS_CLOCK(ck_icn_p_stgen),
++	CS_CLOCK(ck_sys_dbg),
++	CS_CLOCK(ck_icn_p_stm),
++	CS_CLOCK(ck_icn_p_etr),
++	CS_CLOCK(ck_ker_tim2),
++	CS_CLOCK(ck_ker_tim3),
++	CS_CLOCK(ck_ker_tim4),
++	CS_CLOCK(ck_ker_tim5),
++	CS_CLOCK(ck_ker_tim6),
++	CS_CLOCK(ck_ker_tim7),
++	CS_CLOCK(ck_ker_tim10),
++	CS_CLOCK(ck_ker_tim11),
++	CS_CLOCK(ck_ker_tim12),
++	CS_CLOCK(ck_ker_tim13),
++	CS_CLOCK(ck_ker_tim14),
++	CS_CLOCK(ck_ker_tim1),
++	CS_CLOCK(ck_ker_tim8),
++	CS_CLOCK(ck_ker_tim15),
++	CS_CLOCK(ck_ker_tim16),
++	CS_CLOCK(ck_ker_tim17),
++	CS_CLOCK(ck_ker_lptim1),
++	CS_CLOCK(ck_ker_lptim2),
++	CS_CLOCK(ck_ker_usart2),
++	CS_CLOCK(ck_ker_uart4),
++	CS_CLOCK(ck_ker_usart3),
++	CS_CLOCK(ck_ker_uart5),
++	CS_CLOCK(ck_ker_spi2),
++	CS_CLOCK(ck_ker_spi3),
++	CS_CLOCK(ck_ker_spdifrx),
++	CS_CLOCK(ck_ker_i2c1),
++	CS_CLOCK(ck_ker_i2c2),
++	CS_CLOCK(ck_ker_i3c1),
++	CS_CLOCK(ck_ker_i3c2),
++	CS_CLOCK(ck_ker_i2c3),
++	CS_CLOCK(ck_ker_i3c3),
++	CS_CLOCK(ck_ker_spi1),
++	CS_CLOCK(ck_ker_spi4),
++	CS_CLOCK(ck_ker_spi5),
++	CS_CLOCK(ck_ker_spi6),
++	CS_CLOCK(ck_ker_usart1),
++	CS_CLOCK(ck_ker_usart6),
++	CS_CLOCK(ck_ker_uart7),
++	CS_CLOCK(ck_ker_mdf1),
++	CS_CLOCK(ck_ker_sai1),
++	CS_CLOCK(ck_ker_sai2),
++	CS_CLOCK(ck_ker_sai3),
++	CS_CLOCK(ck_ker_sai4),
++	CS_CLOCK(ck_ker_fdcan),
++	CS_CLOCK(ck_ker_csi2),
++	CS_CLOCK(ck_ker_csi2txesc),
++	CS_CLOCK(ck_ker_csi2phy),
++	CS_CLOCK(ck_ker_stgen),
++	CS_CLOCK(ck_ker_lpuart1),
++	CS_CLOCK(ck_ker_lptim3),
++	CS_CLOCK(ck_ker_lptim4),
++	CS_CLOCK(ck_ker_lptim5),
++	CS_CLOCK(ck_ker_tsdbg),
++	CS_CLOCK(ck_ker_tpiu),
++	CS_CLOCK(ck_icn_m_etr),
++	CS_CLOCK(ck_sys_atb),
++	CS_CLOCK(ck_ker_ospi1),
++	CS_CLOCK(ck_ker_fmc),
++	CS_CLOCK(ck_ker_sdmmc1),
++	CS_CLOCK(ck_ker_sdmmc2),
++	CS_CLOCK(ck_ker_sdmmc3),
++	CS_CLOCK(ck_ker_eth1),
++	CS_CLOCK(ck_ker_eth2),
++	CS_CLOCK(ck_ker_eth1ptp),
++	CS_CLOCK(ck_ker_eth2ptp),
++	CS_CLOCK(ck_ker_eth1stp),
++	CS_CLOCK(ck_ker_eth2stp),
++	CS_CLOCK(ck_ker_ltdc),
++	CS_CLOCK(ck_obs0),
++	CS_CLOCK(ck_obs1),
++	CS_CLOCK(ck_mco1),
++	CS_CLOCK(ck_mco2),
++	CS_CLOCK(ck_ker_adc1),
++	CS_CLOCK(ck_ker_adc2),
++	CS_CLOCK(ck_ker_usb2phy1),
++	CS_CLOCK(ck_ker_usb2phy2_en),
++	CS_CLOCK(ck_ker_dts),
++	CS_CLOCK(ck_rtc),
++};
++
++static struct clock_summary clock_summary_mp21 = {
++	.clocks		= stm32mp21_clock_summary,
++	.nb_clocks	= ARRAY_SIZE(stm32mp21_clock_summary),
++};
++
++#endif
+diff --git a/drivers/clk/stm32/stm32mp21_rcc.h b/drivers/clk/stm32/stm32mp21_rcc.h
+new file mode 100644
+index 000000000000..2cc50e39c1d6
+--- /dev/null
++++ b/drivers/clk/stm32/stm32mp21_rcc.h
+@@ -0,0 +1,1753 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
++ * Author: Gabriel Fernandez <gabriel.fernandez@foss.st.com> for STMicroelectronics.
++ */
++
++#ifndef STM32MP21_RCC_H
++#define STM32MP21_RCC_H
++
++#define RCC_SECCFGR0				0x0
++#define RCC_SECCFGR1				0x4
++#define RCC_SECCFGR2				0x8
++#define RCC_SECCFGR3				0xC
++#define RCC_PRIVCFGR0				0x10
++#define RCC_PRIVCFGR1				0x14
++#define RCC_PRIVCFGR2				0x18
++#define RCC_PRIVCFGR3				0x1C
++#define RCC_RCFGLOCKR0				0x20
++#define RCC_RCFGLOCKR1				0x24
++#define RCC_RCFGLOCKR2				0x28
++#define RCC_RCFGLOCKR3				0x2C
++#define RCC_R0CIDCFGR				0x30
++#define RCC_R0SEMCR				0x34
++#define RCC_R1CIDCFGR				0x38
++#define RCC_R1SEMCR				0x3C
++#define RCC_R2CIDCFGR				0x40
++#define RCC_R2SEMCR				0x44
++#define RCC_R3CIDCFGR				0x48
++#define RCC_R3SEMCR				0x4C
++#define RCC_R4CIDCFGR				0x50
++#define RCC_R4SEMCR				0x54
++#define RCC_R5CIDCFGR				0x58
++#define RCC_R5SEMCR				0x5C
++#define RCC_R6CIDCFGR				0x60
++#define RCC_R6SEMCR				0x64
++#define RCC_R7CIDCFGR				0x68
++#define RCC_R7SEMCR				0x6C
++#define RCC_R8CIDCFGR				0x70
++#define RCC_R8SEMCR				0x74
++#define RCC_R9CIDCFGR				0x78
++#define RCC_R9SEMCR				0x7C
++#define RCC_R10CIDCFGR				0x80
++#define RCC_R10SEMCR				0x84
++#define RCC_R11CIDCFGR				0x88
++#define RCC_R11SEMCR				0x8C
++#define RCC_R12CIDCFGR				0x90
++#define RCC_R12SEMCR				0x94
++#define RCC_R13CIDCFGR				0x98
++#define RCC_R13SEMCR				0x9C
++#define RCC_R14CIDCFGR				0xA0
++#define RCC_R14SEMCR				0xA4
++#define RCC_R15CIDCFGR				0xA8
++#define RCC_R15SEMCR				0xAC
++#define RCC_R16CIDCFGR				0xB0
++#define RCC_R16SEMCR				0xB4
++#define RCC_R17CIDCFGR				0xB8
++#define RCC_R17SEMCR				0xBC
++#define RCC_R18CIDCFGR				0xC0
++#define RCC_R18SEMCR				0xC4
++#define RCC_R19CIDCFGR				0xC8
++#define RCC_R19SEMCR				0xCC
++#define RCC_R20CIDCFGR				0xD0
++#define RCC_R20SEMCR				0xD4
++#define RCC_R21CIDCFGR				0xD8
++#define RCC_R21SEMCR				0xDC
++#define RCC_R22CIDCFGR				0xE0
++#define RCC_R22SEMCR				0xE4
++#define RCC_R23CIDCFGR				0xE8
++#define RCC_R23SEMCR				0xEC
++#define RCC_R24CIDCFGR				0xF0
++#define RCC_R24SEMCR				0xF4
++#define RCC_R25CIDCFGR				0xF8
++#define RCC_R25SEMCR				0xFC
++#define RCC_R26CIDCFGR				0x100
++#define RCC_R26SEMCR				0x104
++#define RCC_R27CIDCFGR				0x108
++#define RCC_R27SEMCR				0x10C
++#define RCC_R28CIDCFGR				0x110
++#define RCC_R28SEMCR				0x114
++#define RCC_R29CIDCFGR				0x118
++#define RCC_R29SEMCR				0x11C
++#define RCC_R30CIDCFGR				0x120
++#define RCC_R30SEMCR				0x124
++#define RCC_R31CIDCFGR				0x128
++#define RCC_R31SEMCR				0x12C
++#define RCC_R32CIDCFGR				0x130
++#define RCC_R32SEMCR				0x134
++#define RCC_R33CIDCFGR				0x138
++#define RCC_R33SEMCR				0x13C
++#define RCC_R34CIDCFGR				0x140
++#define RCC_R34SEMCR				0x144
++#define RCC_R35CIDCFGR				0x148
++#define RCC_R35SEMCR				0x14C
++#define RCC_R36CIDCFGR				0x150
++#define RCC_R36SEMCR				0x154
++#define RCC_R37CIDCFGR				0x158
++#define RCC_R37SEMCR				0x15C
++#define RCC_R38CIDCFGR				0x160
++#define RCC_R38SEMCR				0x164
++#define RCC_R39CIDCFGR				0x168
++#define RCC_R39SEMCR				0x16C
++#define RCC_R40CIDCFGR				0x170
++#define RCC_R40SEMCR				0x174
++#define RCC_R41CIDCFGR				0x178
++#define RCC_R41SEMCR				0x17C
++#define RCC_R42CIDCFGR				0x180
++#define RCC_R42SEMCR				0x184
++#define RCC_R43CIDCFGR				0x188
++#define RCC_R43SEMCR				0x18C
++#define RCC_R44CIDCFGR				0x190
++#define RCC_R44SEMCR				0x194
++#define RCC_R45CIDCFGR				0x198
++#define RCC_R45SEMCR				0x19C
++#define RCC_R46CIDCFGR				0x1A0
++#define RCC_R46SEMCR				0x1A4
++#define RCC_R47CIDCFGR				0x1A8
++#define RCC_R47SEMCR				0x1AC
++#define RCC_R48CIDCFGR				0x1B0
++#define RCC_R48SEMCR				0x1B4
++#define RCC_R49CIDCFGR				0x1B8
++#define RCC_R49SEMCR				0x1BC
++#define RCC_R50CIDCFGR				0x1C0
++#define RCC_R50SEMCR				0x1C4
++#define RCC_R51CIDCFGR				0x1C8
++#define RCC_R51SEMCR				0x1CC
++#define RCC_R52CIDCFGR				0x1D0
++#define RCC_R52SEMCR				0x1D4
++#define RCC_R53CIDCFGR				0x1D8
++#define RCC_R53SEMCR				0x1DC
++#define RCC_R54CIDCFGR				0x1E0
++#define RCC_R54SEMCR				0x1E4
++#define RCC_R55CIDCFGR				0x1E8
++#define RCC_R55SEMCR				0x1EC
++#define RCC_R56CIDCFGR				0x1F0
++#define RCC_R56SEMCR				0x1F4
++#define RCC_R57CIDCFGR				0x1F8
++#define RCC_R57SEMCR				0x1FC
++#define RCC_R58CIDCFGR				0x200
++#define RCC_R58SEMCR				0x204
++#define RCC_R59CIDCFGR				0x208
++#define RCC_R59SEMCR				0x20C
++#define RCC_R60CIDCFGR				0x210
++#define RCC_R60SEMCR				0x214
++#define RCC_R61CIDCFGR				0x218
++#define RCC_R61SEMCR				0x21C
++#define RCC_R62CIDCFGR				0x220
++#define RCC_R62SEMCR				0x224
++#define RCC_R63CIDCFGR				0x228
++#define RCC_R63SEMCR				0x22C
++#define RCC_R64CIDCFGR				0x230
++#define RCC_R64SEMCR				0x234
++#define RCC_R65CIDCFGR				0x238
++#define RCC_R65SEMCR				0x23C
++#define RCC_R66CIDCFGR				0x240
++#define RCC_R66SEMCR				0x244
++#define RCC_R67CIDCFGR				0x248
++#define RCC_R67SEMCR				0x24C
++#define RCC_R68CIDCFGR				0x250
++#define RCC_R68SEMCR				0x254
++#define RCC_R69CIDCFGR				0x258
++#define RCC_R69SEMCR				0x25C
++#define RCC_R70CIDCFGR				0x260
++#define RCC_R70SEMCR				0x264
++#define RCC_R71CIDCFGR				0x268
++#define RCC_R71SEMCR				0x26C
++#define RCC_R73CIDCFGR				0x278
++#define RCC_R73SEMCR				0x27C
++#define RCC_R74CIDCFGR				0x280
++#define RCC_R74SEMCR				0x284
++#define RCC_R75CIDCFGR				0x288
++#define RCC_R75SEMCR				0x28C
++#define RCC_R76CIDCFGR				0x290
++#define RCC_R76SEMCR				0x294
++#define RCC_R77CIDCFGR				0x298
++#define RCC_R77SEMCR				0x29C
++#define RCC_R78CIDCFGR				0x2A0
++#define RCC_R78SEMCR				0x2A4
++#define RCC_R79CIDCFGR				0x2A8
++#define RCC_R79SEMCR				0x2AC
++#define RCC_R83CIDCFGR				0x2C8
++#define RCC_R83SEMCR				0x2CC
++#define RCC_R84CIDCFGR				0x2D0
++#define RCC_R84SEMCR				0x2D4
++#define RCC_R85CIDCFGR				0x2D8
++#define RCC_R85SEMCR				0x2DC
++#define RCC_R86CIDCFGR				0x2E0
++#define RCC_R86SEMCR				0x2E4
++#define RCC_R87CIDCFGR				0x2E8
++#define RCC_R87SEMCR				0x2EC
++#define RCC_R88CIDCFGR				0x2F0
++#define RCC_R88SEMCR				0x2F4
++#define RCC_R90CIDCFGR				0x300
++#define RCC_R90SEMCR				0x304
++#define RCC_R91CIDCFGR				0x308
++#define RCC_R91SEMCR				0x30C
++#define RCC_R92CIDCFGR				0x310
++#define RCC_R92SEMCR				0x314
++#define RCC_R93CIDCFGR				0x318
++#define RCC_R93SEMCR				0x31C
++#define RCC_R94CIDCFGR				0x320
++#define RCC_R94SEMCR				0x324
++#define RCC_R95CIDCFGR				0x328
++#define RCC_R95SEMCR				0x32C
++#define RCC_R96CIDCFGR				0x330
++#define RCC_R96SEMCR				0x334
++#define RCC_R97CIDCFGR				0x338
++#define RCC_R97SEMCR				0x33C
++#define RCC_R98CIDCFGR				0x340
++#define RCC_R98SEMCR				0x344
++#define RCC_R101CIDCFGR				0x358
++#define RCC_R101SEMCR				0x35C
++#define RCC_R102CIDCFGR				0x360
++#define RCC_R102SEMCR				0x364
++#define RCC_R103CIDCFGR				0x368
++#define RCC_R103SEMCR				0x36C
++#define RCC_R104CIDCFGR				0x370
++#define RCC_R104SEMCR				0x374
++#define RCC_R105CIDCFGR				0x378
++#define RCC_R105SEMCR				0x37C
++#define RCC_R106CIDCFGR				0x380
++#define RCC_R106SEMCR				0x384
++#define RCC_R108CIDCFGR				0x390
++#define RCC_R108SEMCR				0x394
++#define RCC_R109CIDCFGR				0x398
++#define RCC_R109SEMCR				0x39C
++#define RCC_R110CIDCFGR				0x3A0
++#define RCC_R110SEMCR				0x3A4
++#define RCC_R111CIDCFGR				0x3A8
++#define RCC_R111SEMCR				0x3AC
++#define RCC_R112CIDCFGR				0x3B0
++#define RCC_R112SEMCR				0x3B4
++#define RCC_R113CIDCFGR				0x3B8
++#define RCC_R113SEMCR				0x3BC
++#define RCC_GRSTCSETR				0x400
++#define RCC_C1RSTCSETR				0x404
++#define RCC_C2RSTCSETR				0x40C
++#define RCC_HWRSTSCLRR				0x410
++#define RCC_C1HWRSTSCLRR			0x414
++#define RCC_C2HWRSTSCLRR			0x418
++#define RCC_C1BOOTRSTSSETR			0x41C
++#define RCC_C1BOOTRSTSCLRR			0x420
++#define RCC_C2BOOTRSTSSETR			0x424
++#define RCC_C2BOOTRSTSCLRR			0x428
++#define RCC_C1SREQSETR				0x42C
++#define RCC_C1SREQCLRR				0x430
++#define RCC_CPUBOOTCR				0x434
++#define RCC_STBYBOOTCR				0x438
++#define RCC_LEGBOOTCR				0x43C
++#define RCC_BDCR				0x440
++#define RCC_RDCR				0x44C
++#define RCC_C1MSRDCR				0x450
++#define RCC_PWRLPDLYCR				0x454
++#define RCC_C1CIESETR				0x458
++#define RCC_C1CIFCLRR				0x45C
++#define RCC_C2CIESETR				0x460
++#define RCC_C2CIFCLRR				0x464
++#define RCC_IWDGC1FZSETR			0x468
++#define RCC_IWDGC1FZCLRR			0x46C
++#define RCC_IWDGC1CFGSETR			0x470
++#define RCC_IWDGC1CFGCLRR			0x474
++#define RCC_IWDGC2FZSETR			0x478
++#define RCC_IWDGC2FZCLRR			0x47C
++#define RCC_IWDGC2CFGSETR			0x480
++#define RCC_IWDGC2CFGCLRR			0x484
++#define RCC_MCO1CFGR				0x488
++#define RCC_MCO2CFGR				0x48C
++#define RCC_OCENSETR				0x490
++#define RCC_OCENCLRR				0x494
++#define RCC_OCRDYR				0x498
++#define RCC_HSICFGR				0x49C
++#define RCC_MSICFGR				0x4A0
++#define RCC_LSICR				0x4A4
++#define RCC_RTCDIVR				0x4A8
++#define RCC_APB1DIVR				0x4AC
++#define RCC_APB2DIVR				0x4B0
++#define RCC_APB3DIVR				0x4B4
++#define RCC_APB4DIVR				0x4B8
++#define RCC_APB5DIVR				0x4BC
++#define RCC_APBDBGDIVR				0x4C0
++#define RCC_TIMG1PRER				0x4C8
++#define RCC_TIMG2PRER				0x4CC
++#define RCC_LSMCUDIVR				0x4D0
++#define RCC_DDRCPCFGR				0x4D4
++#define RCC_DDRCAPBCFGR				0x4D8
++#define RCC_DDRPHYCAPBCFGR			0x4DC
++#define RCC_DDRPHYCCFGR				0x4E0
++#define RCC_DDRCFGR				0x4E4
++#define RCC_DDRITFCFGR				0x4E8
++#define RCC_SYSRAMCFGR				0x4F0
++#define RCC_SRAM1CFGR				0x4F8
++#define RCC_RETRAMCFGR				0x500
++#define RCC_BKPSRAMCFGR				0x504
++#define RCC_OSPI1CFGR				0x514
++#define RCC_FMCCFGR				0x51C
++#define RCC_DBGCFGR				0x520
++#define RCC_STMCFGR				0x524
++#define RCC_ETRCFGR				0x528
++#define RCC_GPIOACFGR				0x52C
++#define RCC_GPIOBCFGR				0x530
++#define RCC_GPIOCCFGR				0x534
++#define RCC_GPIODCFGR				0x538
++#define RCC_GPIOECFGR				0x53C
++#define RCC_GPIOFCFGR				0x540
++#define RCC_GPIOGCFGR				0x544
++#define RCC_GPIOHCFGR				0x548
++#define RCC_GPIOICFGR				0x54C
++#define RCC_GPIOZCFGR				0x558
++#define RCC_HPDMA1CFGR				0x55C
++#define RCC_HPDMA2CFGR				0x560
++#define RCC_HPDMA3CFGR				0x564
++#define RCC_IPCC1CFGR				0x570
++#define RCC_RTCCFGR				0x578
++#define RCC_SYSCPU1CFGR				0x580
++#define RCC_BSECCFGR				0x584
++#define RCC_PLL2CFGR1				0x590
++#define RCC_PLL2CFGR2				0x594
++#define RCC_PLL2CFGR3				0x598
++#define RCC_PLL2CFGR4				0x59C
++#define RCC_PLL2CFGR5				0x5A0
++#define RCC_PLL2CFGR6				0x5A8
++#define RCC_PLL2CFGR7				0x5AC
++#define RCC_HSIFMONCR				0x5E0
++#define RCC_HSIFVALR				0x5E4
++#define RCC_MSIFMONCR				0x5E8
++#define RCC_MSIFVALR				0x5EC
++#define RCC_TIM1CFGR				0x700
++#define RCC_TIM2CFGR				0x704
++#define RCC_TIM3CFGR				0x708
++#define RCC_TIM4CFGR				0x70C
++#define RCC_TIM5CFGR				0x710
++#define RCC_TIM6CFGR				0x714
++#define RCC_TIM7CFGR				0x718
++#define RCC_TIM8CFGR				0x71C
++#define RCC_TIM10CFGR				0x720
++#define RCC_TIM11CFGR				0x724
++#define RCC_TIM12CFGR				0x728
++#define RCC_TIM13CFGR				0x72C
++#define RCC_TIM14CFGR				0x730
++#define RCC_TIM15CFGR				0x734
++#define RCC_TIM16CFGR				0x738
++#define RCC_TIM17CFGR				0x73C
++#define RCC_LPTIM1CFGR				0x744
++#define RCC_LPTIM2CFGR				0x748
++#define RCC_LPTIM3CFGR				0x74C
++#define RCC_LPTIM4CFGR				0x750
++#define RCC_LPTIM5CFGR				0x754
++#define RCC_SPI1CFGR				0x758
++#define RCC_SPI2CFGR				0x75C
++#define RCC_SPI3CFGR				0x760
++#define RCC_SPI4CFGR				0x764
++#define RCC_SPI5CFGR				0x768
++#define RCC_SPI6CFGR				0x76C
++#define RCC_SPDIFRXCFGR				0x778
++#define RCC_USART1CFGR				0x77C
++#define RCC_USART2CFGR				0x780
++#define RCC_USART3CFGR				0x784
++#define RCC_UART4CFGR				0x788
++#define RCC_UART5CFGR				0x78C
++#define RCC_USART6CFGR				0x790
++#define RCC_UART7CFGR				0x794
++#define RCC_LPUART1CFGR				0x7A0
++#define RCC_I2C1CFGR				0x7A4
++#define RCC_I2C2CFGR				0x7A8
++#define RCC_I2C3CFGR				0x7AC
++#define RCC_SAI1CFGR				0x7C4
++#define RCC_SAI2CFGR				0x7C8
++#define RCC_SAI3CFGR				0x7CC
++#define RCC_SAI4CFGR				0x7D0
++#define RCC_MDF1CFGR				0x7D8
++#define RCC_FDCANCFGR				0x7E0
++#define RCC_HDPCFGR				0x7E4
++#define RCC_ADC1CFGR				0x7E8
++#define RCC_ADC2CFGR				0x7EC
++#define RCC_ETH1CFGR				0x7F0
++#define RCC_ETH2CFGR				0x7F4
++#define RCC_USBHCFGR				0x7FC
++#define RCC_USB2PHY1CFGR			0x800
++#define RCC_OTGCFGR				0x808
++#define RCC_USB2PHY2CFGR			0x80C
++#define RCC_STGENCFGR				0x824
++#define RCC_SDMMC1CFGR				0x830
++#define RCC_SDMMC2CFGR				0x834
++#define RCC_SDMMC3CFGR				0x838
++#define RCC_LTDCCFGR				0x840
++#define RCC_CSICFGR				0x858
++#define RCC_DCMIPPCFGR				0x85C
++#define RCC_DCMIPSSICFGR			0x860
++#define RCC_RNG1CFGR				0x870
++#define RCC_RNG2CFGR				0x874
++#define RCC_PKACFGR				0x878
++#define RCC_SAESCFGR				0x87C
++#define RCC_HASH1CFGR				0x880
++#define RCC_HASH2CFGR				0x884
++#define RCC_CRYP1CFGR				0x888
++#define RCC_CRYP2CFGR				0x88C
++#define RCC_CCBCFGR				0x890
++#define RCC_IWDG1CFGR				0x894
++#define RCC_IWDG2CFGR				0x898
++#define RCC_IWDG3CFGR				0x89C
++#define RCC_IWDG4CFGR				0x8A0
++#define RCC_WWDG1CFGR				0x8A4
++#define RCC_VREFCFGR				0x8AC
++#define RCC_DTSCFGR				0x8B0
++#define RCC_CRCCFGR				0x8B4
++#define RCC_SERCCFGR				0x8B8
++#define RCC_DDRPERFMCFGR			0x8C0
++#define RCC_I3C1CFGR				0x8C8
++#define RCC_I3C2CFGR				0x8CC
++#define RCC_I3C3CFGR				0x8D0
++#define RCC_MUXSELCFGR				0x1000
++#define RCC_XBAR0CFGR				0x1018
++#define RCC_XBAR1CFGR				0x101C
++#define RCC_XBAR2CFGR				0x1020
++#define RCC_XBAR3CFGR				0x1024
++#define RCC_XBAR4CFGR				0x1028
++#define RCC_XBAR5CFGR				0x102C
++#define RCC_XBAR6CFGR				0x1030
++#define RCC_XBAR7CFGR				0x1034
++#define RCC_XBAR8CFGR				0x1038
++#define RCC_XBAR9CFGR				0x103C
++#define RCC_XBAR10CFGR				0x1040
++#define RCC_XBAR11CFGR				0x1044
++#define RCC_XBAR12CFGR				0x1048
++#define RCC_XBAR13CFGR				0x104C
++#define RCC_XBAR14CFGR				0x1050
++#define RCC_XBAR15CFGR				0x1054
++#define RCC_XBAR16CFGR				0x1058
++#define RCC_XBAR17CFGR				0x105C
++#define RCC_XBAR18CFGR				0x1060
++#define RCC_XBAR19CFGR				0x1064
++#define RCC_XBAR20CFGR				0x1068
++#define RCC_XBAR21CFGR				0x106C
++#define RCC_XBAR22CFGR				0x1070
++#define RCC_XBAR23CFGR				0x1074
++#define RCC_XBAR24CFGR				0x1078
++#define RCC_XBAR25CFGR				0x107C
++#define RCC_XBAR26CFGR				0x1080
++#define RCC_XBAR27CFGR				0x1084
++#define RCC_XBAR28CFGR				0x1088
++#define RCC_XBAR29CFGR				0x108C
++#define RCC_XBAR30CFGR				0x1090
++#define RCC_XBAR31CFGR				0x1094
++#define RCC_XBAR32CFGR				0x1098
++#define RCC_XBAR33CFGR				0x109C
++#define RCC_XBAR34CFGR				0x10A0
++#define RCC_XBAR35CFGR				0x10A4
++#define RCC_XBAR36CFGR				0x10A8
++#define RCC_XBAR37CFGR				0x10AC
++#define RCC_XBAR38CFGR				0x10B0
++#define RCC_XBAR39CFGR				0x10B4
++#define RCC_XBAR40CFGR				0x10B8
++#define RCC_XBAR41CFGR				0x10BC
++#define RCC_XBAR42CFGR				0x10C0
++#define RCC_XBAR43CFGR				0x10C4
++#define RCC_XBAR44CFGR				0x10C8
++#define RCC_XBAR45CFGR				0x10CC
++#define RCC_XBAR46CFGR				0x10D0
++#define RCC_XBAR47CFGR				0x10D4
++#define RCC_XBAR48CFGR				0x10D8
++#define RCC_XBAR49CFGR				0x10DC
++#define RCC_XBAR50CFGR				0x10E0
++#define RCC_XBAR51CFGR				0x10E4
++#define RCC_XBAR52CFGR				0x10E8
++#define RCC_XBAR53CFGR				0x10EC
++#define RCC_XBAR54CFGR				0x10F0
++#define RCC_XBAR55CFGR				0x10F4
++#define RCC_XBAR56CFGR				0x10F8
++#define RCC_XBAR57CFGR				0x10FC
++#define RCC_XBAR58CFGR				0x1100
++#define RCC_XBAR59CFGR				0x1104
++#define RCC_XBAR60CFGR				0x1108
++#define RCC_XBAR61CFGR				0x110C
++#define RCC_XBAR62CFGR				0x1110
++#define RCC_XBAR63CFGR				0x1114
++#define RCC_PREDIV0CFGR				0x1118
++#define RCC_PREDIV1CFGR				0x111C
++#define RCC_PREDIV2CFGR				0x1120
++#define RCC_PREDIV3CFGR				0x1124
++#define RCC_PREDIV4CFGR				0x1128
++#define RCC_PREDIV5CFGR				0x112C
++#define RCC_PREDIV6CFGR				0x1130
++#define RCC_PREDIV7CFGR				0x1134
++#define RCC_PREDIV8CFGR				0x1138
++#define RCC_PREDIV9CFGR				0x113C
++#define RCC_PREDIV10CFGR			0x1140
++#define RCC_PREDIV11CFGR			0x1144
++#define RCC_PREDIV12CFGR			0x1148
++#define RCC_PREDIV13CFGR			0x114C
++#define RCC_PREDIV14CFGR			0x1150
++#define RCC_PREDIV15CFGR			0x1154
++#define RCC_PREDIV16CFGR			0x1158
++#define RCC_PREDIV17CFGR			0x115C
++#define RCC_PREDIV18CFGR			0x1160
++#define RCC_PREDIV19CFGR			0x1164
++#define RCC_PREDIV20CFGR			0x1168
++#define RCC_PREDIV21CFGR			0x116C
++#define RCC_PREDIV22CFGR			0x1170
++#define RCC_PREDIV23CFGR			0x1174
++#define RCC_PREDIV24CFGR			0x1178
++#define RCC_PREDIV25CFGR			0x117C
++#define RCC_PREDIV26CFGR			0x1180
++#define RCC_PREDIV27CFGR			0x1184
++#define RCC_PREDIV28CFGR			0x1188
++#define RCC_PREDIV29CFGR			0x118C
++#define RCC_PREDIV30CFGR			0x1190
++#define RCC_PREDIV31CFGR			0x1194
++#define RCC_PREDIV32CFGR			0x1198
++#define RCC_PREDIV33CFGR			0x119C
++#define RCC_PREDIV34CFGR			0x11A0
++#define RCC_PREDIV35CFGR			0x11A4
++#define RCC_PREDIV36CFGR			0x11A8
++#define RCC_PREDIV37CFGR			0x11AC
++#define RCC_PREDIV38CFGR			0x11B0
++#define RCC_PREDIV39CFGR			0x11B4
++#define RCC_PREDIV40CFGR			0x11B8
++#define RCC_PREDIV41CFGR			0x11BC
++#define RCC_PREDIV42CFGR			0x11C0
++#define RCC_PREDIV43CFGR			0x11C4
++#define RCC_PREDIV44CFGR			0x11C8
++#define RCC_PREDIV45CFGR			0x11CC
++#define RCC_PREDIV46CFGR			0x11D0
++#define RCC_PREDIV47CFGR			0x11D4
++#define RCC_PREDIV48CFGR			0x11D8
++#define RCC_PREDIV49CFGR			0x11DC
++#define RCC_PREDIV50CFGR			0x11E0
++#define RCC_PREDIV51CFGR			0x11E4
++#define RCC_PREDIV52CFGR			0x11E8
++#define RCC_PREDIV53CFGR			0x11EC
++#define RCC_PREDIV54CFGR			0x11F0
++#define RCC_PREDIV55CFGR			0x11F4
++#define RCC_PREDIV56CFGR			0x11F8
++#define RCC_PREDIV57CFGR			0x11FC
++#define RCC_PREDIV58CFGR			0x1200
++#define RCC_PREDIV59CFGR			0x1204
++#define RCC_PREDIV60CFGR			0x1208
++#define RCC_PREDIV61CFGR			0x120C
++#define RCC_PREDIV62CFGR			0x1210
++#define RCC_PREDIV63CFGR			0x1214
++#define RCC_PREDIVSR1				0x1218
++#define RCC_PREDIVSR2				0x121C
++#define RCC_FINDIV0CFGR				0x1224
++#define RCC_FINDIV1CFGR				0x1228
++#define RCC_FINDIV2CFGR				0x122C
++#define RCC_FINDIV3CFGR				0x1230
++#define RCC_FINDIV4CFGR				0x1234
++#define RCC_FINDIV5CFGR				0x1238
++#define RCC_FINDIV6CFGR				0x123C
++#define RCC_FINDIV7CFGR				0x1240
++#define RCC_FINDIV8CFGR				0x1244
++#define RCC_FINDIV9CFGR				0x1248
++#define RCC_FINDIV10CFGR			0x124C
++#define RCC_FINDIV11CFGR			0x1250
++#define RCC_FINDIV12CFGR			0x1254
++#define RCC_FINDIV13CFGR			0x1258
++#define RCC_FINDIV14CFGR			0x125C
++#define RCC_FINDIV15CFGR			0x1260
++#define RCC_FINDIV16CFGR			0x1264
++#define RCC_FINDIV17CFGR			0x1268
++#define RCC_FINDIV18CFGR			0x126C
++#define RCC_FINDIV19CFGR			0x1270
++#define RCC_FINDIV20CFGR			0x1274
++#define RCC_FINDIV21CFGR			0x1278
++#define RCC_FINDIV22CFGR			0x127C
++#define RCC_FINDIV23CFGR			0x1280
++#define RCC_FINDIV24CFGR			0x1284
++#define RCC_FINDIV25CFGR			0x1288
++#define RCC_FINDIV26CFGR			0x128C
++#define RCC_FINDIV27CFGR			0x1290
++#define RCC_FINDIV28CFGR			0x1294
++#define RCC_FINDIV29CFGR			0x1298
++#define RCC_FINDIV30CFGR			0x129C
++#define RCC_FINDIV31CFGR			0x12A0
++#define RCC_FINDIV32CFGR			0x12A4
++#define RCC_FINDIV33CFGR			0x12A8
++#define RCC_FINDIV34CFGR			0x12AC
++#define RCC_FINDIV35CFGR			0x12B0
++#define RCC_FINDIV36CFGR			0x12B4
++#define RCC_FINDIV37CFGR			0x12B8
++#define RCC_FINDIV38CFGR			0x12BC
++#define RCC_FINDIV39CFGR			0x12C0
++#define RCC_FINDIV40CFGR			0x12C4
++#define RCC_FINDIV41CFGR			0x12C8
++#define RCC_FINDIV42CFGR			0x12CC
++#define RCC_FINDIV43CFGR			0x12D0
++#define RCC_FINDIV44CFGR			0x12D4
++#define RCC_FINDIV45CFGR			0x12D8
++#define RCC_FINDIV46CFGR			0x12DC
++#define RCC_FINDIV47CFGR			0x12E0
++#define RCC_FINDIV48CFGR			0x12E4
++#define RCC_FINDIV49CFGR			0x12E8
++#define RCC_FINDIV50CFGR			0x12EC
++#define RCC_FINDIV51CFGR			0x12F0
++#define RCC_FINDIV52CFGR			0x12F4
++#define RCC_FINDIV53CFGR			0x12F8
++#define RCC_FINDIV54CFGR			0x12FC
++#define RCC_FINDIV55CFGR			0x1300
++#define RCC_FINDIV56CFGR			0x1304
++#define RCC_FINDIV57CFGR			0x1308
++#define RCC_FINDIV58CFGR			0x130C
++#define RCC_FINDIV59CFGR			0x1310
++#define RCC_FINDIV60CFGR			0x1314
++#define RCC_FINDIV61CFGR			0x1318
++#define RCC_FINDIV62CFGR			0x131C
++#define RCC_FINDIV63CFGR			0x1320
++#define RCC_FINDIVSR1				0x1324
++#define RCC_FINDIVSR2				0x1328
++#define RCC_FCALCOBS0CFGR			0x1340
++#define RCC_FCALCOBS1CFGR			0x1344
++#define RCC_FCALCREFCFGR			0x1348
++#define RCC_FCALCCR1				0x134C
++#define RCC_FCALCCR2				0x1354
++#define RCC_FCALCSR				0x1358
++#define RCC_PLL4CFGR1				0x1360
++#define RCC_PLL4CFGR2				0x1364
++#define RCC_PLL4CFGR3				0x1368
++#define RCC_PLL4CFGR4				0x136C
++#define RCC_PLL4CFGR5				0x1370
++#define RCC_PLL4CFGR6				0x1378
++#define RCC_PLL4CFGR7				0x137C
++#define RCC_PLL5CFGR1				0x1388
++#define RCC_PLL5CFGR2				0x138C
++#define RCC_PLL5CFGR3				0x1390
++#define RCC_PLL5CFGR4				0x1394
++#define RCC_PLL5CFGR5				0x1398
++#define RCC_PLL5CFGR6				0x13A0
++#define RCC_PLL5CFGR7				0x13A4
++#define RCC_PLL6CFGR1				0x13B0
++#define RCC_PLL6CFGR2				0x13B4
++#define RCC_PLL6CFGR3				0x13B8
++#define RCC_PLL6CFGR4				0x13BC
++#define RCC_PLL6CFGR5				0x13C0
++#define RCC_PLL6CFGR6				0x13C8
++#define RCC_PLL6CFGR7				0x13CC
++#define RCC_PLL7CFGR1				0x13D8
++#define RCC_PLL7CFGR2				0x13DC
++#define RCC_PLL7CFGR3				0x13E0
++#define RCC_PLL7CFGR4				0x13E4
++#define RCC_PLL7CFGR5				0x13E8
++#define RCC_PLL7CFGR6				0x13F0
++#define RCC_PLL7CFGR7				0x13F4
++#define RCC_PLL8CFGR1				0x1400
++#define RCC_PLL8CFGR2				0x1404
++#define RCC_PLL8CFGR3				0x1408
++#define RCC_PLL8CFGR4				0x140C
++#define RCC_PLL8CFGR5				0x1410
++#define RCC_PLL8CFGR6				0x1418
++#define RCC_PLL8CFGR7				0x141C
++#define RCC_VERR				0xFFF4
++#define RCC_IDR					0xFFF8
++#define RCC_SIDR				0xFFFC
++
++/* Offset between RCC_MP_xxxENSETR and RCC_MP_xxxENCLRR registers */
++#define RCC_MP_ENCLRR_OFFSET			U(4)
++
++/* RCC_GRSTCSETR register fields */
++#define RCC_GRSTCSETR_SYSRST			BIT(0)
++
++/* RCC_C1RSTCSETR register fields */
++#define RCC_C1RSTCSETR_C1RST			BIT(0)
++
++/* RCC_C2RSTCSETR register fields */
++#define RCC_C2RSTCSETR_C2RST			BIT(0)
++
++/* RCC_HWRSTSCLRR register fields */
++#define RCC_HWRSTSCLRR_PORRSTF			BIT(0)
++#define RCC_HWRSTSCLRR_BORRSTF			BIT(1)
++#define RCC_HWRSTSCLRR_PADRSTF			BIT(2)
++#define RCC_HWRSTSCLRR_HCSSRSTF			BIT(3)
++#define RCC_HWRSTSCLRR_VCORERSTF		BIT(4)
++#define RCC_HWRSTSCLRR_SYSC1RSTF		BIT(5)
++#define RCC_HWRSTSCLRR_SYSC2RSTF		BIT(6)
++#define RCC_HWRSTSCLRR_IWDG1SYSRSTF		BIT(7)
++#define RCC_HWRSTSCLRR_IWDG2SYSRSTF		BIT(8)
++#define RCC_HWRSTSCLRR_IWDG3SYSRSTF		BIT(9)
++#define RCC_HWRSTSCLRR_IWDG4SYSRSTF		BIT(10)
++#define RCC_HWRSTSCLRR_RETCRCERRRSTF		BIT(12)
++#define RCC_HWRSTSCLRR_RETECCFAILCRCRSTF	BIT(13)
++#define RCC_HWRSTSCLRR_RETECCFAILRESTRSTF	BIT(14)
++
++/* RCC_C1HWRSTSCLRR register fields */
++#define RCC_C1HWRSTSCLRR_VCPURSTF		BIT(0)
++#define RCC_C1HWRSTSCLRR_C1RSTF			BIT(1)
++
++/* RCC_C2HWRSTSCLRR register fields */
++#define RCC_C2HWRSTSCLRR_C2RSTF			BIT(0)
++
++/* RCC_C1BOOTRSTSSETR register fields */
++#define RCC_C1BOOTRSTSSETR_PORRSTF		BIT(0)
++#define RCC_C1BOOTRSTSSETR_BORRSTF		BIT(1)
++#define RCC_C1BOOTRSTSSETR_PADRSTF		BIT(2)
++#define RCC_C1BOOTRSTSSETR_HCSSRSTF		BIT(3)
++#define RCC_C1BOOTRSTSSETR_VCORERSTF		BIT(4)
++#define RCC_C1BOOTRSTSSETR_VCPURSTF		BIT(5)
++#define RCC_C1BOOTRSTSSETR_SYSC1RSTF		BIT(6)
++#define RCC_C1BOOTRSTSSETR_SYSC2RSTF		BIT(7)
++#define RCC_C1BOOTRSTSSETR_IWDG1SYSRSTF		BIT(8)
++#define RCC_C1BOOTRSTSSETR_IWDG2SYSRSTF		BIT(9)
++#define RCC_C1BOOTRSTSSETR_IWDG3SYSRSTF		BIT(10)
++#define RCC_C1BOOTRSTSSETR_IWDG4SYSRSTF		BIT(11)
++#define RCC_C1BOOTRSTSSETR_C1RSTF		BIT(13)
++#define RCC_C1BOOTRSTSSETR_RETCRCERRRSTF	BIT(17)
++#define RCC_C1BOOTRSTSSETR_RETECCFAILCRCRSTF	BIT(18)
++#define RCC_C1BOOTRSTSSETR_RETECCFAILRESTRSTF	BIT(19)
++#define RCC_C1BOOTRSTSSETR_STBYC1RSTF		BIT(20)
++#define RCC_C1BOOTRSTSSETR_D1STBYRSTF		BIT(22)
++#define RCC_C1BOOTRSTSSETR_D2STBYRSTF		BIT(23)
++
++/* RCC_C1BOOTRSTSCLRR register fields */
++#define RCC_C1BOOTRSTSCLRR_PORRSTF		BIT(0)
++#define RCC_C1BOOTRSTSCLRR_BORRSTF		BIT(1)
++#define RCC_C1BOOTRSTSCLRR_PADRSTF		BIT(2)
++#define RCC_C1BOOTRSTSCLRR_HCSSRSTF		BIT(3)
++#define RCC_C1BOOTRSTSCLRR_VCORERSTF		BIT(4)
++#define RCC_C1BOOTRSTSCLRR_VCPURSTF		BIT(5)
++#define RCC_C1BOOTRSTSCLRR_SYSC1RSTF		BIT(6)
++#define RCC_C1BOOTRSTSCLRR_SYSC2RSTF		BIT(7)
++#define RCC_C1BOOTRSTSCLRR_IWDG1SYSRSTF		BIT(8)
++#define RCC_C1BOOTRSTSCLRR_IWDG2SYSRSTF		BIT(9)
++#define RCC_C1BOOTRSTSCLRR_IWDG3SYSRSTF		BIT(10)
++#define RCC_C1BOOTRSTSCLRR_IWDG4SYSRSTF		BIT(11)
++#define RCC_C1BOOTRSTSCLRR_C1RSTF		BIT(13)
++#define RCC_C1BOOTRSTSCLRR_RETCRCERRRSTF	BIT(17)
++#define RCC_C1BOOTRSTSCLRR_RETECCFAILCRCRSTF	BIT(18)
++#define RCC_C1BOOTRSTSCLRR_RETECCFAILRESTRSTF	BIT(19)
++#define RCC_C1BOOTRSTSCLRR_STBYC1RSTF		BIT(20)
++#define RCC_C1BOOTRSTSCLRR_D1STBYRSTF		BIT(22)
++#define RCC_C1BOOTRSTSCLRR_D2STBYRSTF		BIT(23)
++
++/* RCC_C2BOOTRSTSSETR register fields */
++#define RCC_C2BOOTRSTSSETR_PORRSTF		BIT(0)
++#define RCC_C2BOOTRSTSSETR_BORRSTF		BIT(1)
++#define RCC_C2BOOTRSTSSETR_PADRSTF		BIT(2)
++#define RCC_C2BOOTRSTSSETR_HCSSRSTF		BIT(3)
++#define RCC_C2BOOTRSTSSETR_VCORERSTF		BIT(4)
++#define RCC_C2BOOTRSTSSETR_SYSC1RSTF		BIT(6)
++#define RCC_C2BOOTRSTSSETR_SYSC2RSTF		BIT(7)
++#define RCC_C2BOOTRSTSSETR_IWDG1SYSRSTF		BIT(8)
++#define RCC_C2BOOTRSTSSETR_IWDG2SYSRSTF		BIT(9)
++#define RCC_C2BOOTRSTSSETR_IWDG3SYSRSTF		BIT(10)
++#define RCC_C2BOOTRSTSSETR_IWDG4SYSRSTF		BIT(11)
++#define RCC_C2BOOTRSTSSETR_C2RSTF		BIT(14)
++#define RCC_C2BOOTRSTSSETR_RETCRCERRRSTF	BIT(17)
++#define RCC_C2BOOTRSTSSETR_RETECCFAILCRCRSTF	BIT(18)
++#define RCC_C2BOOTRSTSSETR_RETECCFAILRESTRSTF	BIT(19)
++#define RCC_C2BOOTRSTSSETR_STBYC2RSTF		BIT(21)
++#define RCC_C2BOOTRSTSSETR_D2STBYRSTF		BIT(23)
++
++/* RCC_C2BOOTRSTSCLRR register fields */
++#define RCC_C2BOOTRSTSCLRR_PORRSTF		BIT(0)
++#define RCC_C2BOOTRSTSCLRR_BORRSTF		BIT(1)
++#define RCC_C2BOOTRSTSCLRR_PADRSTF		BIT(2)
++#define RCC_C2BOOTRSTSCLRR_HCSSRSTF		BIT(3)
++#define RCC_C2BOOTRSTSCLRR_VCORERSTF		BIT(4)
++#define RCC_C2BOOTRSTSCLRR_SYSC1RSTF		BIT(6)
++#define RCC_C2BOOTRSTSCLRR_SYSC2RSTF		BIT(7)
++#define RCC_C2BOOTRSTSCLRR_IWDG1SYSRSTF		BIT(8)
++#define RCC_C2BOOTRSTSCLRR_IWDG2SYSRSTF		BIT(9)
++#define RCC_C2BOOTRSTSCLRR_IWDG3SYSRSTF		BIT(10)
++#define RCC_C2BOOTRSTSCLRR_IWDG4SYSRSTF		BIT(11)
++#define RCC_C2BOOTRSTSCLRR_C2RSTF		BIT(14)
++#define RCC_C2BOOTRSTSCLRR_RETCRCERRRSTF	BIT(17)
++#define RCC_C2BOOTRSTSCLRR_RETECCFAILCRCRSTF	BIT(18)
++#define RCC_C2BOOTRSTSCLRR_RETECCFAILRESTRSTF	BIT(19)
++#define RCC_C2BOOTRSTSCLRR_STBYC2RSTF		BIT(21)
++#define RCC_C2BOOTRSTSCLRR_D2STBYRSTF		BIT(23)
++
++/* RCC_C1SREQSETR register fields */
++#define RCC_C1SREQSETR_STPREQ_P0		BIT(0)
++#define RCC_C1SREQSETR_ESLPREQ			BIT(16)
++
++/* RCC_C1SREQCLRR register fields */
++#define RCC_C1SREQCLRR_STPREQ_P0		BIT(0)
++#define RCC_C1SREQCLRR_ESLPREQ			BIT(16)
++
++/* RCC_CPUBOOTCR register fields */
++#define RCC_CPUBOOTCR_BOOT_CPU2			BIT(0)
++#define RCC_CPUBOOTCR_BOOT_CPU1			BIT(1)
++
++/* RCC_STBYBOOTCR register fields */
++#define RCC_STBYBOOTCR_CPU_BEN_SEL		BIT(1)
++#define RCC_STBYBOOTCR_COLD_CPU2		BIT(2)
++#define RCC_STBYBOOTCR_CPU2_HW_BEN		BIT(4)
++#define RCC_STBYBOOTCR_CPU1_HW_BEN		BIT(5)
++#define RCC_STBYBOOTCR_RET_CRCERR_RSTEN		BIT(8)
++
++/* RCC_LEGBOOTCR register fields */
++#define RCC_LEGBOOTCR_LEGACY_BEN		BIT(0)
++
++/* RCC_BDCR register fields */
++#define RCC_BDCR_LSEON				BIT(0)
++#define RCC_BDCR_LSEBYP				BIT(1)
++#define RCC_BDCR_LSERDY				BIT(2)
++#define RCC_BDCR_LSEDIGBYP			BIT(3)
++#define RCC_BDCR_LSEDRV_MASK			GENMASK(5, 4)
++#define RCC_BDCR_LSEDRV_SHIFT			4
++#define RCC_BDCR_LSECSSON			BIT(6)
++#define RCC_BDCR_LSEGFON			BIT(7)
++#define RCC_BDCR_LSECSSD			BIT(8)
++#define RCC_BDCR_RTCSRC_MASK			GENMASK(17, 16)
++#define RCC_BDCR_RTCSRC_SHIFT			16
++#define RCC_BDCR_RTCCKEN			BIT(20)
++#define RCC_BDCR_VSWRST				BIT(31)
++
++/* RCC_RDCR register fields */
++#define RCC_RDCR_MRD_MASK			GENMASK(20, 16)
++#define RCC_RDCR_EADLY_MASK			GENMASK(27, 24)
++
++/* RCC_C1MSRDCR register fields */
++#define RCC_C1MSRDCR_C1MSRD_MASK		GENMASK(4, 0)
++#define RCC_C1MSRDCR_C1MSRST			BIT(8)
++
++/* RCC_PWRLPDLYCR register fields */
++#define RCC_PWRLPDLYCR_PWRLP_DLY_MASK		GENMASK(21, 0)
++#define RCC_PWRLPDLYCR_CPU2TMPSKP		BIT(24)
++
++/* RCC_C1CIESETR register fields */
++#define RCC_C1CIESETR_LSIRDYIE			BIT(0)
++#define RCC_C1CIESETR_LSERDYIE			BIT(1)
++#define RCC_C1CIESETR_HSIRDYIE			BIT(2)
++#define RCC_C1CIESETR_HSERDYIE			BIT(3)
++#define RCC_C1CIESETR_MSIRDYIE			BIT(4)
++#define RCC_C1CIESETR_PLL1RDYIE			BIT(5)
++#define RCC_C1CIESETR_PLL2RDYIE			BIT(6)
++#define RCC_C1CIESETR_PLL4RDYIE			BIT(8)
++#define RCC_C1CIESETR_PLL5RDYIE			BIT(9)
++#define RCC_C1CIESETR_PLL6RDYIE			BIT(10)
++#define RCC_C1CIESETR_PLL7RDYIE			BIT(11)
++#define RCC_C1CIESETR_PLL8RDYIE			BIT(12)
++#define RCC_C1CIESETR_LSECSSIE			BIT(16)
++#define RCC_C1CIESETR_WKUPIE			BIT(20)
++
++/* RCC_C1CIFCLRR register fields */
++#define RCC_C1CIFCLRR_LSIRDYF			BIT(0)
++#define RCC_C1CIFCLRR_LSERDYF			BIT(1)
++#define RCC_C1CIFCLRR_HSIRDYF			BIT(2)
++#define RCC_C1CIFCLRR_HSERDYF			BIT(3)
++#define RCC_C1CIFCLRR_MSIRDYF			BIT(4)
++#define RCC_C1CIFCLRR_PLL1RDYF			BIT(5)
++#define RCC_C1CIFCLRR_PLL2RDYF			BIT(6)
++#define RCC_C1CIFCLRR_PLL4RDYF			BIT(8)
++#define RCC_C1CIFCLRR_PLL5RDYF			BIT(9)
++#define RCC_C1CIFCLRR_PLL6RDYF			BIT(10)
++#define RCC_C1CIFCLRR_PLL7RDYF			BIT(11)
++#define RCC_C1CIFCLRR_PLL8RDYF			BIT(12)
++#define RCC_C1CIFCLRR_LSECSSF			BIT(16)
++#define RCC_C1CIFCLRR_WKUPF			BIT(20)
++
++/* RCC_C2CIESETR register fields */
++#define RCC_C2CIESETR_LSIRDYIE			BIT(0)
++#define RCC_C2CIESETR_LSERDYIE			BIT(1)
++#define RCC_C2CIESETR_HSIRDYIE			BIT(2)
++#define RCC_C2CIESETR_HSERDYIE			BIT(3)
++#define RCC_C2CIESETR_MSIRDYIE			BIT(4)
++#define RCC_C2CIESETR_PLL1RDYIE			BIT(5)
++#define RCC_C2CIESETR_PLL2RDYIE			BIT(6)
++#define RCC_C2CIESETR_PLL4RDYIE			BIT(8)
++#define RCC_C2CIESETR_PLL5RDYIE			BIT(9)
++#define RCC_C2CIESETR_PLL6RDYIE			BIT(10)
++#define RCC_C2CIESETR_PLL7RDYIE			BIT(11)
++#define RCC_C2CIESETR_PLL8RDYIE			BIT(12)
++#define RCC_C2CIESETR_LSECSSIE			BIT(16)
++#define RCC_C2CIESETR_WKUPIE			BIT(20)
++
++/* RCC_C2CIFCLRR register fields */
++#define RCC_C2CIFCLRR_LSIRDYF			BIT(0)
++#define RCC_C2CIFCLRR_LSERDYF			BIT(1)
++#define RCC_C2CIFCLRR_HSIRDYF			BIT(2)
++#define RCC_C2CIFCLRR_HSERDYF			BIT(3)
++#define RCC_C2CIFCLRR_MSIRDYF			BIT(4)
++#define RCC_C2CIFCLRR_PLL1RDYF			BIT(5)
++#define RCC_C2CIFCLRR_PLL2RDYF			BIT(6)
++#define RCC_C2CIFCLRR_PLL4RDYF			BIT(8)
++#define RCC_C2CIFCLRR_PLL5RDYF			BIT(9)
++#define RCC_C2CIFCLRR_PLL6RDYF			BIT(10)
++#define RCC_C2CIFCLRR_PLL7RDYF			BIT(11)
++#define RCC_C2CIFCLRR_PLL8RDYF			BIT(12)
++#define RCC_C2CIFCLRR_LSECSSF			BIT(16)
++#define RCC_C2CIFCLRR_WKUPF			BIT(20)
++
++/* RCC_IWDGC1FZSETR register fields */
++#define RCC_IWDGC1FZSETR_FZ_IWDG1		BIT(0)
++#define RCC_IWDGC1FZSETR_FZ_IWDG2		BIT(1)
++
++/* RCC_IWDGC1FZCLRR register fields */
++#define RCC_IWDGC1FZCLRR_FZ_IWDG1		BIT(0)
++#define RCC_IWDGC1FZCLRR_FZ_IWDG2		BIT(1)
++
++/* RCC_IWDGC1CFGSETR register fields */
++#define RCC_IWDGC1CFGSETR_IWDG1_SYSRSTEN	BIT(0)
++#define RCC_IWDGC1CFGSETR_IWDG2_SYSRSTEN	BIT(2)
++#define RCC_IWDGC1CFGSETR_IWDG2_KERRST		BIT(18)
++
++/* RCC_IWDGC1CFGCLRR register fields */
++#define RCC_IWDGC1CFGCLRR_IWDG1_SYSRSTEN	BIT(0)
++#define RCC_IWDGC1CFGCLRR_IWDG2_SYSRSTEN	BIT(2)
++#define RCC_IWDGC1CFGCLRR_IWDG2_KERRST		BIT(18)
++
++/* RCC_IWDGC2FZSETR register fields */
++#define RCC_IWDGC2FZSETR_FZ_IWDG3		BIT(0)
++#define RCC_IWDGC2FZSETR_FZ_IWDG4		BIT(1)
++
++/* RCC_IWDGC2FZCLRR register fields */
++#define RCC_IWDGC2FZCLRR_FZ_IWDG3		BIT(0)
++#define RCC_IWDGC2FZCLRR_FZ_IWDG4		BIT(1)
++
++/* RCC_IWDGC2CFGSETR register fields */
++#define RCC_IWDGC2CFGSETR_IWDG3_SYSRSTEN	BIT(0)
++#define RCC_IWDGC2CFGSETR_IWDG4_SYSRSTEN	BIT(2)
++#define RCC_IWDGC2CFGSETR_IWDG4_KERRST		BIT(18)
++
++/* RCC_IWDGC2CFGCLRR register fields */
++#define RCC_IWDGC2CFGCLRR_IWDG3_SYSRSTEN	BIT(0)
++#define RCC_IWDGC2CFGCLRR_IWDG4_SYSRSTEN	BIT(2)
++#define RCC_IWDGC2CFGCLRR_IWDG4_KERRST		BIT(18)
++
++/* RCC_MCO1CFGR register fields */
++#define RCC_MCO1CFGR_MCO1SEL			BIT(0)
++#define RCC_MCO1CFGR_MCO1ON			BIT(8)
++
++/* RCC_MCO2CFGR register fields */
++#define RCC_MCO2CFGR_MCO2SEL			BIT(0)
++#define RCC_MCO2CFGR_MCO2ON			BIT(8)
++
++/* RCC_OCENSETR register fields */
++#define RCC_OCENSETR_HSION			BIT(0)
++#define RCC_OCENSETR_HSIKERON			BIT(1)
++#define RCC_OCENSETR_MSION			BIT(2)
++#define RCC_OCENSETR_MSIKERON			BIT(3)
++#define RCC_OCENSETR_HSEDIV2ON			BIT(5)
++#define RCC_OCENSETR_HSEDIV2BYP			BIT(6)
++#define RCC_OCENSETR_HSEDIGBYP			BIT(7)
++#define RCC_OCENSETR_HSEON			BIT(8)
++#define RCC_OCENSETR_HSEKERON			BIT(9)
++#define RCC_OCENSETR_HSEBYP			BIT(10)
++#define RCC_OCENSETR_HSECSSON			BIT(11)
++
++/* RCC_OCENCLRR register fields */
++#define RCC_OCENCLRR_HSION			BIT(0)
++#define RCC_OCENCLRR_HSIKERON			BIT(1)
++#define RCC_OCENCLRR_MSION			BIT(2)
++#define RCC_OCENCLRR_MSIKERON			BIT(3)
++#define RCC_OCENCLRR_HSEDIV2ON			BIT(5)
++#define RCC_OCENCLRR_HSEDIV2BYP			BIT(6)
++#define RCC_OCENCLRR_HSEDIGBYP			BIT(7)
++#define RCC_OCENCLRR_HSEON			BIT(8)
++#define RCC_OCENCLRR_HSEKERON			BIT(9)
++#define RCC_OCENCLRR_HSEBYP			BIT(10)
++
++/* RCC_OCRDYR register fields */
++#define RCC_OCRDYR_HSIRDY			BIT(0)
++#define RCC_OCRDYR_MSIRDY			BIT(2)
++#define RCC_OCRDYR_HSERDY			BIT(8)
++#define RCC_OCRDYR_CKREST			BIT(25)
++
++/* RCC_HSICFGR register fields */
++#define RCC_HSICFGR_HSITRIM_MASK		GENMASK(14, 8)
++#define RCC_HSICFGR_HSITRIM_SHIFT		8
++#define RCC_HSICFGR_HSICAL_MASK			GENMASK(24, 16)
++#define RCC_HSICFGR_HSICAL_SHIFT		16
++
++/* RCC_MSICFGR register fields */
++#define RCC_MSICFGR_MSITRIM_MASK		GENMASK(12, 8)
++#define RCC_MSICFGR_MSITRIM_SHIFT		8
++#define RCC_MSICFGR_MSICAL_MASK			GENMASK(23, 16)
++#define RCC_MSICFGR_MSICAL_SHIFT		16
++
++/* RCC_LSICR register fields */
++#define RCC_LSICR_LSION				BIT(0)
++#define RCC_LSICR_LSIRDY			BIT(1)
++
++/* RCC_RTCDIVR register fields */
++#define RCC_RTCDIVR_RTCDIV_MASK			GENMASK(5, 0)
++
++/* RCC_APB1DIVR register fields */
++#define RCC_APB1DIVR_APB1DIV_MASK		GENMASK(2, 0)
++#define RCC_APB1DIVR_APB1DIVRDY			BIT(31)
++
++/* RCC_APB2DIVR register fields */
++#define RCC_APB2DIVR_APB2DIV_MASK		GENMASK(2, 0)
++#define RCC_APB2DIVR_APB2DIVRDY			BIT(31)
++
++/* RCC_APB3DIVR register fields */
++#define RCC_APB3DIVR_APB3DIV_MASK		GENMASK(2, 0)
++#define RCC_APB3DIVR_APB3DIVRDY			BIT(31)
++
++/* RCC_APB4DIVR register fields */
++#define RCC_APB4DIVR_APB4DIV_MASK		GENMASK(2, 0)
++#define RCC_APB4DIVR_APB4DIVRDY			BIT(31)
++
++/* RCC_APB5DIVR register fields */
++#define RCC_APB5DIVR_APB5DIV_MASK		GENMASK(2, 0)
++#define RCC_APB5DIVR_APB5DIVRDY			BIT(31)
++
++/* RCC_APBDBGDIVR register fields */
++#define RCC_APBDBGDIVR_APBDBGDIV_MASK		GENMASK(2, 0)
++#define RCC_APBDBGDIVR_APBDBGDIVRDY		BIT(31)
++
++/* RCC_TIMG1PRER register fields */
++#define RCC_TIMG1PRER_TIMG1PRE			BIT(0)
++#define RCC_TIMG1PRER_TIMG1PRERDY		BIT(31)
++
++/* RCC_TIMG2PRER register fields */
++#define RCC_TIMG2PRER_TIMG2PRE			BIT(0)
++#define RCC_TIMG2PRER_TIMG2PRERDY		BIT(31)
++
++/* RCC_LSMCUDIVR register fields */
++#define RCC_LSMCUDIVR_LSMCUDIV			BIT(0)
++#define RCC_LSMCUDIVR_LSMCUDIVRDY		BIT(31)
++
++/* RCC_DDRCPCFGR register fields */
++#define RCC_DDRCPCFGR_DDRCPRST			BIT(0)
++#define RCC_DDRCPCFGR_DDRCPEN			BIT(1)
++#define RCC_DDRCPCFGR_DDRCPLPEN			BIT(2)
++
++/* RCC_DDRCAPBCFGR register fields */
++#define RCC_DDRCAPBCFGR_DDRCAPBRST		BIT(0)
++#define RCC_DDRCAPBCFGR_DDRCAPBEN		BIT(1)
++#define RCC_DDRCAPBCFGR_DDRCAPBLPEN		BIT(2)
++
++/* RCC_DDRPHYCAPBCFGR register fields */
++#define RCC_DDRPHYCAPBCFGR_DDRPHYCAPBRST	BIT(0)
++#define RCC_DDRPHYCAPBCFGR_DDRPHYCAPBEN		BIT(1)
++#define RCC_DDRPHYCAPBCFGR_DDRPHYCAPBLPEN	BIT(2)
++
++/* RCC_DDRPHYCCFGR register fields */
++#define RCC_DDRPHYCCFGR_DDRPHYCEN		BIT(1)
++
++/* RCC_DDRCFGR register fields */
++#define RCC_DDRCFGR_DDRCFGRST			BIT(0)
++#define RCC_DDRCFGR_DDRCFGEN			BIT(1)
++#define RCC_DDRCFGR_DDRCFGLPEN			BIT(2)
++
++/* RCC_DDRITFCFGR register fields */
++#define RCC_DDRITFCFGR_DDRRST			BIT(0)
++#define RCC_DDRITFCFGR_DDRCKMOD_MASK		GENMASK(5, 4)
++#define RCC_DDRITFCFGR_DDRSHR			BIT(8)
++#define RCC_DDRITFCFGR_DDRPHYDLP		BIT(16)
++
++/* RCC_SYSRAMCFGR register fields */
++#define RCC_SYSRAMCFGR_SYSRAMEN			BIT(1)
++#define RCC_SYSRAMCFGR_SYSRAMLPEN		BIT(2)
++
++/* RCC_SRAM1CFGR register fields */
++#define RCC_SRAM1CFGR_SRAM1EN			BIT(1)
++#define RCC_SRAM1CFGR_SRAM1LPEN			BIT(2)
++
++/* RCC_RETRAMCFGR register fields */
++#define RCC_RETRAMCFGR_RETRAMEN			BIT(1)
++#define RCC_RETRAMCFGR_RETRAMLPEN		BIT(2)
++
++/* RCC_BKPSRAMCFGR register fields */
++#define RCC_BKPSRAMCFGR_BKPSRAMEN		BIT(1)
++#define RCC_BKPSRAMCFGR_BKPSRAMLPEN		BIT(2)
++
++/* RCC_OSPI1CFGR register fields */
++#define RCC_OSPI1CFGR_OSPI1RST			BIT(0)
++#define RCC_OSPI1CFGR_OSPI1EN			BIT(1)
++#define RCC_OSPI1CFGR_OSPI1LPEN			BIT(2)
++#define RCC_OSPI1CFGR_OTFDEC1RST		BIT(8)
++#define RCC_OSPI1CFGR_OSPI1DLLRST		BIT(16)
++
++/* RCC_FMCCFGR register fields */
++#define RCC_FMCCFGR_FMCRST			BIT(0)
++#define RCC_FMCCFGR_FMCEN			BIT(1)
++#define RCC_FMCCFGR_FMCLPEN			BIT(2)
++
++/* RCC_DBGCFGR register fields */
++#define RCC_DBGCFGR_DBGEN			BIT(8)
++#define RCC_DBGCFGR_TRACEEN			BIT(9)
++#define RCC_DBGCFGR_DBGMCUEN			BIT(10)
++#define RCC_DBGCFGR_DBGRST			BIT(12)
++
++/* RCC_STMCFGR register fields */
++#define RCC_STMCFGR_STMEN			BIT(1)
++#define RCC_STMCFGR_STMLPEN			BIT(2)
++
++/* RCC_ETRCFGR register fields */
++#define RCC_ETRCFGR_ETREN			BIT(1)
++#define RCC_ETRCFGR_ETRLPEN			BIT(2)
++
++/* RCC_GPIOACFGR register fields */
++#define RCC_GPIOACFGR_GPIOARST			BIT(0)
++#define RCC_GPIOACFGR_GPIOAEN			BIT(1)
++#define RCC_GPIOACFGR_GPIOALPEN			BIT(2)
++
++/* RCC_GPIOBCFGR register fields */
++#define RCC_GPIOBCFGR_GPIOBRST			BIT(0)
++#define RCC_GPIOBCFGR_GPIOBEN			BIT(1)
++#define RCC_GPIOBCFGR_GPIOBLPEN			BIT(2)
++
++/* RCC_GPIOCCFGR register fields */
++#define RCC_GPIOCCFGR_GPIOCRST			BIT(0)
++#define RCC_GPIOCCFGR_GPIOCEN			BIT(1)
++#define RCC_GPIOCCFGR_GPIOCLPEN			BIT(2)
++
++/* RCC_GPIODCFGR register fields */
++#define RCC_GPIODCFGR_GPIODRST			BIT(0)
++#define RCC_GPIODCFGR_GPIODEN			BIT(1)
++#define RCC_GPIODCFGR_GPIODLPEN			BIT(2)
++
++/* RCC_GPIOECFGR register fields */
++#define RCC_GPIOECFGR_GPIOERST			BIT(0)
++#define RCC_GPIOECFGR_GPIOEEN			BIT(1)
++#define RCC_GPIOECFGR_GPIOELPEN			BIT(2)
++
++/* RCC_GPIOFCFGR register fields */
++#define RCC_GPIOFCFGR_GPIOFRST			BIT(0)
++#define RCC_GPIOFCFGR_GPIOFEN			BIT(1)
++#define RCC_GPIOFCFGR_GPIOFLPEN			BIT(2)
++
++/* RCC_GPIOGCFGR register fields */
++#define RCC_GPIOGCFGR_GPIOGRST			BIT(0)
++#define RCC_GPIOGCFGR_GPIOGEN			BIT(1)
++#define RCC_GPIOGCFGR_GPIOGLPEN			BIT(2)
++
++/* RCC_GPIOHCFGR register fields */
++#define RCC_GPIOHCFGR_GPIOHRST			BIT(0)
++#define RCC_GPIOHCFGR_GPIOHEN			BIT(1)
++#define RCC_GPIOHCFGR_GPIOHLPEN			BIT(2)
++
++/* RCC_GPIOICFGR register fields */
++#define RCC_GPIOICFGR_GPIOIRST			BIT(0)
++#define RCC_GPIOICFGR_GPIOIEN			BIT(1)
++#define RCC_GPIOICFGR_GPIOILPEN			BIT(2)
++
++/* RCC_GPIOZCFGR register fields */
++#define RCC_GPIOZCFGR_GPIOZRST			BIT(0)
++#define RCC_GPIOZCFGR_GPIOZEN			BIT(1)
++#define RCC_GPIOZCFGR_GPIOZLPEN			BIT(2)
++
++/* RCC_HPDMA1CFGR register fields */
++#define RCC_HPDMA1CFGR_HPDMA1RST		BIT(0)
++#define RCC_HPDMA1CFGR_HPDMA1EN			BIT(1)
++#define RCC_HPDMA1CFGR_HPDMA1LPEN		BIT(2)
++
++/* RCC_HPDMA2CFGR register fields */
++#define RCC_HPDMA2CFGR_HPDMA2RST		BIT(0)
++#define RCC_HPDMA2CFGR_HPDMA2EN			BIT(1)
++#define RCC_HPDMA2CFGR_HPDMA2LPEN		BIT(2)
++
++/* RCC_HPDMA3CFGR register fields */
++#define RCC_HPDMA3CFGR_HPDMA3RST		BIT(0)
++#define RCC_HPDMA3CFGR_HPDMA3EN			BIT(1)
++#define RCC_HPDMA3CFGR_HPDMA3LPEN		BIT(2)
++
++/* RCC_IPCC1CFGR register fields */
++#define RCC_IPCC1CFGR_IPCC1RST			BIT(0)
++#define RCC_IPCC1CFGR_IPCC1EN			BIT(1)
++#define RCC_IPCC1CFGR_IPCC1LPEN			BIT(2)
++
++/* RCC_RTCCFGR register fields */
++#define RCC_RTCCFGR_RTCEN			BIT(1)
++#define RCC_RTCCFGR_RTCLPEN			BIT(2)
++
++/* RCC_SYSCPU1CFGR register fields */
++#define RCC_SYSCPU1CFGR_SYSCPU1EN		BIT(1)
++#define RCC_SYSCPU1CFGR_SYSCPU1LPEN		BIT(2)
++
++/* RCC_BSECCFGR register fields */
++#define RCC_BSECCFGR_BSECEN			BIT(1)
++#define RCC_BSECCFGR_BSECLPEN			BIT(2)
++
++/* RCC_PLLxCFGR1 register fields */
++#define RCC_PLLxCFGR1_SSMODRST			BIT(0)
++#define RCC_PLLxCFGR1_PLLEN			BIT(8)
++#define RCC_PLLxCFGR1_PLLRDY			BIT(24)
++#define RCC_PLLxCFGR1_CKREFST			BIT(28)
++
++/* RCC_PLLxCFGR2 register fields */
++#define RCC_PLLxCFGR2_FREFDIV_MASK		GENMASK(5, 0)
++#define RCC_PLLxCFGR2_FBDIV_MASK		GENMASK(27, 16)
++#define RCC_PLLxCFGR2_FREFDIV_SHIFT		0
++#define RCC_PLLxCFGR2_FBDIV_SHIFT		16
++
++/* RCC_PLLxCFGR3 register fields */
++#define RCC_PLLxCFGR3_FRACIN_MASK		GENMASK(23, 0)
++#define RCC_PLLxCFGR3_DOWNSPREAD		BIT(24)
++#define RCC_PLLxCFGR3_DACEN			BIT(25)
++#define RCC_PLLxCFGR3_SSCGDIS			BIT(26)
++#define RCC_PLLxCFGR3_FRACIN_SHIFT		0
++
++/* RCC_PLLxCFGR4 register fields */
++#define RCC_PLLxCFGR4_DSMEN			BIT(8)
++#define RCC_PLLxCFGR4_FOUTPOSTDIVEN		BIT(9)
++#define RCC_PLLxCFGR4_BYPASS			BIT(10)
++
++/* RCC_PLLxCFGR5 register fields */
++#define RCC_PLLxCFGR5_DIVVAL_MASK		GENMASK(3, 0)
++#define RCC_PLLxCFGR5_SPREAD_MASK		GENMASK(20, 16)
++#define RCC_PLLxCFGR5_DIVVAL_SHIFT		0
++#define RCC_PLLxCFGR5_SPREAD_SHIFT		16
++
++/* RCC_PLLxCFGR6 register fields */
++#define RCC_PLLxCFGR6_POSTDIV1_MASK		GENMASK(2, 0)
++#define RCC_PLLxCFGR6_POSTDIV1_SHIFT		0
++
++/* RCC_PLLxCFGR7 register fields */
++#define RCC_PLLxCFGR7_POSTDIV2_MASK		GENMASK(2, 0)
++#define RCC_PLLxCFGR7_POSTDIV2_SHIFT		0
++
++/* RCC_HSIFMONCR register fields */
++#define RCC_HSIFMONCR_HSIREF_MASK		GENMASK(10, 0)
++#define RCC_HSIFMONCR_HSIMONEN			BIT(15)
++#define RCC_HSIFMONCR_HSIDEV_MASK		GENMASK(21, 16)
++#define RCC_HSIFMONCR_HSIMONIE			BIT(30)
++#define RCC_HSIFMONCR_HSIMONF			BIT(31)
++
++/* RCC_HSIFVALR register fields */
++#define RCC_HSIFVALR_HSIVAL_MASK		GENMASK(10, 0)
++
++/* RCC_MSIFMONCR register fields */
++#define RCC_MSIFMONCR_MSIREF_MASK		GENMASK(8, 0)
++#define RCC_MSIFMONCR_MSIMONEN			BIT(15)
++#define RCC_MSIFMONCR_MSIDEV_MASK		GENMASK(20, 16)
++#define RCC_MSIFMONCR_MSIMONIE			BIT(30)
++#define RCC_MSIFMONCR_MSIMONF			BIT(31)
++
++/* RCC_MSIFVALR register fields */
++#define RCC_MSIFVALR_MSIVAL_MASK		GENMASK(8, 0)
++
++/* RCC_TIM1CFGR register fields */
++#define RCC_TIM1CFGR_TIM1RST			BIT(0)
++#define RCC_TIM1CFGR_TIM1EN			BIT(1)
++#define RCC_TIM1CFGR_TIM1LPEN			BIT(2)
++
++/* RCC_TIM2CFGR register fields */
++#define RCC_TIM2CFGR_TIM2RST			BIT(0)
++#define RCC_TIM2CFGR_TIM2EN			BIT(1)
++#define RCC_TIM2CFGR_TIM2LPEN			BIT(2)
++
++/* RCC_TIM3CFGR register fields */
++#define RCC_TIM3CFGR_TIM3RST			BIT(0)
++#define RCC_TIM3CFGR_TIM3EN			BIT(1)
++#define RCC_TIM3CFGR_TIM3LPEN			BIT(2)
++
++/* RCC_TIM4CFGR register fields */
++#define RCC_TIM4CFGR_TIM4RST			BIT(0)
++#define RCC_TIM4CFGR_TIM4EN			BIT(1)
++#define RCC_TIM4CFGR_TIM4LPEN			BIT(2)
++
++/* RCC_TIM5CFGR register fields */
++#define RCC_TIM5CFGR_TIM5RST			BIT(0)
++#define RCC_TIM5CFGR_TIM5EN			BIT(1)
++#define RCC_TIM5CFGR_TIM5LPEN			BIT(2)
++
++/* RCC_TIM6CFGR register fields */
++#define RCC_TIM6CFGR_TIM6RST			BIT(0)
++#define RCC_TIM6CFGR_TIM6EN			BIT(1)
++#define RCC_TIM6CFGR_TIM6LPEN			BIT(2)
++
++/* RCC_TIM7CFGR register fields */
++#define RCC_TIM7CFGR_TIM7RST			BIT(0)
++#define RCC_TIM7CFGR_TIM7EN			BIT(1)
++#define RCC_TIM7CFGR_TIM7LPEN			BIT(2)
++
++/* RCC_TIM8CFGR register fields */
++#define RCC_TIM8CFGR_TIM8RST			BIT(0)
++#define RCC_TIM8CFGR_TIM8EN			BIT(1)
++#define RCC_TIM8CFGR_TIM8LPEN			BIT(2)
++
++/* RCC_TIM10CFGR register fields */
++#define RCC_TIM10CFGR_TIM10RST			BIT(0)
++#define RCC_TIM10CFGR_TIM10EN			BIT(1)
++#define RCC_TIM10CFGR_TIM10LPEN			BIT(2)
++
++/* RCC_TIM11CFGR register fields */
++#define RCC_TIM11CFGR_TIM11RST			BIT(0)
++#define RCC_TIM11CFGR_TIM11EN			BIT(1)
++#define RCC_TIM11CFGR_TIM11LPEN			BIT(2)
++
++/* RCC_TIM12CFGR register fields */
++#define RCC_TIM12CFGR_TIM12RST			BIT(0)
++#define RCC_TIM12CFGR_TIM12EN			BIT(1)
++#define RCC_TIM12CFGR_TIM12LPEN			BIT(2)
++
++/* RCC_TIM13CFGR register fields */
++#define RCC_TIM13CFGR_TIM13RST			BIT(0)
++#define RCC_TIM13CFGR_TIM13EN			BIT(1)
++#define RCC_TIM13CFGR_TIM13LPEN			BIT(2)
++
++/* RCC_TIM14CFGR register fields */
++#define RCC_TIM14CFGR_TIM14RST			BIT(0)
++#define RCC_TIM14CFGR_TIM14EN			BIT(1)
++#define RCC_TIM14CFGR_TIM14LPEN			BIT(2)
++
++/* RCC_TIM15CFGR register fields */
++#define RCC_TIM15CFGR_TIM15RST			BIT(0)
++#define RCC_TIM15CFGR_TIM15EN			BIT(1)
++#define RCC_TIM15CFGR_TIM15LPEN			BIT(2)
++
++/* RCC_TIM16CFGR register fields */
++#define RCC_TIM16CFGR_TIM16RST			BIT(0)
++#define RCC_TIM16CFGR_TIM16EN			BIT(1)
++#define RCC_TIM16CFGR_TIM16LPEN			BIT(2)
++
++/* RCC_TIM17CFGR register fields */
++#define RCC_TIM17CFGR_TIM17RST			BIT(0)
++#define RCC_TIM17CFGR_TIM17EN			BIT(1)
++#define RCC_TIM17CFGR_TIM17LPEN			BIT(2)
++
++/* RCC_LPTIM1CFGR register fields */
++#define RCC_LPTIM1CFGR_LPTIM1RST		BIT(0)
++#define RCC_LPTIM1CFGR_LPTIM1EN			BIT(1)
++#define RCC_LPTIM1CFGR_LPTIM1LPEN		BIT(2)
++
++/* RCC_LPTIM2CFGR register fields */
++#define RCC_LPTIM2CFGR_LPTIM2RST		BIT(0)
++#define RCC_LPTIM2CFGR_LPTIM2EN			BIT(1)
++#define RCC_LPTIM2CFGR_LPTIM2LPEN		BIT(2)
++
++/* RCC_LPTIM3CFGR register fields */
++#define RCC_LPTIM3CFGR_LPTIM3RST		BIT(0)
++#define RCC_LPTIM3CFGR_LPTIM3EN			BIT(1)
++#define RCC_LPTIM3CFGR_LPTIM3LPEN		BIT(2)
++
++/* RCC_LPTIM4CFGR register fields */
++#define RCC_LPTIM4CFGR_LPTIM4RST		BIT(0)
++#define RCC_LPTIM4CFGR_LPTIM4EN			BIT(1)
++#define RCC_LPTIM4CFGR_LPTIM4LPEN		BIT(2)
++
++/* RCC_LPTIM5CFGR register fields */
++#define RCC_LPTIM5CFGR_LPTIM5RST		BIT(0)
++#define RCC_LPTIM5CFGR_LPTIM5EN			BIT(1)
++#define RCC_LPTIM5CFGR_LPTIM5LPEN		BIT(2)
++
++/* RCC_SPI1CFGR register fields */
++#define RCC_SPI1CFGR_SPI1RST			BIT(0)
++#define RCC_SPI1CFGR_SPI1EN			BIT(1)
++#define RCC_SPI1CFGR_SPI1LPEN			BIT(2)
++
++/* RCC_SPI2CFGR register fields */
++#define RCC_SPI2CFGR_SPI2RST			BIT(0)
++#define RCC_SPI2CFGR_SPI2EN			BIT(1)
++#define RCC_SPI2CFGR_SPI2LPEN			BIT(2)
++
++/* RCC_SPI3CFGR register fields */
++#define RCC_SPI3CFGR_SPI3RST			BIT(0)
++#define RCC_SPI3CFGR_SPI3EN			BIT(1)
++#define RCC_SPI3CFGR_SPI3LPEN			BIT(2)
++
++/* RCC_SPI4CFGR register fields */
++#define RCC_SPI4CFGR_SPI4RST			BIT(0)
++#define RCC_SPI4CFGR_SPI4EN			BIT(1)
++#define RCC_SPI4CFGR_SPI4LPEN			BIT(2)
++
++/* RCC_SPI5CFGR register fields */
++#define RCC_SPI5CFGR_SPI5RST			BIT(0)
++#define RCC_SPI5CFGR_SPI5EN			BIT(1)
++#define RCC_SPI5CFGR_SPI5LPEN			BIT(2)
++
++/* RCC_SPI6CFGR register fields */
++#define RCC_SPI6CFGR_SPI6RST			BIT(0)
++#define RCC_SPI6CFGR_SPI6EN			BIT(1)
++#define RCC_SPI6CFGR_SPI6LPEN			BIT(2)
++
++/* RCC_SPDIFRXCFGR register fields */
++#define RCC_SPDIFRXCFGR_SPDIFRXRST		BIT(0)
++#define RCC_SPDIFRXCFGR_SPDIFRXEN		BIT(1)
++#define RCC_SPDIFRXCFGR_SPDIFRXLPEN		BIT(2)
++
++/* RCC_USART1CFGR register fields */
++#define RCC_USART1CFGR_USART1RST		BIT(0)
++#define RCC_USART1CFGR_USART1EN			BIT(1)
++#define RCC_USART1CFGR_USART1LPEN		BIT(2)
++
++/* RCC_USART2CFGR register fields */
++#define RCC_USART2CFGR_USART2RST		BIT(0)
++#define RCC_USART2CFGR_USART2EN			BIT(1)
++#define RCC_USART2CFGR_USART2LPEN		BIT(2)
++
++/* RCC_USART3CFGR register fields */
++#define RCC_USART3CFGR_USART3RST		BIT(0)
++#define RCC_USART3CFGR_USART3EN			BIT(1)
++#define RCC_USART3CFGR_USART3LPEN		BIT(2)
++
++/* RCC_UART4CFGR register fields */
++#define RCC_UART4CFGR_UART4RST			BIT(0)
++#define RCC_UART4CFGR_UART4EN			BIT(1)
++#define RCC_UART4CFGR_UART4LPEN			BIT(2)
++
++/* RCC_UART5CFGR register fields */
++#define RCC_UART5CFGR_UART5RST			BIT(0)
++#define RCC_UART5CFGR_UART5EN			BIT(1)
++#define RCC_UART5CFGR_UART5LPEN			BIT(2)
++
++/* RCC_USART6CFGR register fields */
++#define RCC_USART6CFGR_USART6RST		BIT(0)
++#define RCC_USART6CFGR_USART6EN			BIT(1)
++#define RCC_USART6CFGR_USART6LPEN		BIT(2)
++
++/* RCC_UART7CFGR register fields */
++#define RCC_UART7CFGR_UART7RST			BIT(0)
++#define RCC_UART7CFGR_UART7EN			BIT(1)
++#define RCC_UART7CFGR_UART7LPEN			BIT(2)
++
++/* RCC_LPUART1CFGR register fields */
++#define RCC_LPUART1CFGR_LPUART1RST		BIT(0)
++#define RCC_LPUART1CFGR_LPUART1EN		BIT(1)
++#define RCC_LPUART1CFGR_LPUART1LPEN		BIT(2)
++
++/* RCC_I2C1CFGR register fields */
++#define RCC_I2C1CFGR_I2C1RST			BIT(0)
++#define RCC_I2C1CFGR_I2C1EN			BIT(1)
++#define RCC_I2C1CFGR_I2C1LPEN			BIT(2)
++
++/* RCC_I2C2CFGR register fields */
++#define RCC_I2C2CFGR_I2C2RST			BIT(0)
++#define RCC_I2C2CFGR_I2C2EN			BIT(1)
++#define RCC_I2C2CFGR_I2C2LPEN			BIT(2)
++
++/* RCC_I2C3CFGR register fields */
++#define RCC_I2C3CFGR_I2C3RST			BIT(0)
++#define RCC_I2C3CFGR_I2C3EN			BIT(1)
++#define RCC_I2C3CFGR_I2C3LPEN			BIT(2)
++
++/* RCC_SAI1CFGR register fields */
++#define RCC_SAI1CFGR_SAI1RST			BIT(0)
++#define RCC_SAI1CFGR_SAI1EN			BIT(1)
++#define RCC_SAI1CFGR_SAI1LPEN			BIT(2)
++
++/* RCC_SAI2CFGR register fields */
++#define RCC_SAI2CFGR_SAI2RST			BIT(0)
++#define RCC_SAI2CFGR_SAI2EN			BIT(1)
++#define RCC_SAI2CFGR_SAI2LPEN			BIT(2)
++
++/* RCC_SAI3CFGR register fields */
++#define RCC_SAI3CFGR_SAI3RST			BIT(0)
++#define RCC_SAI3CFGR_SAI3EN			BIT(1)
++#define RCC_SAI3CFGR_SAI3LPEN			BIT(2)
++
++/* RCC_SAI4CFGR register fields */
++#define RCC_SAI4CFGR_SAI4RST			BIT(0)
++#define RCC_SAI4CFGR_SAI4EN			BIT(1)
++#define RCC_SAI4CFGR_SAI4LPEN			BIT(2)
++
++/* RCC_MDF1CFGR register fields */
++#define RCC_MDF1CFGR_MDF1RST			BIT(0)
++#define RCC_MDF1CFGR_MDF1EN			BIT(1)
++#define RCC_MDF1CFGR_MDF1LPEN			BIT(2)
++
++/* RCC_FDCANCFGR register fields */
++#define RCC_FDCANCFGR_FDCANRST			BIT(0)
++#define RCC_FDCANCFGR_FDCANEN			BIT(1)
++#define RCC_FDCANCFGR_FDCANLPEN			BIT(2)
++
++/* RCC_HDPCFGR register fields */
++#define RCC_HDPCFGR_HDPRST			BIT(0)
++#define RCC_HDPCFGR_HDPEN			BIT(1)
++
++/* RCC_ADC1CFGR register fields */
++#define RCC_ADC1CFGR_ADC1RST			BIT(0)
++#define RCC_ADC1CFGR_ADC1EN			BIT(1)
++#define RCC_ADC1CFGR_ADC1LPEN			BIT(2)
++#define RCC_ADC1CFGR_ADC1KERSEL			BIT(12)
++
++/* RCC_ADC2CFGR register fields */
++#define RCC_ADC2CFGR_ADC2RST			BIT(0)
++#define RCC_ADC2CFGR_ADC2EN			BIT(1)
++#define RCC_ADC2CFGR_ADC2LPEN			BIT(2)
++#define RCC_ADC2CFGR_ADC2KERSEL_MASK		GENMASK(13, 12)
++
++/* RCC_ETH1CFGR register fields */
++#define RCC_ETH1CFGR_ETH1RST			BIT(0)
++#define RCC_ETH1CFGR_ETH1MACEN			BIT(1)
++#define RCC_ETH1CFGR_ETH1MACLPEN		BIT(2)
++#define RCC_ETH1CFGR_ETH1STPEN			BIT(4)
++#define RCC_ETH1CFGR_ETH1EN			BIT(5)
++#define RCC_ETH1CFGR_ETH1LPEN			BIT(6)
++#define RCC_ETH1CFGR_ETH1TXEN			BIT(8)
++#define RCC_ETH1CFGR_ETH1TXLPEN			BIT(9)
++#define RCC_ETH1CFGR_ETH1RXEN			BIT(10)
++#define RCC_ETH1CFGR_ETH1RXLPEN			BIT(11)
++
++/* RCC_ETH2CFGR register fields */
++#define RCC_ETH2CFGR_ETH2RST			BIT(0)
++#define RCC_ETH2CFGR_ETH2MACEN			BIT(1)
++#define RCC_ETH2CFGR_ETH2MACLPEN		BIT(2)
++#define RCC_ETH2CFGR_ETH2STPEN			BIT(4)
++#define RCC_ETH2CFGR_ETH2EN			BIT(5)
++#define RCC_ETH2CFGR_ETH2LPEN			BIT(6)
++#define RCC_ETH2CFGR_ETH2TXEN			BIT(8)
++#define RCC_ETH2CFGR_ETH2TXLPEN			BIT(9)
++#define RCC_ETH2CFGR_ETH2RXEN			BIT(10)
++#define RCC_ETH2CFGR_ETH2RXLPEN			BIT(11)
++
++/* RCC_USBHCFGR register fields */
++#define RCC_USBHCFGR_USBHRST			BIT(0)
++#define RCC_USBHCFGR_USBHEN			BIT(1)
++#define RCC_USBHCFGR_USBHLPEN			BIT(2)
++
++/* RCC_USB2PHY1CFGR register fields */
++#define RCC_USB2PHY1CFGR_USB2PHY1RST		BIT(0)
++#define RCC_USB2PHY1CFGR_USB2PHY1EN		BIT(1)
++#define RCC_USB2PHY1CFGR_USB2PHY1LPEN		BIT(2)
++#define RCC_USB2PHY1CFGR_USB2PHY1CKREFSEL	BIT(15)
++
++/* RCC_OTGCFGR register fields */
++#define RCC_OTGCFGR_OTGRST			BIT(0)
++#define RCC_OTGCFGR_OTGEN			BIT(1)
++#define RCC_OTGCFGR_OTGLPEN			BIT(2)
++
++/* RCC_USB2PHY2CFGR register fields */
++#define RCC_USB2PHY2CFGR_USB2PHY2RST		BIT(0)
++#define RCC_USB2PHY2CFGR_USB2PHY2EN		BIT(1)
++#define RCC_USB2PHY2CFGR_USB2PHY2LPEN		BIT(2)
++#define RCC_USB2PHY2CFGR_USB2PHY2CKREFSEL	BIT(15)
++
++/* RCC_STGENCFGR register fields */
++#define RCC_STGENCFGR_STGENEN			BIT(1)
++#define RCC_STGENCFGR_STGENLPEN			BIT(2)
++#define RCC_STGENCFGR_STGENSTPEN		BIT(4)
++
++/* RCC_SDMMC1CFGR register fields */
++#define RCC_SDMMC1CFGR_SDMMC1RST		BIT(0)
++#define RCC_SDMMC1CFGR_SDMMC1EN			BIT(1)
++#define RCC_SDMMC1CFGR_SDMMC1LPEN		BIT(2)
++#define RCC_SDMMC1CFGR_SDMMC1DLLRST		BIT(16)
++
++/* RCC_SDMMC2CFGR register fields */
++#define RCC_SDMMC2CFGR_SDMMC2RST		BIT(0)
++#define RCC_SDMMC2CFGR_SDMMC2EN			BIT(1)
++#define RCC_SDMMC2CFGR_SDMMC2LPEN		BIT(2)
++#define RCC_SDMMC2CFGR_SDMMC2DLLRST		BIT(16)
++
++/* RCC_SDMMC3CFGR register fields */
++#define RCC_SDMMC3CFGR_SDMMC3RST		BIT(0)
++#define RCC_SDMMC3CFGR_SDMMC3EN			BIT(1)
++#define RCC_SDMMC3CFGR_SDMMC3LPEN		BIT(2)
++#define RCC_SDMMC3CFGR_SDMMC3DLLRST		BIT(16)
++
++/* RCC_LTDCCFGR register fields */
++#define RCC_LTDCCFGR_LTDCRST			BIT(0)
++#define RCC_LTDCCFGR_LTDCEN			BIT(1)
++#define RCC_LTDCCFGR_LTDCLPEN			BIT(2)
++
++/* RCC_CSICFGR register fields */
++#define RCC_CSICFGR_CSIRST			BIT(0)
++#define RCC_CSICFGR_CSIEN			BIT(1)
++#define RCC_CSICFGR_CSILPEN			BIT(2)
++
++/* RCC_DCMIPPCFGR register fields */
++#define RCC_DCMIPPCFGR_DCMIPPRST		BIT(0)
++#define RCC_DCMIPPCFGR_DCMIPPEN			BIT(1)
++#define RCC_DCMIPPCFGR_DCMIPPLPEN		BIT(2)
++
++/* RCC_DCMIPSSICFGR register fields */
++#define RCC_DCMIPSSICFGR_DCMIPSSIRST		BIT(0)
++#define RCC_DCMIPSSICFGR_DCMIPSSIEN		BIT(1)
++#define RCC_DCMIPSSICFGR_DCMIPSSILPEN		BIT(2)
++
++/* RCC_RNG1CFGR register fields */
++#define RCC_RNG1CFGR_RNG1RST			BIT(0)
++#define RCC_RNG1CFGR_RNG1EN			BIT(1)
++#define RCC_RNG1CFGR_RNG1LPEN			BIT(2)
++
++/* RCC_RNG2CFGR register fields */
++#define RCC_RNG2CFGR_RNG2RST			BIT(0)
++#define RCC_RNG2CFGR_RNG2EN			BIT(1)
++#define RCC_RNG2CFGR_RNG2LPEN			BIT(2)
++
++/* RCC_PKACFGR register fields */
++#define RCC_PKACFGR_PKARST			BIT(0)
++#define RCC_PKACFGR_PKAEN			BIT(1)
++#define RCC_PKACFGR_PKALPEN			BIT(2)
++
++/* RCC_SAESCFGR register fields */
++#define RCC_SAESCFGR_SAESRST			BIT(0)
++#define RCC_SAESCFGR_SAESEN			BIT(1)
++#define RCC_SAESCFGR_SAESLPEN			BIT(2)
++
++/* RCC_HASH1CFGR register fields */
++#define RCC_HASH1CFGR_HASH1RST			BIT(0)
++#define RCC_HASH1CFGR_HASH1EN			BIT(1)
++#define RCC_HASH1CFGR_HASH1LPEN			BIT(2)
++
++/* RCC_HASH2CFGR register fields */
++#define RCC_HASH2CFGR_HASH2RST			BIT(0)
++#define RCC_HASH2CFGR_HASH2EN			BIT(1)
++#define RCC_HASH2CFGR_HASH2LPEN			BIT(2)
++
++/* RCC_CRYP1CFGR register fields */
++#define RCC_CRYP1CFGR_CRYP1RST			BIT(0)
++#define RCC_CRYP1CFGR_CRYP1EN			BIT(1)
++#define RCC_CRYP1CFGR_CRYP1LPEN			BIT(2)
++
++/* RCC_CRYP2CFGR register fields */
++#define RCC_CRYP2CFGR_CRYP2RST			BIT(0)
++#define RCC_CRYP2CFGR_CRYP2EN			BIT(1)
++#define RCC_CRYP2CFGR_CRYP2LPEN			BIT(2)
++
++/* RCC_CCBCFGR register fields */
++#define RCC_CCBCFGR_CCBRST			BIT(0)
++#define RCC_CCBCFGR_CCBEN			BIT(1)
++#define RCC_CCBCFGR_CCBLPEN			BIT(2)
++
++/* RCC_IWDG1CFGR register fields */
++#define RCC_IWDG1CFGR_IWDG1EN			BIT(1)
++#define RCC_IWDG1CFGR_IWDG1LPEN			BIT(2)
++
++/* RCC_IWDG2CFGR register fields */
++#define RCC_IWDG2CFGR_IWDG2EN			BIT(1)
++#define RCC_IWDG2CFGR_IWDG2LPEN			BIT(2)
++
++/* RCC_IWDG3CFGR register fields */
++#define RCC_IWDG3CFGR_IWDG3EN			BIT(1)
++#define RCC_IWDG3CFGR_IWDG3LPEN			BIT(2)
++
++/* RCC_IWDG4CFGR register fields */
++#define RCC_IWDG4CFGR_IWDG4EN			BIT(1)
++#define RCC_IWDG4CFGR_IWDG4LPEN			BIT(2)
++
++/* RCC_WWDG1CFGR register fields */
++#define RCC_WWDG1CFGR_WWDG1RST			BIT(0)
++#define RCC_WWDG1CFGR_WWDG1EN			BIT(1)
++#define RCC_WWDG1CFGR_WWDG1LPEN			BIT(2)
++
++/* RCC_VREFCFGR register fields */
++#define RCC_VREFCFGR_VREFRST			BIT(0)
++#define RCC_VREFCFGR_VREFEN			BIT(1)
++#define RCC_VREFCFGR_VREFLPEN			BIT(2)
++
++/* RCC_DTSCFGR register fields */
++#define RCC_DTSCFGR_DTSRST			BIT(0)
++#define RCC_DTSCFGR_DTSEN			BIT(1)
++#define RCC_DTSCFGR_DTSLPEN			BIT(2)
++#define RCC_DTSCFGR_DTSKERSEL_MASK		GENMASK(13, 12)
++
++/* RCC_CRCCFGR register fields */
++#define RCC_CRCCFGR_CRCRST			BIT(0)
++#define RCC_CRCCFGR_CRCEN			BIT(1)
++#define RCC_CRCCFGR_CRCLPEN			BIT(2)
++
++/* RCC_SERCCFGR register fields */
++#define RCC_SERCCFGR_SERCRST			BIT(0)
++#define RCC_SERCCFGR_SERCEN			BIT(1)
++#define RCC_SERCCFGR_SERCLPEN			BIT(2)
++
++/* RCC_DDRPERFMCFGR register fields */
++#define RCC_DDRPERFMCFGR_DDRPERFMRST		BIT(0)
++#define RCC_DDRPERFMCFGR_DDRPERFMEN		BIT(1)
++#define RCC_DDRPERFMCFGR_DDRPERFMLPEN		BIT(2)
++
++/* RCC_I3C1CFGR register fields */
++#define RCC_I3C1CFGR_I3C1RST			BIT(0)
++#define RCC_I3C1CFGR_I3C1EN			BIT(1)
++#define RCC_I3C1CFGR_I3C1LPEN			BIT(2)
++
++/* RCC_I3C2CFGR register fields */
++#define RCC_I3C2CFGR_I3C2RST			BIT(0)
++#define RCC_I3C2CFGR_I3C2EN			BIT(1)
++#define RCC_I3C2CFGR_I3C2LPEN			BIT(2)
++
++/* RCC_I3C3CFGR register fields */
++#define RCC_I3C3CFGR_I3C3RST			BIT(0)
++#define RCC_I3C3CFGR_I3C3EN			BIT(1)
++#define RCC_I3C3CFGR_I3C3LPEN			BIT(2)
++
++/* RCC_MUXSELCFGR register fields */
++#define RCC_MUXSELCFGR_MUXSEL0_MASK		GENMASK(2, 0)
++#define RCC_MUXSELCFGR_MUXSEL1_MASK		GENMASK(6, 4)
++#define RCC_MUXSELCFGR_MUXSEL2_MASK		GENMASK(10, 8)
++#define RCC_MUXSELCFGR_MUXSEL3_MASK		GENMASK(14, 12)
++#define RCC_MUXSELCFGR_MUXSEL4_MASK		GENMASK(18, 16)
++#define RCC_MUXSELCFGR_MUXSEL5_MASK		GENMASK(21, 20)
++#define RCC_MUXSELCFGR_MUXSEL6_MASK		GENMASK(25, 24)
++
++/* RCC_XBAR0CFGR register fields */
++#define RCC_XBAR0CFGR_XBAR0SEL_MASK		GENMASK(3, 0)
++#define RCC_XBAR0CFGR_XBAR0SEL_SHIFT		0
++#define RCC_XBAR0CFGR_XBAR0EN			BIT(6)
++#define RCC_XBAR0CFGR_XBAR0STS			BIT(7)
++
++/* RCC_PREDIVxCFGR register fields */
++#define RCC_PREDIV0CFGR_PREDIV0_MASK		GENMASK(9, 0)
++#define RCC_PREDIV0CFGR_PREDIV0_SHIFT		0
++
++/* RCC_FINDIVxCFGR register fields */
++#define RCC_FINDIV0CFGR_FINDIV0_MASK		GENMASK(5, 0)
++#define RCC_FINDIV0CFGR_FINDIV0_SHIFT		0
++#define RCC_FINDIV0CFGR_FINDIV0EN		BIT(6)
++
++/* RCC_FINDIV0CFGR register fields */
++#define RCC_FINDIV0CFGR_FINDIV0_MASK		GENMASK(5, 0)
++#define RCC_FINDIV0CFGR_FINDIV0EN		BIT(6)
++
++/* RCC_PREDIVSR1 register fields */
++#define RCC_PREDIVSR1_PREDIVSTS_MASK		GENMASK(31, 0)
++
++/* RCC_PREDIVSR2 register fields */
++#define RCC_PREDIVSR2_PREDIVSTS_MASK		GENMASK(31, 0)
++
++/* RCC_FINDIVSR1 register fields */
++#define RCC_FINDIVSR1_FINDIVSTS_MASK		GENMASK(31, 0)
++
++/* RCC_FINDIVSR2 register fields */
++#define RCC_FINDIVSR2_FINDIVSTS_MASK		GENMASK(31, 0)
++
++/* RCC_FCALCOBS0CFGR register fields */
++#define RCC_FCALCOBS0CFGR_CKINTSEL_MASK		GENMASK(7, 0)
++#define RCC_FCALCOBS0CFGR_CKEXTSEL_MASK		GENMASK(10, 8)
++#define RCC_FCALCOBS0CFGR_FCALCCKEXTSEL		BIT(15)
++#define RCC_FCALCOBS0CFGR_CKOBSEXTSEL		BIT(16)
++#define RCC_FCALCOBS0CFGR_FCALCCKINV		BIT(17)
++#define RCC_FCALCOBS0CFGR_CKOBSINV		BIT(18)
++#define RCC_FCALCOBS0CFGR_CKOBSDIV_MASK		GENMASK(24, 22)
++#define RCC_FCALCOBS0CFGR_FCALCCKEN		BIT(25)
++#define RCC_FCALCOBS0CFGR_CKOBSEN		BIT(26)
++#define RCC_FCALCOBS0CFGR_CKINTSEL_SHIFT	0
++#define RCC_FCALCOBS0CFGR_CKEXTSEL_SHIFT	8
++#define RCC_FCALCOBS0CFGR_CKOBSDIV_SHIFT	22
++
++/* RCC_FCALCOBS1CFGR register fields */
++#define RCC_FCALCOBS1CFGR_CKINTSEL_MASK		GENMASK(7, 0)
++#define RCC_FCALCOBS1CFGR_CKEXTSEL_MASK		GENMASK(10, 8)
++#define RCC_FCALCOBS1CFGR_CKOBSEXTSEL		BIT(16)
++#define RCC_FCALCOBS1CFGR_CKOBSINV		BIT(18)
++#define RCC_FCALCOBS1CFGR_CKOBSDIV_MASK		GENMASK(24, 22)
++#define RCC_FCALCOBS1CFGR_CKOBSEN		BIT(26)
++#define RCC_FCALCOBS1CFGR_FCALCRSTN		BIT(27)
++#define RCC_FCALCOBS1CFGR_CKINTSEL_SHIFT	0
++#define RCC_FCALCOBS1CFGR_CKEXTSEL_SHIFT	8
++#define RCC_FCALCOBS1CFGR_CKOBSDIV_SHIFT	22
++
++/* RCC_FCALCREFCFGR register fields */
++#define RCC_FCALCREFCFGR_FCALCREFCKSEL_MASK	GENMASK(2, 0)
++
++/* RCC_FCALCCR1 register fields */
++#define RCC_FCALCCR1_FCALCRUN			BIT(0)
++
++/* RCC_FCALCCR2 register fields */
++#define RCC_FCALCCR2_FCALCMD_MASK		GENMASK(4, 3)
++#define RCC_FCALCCR2_FCALCTWC_MASK		GENMASK(14, 11)
++#define RCC_FCALCCR2_FCALCTYP_MASK		GENMASK(21, 17)
++#define RCC_FCALCCR2_FCALCMD_SHIFT		3
++#define RCC_FCALCCR2_FCALCTWC_SHIFT		11
++#define RCC_FCALCCR2_FCALCTYP_SHIFT		17
++
++/* RCC_FCALCSR register fields */
++#define RCC_FCALCSR_FVAL_MASK			GENMASK(15, 0)
++#define RCC_FCALCSR_FCALCSTS			BIT(19)
++#define RCC_FCALCSR_FVAL_OVERFLOW		BIT(16)
++
++/* RCC_VERR register fields */
++#define RCC_VERR_MINREV_MASK			GENMASK(3, 0)
++#define RCC_VERR_MAJREV_MASK			GENMASK(7, 4)
++
++/* RCC_IDR register fields */
++#define RCC_IDR_ID_MASK				GENMASK(31, 0)
++
++/* RCC_SIDR register fields */
++#define RCC_SIDR_SID_MASK			GENMASK(31, 0)
++
++#endif /* STM32MP21_RCC_H */
+-- 
+2.39.5
+

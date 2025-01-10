@@ -1,0 +1,67 @@
+From 25cd3706cefd2b59e4acf7fff25870653b99b6a9 Mon Sep 17 00:00:00 2001
+From: Ram Dayal <ram.dayal@st.com>
+Date: Fri, 26 Jul 2024 11:17:09 +0200
+Subject: [PATCH] pci: stm32: Reduce resume time from low power mode when no
+ PCI-E device is connected
+
+The resume time from low power mode was excessively long when no PCI-E
+device was connected, causing delays in the system's responsiveness.
+This patch optimizes the resume process by checking if the PCI-E link
+was up before suspend and only attempting to restart the link if it was
+previously up.
+
+Change-Id: I6841a02eb35555ee429224b40e65a368b5294872
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395329
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/pci/controller/dwc/pcie-stm32.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
+index c6025d938e9d..0800617e2b93 100644
+--- a/drivers/pci/controller/dwc/pcie-stm32.c
++++ b/drivers/pci/controller/dwc/pcie-stm32.c
+@@ -35,6 +35,7 @@ struct stm32_pcie {
+ 	int pme_irq;
+ 	u32 max_payload;
+ 	bool limit_downstream_mrrs;
++	bool link_is_up;
+ };
+ 
+ static const struct of_device_id stm32_pcie_of_match[] = {
+@@ -134,6 +135,8 @@ static int stm32_pcie_suspend_noirq(struct device *dev)
+ {
+ 	struct stm32_pcie *stm32_pcie = dev_get_drvdata(dev);
+ 
++	stm32_pcie->link_is_up = dw_pcie_link_up(stm32_pcie->pci);
++
+ 	stm32_pcie_stop_link(stm32_pcie->pci);
+ 	clk_disable_unprepare(stm32_pcie->clk);
+ 
+@@ -181,12 +184,14 @@ static int stm32_pcie_resume_noirq(struct device *dev)
+ 	if (ret)
+ 		goto pcie_err;
+ 
+-	ret = stm32_pcie_start_link(stm32_pcie->pci);
+-	if (ret)
+-		goto pcie_err;
++	if (stm32_pcie->link_is_up) {
++		ret = stm32_pcie_start_link(stm32_pcie->pci);
++		if (ret)
++			goto pcie_err;
+ 
+-	/* Ignore errors, the link may come up later */
+-	dw_pcie_wait_for_link(stm32_pcie->pci);
++		/* Ignore errors, the link may come up later */
++		dw_pcie_wait_for_link(stm32_pcie->pci);
++	}
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
+-- 
+2.39.5
+

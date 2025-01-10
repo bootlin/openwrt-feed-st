@@ -1,0 +1,71 @@
+From e372b1bd898b6893b34c8327d6699d1d5abc0832 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 17 Sep 2024 11:23:39 +0200
+Subject: [PATCH] rtc: optee: remove unnecessary memory operations
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Remove memset to zero be initializing structures in the stack to 0.
+Remove memcpy by using directly the shared memory.
+
+Change-Id: I1d0ed03aac516ce5ee5e01d01f568d7fc7155898
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404875
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/rtc/rtc-optee.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/rtc/rtc-optee.c b/drivers/rtc/rtc-optee.c
+index 73aefd32a751..f3a14a2ec1ca 100644
+--- a/drivers/rtc/rtc-optee.c
++++ b/drivers/rtc/rtc-optee.c
+@@ -194,18 +194,9 @@ static int optee_rtc_settime(struct device *dev, struct rtc_time *tm)
+ 	struct optee_rtc *priv = dev_get_drvdata(dev);
+ 	struct tee_ioctl_invoke_arg inv_arg = {0};
+ 	struct tee_param param[4] = {0};
+-	struct optee_rtc_time optee_tm;
+-	void *rtc_data;
++	struct optee_rtc_time *optee_tm;
+ 	int ret;
+ 
+-	optee_tm.tm_sec = tm->tm_sec;
+-	optee_tm.tm_min = tm->tm_min;
+-	optee_tm.tm_hour = tm->tm_hour;
+-	optee_tm.tm_mday = tm->tm_mday;
+-	optee_tm.tm_mon = tm->tm_mon;
+-	optee_tm.tm_year = tm->tm_year + 1900;
+-	optee_tm.tm_wday = tm->tm_wday;
+-
+ 	inv_arg.func = PTA_CMD_RTC_SET_TIME;
+ 	inv_arg.session = priv->session_id;
+ 	inv_arg.num_params = 4;
+@@ -214,11 +205,17 @@ static int optee_rtc_settime(struct device *dev, struct rtc_time *tm)
+ 	param[0].u.memref.shm = priv->shm;
+ 	param[0].u.memref.size = sizeof(struct optee_rtc_time);
+ 
+-	rtc_data = tee_shm_get_va(priv->shm, 0);
+-	if (IS_ERR(rtc_data))
+-		return PTR_ERR(rtc_data);
++	optee_tm = tee_shm_get_va(priv->shm, 0);
++	if (IS_ERR(optee_tm))
++		return PTR_ERR(optee_tm);
+ 
+-	memcpy(rtc_data, &optee_tm, sizeof(struct optee_rtc_time));
++	optee_tm->tm_min = tm->tm_min;
++	optee_tm->tm_sec = tm->tm_sec;
++	optee_tm->tm_hour = tm->tm_hour;
++	optee_tm->tm_mday = tm->tm_mday;
++	optee_tm->tm_mon = tm->tm_mon;
++	optee_tm->tm_year = tm->tm_year + 1900;
++	optee_tm->tm_wday = tm->tm_wday;
+ 
+ 	ret = tee_client_invoke_func(priv->ctx, &inv_arg, param);
+ 	if (ret < 0 || inv_arg.ret != 0)
+-- 
+2.39.5
+

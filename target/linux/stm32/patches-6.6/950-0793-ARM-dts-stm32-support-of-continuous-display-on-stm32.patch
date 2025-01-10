@@ -1,0 +1,77 @@
+From 1fc37627edc0699085d0880e418a584c9153e370 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 30 Jan 2024 08:44:45 +0100
+Subject: [PATCH] ARM: dts: stm32: support of continuous display on stm32mp157
+ DK2 boards
+
+Add DSI clocks to simple framebuffer device & set default-on
+property to ltdc.
+
+Change-Id: I94d2ada5f97e0834628d8caf3ea0bdc89f510925
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 4 +++-
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+index 525dc0a79522..17db8ef2bf58 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+@@ -31,7 +31,7 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
+-			clocks = <&rcc LTDC_PX>;
++			clocks = <&rcc LTDC_PX>, <&rcc DSI>, <&rcc DSI_PX>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -56,6 +56,7 @@ panel_otm8009a: panel-otm8009a@0 {
+ 		reg = <0>;
+ 		reset-gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
+ 		power-supply = <&v3v3>;
++		default-on;
+ 		status = "okay";
+ 
+ 		port {
+@@ -90,6 +91,7 @@ touchscreen@38 {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index b6315528e115..89ff32a4d7c3 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -30,7 +30,7 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
+-			clocks = <&rcc LTDC_PX>;
++			clocks = <&rcc LTDC_PX>, <&rcc DSI>, <&rcc DSI_PX>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -55,6 +55,7 @@ panel_otm8009a: panel-otm8009a@0 {
+ 		reg = <0>;
+ 		reset-gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
+ 		power-supply = <&v3v3>;
++		default-on;
+ 		status = "okay";
+ 
+ 		port {
+@@ -90,6 +91,7 @@ touchscreen@38 {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+-- 
+2.39.5
+

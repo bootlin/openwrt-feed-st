@@ -1,0 +1,43 @@
+From 03601de9d5a06f5fe312c3b75a087ddc319ac151 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 25 Jun 2024 10:58:29 +0200
+Subject: [PATCH] arm64: dts: st: add moortec node on stm32mp211
+
+Add Moortec DTS sensor description on STM32MP211.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ie6754485482f16dcb63d38904831613cf18ee3a5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/389478
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 751b2184e4f6..9ae7919df695 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1756,6 +1756,18 @@ package_otp@1e8 {
+ 			};
+ 		};
+ 
++		dts: thermal-sensor@44070000 {
++			compatible = "moortec,mr75203";
++			reg = <0x44070000 0x0 0x80>,
++			      <0x44070080 0x0 0x180>,
++			      <0x44070200 0x0 0x200>,
++			      <0x44070400 0x0 0xc00>;
++			reg-names = "common", "ts", "pd", "vm";
++			clocks = <&rcc CK_KER_DTS>;
++			resets = <&rcc DTS_R>;
++			#thermal-sensor-cells = <1>;
++		};
++
+ 		rcc: clock-controller@44200000 {
+ 			compatible = "st,stm32mp21-rcc";
+ 			reg = <0x44200000 0x0 0x10000>;
+-- 
+2.39.5
+

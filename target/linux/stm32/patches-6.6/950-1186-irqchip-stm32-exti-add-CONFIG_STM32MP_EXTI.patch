@@ -1,0 +1,37 @@
+From ad46cf29f8192fdd0dbf1c06cb4a09dd98b6288c Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 16 Jan 2024 14:08:43 +0100
+Subject: [PATCH] irqchip/stm32-exti: add CONFIG_STM32MP_EXTI
+
+To guarantee bisect-ability during split of stm32-exti in MCU and
+MPU code, introduce CONFIG_STM32MP_EXTI. It will be used in arch
+configuration.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I4d130ced3f34571bd1b195f775a0830d4545fd57
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383187
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index e80aa05916fc..fc65568da8c1 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -392,6 +392,10 @@ config LS_SCFG_MSI
+ config PARTITION_PERCPU
+ 	bool
+ 
++config STM32MP_EXTI
++	bool
++	select STM32_EXTI
++
+ config STM32_EXTI
+ 	bool
+ 	select IRQ_DOMAIN
+-- 
+2.39.5
+

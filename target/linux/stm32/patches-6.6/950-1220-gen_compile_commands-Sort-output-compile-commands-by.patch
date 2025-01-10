@@ -1,0 +1,63 @@
+From 9a7e2d3c1f6ba67bdc5523e06c3717f5863d7fbb Mon Sep 17 00:00:00 2001
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 9 Oct 2023 11:39:03 -0700
+Subject: [PATCH] gen_compile_commands: Sort output compile commands by file
+ name
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Make the output more stable and deterministic.
+
+Change-Id: I05b6eea33b33eff4fdd5970ae5068c73a8c9fcf3
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Yang Jihong <yangjihong1@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: llvm@lists.linux.dev
+Cc: Ming Wang <wangming01@loongson.cn>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Tom Rix <trix@redhat.com>
+Cc: bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-perf-users@vger.kernel.org
+Link: https://lore.kernel.org/r/20231009183920.200859-3-irogers@google.com
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+
+Backport from v6.7
+Change-Id: I3469c5cd8bb46025b59c49f0300275a432df1ef4
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384981
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ scripts/clang-tools/gen_compile_commands.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 7dc2df5df7cf..b60cc4745cdc 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -221,7 +221,7 @@ def main():
+                                      cmdfile, err)
+ 
+     with open(output, 'wt') as f:
+-        json.dump(compile_commands, f, indent=2, sort_keys=True)
++        json.dump(sorted(compile_commands, key=lambda x: x["file"]), f, indent=2, sort_keys=True)
+ 
+ 
+ if __name__ == '__main__':
+-- 
+2.39.5
+

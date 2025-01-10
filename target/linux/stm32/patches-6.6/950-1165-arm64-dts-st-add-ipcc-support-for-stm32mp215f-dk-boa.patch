@@ -1,0 +1,37 @@
+From 7bfdd87a594bc970d8e0bde676601a79db909a77 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 20 May 2024 11:17:27 +0200
+Subject: [PATCH] arm64: dts: st: add ipcc support for stm32mp215f-dk board
+
+Add IPCC node for stm32mp215f-dk board.
+
+Change-Id: Id8a9f2b90f756c4ee4c14677f294928b8de9b6fc
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381087
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 733c20b0bb43..7b8679358e4e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -242,6 +242,10 @@ imx335_ep: endpoint {
+ 	};
+ };
+ 
++&ipcc1 {
++	status = "okay";
++};
++
+ &ltdc {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&ltdc_pins_a>;
+-- 
+2.39.5
+

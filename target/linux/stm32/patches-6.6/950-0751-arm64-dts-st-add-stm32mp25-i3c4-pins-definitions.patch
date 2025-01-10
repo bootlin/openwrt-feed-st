@@ -1,0 +1,61 @@
+From 51067c8dc288426ab902e6b504b9234205e85549 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 10 Aug 2023 16:23:53 +0200
+Subject: [PATCH] arm64: dts: st: add stm32mp25 i3c4 pins definitions
+
+STM32 I3C requires 3 states of pinctrl: init, default and sleep.
+Init state is needed when enabling the controller, to avoid generating an
+unexpected frame (I3C-211213 erratum).
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: Iedf8256f16de6f966fd2c5eefd40f982e76ef8d5
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 4f402bc8f44c..ab2ce75168b3 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -536,6 +536,38 @@ pins {
+ };
+ 
+ &pinctrl_z {
++	i3c4_pins_a: i3c4-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 4, AF11)>, /* I3C4_SCL */
++				 <STM32_PINMUX('Z', 3, AF11)>; /* I3C4_SDA */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c4_init_pins_a: i3c4-init-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('Z', 4, AF11)>; /* I3C4_SCL */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <1>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('Z', 3, AF11)>; /* I3C4_SDA */
++			drive-push-pull;
++			bias-pull-up;
++			slew-rate = <1>;
++		};
++	};
++
++	i3c4_sleep_pins_a: i3c4-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I3C4_SCL */
++				 <STM32_PINMUX('Z', 3, ANALOG)>; /* I3C4_SDA */
++		};
++	};
++
+ 	spi8_pins_a: spi8-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('Z', 2, AF3)>, /* SPI8_SCK */
+-- 
+2.39.5
+

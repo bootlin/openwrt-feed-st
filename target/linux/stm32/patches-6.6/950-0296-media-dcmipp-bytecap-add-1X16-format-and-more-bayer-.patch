@@ -1,0 +1,87 @@
+From a8972a75ef50dd374a4c3bce3548c07fcd7bb5d0 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 7 Feb 2024 15:58:45 +0100
+Subject: [PATCH] media: dcmipp: bytecap: add 1X16 format and more bayer
+ formats support
+
+Add 1X16 format support since when using CSI input formats are
+1X16 instead of 2X8.
+Add as well for bayer formats.
+
+Change-Id: I216452842f7353c2cec3518a1a645697f57dbceb
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 34 +++++++++++++++----
+ 1 file changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index b3e7a241e01d..0bb097714abe 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -56,15 +56,32 @@ struct dcmipp_bytecap_pix_map {
+ 
+ static const struct dcmipp_bytecap_pix_map dcmipp_bytecap_pix_map_list[] = {
+ 	PIXMAP_MBUS_PFMT(RGB565_2X8_LE, RGB565),
++	PIXMAP_MBUS_PFMT(RGB565_1X16, RGB565),
+ 	PIXMAP_MBUS_PFMT(YUYV8_2X8, YUYV),
++	PIXMAP_MBUS_PFMT(YUYV8_1X16, YUYV),
+ 	PIXMAP_MBUS_PFMT(YVYU8_2X8, YVYU),
++	PIXMAP_MBUS_PFMT(YVYU8_1X16, YVYU),
+ 	PIXMAP_MBUS_PFMT(UYVY8_2X8, UYVY),
++	PIXMAP_MBUS_PFMT(UYVY8_1X16, UYVY),
+ 	PIXMAP_MBUS_PFMT(VYUY8_2X8, VYUY),
++	PIXMAP_MBUS_PFMT(VYUY8_1X16, VYUY),
+ 	PIXMAP_MBUS_PFMT(Y8_1X8, GREY),
+ 	PIXMAP_MBUS_PFMT(SBGGR8_1X8, SBGGR8),
+ 	PIXMAP_MBUS_PFMT(SGBRG8_1X8, SGBRG8),
+ 	PIXMAP_MBUS_PFMT(SGRBG8_1X8, SGRBG8),
+ 	PIXMAP_MBUS_PFMT(SRGGB8_1X8, SRGGB8),
++	PIXMAP_MBUS_PFMT(SBGGR10_1X10, SBGGR10),
++	PIXMAP_MBUS_PFMT(SGBRG10_1X10, SGBRG10),
++	PIXMAP_MBUS_PFMT(SGRBG10_1X10, SGRBG10),
++	PIXMAP_MBUS_PFMT(SRGGB10_1X10, SRGGB10),
++	PIXMAP_MBUS_PFMT(SBGGR12_1X12, SBGGR12),
++	PIXMAP_MBUS_PFMT(SGBRG12_1X12, SGBRG12),
++	PIXMAP_MBUS_PFMT(SGRBG12_1X12, SGRBG12),
++	PIXMAP_MBUS_PFMT(SRGGB12_1X12, SRGGB12),
++	PIXMAP_MBUS_PFMT(SBGGR14_1X14, SBGGR14),
++	PIXMAP_MBUS_PFMT(SGBRG14_1X14, SGBRG14),
++	PIXMAP_MBUS_PFMT(SGRBG14_1X14, SGRBG14),
++	PIXMAP_MBUS_PFMT(SRGGB14_1X14, SRGGB14),
+ 	PIXMAP_MBUS_PFMT(JPEG_1X8, JPEG),
+ };
+ 
+@@ -815,8 +832,7 @@ static int dcmipp_bytecap_link_validate(struct media_link *link)
+ 		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+ 		.pad = link->source->index,
+ 	};
+-	const struct dcmipp_bytecap_pix_map *vpix;
+-	int ret;
++	int ret, i;
+ 
+ 	ret = v4l2_subdev_call(source_sd, pad, get_fmt, NULL, &source_fmt);
+ 	if (ret < 0)
+@@ -830,10 +846,16 @@ static int dcmipp_bytecap_link_validate(struct media_link *link)
+ 		return -EINVAL;
+ 	}
+ 
+-	vpix = dcmipp_bytecap_pix_map_by_pixelformat(vcap->format.pixelformat);
+-	if (source_fmt.format.code != vpix->code) {
+-		dev_err(vcap->dev, "Wrong mbus_code 0x%x, (0x%x expected)\n",
+-			vpix->code, source_fmt.format.code);
++	for (i = 0; i < ARRAY_SIZE(dcmipp_bytecap_pix_map_list); i++) {
++		if (dcmipp_bytecap_pix_map_list[i].pixelformat ==
++			vcap->format.pixelformat &&
++		    dcmipp_bytecap_pix_map_list[i].code ==
++			source_fmt.format.code)
++			break;
++	}
++
++	if (i == ARRAY_SIZE(dcmipp_bytecap_pix_map_list)) {
++		dev_err(vcap->dev, "Invalid format given\n");
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.39.5
+

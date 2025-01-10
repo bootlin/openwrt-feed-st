@@ -1,0 +1,51 @@
+From bb2ac74bbf3ef0b636590ee134b2979ad5acc5f4 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 26 Sep 2024 20:16:45 +0200
+Subject: [PATCH] media: dcmipp: pixelproc: correct aux source pad fmt
+
+pixelproc subdev output is always either RGB888_1X24 or
+YUV8_1X24.  In case of aux pipe, since it cannot perform
+color conversion, it is the direct conversion of the input
+format.  Ensure than when setting aux pixelproc source
+pad, the format set is correct and correct it if necessary
+based on the sink pad.
+
+Change-Id: I1409f1290f83a7db3387c834a93b0880e616f641
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407250
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Tested-by: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index ecad6efa8250..70a05a91ae45 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -685,6 +685,16 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+ 				v4l2_subdev_state_get_format(state, 0);
+ 
+ 			fmt->format = *sink_pad_fmt;
++
++			/*
++			 * Output is always either YUV8_1X24 or RGB888_1X24
++			 * depending on the input
++			 */
++			if (fmt->format.code >= MEDIA_BUS_FMT_Y8_1X8 &&
++			    fmt->format.code < MEDIA_BUS_FMT_SBGGR8_1X8)
++				fmt->format.code = MEDIA_BUS_FMT_YUV8_1X24;
++			else
++				fmt->format.code = MEDIA_BUS_FMT_RGB888_1X24;
+ 		}
+ 
+ 		compose = v4l2_subdev_state_get_compose(state, 0);
+-- 
+2.39.5
+

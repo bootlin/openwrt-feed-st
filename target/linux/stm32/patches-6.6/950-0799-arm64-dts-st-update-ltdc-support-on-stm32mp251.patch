@@ -1,0 +1,29 @@
+From c12604aa12bcd286fcdec4fa6233dbbfaea86537 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 21 Feb 2024 12:09:32 +0100
+Subject: [PATCH] arm64: dts: st: update ltdc support on stm32mp251
+
+Add a new compatible for ltdc for SOC MP25.
+
+Change-Id: Iae44315e0df9419cf53679cb5dd1895910ef02f3
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index f1bbce1e4afd..0c5ec9ca3c81 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2061,7 +2061,7 @@ i3c4: i3c@46080000 {
+ 			};
+ 
+ 			ltdc: display-controller@48010000 {
+-				compatible = "st,stm32-ltdc";
++				compatible = "st,stm32mp25-ltdc";
+ 				reg = <0x48010000 0x400>;
+ 				st,syscon = <&syscfg>;
+ 				interrupts = <GIC_SPI 158 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.39.5
+

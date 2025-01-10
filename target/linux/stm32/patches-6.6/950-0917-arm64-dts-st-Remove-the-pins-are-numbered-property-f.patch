@@ -1,0 +1,46 @@
+From 1f2c0a316f241da65c1a84cc30bde24a49263d49 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Mon, 8 Apr 2024 11:15:58 +0200
+Subject: [PATCH] arm64: dts: st: Remove the pins-are-numbered property from
+ stm32mp251
+
+Remove the deprecated property "pins-are-numbered" from pinctrl and
+pinctrl_z nodes of stm32mp25 soc to ensure to be conform with the
+upstream series of the link below.
+
+Link: https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=697861
+Fixes: 5d30d03aaf78 ("arm64: dts: st: introduce stm32mp25 SoCs family")
+Change-Id: I6549a0a6c1cd10a031cfbe2bb26a4dba937b9d8b
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371961
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 7542444d987d..104472928902 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2651,7 +2651,6 @@ pinctrl: pinctrl@44240000 {
+ 			compatible = "st,stm32mp257-pinctrl";
+ 			ranges = <0 0x44240000 0xa0400>;
+ 			interrupt-parent = <&exti1>;
+-			pins-are-numbered;
+ 			interrupts-extended =
+ 				<&exti1  0 0>, <&exti1  1 0>, <&exti1  2 0>, <&exti1  3 0>,
+ 				<&exti1  4 0>, <&exti1  5 0>, <&exti1  6 0>, <&exti1  7 0>,
+@@ -2800,7 +2799,6 @@ pinctrl_z: pinctrl@46200000 {
+ 			compatible = "st,stm32mp257-z-pinctrl";
+ 			ranges = <0 0x46200000 0x400>;
+ 			interrupt-parent = <&exti1>;
+-			pins-are-numbered;
+ 
+ 			gpioz: gpio@46200000 {
+ 				gpio-controller;
+-- 
+2.39.5
+

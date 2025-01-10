@@ -1,0 +1,51 @@
+From 35551b592c7045c58a771720fddf984590694b06 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 10 Apr 2024 09:24:14 +0200
+Subject: [PATCH] arm64: dts: st: add UART console on stm32mp215f-dk boards
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add USART2 to support console on stm32mp215f-dk boards.
+
+Change-Id: Ifeb4cb490869fa4e00896fdf7cf0ab3b5c4ce6ca
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372685
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 552c401d5c63..48d785de2e5b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -16,7 +16,7 @@ / {
+ 	compatible = "st,stm32mp215f-dk", "st,stm32mp215";
+ 
+ 	aliases {
+-		/* serial0 = &usart2; */
++		serial0 = &usart2;
+ 	};
+ 
+ 	chosen {
+@@ -40,3 +40,13 @@ fw@80000000 {
+ 		};
+ 	};
+ };
++
++&usart2 {
++	pinctrl-names = "default", "idle", "sleep";
++	pinctrl-0 = <&usart2_pins_a>;
++	pinctrl-1 = <&usart2_idle_pins_a>;
++	pinctrl-2 = <&usart2_sleep_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "okay";
++};
+-- 
+2.39.5
+

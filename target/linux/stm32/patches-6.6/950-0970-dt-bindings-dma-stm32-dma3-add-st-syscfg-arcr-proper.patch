@@ -1,0 +1,47 @@
+From 4c10c2070e16552465eed06bcb21140bac6ae0d9 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 21 Sep 2023 18:45:35 +0200
+Subject: [PATCH] dt-bindings: dma: stm32-dma3: add 'st,syscfg-arcr' property
+
+'st,syscfg-arcr' property is used to get register offset and register
+bitmask within system configuration controller (syscfg), for DMA controller
+Address Remapping ENable (AREN) bit.
+When this bit is set, it means STM32 DMA3 AXI port address remapping is
+enabled, then the 4GB address space accessible by the STM32 DMA3 AXI port
+starts at address 0x80000000 instead of 0x00000000.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I68bc3dae8b005d75370e154aa4a6200778298bbb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373116
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+index e7fd006fea40..b3072edccb1e 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+@@ -78,6 +78,18 @@ properties:
+     maximum: 256
+     default: 64
+ 
++  st,syscfg-arcr:
++    description: |
++      Phandle to system configuration controller. It is used to get the status of the STM32 DMA3 AXI
++      port address remapping. When enabled, the 4GB address space accessible by the STM32 DMA3 AXI
++      port starts at address 0x80000000 instead of 0x00000000.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - items:
++          - description: phandle to syscfg
++          - description: register offset within syscfg
++          - description: register bitmask for DMA controller Address Remapping ENable (AREN) bit
++
+   "#dma-cells":
+     const: 3
+     description: |
+-- 
+2.39.5
+

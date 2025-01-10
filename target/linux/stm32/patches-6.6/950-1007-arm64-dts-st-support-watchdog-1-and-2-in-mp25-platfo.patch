@@ -1,0 +1,57 @@
+From 7927680b187e5ab1143997769c4e3db4882de012 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 20 Mar 2024 14:46:19 +0100
+Subject: [PATCH] arm64: dts: st: support watchdog 1 and 2 in mp25 platforms
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Support IWDG1 and IWDG2 nodes in mp25.
+
+Change-Id: I91497bfe406e9473353128208ab95fcf11dea731
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368012
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373633
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index ae6f4b0d2805..cc65940fb4e3 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1928,6 +1928,26 @@ rng: rng@42020000 {
+ 				status = "disabled";
+ 			};
+ 
++			iwdg1: watchdog@44010000 {
++				compatible = "st,stm32mp1-iwdg";
++				reg = <0x44010000 0x400>;
++				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_IWDG1>, <&scmi_clk CK_SCMI_LSI>;
++				clock-names = "pclk", "lsi";
++				access-controllers = <&rifsc 98>;
++				status = "disabled";
++			};
++
++			iwdg2: watchdog@44020000 {
++				compatible = "st,stm32mp1-iwdg";
++				reg = <0x44020000 0x400>;
++				interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_IWDG2>, <&scmi_clk CK_SCMI_LSI>;
++				clock-names = "pclk", "lsi";
++				access-controllers = <&rifsc 99>;
++				status = "disabled";
++			};
++
+ 			spi8: spi@46020000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-- 
+2.39.5
+

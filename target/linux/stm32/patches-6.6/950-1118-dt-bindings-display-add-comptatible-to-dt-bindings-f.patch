@@ -1,0 +1,32 @@
+From d61891f6845b5f15dbe14f372d97e4fee1fe1e1e Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 21 May 2024 09:00:09 +0200
+Subject: [PATCH] dt-bindings: display: add comptatible to dt-bindings for
+ STM32 LTDC device
+
+Add "st,stm32mp21-ltdc" compatible for SOC MP21
+
+Change-Id: Ie3f282d0962f3de651f6e4fa7f35acc293e7544b
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381181
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+index b8c1ad083a9d..8c18a58c3fe4 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+@@ -13,6 +13,7 @@ maintainers:
+ properties:
+   compatible:
+     const: st,stm32-ltdc
++    const: st,stm32mp21-ltdc
+     const: st,stm32mp25-ltdc
+ 
+   reg:
+-- 
+2.39.5
+

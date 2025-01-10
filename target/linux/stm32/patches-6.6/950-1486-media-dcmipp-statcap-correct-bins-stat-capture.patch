@@ -1,0 +1,55 @@
+From 4a900805d80decfd282ace296b014517eb4e4490 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 30 Sep 2024 13:28:13 +0200
+Subject: [PATCH] media: dcmipp: statcap: correct bins stat capture
+
+In FULL profile, all stats are only available upon capture
+of the 4th set of BINS.
+Moreover, fix the storage pointer of the 4th set of bins.
+
+Change-Id: Id5b03d72d3950cd5c404da24167346bd7da8e3a5
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407887
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index eb34971ec151..a8399f21eb94 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -687,9 +687,15 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 				  DCMIPP_P1STXCR_ENABLE);
+ 
+ 		if (vcap->prev_capture_state == PHY_BIN_3_SHA_AV_RGB) {
++			/* The data capture refer to the previous location */
++			avr_bins = !vcap->stat_location == DCMIPP_P1STXCR_SRC_LOC_PRE ?
++					&vcap->local_buf.pre : &vcap->local_buf.post;
+ 			/* Accumulators contains the 4th set of BINS */
+ 			for (i = 0; i < 3; i++)
+ 				avr_bins->bins[i + 9] = reg_read(vcap, DCMIPP_P1STXSR(i));
++			/* By the time we get the 4th POST BINS, stat_location is again in PRE */
++			if (vcap->stat_location == DCMIPP_P1STXCR_SRC_LOC_PRE)
++				vcap->stat_ready = true;
+ 		}
+ 		break;
+ 
+@@ -768,8 +774,6 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 		if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
+ 			vcap->capture_state++;
+ 		} else {
+-			if (vcap->stat_location == DCMIPP_P1STXCR_SRC_LOC_POST)
+-				vcap->stat_ready = true;
+ 			vcap->stat_location = !vcap->stat_location;
+ 			vcap->capture_state = PHY_AV_RGB_SHA_BIN_0;
+ 		}
+-- 
+2.39.5
+

@@ -1,0 +1,70 @@
+From ad067bc999db185fb34072709d525d325422a191 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 12 May 2023 14:53:21 +0200
+Subject: [PATCH] arm64: dts: st: add ommanager node in stm32mp251.dtsi
+
+Add Octo Memory Manager node in stm32mp251.dtsi.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I8e38d6a84fb19c93e6ff8ac1ab34f81ba893e6c6
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 43 ++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 8e18748aa116..bcfb9172b7d4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -303,6 +303,49 @@ hpdma3: dma-controller@40420000 {
+ 			st,axi-max-burst-len = <16>;
+ 		};
+ 
++		ommanager: ommanager@40500000 {
++			#address-cells = <2>;
++			#size-cells = <1>;
++			compatible = "st,stm32mp25-omm";
++			reg = <0x40500000 0x400>, <0x60000000 0x10000000>;
++			reg-names = "omm", "omm_mm";
++			clocks = <&rcc CK_BUS_OSPIIOM>;
++			resets = <&rcc OSPIIOM_R>;
++			st,syscfg-amcr = <&syscfg 0x2c00 0x7>;
++			access-controllers = <&rifsc 111>;
++			status = "disabled";
++			ranges = <0 0 0x40430000 0x400>,
++				 <1 0 0x40440000 0x400>;
++
++			ospi1: spi@40430000 {
++				compatible = "st,stm32mp25-omi";
++				reg = <0 0 0x400>;
++				interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 2 0x62 0x00003121>,
++				       <&hpdma 2 0x42 0x00003112>;
++				dma-names = "tx", "rx";
++				st,syscfg-dlyb = <&syscfg 0x1000>;
++				clocks = <&scmi_clk CK_SCMI_OSPI1>;
++				resets = <&scmi_reset RST_SCMI_OSPI1>, <&scmi_reset RST_SCMI_OSPI1DLL>;
++				access-controllers = <&rifsc 74>;
++				status = "disabled";
++			};
++
++			ospi2: spi@40440000 {
++				compatible = "st,stm32mp25-omi";
++				reg = <1 0 0x400>;
++				interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 3 0x62 0x00003121>,
++				       <&hpdma 3 0x42 0x00003112>;
++				dma-names = "tx", "rx";
++				st,syscfg-dlyb = <&syscfg 0x1400>;
++				clocks = <&scmi_clk CK_SCMI_OSPI2>;
++				resets = <&scmi_reset RST_SCMI_OSPI2>, <&scmi_reset RST_SCMI_OSPI2DLL>;
++				access-controllers = <&rifsc 75>;
++				status = "disabled";
++			};
++		};
++
+ 		rifsc: bus@42080000 {
+ 			compatible = "st,stm32mp25-rifsc", "simple-bus";
+ 			reg = <0x42080000 0x1000>;
+-- 
+2.39.5
+

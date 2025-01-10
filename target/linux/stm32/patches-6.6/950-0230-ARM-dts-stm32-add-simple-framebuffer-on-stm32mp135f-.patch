@@ -1,0 +1,37 @@
+From a01d3c99b909df8f94bfd0a63961f8dd28a22ed0 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 3 Nov 2021 16:35:51 +0100
+Subject: [PATCH] ARM: dts: stm32: add simple-framebuffer on stm32mp135f-dk
+
+Add node to support the simple-frambuffer. By default, the node must be
+disabled.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I37bc4c7494a3fc2cdfc5a2b7257b34f38aa5ffa1
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index d58b0153cae6..e3e6a2b8d1e4 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -28,6 +28,15 @@ aliases {
+ 
+ 	chosen {
+ 		stdout-path = "serial0:115200n8";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	memory@c0000000 {
+-- 
+2.39.5
+

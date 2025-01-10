@@ -1,0 +1,51 @@
+From c00d64530fc926e6d13df755d869eb164877d492 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Thu, 30 Nov 2023 15:25:20 +0100
+Subject: [PATCH] arm64: dts: st: enable usb-role-switch on stm32mp257f-ev1
+
+Enable usb-role-switch on stm32mp257f-ev1, to support dual role USB2
+with power delivery on Type-C connector.
+
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I1f63d5bdff209c76454fe2733c3ed21da95a77ab
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 9022989497ac..74ab02d32e5f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -436,6 +436,16 @@ typec@35 {
+ 			reg = <0x35>;
+ 			interrupts-extended = <&intc_rpmsg 0>;
+ 			status = "okay";
++			connector {
++				compatible = "usb-c-connector";
++				label = "USB-C";
++
++				port {
++					typec_ep: endpoint {
++						remote-endpoint = <&dwc3_ep>;
++					};
++				};
++			};
+ 		};
+ 	};
+ };
+@@ -607,6 +617,11 @@ &usb3dr {
+ 
+ 	dwc3: usb@48300000 {
+ 		maximum-speed = "high-speed";
+-		dr_mode = "peripheral";
++		usb-role-switch;
++		port {
++			dwc3_ep: endpoint {
++				remote-endpoint = <&typec_ep>;
++			};
++		};
+ 	};
+ };
+-- 
+2.39.5
+

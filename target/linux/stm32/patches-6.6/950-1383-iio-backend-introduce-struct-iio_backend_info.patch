@@ -1,0 +1,126 @@
+From 12a2adc5d3525a477be78dcdf161a5da3d3429ed Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 10 Sep 2024 13:51:27 +0200
+Subject: [PATCH] iio: backend: introduce struct iio_backend_info
+
+Instead of only passing the backend ops when calling
+devm_iio_backend_register(), pass an info like structure that will
+contains the ops and additional information. Fow now, the backend name
+is being added as that will be used by the debugFS interface introduced
+in a later patch.
+
+It also opens the door for further customizations passed by backends.
+
+All users of devm_iio_backend_register() were updated accordingly.
+
+Change-Id: I709cfa9ec73a8aebd8075ef5ca5bd79261fef0c1
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://patch.msgid.link/20240802-dev-iio-backend-add-debugfs-v2-1-4cb62852f0d0@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403507
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/iio/adc/adi-axi-adc.c      |  7 ++++++-
+ drivers/iio/industrialio-backend.c | 10 +++++-----
+ include/linux/iio/backend.h        | 12 +++++++++++-
+ 3 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/iio/adc/adi-axi-adc.c b/drivers/iio/adc/adi-axi-adc.c
+index e3b215882941..41d22220dc08 100644
+--- a/drivers/iio/adc/adi-axi-adc.c
++++ b/drivers/iio/adc/adi-axi-adc.c
+@@ -159,7 +159,7 @@ static const struct regmap_config axi_adc_regmap_config = {
+ 	.max_register = 0x0800,
+ };
+ 
+-static const struct iio_backend_ops adi_axi_adc_generic = {
++static const struct iio_backend_ops adi_axi_adc_ops = {
+ 	.enable = axi_adc_enable,
+ 	.disable = axi_adc_disable,
+ 	.data_format_set = axi_adc_data_format_set,
+@@ -169,6 +169,11 @@ static const struct iio_backend_ops adi_axi_adc_generic = {
+ 	.free_buffer = axi_adc_free_buffer,
+ };
+ 
++static const struct iio_backend_info adi_axi_adc_generic = {
++	.name = "axi-adc",
++	.ops = &adi_axi_adc_ops,
++};
++
+ static int adi_axi_adc_probe(struct platform_device *pdev)
+ {
+ 	const unsigned int *expected_ver;
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index 3afdce7da1b5..042ae8e50dc1 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -643,20 +643,20 @@ static void iio_backend_unregister(void *arg)
+ /**
+  * devm_iio_backend_register - Device managed backend device register
+  * @dev: Backend device being registered
+- * @ops: Backend ops
++ * @info: Backend info
+  * @priv: Device private data
+  *
+- * @ops is mandatory. Not providing it results in -EINVAL.
++ * @info is mandatory. Not providing it results in -EINVAL.
+  *
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+  */
+ int devm_iio_backend_register(struct device *dev,
+-			      const struct iio_backend_ops *ops, void *priv)
++			      const struct iio_backend_info *info, void *priv)
+ {
+ 	struct iio_backend *back;
+ 
+-	if (!ops)
++	if (!info || !info->ops)
+ 		return dev_err_probe(dev, -EINVAL, "No backend ops given\n");
+ 
+ 	/*
+@@ -669,7 +669,7 @@ int devm_iio_backend_register(struct device *dev,
+ 	if (!back)
+ 		return -ENOMEM;
+ 
+-	back->ops = ops;
++	back->ops = info->ops;
+ 	back->owner = dev->driver->owner;
+ 	back->dev = dev;
+ 	back->priv = priv;
+diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
+index 4e81931703ab..13020d661642 100644
+--- a/include/linux/iio/backend.h
++++ b/include/linux/iio/backend.h
+@@ -115,6 +115,16 @@ struct iio_backend_ops {
+ 			    const struct iio_chan_spec *chan, char *buf);
+ };
+ 
++/**
++ * struct iio_backend_info - info structure for an iio_backend
++ * @name: Backend name.
++ * @ops: Backend operations.
++ */
++struct iio_backend_info {
++	const char *name;
++	const struct iio_backend_ops *ops;
++};
++
+ int iio_backend_chan_enable(struct iio_backend *back, unsigned int chan);
+ int iio_backend_chan_disable(struct iio_backend *back, unsigned int chan);
+ int devm_iio_backend_enable(struct device *dev, struct iio_backend *back);
+@@ -151,6 +161,6 @@ __devm_iio_backend_get_from_fwnode_lookup(struct device *dev,
+ 					  struct fwnode_handle *fwnode);
+ 
+ int devm_iio_backend_register(struct device *dev,
+-			      const struct iio_backend_ops *ops, void *priv);
++			      const struct iio_backend_info *info, void *priv);
+ 
+ #endif
+-- 
+2.39.5
+

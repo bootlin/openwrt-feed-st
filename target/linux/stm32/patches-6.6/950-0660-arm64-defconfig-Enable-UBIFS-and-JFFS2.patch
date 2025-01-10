@@ -1,0 +1,47 @@
+From 92db30384df82e816d18ef0d62e127bd30efb992 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 28 Jun 2022 18:18:53 +0200
+Subject: [PATCH] arm64: defconfig: Enable UBIFS and JFFS2
+
+This patch adds the support of UBIFS and JFFS2.
+
+Change-Id: I7cf3c7f3172676544c4114ba9e0660d0b8a876bd
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310484
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index c3d45aaf5da9..4f60ee05227f 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -5,10 +5,12 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_I2C_STM32F7=y
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
++CONFIG_JFFS2_FS=y
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+ CONFIG_MTD_NAND_STM32_FMC2=y
++CONFIG_MTD_UBI=y
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_PHY_STM32_USB2PHY=y
+@@ -33,6 +35,7 @@ CONFIG_STM32_RPROC=y
+ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_TIMER_CNT=m
+ CONFIG_TEE_REMOTEPROC=y
++CONFIG_UBIFS_FS=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+-- 
+2.39.5
+

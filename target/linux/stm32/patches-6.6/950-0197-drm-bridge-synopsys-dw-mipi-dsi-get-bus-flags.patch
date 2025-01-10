@@ -1,0 +1,52 @@
+From ead9f3a435084cb65752b90f817a9c2c33f632fd Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 18 Dec 2023 10:42:56 +0100
+Subject: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: get bus flags
+
+Get the bus flags from the connector to set the polarity of
+the input signal "Data Enable".
+
+Change-Id: I64ddbfe9c19acd3fafc4eb4267a90998a165a6f0
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+index 4b8f4e226583..4a80ca98053f 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+@@ -664,6 +664,21 @@ static void dw_mipi_dsi_dpi_config(struct dw_mipi_dsi *dsi,
+ 				   const struct drm_display_mode *mode)
+ {
+ 	u32 val = 0, color = 0;
++	struct drm_bridge *bridge = &dsi->bridge;
++	struct drm_encoder *encoder = bridge->encoder;
++	struct drm_connector_list_iter iter;
++	struct drm_connector *connector = NULL;
++	u32 bus_flags = 0;
++
++	/* Get the connector from encoder */
++	drm_connector_list_iter_begin(encoder->dev, &iter);
++	drm_for_each_connector_iter(connector, &iter)
++		if (connector->encoder == encoder)
++			break;
++	drm_connector_list_iter_end(&iter);
++
++	if (connector)
++		bus_flags = connector->display_info.bus_flags;
+ 
+ 	switch (dsi->format) {
+ 	case MIPI_DSI_FMT_RGB888:
+@@ -684,6 +699,8 @@ static void dw_mipi_dsi_dpi_config(struct dw_mipi_dsi *dsi,
+ 		val |= VSYNC_ACTIVE_LOW;
+ 	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+ 		val |= HSYNC_ACTIVE_LOW;
++	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
++		val |= DATAEN_ACTIVE_LOW;
+ 
+ 	dsi_write(dsi, DSI_DPI_VCID, DPI_VCID(dsi->channel));
+ 	dsi_write(dsi, DSI_DPI_COLOR_CODING, color);
+-- 
+2.39.5
+

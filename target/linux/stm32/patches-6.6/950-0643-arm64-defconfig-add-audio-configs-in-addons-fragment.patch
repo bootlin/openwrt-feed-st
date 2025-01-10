@@ -1,0 +1,51 @@
+From aa599feb090f01da385ab812d37f727532752bf4 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 22 Feb 2024 09:30:29 +0100
+Subject: [PATCH] arm64: defconfig: add audio configs in addons fragment
+
+Add Audio peripherals I2S, SAI, SPDIRX and wolfson audio codec WM8994
+config flags in addons fragment.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I97032bb64221090c02f1d7229fa48bfa245eb1f8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357322
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 7d6729a3c2b7..db214a9b37ee 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -7,6 +7,7 @@ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
++CONFIG_MFD_WM8994=m
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_PHY_STM32_USB2PHY=y
+@@ -15,10 +16,17 @@ CONFIG_PWM_STM32_LP=m
+ CONFIG_REGULATOR_ARM_SCMI=y
+ CONFIG_REMOTEPROC=y
+ CONFIG_RTC_DRV_STM32=y
++CONFIG_SND_SOC_STM32_I2S=m
++CONFIG_SND_SOC_STM32_MDF=m
++CONFIG_SND_SOC_STM32_SAI=m
++CONFIG_SND_SOC_STM32_SPDIFRX=m
++CONFIG_SND_SOC_WM8994=m
+ CONFIG_SPI_STM32=m
+ CONFIG_STM32_ADC=m
+ CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_DMA3=y
++CONFIG_STM32_MDF_ADC=m
++CONFIG_STM32_MDF_CORE=m
+ CONFIG_STM32_RPROC=y
+ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_TIMER_CNT=m
+-- 
+2.39.5
+

@@ -1,0 +1,32 @@
+From 519d10dc888ea15a7b3894af7f60ae9eacf041ea Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 5 Oct 2022 18:17:44 +0200
+Subject: [PATCH] remoteproc: stm32: Fix info message when pdds syscfg is not
+ found
+
+It is not a failure as the pdds sys config is optional.
+Change the message to reflect an information, not failure.
+
+Change-Id: I5f4f5bc2a09c3dddf07741596b033c09a5cda0bf
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/269209
+---
+ drivers/remoteproc/stm32_rproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 206e2f69380e..94639af535c5 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -913,7 +913,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+ 
+ 	err = stm32_rproc_get_syscon(np, "st,syscfg-pdds", &ddata->pdds);
+ 	if (err)
+-		dev_info(dev, "failed to get pdds\n");
++		dev_info(dev, "pdds sys config not defined\n");
+ 
+ 	*auto_boot = of_property_read_bool(np, "st,auto-boot");
+ 
+-- 
+2.39.5
+

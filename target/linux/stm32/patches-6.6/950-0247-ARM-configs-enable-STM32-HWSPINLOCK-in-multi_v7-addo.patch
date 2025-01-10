@@ -1,0 +1,32 @@
+From 7d7e78762d9f0a8aeace7d1e1075c9e1677cbd0f Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Wed, 16 Sep 2020 17:43:18 +0200
+Subject: [PATCH] ARM: configs: enable STM32 HWSPINLOCK in multi_v7 addons
+ fragment
+
+This patch adds fragments for the STM32 HSEM driver to multi_v7 addons.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/282561
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I00a84334733e0aead9647ceabaa77c7e211806d6
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 21d19a1ea704..86257440bf50 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -11,6 +11,8 @@ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+ CONFIG_GDB_SCRIPTS=y
+ CONFIG_HIGHMEM=y
++CONFIG_HWSPINLOCK=y
++CONFIG_HWSPINLOCK_STM32=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_JFFS2_FS=y
+-- 
+2.39.5
+

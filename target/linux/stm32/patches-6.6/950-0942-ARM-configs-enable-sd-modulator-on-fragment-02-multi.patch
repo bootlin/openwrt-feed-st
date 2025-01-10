@@ -1,0 +1,35 @@
+From c3dd6352658670900b83600dab489885bb286f10 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 25 Mar 2024 17:55:41 +0100
+Subject: [PATCH] ARM: configs: enable sd modulator on
+ fragment-02-multiv7_addons
+
+Enable SD modulator on multiv7 addons fragment to support DFSDM
+IIO use cases.
+
+Change-Id: I1692da0888fe39faceb65720748843030de229aa
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369119
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 0f1a88b6ef74..a0d67171494c 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -57,6 +57,7 @@ CONFIG_RPMSG_VIRTIO=y
+ CONFIG_SAMPLES=y
+ CONFIG_SAMPLE_RPMSG_CLIENT=m
+ CONFIG_SCHED_MC=y
++CONFIG_SD_ADC_MODULATOR=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+ CONFIG_STM32_IPCC=y
+-- 
+2.39.5
+

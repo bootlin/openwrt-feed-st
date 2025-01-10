@@ -1,0 +1,37 @@
+From 037afca98fe0bdc7f28cb79cde12d7096f688dc1 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 1 Feb 2023 17:05:48 +0100
+Subject: [PATCH] ARM: configs: enable Ethernet REALTEK Phy on
+ fragment-01-multiv7_cleanup
+
+Need to use Realtek PHY driver instead of GENERIC Phy driver by default
+If Generic Phy used, issue to retrieve IP address after suspend/resume
+
+Change-Id: I8c6c46ffa745e27f6ee43237f0b51d2fccd5a5d0
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369093
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+index 0dace0a1cd01..161be292536c 100644
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -238,7 +238,6 @@
+ # CONFIG_POWER_SUPPLY is not set
+ # CONFIG_PREEMPT_NONE is not set
+ # CONFIG_PWM_ATMEL_TCB is not set
+-# CONFIG_REALTEK_PHY is not set
+ # CONFIG_REGULATOR_WM8994 is not set
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_SERIAL_8250 is not set
+-- 
+2.39.5
+

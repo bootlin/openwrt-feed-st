@@ -1,0 +1,66 @@
+From 3fb6646ec017d21d4734470524868447882b1171 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:18:41 +0200
+Subject: [PATCH] ARM: dts: stm32: MP13X move to nvmem layout description
+
+Legacy description is not any more supported by st,stm32mp15-tamp-nvram
+driver
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: I99838bc26ca11f3bcbf70361fbf94867a211eb2a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397667
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 29 +++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 2d86424c5aae..ea975ae06e2f 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1813,21 +1813,24 @@ tamp: tamp@5c00a000 {
+ 
+ 			nvram: nvram@5c00a100 {
+ 				compatible = "st,stm32mp15-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+ 				reg = <0x5c00a100 0x80>;
+ 
+-				saes_secret_key: tamp-bkp@0 {
+-					/* see saes secret key feature */
+-					reg = <0x0 0x20>;
+-				};
+-				boot_mode: tamp-bkp@78 {
+-					/* see boot mode selection feature */
+-					reg = <0x78 0x4>;
+-				};
+-				boot_counter: tamp-bkp@7c {
+-					/* see boot counter feature */
+-					reg = <0x7c 0x4>;
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					saes_secret_key: tamp-bkp@0 {
++						/* see saes secret key feature */
++						reg = <0x0 0x20>;
++					};
++					boot_mode: tamp-bkp@78 {
++						/* see boot mode selection feature */
++						reg = <0x78 0x4>;
++					};
++					boot_counter: tamp-bkp@7c {
++						/* see boot counter feature */
++						reg = <0x7c 0x4>;
++					};
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

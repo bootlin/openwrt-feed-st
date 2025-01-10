@@ -1,0 +1,65 @@
+From 0e1c701ea761cc8fa7d624bc50c17308df20e6bb Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Fri, 18 Nov 2022 15:10:01 +0100
+Subject: [PATCH] arm64: dts: st: Enable PCIe RC on the stm32mp257f-ev1 board
+
+Enable PCIe and the ComboPHY with external pad clock on eval board.
+Use GPIO PJ8 wired to the mini-pcie connector to release PERSTN#
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Idd2deb4ab743bd9ec686c6ce31598d47f6dd5ec3
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index d555add34dfa..29ea8abc98df 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -28,6 +28,14 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	clocks {
++		pad_clk: pad-clk {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++		};
++	};
++
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+@@ -39,6 +47,13 @@ &arm_wdt {
+ 	status = "okay";
+ };
+ 
++&combophy {
++	clocks = <&rcc CK_BUS_USB3PCIEPHY>, <&rcc CK_KER_USB3PCIEPHY>, <&pad_clk>;
++	clock-names = "apb-clk", "ker-clk", "pad-clk";
++	st,rx_equalizer = <1>;
++	status = "okay";
++};
++
+ &eth1 {
+ 	status = "disabled";
+ 	pinctrl-0 = <&eth1_mdio_pins_a>;
+@@ -125,6 +140,14 @@ &i2c2 {
+ 	/delete-property/dma-names;
+ };
+ 
++&pcie_rc {
++	pinctrl-names = "default", "init";
++	pinctrl-0 = <&pcie_pins_a>;
++	pinctrl-1 = <&pcie_init_pins_a>;
++	reset-gpios = <&gpioj 8 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
++
+ &rtc {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

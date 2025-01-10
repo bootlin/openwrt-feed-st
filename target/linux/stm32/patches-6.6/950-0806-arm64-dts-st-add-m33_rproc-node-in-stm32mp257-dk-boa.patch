@@ -1,0 +1,49 @@
+From e173764c602596d89f5cbed05c47ecf09bc5146c Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 11:41:54 +0100
+Subject: [PATCH] arm64: dts: st: add m33_rproc node in stm32mp257-dk board
+
+Add m33_rproc node in stm32mp257-dk board.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Idcfedf0186444653b31bfb94debb30698eea7537
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index e20a5e17eebc..31de85df14b9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -129,6 +129,10 @@ wifi_pwrseq: wifi-pwrseq {
+ 	};
+ };
+ 
++&a35ss_syscfg {
++	status = "okay";
++};
++
+ &arm_wdt {
+ 	timeout-sec = <32>;
+ 	status = "okay";
+@@ -366,6 +370,16 @@ lvds_out0: endpoint {
+ 	};
+ };
+ 
++&m33_rproc {
++	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
++	mbox-names = "vq0", "vq1", "shutdown";
++	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
++			<&ipc_shmem_1>, <&vdev0vring0>,
++			<&vdev0vring1>, <&vdev0buffer>;
++	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
++	status = "okay";
++};
++
+ &mlahb {
+ 	intc_rpmsg: interrupt-controller@1 {
+ 		compatible = "rpmsg,intc";
+-- 
+2.39.5
+

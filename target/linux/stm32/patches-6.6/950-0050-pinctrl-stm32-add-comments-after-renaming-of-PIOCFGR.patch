@@ -1,0 +1,51 @@
+From 0ac11b02b7576177f7749d552d246d0dd1db17d5 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 12 Sep 2023 18:04:11 +0200
+Subject: [PATCH] pinctrl: stm32: add comments after renaming of PIOCFGR
+ register [MP25_REVA]
+
+PIOCFGR has been renamed to ADVCFGR. Keep a log of this in comments during
+MP25 cut1.x (short) life time.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I1d0326934fc6f64051b50ddb3d4f35629eb36957
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 619ec3609be0..72fb5b64d923 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -50,13 +50,18 @@
+ #define STM32_GPIO_AFRH		0x24
+ #define STM32_GPIO_SECCFGR	0x30
+ #define STM32_GPIO_DELAYRL	0x40
++/* MP25 RevA: STM32_GPIO_PIOCFGR */
+ #define STM32_GPIO_ADVCFGRL	0x48
+ #define STM32_GPIO_CIDCFGR(x)	(0x50 + (0x8 * (x)))
+ #define STM32_GPIO_SEMCR(x)	(0x54 + (0x8 * (x)))
+ 
++/* MP25 RevA: STM32_GPIO_PIOCFGR_CFG[0]_POS */
+ #define STM32_GPIO_ADVCFGR_DLYPATH_POS		0
++/* MP25 RevA: STM32_GPIO_PIOCFGR_CFG[1]_POS */
+ #define STM32_GPIO_ADVCFGR_DE_POS		1
++/* MP25 RevA: STM32_GPIO_PIOCFGR_CFG[2]_POS */
+ #define STM32_GPIO_ADVCFGR_INVCLK_POS		2
++/* MP25 RevA: STM32_GPIO_PIOCFGR_CFG[3]_POS */
+ #define STM32_GPIO_ADVCFGR_RET_POS		3
+ 
+ #define STM32_GPIO_CIDCFGR_CFEN		BIT(0)
+@@ -78,7 +83,9 @@
+ #define STM32_GPIO_BKP_PUPD_MASK	GENMASK(9, 8)
+ #define STM32_GPIO_BKP_TYPE		10
+ #define STM32_GPIO_BKP_VAL		11
++/* MP25 RevA: STM32_GPIO_BKP_PIOCFG_SHIFT */
+ #define STM32_GPIO_BKP_ADVCFG_SHIFT	12
++/* MP25 RevA: STM32_GPIO_BKP_PIOCFG_MASK */
+ #define STM32_GPIO_BKP_ADVCFG_MASK	GENMASK(15, 12)
+ #define STM32_GPIO_BKP_DELAY_SHIFT	16
+ #define STM32_GPIO_BKP_DELAY_MASK	GENMASK(19, 16)
+-- 
+2.39.5
+

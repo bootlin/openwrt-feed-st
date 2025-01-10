@@ -1,0 +1,72 @@
+From 629702d057c54eee237479c15ea594ad7d788e60 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 30 Sep 2024 14:25:57 +0200
+Subject: [PATCH] media: dcmipp: statcap: average stat capture requires 2
+ frames to start
+
+Correct the state machine in case of capture with the average profile.
+Indeed, since shadow registers are set within the COLD_START step,
+it requires 2 VSYNC before being able to read valid average stats from
+the accumulators.  For that purpose, add an extra step to wait for valid
+accumulator values.
+
+This adds an extra VSYNC delay only at startup and prevent capturing
+corrupted average data right after startup of the capture.
+
+Change-Id: Ic854297a8192fe53b2745802ada0cfb4f6d8dc1d
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407888
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c  | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index a8399f21eb94..d6899acba7a7 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -72,7 +72,8 @@ enum stat_capture_state {
+ 	PHY_BIN_2_SHA_BIN_3,	/* Shadow: BIN_3, Physical: BIN_2 */
+ 	PHY_BIN_3_SHA_AV_RGB,	/* Shadow: AVERAGE (RGB), Physical: BIN_3 */
+ 	/* Average pre-post profile */
+-	PHY_AV_RGB_SHA_AV_RGB,	/* Shadow: AVERAGE (RGB), Physical: AVERAGE (RGB) */
++	PHY_AV_RGB,	/* Shadow: AVERAGE (RGB), Physical: AVERAGE (RGB) */
++	AV_READ,	/* Capturing AVERAGE / Accumulators with valid AVERAGE */
+ };
+ 
+ enum component {
+@@ -755,10 +756,13 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 			avr_bins->bins[i + 6] = reg_read(vcap, DCMIPP_P1STXSR(i));
+ 		break;
+ 
+-	case PHY_AV_RGB_SHA_AV_RGB:
++	case AV_READ:
+ 		/* State used for the AVERAGE PRE capture mode */
+ 		dcmipp_statcap_read_avg_stats(vcap);
+ 		break;
++
++	default:
++		break;
+ 	}
+ 
+ 	/* If a full capture cycle has been done, output data to a buffer */
+@@ -782,7 +786,9 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	case V4L2_STAT_PROFILE_AVERAGE_PRE:
+ 	case V4L2_STAT_PROFILE_AVERAGE_POST:
+ 		if (vcap->capture_state == COLD_START) {
+-			vcap->capture_state = PHY_AV_RGB_SHA_AV_RGB;
++			vcap->capture_state = PHY_AV_RGB;
++		} else if (vcap->capture_state == PHY_AV_RGB) {
++			vcap->capture_state = AV_READ;
+ 			vcap->stat_ready = true;
+ 		}
+ 		break;
+-- 
+2.39.5
+

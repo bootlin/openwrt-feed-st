@@ -1,0 +1,123 @@
+From ebbef3856a0c2052edfb436d26e6758432bf4b4b Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 29 Nov 2022 09:32:35 +0100
+Subject: [PATCH] ARM: dts: stm32: deactivate the PWR regulator on SCMI for
+ STM32MP15
+
+The SCMI PWR regulator is only available for STM32MP13x
+This reverts the commit:
+Revert "ARM: dts: stm32: fix pwr regulators references to use scmi"
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I52350b5d4a4c7ee37c7895647a0cc0c1300b57b9
+---
+ arch/arm/boot/dts/st/stm32mp15-scmi.dtsi      | 50 -------------------
+ .../arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi |  1 -
+ .../arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi |  1 -
+ .../arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi |  1 -
+ 4 files changed, 53 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+index dc3b09f2f2af..42c52f91c441 100644
+--- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+@@ -26,60 +26,10 @@ scmi_reset: protocol@16 {
+ 				reg = <0x16>;
+ 				#reset-cells = <1>;
+ 			};
+-
+-			scmi_voltd: protocol@17 {
+-				reg = <0x17>;
+-
+-				scmi_reguls: regulators {
+-					#address-cells = <1>;
+-					#size-cells = <0>;
+-
+-					scmi_reg11: regulator@0 {
+-						reg = <0>;
+-						regulator-name = "reg11";
+-						regulator-min-microvolt = <1100000>;
+-						regulator-max-microvolt = <1100000>;
+-					};
+-
+-					scmi_reg18: regulator@1 {
+-						reg = <1>;
+-						regulator-name = "reg18";
+-						regulator-min-microvolt = <1800000>;
+-						regulator-max-microvolt = <1800000>;
+-					};
+-
+-					scmi_usb33: regulator@2 {
+-						reg = <2>;
+-						regulator-name = "usb33";
+-						regulator-min-microvolt = <3300000>;
+-						regulator-max-microvolt = <3300000>;
+-					};
+-				};
+-			};
+ 		};
+ 	};
+ };
+ 
+-&reg11 {
+-	status = "disabled";
+-};
+-
+-&reg18 {
+-	status = "disabled";
+-};
+-
+-&usb33 {
+-	status = "disabled";
+-};
+-
+-&usbotg_hs {
+-	usb33d-supply = <&scmi_usb33>;
+-};
+-
+-&usbphyc {
+-	vdda1v1-supply = <&scmi_reg11>;
+-	vdda1v8-supply = <&scmi_reg18>;
+-};
+ 
+ /delete-node/ &clk_hse;
+ /delete-node/ &clk_hsi;
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
+index 8bd2540f63ee..7c95ff580692 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
+@@ -22,7 +22,6 @@ &cpu1 {
+ };
+ 
+ &dsi {
+-	phy-dsi-supply = <&scmi_reg18>;
+ 	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
+index 6069c5067114..d7c9193f8cbd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
+@@ -29,7 +29,6 @@ &cryp1 {
+ };
+ 
+ &dsi {
+-	phy-dsi-supply = <&scmi_reg18>;
+ 	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
+index 6cd714b9f4fc..3aafb366728a 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
+@@ -27,7 +27,6 @@ &cryp1 {
+ };
+ 
+ &dsi {
+-	phy-dsi-supply = <&scmi_reg18>;
+ 	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
+ };
+ 
+-- 
+2.39.5
+

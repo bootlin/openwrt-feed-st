@@ -1,0 +1,52 @@
+From 1690a4f47fca36d3afed92d035c59e3778b70953 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Fri, 24 May 2024 14:42:17 +0530
+Subject: [PATCH] arm64: dts: st: add otg support on stm32mp21
+
+Update device-tree stm32mp211.dtsi to add otg features.
+
+Change-Id: Iaf8f12516e01f7cb46bc5e8692c74d0dc76265c4
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381995
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index d5ebe0b3745c..e4c125cfbd9e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1660,6 +1660,26 @@ usbh_ehci: usb@482f0000 {
+ 					phy-names = "usb";
+ 				};
+ 			};
++
++			usbotg_hs: usb@48300000 {
++				compatible = "st,stm32mp21-hsotg", "snps,dwc2";
++				reg = <0x48300000 0x10000>;
++				clocks = <&rcc CK_BUS_OTG>;
++				clock-names = "otg";
++				resets = <&rcc OTG_R>;
++				reset-names = "dwc2";
++				interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
++				access-controllers = <&rifsc 66>;
++				g-rx-fifo-size = <1024>;
++				g-np-tx-fifo-size = <64>;
++				g-tx-fifo-size = <512 16 16 16 16 16 16 16>;
++				dr_mode = "otg";
++				otg-rev = <0x200>;
++				phys = <&usb2_phy2>;
++				phy-names = "usb2-phy";
++				st,syscfg = <&syscfg 0x2824>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		hdp: pinctrl@44090000 {
+-- 
+2.39.5
+

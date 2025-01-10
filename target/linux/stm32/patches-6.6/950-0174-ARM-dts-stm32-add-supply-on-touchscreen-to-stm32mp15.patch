@@ -1,0 +1,29 @@
+From a5863e7cb7990d599e276c52c4e1019210636ae0 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 8 Dec 2022 18:23:18 +0100
+Subject: [PATCH] ARM: dts: stm32: add supply on touchscreen to stm32mp157f-dk2
+
+Add vcc & io-vcc supply to touchscreen node to stm32mp157f-dk2 device-tree.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: Ida5799130fc3ba85799282eb1039b5832da22465
+---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index 677505a8f580..03a8f98b00cb 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -69,6 +69,8 @@ touchscreen@38 {
+ 		interrupt-controller;
+ 		touchscreen-size-x = <480>;
+ 		touchscreen-size-y = <800>;
++		vcc-supply = <&v3v3>;
++		iovcc-supply = <&v3v3>;
+ 		status = "okay";
+ 	};
+ };
+-- 
+2.39.5
+

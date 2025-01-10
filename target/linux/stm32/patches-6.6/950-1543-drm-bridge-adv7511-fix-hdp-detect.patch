@@ -1,0 +1,35 @@
+From 78fd6f2b9ffa218512eddf6f31055b79ee74ba7a Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 14 Oct 2024 13:05:22 +0200
+Subject: [PATCH] drm: bridge: adv7511: fix hdp detect
+
+Detection function returned a wrong status of HDMI connector after
+a power off/on sequence. To solve issue removed some lines which
+return a status disconnected instead of connected.
+
+Change-Id: I36e264358dac2963e05cf51e24fad5d92f4ce34d
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411131
+Tested-by: Florian LEPELTIER <florian.lepeltier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index 64292d33b859..2514dc738d97 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -678,8 +678,6 @@ adv7511_detect(struct adv7511 *adv7511, struct drm_connector *connector)
+ 		adv7511_power_on(adv7511);
+ 		if (connector)
+ 			adv7511_get_modes(adv7511, connector);
+-		if (adv7511->status == connector_status_connected)
+-			status = connector_status_disconnected;
+ 	} else {
+ 		/* Renable HPD sensing */
+ 		if (adv7511->type == ADV7535)
+-- 
+2.39.5
+

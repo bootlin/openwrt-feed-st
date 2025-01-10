@@ -1,0 +1,114 @@
+From 2d866d07ccab0f81437cbbc6f6218e85ffbadcdb Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Mon, 3 Apr 2023 12:42:42 +0200
+Subject: [PATCH] firmware: arm_scmi: optee: ocall2 support for msg channel
+
+Implements Ocall2 sequence for MSG SCMI channels. An MSG SCMI channel is
+an SCMI channel using OP-TEE native shared memory. Agent (Linux)
+passes the SCMI shm reference when invoking SCMI PTA to create an Ocall2
+threaded context (PTA command PTA_SCMI_CMD_OCALL2_MSG_THREAD) instead
+of using a statically allocated and mapped IOMEM shred memory buffer.
+
+Change-Id: I15bf552b7fccac146c92066ac7443edd52f1716a
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357081
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/firmware/arm_scmi/optee.c | 48 ++++++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+index 92ccb5604b07..489e86748432 100644
+--- a/drivers/firmware/arm_scmi/optee.c
++++ b/drivers/firmware/arm_scmi/optee.c
+@@ -207,6 +207,11 @@ enum scmi_optee_ocall_reply {
+ 	 * issue Ocall command PTA_SCMI_OCALL_CMD_THREAD_READY again.
+ 	 */
+ 	PTA_SCMI_OCALL_PROCESS_SMT_MESSAGE = 2,
++	/*
++	 * On return of Ocall, SCMI PTA shall process channel's MSG SCMI message
++	 * and issue Ocall command PTA_SCMI_OCALL_CMD_THREAD_READY again.
++	 */
++	PTA_SCMI_OCALL_PROCESS_MSG = 3,
+ };
+ 
+ /*
+@@ -589,26 +594,43 @@ static int close_ocall_thread(struct scmi_optee_channel *channel)
+ 	return ret;
+ }
+ 
+-static int invoke_ocall_thread(struct scmi_optee_channel *channel,
+-			       size_t msg_size)
++static int invoke_ocall_thread(struct scmi_optee_channel *channel)
++{
++	if (!invoke_optee_ocall(channel) && ocall_thread_is_ready(channel))
++		return 0;
++
++	if (return_is_ocall(channel->ocall_ctx))
++		abort_ocall(channel);
++
++	free_ocall_ctx(channel);
++
++	return -EPROTO;
++}
++
++static int invoke_ocall_msg_thread(struct scmi_optee_channel *channel,
++				   size_t msg_size)
+ {
+ 	struct ocall_ctx *ocall_ctx = channel->ocall_ctx;
+ 	int ret;
+ 
+-	ocall_ctx->ocall_arg.out_param1 = PTA_SCMI_OCALL_PROCESS_SMT_MESSAGE;
++	ocall_ctx->ocall_arg.out_param1 = PTA_SCMI_OCALL_PROCESS_MSG;
+ 	ocall_ctx->ocall_arg.out_param2 = msg_size;
+ 
+-	ret = invoke_optee_ocall(channel);
++	ret = invoke_ocall_thread(channel);
++	if (!ret)
++		channel->rx_len = ocall_ctx->ocall_arg.in_param2;
+ 
+-	if (!ret && ocall_thread_is_ready(channel))
+-		return 0;
++	return ret;
++}
+ 
+-	if (return_is_ocall(channel->ocall_ctx))
+-		abort_ocall(channel);
++static int invoke_ocall_smt_thread(struct scmi_optee_channel *channel)
++{
++	struct ocall_ctx *ocall_ctx = channel->ocall_ctx;
+ 
+-	free_ocall_ctx(channel);
++	ocall_ctx->ocall_arg.out_param1 = PTA_SCMI_OCALL_PROCESS_SMT_MESSAGE;
++	ocall_ctx->ocall_arg.out_param2 = 0;
+ 
+-	return -EPROTO;
++	return invoke_ocall_thread(channel);
+ }
+ 
+ static int invoke_process_smt_channel(struct scmi_optee_channel *channel)
+@@ -872,8 +894,8 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
+ 		msg_tx_prepare(channel->req.msg, xfer);
+ 
+ 		if (channel->ocall_ctx)
+-			ret = invoke_ocall_thread(channel,
+-						  msg_command_size(xfer));
++			ret = invoke_ocall_msg_thread(channel,
++						      msg_command_size(xfer));
+ 		else
+ 			ret = invoke_process_msg_channel(channel,
+ 							 msg_command_size(xfer));
+@@ -881,7 +903,7 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
+ 		shmem_tx_prepare(channel->req.shmem, xfer, cinfo);
+ 
+ 		if (channel->ocall_ctx)
+-			ret = invoke_ocall_thread(channel, 0);
++			ret = invoke_ocall_smt_thread(channel);
+ 		else
+ 			ret = invoke_process_smt_channel(channel);
+ 	}
+-- 
+2.39.5
+

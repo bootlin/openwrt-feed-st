@@ -1,0 +1,130 @@
+From 71c3ff70446befd952b177074dcc7589f29d888c Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 4 Jan 2024 16:23:55 +0100
+Subject: [PATCH] remoteproc: stm32_rproc: Do not convert resource table
+ address
+
+The remoteproc driver may not have information about the DA to PA
+conversion for the resource table address. It is more reliable to
+obtain the physical address from the TAMP register in case of attachment.
+This also simplifies the code by removing the stm32_rproc_da_to_pa
+function.
+
+Change-Id: I41b9b6dc4fc38911cd717aa9a9732cfbca7dcdb0
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/349036
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 48 ++++----------------------------
+ 1 file changed, 6 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index a623cda98473..3f3a604d30e1 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -778,32 +778,6 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+ 	}
+ }
+ 
+-static int stm32_rproc_da_to_pa(struct rproc *rproc,
+-				u64 da, phys_addr_t *pa)
+-{
+-	struct stm32_rproc *ddata = rproc->priv;
+-	struct device *dev = rproc->dev.parent;
+-	struct stm32_rproc_mem *p_mem;
+-	unsigned int i;
+-
+-	for (i = 0; i < ddata->nb_rmems; i++) {
+-		p_mem = &ddata->rmems[i];
+-
+-		if (da < p_mem->dev_addr ||
+-		    da >= p_mem->dev_addr + p_mem->size)
+-			continue;
+-
+-		*pa = da - p_mem->dev_addr + p_mem->bus_addr;
+-		dev_dbg(dev, "da %llx to pa %pap\n", da, pa);
+-
+-		return 0;
+-	}
+-
+-	dev_err(dev, "can't translate da %llx\n", da);
+-
+-	return -EINVAL;
+-}
+-
+ static struct resource_table *
+ stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
+ {
+@@ -845,8 +819,7 @@ static int stm32_rproc_get_m4_info(struct rproc *rproc)
+ {
+ 	struct stm32_rproc *ddata = rproc->priv;
+ 	struct device *dev = rproc->dev.parent;
+-	phys_addr_t rsc_pa;
+-	u32 rsc_da;
++	u32 rsc_pa;
+ 	unsigned int state;
+ 	int ret;
+ 
+@@ -869,20 +842,16 @@ static int stm32_rproc_get_m4_info(struct rproc *rproc)
+ 	rproc->state = RPROC_DETACHED;
+ 
+ 	/* Get the resource table information */
+-	ret = regmap_read(ddata->rsctbl.map, ddata->rsctbl.reg, &rsc_da);
++	ret = regmap_read(ddata->rsctbl.map, ddata->rsctbl.reg, &rsc_pa);
+ 	if (ret) {
+ 		dev_err(dev, "failed to read rsc tbl addr\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!rsc_da)
++	if (!rsc_pa)
+ 		/* no rsc table */
+ 		return 0;
+ 
+-	ret = stm32_rproc_da_to_pa(rproc, rsc_da, &rsc_pa);
+-	if (ret)
+-		return ret;
+-
+ 	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
+ 	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
+ 		dev_err(dev, "Unable to map memory region: %pa+%x\n", &rsc_pa, RSC_TBL_SIZE);
+@@ -905,8 +874,7 @@ static int stm32_rproc_get_m33_info(struct rproc *rproc)
+ 	struct stm32_rproc *ddata = rproc->priv;
+ 	struct device *dev = rproc->dev.parent;
+ 	unsigned int cm_state;
+-	phys_addr_t rsc_pa;
+-	u32 rsc_da;
++	u32 rsc_pa;
+ 	u32 size;
+ 	int ret;
+ 
+@@ -936,20 +904,16 @@ static int stm32_rproc_get_m33_info(struct rproc *rproc)
+ 	}
+ 
+ 	/* Get the resource table information */
+-	ret = nvmem_cell_read_u32(dev, "rsc-tbl-addr", &rsc_da);
++	ret = nvmem_cell_read_u32(dev, "rsc-tbl-addr", &rsc_pa);
+ 	if (ret) {
+ 		dev_err(dev, "failed to read rsc tbl addr\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!rsc_da)
++	if (!rsc_pa)
+ 		/* no rsc table */
+ 		return 0;
+ 
+-	ret = stm32_rproc_da_to_pa(rproc, rsc_da, &rsc_pa);
+-	if (ret)
+-		return ret;
+-
+ 	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
+ 	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
+ 		dev_err(dev, "Unable to map memory region: %pa+%x\n", &rsc_pa, RSC_TBL_SIZE);
+-- 
+2.39.5
+

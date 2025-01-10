@@ -1,0 +1,36 @@
+From a45705d4f6cd744b6d6d87c81e013a68c6a89c6e Mon Sep 17 00:00:00 2001
+From: Nicolas Le Bayon <nicolas.le.bayon@st.com>
+Date: Wed, 6 Mar 2024 17:14:51 +0100
+Subject: [PATCH] arm64: dts: st: add optee interrupt properties in stm32mp211
+ SoC file
+
+Add optee node interrupt properties for this SoC family.
+
+Signed-off-by: Nicolas Le Bayon <nicolas.le.bayon@st.com>
+Change-Id: I659d9745151a2a3eb24ab8d8103205d6d713bd8e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364951
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 72eac470d31c..bdb85f9cc573 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -35,6 +35,10 @@ firmware {
+ 		optee {
+ 			compatible = "linaro,optee-tz";
+ 			method = "smc";
++			interrupt-parent = <&intc>;
++			interrupts = <GIC_PPI 15 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
++			interrupt-controller;
++			#interrupt-cells = <1>;
+ 		};
+ 
+ 		scmi: scmi {
+-- 
+2.39.5
+

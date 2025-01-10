@@ -1,0 +1,88 @@
+From 7675339865788af558a3fd5d811a6b67913cdee5 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Mon, 17 Jun 2024 19:21:53 +0200
+Subject: [PATCH] irqchip: stm32mp-exti1: Add support of pm runtime
+
+Activate pm_runtime for exti driver to serve IRQ; when IMR is configured
+the associated power domain can be switched OFF.
+This patch avoids to stop the RETENTION domain when EXTI1 is used for
+CPUIdle mode with PSCI OS initiated on STM32MP25 SoC, because in
+LPLV-Stop1 the EXTI1 device is not functional.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I066ba1bd1ec1d02c413da5b8f5b610f66603fe8d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393891
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 5d420a22bca7..c060f922491a 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -19,6 +19,7 @@
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+@@ -301,6 +302,9 @@ static void stm32mp_chip_resume(struct stm32mp_exti_chip_data *chip_data,
+ 	writel_relaxed(chip_data->ftsr_cache, base + bank->ftsr_ofst);
+ 
+ 	writel_relaxed(mask_cache, base + bank->imr_ofst);
++
++	if (mask_cache)
++		pm_runtime_get(chip_data->host_data->dev);
+ }
+ 
+ /* directly set the target bit without reading first. */
+@@ -349,6 +353,10 @@ static void stm32mp_exti_eoi(struct irq_data *d)
+ 	stm32mp_exti_write_bit(d, bank->rpr_ofst);
+ 	stm32mp_exti_write_bit(d, bank->fpr_ofst);
+ 
++	/* power domain is ON when IMR change from 0 */
++	if (!chip_data->mask_cache)
++		pm_runtime_get(chip_data->host_data->dev);
++
+ 	chip_data->mask_cache = stm32mp_exti_set_bit(d, bank->imr_ofst);
+ 
+ 	raw_spin_unlock(&chip_data->rlock);
+@@ -363,6 +371,11 @@ static void stm32mp_exti_mask(struct irq_data *d)
+ 
+ 	raw_spin_lock(&chip_data->rlock);
+ 	chip_data->mask_cache = stm32mp_exti_clr_bit(d, bank->imr_ofst);
++
++	/* power domain is OFF when IMR becomes 0 */
++	if (!chip_data->mask_cache)
++		pm_runtime_put(chip_data->host_data->dev);
++
+ 	raw_spin_unlock(&chip_data->rlock);
+ 
+ 	irq_chip_mask_parent(d);
+@@ -374,6 +387,11 @@ static void stm32mp_exti_unmask(struct irq_data *d)
+ 	const struct stm32mp_exti_bank *bank = chip_data->reg_bank;
+ 
+ 	raw_spin_lock(&chip_data->rlock);
++
++	/* power domain is ON when IMR change from 0 */
++	if (!chip_data->mask_cache)
++		pm_runtime_get(chip_data->host_data->dev);
++
+ 	chip_data->mask_cache = stm32mp_exti_set_bit(d, bank->imr_ofst);
+ 	raw_spin_unlock(&chip_data->rlock);
+ 
+@@ -942,6 +960,8 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
+ 
++	devm_pm_runtime_enable(dev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.5
+

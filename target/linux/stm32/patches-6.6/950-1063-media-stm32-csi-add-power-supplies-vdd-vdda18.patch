@@ -1,0 +1,92 @@
+From 228cceab89ab27fba1303793103befaf8187dde3 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 18 Oct 2023 13:55:21 +0200
+Subject: [PATCH] media: stm32: csi: add power supplies vdd & vdda18
+
+This patch enables power supplies vdd & vdda18.
+
+Change-Id: Ibd13c6d22d6a9f636830f7f524e8b5c49d4462fa
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364814
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-csi.c | 24 ++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-csi.c b/drivers/media/platform/st/stm32/stm32-csi.c
+index b5bd85018e2e..13ea4d463e00 100644
+--- a/drivers/media/platform/st/stm32/stm32-csi.c
++++ b/drivers/media/platform/st/stm32/stm32-csi.c
+@@ -174,6 +174,7 @@ struct stm32_csi_dev {
+ 	struct clk			*pclk;
+ 	struct clk			*txesc;
+ 	struct clk			*csi2phy;
++	struct regulator_bulk_data	supplies[2];
+ 	struct reset_control		*rstc;
+ 
+ 	u8				lanes[STM32_CSI_LANES_MAX];
+@@ -919,6 +920,14 @@ static int stm32_csi_get_resources(struct stm32_csi_dev *csi2priv,
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(csi2priv->rstc),
+ 				     "Couldn't get reset control\n");
+ 
++	csi2priv->supplies[0].supply = "vdd";
++	csi2priv->supplies[1].supply = "vdda18";
++	ret = devm_regulator_bulk_get(&pdev->dev, ARRAY_SIZE(csi2priv->supplies),
++				      csi2priv->supplies);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "Failed to request regulator vdd\n");
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq <= 0)
+ 		return irq ? irq : -ENXIO;
+@@ -1083,11 +1092,16 @@ static void stm32_csi_remove(struct platform_device *pdev)
+ static int stm32_csi_runtime_suspend(struct device *dev)
+ {
+ 	struct stm32_csi_dev *csi2priv = dev_get_drvdata(dev);
++	int ret;
+ 
+ 	clk_disable_unprepare(csi2priv->csi2phy);
+ 	clk_disable_unprepare(csi2priv->txesc);
+ 	clk_disable_unprepare(csi2priv->pclk);
+ 
++	ret = regulator_bulk_disable(ARRAY_SIZE(csi2priv->supplies), csi2priv->supplies);
++	if (ret < 0)
++		dev_err(dev, "cannot disable regulators %d\n", ret);
++
+ 	return 0;
+ }
+ 
+@@ -1096,10 +1110,14 @@ static int stm32_csi_runtime_resume(struct device *dev)
+ 	struct stm32_csi_dev *csi2priv = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(csi2priv->pclk);
++	ret = regulator_bulk_enable(ARRAY_SIZE(csi2priv->supplies), csi2priv->supplies);
+ 	if (ret)
+ 		goto error_out;
+ 
++	ret = clk_prepare_enable(csi2priv->pclk);
++	if (ret)
++		goto error_disable_supplies;
++
+ 	ret = clk_prepare_enable(csi2priv->txesc);
+ 	if (ret)
+ 		goto error_disable_pclk;
+@@ -1114,6 +1132,10 @@ static int stm32_csi_runtime_resume(struct device *dev)
+ 	clk_disable_unprepare(csi2priv->txesc);
+ error_disable_pclk:
+ 	clk_disable_unprepare(csi2priv->pclk);
++error_disable_supplies:
++	ret = regulator_bulk_disable(ARRAY_SIZE(csi2priv->supplies), csi2priv->supplies);
++	if (ret < 0)
++		dev_err(dev, "cannot disable regulators %d\n", ret);
+ error_out:
+ 	dev_err(csi2priv->dev, "Failed to resume: %d\n", ret);
+ 
+-- 
+2.39.5
+

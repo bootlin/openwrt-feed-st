@@ -1,0 +1,77 @@
+From 2058791f1086eeb6cfe403558cf2b99b41834356 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 10 Apr 2024 17:01:40 +0200
+Subject: [PATCH] arm64: dts: st: add power-domain property to SPI nodes on
+ stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Update device-tree stm32mp211.dtsi to add SPI power-domain features.
+
+Change-Id: I28c253d15f29dcd56984d21f8d3b7e8c3c83e044
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372797
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index a1a577314703..8d4e88e35654 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -229,6 +229,7 @@ spi2: spi@400b0000 {
+ 				       <&hpdma 35 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 23>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -244,6 +245,7 @@ spi3: spi@400c0000 {
+ 				       <&hpdma 37 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 24>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -356,6 +358,7 @@ spi1: spi@40230000 {
+ 				       <&hpdma 33 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 22>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -371,6 +374,7 @@ spi4: spi@40240000 {
+ 				       <&hpdma 39 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 25>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -386,6 +390,7 @@ spi5: spi@40280000 {
+ 				       <&hpdma 41 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 26>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -434,6 +439,7 @@ spi6: spi@46020000 {
+ 				       <&hpdma 43 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 27>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.39.5
+

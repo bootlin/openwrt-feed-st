@@ -1,0 +1,49 @@
+From 448792ae045fcf9340e023a4b9f82db4c2f8a077 Mon Sep 17 00:00:00 2001
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Date: Mon, 11 Dec 2023 18:29:45 +0530
+Subject: [PATCH] media: i2c: imx335: Improve configuration error reporting
+
+The existing imx335_parse_hw_config function has two paths
+that can be taken without reporting to the user the reason
+for failing to accept the hardware configuration.
+
+Extend the error reporting paths to identify failures when
+probing the device.
+
+Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+(cherry picked from commit 1af87779e9f7dcdd4f219b355ae090ca18028540)
+---
+ drivers/media/i2c/imx335.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+index 5edab910a723..d5646749687a 100644
+--- a/drivers/media/i2c/imx335.c
++++ b/drivers/media/i2c/imx335.c
+@@ -804,8 +804,10 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+ 	}
+ 
+ 	ep = fwnode_graph_get_next_endpoint(fwnode, NULL);
+-	if (!ep)
++	if (!ep) {
++		dev_err(imx335->dev, "Failed to get next endpoint\n");
+ 		return -ENXIO;
++	}
+ 
+ 	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+ 	fwnode_handle_put(ep);
+@@ -830,6 +832,8 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+ 		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
+ 			goto done_endpoint_free;
+ 
++	dev_err(imx335->dev, "no compatible link frequencies found\n");
++
+ 	ret = -EINVAL;
+ 
+ done_endpoint_free:
+-- 
+2.39.5
+

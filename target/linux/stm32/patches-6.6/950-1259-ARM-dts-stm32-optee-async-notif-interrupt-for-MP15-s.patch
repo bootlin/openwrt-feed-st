@@ -1,0 +1,44 @@
+From 1d9b7d7a4835e0bfe8e78f9b6a065860f263ca3f Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Thu, 6 Jun 2024 13:37:04 +0200
+Subject: [PATCH] ARM: dts: stm32: optee async notif interrupt for MP15 scmi
+ variants
+
+Define the interrupt used by OP-TEE async notif on stm32mp15 scmi based
+platforms.
+
+Change-Id: Ibd08267dd3ce654d5b9b4d2bc77c924c20c69ff6
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/385758
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp15-scmi.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+index caa8c15a3eb0..f113ba003673 100644
+--- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+ /*
+- * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
++ * Copyright (C) STMicroelectronics 2022-2024 - All Rights Reserved
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
+ 
+@@ -9,6 +9,8 @@ firmware {
+ 		optee: optee {
+ 			compatible = "linaro,optee-tz";
+ 			method = "smc";
++			interrupt-parent = <&intc>;
++			interrupts = <GIC_PPI 15 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
+ 		};
+ 
+ 		scmi: scmi {
+-- 
+2.39.5
+

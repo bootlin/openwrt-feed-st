@@ -1,0 +1,40 @@
+From 79e75bd376fb59bec539b9d9b87b89101bd70a10 Mon Sep 17 00:00:00 2001
+From: Michel JAOUEN <michel.jaouen@st.com>
+Date: Mon, 10 Jun 2024 17:43:32 +0200
+Subject: [PATCH] mailbox: stm32-ipcc: set arch init call for ipcc
+
+Since ipcc is used to for scmi service including clock service,
+the device needs to be probed in arch init
+
+Change-Id: I8e53bb32dc2e8ae1935132023f2697fc9f5860a4
+Signed-off-by: Michel JAOUEN <michel.jaouen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402232
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/mailbox/stm32-ipcc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
+index 8213f5892953..3f28be8637b2 100644
+--- a/drivers/mailbox/stm32-ipcc.c
++++ b/drivers/mailbox/stm32-ipcc.c
+@@ -522,7 +522,12 @@ static struct platform_driver stm32_ipcc_driver = {
+ 	.remove		= stm32_ipcc_remove,
+ };
+ 
+-module_platform_driver(stm32_ipcc_driver);
++static int __init ipcc_driver_init(void)
++{
++	return platform_driver_register(&stm32_ipcc_driver);
++}
++
++arch_initcall(ipcc_driver_init);
+ 
+ MODULE_AUTHOR("Ludovic Barre <ludovic.barre@st.com>");
+ MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@st.com>");
+-- 
+2.39.5
+

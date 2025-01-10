@@ -1,0 +1,45 @@
+From 9de83ac46f449567757d788d383ceb153597c866 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 24 Nov 2022 11:02:27 +0100
+Subject: [PATCH] arm64: dts: st: add pcie pinctrl entries in
+ stm32mp25-pinctrl.dtsi
+
+Add pcie pinctrl entries in stm32mp25-pinctrl.dtsi
+init: forces GPIO to low while probing so CLKREQ is low for
+phy_init
+default: restore the AFMUX after controller probe
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I26808f9863d9f2ecc0a3335372fedee7c1717240
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index b8bc0eda65df..5801c4bcf2c2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -153,6 +153,20 @@ pins {
+ 		};
+ 	};
+ 
++	pcie_pins_a: pcie-0 {
++		pins {
++			pinmux = <STM32_PINMUX('J', 0, AF4)>;
++			bias-disable;
++		};
++	};
++
++	pcie_init_pins_a: pcie-init-0 {
++		pins {
++			pinmux = <STM32_PINMUX('J', 0, GPIO)>;
++			output-low;
++		};
++	};
++
+ 	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
+-- 
+2.39.5
+

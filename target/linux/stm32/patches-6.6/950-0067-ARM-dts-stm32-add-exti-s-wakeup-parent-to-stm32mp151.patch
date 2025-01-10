@@ -1,0 +1,48 @@
+From 61453281af2d35da1f168071bd5293b4e869b84c Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 25 Aug 2022 17:12:19 +0200
+Subject: [PATCH] ARM: dts: stm32: add exti's 'wakeup-parent' to stm32mp151
+
+The EXTI interrupt controller can have two interrupt parents:
+- the CPU GIC as default;
+- a dedicated interrupt controller for power wake-up.
+
+Add the 'wakeup-parent' property to specify the node of the power
+wake-up interrupt controller for power wake-up.
+Add the wake-up entries in the interrupt nexus child node.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: If4f16921afc36a2dc05fd0bbd4f725f75034b955
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 0ddde1aec082..2b5c82414b03 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1243,6 +1243,7 @@ exti: interrupt-controller@5000d000 {
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+ 			reg = <0x5000d000 0x400>;
++			wakeup-parent = <&pwr_irq>;
+ 
+ 			exti-interrupt-map {
+ 				#address-cells = <0>;
+@@ -1288,6 +1289,12 @@ exti-interrupt-map {
+ 					<52 0 &intc GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
+ 					<53 0 &intc GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
+ 					<54 0 &intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
++					<55 0 &pwr_irq 0 IRQ_TYPE_EDGE_FALLING 0>,
++					<56 0 &pwr_irq 1 IRQ_TYPE_EDGE_FALLING 0>,
++					<57 0 &pwr_irq 2 IRQ_TYPE_EDGE_FALLING 0>,
++					<58 0 &pwr_irq 3 IRQ_TYPE_EDGE_FALLING 0>,
++					<59 0 &pwr_irq 4 IRQ_TYPE_EDGE_FALLING 0>,
++					<60 0 &pwr_irq 5 IRQ_TYPE_EDGE_FALLING 0>,
+ 					<61 0 &intc GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+ 					<65 0 &intc GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
+ 					<68 0 &intc GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.39.5
+

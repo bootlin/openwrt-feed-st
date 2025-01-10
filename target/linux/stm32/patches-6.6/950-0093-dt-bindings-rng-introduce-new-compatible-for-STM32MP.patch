@@ -1,0 +1,64 @@
+From 5356b3b360da478bd2b446feda834c38fbf4737d Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Thu, 21 Sep 2023 10:02:53 +0200
+Subject: [PATCH] dt-bindings: rng: introduce new compatible for STM32MP13x
+
+Introduce st,stm32mp13-rng compatible and add st,rng-lock-conf.
+
+If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
+and RNG_NSCR will be locked. It is supported starting from the RNG
+version present in the STM32MP13
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ .../devicetree/bindings/rng/st,stm32-rng.yaml | 20 ++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 187b172d0cca..717f6b321f88 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -15,7 +15,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32-rng
++    enum:
++      - st,stm32-rng
++      - st,stm32mp13-rng
+ 
+   reg:
+     maxItems: 1
+@@ -30,11 +32,27 @@ properties:
+     type: boolean
+     description: If set enable the clock detection management
+ 
++  st,rng-lock-conf:
++    type: boolean
++    description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
++                  RNG_NSCR will be locked.
++
+ required:
+   - compatible
+   - reg
+   - clocks
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - st,stm32-rng
++    then:
++      properties:
++        st,rng-lock-conf: false
++
+ additionalProperties: false
+ 
+ examples:
+-- 
+2.39.5
+

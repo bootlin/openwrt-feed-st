@@ -1,0 +1,43 @@
+From b0d4f3944183c4bbf573575a6be092d96c0214ad Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Thu, 21 Sep 2023 10:02:54 +0200
+Subject: [PATCH] hwrng: stm32 - use devm_platform_get_and_ioremap_resource()
+ API
+
+Use devm_platform_get_and_ioremap_resource() to get and ioremap a
+resource.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/char/hw_random/stm32-rng.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index efb6a9f9a11b..d64d25d0fee8 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -118,18 +118,13 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	struct device *dev = &ofdev->dev;
+ 	struct device_node *np = ofdev->dev.of_node;
+ 	struct stm32_rng_private *priv;
+-	struct resource res;
+-	int err;
++	struct resource *res;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(struct stm32_rng_private), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	err = of_address_to_resource(np, 0, &res);
+-	if (err)
+-		return err;
+-
+-	priv->base = devm_ioremap_resource(dev, &res);
++	priv->base = devm_platform_get_and_ioremap_resource(ofdev, 0, &res);
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
+-- 
+2.39.5
+

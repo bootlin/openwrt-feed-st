@@ -1,0 +1,61 @@
+From 64a7490a6bda2adc777394fe54f5c1fdff6a266e Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 2 Jul 2024 19:06:07 +0200
+Subject: [PATCH] arm64: dts: st: fix csi/dcmipp nodes on stm32mp211
+
+Move the dcmipp node into soc@1 in order to avoid translation
+
+Change-Id: I9b281de9edd81a839cafde1facb28b2e4529a054
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/391004
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 4992fbca8ba5..79a02c591728 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1547,17 +1547,6 @@ csi: csi@48020000 {
+ 				status = "disabled";
+ 			};
+ 
+-			dcmipp: dcmipp@48030000 {
+-				compatible = "st,stm32mp25-dcmipp";
+-				reg = <0x48030000 0x0 0x1000>;
+-				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+-				resets = <&rcc DCMIPP_R>;
+-				clocks = <&rcc CK_BUS_DCMIPP>, <&rcc CK_KER_CSI>;
+-				clock-names = "kclk", "mclk";
+-				access-controllers = <&rifsc 87>;
+-				status = "disabled";
+-			};
+-
+ 			lptimer3: timer@46050000 {
+ 				compatible = "st,stm32mp21-lptimer";
+ 				reg = <0x46050000 0x0 0x400>;
+@@ -2288,6 +2277,17 @@ soc1: soc@1 {
+ 		interrupt-parent = <&intc>;
+ 		ranges = <0x0 0x0 0x0 0x80000000>;
+ 
++		dcmipp: dcmipp@48030000 {
++			compatible = "st,stm32mp25-dcmipp";
++			reg = <0x48030000 0x1000>;
++			interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
++			resets = <&rcc DCMIPP_R>;
++			clocks = <&rcc CK_BUS_DCMIPP>, <&rcc CK_KER_CSI>;
++			clock-names = "kclk", "mclk";
++			access-controllers = <&rifsc 87>;
++			status = "disabled";
++		};
++
+ 		eth1: eth1@482c0000 {
+ 			compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
+ 			reg = <0x482c0000 0x4000>;
+-- 
+2.39.5
+

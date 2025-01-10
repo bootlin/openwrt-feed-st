@@ -1,0 +1,94 @@
+From 06c0b78306e220971d3ee5b3b880cd539055e43e Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 15 May 2024 09:30:34 +0200
+Subject: [PATCH] arm64: dts: st: add i2s support on stm32mp211
+
+Add the nodes for all the I2S instances available on the STM32MP211.
+
+Change-Id: I7e78667ebf85b76ae62f48a0d1f8614fb03d44ee
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379817
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 48 ++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 3edd5e2f48cc..0c41f30a21e7 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -218,6 +218,22 @@ rifsc: bus@42080000 {
+ 			ranges;
+ 			dma-ranges;
+ 
++			i2s2: audio-controller@400b0000 {
++				compatible = "st,stm32mp25-i2s";
++				reg = <0x400b0000 0x400>;
++				#sound-dai-cells = <0>;
++				interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_SPI2>, <&rcc CK_KER_SPI2>;
++				clock-names = "pclk", "i2sclk";
++				resets = <&rcc SPI2_R>;
++				dmas = <&hpdma 34 0x43 0x12>,
++					<&hpdma 35 0x43 0x21>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 23>;
++				power-domains = <&RET_PD>;
++				status = "disabled";
++			};
++
+ 			spi2: spi@400b0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+@@ -234,6 +250,22 @@ spi2: spi@400b0000 {
+ 				status = "disabled";
+ 			};
+ 
++			i2s3: audio-controller@400c0000 {
++				compatible = "st,stm32mp25-i2s";
++				reg = <0x400c0000 0x400>;
++				#sound-dai-cells = <0>;
++				interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_SPI3>, <&rcc CK_KER_SPI3>;
++				clock-names = "pclk", "i2sclk";
++				resets = <&rcc SPI3_R>;
++				dmas = <&hpdma 36 0x43 0x12>,
++					<&hpdma 37 0x43 0x21>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 24>;
++				power-domains = <&RET_PD>;
++				status = "disabled";
++			};
++
+ 			spi3: spi@400c0000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+@@ -363,6 +395,22 @@ usart6: serial@40220000 {
+ 				status = "disabled";
+ 			};
+ 
++			i2s1: audio-controller@40230000 {
++				compatible = "st,stm32mp25-i2s";
++				reg = <0x40230000 0x400>;
++				#sound-dai-cells = <0>;
++				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_SPI1>, <&rcc CK_KER_SPI1>;
++				clock-names = "pclk", "i2sclk";
++				resets = <&rcc SPI1_R>;
++				dmas = <&hpdma 32 0x43 0x12>,
++					<&hpdma 33 0x43 0x21>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 22>;
++				power-domains = <&RET_PD>;
++				status = "disabled";
++			};
++
+ 			spi1: spi@40230000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-- 
+2.39.5
+

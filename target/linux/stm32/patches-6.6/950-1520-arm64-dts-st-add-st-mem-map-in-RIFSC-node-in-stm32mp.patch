@@ -1,0 +1,35 @@
+From 9eea67bbe73de838971b51e34dac292753e418dc Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Mon, 30 Sep 2024 14:54:27 +0200
+Subject: [PATCH] arm64: dts: st: add st,mem-map in RIFSC node in
+ stm32mp231.dtsi
+
+Add st,mem-map in RIFSC node in stm32mp231.dtsi to describe address
+ranges covered by the RISAL instances.
+
+Change-Id: I94ba227956bc6026ac2a81883dc79e897feb9d93
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407784
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index 4dc143d6b118..f3567c550991 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -461,6 +461,7 @@ rifsc: bus@42080000 {
+ 			#size-cells = <1>;
+ 			#access-controller-cells = <1>;
+ 			ranges;
++			st,mem-map = <0x200c0000 0x2000 0x200c2000 0x2000 0x200c4000 0x4000>;
+ 
+ 			timers2: timer@40000000 {
+ 				compatible = "st,stm32mp25-timers";
+-- 
+2.39.5
+

@@ -1,0 +1,49 @@
+From 64866ffcb7be8f0b43754f9f41e01e6849de6e29 Mon Sep 17 00:00:00 2001
+From: Michel JAOUEN <michel.jaouen@st.com>
+Date: Fri, 12 Jul 2024 16:55:04 +0200
+Subject: [PATCH] arm64: dts: st: add a label to scmi node
+
+Without the label, the node modification done in external dt for
+m33td flavor support generates an error.
+
+Change-Id: I1538844d13da660c3382e8ac0fecb0613bf65cb9
+Signed-off-by: Michel JAOUEN <michel.jaouen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403137
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 2 +-
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index 446693625024..4bd5d8d4ebc1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -135,7 +135,7 @@ optee: optee {
+ 			#interrupt-cells = <1>;
+ 		};
+ 
+-		scmi {
++		scmi: scmi {
+ 			compatible = "linaro,scmi-optee";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 4ed74b01a0a0..4b390d16fcdc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -135,7 +135,7 @@ optee: optee {
+ 			#interrupt-cells = <1>;
+ 		};
+ 
+-		scmi {
++		scmi: scmi {
+ 			compatible = "linaro,scmi-optee";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+2.39.5
+

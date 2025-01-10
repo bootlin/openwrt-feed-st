@@ -1,0 +1,198 @@
+From ed56308cd304107cf92fbb27f1b61db44c9d00c2 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:37 +0200
+Subject: [PATCH] hwrng: stm32 - implement support for STM32MP25x platforms
+
+Implement the support for STM32MP25x platforms. On this platform, a
+security clock is shared between some hardware blocks. For the RNG,
+it is the RNG kernel clock. Therefore, the gate is no more shared
+between the RNG bus and kernel clocks as on STM32MP1x platforms and
+the bus clock has to be managed on its own.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Iecf8a40774d2633a3c6d1b63de68d3c98f898ae1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325024
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377068
+---
+ drivers/char/hw_random/stm32-rng.c | 67 ++++++++++++++++++++++++++++--
+ 1 file changed, 63 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index efd6edcd7066..1c30e359c184 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -49,6 +49,7 @@
+ 
+ struct stm32_rng_data {
+ 	uint	max_clock_rate;
++	uint	nb_clock;
+ 	u32	cr;
+ 	u32	nscr;
+ 	u32	htcr;
+@@ -72,6 +73,7 @@ struct stm32_rng_private {
+ 	struct hwrng rng;
+ 	void __iomem *base;
+ 	struct clk *clk;
++	struct clk *bus_clk;
+ 	struct reset_control *rst;
+ 	struct stm32_rng_config pm_conf;
+ 	const struct stm32_rng_data *data;
+@@ -289,6 +291,12 @@ static int stm32_rng_init(struct hwrng *rng)
+ 	if (err)
+ 		return err;
+ 
++	if (priv->bus_clk) {
++		err = clk_prepare_enable(priv->bus_clk);
++		if (err)
++			return err;
++	}
++
+ 	/* clear error indicators */
+ 	writel_relaxed(0, priv->base + RNG_SR);
+ 
+@@ -354,7 +362,10 @@ static int stm32_rng_init(struct hwrng *rng)
+ 						reg & RNG_SR_DRDY,
+ 						10, 100000);
+ 	if (err | (reg & ~RNG_SR_DRDY)) {
++		if (priv->bus_clk)
++			clk_disable_unprepare(priv->bus_clk);
+ 		clk_disable_unprepare(priv->clk);
++
+ 		dev_err((struct device *)priv->rng.priv,
+ 			"%s: timeout:%x SR: %x!\n", __func__, err, reg);
+ 		return -EINVAL;
+@@ -378,6 +389,9 @@ static int __maybe_unused stm32_rng_runtime_suspend(struct device *dev)
+ 	reg = readl_relaxed(priv->base + RNG_CR);
+ 	reg &= ~RNG_CR_RNGEN;
+ 	writel_relaxed(reg, priv->base + RNG_CR);
++
++	if (priv->bus_clk)
++		clk_disable_unprepare(priv->bus_clk);
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
+@@ -397,6 +411,8 @@ static int __maybe_unused stm32_rng_suspend(struct device *dev)
+ 
+ 	writel_relaxed(priv->pm_conf.cr, priv->base + RNG_CR);
+ 
++	if (priv->bus_clk)
++		clk_disable_unprepare(priv->bus_clk);
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	return 0;
+@@ -412,6 +428,14 @@ static int __maybe_unused stm32_rng_runtime_resume(struct device *dev)
+ 	if (err)
+ 		return err;
+ 
++	if (priv->bus_clk) {
++		err = clk_prepare_enable(priv->bus_clk);
++		if (err) {
++			clk_disable_unprepare(priv->clk);
++			return err;
++		}
++	}
++
+ 	/* Clean error indications */
+ 	writel_relaxed(0, priv->base + RNG_SR);
+ 
+@@ -432,6 +456,14 @@ static int __maybe_unused stm32_rng_resume(struct device *dev)
+ 	if (err)
+ 		return err;
+ 
++	if (priv->bus_clk) {
++		err = clk_prepare_enable(priv->bus_clk);
++		if (err) {
++			clk_disable_unprepare(priv->clk);
++			return err;
++		}
++	}
++
+ 	/* Clean error indications */
+ 	writel_relaxed(0, priv->base + RNG_SR);
+ 
+@@ -456,6 +488,8 @@ static int __maybe_unused stm32_rng_resume(struct device *dev)
+ 							reg & ~RNG_CR_CONDRST, 10, 100000);
+ 
+ 		if (err) {
++			if (priv->bus_clk)
++				clk_disable_unprepare(priv->bus_clk);
+ 			clk_disable_unprepare(priv->clk);
+ 			dev_err((struct device *)priv->rng.priv,
+ 				"%s: timeout:%x CR: %x!\n", __func__, err, reg);
+@@ -477,9 +511,19 @@ static const struct dev_pm_ops __maybe_unused stm32_rng_pm_ops = {
+ 				stm32_rng_resume)
+ };
+ 
++static const struct stm32_rng_data stm32mp25_rng_data = {
++	.has_cond_reset = true,
++	.max_clock_rate = 48000000,
++	.nb_clock = 2,
++	.cr = 0x00F00D00,
++	.nscr = 0x2B5BB,
++	.htcr = 0x969D,
++};
++
+ static const struct stm32_rng_data stm32mp13_rng_data = {
+ 	.has_cond_reset = true,
+ 	.max_clock_rate = 48000000,
++	.nb_clock = 1,
+ 	.cr = 0x00F00D00,
+ 	.nscr = 0x2B5BB,
+ 	.htcr = 0x969D,
+@@ -488,9 +532,14 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+ static const struct stm32_rng_data stm32_rng_data = {
+ 	.has_cond_reset = false,
+ 	.max_clock_rate = 3000000,
++	.nb_clock = 1,
+ };
+ 
+ static const struct of_device_id stm32_rng_match[] = {
++	{
++		.compatible = "st,stm32mp25-rng",
++		.data = &stm32mp25_rng_data,
++	},
+ 	{
+ 		.compatible = "st,stm32mp13-rng",
+ 		.data = &stm32mp13_rng_data,
+@@ -518,10 +567,6 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
+-	priv->clk = devm_clk_get(&ofdev->dev, NULL);
+-	if (IS_ERR(priv->clk))
+-		return PTR_ERR(priv->clk);
+-
+ 	priv->rst = devm_reset_control_get(&ofdev->dev, NULL);
+ 	if (!IS_ERR(priv->rst)) {
+ 		reset_control_assert(priv->rst);
+@@ -544,6 +589,20 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	priv->rng.priv = (unsigned long) dev;
+ 	priv->rng.quality = 900;
+ 
++	if (priv->data->nb_clock > 1) {
++		priv->clk = devm_clk_get(&ofdev->dev, "rng_clk");
++		if (IS_ERR(priv->clk))
++			return PTR_ERR(priv->clk);
++
++		priv->bus_clk = devm_clk_get(&ofdev->dev, "rng_hclk");
++		if (IS_ERR(priv->clk))
++			return PTR_ERR(priv->bus_clk);
++	} else {
++		priv->clk = devm_clk_get(&ofdev->dev, NULL);
++		if (IS_ERR(priv->clk))
++			return PTR_ERR(priv->clk);
++	}
++
+ 	pm_runtime_set_autosuspend_delay(dev, 100);
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_enable(dev);
+-- 
+2.39.5
+

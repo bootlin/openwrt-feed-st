@@ -1,0 +1,117 @@
+From 24af8676831c58d5c5b8a8b32f930afb4fcec6cb Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Thu, 28 Mar 2024 15:56:41 +0530
+Subject: [PATCH] usb: dwc3: Fix for xhci-reset stuck issue with dwc3
+
+Patch provided by Synopsys with following comment :
+The change we have here is to keep both the GUSB3PIPECTL.SUSPENDENABLE
+and GUSB2PHYCFG.SUSPENDUSB20 bits clear when switching mode, only to
+restore them after the controller initialization completes.
+For host mode, the host controller initialization described in xHCI spec
+section 4.2 describe the last step of the initialization is to turn on
+the Run/Stop bit. This is what we tried with drd_susphy_v2. This patch
+will resolve this issue. The change touches some xhci files, not the
+core files, and it will be available in linux mainline in the future
+
+Change-Id: Idde90ba06383d067e347df3e03d13ddce9304245
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374828
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/dwc3/core.c      |  2 ++
+ drivers/usb/dwc3/core.h      |  3 +++
+ drivers/usb/host/xhci-plat.c | 18 +++++++++++++++++-
+ drivers/usb/host/xhci-plat.h |  2 ++
+ 4 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index d7ee706094a6..053e677ee747 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -177,6 +177,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+ 	if (desired_dr_role == DWC3_GCTL_PRTCAP_OTG && dwc->edev)
+ 		goto out;
+ 
++	dwc3_enable_susphy(dwc, false);
++
+ 	switch (dwc->current_dr_role) {
+ 	case DWC3_GCTL_PRTCAP_HOST:
+ 		dwc3_host_exit(dwc);
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 358f618db997..0dc0546ab124 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -983,6 +983,7 @@ struct dwc3_scratchpad_array {
+  * @bounce_addr: dma address of @bounce
+  * @ep0_usb_req: dummy req used while handling STD USB requests
+  * @ep0_in_setup: one control transfer is completed and enter setup phase
++ * @xhci_plat_data: private data for xhci callback
+  * @lock: for synchronizing
+  * @mutex: for mode switching
+  * @dev: pointer to our struct device
+@@ -1145,6 +1146,8 @@ struct dwc3 {
+ 	struct dwc3_request	ep0_usb_req;
+ 	struct completion	ep0_in_setup;
+ 
++	void			*xhci_plat_data;
++
+ 	/* device lock */
+ 	spinlock_t		lock;
+ 
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index d68e9abcdc69..f1f0c3b09e58 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -44,6 +44,14 @@ static void xhci_priv_plat_start(struct usb_hcd *hcd)
+ 		priv->plat_start(hcd);
+ }
+ 
++static void xhci_priv_post_plat_start(struct usb_hcd *hcd)
++{
++	struct xhci_plat_priv *priv = hcd_to_xhci_priv(hcd);
++
++	if (priv->post_plat_start)
++		priv->post_plat_start(hcd);
++}
++
+ static int xhci_priv_init_quirk(struct usb_hcd *hcd)
+ {
+ 	struct xhci_plat_priv *priv = hcd_to_xhci_priv(hcd);
+@@ -96,8 +104,16 @@ static int xhci_plat_setup(struct usb_hcd *hcd)
+ 
+ static int xhci_plat_start(struct usb_hcd *hcd)
+ {
++	int ret;
++
+ 	xhci_priv_plat_start(hcd);
+-	return xhci_run(hcd);
++	ret = xhci_run(hcd);
++	if (ret)
++		return ret;
++
++	xhci_priv_post_plat_start(hcd);
++
++	return 0;
+ }
+ 
+ #ifdef CONFIG_OF
+diff --git a/drivers/usb/host/xhci-plat.h b/drivers/usb/host/xhci-plat.h
+index 6475130eac4b..960ab025c961 100644
+--- a/drivers/usb/host/xhci-plat.h
++++ b/drivers/usb/host/xhci-plat.h
+@@ -16,9 +16,11 @@ struct xhci_plat_priv {
+ 	const char *firmware_name;
+ 	unsigned long long quirks;
+ 	void (*plat_start)(struct usb_hcd *);
++	void (*post_plat_start)(struct usb_hcd *);
+ 	int (*init_quirk)(struct usb_hcd *);
+ 	int (*suspend_quirk)(struct usb_hcd *);
+ 	int (*resume_quirk)(struct usb_hcd *);
++	void *data;
+ };
+ 
+ #define hcd_to_xhci_priv(h) ((struct xhci_plat_priv *)hcd_to_xhci(h)->priv)
+-- 
+2.39.5
+

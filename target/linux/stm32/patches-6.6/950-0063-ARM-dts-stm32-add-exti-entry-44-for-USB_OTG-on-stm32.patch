@@ -1,0 +1,30 @@
+From e54db36b59f0306e77c0ac606a197007e0cbb3a6 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 17 Oct 2022 16:16:23 +0200
+Subject: [PATCH] ARM: dts: stm32: add exti entry 44 for USB_OTG on stm32mp151
+
+Add exti entry 44 used for USB_OTG wake up.
+This event is mapped to GIC 98.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I33c2237363e34b309b0d4c1aa4d528909672b6d0
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 21bc8a13aca2..83b69cdc85b8 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1265,6 +1265,7 @@ exti-interrupt-map {
+ 					<32 0 &intc GIC_SPI 82  IRQ_TYPE_LEVEL_HIGH>,
+ 					<33 0 &intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
+ 					<43 0 &intc GIC_SPI 75  IRQ_TYPE_LEVEL_HIGH>,
++					<44 0 &intc GIC_SPI 98  IRQ_TYPE_LEVEL_HIGH>,
+ 					<47 0 &intc GIC_SPI 93  IRQ_TYPE_LEVEL_HIGH>,
+ 					<48 0 &intc GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
+ 					<50 0 &intc GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.39.5
+

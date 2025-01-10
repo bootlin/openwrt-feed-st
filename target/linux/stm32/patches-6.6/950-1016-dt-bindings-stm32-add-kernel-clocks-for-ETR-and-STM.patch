@@ -1,0 +1,68 @@
+From 4a46335120672de140716a6f3f7a6b524b177bba Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Wed, 17 Apr 2024 16:00:18 +0200
+Subject: [PATCH] dt-bindings: stm32: add kernel clocks for ETR and STM
+
+This patch adds Kernel clocks for ETR and STM.
+This patch also renames CK_BUS_STM500 into CK_BUS_STM according
+the reference manual.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: Id023018cab3cb5a2ce71c1c507f7a8ca7063b0d0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364334
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374601
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ include/dt-bindings/clock/st,stm32mp25-rcc.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
+index b6cf05ad4be6..66b3f95329af 100644
+--- a/include/dt-bindings/clock/st,stm32mp25-rcc.h
++++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
+@@ -109,7 +109,7 @@
+ /* LOW SPEED MCU CLOCK */
+ #define CK_ICN_LS_MCU		88
+ 
+-#define CK_BUS_STM500		89
++#define CK_BUS_STM		89
+ #define CK_BUS_FMC		90
+ #define CK_BUS_GPU		91
+ #define CK_BUS_ETH1		92
+@@ -363,8 +363,10 @@
+ #define CK_BUS_ETHSWACMCFG	341
+ #define CK_BUS_ETHSWACMMSG	342
+ #define HSE_DIV2_CK		343
++#define CK_KER_ETR		344
++#define CK_KER_STM		345
+ 
+-#define STM32MP25_LAST_CLK	344
++#define STM32MP25_LAST_CLK	346
+ 
+ #define CK_SCMI_ICN_HS_MCU	0
+ #define CK_SCMI_ICN_SDMMC	1
+@@ -452,7 +454,7 @@
+ #define CK_SCMI_TIMG2		83
+ #define CK_SCMI_BKPSRAM		84
+ #define CK_SCMI_BSEC		85
+-#define CK_SCMI_ETR		87
++#define CK_SCMI_BUS_ETR		87
+ #define CK_SCMI_FMC		88
+ #define CK_SCMI_GPIOA		89
+ #define CK_SCMI_GPIOB		90
+@@ -487,6 +489,8 @@
+ #define CK_SCMI_SYSDBG		119
+ #define CK_SCMI_SYSATB		120
+ #define CK_SCMI_TSDBG		121
+-#define CK_SCMI_STM500		122
++#define CK_SCMI_BUS_STM		122
++#define CK_SCMI_KER_STM		123
++#define CK_SCMI_KER_ETR		124
+ 
+ #endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
+-- 
+2.39.5
+

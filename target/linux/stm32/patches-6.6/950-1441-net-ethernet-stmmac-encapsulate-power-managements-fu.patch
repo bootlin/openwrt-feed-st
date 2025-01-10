@@ -1,0 +1,53 @@
+From 8d7338c8df095477e6f7eee44c2f5111faae877d Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Thu, 6 Apr 2023 11:35:05 +0200
+Subject: [PATCH] net: ethernet: stmmac: encapsulate power managements
+ functions
+
+This commit encapsulates all the power management functions.
+
+Signed-off-by: Arturo Buzarra <arturo.buzarra@digi.com>
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I94d6e73936e718bdf7b81c35bf439bc34380501b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299335
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404477
+Tested-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index a8b30b7ab22e..405399377d00 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -643,10 +643,10 @@ static int stm32_dwmac_resume(struct device *dev)
+ 
+ 	return ret;
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+ static SIMPLE_DEV_PM_OPS(stm32_dwmac_pm_ops,
+ 	stm32_dwmac_suspend, stm32_dwmac_resume);
++#endif /* CONFIG_PM_SLEEP */
+ 
+ static struct stm32_ops stm32mcu_dwmac_data = {
+ 	.set_mode = stm32mcu_set_mode,
+@@ -718,7 +718,9 @@ static struct platform_driver stm32_dwmac_driver = {
+ 	.remove_new = stm32_dwmac_remove,
+ 	.driver = {
+ 		.name           = "stm32-dwmac",
++#ifdef CONFIG_PM_SLEEP
+ 		.pm		= &stm32_dwmac_pm_ops,
++#endif /* CONFIG_PM_SLEEP */
+ 		.of_match_table = stm32_dwmac_match,
+ 	},
+ };
+-- 
+2.39.5
+

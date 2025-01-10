@@ -1,0 +1,29 @@
+From 8559000cce45f0f6ba4f31a298dd7be0c5291b39 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 26 Oct 2023 16:25:13 +0200
+Subject: [PATCH] ARM: stm32: add STM32MP153 SoC support
+
+Add STM32MP153 SoC support.
+
+Change-Id: I1ed3cb4f7ff4208cabf24b379c9aba51b3d2b071
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/mach-stm32/board-dt.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/mach-stm32/board-dt.c b/arch/arm/mach-stm32/board-dt.c
+index 5dcc4ddd1a56..9ff06f2fcbf4 100644
+--- a/arch/arm/mach-stm32/board-dt.c
++++ b/arch/arm/mach-stm32/board-dt.c
+@@ -22,6 +22,7 @@ static const char *const stm32_compat[] __initconst = {
+ 	"st,stm32mp133",
+ 	"st,stm32mp135",
+ 	"st,stm32mp151",
++	"st,stm32mp153",
+ 	"st,stm32mp157",
+ 	NULL
+ };
+-- 
+2.39.5
+

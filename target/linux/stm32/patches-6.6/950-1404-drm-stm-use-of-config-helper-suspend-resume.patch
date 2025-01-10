@@ -1,0 +1,81 @@
+From b95281473f55f38763988a2ed60c7bd2a3ceadc5 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 29 May 2024 09:53:24 +0200
+Subject: [PATCH] drm/stm: use of config helper suspend/resume
+
+Rework of pm_runtime callback with use of drm_mode_config_helper.
+
+Change-Id: I1574e7bcb2618159f25718ca95a3d24727f4e698
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/385853
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/drv.c  | 24 +++++++-----------------
+ drivers/gpu/drm/stm/ltdc.h |  1 -
+ 2 files changed, 7 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index 0b073c32aeac..2ce7550370ab 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -119,16 +119,14 @@ static void drv_unload(struct drm_device *ddev)
+ static __maybe_unused int drv_suspend(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+-	struct ltdc_device *ldev = ddev->dev_private;
+-	struct drm_atomic_state *state;
++	int ret;
+ 
+-	WARN_ON(ldev->suspend_state);
++	DRM_DEBUG_DRIVER("\n");
+ 
+-	state = drm_atomic_helper_suspend(ddev);
+-	if (IS_ERR(state))
+-		return PTR_ERR(state);
++	ret = drm_mode_config_helper_suspend(ddev);
++	if (ret)
++		return ret;
+ 
+-	ldev->suspend_state = state;
+ 	pm_runtime_force_suspend(dev);
+ 
+ 	return 0;
+@@ -137,20 +135,12 @@ static __maybe_unused int drv_suspend(struct device *dev)
+ static __maybe_unused int drv_resume(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+-	struct ltdc_device *ldev = ddev->dev_private;
+-	int ret;
+ 
+-	if (WARN_ON(!ldev->suspend_state))
+-		return -ENOENT;
++	DRM_DEBUG_DRIVER("\n");
+ 
+ 	pm_runtime_force_resume(dev);
+-	ret = drm_atomic_helper_resume(ddev, ldev->suspend_state);
+-	if (ret)
+-		pm_runtime_force_suspend(dev);
+ 
+-	ldev->suspend_state = NULL;
+-
+-	return ret;
++	return drm_mode_config_helper_resume(ddev);
+ }
+ 
+ static __maybe_unused int drv_runtime_suspend(struct device *dev)
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 8b7f56571f74..8d58bc93a460 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -65,7 +65,6 @@ struct ltdc_device {
+ 	u32 fifo_threshold;	/* fifo underrun threshold */
+ 	u32 transfer_err;	/* transfer error counter */
+ 	struct fps_info plane_fpsi[LTDC_MAX_LAYER];
+-	struct drm_atomic_state *suspend_state;
+ 	int crc_skip_count;
+ 	bool crc_active;
+ 	bool vblank_active;
+-- 
+2.39.5
+

@@ -1,0 +1,139 @@
+From 8e496f5217d468436f05fab049e00b8b82fe2076 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Fri, 1 Sep 2023 15:07:12 +0530
+Subject: [PATCH] usb: gadget: Fix f_ncm cleanup for net_device
+
+ncm_bind registers net_device using gether_register_netdev, but
+net_device is unregistered inside ncm_free_inst inside gether_cleanup
+This breaks the symmetry for the net_device calls, and causes a kernel
+warning(s), when UDC is removed via role-switch or usb-ctrl unbind :
+
+sysfs group 'byte_queue_limits' not found for kobject 'tx-0'
+WARNING: CPU: 0 PID: 1209 at fs/sysfs/group.c:279
+sysfs group 'power' not found for kobject 'usb0'
+WARNING: CPU: 0 PID: 1209 at fs/sysfs/group.c:279
+sysfs group 'statistics' not found for kobject 'usb0'
+WARNING: CPU: 0 PID: 1209 at fs/sysfs/group.c:279
+
+Call trace: (for all above warnings)
+ sysfs_remove_group
+ sysfs_remove_groups
+ device_remove_attrs
+ device_del
+ netdev_unregister_kobject
+ unregister_netdevice_many
+ unregister_netdevice_queue
+ unregister_netdev
+ gether_cleanup [u_ether]
+ rndis_free_inst [usb_f_rndis]
+ usb_put_function_instance [libcomposite]
+ rndis_attr_release [usb_f_rndis]
+ config_item_cleanup
+ config_item_put
+ configfs_rmdir
+ vfs_rmdir
+ do_rmdir
+
+To maintain the symmetry in the calls, we shift unregister net_device call
+from ncm_free_inst to ncm_bind
+
+Fixes: 40d133d7f542 ("usb: gadget: f_ncm: convert to new function interface with backward compatibility")
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I9fc36e336fe6f65082e48e82ced49152eebfcbc6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325758
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/gadget/function/f_ncm.c   |  9 +++++----
+ drivers/usb/gadget/function/u_ether.c | 19 +++++++++++++++++--
+ drivers/usb/gadget/function/u_ether.h |  1 +
+ 3 files changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index f5731d465cd7..e2f57ebddc78 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1603,10 +1603,7 @@ static void ncm_free_inst(struct usb_function_instance *f)
+ 	struct f_ncm_opts *opts;
+ 
+ 	opts = container_of(f, struct f_ncm_opts, func_inst);
+-	if (opts->bound)
+-		gether_cleanup(netdev_priv(opts->net));
+-	else
+-		free_netdev(opts->net);
++	free_netdev(opts->net);
+ 	kfree(opts->ncm_interf_group);
+ 	kfree(opts);
+ }
+@@ -1665,6 +1662,7 @@ static void ncm_free(struct usb_function *f)
+ static void ncm_unbind(struct usb_configuration *c, struct usb_function *f)
+ {
+ 	struct f_ncm *ncm = func_to_ncm(f);
++	struct f_ncm_opts *opts = container_of(f->fi, struct f_ncm_opts, func_inst);
+ 
+ 	DBG(c->cdev, "ncm unbind\n");
+ 
+@@ -1683,6 +1681,9 @@ static void ncm_unbind(struct usb_configuration *c, struct usb_function *f)
+ 
+ 	kfree(ncm->notify_req->buf);
+ 	usb_ep_free_request(ncm->notify, ncm->notify_req);
++
++	if (opts->bound)
++		gether_unregister_netdev(netdev_priv(opts->net));
+ }
+ 
+ static struct usb_function *ncm_alloc(struct usb_function_instance *fi)
+diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+index 4bb0553da658..7b4529249243 100644
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -1078,6 +1078,22 @@ void gether_resume(struct gether *link)
+ }
+ EXPORT_SYMBOL_GPL(gether_resume);
+ 
++/*
++ * gether_unregister_netdev - unregister Ethernet-over-USB device
++ * Context: may sleep
++ *
++ * This is called to unregister all resources allocated by @gether_register_netdev().
++ */
++void gether_unregister_netdev(struct eth_dev *dev)
++{
++	if (!dev)
++		return;
++
++	unregister_netdev(dev->net);
++	flush_work(&dev->work);
++}
++EXPORT_SYMBOL_GPL(gether_unregister_netdev);
++
+ /*
+  * gether_cleanup - remove Ethernet-over-USB device
+  * Context: may sleep
+@@ -1089,8 +1105,7 @@ void gether_cleanup(struct eth_dev *dev)
+ 	if (!dev)
+ 		return;
+ 
+-	unregister_netdev(dev->net);
+-	flush_work(&dev->work);
++	gether_unregister_netdev(dev);
+ 	free_netdev(dev->net);
+ }
+ EXPORT_SYMBOL_GPL(gether_cleanup);
+diff --git a/drivers/usb/gadget/function/u_ether.h b/drivers/usb/gadget/function/u_ether.h
+index 34be220cef77..c4c3fedeaba7 100644
+--- a/drivers/usb/gadget/function/u_ether.h
++++ b/drivers/usb/gadget/function/u_ether.h
+@@ -258,6 +258,7 @@ int gether_get_ifname(struct net_device *net, char *name, int len);
+ int gether_set_ifname(struct net_device *net, const char *name, int len);
+ 
+ void gether_cleanup(struct eth_dev *dev);
++void gether_unregister_netdev(struct eth_dev *dev);
+ 
+ void gether_suspend(struct gether *link);
+ void gether_resume(struct gether *link);
+-- 
+2.39.5
+

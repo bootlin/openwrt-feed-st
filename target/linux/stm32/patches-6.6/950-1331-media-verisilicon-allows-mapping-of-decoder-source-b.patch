@@ -1,0 +1,40 @@
+From cea3c6caee60ea302e4b097fe1f75acfaf6025f8 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Wed, 29 May 2024 17:46:00 +0200
+Subject: [PATCH] media: verisilicon: allows mapping of decoder source buffers
+
+Allows mapping of decoder source buffers, this is needed for
+jpeg decoder to parse header.
+
+Change-Id: I7930d13e382f65bc75eacc2e587c66a2479632ab
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393590
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ drivers/media/platform/verisilicon/hantro_drv.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
+index 7dba2c0dde98..d49e6f0e037e 100644
+--- a/drivers/media/platform/verisilicon/hantro_drv.c
++++ b/drivers/media/platform/verisilicon/hantro_drv.c
+@@ -220,6 +220,13 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+ 	 */
+ 	src_vq->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES |
+ 			    DMA_ATTR_NO_KERNEL_MAPPING;
++	/*
++	 * The Kernel needs access to the JPEG source buffer for the
++	 * JPEG decoder to parse the JPEG headers.
++	 */
++	if (!ctx->is_encoder)
++		src_vq->dma_attrs &= ~DMA_ATTR_NO_KERNEL_MAPPING;
++
+ 	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+ 	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+ 	src_vq->lock = &ctx->dev->vpu_mutex;
+-- 
+2.39.5
+

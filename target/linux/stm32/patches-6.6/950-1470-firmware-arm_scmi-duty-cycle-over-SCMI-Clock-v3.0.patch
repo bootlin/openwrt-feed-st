@@ -1,0 +1,267 @@
+From 7d09e46095d12633acdea7272b880020a84bf86a Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Tue, 2 Jul 2024 15:13:05 +0200
+Subject: [PATCH] firmware: arm_scmi: duty cycle over SCMI Clock v3.0
+
+Implement the SCMI message defined in SCMI Clock protocol v3.0 to get the
+duty cycle (in percent) of an SMCI clock domain: CLOCK_CONFIG_GET with
+flags = 0x1.
+
+This change preserves the implementation of SCMI clock duty cycle info
+of  OSTLv5.x releases for backward compatibly, when the SCMO clock
+protocol version reported by the SCMI server is strictly lower than 3.0.
+
+For clarity of the SCMI clock protocol commands defined in the SCMI
+specification, enum scmi_clock_protocol_cmd is updated with the
+IDs defined in the different versions of the SCMI clock protocol.
+
+Change-Id: I7e4ebf46308206f5d02de4d30be6ea6e58fddb5b
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390948
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Tested-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+---
+ .../configs/fragment-02-multiv7_addons.config |   1 +
+ .../fragment-02-defconfig-addons.config       |   1 +
+ drivers/firmware/arm_scmi/Kconfig             |   6 +
+ drivers/firmware/arm_scmi/clock.c             | 115 +++++++++++++++---
+ 4 files changed, 108 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index fe5c37b26475..48383caa1e84 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -59,6 +59,7 @@ CONFIG_RPMSG_VIRTIO=y
+ CONFIG_SAMPLES=y
+ CONFIG_SAMPLE_RPMSG_CLIENT=m
+ CONFIG_SCHED_MC=y
++CONFIG_SCMI_STM32MP_OSTL_V5=y
+ CONFIG_SD_ADC_MODULATOR=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index e193c2801043..e177df6bdd0b 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -80,6 +80,7 @@ CONFIG_RPMSG_VIRTIO=m
+ CONFIG_RTC_DRV_STM32=y
+ CONFIG_SAMPLES=y
+ CONFIG_SAMPLE_RPMSG_CLIENT=m
++CONFIG_SCMI_STM32MP_OSTL_V5=y
+ CONFIG_SD_ADC_MODULATOR=m
+ CONFIG_SENSORS_MR75203=y
+ CONFIG_SMSC_PHY=y
+diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+index ea0f5083ac47..bd04a20484ee 100644
+--- a/drivers/firmware/arm_scmi/Kconfig
++++ b/drivers/firmware/arm_scmi/Kconfig
+@@ -166,6 +166,12 @@ config ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_ENABLE
+ 	  in atomic context too, at the price of using a number of busy-waiting
+ 	  primitives all over instead. If unsure say N.
+ 
++config SCMI_STM32MP_OSTL_V5
++	bool "Support for STM32MP legacy SCMI messages in OSTL distributions"
++	help
++	  Enable support for legacy SCMI message IDs used in STM32MP OSTL
++	  distributions, from its version v4.0 up to v5.0. If unsure, say N.
++
+ endif #ARM_SCMI_PROTOCOL
+ 
+ config ARM_SCMI_POWER_DOMAIN
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 726ce33915fe..8732e5f2345d 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -13,16 +13,30 @@
+ #include "notify.h"
+ 
+ enum scmi_clock_protocol_cmd {
++	/* Command IDs introduced in SCMI clock protocol v1.0 (0x1000) */
+ 	CLOCK_ATTRIBUTES = 0x3,
+ 	CLOCK_DESCRIBE_RATES = 0x4,
+ 	CLOCK_RATE_SET = 0x5,
+ 	CLOCK_RATE_GET = 0x6,
+ 	CLOCK_CONFIG_SET = 0x7,
++	/* Command IDs introduced in SCMI clock protocol v2.0 (0x2000) */
+ 	CLOCK_NAME_GET = 0x8,
+ 	CLOCK_RATE_NOTIFY = 0x9,
+ 	CLOCK_RATE_CHANGE_REQUESTED_NOTIFY = 0xA,
+-	CLOCK_DUTY_CYCLE_GET = 0xB,
+-	CLOCK_ROUND_RATE_GET = 0xC,
++	/*
++	 * Command IDs introduced in SCMI clock protocol v3.0 (0x3000)
++	 * Not all are currently supported.
++	 */
++	CLOCK_CONFIG_GET = 0xB,
++	CLOCK_POSSIBLE_PARENTS_GET = 0xC,
++	CLOCK_PARENT_SET = 0xD,
++	CLOCK_PARENT_GET = 0xE,
++	CLOCK_GET_PERMISSIONS = 0xF,
++#ifdef CONFIG_SCMI_STM32MP_OSTL_V5 /* NOT TO UPSTREAM */
++	/* SCMI Clock message IDs used on OSTLv5.x, deprecated in OSTLv6.x */
++	CLOCK_OSTL_DUTY_CYCLE_GET = 0xB,
++	CLOCK_OSTL_ROUND_RATE_GET = 0xC,
++#endif
+ };
+ 
+ struct scmi_msg_resp_clock_protocol_attributes {
+@@ -46,6 +60,31 @@ struct scmi_clock_set_config {
+ 	__le32 attributes;
+ };
+ 
++/* Structure used since SCMI clock v3.0 */
++struct scmi_clock_set_config_v2 {
++	__le32 id;
++	__le32 attributes;
++	__le32 extended_config_val;
++};
++
++/* Valid only from SCMI clock v3.0 */
++#define REGMASK_OEM_TYPE_NONE		(0 << 16)
++#define REGMASK_OEM_TYPE_DUTY_CYCLE	(1 << 16)
++#define REGMASK_OEM_TYPE_PHASE		(2 << 16)
++
++struct scmi_msg_clock_config_get {
++	__le32 id;
++	__le32 flags;
++#define REGMASK_OEM_TYPE_GET		GENMASK(7, 0)
++};
++
++struct scmi_msg_resp_clock_config_get {
++	__le32 attributes;
++	__le32 config;
++#define IS_CLK_ENABLED(x)		le32_get_bits((x), BIT(0))
++	__le32 oem_config_val;
++};
++
+ struct scmi_msg_clock_describe_rates {
+ 	__le32 id;
+ 	__le32 rate_index;
+@@ -337,23 +376,51 @@ scmi_clock_get_duty_cycle(const struct scmi_protocol_handle *ph,
+ {
+ 	int ret;
+ 	struct scmi_xfer *t;
+-	struct scmi_msg_resp_get_duty_cyle *resp;
++	struct clock_info *ci = ph->get_priv(ph);
+ 
+-	ret = ph->xops->xfer_get_init(ph, CLOCK_DUTY_CYCLE_GET,
+-				      sizeof(__le32), sizeof(u64), &t);
+-	if (ret)
+-		return ret;
++	if (PROTOCOL_REV_MAJOR(ci->version) >= 0x3) {
++		struct scmi_msg_clock_config_get *cfg;
+ 
+-	resp = t->rx.buf;
++		ret = ph->xops->xfer_get_init(ph, CLOCK_CONFIG_GET,
++					      sizeof(*cfg), 0, &t);
++		if (ret)
++			return ret;
+ 
+-	put_unaligned_le32(clk_id, t->tx.buf);
++		cfg = t->tx.buf;
++		cfg->id = cpu_to_le32(clk_id);
++		cfg->flags = cpu_to_le32(REGMASK_OEM_TYPE_DUTY_CYCLE);
++	} else {
++#ifdef CONFIG_SCMI_STM32MP_OSTL_V5
++		ret = ph->xops->xfer_get_init(ph, CLOCK_OSTL_DUTY_CYCLE_GET,
++					      sizeof(__le32), sizeof(u64), &t);
++		if (ret)
++			return ret;
++
++		put_unaligned_le32(clk_id, t->tx.buf);
++#else
++		return -EOPNOTSUPP;
++#endif
++	}
+ 
+ 	ret = ph->xops->do_xfer(ph, t);
+-	if (!ret) {
++	if (ret)
++		goto out;
++
++	if (PROTOCOL_REV_MAJOR(ci->version) >= 0x3) {
++		struct scmi_msg_resp_clock_config_get *resp = t->rx.buf;
++
++		*num = le32_to_cpu(resp->oem_config_val);
++		*den = 100;
++	} else {
++#ifdef CONFIG_SCMI_STM32MP_OSTL_V5
++		struct scmi_msg_resp_get_duty_cyle *resp = t->rx.buf;
++
+ 		*num = resp->num;
+ 		*den = resp->den;
++#endif
+ 	}
+ 
++out:
+ 	ph->xops->xfer_put(ph, t);
+ 
+ 	return ret;
+@@ -432,13 +499,14 @@ static int
+ scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+ 			  u32 clk_id, u64 *value)
+ {
++#ifdef CONFIG_SCMI_STM32MP_OSTL_V5
+ 	int ret;
+ 	struct scmi_xfer *t;
+ 	struct scmi_clock_set_rate *cfg;
+ 	struct clock_info *ci = ph->get_priv(ph);
+ 	u32 flags = 0;
+ 
+-	ret = ph->xops->xfer_get_init(ph, CLOCK_ROUND_RATE_GET,
++	ret = ph->xops->xfer_get_init(ph, CLOCK_OSTL_ROUND_RATE_GET,
+ 				      sizeof(*cfg), 0, &t);
+ 	if (ret)
+ 		return ret;
+@@ -467,6 +535,9 @@ scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+ 	ph->xops->xfer_put(ph, t);
+ 
+ 	return ret;
++#else
++	return -EOPNOTSUPP;
++#endif
+ }
+ 
+ static int
+@@ -474,19 +545,33 @@ scmi_clock_config_set(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 		      u32 config, bool atomic)
+ {
+ 	int ret;
++	size_t in_size;
+ 	struct scmi_xfer *t;
+ 	struct scmi_clock_set_config *cfg;
++	struct scmi_clock_set_config_v2 *cfg_v2;
++	struct clock_info *ci = ph->get_priv(ph);
++
++	if (PROTOCOL_REV_MAJOR(ci->version) >= 3)
++		in_size = sizeof(*cfg_v2);
++	else
++		in_size = sizeof(*cfg);
+ 
+ 	ret = ph->xops->xfer_get_init(ph, CLOCK_CONFIG_SET,
+-				      sizeof(*cfg), 0, &t);
++				      in_size, 0, &t);
+ 	if (ret)
+ 		return ret;
+ 
+ 	t->hdr.poll_completion = atomic;
+ 
+-	cfg = t->tx.buf;
+-	cfg->id = cpu_to_le32(clk_id);
+-	cfg->attributes = cpu_to_le32(config);
++	if (PROTOCOL_REV_MAJOR(ci->version) >= 3) {
++		cfg_v2 = t->tx.buf;
++		cfg_v2->id = cpu_to_le32(clk_id);
++		cfg_v2->attributes = cpu_to_le32(config);
++	} else {
++		cfg = t->tx.buf;
++		cfg->id = cpu_to_le32(clk_id);
++		cfg->attributes = cpu_to_le32(config);
++	}
+ 
+ 	ret = ph->xops->do_xfer(ph, t);
+ 
+-- 
+2.39.5
+

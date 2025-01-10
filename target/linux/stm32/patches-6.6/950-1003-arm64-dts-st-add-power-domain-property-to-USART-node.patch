@@ -1,0 +1,77 @@
+From d949cd574f37ec4ba5b97c87483397d1c8200943 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 10 Apr 2024 16:57:55 +0200
+Subject: [PATCH] arm64: dts: st: add power-domain property to USART nodes on
+ stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Update device-tree stm32mp211.dtsi to add USART power-domain features.
+
+Change-Id: I1dd83668d5e6f1890b6073541172db1ce84dc1b8
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372796
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 4354b5bd3a6c..a1a577314703 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -256,6 +256,7 @@ usart2: serial@400e0000 {
+ 				       <&hpdma 12 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 32>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -268,6 +269,7 @@ usart3: serial@400f0000 {
+ 				       <&hpdma 14 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 33>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -280,6 +282,7 @@ uart4: serial@40100000 {
+ 				       <&hpdma 16 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 34>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -292,6 +295,7 @@ uart5: serial@40110000 {
+ 				       <&hpdma 18 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 35>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -336,6 +340,7 @@ usart6: serial@40220000 {
+ 				       <&hpdma 20 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 36>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -393,6 +398,7 @@ usart1: serial@40330000 {
+ 				       <&hpdma 10 0x40 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 31>;
++				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
+ 			};
+ 
+-- 
+2.39.5
+

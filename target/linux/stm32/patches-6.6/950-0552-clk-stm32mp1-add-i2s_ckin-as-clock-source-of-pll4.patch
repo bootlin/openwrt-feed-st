@@ -1,0 +1,33 @@
+From 64279c678d266a23ebafcf2c4b33e149c46aab9b Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@st.com>
+Date: Tue, 3 Mar 2020 08:18:01 +0100
+Subject: [PATCH] clk: stm32mp1: add i2s_ckin as clock source of pll4
+
+i2s_ckin was missed as clock source of pll4.
+
+Change-Id: Ia46a013f4a6a899076043b2cbc5cc2ee4c74ee87
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/159962
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/clk/stm32/clk-stm32mp1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
+index 7e2337297402..07cb42515104 100644
+--- a/drivers/clk/stm32/clk-stm32mp1.c
++++ b/drivers/clk/stm32/clk-stm32mp1.c
+@@ -120,7 +120,7 @@ static const char * const ref3_parents[] = {
+ };
+ 
+ static const char * const ref4_parents[] = {
+-	"ck_hsi", "ck_hse", "ck_csi"
++	"ck_hsi", "ck_hse", "ck_csi", "i2s_ckin"
+ };
+ 
+ static const char * const cpu_src[] = {
+-- 
+2.39.5
+

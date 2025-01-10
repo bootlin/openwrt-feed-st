@@ -1,0 +1,43 @@
+From ec90f6b35e20ea2e4f03a98a186d234a7df2a95b Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Wed, 28 Aug 2024 15:58:39 +0200
+Subject: [PATCH] spi: stm32-ospi: avoid false timeout expiration
+
+In case of stress test, timeout could occurred. To avoid false timeout,
+check that the transfer is completed or not.
+
+Change-Id: Ic30ccb4222189caf83ea6af906f4a1a38876aa39
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/400850
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/spi/spi-stm32-ospi.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
+index aa603410845b..084b420d2e11 100644
+--- a/drivers/spi/spi-stm32-ospi.c
++++ b/drivers/spi/spi-stm32-ospi.c
+@@ -200,8 +200,13 @@ static int stm32_ospi_wait_poll_status(struct stm32_ospi *ospi,
+ 	writel_relaxed(cr | CR_SMIE, regs_base + OSPI_CR);
+ 
+ 	if (!wait_for_completion_timeout(&omi->match_completion,
+-					 msecs_to_jiffies(ospi->status_timeout)))
+-		return -ETIMEDOUT;
++					 msecs_to_jiffies(ospi->status_timeout))) {
++		u32 sr = readl_relaxed(regs_base + OSPI_SR);
++
++		/* Avoid false timeout */
++		if (!(sr & SR_SMF))
++			return -ETIMEDOUT;
++	}
+ 
+ 	writel_relaxed(FCR_CSMF, regs_base + OSPI_FCR);
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,64 @@
+From 4ba7cb6234974db22c260750bb94117a1b065933 Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Wed, 2 Oct 2024 15:14:26 +0200
+Subject: [PATCH] arm64: dts: st: add RISAB1/2/3/5 nodes to stm32mp211.dtsi
+
+Add RISAB1/2/3/5 nodes to this device tree SoC file.
+
+Change-Id: I6ffb0e02faa4731707016d3ffc1b5e855cf784ee
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408490
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 32 ++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index f8df6101da4d..c2a16c960f99 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1832,6 +1832,38 @@ risaf4: risaf@420d0000 {
+ 			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
+ 		};
+ 
++		risab1: risab@420f0000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x420f0000 0x0 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa000000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab2: risab@42100000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42100000 0x0 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa020000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab3: risab@42110000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42110000 0x0 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0x0a060000 0x10000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab5: risab@42130000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42130000 0x0 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0x0a040000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
+ 		hdp: pinctrl@44090000 {
+ 			compatible = "st,stm32mp-hdp";
+ 			reg = <0x44090000 0x0 0x400>;
+-- 
+2.39.5
+

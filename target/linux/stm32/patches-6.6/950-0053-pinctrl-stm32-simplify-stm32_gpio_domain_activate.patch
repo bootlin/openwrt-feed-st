@@ -1,0 +1,39 @@
+From af548dfa5411e5901b7e194f3c46fe855a73d293 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 19 Sep 2023 18:25:33 +0200
+Subject: [PATCH] pinctrl: stm32: simplify stm32_gpio_domain_activate()
+
+The variable 'ret' is only used locally and there is no need to
+initialize and propagate it till the function's end.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I317786d3573a943c8ae22f9c5fe89bb3c054aa9b
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 1f1cc352153f..d21ee06b3ed7 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -604,7 +604,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
+ {
+ 	struct stm32_gpio_bank *bank = d->host_data;
+ 	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
+-	int ret = 0;
++	int ret;
+ 
+ 	if (pctl->hwlock) {
+ 		ret = hwspin_lock_timeout_in_atomic(pctl->hwlock,
+@@ -620,7 +620,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
+ 	if (pctl->hwlock)
+ 		hwspin_unlock_in_atomic(pctl->hwlock);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+-- 
+2.39.5
+

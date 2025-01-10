@@ -1,0 +1,56 @@
+From 82150682d872ae9bdb441c7907594a90c3c64199 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 23 May 2024 18:34:16 +0200
+Subject: [PATCH] iio: trigger: stm32-timer: add support for stm32mp21
+
+Add support for STM32MP21 SoC using new compatible.
+
+Change-Id: I5e3c4531a2cab29c2dfeae70de5eaec380766063
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382224
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/trigger/stm32-timer-trigger.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
+index cd78a7f6be3e..733915b607e2 100644
+--- a/drivers/iio/trigger/stm32-timer-trigger.c
++++ b/drivers/iio/trigger/stm32-timer-trigger.c
+@@ -19,6 +19,8 @@
+ #define MAX_TRIGGERS 7
+ #define MAX_VALIDS 5
+ 
++#define STM32MP21_NUM_TRIGGERS 17
++
+ /* List the triggers created by each timer */
+ static const void *triggers_table[][MAX_TRIGGERS] = {
+ 	{ TIM1_TRGO, TIM1_TRGO2, TIM1_CH1, TIM1_CH2, TIM1_CH3, TIM1_CH4,},
+@@ -894,6 +896,11 @@ static const struct stm32_timer_trigger_cfg stm32h7_timer_trg_cfg = {
+ 	.num_valids_table = ARRAY_SIZE(stm32h7_valids_table),
+ };
+ 
++static const struct stm32_timer_trigger_cfg stm32mp21_timer_trg_cfg = {
++	/* The last timer instance is TIM17. */
++	.num_valids_table = STM32MP21_NUM_TRIGGERS,
++};
++
+ static const struct stm32_timer_trigger_cfg stm32mp25_timer_trg_cfg = {
+ 	/*
+ 	 * valids_table not used: counter framework is now superseding the deprecated IIO
+@@ -912,6 +919,9 @@ static const struct of_device_id stm32_trig_of_match[] = {
+ 	}, {
+ 		.compatible = "st,stm32h7-timer-trigger",
+ 		.data = (void *)&stm32h7_timer_trg_cfg,
++	}, {
++		.compatible = "st,stm32mp21-timer-trigger",
++		.data = (void *)&stm32mp21_timer_trg_cfg,
+ 	}, {
+ 		.compatible = "st,stm32mp25-timer-trigger",
+ 		.data = (void *)&stm32mp25_timer_trg_cfg,
+-- 
+2.39.5
+

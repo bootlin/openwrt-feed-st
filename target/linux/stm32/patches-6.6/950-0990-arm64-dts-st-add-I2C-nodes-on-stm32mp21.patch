@@ -1,0 +1,91 @@
+From 1f4ac13a0b22665bb5af1056d765c980b691c493 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 2 Apr 2024 14:29:32 +0200
+Subject: [PATCH] arm64: dts: st: add I2C nodes on stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The stm32mp21 series embeds 3 instances of i2c controllers.
+
+Change-Id: Ie33a18e18b0ba36ec757089e7b6c1af11733b7b7
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372678
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 48 ++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index ad52d3e085ce..4354b5bd3a6c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -295,6 +295,38 @@ uart5: serial@40110000 {
+ 				status = "disabled";
+ 			};
+ 
++			i2c1: i2c@40170000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40170000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C1>;
++				resets = <&rcc I2C1_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 23 0x40 0x3012>,
++				       <&hpdma 24 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 41>;
++				status = "disabled";
++			};
++
++			i2c2: i2c@40180000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x40180000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C2>;
++				resets = <&rcc I2C2_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 26 0x40 0x3012>,
++				       <&hpdma 27 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 42>;
++				status = "disabled";
++			};
++
+ 			usart6: serial@40220000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40220000 0x400>;
+@@ -399,6 +431,22 @@ spi6: spi@46020000 {
+ 				status = "disabled";
+ 			};
+ 
++			i2c3: i2c@46040000 {
++				compatible = "st,stm32mp25-i2c";
++				reg = <0x46040000 0x400>;
++				interrupt-names = "event";
++				interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I2C3>;
++				resets = <&rcc I2C3_R>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				dmas = <&hpdma 29 0x40 0x3012>,
++				       <&hpdma 30 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 43>;
++				status = "disabled";
++			};
++
+ 			sdmmc1: mmc@48220000 {
+ 				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+ 				arm,primecell-periphid = <0x00353180>;
+-- 
+2.39.5
+

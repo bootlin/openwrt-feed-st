@@ -1,0 +1,153 @@
+From 0bd70a3f7a23632cbee8b301a1bfc9590a285c5f Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Wed, 5 Jan 2022 18:57:44 +0100
+Subject: [PATCH] dt-bindings: PCI: Add STM32MP25 PCIe RC bindings
+
+STM32MP25 PCIe Controller is based on the DesignWare core configured as
+root complex mode from the SYSCFG register.
+It supports 4 legacy interrupts and MSI interrupts from the ARM
+GICv2m controller.
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Ic24b54a56df6d79a8ac2e783409cb3bcc922073d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/258470
+Reviewed-by: Christian BRUEL <christian.bruel@st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Christian BRUEL <christian.bruel@st.com>
+---
+ .../bindings/pci/st,stm32-pcie-host.yaml      | 123 ++++++++++++++++++
+ 1 file changed, 123 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+
+diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+new file mode 100644
+index 000000000000..2ab4b14d2cbd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
+@@ -0,0 +1,123 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/st,stm32-pcie-host.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: PCIe RC controller on STM32MP25 SoC
++
++maintainers:
++  - Christian Bruel <christian.bruel@foss.st.com>
++
++description: |
++  PCIe RC controller based on the Synopsys DesignWare PCIe core.
++
++allOf:
++  - $ref: /schemas/pci/snps,dw-pcie.yaml#
++
++properties:
++  compatible:
++    const: st,stm32mp25-pcie-rc
++
++  reg:
++    items:
++      - description: Data Bus Interface (DBI) registers.
++      - description: PCIe configuration registers.
++
++  reg-names:
++    items:
++      - const: dbi
++      - const: config
++
++  st,syscfg:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: Phandle to the SYSCON entry required for configuring PCIe mode.
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: pcie
++
++  clocks:
++    maxItems: 1
++    description: PCIe system clock
++
++  clock-names:
++    const: core
++
++  phys:
++    maxItems: 1
++
++  phy-names:
++    const: pcie-phy
++
++  num-lanes:
++    const: 1
++
++  max-link-speed:
++    enum: [1, 2]
++    default: 2
++
++  msi-parent:
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO controlled connection to PERST# signal
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  access-controllers:
++    maxItems: 1
++
++required:
++  - st,syscfg
++  - interrupt-map
++  - interrupt-map-mask
++  - ranges
++  - resets
++  - reset-names
++  - clocks
++  - clock-names
++  - phys
++  - phy-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/phy/phy.h>
++    #include <dt-bindings/clock/st,stm32mp25-rcc.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/reset/st,stm32mp25-rcc.h>
++
++    pcie_rc: pcie@48400000 {
++             compatible = "st,stm32mp25-pcie-rc";
++             device_type = "pci";
++             num-lanes = <1>;
++             reg = <0x48400000 0x400000>,
++                   <0x10000000 0x10000>;
++             reg-names = "dbi", "config";
++             st,syscfg = <&syscfg>;
++             #interrupt-cells = <1>;
++             interrupt-map-mask = <0 0 0 7>;
++             interrupt-map = <0 0 0 1 &intc 0 0 GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
++                             <0 0 0 2 &intc 0 0 GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>,
++                             <0 0 0 3 &intc 0 0 GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>,
++                             <0 0 0 4 &intc 0 0 GIC_SPI 267 IRQ_TYPE_LEVEL_HIGH>;
++             #address-cells = <3>;
++             #size-cells = <2>;
++             ranges = <0x01000000 0 0x10010000 0x10010000 0 0x10000>,
++                      <0x02000000 0 0x10020000 0x10020000 0 0x7fe0000>,
++                      <0x42000000 0 0x18000000 0x18000000 0 0x8000000>;
++             bus-range = <0x00 0xff>;
++             clocks = <&rcc CK_BUS_PCIE>;
++             clock-names = "core";
++             phys = <&combophy PHY_TYPE_PCIE>;
++             phy-names = "pcie-phy";
++             resets = <&rcc PCIE_R>;
++             reset-names = "pcie";
++             msi-parent = <&v2m0>;
++    };
+-- 
+2.39.5
+

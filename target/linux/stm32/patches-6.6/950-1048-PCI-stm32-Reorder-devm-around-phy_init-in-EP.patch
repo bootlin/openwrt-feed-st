@@ -1,0 +1,74 @@
+From d482f1e69e36b52c71fed9875e7c7585cfdf569f Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 7 Mar 2024 10:42:35 +0100
+Subject: [PATCH] PCI: stm32: Reorder devm around phy_init in EP
+
+Reorder devm calls around phy_init
+
+Fixes: 23a0930549cb ("PCI: stm32: Add PCIe EP mode support for STM32MP25")
+Change-Id: I328acc00baf285246fc77528d29adf3d0e258d44
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373818
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/pci/controller/dwc/pcie-stm32-ep.c | 34 ++++++++++------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
+index 6d70bd22e502..cbd873933cd2 100644
+--- a/drivers/pci/controller/dwc/pcie-stm32-ep.c
++++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
+@@ -330,24 +330,7 @@ static int stm32_add_pcie_ep(struct stm32_pcie *stm32_pcie,
+ 		return ret;
+ 	}
+ 
+-	stm32_pcie->perst_irq = gpiod_to_irq(stm32_pcie->reset_gpio);
+-
+-	/* Will be enabled in start_link when device is initialized. */
+-	irq_set_status_flags(stm32_pcie->perst_irq, IRQ_NOAUTOEN);
+-
+-	ret = devm_request_threaded_irq(dev, stm32_pcie->perst_irq, NULL,
+-					stm32_pcie_ep_perst_irq_thread,
+-					IRQF_TRIGGER_RISING |
+-					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+-					"perst_irq", stm32_pcie);
+-	if (ret) {
+-		dev_err(dev, "Failed to request PERST IRQ: %d\n", ret);
+-		dw_pcie_ep_exit(ep);
+-		stm32_pcie_disable_resources(stm32_pcie);
+-		pm_runtime_put_sync(dev);
+-	}
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -408,6 +391,21 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	stm32_pcie->perst_irq = gpiod_to_irq(stm32_pcie->reset_gpio);
++
++	/* Will be enabled in start_link when device is initialized. */
++	irq_set_status_flags(stm32_pcie->perst_irq, IRQ_NOAUTOEN);
++
++	ret = devm_request_threaded_irq(dev, stm32_pcie->perst_irq, NULL,
++					stm32_pcie_ep_perst_irq_thread,
++					IRQF_TRIGGER_RISING |
++					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++					"perst_irq", stm32_pcie);
++	if (ret) {
++		dev_err(dev, "Failed to request PERST IRQ: %d\n", ret);
++		return ret;
++	}
++
+ 	return stm32_add_pcie_ep(stm32_pcie, pdev);
+ }
+ 
+-- 
+2.39.5
+

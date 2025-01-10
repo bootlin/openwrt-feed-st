@@ -1,0 +1,88 @@
+From 3682d604ecbdd233bb7e38b8e18f0496d78a8969 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 31 Oct 2024 08:56:07 +0100
+Subject: [PATCH] drm/stm: ltdc: reset ltdc on crtc enable
+
+To avoid any blocking point between uboot and the kernel,
+ltdc must be reset. To have a continuous display,
+the reset is conditional on the boolean "default-on".
+The reset must be done when activating the crtc.
+
+Change-Id: I1f8c31087ea28fab4ff56400f1aa863541ed08c3
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/416185
+---
+ drivers/gpu/drm/stm/ltdc.c | 21 +++++++++++++++------
+ drivers/gpu/drm/stm/ltdc.h |  1 +
+ 2 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 2a25119cd995..11fb670c600c 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -810,8 +810,18 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+-	if (pm_runtime_active(ddev->dev))
++	if (pm_runtime_active(ddev->dev)) {
++		if (!IS_ERR(ldev->rstc)) {
++			reset_control_assert(ldev->rstc);
++			usleep_range(10, 20);
++			reset_control_deassert(ldev->rstc);
++		}
++
++		/* Wait a while to clear the current display */
++		mdelay(30);
++
+ 		pm_runtime_put_sync_suspend(ddev->dev);
++	}
+ 
+ 	/* get encoder from crtc */
+ 	drm_for_each_encoder(en_iter, ddev)
+@@ -2413,7 +2423,6 @@ int ltdc_load(struct drm_device *ddev)
+ 	struct drm_bridge *bridge;
+ 	struct drm_panel *panel;
+ 	struct drm_crtc *crtc;
+-	struct reset_control *rstc;
+ 	struct resource *res;
+ 	int irq, i, nb_endpoints;
+ 	int ret = -ENODEV;
+@@ -2472,7 +2481,7 @@ int ltdc_load(struct drm_device *ddev)
+ 		}
+ 	}
+ 
+-	rstc = devm_reset_control_get_exclusive(dev, NULL);
++	ldev->rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+ 	mutex_init(&ldev->err_lock);
+ 
+@@ -2483,10 +2492,10 @@ int ltdc_load(struct drm_device *ddev)
+ 	 * remain activated and reset shouldn't be done
+ 	 */
+ 	if (!def_value) {
+-		if (!IS_ERR(rstc)) {
+-			reset_control_assert(rstc);
++		if (!IS_ERR(ldev->rstc)) {
++			reset_control_assert(ldev->rstc);
+ 			usleep_range(10, 20);
+-			reset_control_deassert(rstc);
++			reset_control_deassert(ldev->rstc);
+ 		}
+ 	}
+ 
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 8d58bc93a460..356033af6b9b 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -71,6 +71,7 @@ struct ltdc_device {
+ 	u32 crc;
+ 	u32 max_burst_length;
+ 	struct reserved_mem *rot_mem;
++	struct reset_control *rstc;
+ 	struct stm32_firewall firewall[LTDC_MAX_FIREWALL];
+ 	bool plane_enabled[LTDC_MAX_LAYER];
+ };
+-- 
+2.39.5
+

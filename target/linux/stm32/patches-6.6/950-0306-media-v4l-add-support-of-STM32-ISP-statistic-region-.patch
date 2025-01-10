@@ -1,0 +1,123 @@
+From 8e3631fe5875dca93dab07984df472e677c4f516 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Thu, 8 Dec 2022 17:29:30 +0100
+Subject: [PATCH] media: v4l: add support of STM32 ISP statistic region control
+
+ISP_STAT_REGION can control one or several regions (rectangles) which
+define the area where the statistics are collected.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: Ib38b95ab734e559ecaf81e7276d406fe68e0c4c8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/292768
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ drivers/media/v4l2-core/v4l2-ctrls-core.c | 10 ++++++++--
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c |  4 ++++
+ include/uapi/linux/v4l2-controls.h        | 18 ++++++++++++++++++
+ include/uapi/linux/videodev2.h            |  2 ++
+ 4 files changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+index a662fb60f73f..865ae1b52147 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+@@ -367,7 +367,9 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+ 	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
+ 		pr_cont("AV1_FILM_GRAIN");
+ 		break;
+-
++	case V4L2_CTRL_TYPE_ISP_STAT_REGION:
++		pr_cont("ISP_STAT_REGION");
++		break;
+ 	default:
+ 		pr_cont("unknown type %d", ctrl->type);
+ 		break;
+@@ -1168,7 +1170,8 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+ 		if (!area->width || !area->height)
+ 			return -EINVAL;
+ 		break;
+-
++	case V4L2_CTRL_TYPE_ISP_STAT_REGION:
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1865,6 +1868,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
+ 		elem_size = sizeof(struct v4l2_ctrl_av1_film_grain);
+ 		break;
++	case V4L2_CTRL_TYPE_ISP_STAT_REGION:
++		elem_size = sizeof(struct v4l2_ctrl_isp_stat_region);
++		break;
+ 	case V4L2_CTRL_TYPE_AREA:
+ 		elem_size = sizeof(struct v4l2_area);
+ 		break;
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index 8696eb1cdd61..bf927997844a 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -1163,6 +1163,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_TEST_PATTERN:		return "Test Pattern";
+ 	case V4L2_CID_DEINTERLACING_MODE:	return "Deinterlacing Mode";
+ 	case V4L2_CID_DIGITAL_GAIN:		return "Digital Gain";
++	case V4L2_CID_ISP_STAT_REGION:		return "ISP Stat Region";
+ 
+ 	/* DV controls */
+ 	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+@@ -1602,6 +1603,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+ 		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+ 		break;
++	case V4L2_CID_ISP_STAT_REGION:
++		*type = V4L2_CTRL_TYPE_ISP_STAT_REGION;
++		break;
+ 	default:
+ 		*type = V4L2_CTRL_TYPE_INTEGER;
+ 		break;
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index c3604a0a3e30..2f57bdbc01a9 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -1212,6 +1212,24 @@ enum v4l2_jpeg_chroma_subsampling {
+ #define V4L2_CID_DEINTERLACING_MODE		(V4L2_CID_IMAGE_PROC_CLASS_BASE + 4)
+ #define V4L2_CID_DIGITAL_GAIN			(V4L2_CID_IMAGE_PROC_CLASS_BASE + 5)
+ 
++#define V4L2_CID_ISP_STAT_REGION		(V4L2_CID_IMAGE_PROC_CLASS_BASE + 10)
++/**
++ * struct v4l2_ctrl_isp_stat_region - Region where ISP statistics are collected
++ *
++ * @nb_regions: number of regions
++ * @top: top coordinate of a region
++ * @left: left coordinate of a region
++ * @width: width of a region
++ * @height: height of a region
++ */
++struct v4l2_ctrl_isp_stat_region {
++	__u8 nb_regions;
++	__u32 top[25];
++	__u32 left[25];
++	__u32 width[25];
++	__u32 height[25];
++};
++
+ /*  DV-class control IDs defined by V4L2 */
+ #define V4L2_CID_DV_CLASS_BASE			(V4L2_CTRL_CLASS_DV | 0x900)
+ #define V4L2_CID_DV_CLASS			(V4L2_CTRL_CLASS_DV | 1)
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index ea63184afe48..bf96b8f492ce 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -1918,6 +1918,8 @@ enum v4l2_ctrl_type {
+ 	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
+ 	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
+ 	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
++
++	V4L2_CTRL_TYPE_ISP_STAT_REGION     = 0x0310,
+ };
+ 
+ /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
+-- 
+2.39.5
+

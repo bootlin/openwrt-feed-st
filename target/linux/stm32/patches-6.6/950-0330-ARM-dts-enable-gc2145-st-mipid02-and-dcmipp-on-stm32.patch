@@ -1,0 +1,61 @@
+From fabe6471537f437fde70ef39846e85472c3fd3ca Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 2 Feb 2024 16:18:57 +0100
+Subject: [PATCH] ARM: dts: enable gc2145/st-mipid02 and dcmipp on
+ stm32mp135f-dk.dts
+
+Change-Id: Ida97887c0713e78f304e1802a11dfa59d6e52dd4
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 4e14ee918dc8..893378d27470 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -165,7 +165,7 @@ &arm_wdt {
+ };
+ 
+ &dcmipp {
+-	status = "disabled";
++	status = "okay";
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&dcmipp_pins_a>;
+ 	pinctrl-1 = <&dcmipp_sleep_pins_a>;
+@@ -249,7 +249,7 @@ &i2c5 {
+ 	stmipi: stmipi@14 {
+ 		compatible = "st,st-mipid02";
+ 		reg = <0x14>;
+-		status = "disabled";
++		status = "okay";
+ 		clocks = <&clk_mco1>;
+ 		clock-names = "xclk";
+ 		VDDE-supply = <&scmi_v1v8_periph>;
+@@ -286,18 +286,19 @@ gc2145: gc2145@3c {
+ 		compatible = "galaxycore,gc2145";
+ 		reg = <0x3c>;
+ 		clocks = <&clk_ext_camera>;
+-		IOVDD-supply = <&scmi_v3v3_sw>;
+-		AVDD-supply = <&scmi_v3v3_sw>;
+-		DVDD-supply = <&scmi_v3v3_sw>;
++		iovdd-supply = <&scmi_v3v3_sw>;
++		avdd-supply = <&scmi_v3v3_sw>;
++		dvdd-supply = <&scmi_v3v3_sw>;
+ 		powerdown-gpios = <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
+ 		reset-gpios = <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
+-		status = "disabled";
++		status = "okay";
+ 
+ 		port {
+ 			gc2145_ep: endpoint {
+ 				remote-endpoint = <&mipid02_0>;
+ 				clock-lanes = <0>;
+ 				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <120000000 192000000 240000000>;
+ 			};
+ 		};
+ 	};
+-- 
+2.39.5
+

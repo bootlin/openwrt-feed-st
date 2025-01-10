@@ -1,0 +1,66 @@
+From b403ad4737126327cda618f31768d704b8845496 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Wed, 17 Jan 2024 17:28:14 +0100
+Subject: [PATCH] mtd: hyperbus: Provide external access to
+ hyperbus_sfdp_mode_on/off()
+
+Provide external access to hyperbus_sfdp_mode_on/off() functions
+
+Change-Id: Id59ff0781c53287f52e537b8e167e308e8b5c897
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369129
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/mtd/hyperbus/hyperbus-sfdp.c | 6 ++++--
+ include/linux/mtd/sfdp.h             | 5 ++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
+index 7efcc3c2cc0f..d6d6f75f1f41 100644
+--- a/drivers/mtd/hyperbus/hyperbus-sfdp.c
++++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
+@@ -64,7 +64,7 @@ static int __xipram hyperbus_sfdp_present(struct map_info *map, __u32 base,
+ 	return 1; /* "SFDP" found */
+ }
+ 
+-static int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
++int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
+ 					  struct cfi_private *cfi)
+ {
+ 	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
+@@ -73,12 +73,14 @@ static int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
+ 	hyperbus_write(HYPERBUS_CMD_RDSFDP, HYPERBUS_ADDR_UNLOCK1, map, cfi);
+ 	return hyperbus_sfdp_present(map, 0, cfi);
+ }
++EXPORT_SYMBOL_GPL(hyperbus_sfdp_mode_on);
+ 
+-static void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
++void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
+ 					    struct cfi_private *cfi)
+ {
+ 	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
+ }
++EXPORT_SYMBOL_GPL(hyperbus_sfdp_mode_off);
+ 
+ static u16 __xipram hyperbus_s26hx_rdvcr1(struct map_info *map,
+ 					  struct cfi_private *cfi)
+diff --git a/include/linux/mtd/sfdp.h b/include/linux/mtd/sfdp.h
+index 2bdb8cdc8170..8f33c356a0e0 100644
+--- a/include/linux/mtd/sfdp.h
++++ b/include/linux/mtd/sfdp.h
+@@ -5,5 +5,8 @@
+ #include <linux/mtd/gen_probe.h>
+ 
+ struct mtd_info *hyperbus_sfdp_probe(struct map_info *map);
+-
++int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
++				   struct cfi_private *cfi);
++void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
++				     struct cfi_private *cfi);
+ #endif /* __MTD_SFDP_H__ */
+-- 
+2.39.5
+

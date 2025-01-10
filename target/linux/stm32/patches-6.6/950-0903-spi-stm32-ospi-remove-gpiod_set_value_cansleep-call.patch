@@ -1,0 +1,46 @@
+From 06680e367d8d514126ed7b5fc31f579c3c6e0960 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 23 Feb 2024 12:22:56 +0100
+Subject: [PATCH] spi: stm32-ospi: remove gpiod_set_value_cansleep call
+
+gpiod_set_value_cansleep() not needed around stm32_ospi_dtr_calibration()
+as there are already present around stm32_ospi_send() in
+stm32_ospi_readid() which is called by stm32_ospi_dtr_calibration().
+
+Change-Id: I7f77856a2ab17ef7b280311f07ab8fd7d962f6e6
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369124
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/spi/spi-stm32-ospi.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
+index 7c4b043297a6..93154e826bbe 100644
+--- a/drivers/spi/spi-stm32-ospi.c
++++ b/drivers/spi/spi-stm32-ospi.c
+@@ -621,9 +621,6 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+ 	};
+ 
+ 	if (op->cmd.dtr && !flash->dtr_calibration_done_once) {
+-		if (spi->cs_gpiod)
+-			gpiod_set_value_cansleep(spi->cs_gpiod, false);
+-
+ 		stm32_omi_dlyb_stop(omi);
+ 		flash->sample_later = false;
+ 		flash->octal_dtr = (op->cmd.nbytes == 2);
+@@ -633,8 +630,6 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+ 			return ret;
+ 
+ 		flash->dtr_mode = true;
+-		if (spi->cs_gpiod)
+-			gpiod_set_value_cansleep(spi->cs_gpiod, true);
+ 	}
+ 
+ 	/*
+-- 
+2.39.5
+

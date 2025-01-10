@@ -1,0 +1,55 @@
+From 70ad8bfde73a5bc94ee1dd254eadee536d119f4d Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 20 May 2024 10:30:46 +0200
+Subject: [PATCH] arm64: dts: st: add mlahb node on stm32mp21
+
+Add mlahb node for stm32mp21x platform.
+
+Change-Id: I34a44146ffc93c6a4ab3d5ae88079e99c842afde
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384057
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 2549c686f688..58eff8a6e47d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2254,4 +2254,28 @@ mtl_tx_setup_1: tx-queues-config {
+ 			};
+ 		};
+ 	};
++
++	mlahb: ahb@2 {
++		compatible = "st,mlahb", "simple-bus";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x0 0xfffffffc>;
++		dma-ranges = <0x0 0x0 0x0 0xfffffffc>;
++
++		m33_rproc: m33@0 {
++			compatible = "st,stm32mp2-m33";
++			reg = <0 0>;
++			resets = <&scmi_reset RST_SCMI_C2_R>,
++				 <&scmi_reset RST_SCMI_C2_HOLDBOOT_R>;
++			reset-names = "mcu_rst", "hold_boot";
++			st,syscfg-cm-state = <&pwr 0x204 0x0000000c>;
++			interrupt-parent = <&intc>;
++			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
++			nvmem-cells = <&rsc_tbl_addr>, <&rsc_tbl_size>;
++			nvmem-cell-names = "rsc-tbl-addr", "rsc-tbl-size";
++
++			status = "disabled";
++		};
++	};
++
+ };
+-- 
+2.39.5
+

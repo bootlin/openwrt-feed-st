@@ -1,0 +1,32 @@
+From 0d390351dc56056d5479cdf45cc473ccd3e307e3 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Fri, 9 Feb 2024 18:17:30 +0100
+Subject: [PATCH] arm64: dts: st: remove empty line in stm32mp251.dtsi
+
+Remove unnecessary empty line in stm32mp251.dtsi
+
+Fixes: 5d30d03aaf78 ("arm64: dts: st: introduce stm32mp25 SoCs family")
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ia426b4ef1d1200247a950ef9abd54a94dc520acb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/359282
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5268a4321841..2b9c08190809 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -273,7 +273,6 @@ gpioz: gpio@46200000 {
+ 				st,bank-ioport = <11>;
+ 				status = "disabled";
+ 			};
+-
+ 		};
+ 	};
+ };
+-- 
+2.39.5
+

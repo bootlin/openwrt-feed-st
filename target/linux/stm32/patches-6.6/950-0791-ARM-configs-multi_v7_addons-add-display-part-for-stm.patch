@@ -1,0 +1,51 @@
+From b1beff70a302a8b3e59ffeb732b0136daab549df Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 23 Feb 2024 08:52:39 +0100
+Subject: [PATCH] ARM: configs: multi_v7_addons: add display part for stm32mp1
+
+Add display part (cec, dsi, ts, ltdc, bridge) to multi_v7 addons
+fragment file.
+
+Change-Id: Ib672a81850ef6c47f23297e7ce71818e631b4a19
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 2710103972f3..15c0afcf584a 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -3,10 +3,20 @@ CONFIG_AEABI=y
+ CONFIG_ARCH_FORCE_MAX_ORDER=12
+ CONFIG_ARM_SMC_MBOX=y
+ CONFIG_ARM_SMC_WATCHDOG=y
++CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CHR_DEV_SG=y
+ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_DEBUG_PREEMPT=y
+ CONFIG_DEBUG_SECTION_MISMATCH=y
++CONFIG_DRM_DISPLAY_CONNECTOR=y
++CONFIG_DRM_I2C_ADV7511=y
++CONFIG_DRM_PANEL_ORISETECH_OTM8009A=y
++CONFIG_DRM_PANEL_RAYDIUM_RM68200=y
++CONFIG_DRM_PANEL_ROCKTECH_HX8394=y
++CONFIG_DRM_SII902X=y
++CONFIG_DRM_SIMPLEDRM=y
++CONFIG_DRM_STM=y
++CONFIG_DRM_STM_DSI=y
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_FUTEX=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+@@ -50,6 +60,8 @@ CONFIG_SRAM=y
+ CONFIG_STM32_IPCC=y
+ CONFIG_STM32_RPROC=y
+ CONFIG_TEE_REMOTEPROC=y
++CONFIG_TOUCHSCREEN_EDT_FT5X06=y
++CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_ONBOARD_HUB=y
+ CONFIG_VFP=y
+-- 
+2.39.5
+

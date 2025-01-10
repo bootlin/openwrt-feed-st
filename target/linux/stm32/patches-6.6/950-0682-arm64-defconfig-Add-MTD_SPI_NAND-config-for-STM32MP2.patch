@@ -1,0 +1,34 @@
+From 17192ff874c43818159c7630fa95855a220c140a Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 17 Mar 2022 11:14:35 +0100
+Subject: [PATCH] arm64: defconfig: Add MTD_SPI_NAND config for STM32MP25
+
+Enable SPI NAND support.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I79f1c629ff5af501a71782c50a8859746c9ef276
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/242639
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/307845
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 70aa0d2afff1..58925de6806e 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -11,6 +11,7 @@ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+ CONFIG_MTD_NAND_STM32_FMC2=y
+ CONFIG_MTD_HYPERBUS=y
++CONFIG_MTD_SPI_NAND=y
+ CONFIG_MTD_UBI=y
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_OF_OVERLAY=y
+-- 
+2.39.5
+

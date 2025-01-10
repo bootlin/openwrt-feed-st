@@ -1,0 +1,63 @@
+From d214f8f16853d6dcb37cf94fe9c23005ec70c277 Mon Sep 17 00:00:00 2001
+From: Nuno Sa <nuno.sa@analog.com>
+Date: Tue, 30 Jul 2024 16:17:10 +0200
+Subject: [PATCH] iio: backend: remove unused parameter
+
+Indio_dev was not being used in iio_backend_extend_chan_spec() so remove
+it.
+
+Change-Id: Ie563100ae17221ad991c71478a56aa32b7cfbb4d
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://patch.msgid.link/20240709-dev-iio-backend-add-debugfs-v1-1-fb4b8f2373c7@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397582
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/iio/industrialio-backend.c | 4 +---
+ include/linux/iio/backend.h        | 3 +--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index 929aff4040ed..e01b7be8e693 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -451,7 +451,6 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_set, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_extend_chan_spec - Extend an IIO channel
+- * @indio_dev: IIO device
+  * @back: Backend device
+  * @chan: IIO channel
+  *
+@@ -461,8 +460,7 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_set, IIO_BACKEND);
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+  */
+-int iio_backend_extend_chan_spec(struct iio_dev *indio_dev,
+-				 struct iio_backend *back,
++int iio_backend_extend_chan_spec(struct iio_backend *back,
+ 				 struct iio_chan_spec *chan)
+ {
+ 	const struct iio_chan_spec_ext_info *frontend_ext_info = chan->ext_info;
+diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
+index 8099759d7242..4e81931703ab 100644
+--- a/include/linux/iio/backend.h
++++ b/include/linux/iio/backend.h
+@@ -142,8 +142,7 @@ ssize_t iio_backend_ext_info_set(struct iio_dev *indio_dev, uintptr_t private,
+ ssize_t iio_backend_ext_info_get(struct iio_dev *indio_dev, uintptr_t private,
+ 				 const struct iio_chan_spec *chan, char *buf);
+ 
+-int iio_backend_extend_chan_spec(struct iio_dev *indio_dev,
+-				 struct iio_backend *back,
++int iio_backend_extend_chan_spec(struct iio_backend *back,
+ 				 struct iio_chan_spec *chan);
+ void *iio_backend_get_priv(const struct iio_backend *conv);
+ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name);
+-- 
+2.39.5
+

@@ -1,0 +1,33 @@
+From 524bd3db02255d58e4e9b9622faf2c70acc25cde Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 8 Mar 2022 15:53:50 +0100
+Subject: [PATCH] ARM: dts: stm32: add wake-up button on stm32mp135f-dk
+
+Adds wake-up button, that comes from OPTEE interrupt number ZERO.
+
+Change-Id: I141fc2d2c2c4558ff0d02c76923d0d28d763c703
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 893378d27470..72ef5fcc30c6 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -77,6 +77,12 @@ button-user {
+ 			linux,code = <BTN_1>;
+ 			gpios = <&gpioa 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ 		};
++
++		button-wakeup {
++			label = "wake-up";
++			linux,code = <KEY_WAKEUP>;
++			interrupts-extended = <&optee 0>;
++		};
+ 	};
+ 
+ 	leds {
+-- 
+2.39.5
+

@@ -1,0 +1,66 @@
+From 4eb3e60486cc628e73b4772e9bddcb1d76791249 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Wed, 3 Apr 2024 14:59:10 +0200
+Subject: [PATCH] arm64: dts: st: add sdmmc2 and sdmmc3 nodes for stm32mp21
+
+Add sdmmc2 and sdmmc3 nodes for stm32mp21.
+
+Change-Id: I78ae68525f19e3efa77556e38b9e2c11cca77c35
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371721
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 32 ++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 53f653a9f3c8..7cee0fe182ef 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -159,6 +159,38 @@ sdmmc1: mmc@48220000 {
+ 				st,syscfg-arcr = <&syscfg 0x40c 0x1>;
+ 				status = "disabled";
+ 			};
++
++			sdmmc2: mmc@48230000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48230000 0x400>, <0x44230800 0x8>;
++				interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SDMMC2>;
++				clock-names = "apb_pclk";
++				resets = <&rcc SDMMC2_R>;
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				access-controllers = <&rifsc 77>;
++				st,syscfg-arcr = <&syscfg 0x80c 0x1>;
++				status = "disabled";
++			};
++
++			sdmmc3: mmc@48240000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48240000 0x400>, <0x44230c00 0x8>;
++				interrupts = <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SDMMC3>;
++				clock-names = "apb_pclk";
++				resets = <&rcc SDMMC3_R>;
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				access-controllers = <&rifsc 78>;
++				st,syscfg-arcr = <&syscfg 0xc0c 0x1>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		rcc: clock-controller@44200000 {
+-- 
+2.39.5
+

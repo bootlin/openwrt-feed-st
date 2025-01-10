@@ -1,0 +1,37 @@
+From f460325764c83916426fea0bed4501cb7da32e12 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@st.com>
+Date: Wed, 7 Oct 2020 15:13:09 +0200
+Subject: [PATCH] clk: stm32mp1: Add CLK_IGNORE_UNUSED to ck_trace clock
+
+Don't disable the tracing clock if it was set by bootloader or by
+an external debugger tool.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Change-Id: I8883d6442412c3610ee5d0f66cb74ba71766d79a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/179914
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@st.com>
+Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou-ext@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/clk/stm32/clk-stm32mp1.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
+index 6a77d642dbd5..a68d7a37f628 100644
+--- a/drivers/clk/stm32/clk-stm32mp1.c
++++ b/drivers/clk/stm32/clk-stm32mp1.c
+@@ -2199,7 +2199,8 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+ 	GATE(CK_DBG, "ck_sys_dbg", "ck_axi", CLK_IGNORE_UNUSED,
+ 	     RCC_DBGCFGR, 8, 0),
+ 
+-	COMPOSITE(CK_TRACE, "ck_trace", ck_trace_src, CLK_OPS_PARENT_ENABLE,
++	COMPOSITE(CK_TRACE, "ck_trace", ck_trace_src,
++		  CLK_OPS_PARENT_ENABLE | CLK_IGNORE_UNUSED,
+ 		  _GATE(RCC_DBGCFGR, 9, 0),
+ 		  _NO_MUX,
+ 		  _DIV(RCC_DBGCFGR, 0, 3, 0, ck_trace_div_table)),
+-- 
+2.39.5
+

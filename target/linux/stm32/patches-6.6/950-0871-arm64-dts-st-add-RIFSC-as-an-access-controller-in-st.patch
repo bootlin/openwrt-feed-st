@@ -1,0 +1,73 @@
+From 093a5da8d63605177a298f5da882f0eb9affb138 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Thu, 22 Feb 2024 16:09:04 +0100
+Subject: [PATCH] arm64: dts: st: add RIFSC as an access-controller in
+ stm32mp211 SoC file
+
+Add RIFSC as an access-controller for this SoC family.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I33af5a74cca4e7e5f4c1926112bf1f348524f6be
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/362104
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Francois CHOLEAU <francois.choleau@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index ba2aa514fc42..9c411cfcfeb4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -87,10 +87,11 @@ soc@0 {
+ 		ranges = <0x0 0x0 0x0 0x80000000>;
+ 
+ 		rifsc: bus@42080000 {
+-			compatible = "simple-bus";
++			compatible = "st,stm32mp25-rifsc", "simple-bus";
+ 			reg = <0x42080000 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
++			#access-controller-cells = <1>;
+ 			ranges;
+ 
+ 			usart2: serial@400e0000 {
+@@ -98,6 +99,7 @@ usart2: serial@400e0000 {
+ 				reg = <0x400e0000 0x400>;
+ 				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART2>;
++				access-controllers = <&rifsc 32>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -106,6 +108,7 @@ uart4: serial@40100000 {
+ 				reg = <0x40100000 0x400>;
+ 				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART4>;
++				access-controllers = <&rifsc 34>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -120,6 +123,7 @@ sdmmc1: mmc@48220000 {
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+ 				max-frequency = <120000000>;
++				access-controllers = <&rifsc 76>;
+ 				status = "disabled";
+ 			};
+ 		};
+@@ -200,6 +204,7 @@ rcc: clock-controller@44200000 {
+ 				<&scmi_clk CK_SCMI_ICN_APBDBG>,
+ 				<&scmi_clk CK_SCMI_TIMG1>,
+ 				<&scmi_clk CK_SCMI_TIMG2>;
++			access-controllers = <&rifsc 156>;
+ 		};
+ 
+ 		syscfg: syscon@44230000 {
+-- 
+2.39.5
+

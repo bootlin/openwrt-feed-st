@@ -1,0 +1,48 @@
+From f6e33af19395a74db71a66551f799f673daf3520 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Mon, 29 Nov 2021 18:10:53 +0100
+Subject: [PATCH] usb: dwc2: handle suspended gadget when going to low power
+
+In power_down mode 'none', in case the bus is suspended before going to
+low power mode, dwc2_hsotg_suspend() will be a no-op. When resuming,
+the controller registers may have been lost. But dwc2_hsotg_resume
+will also be a no-op. So the gadget needs to be properly suspended, so it
+can be later resumed.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I7deb8aecbec1420060ee05a74c4fa0a5e7315a7d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229475
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/platform.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index e313fbe8b7b4..ffa58e248652 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -647,8 +647,19 @@ static int __maybe_unused dwc2_suspend(struct device *dev)
+ 	bool is_device_mode = dwc2_is_device_mode(dwc2);
+ 	int ret = 0;
+ 
+-	if (is_device_mode)
++	if (is_device_mode) {
++		/*
++		 * Handle the case when bus has been suspended prior to platform suspend.
++		 * As the lx_state is DWC2_L2, dwc2_hsotg_suspend() is then a no-op.
++		 * So need to exit clock gating first, so the gadget can be suspended and
++		 * resumed later on.
++		 */
++		if (dwc2->params.power_down == DWC2_POWER_DOWN_PARAM_NONE &&
++		    dwc2->bus_suspended)
++			dwc2_gadget_exit_clock_gating(dwc2, 0);
++
+ 		dwc2_hsotg_suspend(dwc2);
++	}
+ 
+ 	dwc2_drd_suspend(dwc2);
+ 
+-- 
+2.39.5
+

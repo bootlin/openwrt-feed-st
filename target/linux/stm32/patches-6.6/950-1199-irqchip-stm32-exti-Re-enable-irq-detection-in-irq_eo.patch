@@ -1,0 +1,62 @@
+From faa6b6e64e36df2c430119f2c969394d2a5367b5 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 28 Mar 2023 14:57:33 +0200
+Subject: [PATCH] irqchip/stm32-exti: Re-enable irq detection in irq_eoi
+
+EXTI interrupt controller is based on input edge detection.
+Each bit in EXTI Interrupt Mask Register (IMR) disables the edge
+detection while masking the interrupt.
+
+The current code can fail detecting an interrupt in the following
+setup:
+- the interrupt client of EXTI requests a threaded interrupt;
+- the EXTI interrupt line is of "configurable" event type, which
+  means that EXTI is responsible to detect the input's edge and to
+  propagate the interrupt to the parent irq_chip (GIC);
+- a second interrupt (the one that will be lost) arrives while
+  handling a previous interrupt, as explained below.
+
+The interrupt client of EXTI requests a threaded interrupt and uses
+the flag IRQF_ONESHOT. To serve interrupts, the EXTI irq_eoi()
+will be called with interrupt masked; irq_mask() will be executed
+before irq_eoi() and irq_unmask() will be executed later on, after
+the threaded handler of the client.
+If the interrupt client suddenly re-triggers the interrupt between
+the end of its threaded handler and the EXTI irq_unmask(), EXTI
+will miss the interrupt.
+
+For "configurable" events, EXTI uses GIC as hierarchically parent
+interrupt controller and GIC is able to mask the interrupts that
+arrive from EXTI. This makes possible to re-enable the EXTI IMR
+bit during irq_eoi(); the GIC will take care of masking an incoming
+interrupt from EXTI.
+
+Re-enable the IMR bit in irq_eoi() to detect the edge of the
+interrupt before irq_unmask() is called.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I80a8c31a8a5a91672fc5d1d1794623f0113b7fb3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383200
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 22f4bb0f76a0..3e431c39103d 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -335,6 +335,8 @@ static void stm32mp_exti_eoi(struct irq_data *d)
+ 	stm32mp_exti_write_bit(d, bank->rpr_ofst);
+ 	stm32mp_exti_write_bit(d, bank->fpr_ofst);
+ 
++	chip_data->mask_cache = stm32mp_exti_set_bit(d, bank->imr_ofst);
++
+ 	raw_spin_unlock(&chip_data->rlock);
+ 
+ 	irq_chip_eoi_parent(d);
+-- 
+2.39.5
+

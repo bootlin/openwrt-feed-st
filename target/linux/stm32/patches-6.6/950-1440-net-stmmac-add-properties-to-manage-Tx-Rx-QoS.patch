@@ -1,0 +1,105 @@
+From 6751823b51dfa6c6c8afa354d512874abe9d4596 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 10 Sep 2024 15:57:49 +0200
+Subject: [PATCH] net: stmmac: add properties to manage Tx/Rx QoS
+
+Add 2 new properties to manage Tx/Rx Qos transactions of DMA Channel.
+In SNPS IP, in registers Channel transmit/receive control, there are a
+bitfield TQOS and RQOS, these fields are used to drive priority of output
+signals for all transactions of DMA Tx/Rx Channel.
+Value of Transmit and Receive QoS is value between 0 and 15.
+(15 is best priority)
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: Ib3121d2072535f2e0a207467e31f709456df400e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368138
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404476
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c      | 11 +++++++++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h      |  5 +++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c |  2 ++
+ include/linux/stmmac.h                                |  2 ++
+ 4 files changed, 20 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+index 84d3a8551b03..bf70ad5837b2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+@@ -80,6 +80,12 @@ static void dwmac4_dma_init_rx_chan(struct stmmac_priv *priv,
+ 
+ 	value = readl(ioaddr + DMA_CHAN_RX_CONTROL(dwmac4_addrs, chan));
+ 	value = value | (rxpbl << DMA_BUS_MODE_RPBL_SHIFT);
++
++	/* Set Receive QOS */
++	value &= ~DMA_CONTROL_RQOS;
++	value |= (dma_cfg->rxqos & DMA_CONTROL_XQOS_MAX) <<
++		 DMA_CONTROL_RQOS_SHIFT;
++
+ 	writel(value, ioaddr + DMA_CHAN_RX_CONTROL(dwmac4_addrs, chan));
+ 
+ 	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) && likely(dma_cfg->eame))
+@@ -105,6 +111,11 @@ static void dwmac4_dma_init_tx_chan(struct stmmac_priv *priv,
+ 	/* Enable OSP to get best performance */
+ 	value |= DMA_CONTROL_OSP;
+ 
++	/* Set Transmit QOS */
++	value &= ~DMA_CONTROL_TQOS;
++	value |= (dma_cfg->txqos & DMA_CONTROL_XQOS_MAX) <<
++		 DMA_CONTROL_TQOS_SHIFT;
++
+ 	writel(value, ioaddr + DMA_CHAN_TX_CONTROL(dwmac4_addrs, chan));
+ 
+ 	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT) && likely(dma_cfg->eame))
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
+index 358e7dcb6a9a..f0f36fb56352 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h
+@@ -137,11 +137,16 @@ static inline u32 dma_chanx_base_addr(const struct dwmac4_addrs *addrs,
+ 
+ /* DMA Tx Channel X Control register defines */
+ #define DMA_CONTROL_EDSE		BIT(28)
++#define DMA_CONTROL_TQOS		GENMASK(27, 24)
++#define DMA_CONTROL_TQOS_SHIFT		24
++#define DMA_CONTROL_XQOS_MAX		0xf
+ #define DMA_CONTROL_TSE			BIT(12)
+ #define DMA_CONTROL_OSP			BIT(4)
+ #define DMA_CONTROL_ST			BIT(0)
+ 
+ /* DMA Rx Channel X Control register defines */
++#define DMA_CONTROL_RQOS		GENMASK(27, 24)
++#define DMA_CONTROL_RQOS_SHIFT		24
+ #define DMA_CONTROL_SR			BIT(0)
+ #define DMA_RBSZ_MASK			GENMASK(14, 1)
+ #define DMA_RBSZ_SHIFT			1
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index e9d67edae22b..c4c21804b8e6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -562,6 +562,8 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+ 	of_property_read_u32(np, "snps,txpbl", &dma_cfg->txpbl);
+ 	of_property_read_u32(np, "snps,rxpbl", &dma_cfg->rxpbl);
+ 	dma_cfg->pblx8 = !of_property_read_bool(np, "snps,no-pbl-x8");
++	of_property_read_u32(np, "snps,txqos", &dma_cfg->txqos);
++	of_property_read_u32(np, "snps,rxqos", &dma_cfg->rxqos);
+ 
+ 	dma_cfg->aal = of_property_read_bool(np, "snps,aal");
+ 	dma_cfg->fixed_burst = of_property_read_bool(np, "snps,fixed-burst");
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index d32c22f70594..b9a112ec1eeb 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -93,6 +93,8 @@ struct stmmac_dma_cfg {
+ 	int pbl;
+ 	int txpbl;
+ 	int rxpbl;
++	int txqos;
++	int rxqos;
+ 	bool pblx8;
+ 	int fixed_burst;
+ 	int mixed_burst;
+-- 
+2.39.5
+

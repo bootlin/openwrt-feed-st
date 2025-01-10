@@ -1,0 +1,112 @@
+From 537a8a51caa90a0c96733a06760865eccc9b3e79 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 18 Apr 2018 16:46:09 +0200
+Subject: [PATCH] dt-bindings: rtc: stm32: add st,lsco optional property to
+ select output
+
+STM32 RTC has three output pins: RTC_OUT1, RTC_OUT2 or RTC_OUT2_RMP.
+
+RTC Low-Speed Clock Output (LSCO) can be output on RTC_OUT1 or
+RTC_OUT2_RMP.
+
+This patch adds constants for RTC output bindings and adds st,lsco
+optional property for stm32 rtc driver, to select and enable LSCO.
+A pinctrl state is also optional to reserve pin for RTC output.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I41e0ab7090b8f007978ba549c22fe53bb420bac0
+---
+ .../devicetree/bindings/rtc/st,stm32-rtc.yaml | 20 +++++++++++++++++++
+ include/dt-bindings/rtc/rtc-stm32.h           | 14 +++++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 include/dt-bindings/rtc/rtc-stm32.h
+
+diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+index 4703083d1f11..939ce15d6028 100644
+--- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+@@ -52,6 +52,13 @@ properties:
+       override default rtc_ck parent clock phandle of the new parent clock of rtc_ck
+     maxItems: 1
+ 
++  st,lsco:
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    description: |
++      To select and enable RTC Low Speed Clock Output.
++      Refer to <include/dt-bindings/rtc/rtc-stm32.h> for the supported values.
++      Pinctrl state named "default" may be defined to reserve pin for RTC output.
++
+ allOf:
+   - if:
+       properties:
+@@ -65,6 +72,9 @@ allOf:
+           minItems: 1
+           maxItems: 1
+ 
++        st,lsco:
++          maxItems: 0
++
+         clock-names: false
+ 
+       required:
+@@ -82,6 +92,9 @@ allOf:
+           minItems: 2
+           maxItems: 2
+ 
++        st,lsco:
++          maxItems: 0
++
+       required:
+         - clock-names
+         - st,syscfg
+@@ -101,6 +114,9 @@ allOf:
+         assigned-clocks: false
+         assigned-clock-parents: false
+ 
++        st,lsco:
++          maxItems: 1
++
+       required:
+         - clock-names
+ 
+@@ -130,12 +146,16 @@ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+     #include <dt-bindings/clock/stm32mp1-clks.h>
++    #include <dt-bindings/rtc/rtc-stm32.h>
+     rtc@5c004000 {
+       compatible = "st,stm32mp1-rtc";
+       reg = <0x5c004000 0x400>;
+       clocks = <&rcc RTCAPB>, <&rcc RTC>;
+       clock-names = "pclk", "rtc_ck";
+       interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++      st,lsco = <RTC_OUT2_RMP>;
++      pinctrl-0 = <&rtc_out2_rmp_pins_a>;
++      pinctrl-names = "default";
+     };
+ 
+ ...
+diff --git a/include/dt-bindings/rtc/rtc-stm32.h b/include/dt-bindings/rtc/rtc-stm32.h
+new file mode 100644
+index 000000000000..f0e70af1ca9e
+--- /dev/null
++++ b/include/dt-bindings/rtc/rtc-stm32.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * This header provides constants for STM32_RTC bindings.
++ */
++
++#ifndef _DT_BINDINGS_RTC_RTC_STM32_H
++#define _DT_BINDINGS_RTC_RTC_STM32_H
++
++#define RTC_NO_OUT	0
++#define RTC_OUT1	1
++#define RTC_OUT2	2
++#define RTC_OUT2_RMP	3
++
++#endif
+-- 
+2.39.5
+

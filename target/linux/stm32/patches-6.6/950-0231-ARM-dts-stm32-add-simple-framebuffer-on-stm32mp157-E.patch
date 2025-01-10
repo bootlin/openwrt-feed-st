@@ -1,0 +1,105 @@
+From 058db75aa40583ce273fc0a758c381544aefa541 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 16 Nov 2021 16:59:32 +0100
+Subject: [PATCH] ARM: dts: stm32: add simple-framebuffer on stm32mp157 EV
+ boards
+
+Add node to support the simple-frambuffer. By default, the node must be
+disabled.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I97a661692c036791d7289ef50a9c0acc31f8bece
+---
+ arch/arm/boot/dts/st/stm32mp157a-ev1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157d-ev1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 9 +++++++++
+ 4 files changed, 36 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+index 45d691078ec2..e9ca1744a14b 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+@@ -21,7 +21,16 @@ aliases {
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+index 87475702f9f3..08a8191439c5 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+@@ -21,7 +21,16 @@ aliases {
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+index eab2b256fdc8..206ef27840bd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+@@ -21,7 +21,16 @@ aliases {
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	clocks {
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+index e79ee2657218..0290daebb2a1 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+@@ -21,7 +21,16 @@ aliases {
+ 	};
+ 
+ 	chosen {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
+ 		stdout-path = "serial0:115200n8";
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			clocks = <&rcc LTDC_PX>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	clocks {
+-- 
+2.39.5
+

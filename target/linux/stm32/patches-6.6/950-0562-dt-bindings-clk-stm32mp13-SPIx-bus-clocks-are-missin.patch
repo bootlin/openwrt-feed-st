@@ -1,0 +1,40 @@
+From 7b02b235bb3225341665c4530d84a797e22bbfdc Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Wed, 19 Oct 2022 09:54:40 +0200
+Subject: [PATCH] dt-bindings: clk: stm32mp13: SPIx bus clocks are missing
+
+Add SPI1, SPI2, SPI3, SPI4, SPI5 bus clocks.
+
+Change-Id: I55049c3a27d3698cf300fd86f5691161684b94ce
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/271637
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ include/dt-bindings/clock/stm32mp13-clks.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/include/dt-bindings/clock/stm32mp13-clks.h b/include/dt-bindings/clock/stm32mp13-clks.h
+index 0bd7b54c65ff..151111e5d0c5 100644
+--- a/include/dt-bindings/clock/stm32mp13-clks.h
++++ b/include/dt-bindings/clock/stm32mp13-clks.h
+@@ -193,7 +193,13 @@
+ #define SAI1		160
+ #define SAI2		161
+ 
+-#define STM32MP1_LAST_CLK 162
++#define SPI1		162
++#define SPI2		163
++#define SPI3		164
++#define SPI4		165
++#define SPI5		166
++
++#define STM32MP1_LAST_CLK 167
+ 
+ /* SCMI clock identifiers */
+ #define CK_SCMI_HSE		0
+-- 
+2.39.5
+

@@ -1,0 +1,30 @@
+From 2edb82c0a52ef6af13b7ceaea5a5fe2336134ca9 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Mon, 14 Sep 2020 17:05:25 +0200
+Subject: [PATCH] ARM: dts: stm32: Add hwlock for irqchip on stm32mp151
+
+Define a hwspinlock to be used by the irq controller driver and the
+syscon driver.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I9960fe758e506611df110f60145516aab0c2d3e2
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index e9d1925f92d0..f7872ee25115 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1296,6 +1296,7 @@ exti: interrupt-controller@5000d000 {
+ 			#address-cells = <0>;
+ 			reg = <0x5000d000 0x400>;
+ 			wakeup-parent = <&pwr_irq>;
++			hwlocks = <&hsem 1 1>;
+ 
+ 			exti-interrupt-map {
+ 				#address-cells = <0>;
+-- 
+2.39.5
+

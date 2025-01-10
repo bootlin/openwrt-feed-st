@@ -1,0 +1,48 @@
+From f000b330100c405dc76786fde1a78040d49f6115 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 26 Mar 2024 14:43:06 +0100
+Subject: [PATCH] dt-bindings: stm32: dfsdm: fix st,adc-alt-channel description
+
+Modify the description of DFSDM st,adc-alt-channel property to
+fix dtbs check warning: st,adc-alt-channel: [[1]] is not of type 'boolean'
+
+The DFSDM driver expects the st,adc-alt-channel property to be an array
+of integer value either 0 or 1, where the index of each integer corresponds
+to a channel index.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I216978616dd8139d59d382c54b0f1976f2bdeeee
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369766
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml          | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index 2722edab1d9a..4aae5b41a4a1 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -142,11 +142,12 @@ patternProperties:
+ 
+       st,adc-alt-channel:
+         description:
+-          Must be defined if two sigma delta modulators are
+-          connected on same SPI input.
+-          If not set, channel n is connected to SPI input n.
+-          If set, channel n is connected to SPI input n + 1.
+-        type: boolean
++          Must be defined if two sigma delta modulators are connected on same SPI input.
++          - If set to 0 channel n is connected to SPI input n.
++          - If set to 1 channel n is connected to SPI input n + 1.
++        items:
++          enum: [ 0, 1 ]
++        $ref: /schemas/types.yaml#/definitions/uint32-array
+ 
+       st,filter0-sync:
+         description:
+-- 
+2.39.5
+

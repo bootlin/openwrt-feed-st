@@ -1,0 +1,80 @@
+From 5e384d9fbe1caddc96917e21f3c73a3b7dcb5e19 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 21 Feb 2024 12:29:24 +0100
+Subject: [PATCH] drm/stm: ltdc: configure length according to DT configuration
+
+Provide capability to configure LTDC burst length according
+to bus and DDR configuration.
+Configuration is provided through DT node.
+
+Change-Id: Id32658de895d4d64a1487346973a2d80ece17f94
+Signed-off-by: Philippe Cornu <philippe.cornu@foss.st.com>
+Signed-off-by: Loic Pallardy <loic.pallardy@foss.st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 15 +++++++++++++++
+ drivers/gpu/drm/stm/ltdc.h |  1 +
+ 2 files changed, 16 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 3943ef8e5921..762b85a4637d 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -1263,6 +1263,8 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 				     struct drm_atomic_state *state)
+ {
+ 	struct ltdc_device *ldev = plane_to_ltdc(plane);
++	struct drm_device *ddev = plane->dev;
++	struct device *dev = ddev->dev;
+ 	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
+ 									  plane);
+ 	struct drm_framebuffer *fb = newstate->fb;
+@@ -1468,6 +1470,10 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 		}
+ 	}
+ 
++	/* Configure burst length */
++	if (of_device_is_compatible(dev->of_node, "st,stm32mp25-ltdc"))
++		regmap_write(ldev->regmap, LTDC_L1BLCR + lofs, ldev->max_burst_length);
++
+ 	/* Enable layer and CLUT if needed */
+ 	val = fb->format->format == DRM_FORMAT_C8 ? LXCR_CLUTEN : 0;
+ 	val |= LXCR_LEN;
+@@ -1944,6 +1950,7 @@ int ltdc_load(struct drm_device *ddev)
+ 	struct resource *res;
+ 	int irq, i, nb_endpoints;
+ 	int ret = -ENODEV;
++	u32 mbl;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+@@ -1965,6 +1972,14 @@ int ltdc_load(struct drm_device *ddev)
+ 	}
+ 
+ 	if (of_device_is_compatible(np, "st,stm32mp25-ltdc")) {
++		/* Get max burst length */
++		ret = of_property_read_u32(np, "st,burstlen", &mbl);
++		if (ret)
++			/* set to max burst length value */
++			ldev->max_burst_length = 0;
++		else
++			ldev->max_burst_length = mbl / 8;
++
+ 		ldev->bus_clk = devm_clk_get(dev, "bus");
+ 		if (IS_ERR(ldev->bus_clk))
+ 			return dev_err_probe(dev, PTR_ERR(ldev->bus_clk),
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index ddfa8ae61a7b..cc8b00639c58 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -60,6 +60,7 @@ struct ltdc_device {
+ 	struct drm_atomic_state *suspend_state;
+ 	int crc_skip_count;
+ 	bool crc_active;
++	u32 max_burst_length;
+ };
+ 
+ int ltdc_load(struct drm_device *ddev);
+-- 
+2.39.5
+

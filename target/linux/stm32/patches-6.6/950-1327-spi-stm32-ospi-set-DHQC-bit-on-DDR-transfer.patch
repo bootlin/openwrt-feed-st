@@ -1,0 +1,53 @@
+From 4d03ca5bc4a969aa0c5a11404c35245d2b160283 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 25 Jul 2024 14:00:30 +0200
+Subject: [PATCH] spi: stm32-ospi: set DHQC bit on DDR transfer
+
+DHQC bit is systematically cleared when a command is sent. It should
+not be the case in case of a DDR transfer if the prescaler is not set
+to 0.
+
+Change-Id: I2e11224d099ed201a74371c2daa74b0a894a0a41
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395224
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/spi/spi-stm32-ospi.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
+index 7c6a43d227e7..aa603410845b 100644
+--- a/drivers/spi/spi-stm32-ospi.c
++++ b/drivers/spi/spi-stm32-ospi.c
+@@ -282,6 +282,10 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+ 	if (op->cmd.dtr) {
+ 		ccr |= CCR_IDTR;
+ 		ccr |= CCR_DQSE;
++
++		if (FIELD_GET(DCR2_PRESC_MASK,
++			      readl_relaxed(regs_base + OSPI_DCR2)))
++			tcr |= TCR_DHQC;
+ 	}
+ 
+ 	if (op->addr.dtr)
+@@ -566,12 +570,9 @@ static int stm32_ospi_dtr_calibration(struct stm32_ospi *ospi)
+ 	writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
+ 
+ 	prescaler = FIELD_GET(DCR2_PRESC_MASK,
+-			      readl(regs_base + OSPI_DCR2));
++			      readl_relaxed(regs_base + OSPI_DCR2));
+ 	bus_freq = DIV_ROUND_UP(omi->clk_rate, prescaler + 1);
+ 
+-	if (prescaler)
+-		writel_relaxed(TCR_DHQC, regs_base + OSPI_TCR);
+-
+ 	if (bus_freq <= STM32_DLYB_FREQ_THRESHOLD) {
+ 		bypass_mode = true;
+ 		period_ps = NSEC_PER_SEC / (bus_freq / 1000);
+-- 
+2.39.5
+

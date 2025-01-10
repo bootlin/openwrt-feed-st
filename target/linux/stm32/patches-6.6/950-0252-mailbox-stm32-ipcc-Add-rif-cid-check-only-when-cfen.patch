@@ -1,0 +1,45 @@
+From 04313a038db5c63e912fc3930b2c4c2cfcf27a85 Mon Sep 17 00:00:00 2001
+From: Michel JAOUEN <michel.jaouen@st.com>
+Date: Fri, 22 Sep 2023 16:26:50 +0200
+Subject: [PATCH] mailbox: stm32-ipcc: Add rif cid check only when cfen
+
+For configuration without CID filtering, cid check is removed.
+
+Change-Id: I143615210d0c527fb1910324e1f4668e1095b644
+Signed-off-by: Michel JAOUEN <michel.jaouen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/329392
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/mailbox/stm32-ipcc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
+index 73cb7cdff638..8213f5892953 100644
+--- a/drivers/mailbox/stm32-ipcc.c
++++ b/drivers/mailbox/stm32-ipcc.c
+@@ -312,7 +312,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	struct stm32_ipcc *ipcc;
+-	u32 ip_ver, hwcfg, cidcfgr, cid, cid_mask;
++	u32 ip_ver, hwcfg, cidcfgr, cid, cid_mask, cfen;
+ 	unsigned long i;
+ 	int ret;
+ 
+@@ -382,7 +382,8 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+ 	if (cid_mask) {
+ 		cidcfgr = readl(ipcc->reg_base + IPCC_CIDCFGR(ipcc->proc_id));
+ 		cid = FIELD_GET(IPCC_CIDCFGR_SCID_MASK, cidcfgr);
+-		if ((cid & cid_mask) != IPCC_CORE_ID) {
++		cfen = FIELD_GET(IPCC_CIDCFGR_CFEN_MASK, cidcfgr);
++		if (cfen && ((cid & cid_mask) != IPCC_CORE_ID)) {
+ 			dev_err(dev, "Unexpected CID%u, no access right\n", cid & cid_mask);
+ 			ret = -EPERM;
+ 			goto err_init_wkp;
+-- 
+2.39.5
+

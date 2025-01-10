@@ -1,0 +1,269 @@
+From a17c92edd7bbfaedc976696f5de7bf4528972f48 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 1 Sep 2023 16:39:56 -0700
+Subject: [PATCH] Revert "drm: Call drm_atomic_helper_shutdown() at
+ shutdown/remove time for misc drivers"
+
+This reverts commit 69f03be1fa08a66735d53d92d3429c052540e3bf.
+This commit generate a crash at system reboot.
+
+Change-Id: Ia25deefbc94739c553a0a55eb5c2fb1123946bd4
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374157
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/aspeed/aspeed_gfx_drv.c |  7 -------
+ drivers/gpu/drm/mgag200/mgag200_drv.c   |  8 --------
+ drivers/gpu/drm/pl111/pl111_drv.c       |  7 -------
+ drivers/gpu/drm/stm/drv.c               |  7 -------
+ drivers/gpu/drm/tilcdc/tilcdc_drv.c     | 11 +----------
+ drivers/gpu/drm/tve200/tve200_drv.c     |  7 -------
+ drivers/gpu/drm/vboxvideo/vbox_drv.c    | 10 ----------
+ 7 files changed, 1 insertion(+), 56 deletions(-)
+
+diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+index 78122b35a0cb..d207b03f8357 100644
+--- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
++++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+@@ -358,18 +358,11 @@ static void aspeed_gfx_remove(struct platform_device *pdev)
+ 	sysfs_remove_group(&pdev->dev.kobj, &aspeed_sysfs_attr_group);
+ 	drm_dev_unregister(drm);
+ 	aspeed_gfx_unload(drm);
+-	drm_atomic_helper_shutdown(drm);
+-}
+-
+-static void aspeed_gfx_shutdown(struct platform_device *pdev)
+-{
+-	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+ }
+ 
+ static struct platform_driver aspeed_gfx_platform_driver = {
+ 	.probe		= aspeed_gfx_probe,
+ 	.remove_new	= aspeed_gfx_remove,
+-	.shutdown	= aspeed_gfx_shutdown,
+ 	.driver = {
+ 		.name = "aspeed_gfx",
+ 		.of_match_table = aspeed_gfx_match,
+diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
+index 2fb18b782b05..abddf37f0ea1 100644
+--- a/drivers/gpu/drm/mgag200/mgag200_drv.c
++++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
+@@ -10,7 +10,6 @@
+ #include <linux/pci.h>
+ 
+ #include <drm/drm_aperture.h>
+-#include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_fbdev_generic.h>
+ #include <drm/drm_file.h>
+@@ -279,12 +278,6 @@ static void mgag200_pci_remove(struct pci_dev *pdev)
+ 	struct drm_device *dev = pci_get_drvdata(pdev);
+ 
+ 	drm_dev_unregister(dev);
+-	drm_atomic_helper_shutdown(dev);
+-}
+-
+-static void mgag200_pci_shutdown(struct pci_dev *pdev)
+-{
+-	drm_atomic_helper_shutdown(pci_get_drvdata(pdev));
+ }
+ 
+ static struct pci_driver mgag200_pci_driver = {
+@@ -292,7 +285,6 @@ static struct pci_driver mgag200_pci_driver = {
+ 	.id_table = mgag200_pciidlist,
+ 	.probe = mgag200_pci_probe,
+ 	.remove = mgag200_pci_remove,
+-	.shutdown = mgag200_pci_shutdown,
+ };
+ 
+ drm_module_pci_driver_if_modeset(mgag200_pci_driver, mgag200_modeset);
+diff --git a/drivers/gpu/drm/pl111/pl111_drv.c b/drivers/gpu/drm/pl111/pl111_drv.c
+index 02e6b74d5016..ba3b5b5f0cdf 100644
+--- a/drivers/gpu/drm/pl111/pl111_drv.c
++++ b/drivers/gpu/drm/pl111/pl111_drv.c
+@@ -323,18 +323,12 @@ static void pl111_amba_remove(struct amba_device *amba_dev)
+ 	struct pl111_drm_dev_private *priv = drm->dev_private;
+ 
+ 	drm_dev_unregister(drm);
+-	drm_atomic_helper_shutdown(drm);
+ 	if (priv->panel)
+ 		drm_panel_bridge_remove(priv->bridge);
+ 	drm_dev_put(drm);
+ 	of_reserved_mem_device_release(dev);
+ }
+ 
+-static void pl111_amba_shutdown(struct amba_device *amba_dev)
+-{
+-	drm_atomic_helper_shutdown(amba_get_drvdata(amba_dev));
+-}
+-
+ /*
+  * This early variant lacks the 565 and 444 pixel formats.
+  */
+@@ -437,7 +431,6 @@ static struct amba_driver pl111_amba_driver __maybe_unused = {
+ 	},
+ 	.probe = pl111_amba_probe,
+ 	.remove = pl111_amba_remove,
+-	.shutdown = pl111_amba_shutdown,
+ 	.id_table = pl111_id_table,
+ };
+ 
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index df56c81e0065..6ae9fadc3d13 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -108,7 +108,6 @@ static void drv_unload(struct drm_device *ddev)
+ 	DRM_DEBUG("%s\n", __func__);
+ 
+ 	drm_kms_helper_poll_fini(ddev);
+-	drm_atomic_helper_shutdown(ddev);
+ 	ltdc_unload(ddev);
+ }
+ 
+@@ -278,11 +277,6 @@ static void stm_drm_platform_remove(struct platform_device *pdev)
+ 	drm_dev_put(ddev);
+ }
+ 
+-static void stm_drm_platform_shutdown(struct platform_device *pdev)
+-{
+-	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+-}
+-
+ static struct ltdc_plat_data stm_drm_plat_data = {
+ 	.pad_max_freq_hz = 90000000,
+ };
+@@ -301,7 +295,6 @@ MODULE_DEVICE_TABLE(of, drv_dt_ids);
+ static struct platform_driver stm_drm_platform_driver = {
+ 	.probe = stm_drm_platform_probe,
+ 	.remove_new = stm_drm_platform_remove,
+-	.shutdown = stm_drm_platform_shutdown,
+ 	.driver = {
+ 		.name = "stm32-display",
+ 		.of_match_table = drv_dt_ids,
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+index 2f6eaac7f659..83233bdc0526 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+@@ -175,7 +175,6 @@ static void tilcdc_fini(struct drm_device *dev)
+ 		drm_dev_unregister(dev);
+ 
+ 	drm_kms_helper_poll_fini(dev);
+-	drm_atomic_helper_shutdown(dev);
+ 	tilcdc_irq_uninstall(dev);
+ 	drm_mode_config_cleanup(dev);
+ 
+@@ -390,7 +389,6 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
+ 
+ init_failed:
+ 	tilcdc_fini(ddev);
+-	platform_set_drvdata(pdev, NULL);
+ 
+ 	return ret;
+ }
+@@ -539,8 +537,7 @@ static void tilcdc_unbind(struct device *dev)
+ 	if (!ddev->dev_private)
+ 		return;
+ 
+-	tilcdc_fini(ddev);
+-	dev_set_drvdata(dev, NULL);
++	tilcdc_fini(dev_get_drvdata(dev));
+ }
+ 
+ static const struct component_master_ops tilcdc_comp_ops = {
+@@ -585,11 +582,6 @@ static int tilcdc_pdev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static void tilcdc_pdev_shutdown(struct platform_device *pdev)
+-{
+-	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+-}
+-
+ static const struct of_device_id tilcdc_of_match[] = {
+ 		{ .compatible = "ti,am33xx-tilcdc", },
+ 		{ .compatible = "ti,da850-tilcdc", },
+@@ -600,7 +592,6 @@ MODULE_DEVICE_TABLE(of, tilcdc_of_match);
+ static struct platform_driver tilcdc_platform_driver = {
+ 	.probe      = tilcdc_pdev_probe,
+ 	.remove     = tilcdc_pdev_remove,
+-	.shutdown   = tilcdc_pdev_shutdown,
+ 	.driver     = {
+ 		.name   = "tilcdc",
+ 		.pm     = pm_sleep_ptr(&tilcdc_pm_ops),
+diff --git a/drivers/gpu/drm/tve200/tve200_drv.c b/drivers/gpu/drm/tve200/tve200_drv.c
+index acce210e2554..0bb56d063536 100644
+--- a/drivers/gpu/drm/tve200/tve200_drv.c
++++ b/drivers/gpu/drm/tve200/tve200_drv.c
+@@ -242,7 +242,6 @@ static void tve200_remove(struct platform_device *pdev)
+ 	struct tve200_drm_dev_private *priv = drm->dev_private;
+ 
+ 	drm_dev_unregister(drm);
+-	drm_atomic_helper_shutdown(drm);
+ 	if (priv->panel)
+ 		drm_panel_bridge_remove(priv->bridge);
+ 	drm_mode_config_cleanup(drm);
+@@ -250,11 +249,6 @@ static void tve200_remove(struct platform_device *pdev)
+ 	drm_dev_put(drm);
+ }
+ 
+-static void tve200_shutdown(struct platform_device *pdev)
+-{
+-	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+-}
+-
+ static const struct of_device_id tve200_of_match[] = {
+ 	{
+ 		.compatible = "faraday,tve200",
+@@ -269,7 +263,6 @@ static struct platform_driver tve200_driver = {
+ 	},
+ 	.probe = tve200_probe,
+ 	.remove_new = tve200_remove,
+-	.shutdown = tve200_shutdown,
+ };
+ drm_module_platform_driver(tve200_driver);
+ 
+diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+index cd9e66a06596..8ecd0863fad7 100644
+--- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
++++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+@@ -12,7 +12,6 @@
+ #include <linux/vt_kern.h>
+ 
+ #include <drm/drm_aperture.h>
+-#include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_fbdev_generic.h>
+ #include <drm/drm_file.h>
+@@ -98,19 +97,11 @@ static void vbox_pci_remove(struct pci_dev *pdev)
+ 	struct vbox_private *vbox = pci_get_drvdata(pdev);
+ 
+ 	drm_dev_unregister(&vbox->ddev);
+-	drm_atomic_helper_shutdown(&vbox->ddev);
+ 	vbox_irq_fini(vbox);
+ 	vbox_mode_fini(vbox);
+ 	vbox_hw_fini(vbox);
+ }
+ 
+-static void vbox_pci_shutdown(struct pci_dev *pdev)
+-{
+-	struct vbox_private *vbox = pci_get_drvdata(pdev);
+-
+-	drm_atomic_helper_shutdown(&vbox->ddev);
+-}
+-
+ static int vbox_pm_suspend(struct device *dev)
+ {
+ 	struct vbox_private *vbox = dev_get_drvdata(dev);
+@@ -174,7 +165,6 @@ static struct pci_driver vbox_pci_driver = {
+ 	.id_table = pciidlist,
+ 	.probe = vbox_pci_probe,
+ 	.remove = vbox_pci_remove,
+-	.shutdown = vbox_pci_shutdown,
+ 	.driver.pm = pm_sleep_ptr(&vbox_pm_ops),
+ };
+ 
+-- 
+2.39.5
+

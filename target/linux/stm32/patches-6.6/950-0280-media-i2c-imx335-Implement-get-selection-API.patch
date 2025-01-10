@@ -1,0 +1,93 @@
+From 015c99bf92e3dcaf9406880f9c09d73b0667ed28 Mon Sep 17 00:00:00 2001
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Date: Mon, 11 Dec 2023 18:29:47 +0530
+Subject: [PATCH] media: i2c: imx335: Implement get selection API
+
+Support reporting of the Sensor Native and Active pixel array areas
+through the Selection API.
+
+The implementation reports a single target crop only for the mode that
+is presently exposed by the driver.
+
+Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+(cherry picked from commit 252b2caaf2cbbf2bfab483af200d58a7a5bfe87f)
+---
+ drivers/media/i2c/imx335.c | 45 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+index 2222f54087ef..9aad22a1b2e7 100644
+--- a/drivers/media/i2c/imx335.c
++++ b/drivers/media/i2c/imx335.c
+@@ -55,6 +55,14 @@
+ #define IMX335_REG_MIN		0x00
+ #define IMX335_REG_MAX		0xfffff
+ 
++/* IMX335 native and active pixel array size. */
++#define IMX335_NATIVE_WIDTH		2616U
++#define IMX335_NATIVE_HEIGHT		1964U
++#define IMX335_PIXEL_ARRAY_LEFT		12U
++#define IMX335_PIXEL_ARRAY_TOP		12U
++#define IMX335_PIXEL_ARRAY_WIDTH	2592U
++#define IMX335_PIXEL_ARRAY_HEIGHT	1944U
++
+ /**
+  * struct imx335_reg - imx335 sensor register
+  * @address: Register address
+@@ -647,6 +655,41 @@ static int imx335_init_pad_cfg(struct v4l2_subdev *sd,
+ 	return imx335_set_pad_format(sd, sd_state, &fmt);
+ }
+ 
++/**
++ * imx335_get_selection() - Selection API
++ * @sd: pointer to imx335 V4L2 sub-device structure
++ * @sd_state: V4L2 sub-device configuration
++ * @sel: V4L2 selection info
++ *
++ * Return: 0 if successful, error code otherwise.
++ */
++static int imx335_get_selection(struct v4l2_subdev *sd,
++				struct v4l2_subdev_state *sd_state,
++				struct v4l2_subdev_selection *sel)
++{
++	switch (sel->target) {
++	case V4L2_SEL_TGT_NATIVE_SIZE:
++		sel->r.top = 0;
++		sel->r.left = 0;
++		sel->r.width = IMX335_NATIVE_WIDTH;
++		sel->r.height = IMX335_NATIVE_HEIGHT;
++
++		return 0;
++
++	case V4L2_SEL_TGT_CROP:
++	case V4L2_SEL_TGT_CROP_DEFAULT:
++	case V4L2_SEL_TGT_CROP_BOUNDS:
++		sel->r.top = IMX335_PIXEL_ARRAY_TOP;
++		sel->r.left = IMX335_PIXEL_ARRAY_LEFT;
++		sel->r.width = IMX335_PIXEL_ARRAY_WIDTH;
++		sel->r.height = IMX335_PIXEL_ARRAY_HEIGHT;
++
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
+ /**
+  * imx335_start_streaming() - Start sensor stream
+  * @imx335: pointer to imx335 device
+@@ -871,6 +914,8 @@ static const struct v4l2_subdev_pad_ops imx335_pad_ops = {
+ 	.init_cfg = imx335_init_pad_cfg,
+ 	.enum_mbus_code = imx335_enum_mbus_code,
+ 	.enum_frame_size = imx335_enum_frame_size,
++	.get_selection = imx335_get_selection,
++	.set_selection = imx335_get_selection,
+ 	.get_fmt = imx335_get_pad_format,
+ 	.set_fmt = imx335_set_pad_format,
+ };
+-- 
+2.39.5
+

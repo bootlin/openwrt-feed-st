@@ -1,0 +1,312 @@
+From 7361f1036ae42c8e94e4da42177b1f521a0f5b0d Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 11 Dec 2023 17:59:12 +0100
+Subject: [PATCH] ARM: dts: stm32: put ETZPC as an access controller for
+ STM32MP13x boards
+
+Reference ETZPC as an access-control-provider.
+
+For more information on which peripheral is securable or supports MCU
+isolation, please read the STM32MP13 reference manual
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi  | 29 ++++++++++++++++++++++++++-
+ arch/arm/boot/dts/st/stm32mp133.dtsi  |  2 ++
+ arch/arm/boot/dts/st/stm32mp135.dtsi  |  2 ++
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi |  1 +
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi |  1 +
+ 5 files changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 23f94b8cc6af..693a1d5f22da 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1040,10 +1040,11 @@ ethernet_mac2_address: mac2@ea {
+ 		};
+ 
+ 		etzpc: bus@5c007000 {
+-			compatible = "simple-bus";
++			compatible = "st,stm32-etzpc", "simple-bus";
+ 			reg = <0x5c007000 0x400>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
++			#access-controller-cells = <1>;
+ 			ranges;
+ 
+ 			adc_2: adc@48004000 {
+@@ -1056,6 +1057,7 @@ adc_2: adc@48004000 {
+ 				#interrupt-cells = <1>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				access-controllers = <&etzpc 33>;
+ 				status = "disabled";
+ 
+ 				adc2: adc@0 {
+@@ -1107,6 +1109,7 @@ usbotg_hs: usb@49000000 {
+ 				usb33d-supply = <&scmi_usb33>;
+ 				power-domains = <&pd_core>;
+ 				wakeup-source;
++				access-controllers = <&etzpc 34>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1121,6 +1124,7 @@ usart1: serial@4c000000 {
+ 				dmas = <&dmamux1 41 0x400 0x5>,
+ 				       <&dmamux1 42 0x400 0x1>;
+ 				dma-names = "rx", "tx";
++				access-controllers = <&etzpc 16>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1135,6 +1139,7 @@ usart2: serial@4c001000 {
+ 				dmas = <&dmamux1 43 0x400 0x5>,
+ 				       <&dmamux1 44 0x400 0x1>;
+ 				dma-names = "rx", "tx";
++				access-controllers = <&etzpc 17>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1146,6 +1151,7 @@ i2s4: audio-controller@4c002000 {
+ 				dmas = <&dmamux1 83 0x400 0x01>,
+ 				       <&dmamux1 84 0x400 0x01>;
+ 				dma-names = "rx", "tx";
++				access-controllers = <&etzpc 13>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1160,6 +1166,7 @@ spi4: spi@4c002000 {
+ 				dmas = <&dmamux1 83 0x400 0x01>,
+ 				       <&dmamux1 84 0x400 0x01>;
+ 				dma-names = "rx", "tx";
++				access-controllers = <&etzpc 18>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1174,6 +1181,7 @@ spi5: spi@4c003000 {
+ 				dmas = <&dmamux1 85 0x400 0x01>,
+ 				       <&dmamux1 86 0x400 0x01>;
+ 				dma-names = "rx", "tx";
++				access-controllers = <&etzpc 19>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1192,6 +1200,7 @@ i2c3: i2c@4c004000 {
+ 				dma-names = "rx", "tx";
+ 				st,syscfg-fmp = <&syscfg 0x4 0x4>;
+ 				i2c-analog-filter;
++				access-controllers = <&etzpc 20>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1210,6 +1219,7 @@ i2c4: i2c@4c005000 {
+ 				dma-names = "rx", "tx";
+ 				st,syscfg-fmp = <&syscfg 0x4 0x8>;
+ 				i2c-analog-filter;
++				access-controllers = <&etzpc 21>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1228,6 +1238,7 @@ i2c5: i2c@4c006000 {
+ 				dma-names = "rx", "tx";
+ 				st,syscfg-fmp = <&syscfg 0x4 0x10>;
+ 				i2c-analog-filter;
++				access-controllers = <&etzpc 22>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1240,6 +1251,7 @@ timers12: timer@4c007000 {
+ 				interrupt-names = "global";
+ 				clocks = <&rcc TIM12_K>;
+ 				clock-names = "int";
++				access-controllers = <&etzpc 23>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1264,6 +1276,7 @@ timers13: timer@4c008000 {
+ 				interrupt-names = "global";
+ 				clocks = <&rcc TIM13_K>;
+ 				clock-names = "int";
++				access-controllers = <&etzpc 24>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1288,6 +1301,7 @@ timers14: timer@4c009000 {
+ 				interrupt-names = "global";
+ 				clocks = <&rcc TIM14_K>;
+ 				clock-names = "int";
++				access-controllers = <&etzpc 25>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1317,6 +1331,7 @@ timers15: timer@4c00a000 {
+ 				       <&dmamux1 107 0x400 0x1>,
+ 				       <&dmamux1 108 0x400 0x1>;
+ 				dma-names = "ch1", "up", "trig", "com";
++				access-controllers = <&etzpc 26>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1344,6 +1359,7 @@ timers16: timer@4c00b000 {
+ 				dmas = <&dmamux1 109 0x400 0x1>,
+ 				       <&dmamux1 110 0x400 0x1>;
+ 				dma-names = "ch1", "up";
++				access-controllers = <&etzpc 27>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1371,6 +1387,7 @@ timers17: timer@4c00c000 {
+ 				dmas = <&dmamux1 111 0x400 0x1>,
+ 				       <&dmamux1 112 0x400 0x1>;
+ 				dma-names = "ch1", "up";
++				access-controllers = <&etzpc 28>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1396,6 +1413,7 @@ lptimer2: timer@50021000 {
+ 				clock-names = "mux";
+ 				power-domains = <&pd_core_ret>;
+ 				wakeup-source;
++				access-controllers = <&etzpc 1>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1431,6 +1449,7 @@ lptimer3: timer@50022000 {
+ 				clock-names = "mux";
+ 				power-domains = <&pd_core_ret>;
+ 				wakeup-source;
++				access-controllers = <&etzpc 2>;
+ 				status = "disabled";
+ 
+ 				pwm {
+@@ -1459,6 +1478,7 @@ hash: hash@54003000 {
+ 				resets = <&rcc HASH1_R>;
+ 				dmas = <&mdma 30 0x2 0x1000a02 0x0 0x0 0x0>;
+ 				dma-names = "in";
++				access-controllers = <&etzpc 41>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1467,6 +1487,7 @@ rng: rng@54004000 {
+ 				reg = <0x54004000 0x400>;
+ 				clocks = <&rcc RNG1_K>;
+ 				resets = <&rcc RNG1_R>;
++				access-controllers = <&etzpc 40>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1482,6 +1503,7 @@ fmc: memory-controller@58002000 {
+ 				#size-cells = <1>;
+ 				clocks = <&rcc FMC_K>;
+ 				resets = <&rcc FMC_R>;
++				access-controllers = <&etzpc 54>;
+ 				status = "disabled";
+ 
+ 				nand-controller@4,0 {
+@@ -1515,6 +1537,7 @@ qspi: spi@58003000 {
+ 				dma-names = "tx", "rx";
+ 				clocks = <&rcc QSPI_K>;
+ 				resets = <&rcc QSPI_R>;
++				access-controllers = <&etzpc 55>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1529,6 +1552,7 @@ sdmmc1: mmc@58005000 {
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+ 				max-frequency = <130000000>;
++				access-controllers = <&etzpc 50>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1543,6 +1567,7 @@ sdmmc2: mmc@58007000 {
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+ 				max-frequency = <130000000>;
++				access-controllers = <&etzpc 51>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -1568,6 +1593,7 @@ ethernet1: ethernet@5800a000 {
+ 				snps,pbl = <2>;
+ 				snps,axi-config = <&stmmac_axi_config_1>;
+ 				snps,tso;
++				access-controllers = <&etzpc 48>;
+ 				status = "disabled";
+ 
+ 				stmmac_axi_config_1: stmmac-axi-config {
+@@ -1587,6 +1613,7 @@ usbphyc: usbphyc@5a006000 {
+ 				resets = <&rcc USBPHY_R>;
+ 				vdda1v1-supply = <&scmi_reg11>;
+ 				vdda1v8-supply = <&scmi_reg18>;
++				access-controllers = <&etzpc 5>;
+ 				status = "disabled";
+ 
+ 				usbphyc_port0: usb-phy@0 {
+diff --git a/arch/arm/boot/dts/st/stm32mp133.dtsi b/arch/arm/boot/dts/st/stm32mp133.dtsi
+index 402bd64e3491..4b6e7ae12937 100644
+--- a/arch/arm/boot/dts/st/stm32mp133.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp133.dtsi
+@@ -47,6 +47,7 @@ adc_1: adc@48003000 {
+ 		#interrupt-cells = <1>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		access-controllers = <&etzpc 32>;
+ 		status = "disabled";
+ 
+ 		adc1: adc@0 {
+@@ -91,6 +92,7 @@ ethernet2: ethernet@5800e000 {
+ 		snps,pbl = <2>;
+ 		snps,axi-config = <&stmmac_axi_config_2>;
+ 		snps,tso;
++		access-controllers = <&etzpc 49>;
+ 		status = "disabled";
+ 
+ 		stmmac_axi_config_2: stmmac-axi-config {
+diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+index c8d77f7a89b6..d95b3d6d947f 100644
+--- a/arch/arm/boot/dts/st/stm32mp135.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+@@ -14,6 +14,7 @@ dcmipp: dcmipp@5a000000 {
+ 		resets = <&rcc DCMIPP_R>;
+ 		clocks = <&rcc DCMIPP_K>;
+ 		clock-names = "kclk";
++		access-controllers = <&etzpc 4>;
+ 		status = "disabled";
+ 	};
+ 
+@@ -25,6 +26,7 @@ ltdc: display-controller@5a001000 {
+ 		clocks = <&rcc LTDC_PX>;
+ 		clock-names = "lcd";
+ 		resets = <&scmi_reset RST_SCMI_LTDC>;
++		access-controllers = <&etzpc 3>;
+ 		status = "disabled";
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp13xc.dtsi b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
+index 969386d52b20..b49b9b9c37f5 100644
+--- a/arch/arm/boot/dts/st/stm32mp13xc.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
+@@ -14,6 +14,7 @@ cryp: crypto@54002000 {
+ 		dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
+ 		       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
+ 		dma-names = "in", "out";
++		access-controllers = <&etzpc 42>;
+ 		status = "disabled";
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp13xf.dtsi b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
+index 969386d52b20..b49b9b9c37f5 100644
+--- a/arch/arm/boot/dts/st/stm32mp13xf.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
+@@ -14,6 +14,7 @@ cryp: crypto@54002000 {
+ 		dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
+ 		       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
+ 		dma-names = "in", "out";
++		access-controllers = <&etzpc 42>;
+ 		status = "disabled";
+ 	};
+ };
+-- 
+2.39.5
+

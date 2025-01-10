@@ -1,0 +1,58 @@
+From 42aa6e624a30a1022e49fde3106c22b1c90eaa9d Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore-ext@st.com>
+Date: Tue, 6 Aug 2024 10:05:48 +0200
+Subject: [PATCH] iio: adc: stm32:  Fix minimum sampling time values
+
+- On stm32mp15:  vddcpu and vddq_ddr are not connected to internal
+channel, so their sampling time values are 0
+
+- On stm32mp13:  vddcpu and vddq_ddr are connected to internal channels
+and the value for vddcore was not correct
+
+Also add a comment to explain how to match the values in the tables with
+internal channel concerned.
+
+Change-Id: Ia3e5791361e765a3f7a2e8089bd7eb3ae312640c
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396913
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/adc/stm32-adc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index c364e03d0182..ba1fb9477f16 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -3175,6 +3175,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
+ 	.vref_charac = 3300,
+ };
+ 
++/* Internal channel indexes are mapped on stm32_adc_int_ch enum */
+ static const unsigned int stm32_adc_min_ts_h7[] = { 0, 0, 0, 4300, 9000, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_h7) == STM32_ADC_INT_CH_NB);
+ 
+@@ -3198,7 +3199,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+ 	.vref_charac = 3300,
+ };
+ 
+-static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800, 0 };
++static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 0, 0, 4300, 9800, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp1) == STM32_ADC_INT_CH_NB);
+ 
+ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -3222,7 +3223,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+ 	.vref_charac = 3300,
+ };
+ 
+-static const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800, 0 };
++static const unsigned int stm32_adc_min_ts_mp13[] = { 1000, 1000, 1000, 4300, 9800, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp13) == STM32_ADC_INT_CH_NB);
+ 
+ static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
+-- 
+2.39.5
+

@@ -1,0 +1,65 @@
+From b468b38c1fc9af33d3d72ebef19ca84cf6618c88 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Mon, 18 Mar 2024 17:55:31 +0100
+Subject: [PATCH] watchdog: stm32_iwdg: get hardware version during probe
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Get the hardware version of the IWDG peripheral during probe.
+
+Change-Id: I71a59b1a93bac45f9c9efb46ae7b4f51ae3d9c7c
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367758
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373634
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/watchdog/stm32_iwdg.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index d700e0d49bb9..f8ecb33490e5 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -30,6 +30,7 @@
+ #define IWDG_SR		0x0C /* Status Register */
+ #define IWDG_WINR	0x10 /* Windows Register */
+ #define IWDG_EWCR	0x14 /* Early Wake-up Register */
++#define IWDG_VERR	0x3F4 /* Version Register */
+ 
+ /* IWDG_KR register bit mask */
+ #define KR_KEY_RELOAD	0xAAAA /* reload counter enable */
+@@ -53,6 +54,9 @@
+ #define EWCR_EWIC	BIT(14) /* Watchdog early interrupt acknowledge */
+ #define EWCR_EWIE	BIT(15) /* Watchdog early interrupt enable */
+ 
++/* IWDG_VERR register mask */
++#define VERR_MASK	GENMASK(7, 0)
++
+ /* set timeout to 100000 us */
+ #define TIMEOUT_US	100000
+ #define SLEEP_US	1000
+@@ -82,6 +86,7 @@ struct stm32_iwdg {
+ 	struct clk		*clk_lsi;
+ 	struct clk		*clk_pclk;
+ 	unsigned int		rate;
++	unsigned int		hw_version;
+ };
+ 
+ static inline u32 reg_read(void __iomem *base, u32 reg)
+@@ -348,6 +353,8 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	wdt->hw_version = reg_read(wdt->regs, IWDG_VERR) & VERR_MASK;
++
+ 	watchdog_set_drvdata(wdd, wdt);
+ 	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
+ 	watchdog_init_timeout(wdd, 0, dev);
+-- 
+2.39.5
+

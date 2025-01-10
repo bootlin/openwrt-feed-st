@@ -1,0 +1,63 @@
+From e05482fbecdab9499ff044081dd6cbb91f9c5b31 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Fri, 24 May 2024 14:28:29 +0530
+Subject: [PATCH] arm64: dts: st: add usbh support on stm32mp21
+
+Update device-tree stm32mp211.dtsi to add ehci and ochi features.
+
+Change-Id: Ic015ad934364dbde01b3945f4fedef1d113aa6c5
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381994
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 31 ++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index ef1c312c9e84..119e39f1cc31 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1620,6 +1620,37 @@ sdmmc3: mmc@48240000 {
+ 				st,syscfg-arcr = <&syscfg 0xc0c 0x1>;
+ 				status = "disabled";
+ 			};
++
++			usbh: usb@482e0000 {
++				compatible = "st,stm32mp21-usbh";
++				st,syscfg = <&syscfg 0x2420>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x482e0000 0x482e0000 0x20000>;
++				access-controllers = <&rifsc 63>;
++				status = "disabled";
++
++				usbh_ohci: usb@482e0000 {
++					compatible = "generic-ohci";
++					reg = <0x482e0000 0x1000>;
++					clocks = <&rcc CK_BUS_USBHOHCI>;
++					resets = <&rcc USBH_R>;
++					interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
++					phys = <&usb2_phy1>;
++					phy-names = "usb";
++				};
++
++				usbh_ehci: usb@482f0000 {
++					compatible = "generic-ehci";
++					reg = <0x482f0000 0x1000>;
++					clocks = <&rcc CK_BUS_USBHEHCI>;
++					resets = <&rcc USBH_R>;
++					interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
++					companion = <&usbh_ohci>;
++					phys = <&usb2_phy1>;
++					phy-names = "usb";
++				};
++			};
+ 		};
+ 
+ 		hdp: pinctrl@44090000 {
+-- 
+2.39.5
+

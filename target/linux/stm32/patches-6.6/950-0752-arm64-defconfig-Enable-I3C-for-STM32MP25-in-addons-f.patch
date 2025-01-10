@@ -1,0 +1,37 @@
+From ce2f075a9b3fb5b81c319fda41e8f1ca36f189c4 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 14:16:55 +0100
+Subject: [PATCH] arm64: defconfig: Enable I3C for STM32MP25 in addons fragment
+
+Enable the I3C subsystem and STM32 I3C controller driver to be used as
+I3C controller.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I0d258120af51f69e521e49ffc00750ec424f2b8f
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 0fb8fd3b0a3e..2b15080d25c1 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -4,6 +4,7 @@ CONFIG_COUNTER=m
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_I2C_RPMSG=m
+ CONFIG_I2C_STM32F7=y
++CONFIG_I3C=y
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_JFFS2_FS=y
+@@ -50,6 +51,7 @@ CONFIG_STM32_TIMER_CNT=m
+ CONFIG_TEE_REMOTEPROC=y
+ CONFIG_UBIFS_FS=y
+ CONFIG_STM32_HYPERBUS=y
++CONFIG_STM32_I3C_MASTER=m
+ CONFIG_STM32_IPCC=y
+ CONFIG_STM32_OMI=y
+ CONFIG_STM32_OMM=y
+-- 
+2.39.5
+

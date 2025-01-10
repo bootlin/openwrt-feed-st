@@ -1,0 +1,42 @@
+From 2fcb58b6a3bd700bdd7163bd2e7ee295ff7b2b1c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 21 Nov 2023 15:21:07 +0100
+Subject: [PATCH] ARM: dts: stm32: add Hardware debug port (HDP) on stm32mp13
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add the hdp devicetree node for stm32mp13 SoC family
+
+Change-Id: I90f6c4fd3a89b3849faf2aaea4cac92b73886060
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372880
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 3c9e68a6c8b8..d9a65d22edb8 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -956,6 +956,13 @@ dts: thermal@50028000 {
+ 			status = "disabled";
+ 		};
+ 
++		hdp: pinctrl@5002a000 {
++			compatible = "st,stm32mp-hdp";
++			reg = <0x5002a000 0x400>;
++			clocks = <&rcc HDP>;
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;
+-- 
+2.39.5
+

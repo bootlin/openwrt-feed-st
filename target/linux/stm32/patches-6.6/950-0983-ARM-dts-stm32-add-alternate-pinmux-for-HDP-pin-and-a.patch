@@ -1,0 +1,67 @@
+From e143897d23f3ddd67ceaad3a4c1decbea14f3dc6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 21 Nov 2023 15:20:15 +0100
+Subject: [PATCH] ARM: dts: stm32: add alternate pinmux for HDP pin and add HDP
+ pinctrl node
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Introduce hdp node to output a user defined value on port hdp2.
+Add pinctrl nodes to be able to output this signal on one SoC pin.
+
+Change-Id: I0e2af4b8fdbb46754b37898bc09748793b282753
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372882
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 23 +++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+index 8bf43e33f478..534a03da21cf 100644
+--- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+@@ -4,6 +4,14 @@
+  * Author: Ludovic Barre <ludovic.barre@st.com> for STMicroelectronics.
+  */
+ #include <dt-bindings/pinctrl/stm32-pinfunc.h>
++#include <dt-bindings/pinctrl/stm32mp15-hdp.h>
++
++&hdp {
++	hdp2_gpo: hdp2-pins {
++		pins = "hdp2";
++		function = HDP2_GPOVAL_2;
++	};
++};
+ 
+ &pinctrl {
+ 	adc1_ain_pins_a: adc1-ain-0 {
+@@ -684,6 +692,21 @@ pins {
+ 		};
+ 	};
+ 
++	hdp2_pins_a: hdp2-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 13, AF0)>; /* HDP2 */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <2>;
++		};
++	};
++
++	hdp2_sleep_pins_a: hdp2-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 13, ANALOG)>; /* HDP2 */
++		};
++	};
++
+ 	i2c1_pins_a: i2c1-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
+-- 
+2.39.5
+

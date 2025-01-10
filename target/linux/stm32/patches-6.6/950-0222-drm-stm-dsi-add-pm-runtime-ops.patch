@@ -1,0 +1,110 @@
+From fbb1c1840058cdc1d0d0ded075253d135daabf51 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 16 Mar 2023 09:30:37 +0100
+Subject: [PATCH] drm/stm: dsi: add pm runtime ops
+
+Update control of clocks and supply thanks to the PM runtime
+mechanism to avoid kernel crash during a system suspend.
+
+Change-Id: Ic31e8ed66a4cd4b97a8819575c8986f12f941ba3
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 28 +++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+index d5f8c923d7bc..a0ca4d7f3b8a 100644
+--- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
++++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+@@ -11,6 +11,7 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <video/mipi_display.h>
+@@ -77,6 +78,7 @@ enum dsi_color {
+ struct dw_mipi_dsi_stm {
+ 	void __iomem *base;
+ 	struct clk *pllref_clk;
++	struct clk *pclk;
+ 	struct dw_mipi_dsi *dsi;
+ 	u32 hw_version;
+ 	int lane_min_kbps;
+@@ -443,7 +445,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct dw_mipi_dsi_stm *dsi;
+-	struct clk *pclk;
+ 	int ret;
+ 
+ 	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+@@ -483,21 +484,21 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+ 		goto err_clk_get;
+ 	}
+ 
+-	pclk = devm_clk_get(dev, "pclk");
+-	if (IS_ERR(pclk)) {
+-		ret = PTR_ERR(pclk);
++	dsi->pclk = devm_clk_get(dev, "pclk");
++	if (IS_ERR(dsi->pclk)) {
++		ret = PTR_ERR(dsi->pclk);
+ 		DRM_ERROR("Unable to get peripheral clock: %d\n", ret);
+ 		goto err_dsi_probe;
+ 	}
+ 
+-	ret = clk_prepare_enable(pclk);
++	ret = clk_prepare_enable(dsi->pclk);
+ 	if (ret) {
+ 		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
+ 		goto err_dsi_probe;
+ 	}
+ 
+ 	dsi->hw_version = dsi_read(dsi, DSI_VERSION) & VERSION;
+-	clk_disable_unprepare(pclk);
++	clk_disable_unprepare(dsi->pclk);
+ 
+ 	if (dsi->hw_version != HWVER_130 && dsi->hw_version != HWVER_131) {
+ 		ret = -ENODEV;
+@@ -551,6 +552,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+ 	clk_disable_unprepare(dsi->pllref_clk);
++	clk_disable_unprepare(dsi->pclk);
+ 	regulator_disable(dsi->vdd_supply);
+ 
+ 	return 0;
+@@ -569,8 +571,16 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
++	ret = clk_prepare_enable(dsi->pclk);
++	if (ret) {
++		regulator_disable(dsi->vdd_supply);
++		DRM_ERROR("Failed to enable pclk: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = clk_prepare_enable(dsi->pllref_clk);
+ 	if (ret) {
++		clk_disable_unprepare(dsi->pclk);
+ 		regulator_disable(dsi->vdd_supply);
+ 		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
+ 		return ret;
+@@ -580,8 +590,10 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops dw_mipi_dsi_stm_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(dw_mipi_dsi_stm_suspend,
+-				dw_mipi_dsi_stm_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(dw_mipi_dsi_stm_suspend,
++			   dw_mipi_dsi_stm_resume, NULL)
+ };
+ 
+ static struct platform_driver dw_mipi_dsi_stm_driver = {
+-- 
+2.39.5
+

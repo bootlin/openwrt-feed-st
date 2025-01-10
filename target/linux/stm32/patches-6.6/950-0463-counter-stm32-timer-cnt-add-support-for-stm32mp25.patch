@@ -1,0 +1,35 @@
+From b3740bd1e6ce01ef8b4f50fe3d0cc3a34c680ba2 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 28 Oct 2022 17:34:12 +0200
+Subject: [PATCH] counter: stm32-timer-cnt: add support for stm32mp25
+
+Add support for STM32MP25 SoC. There are new counter modes that may be
+implemented in later. Still, use newly introduced compatible to handle
+this new HW variant and avoid being blocked with existing compatible
+in SoC dtsi file. Modes supported currently still remains compatible.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I9c5b03db5f790411674a8e07f75e4f377beffb6d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/278654
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index 6206d2dc3d47..5865cec8e8ff 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -402,6 +402,7 @@ static SIMPLE_DEV_PM_OPS(stm32_timer_cnt_pm_ops, stm32_timer_cnt_suspend,
+ 
+ static const struct of_device_id stm32_timer_cnt_of_match[] = {
+ 	{ .compatible = "st,stm32-timer-counter", },
++	{ .compatible = "st,stm32mp25-timer-counter", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_timer_cnt_of_match);
+-- 
+2.39.5
+

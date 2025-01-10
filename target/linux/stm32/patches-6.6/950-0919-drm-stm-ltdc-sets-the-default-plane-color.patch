@@ -1,0 +1,49 @@
+From 92267f33e4f0bcee6ca873d55e60d15fa97d57be Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 15 Mar 2024 13:03:50 +0100
+Subject: [PATCH] drm/stm: ltdc: sets the default plane color
+
+Sets the default plane color to black by default.
+This is important because earlier boot firmwares (like U-Boot)
+may have set the background color to another color.
+
+Change-Id: I3c5ebfbb227cbe4d07af2e9d81d4dc18ca22f833
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367077
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372035
+---
+ drivers/gpu/drm/stm/ltdc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 807452eb2dfe..647709dfb7ac 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -180,6 +180,12 @@
+ #define BCCR_BCRED	GENMASK(23, 16)	/* Background Color RED */
+ #define BCCR_BCWHITE	GENMASK(23, 0)	/* Background Color WHITE */
+ 
++#define DCCR_DCBLACK	0x00		/* Default Color BLACK */
++#define DCCR_DCBLUE	GENMASK(7, 0)	/* Default Color BLUE */
++#define DCCR_DCGREEN	GENMASK(15, 8)	/* Default Color GREEN */
++#define DCCR_DCRED	GENMASK(23, 16)	/* Default Color RED */
++#define DCCR_DCWHITE	GENMASK(23, 0)	/* Default Color WHITE */
++
+ #define IER_LIE		BIT(0)		/* Line Interrupt Enable */
+ #define IER_FUWIE	BIT(1)		/* Fifo Underrun Warning Interrupt Enable */
+ #define IER_TERRIE	BIT(2)		/* Transfer ERRor Interrupt Enable */
+@@ -1654,6 +1660,9 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 	val = newstate->alpha >> 8;
+ 	regmap_write_bits(ldev->regmap, LTDC_L1CACR + lofs, LXCACR_CONSTA, val);
+ 
++	/* Sets the default color to black */
++	regmap_write(ldev->regmap, LTDC_L1DCCR + lofs, DCCR_DCBLACK);
++
+ 	/* Specifies the blending factors */
+ 	val = BF1_PAXCA | BF2_1PAXCA;
+ 	if (!fb->format->has_alpha)
+-- 
+2.39.5
+

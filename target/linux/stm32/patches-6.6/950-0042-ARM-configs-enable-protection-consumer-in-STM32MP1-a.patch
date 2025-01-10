@@ -1,0 +1,29 @@
+From 766f5bec5bf97fff99208abf15b4aaf1cfe32152 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Thu, 18 Jan 2024 15:15:31 +0100
+Subject: [PATCH] ARM: configs: enable protection consumer in STM32MP1 addons
+ fragment
+
+Enable Regulator protection consumer in local Linux config fragment.
+
+Change-Id: Ie2e50fb018f7ecf5deb261afaa1811e90fb9a0c8
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 27a6fa5c8140..6744c0649e19 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -28,6 +28,7 @@ CONFIG_POSIX_MQUEUE=y
+ CONFIG_PREEMPT=y
+ CONFIG_PREEMPT_COUNT=y
+ CONFIG_PROFILING=y
++CONFIG_REGULATOR_PROTECTION_CONSUMER=y
+ CONFIG_SCHED_MC=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+-- 
+2.39.5
+

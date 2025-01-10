@@ -1,0 +1,32 @@
+From 17165bb6df4291f8f1bc27ee8bb1f777868dda9e Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 8 Feb 2024 15:28:08 +0100
+Subject: [PATCH] ASoC: dt-bindings: stm32: fix dtbs warning on spdifrx port
+
+Fix dtbs warning on SPDIFRX endpoint port:
+Unevaluated properties are not allowed ('port' was unexpected)
+
+Change-Id: I420be847a8e6c8fe734f7a165b494e66155c9fd8
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+index bc48151b9adb..2f31f5049099 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -50,6 +50,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  port:
++    $ref: audio-graph-port.yaml#
++    unevaluatedProperties: false
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+-- 
+2.39.5
+

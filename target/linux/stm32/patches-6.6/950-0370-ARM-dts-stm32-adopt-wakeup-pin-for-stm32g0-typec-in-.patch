@@ -1,0 +1,42 @@
+From 9e09dd253ea81574b7c26d2130faa9895f6700b6 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Tue, 19 Jul 2022 18:10:00 +0200
+Subject: [PATCH] ARM: dts: stm32: adopt wakeup pin for stm32g0 typec in
+ stm32mp135f-dk
+
+USB Type-c controller (stm32g0) has an interrupt pin wired to a
+STM32MP13 PWR wakeup pin on DK board. It can be used as a wakeup source,
+to wakeup the system from standby mode, when changes are identified on the
+Type-c connector.
+All is configured in OPTEE, adopt it.
+
+Change-Id: I23380dccb337665e06edc1c8d14caf58549efbc9
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 72ef5fcc30c6..013b77c3ecaf 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -220,13 +220,10 @@ mcp23017: pinctrl@21 {
+ 	typec@53 {
+ 		compatible = "st,stm32g0-typec";
+ 		reg = <0x53>;
+-		/* Alert pin on PI2 */
+-		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
+-		interrupt-parent = <&gpioi>;
+-		/* Internal pull-up on PI2 */
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&stm32g0_intn_pins_a>;
++		/* Alert pin on PI2 (PWR wakeup pin), managed by optee */
++		interrupts-extended = <&optee 1>;
+ 		firmware-name = "stm32g0-ucsi.mp135f-dk.fw";
++		wakeup-source;
+ 		connector {
+ 			compatible = "usb-c-connector";
+ 			label = "USB-C";
+-- 
+2.39.5
+

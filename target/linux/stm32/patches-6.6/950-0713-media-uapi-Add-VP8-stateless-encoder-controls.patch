@@ -1,0 +1,215 @@
+From 4c0709b85bd1cb2ace4af98fe830a0f94787d020 Mon Sep 17 00:00:00 2001
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Date: Fri, 3 Mar 2023 11:36:34 +0100
+Subject: [PATCH] media: uapi: Add VP8 stateless encoder controls
+
+Add uAPI for stateless VP8 encoders.
+
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+---
+ drivers/media/v4l2-core/v4l2-ctrls-core.c | 13 ++++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c |  6 ++
+ include/media/v4l2-ctrls.h                |  1 +
+ include/uapi/linux/v4l2-controls.h        | 91 +++++++++++++++++++++++
+ include/uapi/linux/videodev2.h            |  2 +
+ 5 files changed, 113 insertions(+)
+
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+index 865ae1b52147..2687f0facc29 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+@@ -813,6 +813,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+ 	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+ 	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+ 	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
++	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+ 	struct v4l2_area *area;
+ 	void *p = ptr.p + idx * ctrl->elem_size;
+ 	unsigned int i;
+@@ -1049,6 +1050,15 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+ 		zero_padding(p_vp8_frame->coder_state);
+ 		break;
+ 
++	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
++		p_vp8_encode_params = p;
++		if (p_vp8_encode_params->loop_filter_level > 63)
++			return -EINVAL;
++
++		if (p_vp8_encode_params->sharpness_level > 7)
++			return -EINVAL;
++		break;
++
+ 	case V4L2_CTRL_TYPE_HEVC_SPS:
+ 		p_hevc_sps = p;
+ 
+@@ -1874,6 +1884,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	case V4L2_CTRL_TYPE_AREA:
+ 		elem_size = sizeof(struct v4l2_area);
+ 		break;
++	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
++		elem_size = sizeof(struct v4l2_ctrl_vp8_encode_params);
++		break;
+ 	default:
+ 		if (type < V4L2_CTRL_COMPOUND_TYPES)
+ 			elem_size = sizeof(s32);
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index e1d8ebdd6e87..4b3d5422cfa7 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -1241,6 +1241,9 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_STATELESS_AV1_FRAME:			return "AV1 Frame Parameters";
+ 	case V4L2_CID_STATELESS_AV1_FILM_GRAIN:			return "AV1 Film Grain";
+ 
++	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:		return "VP8 Encode Parameters";
++	case V4L2_CID_STATELESS_VP8_ENCODE_QP:			return "VP8 Encode QP";
++
+ 	/* Colorimetry controls */
+ 	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+ 	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+@@ -1583,6 +1586,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 	case V4L2_CID_STATELESS_VP9_FRAME:
+ 		*type = V4L2_CTRL_TYPE_VP9_FRAME;
+ 		break;
++	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:
++		*type = V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS;
++		break;
+ 	case V4L2_CID_STATELESS_AV1_SEQUENCE:
+ 		*type = V4L2_CTRL_TYPE_AV1_SEQUENCE;
+ 		break;
+diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+index 59679a42b3e7..2f68c47624e9 100644
+--- a/include/media/v4l2-ctrls.h
++++ b/include/media/v4l2-ctrls.h
+@@ -89,6 +89,7 @@ union v4l2_ctrl_ptr {
+ 	struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
+ 	struct v4l2_ctrl_av1_frame *p_av1_frame;
+ 	struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
++	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+ 	void *p;
+ 	const void *p_const;
+ };
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 496691b588b1..ff7f21a72c47 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -1987,6 +1987,97 @@ struct v4l2_ctrl_vp8_frame {
+ 	__u64 flags;
+ };
+ 
++#define V4L2_CID_STATELESS_VP8_ENCODE_PARAMS	(V4L2_CID_CODEC_STATELESS_BASE + 201)
++
++#define V4L2_VP8_FRAME_FLAG_SHOWFRAME			0x1
++#define V4L2_VP8_FRAME_FLAG_GOLDEN_REFRESH		0x2
++#define V4L2_VP8_FRAME_FLAG_ALTREF_REFRESH		0x4
++#define V4L2_VP8_FRAME_FLAG_SEGMENT_ENABLED		0x8
++#define V4L2_VP8_FRAME_FLAG_LOOP_FILTER_ADJ_ENABLED	0x10
++#define V4L2_VP8_FRAME_FLAG_REFRESH_ENTROPY_PROBS	0x20
++
++#define V4L2_VP8_FRAME_TYPE_KEYFRAME	0
++#define V4L2_VP8_FRAME_TYPE_INTER	1
++
++#define V4L2_VP8_FRAME_COLOR_SPACE_YUV		0
++#define V4L2_VP8_FRAME_COLOR_SPACE_RESERVED	1
++
++#define V4L2_VP8_FRAME_CLAMPING_REQUIRED	0
++#define V4L2_VP8_FRAME_CLAMPING_NO		1
++
++#define V4L2_VP8_FRAME_FILTER_TYPE_NORMAL	0
++#define V4L2_VP8_FRAME_FILTER_TYPE_SIMPLE	1
++
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_1	0
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_2	1
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_4	2
++#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_8	3
++
++#define V4L2_VP8_FRAME_GOLDEN_KEEP		0
++#define V4L2_VP8_FRAME_GOLDEN_LASTFRAME		1
++#define V4L2_VP8_FRAME_GOLDEN_ALTREF		2
++
++#define V4L2_VP8_FRAME_ALTREF_KEEP		0
++#define V4L2_VP8_FRAME_ALTREF_LASTFRAME		1
++#define V4L2_VP8_FRAME_ALTREF_GOLDEN		2
++
++#define V4L2_VP8_FRAME_REF_LAST		0
++#define V4L2_VP8_FRAME_REF_GOLDEN	1
++#define V4L2_VP8_FRAME_REF_ALT		2
++
++/**
++ * struct v4l2_ctrl_vp8_encode_params - VP8 encode parameters
++ * @flags: combination of V4L2_VP8_FRAME_FLAG_{} flags.
++ * @frame_type: specifies the frame type (key or inter).
++ *		Set to one of V4L2_VP8_FRAME_TYPE_{}.
++ * @color_space: defines the YUV color space of the sequence.
++ *		 V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
++ *		 Set to one of V4L2_VP8_FRAME_COLOR_SPACE_{}.
++ * @clamping_type: defines pixel value clamping type.
++ *		   V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
++ *		   Set to one of V4L2_VP8_FRAME_CLAMPING_{}.
++ * @loop_filter_type: selects the type of loop filter applied.
++ *		      Set to one of V4L2_VP8_FRAME_FILTER_TYPE_{}.
++ * @loop_filter_level: sets the strength of the applied loop filter.
++ *		       Set to a value from the rage 0..63.
++ * @sharpness_level: sets the sharpness of the applied loop filter.
++ *		     Set to a value from the range 0..7.
++ * @log2_nbr_of_dct_partitions: determines the number of separate partitions
++ *				containing the DCT coefficients of macroblocks.
++ *				Set to one of V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_{}.
++ * @prob_intra: indicates the probability of an intra macroblock.
++ *		Set to a value from the range 0..255.
++ * @prob_last: indicates the probability that the last reference frame is used for inter-prediction.
++ *	       Set to a value from the range 0..255.
++ * @prob_gf: indicates the probability that the golden reference frame is used for inter-prediction.
++ *	     Set to a value from the range 0..255.
++ * @copy_buffer_to_golden: specifies the golden frame refresh strategy.
++ *			   Set to one of V4L2_VP8_FRAME_FLAG_GOLDEN_{}.
++ * @copy_buffer_to_alternate: specifies the atlref frame refresh strategy.
++ *			      Set to one of V4L2_VP8_FRAME_FLAG_ALTREF_{}.
++ * @reference_type: specifies what kind of reference to use for current inter frame.
++ *		    V4L2_VP8_FRAME_TYPE_KEYFRAME shall set this field to zero.
++ *		    Set to one of V4L2_VP8_FRAME_REF_{}.
++ */
++struct v4l2_ctrl_vp8_encode_params {
++	__u32 flags;
++	__u8 frame_type;
++	__u8 color_space;
++	__u8 clamping_type;
++	__u8 loop_filter_type;
++	__u8 loop_filter_level;
++	__u8 sharpness_level;
++	__u8 log2_nbr_of_dct_partitions;
++	__u8 prob_intra;
++	__u8 prob_last;
++	__u8 prob_gf;
++	__u8 copy_buffer_to_golden;
++	__u8 copy_buffer_to_alternate;
++	__u8 reference_type;
++};
++
++#define V4L2_CID_STATELESS_VP8_ENCODE_QP	(V4L2_CID_CODEC_STATELESS_BASE + 202)
++
+ /* Stateless MPEG-2 controls */
+ 
+ #define V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE	0x01
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index bf96b8f492ce..23343be92751 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -1840,6 +1840,7 @@ struct v4l2_ext_control {
+ 		struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_tile_group_entry;
+ 		struct v4l2_ctrl_av1_frame __user *p_av1_frame;
+ 		struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grain;
++		struct v4l2_ctrl_vp8_encode_params __user *p_vp8_encode_params;
+ 		void __user *ptr;
+ 	};
+ } __attribute__ ((packed));
+@@ -1900,6 +1901,7 @@ enum v4l2_ctrl_type {
+ 	V4L2_CTRL_TYPE_FWHT_PARAMS	    = 0x0220,
+ 
+ 	V4L2_CTRL_TYPE_VP8_FRAME            = 0x0240,
++	V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS    = 0x0241,
+ 
+ 	V4L2_CTRL_TYPE_MPEG2_QUANTISATION   = 0x0250,
+ 	V4L2_CTRL_TYPE_MPEG2_SEQUENCE       = 0x0251,
+-- 
+2.39.5
+

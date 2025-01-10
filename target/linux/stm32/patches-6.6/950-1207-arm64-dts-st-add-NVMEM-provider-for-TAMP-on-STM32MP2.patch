@@ -1,0 +1,75 @@
+From e240221f656da07fdbe840fa6dba49f929f05e56 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 31 May 2024 17:14:22 +0200
+Subject: [PATCH] arm64: dts: st: add NVMEM provider for TAMP on STM32MP21x
+ boards
+
+TAMP backup registers allow information sharing between different
+software components/execution levels.
+They are described individually as nvmem cells.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Ie797c6346b4dfeb21485b2f2686f97beffd04764
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384536
+Reviewed-by: Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 39 ++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 4a93c1def992..cf1ea17bd51d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2090,6 +2090,45 @@ rtc: rtc@46000000 {
+ 			status = "disabled";
+ 		};
+ 
++		tamp: tamp@46010000 {
++			compatible = "st,stm32mp25-tamp", "syscon", "simple-mfd";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x46010000 0x400>;
++			ranges;
++
++			nvram: nvram@46010100 {
++				compatible = "st,stm32mp25-tamp-nvram";
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = <0x46010100 0x200>;
++
++				boot_mode: tamp-bkp@180 {
++					reg = <0x180 0x4>;
++				};
++				rsc_tbl_addr: tamp-bkp@184 {
++					reg = <0x184 0x4>;
++				};
++				rsc_tbl_size: tamp-bkp@188 {
++					reg = <0x188 0x4>;
++				};
++			};
++
++			reboot_mode: reboot-mode {
++				compatible = "nvmem-reboot-mode";
++				nvmem-cells = <&boot_mode>;
++				nvmem-cell-names = "reboot-mode";
++				mode-normal = <0x00>;
++				mode-fastboot = <0x01>;
++				mode-recovery = <0x02>;
++				mode-stm32cubeprogrammer = <0x03>;
++				mode-ums_mmc0 = <0x10>;
++				mode-ums_mmc1 = <0x11>;
++				mode-ums_mmc2 = <0x12>;
++				mode-romcode_serial = <0xff>;
++			};
++		};
++
+ 		pinctrl_z: pinctrl@46200000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+-- 
+2.39.5
+

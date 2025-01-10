@@ -1,0 +1,60 @@
+From 14d7b48970e3be09ae6a8b2df195aca44224c56d Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 19 Nov 2021 09:53:05 +0100
+Subject: [PATCH] usb: dwc2: don't disable/enable external vbus by system
+ suspend/resume
+
+It's not required to remove port power upon system suspend, as explained in
+commit 113f86d0c302 ("usb: dwc2: Update partial power down entering by
+system suspend")
+
+Moreover, with current implementation runtime PM calls bus suspend/resume
+routines, when no device is present on the port. In this case,
+"b.port_connect_status" variable is 0, this makes:
+- the _dwc2_hcd_suspend routine to skip power savings, vbus disable.
+- the _dwc2_hcd_resume() is fully executed, including vbus enable
+So, the vbus regulator enable count constantly increase. As a result, vbus
+won't be turned off in case the role changes later to device mode.
+
+So remove the disable/enable of external vbus in bus suspend/resume
+routines to avoid this.
+
+Fixes: 113f86d0c302 ("usb: dwc2: Update partial power down entering by system suspend")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I28879a2f2d325ec2b6f02fd12e60b350cd0c75a0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229470
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/hcd.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index b11d24009cea..90c4367ef8b3 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4395,10 +4395,6 @@ static int _dwc2_hcd_suspend(struct usb_hcd *hcd)
+ 		goto skip_power_saving;
+ 	}
+ 
+-	spin_unlock_irqrestore(&hsotg->lock, flags);
+-	dwc2_vbus_supply_exit(hsotg);
+-	spin_lock_irqsave(&hsotg->lock, flags);
+-
+ 	/* Ask phy to be suspended */
+ 	if (!IS_ERR_OR_NULL(hsotg->uphy)) {
+ 		spin_unlock_irqrestore(&hsotg->lock, flags);
+@@ -4507,10 +4503,7 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+ 		spin_lock_irqsave(&hsotg->lock, flags);
+ 	}
+ 
+-	/* Enable external vbus supply after resuming the port. */
+ 	spin_unlock_irqrestore(&hsotg->lock, flags);
+-	dwc2_vbus_supply_init(hsotg);
+-
+ 	/* Wait for controller to correctly update D+/D- level */
+ 	usleep_range(3000, 5000);
+ 	spin_lock_irqsave(&hsotg->lock, flags);
+-- 
+2.39.5
+

@@ -1,0 +1,73 @@
+From 05d43a89011bfdb857664b624c73362f25c6a6d4 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Mon, 21 Oct 2024 17:12:06 +0200
+Subject: [PATCH] dts: arm64: st: add wakeup source for Ethernets for
+ stm32mp21/23
+
+When the "wakeup-source" flag is found, Ethernet marks
+the device as wakeup capable and enables the wakeup by
+default. (with WoL event)
+
+Change-Id: I9a5092f5cbc6f4ba518c7faca20bda3a9a95d1b2
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/412934
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 8 ++++++--
+ arch/arm64/boot/dts/st/stm32mp213.dtsi | 7 +++++--
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index edcc72708e28..dc2f14cea6cf 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2598,8 +2598,10 @@ eth1: eth1@482c0000 {
+ 			compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
+ 			reg = <0x482c0000 0x4000>;
+ 			reg-names = "stmmaceth";
+-			interrupts-extended = <&intc GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "macirq";
++			interrupts-extended = <&intc GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
++					      <&exti1 68 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq",
++					  "eth_wake_irq";
+ 			clock-names = "stmmaceth",
+ 				      "mac-clk-tx",
+ 				      "mac-clk-rx",
+@@ -2619,6 +2621,8 @@ eth1: eth1@482c0000 {
+ 			snps,rxqos = <7>;
+ 			snps,axi-config = <&stmmac_axi_config_1>;
+ 			snps,tso;
++			power-domains = <&CLUSTER_PD>;
++			wakeup-source;
+ 			status = "disabled";
+ 			snps,mtl-rx-config = <&mtl_rx_setup_1>;
+ 			snps,mtl-tx-config = <&mtl_tx_setup_1>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+index f0fa2487c359..fc9bd0c83198 100644
+--- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
+@@ -11,8 +11,10 @@ eth2: eth2@482d0000 {
+ 			compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
+ 			reg = <0x482d0000 0x4000>;
+ 			reg-names = "stmmaceth";
+-			interrupts-extended = <&intc GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "macirq";
++			interrupts-extended = <&intc GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
++					      <&exti1 70 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq",
++				  "eth_wake_irq";
+ 			clock-names = "stmmaceth",
+ 				      "mac-clk-tx",
+ 				      "mac-clk-rx",
+@@ -34,6 +36,7 @@ eth2: eth2@482d0000 {
+ 			snps,tso;
+ 			access-controllers = <&rifsc 61>;
+ 			power-domains = <&CLUSTER_PD>;
++			wakeup-source;
+ 			status = "disabled";
+ 			snps,mtl-rx-config = <&mtl_rx_setup_2>;
+ 			snps,mtl-tx-config = <&mtl_tx_setup_2>;
+-- 
+2.39.5
+

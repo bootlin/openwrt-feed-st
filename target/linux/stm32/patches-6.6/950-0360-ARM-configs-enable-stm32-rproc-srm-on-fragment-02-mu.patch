@@ -1,0 +1,32 @@
+From 09ec739c71b427fd3af48168bfaf17f310a05d8f Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 18 Nov 2020 11:24:49 +0100
+Subject: [PATCH] ARM: configs: enable stm32 rproc srm on
+ fragment-02-multiv7_addons
+
+Enable STM32 remoteproc resource manager.
+this also impose to have the virtio rpmsg in built-in
+
+Change-Id: I009434325a33c229359072dbc38d5c3be8ec3b8c
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283852
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 6d90c793480f..750e925ada61 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -32,6 +32,8 @@ CONFIG_PREEMPT_COUNT=y
+ CONFIG_PROFILING=y
+ CONFIG_REGULATOR_PROTECTION_CONSUMER=y
+ CONFIG_REMOTEPROC=y
++CONFIG_REMOTEPROC_SRM_CORE=y
++CONFIG_REMOTEPROC_SRM_DEV=y
+ CONFIG_RPMSG_CHAR=m
+ CONFIG_RPMSG_CTRL=m
+ CONFIG_RPMSG_TTY=m
+-- 
+2.39.5
+

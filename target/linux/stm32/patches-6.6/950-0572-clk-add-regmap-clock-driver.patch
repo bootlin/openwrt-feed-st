@@ -1,0 +1,372 @@
+From b0c39d0e47b4991be143c033ed90936b70f7f68a Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Thu, 10 Aug 2023 11:23:24 +0200
+Subject: [PATCH] clk: add regmap clock driver
+
+Introduce a new type of clock, based on the regmap API.  This allows a
+generic clock driver to handle external clock muxers only using syscon
+registers.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I4bb0e67666dbf3bd0d55012c2fc031f928389a4c
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/322728
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/Kconfig        |   4 +
+ drivers/clk/Makefile       |   1 +
+ drivers/clk/clk-regmap.c   | 186 +++++++++++++++++++++++++++++++++++++
+ include/linux/clk-regmap.h | 117 +++++++++++++++++++++++
+ 4 files changed, 308 insertions(+)
+ create mode 100644 drivers/clk/clk-regmap.c
+ create mode 100644 include/linux/clk-regmap.h
+
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 693e3ab14c89..209e4c7c5314 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -33,6 +33,10 @@ menuconfig COMMON_CLK
+ 
+ if COMMON_CLK
+ 
++config COMMON_CLK_REGMAP
++	tristate
++	select REGMAP
++
+ config COMMON_CLK_WM831X
+ 	tristate "Clock driver for WM831x/2x PMICs"
+ 	depends on MFD_WM831X
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 7ba05060ed7f..1a3bf597abda 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -56,6 +56,7 @@ obj-$(CONFIG_COMMON_CLK_PALMAS)		+= clk-palmas.o
+ obj-$(CONFIG_CLK_LS1028A_PLLDIG)	+= clk-plldig.o
+ obj-$(CONFIG_COMMON_CLK_PWM)		+= clk-pwm.o
+ obj-$(CONFIG_CLK_QORIQ)			+= clk-qoriq.o
++obj-$(CONFIG_COMMON_CLK_REGMAP)		+= clk-regmap.o
+ obj-$(CONFIG_COMMON_CLK_RK808)		+= clk-rk808.o
+ obj-$(CONFIG_COMMON_CLK_HI655X)		+= clk-hi655x.o
+ obj-$(CONFIG_COMMON_CLK_S2MPS11)	+= clk-s2mps11.o
+diff --git a/drivers/clk/clk-regmap.c b/drivers/clk/clk-regmap.c
+new file mode 100644
+index 000000000000..491d6d52d5d0
+--- /dev/null
++++ b/drivers/clk/clk-regmap.c
+@@ -0,0 +1,186 @@
++// SPDX-License-Identifier: GPL-2.0 GPL-2.0-only
++/*
++ * Copyright (c) 2018 BayLibre, SAS.
++ * Author: Jerome Brunet <jbrunet@baylibre.com>
++ */
++
++#include <linux/module.h>
++#include <linux/clk-regmap.h>
++
++static int clk_regmap_gate_endisable(struct clk_hw *hw, int enable)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_gate_data *gate = clk_get_regmap_gate_data(clk);
++	int set = gate->flags & CLK_GATE_SET_TO_DISABLE ? 1 : 0;
++
++	set ^= enable;
++
++	return regmap_update_bits(clk->map, gate->offset, BIT(gate->bit_idx),
++				  set ? BIT(gate->bit_idx) : 0);
++}
++
++static int clk_regmap_gate_enable(struct clk_hw *hw)
++{
++	return clk_regmap_gate_endisable(hw, 1);
++}
++
++static void clk_regmap_gate_disable(struct clk_hw *hw)
++{
++	clk_regmap_gate_endisable(hw, 0);
++}
++
++static int clk_regmap_gate_is_enabled(struct clk_hw *hw)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_gate_data *gate = clk_get_regmap_gate_data(clk);
++	unsigned int val;
++
++	regmap_read(clk->map, gate->offset, &val);
++	if (gate->flags & CLK_GATE_SET_TO_DISABLE)
++		val ^= BIT(gate->bit_idx);
++
++	val &= BIT(gate->bit_idx);
++
++	return val ? 1 : 0;
++}
++
++const struct clk_ops clk_regmap_gate_ops = {
++	.enable = clk_regmap_gate_enable,
++	.disable = clk_regmap_gate_disable,
++	.is_enabled = clk_regmap_gate_is_enabled,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_gate_ops);
++
++const struct clk_ops clk_regmap_gate_ro_ops = {
++	.is_enabled = clk_regmap_gate_is_enabled,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_gate_ro_ops);
++
++static unsigned long clk_regmap_div_recalc_rate(struct clk_hw *hw,
++						unsigned long prate)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(clk->map, div->offset, &val);
++	if (ret)
++		/* Gives a hint that something is wrong */
++		return 0;
++
++	val >>= div->shift;
++	val &= clk_div_mask(div->width);
++	return divider_recalc_rate(hw, prate, val, div->table, div->flags,
++				   div->width);
++}
++
++static int clk_regmap_div_determine_rate(struct clk_hw *hw,
++					 struct clk_rate_request *req)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
++	unsigned int val;
++	int ret;
++
++	/* if read only, just return current value */
++	if (div->flags & CLK_DIVIDER_READ_ONLY) {
++		ret = regmap_read(clk->map, div->offset, &val);
++		if (ret)
++			return ret;
++
++		val >>= div->shift;
++		val &= clk_div_mask(div->width);
++
++		return divider_ro_determine_rate(hw, req, div->table,
++						 div->width, div->flags, val);
++	}
++
++	return divider_determine_rate(hw, req, div->table, div->width,
++				      div->flags);
++}
++
++static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
++				   unsigned long parent_rate)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
++	unsigned int val;
++	int ret;
++
++	ret = divider_get_val(rate, parent_rate, div->table, div->width,
++			      div->flags);
++	if (ret < 0)
++		return ret;
++
++	val = (unsigned int)ret << div->shift;
++	return regmap_update_bits(clk->map, div->offset,
++				  clk_div_mask(div->width) << div->shift, val);
++};
++
++/* Would prefer clk_regmap_div_ro_ops but clashes with qcom */
++
++const struct clk_ops clk_regmap_divider_ops = {
++	.recalc_rate = clk_regmap_div_recalc_rate,
++	.determine_rate = clk_regmap_div_determine_rate,
++	.set_rate = clk_regmap_div_set_rate,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_divider_ops);
++
++const struct clk_ops clk_regmap_divider_ro_ops = {
++	.recalc_rate = clk_regmap_div_recalc_rate,
++	.determine_rate = clk_regmap_div_determine_rate,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_divider_ro_ops);
++
++static u8 clk_regmap_mux_get_parent(struct clk_hw *hw)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(clk->map, mux->offset, &val);
++	if (ret)
++		return ret;
++
++	val >>= mux->shift;
++	val &= mux->mask;
++	return clk_mux_val_to_index(hw, mux->table, mux->flags, val);
++}
++
++static int clk_regmap_mux_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
++	unsigned int val = clk_mux_index_to_val(mux->table, mux->flags, index);
++
++	return regmap_update_bits(clk->map, mux->offset,
++				  mux->mask << mux->shift,
++				  val << mux->shift);
++}
++
++static int clk_regmap_mux_determine_rate(struct clk_hw *hw,
++					 struct clk_rate_request *req)
++{
++	struct clk_regmap *clk = to_clk_regmap(hw);
++	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
++
++	return clk_mux_determine_rate_flags(hw, req, mux->flags);
++}
++
++const struct clk_ops clk_regmap_mux_ops = {
++	.get_parent = clk_regmap_mux_get_parent,
++	.set_parent = clk_regmap_mux_set_parent,
++	.determine_rate = clk_regmap_mux_determine_rate,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_mux_ops);
++
++const struct clk_ops clk_regmap_mux_ro_ops = {
++	.get_parent = clk_regmap_mux_get_parent,
++};
++EXPORT_SYMBOL_GPL(clk_regmap_mux_ro_ops);
++
++MODULE_DESCRIPTION("Amlogic regmap backed clock driver");
++MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/clk-regmap.h b/include/linux/clk-regmap.h
+new file mode 100644
+index 000000000000..0666c747fa80
+--- /dev/null
++++ b/include/linux/clk-regmap.h
+@@ -0,0 +1,117 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2018 BayLibre, SAS.
++ * Author: Jerome Brunet <jbrunet@baylibre.com>
++ */
++
++#ifndef __CLK_REGMAP_H
++#define __CLK_REGMAP_H
++
++#include <linux/clk-provider.h>
++#include <linux/regmap.h>
++
++/**
++ * struct clk_regmap - regmap backed clock
++ *
++ * @hw:		handle between common and hardware-specific interfaces
++ * @map:	pointer to the regmap structure controlling the clock
++ * @data:	data specific to the clock type
++ *
++ * Clock which is controlled by regmap backed registers. The actual type
++ * of the clock is controlled by the clock_ops and data.
++ */
++struct clk_regmap {
++	struct clk_hw	hw;
++	struct regmap	*map;
++	void		*data;
++};
++
++static inline struct clk_regmap *to_clk_regmap(struct clk_hw *hw)
++{
++	return container_of(hw, struct clk_regmap, hw);
++}
++
++/**
++ * struct clk_regmap_gate_data - regmap backed gate specific data
++ *
++ * @offset:	offset of the register controlling gate
++ * @bit_idx:	single bit controlling gate
++ * @flags:	hardware-specific flags
++ *
++ * Flags:
++ * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
++ */
++struct clk_regmap_gate_data {
++	unsigned int	offset;
++	u8		bit_idx;
++	u8		flags;
++};
++
++static inline struct clk_regmap_gate_data *
++clk_get_regmap_gate_data(struct clk_regmap *clk)
++{
++	return (struct clk_regmap_gate_data *)clk->data;
++}
++
++extern const struct clk_ops clk_regmap_gate_ops;
++extern const struct clk_ops clk_regmap_gate_ro_ops;
++
++/**
++ * struct clk_regmap_div_data - regmap backed adjustable divider specific data
++ *
++ * @offset:	offset of the register controlling the divider
++ * @shift:	shift to the divider bit field
++ * @width:	width of the divider bit field
++ * @table:	array of value/divider pairs, last entry should have div = 0
++ *
++ * Flags:
++ * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
++ */
++struct clk_regmap_div_data {
++	unsigned int	offset;
++	u8		shift;
++	u8		width;
++	u8		flags;
++	const struct clk_div_table	*table;
++};
++
++static inline struct clk_regmap_div_data *
++clk_get_regmap_div_data(struct clk_regmap *clk)
++{
++	return (struct clk_regmap_div_data *)clk->data;
++}
++
++extern const struct clk_ops clk_regmap_divider_ops;
++extern const struct clk_ops clk_regmap_divider_ro_ops;
++
++/**
++ * struct clk_regmap_mux_data - regmap backed multiplexer clock specific data
++ *
++ * @hw:		handle between common and hardware-specific interfaces
++ * @offset:	offset of theregister controlling multiplexer
++ * @table:	array of parent indexed register values
++ * @shift:	shift to multiplexer bit field
++ * @mask:	mask of mutliplexer bit field
++ * @flags:	hardware-specific flags
++ *
++ * Flags:
++ * Same as clk_divider except CLK_MUX_HIWORD_MASK which is ignored
++ */
++struct clk_regmap_mux_data {
++	unsigned int	offset;
++	u32		*table;
++	u32		mask;
++	u8		shift;
++	u8		flags;
++};
++
++static inline struct clk_regmap_mux_data *
++clk_get_regmap_mux_data(struct clk_regmap *clk)
++{
++	return (struct clk_regmap_mux_data *)clk->data;
++}
++
++extern const struct clk_ops clk_regmap_mux_ops;
++extern const struct clk_ops clk_regmap_mux_ro_ops;
++
++#endif /* __CLK_REGMAP_H */
+-- 
+2.39.5
+

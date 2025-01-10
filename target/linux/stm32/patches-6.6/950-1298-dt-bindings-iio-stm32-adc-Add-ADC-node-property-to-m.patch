@@ -1,0 +1,40 @@
+From 076de6b4de17ac3e38cf66860570667669f1d981 Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore-ext@st.com>
+Date: Tue, 16 Jul 2024 11:55:13 +0200
+Subject: [PATCH] dt-bindings: iio: stm32-adc: Add ADC node property to manage
+ trigger on stm32mp21
+
+The property "st,adc-trigger-sel " allow to make the difference between
+the ADCs and to apply the correct trigger configuration.
+
+Change-Id: I8649feb00072c1bd2b3e893a8c30d8628c3f43a6
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393467
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index 27a4414b63ea..b600e337b6a3 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -403,6 +403,12 @@ patternProperties:
+         items:
+           - const: vrefint
+ 
++      st,adc-trigger-sel:
++        description: Selects the HW trigger configuration available on this ADC
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        default: 0
++
+     patternProperties:
+       "^channel@([0-9]|1[0-9])$":
+         type: object
+-- 
+2.39.5
+

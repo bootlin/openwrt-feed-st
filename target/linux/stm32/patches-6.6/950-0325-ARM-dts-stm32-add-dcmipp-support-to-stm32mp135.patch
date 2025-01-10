@@ -1,0 +1,37 @@
+From d21f381c2674cbb8380195c5704efe7f9840ec5a Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Mon, 15 Nov 2021 17:02:01 +0100
+Subject: [PATCH] ARM: dts: stm32: add dcmipp support to stm32mp135
+
+Add dcmipp support to STM32MP135.
+
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Change-Id: I61e74e11af2c7a1ddd817edbbc5a8e3c7b23b0b6
+---
+ arch/arm/boot/dts/st/stm32mp135.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+index b01b56681349..61052a87d57b 100644
+--- a/arch/arm/boot/dts/st/stm32mp135.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+@@ -8,6 +8,16 @@
+ 
+ / {
+ 	soc {
++		dcmipp: dcmipp@5a000000 {
++			compatible = "st,stm32mp13-dcmipp";
++			reg = <0x5a000000 0x400>;
++			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
++			resets = <&rcc DCMIPP_R>;
++			clocks = <&rcc DCMIPP_K>;
++			clock-names = "kclk";
++			status = "disabled";
++		};
++
+ 		ltdc: display-controller@5a001000 {
+ 			compatible = "st,stm32-ltdc";
+ 			reg = <0x5a001000 0x400>;
+-- 
+2.39.5
+

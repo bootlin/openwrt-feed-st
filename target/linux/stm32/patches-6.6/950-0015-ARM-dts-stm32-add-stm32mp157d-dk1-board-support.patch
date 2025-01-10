@@ -1,0 +1,82 @@
+From 4d3d57fb837fd9e4751aa5f8ad3e66aa1a96ab75 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 12 Oct 2022 16:35:57 +0200
+Subject: [PATCH] ARM: dts: stm32: add stm32mp157d-dk1 board support
+
+This commit adds stm32mp157d-dk1 board support. This board embeds a
+STM32MP157D SOC. This SOC contains the same level of feature than a
+STM32MP157A SOC but A7 clock frequency can reach 800MHz.
+
+Change-Id: Ifd2c1ada26e3f9f2c7ae899588eed3b08be311f5
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ .../devicetree/bindings/arm/stm32/stm32.yaml  |  4 ++-
+ arch/arm/boot/dts/st/Makefile                 |  1 +
+ arch/arm/boot/dts/st/stm32mp157d-dk1.dts      | 27 +++++++++++++++++++
+ 3 files changed, 31 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157d-dk1.dts
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index 19a3bc85ba88..190632740a82 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -87,7 +87,9 @@ properties:
+           - const: st,stm32mp157
+ 
+       - items:
+-          - const: st,stm32mp157a-dk1
++          - enum:
++              - st,stm32mp157a-dk1
++              - st,stm32mp157d-dk1
+           - const: st,stm32mp157
+       - items:
+           - enum:
+diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
+index 16882b319c3e..e15545507f42 100644
+--- a/arch/arm/boot/dts/st/Makefile
++++ b/arch/arm/boot/dts/st/Makefile
+@@ -56,6 +56,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp157c-lxa-tac-gen2.dtb \
+ 	stm32mp157c-odyssey.dtb \
+ 	stm32mp157c-phycore-stm32mp1-3.dtb \
++	stm32mp157d-dk1.dtb \
+ 	stm32mp157f-dk2.dtb
+ dtb-$(CONFIG_ARCH_U8500) += \
+ 	ste-snowball.dtb \
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-dk1.dts b/arch/arm/boot/dts/st/stm32mp157d-dk1.dts
+new file mode 100644
+index 000000000000..0fbaeccc7301
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157d-dk1.dts
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157.dtsi"
++#include "stm32mp15xd.dtsi"
++#include "stm32mp15-pinctrl.dtsi"
++#include "stm32mp15xxac-pinctrl.dtsi"
++#include "stm32mp15xx-dkx.dtsi"
++#include "stm32mp157a-dk1-scmi.dtsi"
++
++/ {
++	model = "STMicroelectronics STM32MP157D-DK1 Discovery Board";
++	compatible = "st,stm32mp157d-dk1", "st,stm32mp157";
++
++	aliases {
++		ethernet0 = &ethernet0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++};
+-- 
+2.39.5
+

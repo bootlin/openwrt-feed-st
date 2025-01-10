@@ -1,0 +1,86 @@
+From fb4bea7b12d686ecc84ce9dba812273ca9b3812a Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Wed, 16 Aug 2023 09:40:41 +0200
+Subject: [PATCH] ARM: dts: stm32: add counter examples on stm32mp157 eval
+
+Enable the counter nodes without dedicated pins. With such configuration,
+the counter interface can be used on internal clock to generate events.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I6513882d7de14f4586c5a4dd5840481143b94a6e
+---
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 9 +++++++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+index a68333781571..127aa0e36554 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+@@ -680,6 +680,9 @@ &timers2 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm2_pins_a>;
+ 		pinctrl-1 = <&pwm2_sleep_pins_a>;
+@@ -695,6 +698,9 @@ &timers8 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm8_pins_a>;
+ 		pinctrl-1 = <&pwm8_sleep_pins_a>;
+@@ -710,6 +716,9 @@ &timers12 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm12_pins_a>;
+ 		pinctrl-1 = <&pwm12_sleep_pins_a>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+index b50b1c06aea2..0b78ca882582 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+@@ -681,6 +681,9 @@ &timers2 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm2_pins_a>;
+ 		pinctrl-1 = <&pwm2_sleep_pins_a>;
+@@ -696,6 +699,9 @@ &timers8 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm8_pins_a>;
+ 		pinctrl-1 = <&pwm8_sleep_pins_a>;
+@@ -711,6 +717,9 @@ &timers12 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 	status = "disabled";
++	counter {
++		status = "okay";
++	};
+ 	pwm {
+ 		pinctrl-0 = <&pwm12_pins_a>;
+ 		pinctrl-1 = <&pwm12_sleep_pins_a>;
+-- 
+2.39.5
+

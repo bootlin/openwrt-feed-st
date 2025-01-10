@@ -1,0 +1,233 @@
+From 8d771e0055f41bf9ebe7f923563b496d568d0903 Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Mon, 30 Sep 2024 14:58:25 +0200
+Subject: [PATCH] bus: rifsc: add support of RISAL dump debug in RIFSC driver
+
+This driver creates an entry in the debugfs to dump RISAL memory
+regions configurations.
+
+Change-Id: I5452bbcf73afd141465dcc54f7ccdd377f26121a
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407786
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/bus/stm32_rifsc.c          | 134 ++++++++++++++++++++++++++++-
+ include/linux/bus/stm32_firewall.h |   2 +
+ 2 files changed, 134 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
+index 175f0b5c996b..21ea5f88072a 100644
+--- a/drivers/bus/stm32_rifsc.c
++++ b/drivers/bus/stm32_rifsc.c
+@@ -26,6 +26,8 @@
+ #define RIFSC_RISC_PRIVCFGR0		0x30
+ #define RIFSC_RISC_PER0_CIDCFGR		0x100
+ #define RIFSC_RISC_PER0_SEMCR		0x104
++#define RIFSC_RISC_REG0_ACFGR		0x900
++#define RIFSC_RISC_REG3_AADDR		0x924
+ #define RIFSC_RISC_HWCFGR2		0xFEC
+ 
+ /*
+@@ -74,6 +76,8 @@
+ #ifdef CONFIG_DEBUG_FS
+ #define STM32MP25_RIFSC_DEVICE_ENTRIES		128
+ #define STM32MP25_RIFSC_MASTER_ENTRIES	16
++#define STM32MP25_RIFSC_RISAL_SUBREGIONS	2
++#define STM32MP25_RIFSC_RISAL_GRANULARITY	8
+ 
+ #define RIFSC_RIMC_ATTR0		0xC10
+ 
+@@ -82,6 +86,14 @@
+ #define RIFSC_RIMC_MSEC			BIT(8)
+ #define RIFSC_RIMC_MPRIV		BIT(9)
+ 
++#define RIFSC_RISC_SRCID_MASK	GENMASK(6, 4)
++#define RIFSC_RISC_SRPRIV	BIT(9)
++#define RIFSC_RISC_SRSEC	BIT(8)
++#define RIFSC_RISC_SRRLOCK	BIT(1)
++#define RIFSC_RISC_SREN	BIT(0)
++#define RIFSC_RISC_SRLENGTH_MASK	GENMASK(27, 16)
++#define RIFSC_RISC_SRSTART_MASK	GENMASK(10, 0)
++
+ static const char *stm32mp25_rifsc_master_names[STM32MP25_RIFSC_MASTER_ENTRIES] = {
+ 	"ETR",
+ 	"SDMMC1",
+@@ -251,6 +263,16 @@ struct rifsc_master_debug_data {
+ 	bool m_priv;
+ };
+ 
++struct rifsc_subreg_debug_data {
++	bool sr_sec;
++	bool sr_priv;
++	u8 sr_cid;
++	bool sr_rlock;
++	bool sr_enable;
++	u16 sr_start;
++	u16 sr_length;
++};
++
+ static void stm32_rifsc_fill_master_dbg_entry(struct stm32_firewall_controller *rifsc,
+ 					      struct rifsc_master_debug_data *dbg_entry, int i)
+ {
+@@ -286,10 +308,33 @@ static void stm32_rifsc_fill_dev_dbg_entry(struct stm32_firewall_controller *rif
+ 	dbg_entry->dev_priv = priv_cfgr & BIT(reg_offset) ?  true : false;
+ }
+ 
++static void stm32_rifsc_fill_subreg_dbg_entry(struct stm32_firewall_controller *rifsc,
++					      struct rifsc_subreg_debug_data *dbg_entry, int i,
++						  int j)
++{
++	u32 risc_xcfgr = readl_relaxed(rifsc->mmio + RIFSC_RISC_REG0_ACFGR + 0x10 * i + 0x8 * j);
++	u32 risc_xaddr;
++
++	dbg_entry->sr_sec = risc_xcfgr & RIFSC_RISC_SRSEC;
++	dbg_entry->sr_priv = risc_xcfgr & RIFSC_RISC_SRPRIV;
++	dbg_entry->sr_cid = FIELD_GET(RIFSC_RISC_SRCID_MASK, risc_xcfgr);
++	dbg_entry->sr_rlock = risc_xcfgr & RIFSC_RISC_SRRLOCK;
++	dbg_entry->sr_enable = risc_xcfgr & RIFSC_RISC_SREN;
++	if (i == 2) {
++		risc_xaddr = readl_relaxed(rifsc->mmio + RIFSC_RISC_REG3_AADDR + 0x8 * j);
++		dbg_entry->sr_length = FIELD_GET(RIFSC_RISC_SRLENGTH_MASK, risc_xaddr);
++		dbg_entry->sr_start = FIELD_GET(RIFSC_RISC_SRSTART_MASK, risc_xaddr);
++	} else {
++		dbg_entry->sr_start = 0;
++		dbg_entry->sr_length = U16_MAX;
++	}
++}
++
+ static int stm32_rifsc_conf_dump_show(struct seq_file *s, void *data)
+ {
+ 	struct stm32_firewall_controller *rifsc = (struct stm32_firewall_controller *)s->private;
+-	int i;
++	u32 subregion_start, subregion_end;
++	int i, j;
+ 
+ 	seq_puts(s, "\n=============================================\n");
+ 	seq_puts(s, "                 RIFSC dump\n");
+@@ -347,6 +392,51 @@ static int stm32_rifsc_conf_dump_show(struct seq_file *s, void *data)
+ 		seq_printf(s, "| %-12s |\n", m_dbg_entry.m_priv ? "PRIV" : "NPRIV");
+ 	}
+ 
++	if (rifsc->nb_risal > 0) {
++		seq_puts(s, "\n=============================================\n");
++		seq_puts(s, "                  RISAL dump\n");
++		seq_puts(s, "=============================================\n");
++
++		seq_puts(s, "| Memory  |");
++		seq_puts(s, "| Subreg. |");
++		seq_puts(s, "| N/SECURE |");
++		seq_puts(s, "| N/PRIVILEGED |");
++		seq_puts(s, "| Subreg. CID |");
++		seq_puts(s, "| Resource lock |");
++		seq_puts(s, "| Subreg. enable |");
++		seq_puts(s, "| Subreg. start |");
++		seq_puts(s, "|  Subreg. end  |\n");
++
++		for (i = 0; i < rifsc->nb_risal; i++) {
++			for (j = 0; j < STM32MP25_RIFSC_RISAL_SUBREGIONS; j++) {
++				struct rifsc_subreg_debug_data sr_dbg_entry;
++
++				stm32_rifsc_fill_subreg_dbg_entry(rifsc, &sr_dbg_entry, i, j);
++
++				seq_printf(s, "| LPSRAM%1d |", i + 1);
++				seq_printf(s, "|    %1s    |", (j == 0) ? "A" : "B");
++				seq_printf(s, "| %-8s |", sr_dbg_entry.sr_sec ? "SEC" : "NSEC");
++				seq_printf(s, "| %-12s |", sr_dbg_entry.sr_priv ? "PRIV" : "NPRIV");
++				seq_printf(s, "| 0x%-9x |", sr_dbg_entry.sr_cid);
++				seq_printf(s, "| %-13s |",
++					   sr_dbg_entry.sr_rlock ? "locked (1)" : "unlocked (0)");
++				seq_printf(s, "| %-14s |",
++					   sr_dbg_entry.sr_enable ? "enabled" : "disabled");
++
++				subregion_start = rifsc->risal_map_bases[2 * i] +
++					sr_dbg_entry.sr_start * STM32MP25_RIFSC_RISAL_GRANULARITY;
++				subregion_end = rifsc->risal_map_bases[2 * i] +
++					rifsc->risal_map_bases[2 * i + 1] - 1;
++				subregion_end = min(subregion_start + sr_dbg_entry.sr_length *
++						    STM32MP25_RIFSC_RISAL_GRANULARITY - 1,
++						    subregion_end);
++
++				seq_printf(s, "| 0x%-11x |", subregion_start);
++				seq_printf(s, "| 0x%-11x |\n", subregion_end);
++			}
++		}
++	}
++
+ 	return 0;
+ }
+ DEFINE_SHOW_ATTRIBUTE(stm32_rifsc_conf_dump);
+@@ -487,7 +577,7 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+ 	u32 nb_risup, nb_rimu, nb_risal;
+ 	struct resource *res;
+ 	void __iomem *mmio;
+-	int rc;
++	int rc, err, nb_risal_map_bases;
+ 
+ 	rifsc_controller = devm_kzalloc(&pdev->dev, sizeof(*rifsc_controller), GFP_KERNEL);
+ 	if (!rifsc_controller)
+@@ -512,6 +602,46 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+ 	nb_risal = FIELD_GET(HWCFGR2_CONF3_MASK,
+ 			     readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2));
+ 	rifsc_controller->max_entries = nb_risup + nb_rimu + nb_risal;
++	rifsc_controller->nb_risal = nb_risal;
++
++	/*
++	 * In STM32MP21, RIFSC_RISC_HWCFGR2 shows an incorrect number of RISAL (NUM_RISAL is 3
++	 * instead of 0). A software workaround is implemented using the st,mem-map property in the
++	 * device tree. This property is absent or left empty if there is no RISAL.
++	 */
++	if (of_property_present(np, "st,mem-map")) {
++		nb_risal_map_bases = of_property_count_u32_elems(np, "st,mem-map");
++		if (nb_risal_map_bases < 0) {
++			pr_err("Couldn't read st,mem-map property");
++			return nb_risal_map_bases;
++		}
++	} else {
++		nb_risal_map_bases = 0;
++	}
++
++	if (nb_risal_map_bases == 0)
++		rifsc_controller->nb_risal = 0;
++
++	/* Get RISAL map bases */
++	if (rifsc_controller->nb_risal > 0) {
++		if (nb_risal_map_bases != 2 * rifsc_controller->nb_risal) {
++			pr_err("RISAL count in HW configuration register and device tree mismatch");
++			return -EINVAL;
++		}
++
++		rifsc_controller->risal_map_bases = devm_kzalloc(&pdev->dev, nb_risal_map_bases *
++								sizeof(u32), GFP_KERNEL);
++		if (!rifsc_controller->risal_map_bases)
++			return -ENOMEM;
++
++		err = of_property_read_u32_array(np, "st,mem-map",
++						 rifsc_controller->risal_map_bases,
++						 nb_risal_map_bases);
++		if (err) {
++			pr_err("Couldn't read st,mem-map property");
++			return err;
++		}
++	}
+ 
+ 	platform_set_drvdata(pdev, rifsc_controller);
+ 
+diff --git a/include/linux/bus/stm32_firewall.h b/include/linux/bus/stm32_firewall.h
+index e5fac85fe346..401497fab35e 100644
+--- a/include/linux/bus/stm32_firewall.h
++++ b/include/linux/bus/stm32_firewall.h
+@@ -45,6 +45,8 @@ struct stm32_firewall_controller {
+ 	struct list_head entry;
+ 	unsigned int type;
+ 	unsigned int max_entries;
++	u32 *risal_map_bases;
++	u32 nb_risal;
+ 
+ 	int (*grant_access)(struct stm32_firewall_controller *ctrl, u32 id);
+ 	void (*release_access)(struct stm32_firewall_controller *ctrl, u32 id);
+-- 
+2.39.5
+

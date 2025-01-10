@@ -1,0 +1,57 @@
+From e0a1937cc8564cab7040963439406a2bb43ef349 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 9 Jan 2024 16:58:40 +0100
+Subject: [PATCH] ARM: dts: stm32: add wake-up button on stm32mp25 boards
+
+Adds wake-up button, that comes from OPTEE interrupt number ZERO.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I10b522b90640518c311b4a78c1933d51db53f48b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/350297
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368872
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts  | 7 +++++++
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 7 +++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 471189b62cfa..eb3dd0ced539 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -80,6 +80,13 @@ button-user-2 {
+ 			gpios = <&gpioc 11 GPIO_ACTIVE_HIGH>;
+ 			status = "okay";
+ 		};
++
++		button-wake-up {
++			label = "wake-up";
++			linux,code = <KEY_WAKEUP>;
++			interrupts-extended = <&optee 0>;
++			status = "okay";
++		};
+ 	};
+ 
+ 	gpio-leds {
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 41206a1509f4..c345cb8ef339 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -54,6 +54,13 @@ button-user-1 {
+ 			gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
+ 			status = "okay";
+ 		};
++
++		button-wake-up {
++			label = "wake-up";
++			linux,code = <KEY_WAKEUP>;
++			interrupts-extended = <&optee 0>;
++			status = "okay";
++		};
+ 	};
+ 
+ 	gpio-leds {
+-- 
+2.39.5
+

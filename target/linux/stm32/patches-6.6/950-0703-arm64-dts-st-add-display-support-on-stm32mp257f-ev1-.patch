@@ -1,0 +1,197 @@
+From 4ecfd73e1343e46d95d4d1f144ec0bbe1dadc4dc Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 26 May 2023 10:46:36 +0200
+Subject: [PATCH] arm64: dts: st: add display support on stm32mp257f-ev1 board
+
+This patch enables the following IPs on stm32mp257f-ev1 :
+* LTDC
+* LVDS
+* WSVGA LVDS panel (1024x600)
+* Panel LVDS backlight
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I35af11fc5bfe753c4733509264ceaa487ac4bd49
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 146 +++++++++++++++++++++
+ 1 file changed, 146 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 49ec2d095a06..44dac39313e1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -67,6 +67,43 @@ memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+ 	};
++
++	panel_lvds: panel-lvds {
++		compatible = "edt,etml0700z9ndha", "panel-lvds";
++		enable-gpios = <&gpiog 15 GPIO_ACTIVE_HIGH>;
++		backlight = <&panel_lvds_backlight>;
++		status = "okay";
++
++		width-mm = <156>;
++		height-mm = <92>;
++		data-mapping = "vesa-24";
++
++		panel-timing {
++			clock-frequency = <54000000>;
++			hactive = <1024>;
++			vactive = <600>;
++			hfront-porch = <150>;
++			hback-porch = <150>;
++			hsync-len = <21>;
++			vfront-porch = <24>;
++			vback-porch = <24>;
++			vsync-len = <21>;
++		};
++
++		port {
++			lvds_panel_in: endpoint {
++				remote-endpoint = <&lvds_out0>;
++			};
++		};
++	};
++
++	panel_lvds_backlight: panel-lvds-backlight {
++		compatible = "gpio-backlight";
++		gpios = <&gpioi 5 GPIO_ACTIVE_HIGH>;
++		default-on;
++		default-brightness-level = <0>;
++		status = "okay";
++	};
+ };
+ 
+ &a35ss_syscfg {
+@@ -85,6 +122,29 @@ &combophy {
+ 	status = "okay";
+ };
+ 
++&dsi {
++	status = "disabled";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dsi_in: endpoint {
++				remote-endpoint = <&ltdc_ep1_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dsi_out1: endpoint {
++				remote-endpoint = <&adv7535_in>;
++			};
++		};
++	};
++};
++
+ &eth1 {
+ 	status = "disabled";
+ 	pinctrl-0 = <&eth1_mdio_pins_a>;
+@@ -169,12 +229,98 @@ &i2c2 {
+ 	/* spare dmas for other usage */
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
++
++	adv7535: hdmi@3d {
++		compatible = "adi,adv7535";
++		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
++		reg-names = "main", "cec", "edid", "packet";
++		status = "disabled";
++		adi,dsi-lanes = <4>;
++		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
++		avdd-supply = <&scmi_v3v3>;
++		dvdd-supply = <&scmi_v3v3>;
++		pvdd-supply = <&scmi_v3v3>;
++		a2vdd-supply = <&scmi_v3v3>;
++		v3p3-supply = <&scmi_v3v3>;
++		v1p2-supply = <&scmi_v3v3>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				adv7535_in: endpoint {
++					remote-endpoint = <&dsi_out1>;
++				};
++			};
++
++			port@2 {
++				reg = <2>;
++				adv7535_tx_endpoint: endpoint {
++					remote-endpoint = <&i2s2_endpoint>;
++				};
++			};
++		};
++	};
++
++	ili2511: ili2511@41 {
++		compatible = "ilitek,ili251x";
++		reg = <0x41>;
++		interrupt-parent = <&gpioi>;
++		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++		reset-gpios = <&gpiog 14 GPIO_ACTIVE_LOW>;
++		status = "okay";
++	};
+ };
+ 
+ &ipcc1 {
+ 	status = "okay";
+ };
+ 
++&ltdc {
++	rotation-memory = <&ltdc_sec_rotation>;
++	status = "okay";
++
++	port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ltdc_ep0_out: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&lvds_in>;
++		};
++
++		ltdc_ep1_out: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&dsi_in>;
++		};
++	};
++};
++
++&lvds {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			lvds_in: endpoint {
++				remote-endpoint = <&ltdc_ep0_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			lvds_out0: endpoint {
++				remote-endpoint = <&lvds_panel_in>;
++			};
++		};
++	};
++};
++
+ &m33_rproc {
+ 	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
+ 	mbox-names = "vq0", "vq1", "shutdown";
+-- 
+2.39.5
+

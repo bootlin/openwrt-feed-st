@@ -1,0 +1,48 @@
+From 2bd23a00c2091bff34ab6a7a3f0bf7eca72f33a0 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Wed, 8 Mar 2023 17:46:41 +0100
+Subject: [PATCH] dt-bindings: usb: typec: add support for stm32mp25
+
+STM32M25 now embeds all the hardware needed to use USB Type-C power
+delivery protocol.
+All the hardware handling can be done by firmware in the co-processor,
+hence using the UCSI protocol allows to manage it.
+So add a new compatible to handle this hardware variant.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I07a6b72aeb03ff261b21f673aaa2187623073ab8
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/294486
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ Documentation/devicetree/bindings/usb/st,typec-stm32g0.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/usb/st,typec-stm32g0.yaml b/Documentation/devicetree/bindings/usb/st,typec-stm32g0.yaml
+index 1cb68cabe17d..3ba25957bbff 100644
+--- a/Documentation/devicetree/bindings/usb/st,typec-stm32g0.yaml
++++ b/Documentation/devicetree/bindings/usb/st,typec-stm32g0.yaml
+@@ -10,13 +10,17 @@ description: |
+   The STM32G0 MCU can be programmed to control Type-C connector(s) through I2C
+   typically using the UCSI protocol over I2C, with a dedicated alert
+   (interrupt) pin.
++  On STM32MP25, the co-processor can be used with a dedicated firmware to
++  achieve similar Type-C and Power Delivery functionality.
+ 
+ maintainers:
+   - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ properties:
+   compatible:
+-    const: st,stm32g0-typec
++    enum:
++      - st,stm32g0-typec
++      - st,stm32mp25-typec
+ 
+   reg:
+     maxItems: 1
+-- 
+2.39.5
+

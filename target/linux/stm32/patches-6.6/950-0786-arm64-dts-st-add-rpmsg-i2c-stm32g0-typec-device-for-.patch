@@ -1,0 +1,43 @@
+From 16069a1a5a0516d03004a701f04b9c738e642e1b Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 18:29:35 +0100
+Subject: [PATCH] arm64: dts: st: add rpmsg i2c stm32g0-typec device for
+ stm32mp257f-dk board
+
+Add the support of the stm32go typeC device on the rpmsg I2C adapter.
+Instead of communicating with an external G0 processor, it communicates
+with the coprocessor relying on a virtual i2c. G0  physical interrupts
+are replaced by a rpmsg virtual interrupts controller through the
+irq-rpmsg service.
+notice that this impose that the rpmsg framework treat message under
+interrupt context. this solution should be replaced by virtio-gpio and
+virtio-i2c solutions.
+
+Change-Id: I4249fdc0c38d40885fccd8d95f84b0fafde2af1b
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index ba85eece0e9b..7d9e9dec4a94 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -109,6 +109,13 @@ i2c_rpmsg: i2c@2 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++
++		typec@35 {
++			compatible = "st,stm32mp25-typec";
++			reg = <0x35>;
++			interrupts-extended = <&intc_rpmsg 0>;
++			status = "disabled";
++		};
+ 	};
+ };
+ 
+-- 
+2.39.5
+

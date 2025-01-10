@@ -1,0 +1,37 @@
+From 4f13708e1cda7ee96ff1096de42b90dcf40d508d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 6 Aug 2024 17:45:15 +0200
+Subject: [PATCH] ARM: configs: enable CONFIG_USB_SERIAL_FTDI_SIO in
+ multiv7_addons fragment
+
+Compile FTDI SIO single port USB to serial converter driver as a module.
+
+Change-Id: Ifbdd3f4c75fc2c4f75e8358ce00ff81cef4174bd
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398102
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 951115ff8480..4ae834ca6c50 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -68,6 +68,8 @@ CONFIG_TOUCHSCREEN_EDT_FT5X06=y
+ CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_ONBOARD_HUB=y
++CONFIG_USB_SERIAL=m
++CONFIG_USB_SERIAL_FTDI_SIO=m
+ CONFIG_VFP=y
+ CONFIG_VIDEO_GC2145=m
+ CONFIG_VIDEO_OV5640=m
+-- 
+2.39.5
+

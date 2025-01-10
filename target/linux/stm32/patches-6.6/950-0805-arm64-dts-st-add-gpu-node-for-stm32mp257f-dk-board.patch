@@ -1,0 +1,33 @@
+From faff55a03bef851b34c64ab24c0ba533cacb862e Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 11:40:09 +0100
+Subject: [PATCH] arm64: dts: st: add gpu node for stm32mp257f-dk board
+
+Add gpu node for stm32mp257f-dk board.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I993f42fd1959cbfe24611c1a60563a194b11994c
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index a8b467c97700..e20a5e17eebc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -215,6 +215,11 @@ phy1_eth1: ethernet-phy@1 {
+ 	};
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++	status = "disabled";
++};
++
+ &hpdma {
+ 	memory-region = <&hpdma1_lli>;
+ };
+-- 
+2.39.5
+

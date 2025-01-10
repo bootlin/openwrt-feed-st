@@ -1,0 +1,40 @@
+From 36b9399199385fb69d7286e8e65b2cafc981a441 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 4 Jun 2024 16:36:13 +0200
+Subject: [PATCH] coresight: tmc: hack default AXI address width
+
+NOT_UPSTREAMABLE
+
+On STM32MP2xx the AXI bus of ETR uses 32 bits address width.
+Hack the default value of 40 bits to prevent bus hang with simple
+commands like:
+	perf record -e cs_etm/@tmc_etr0/ --per-thread uname
+
+A better implementation would require a DT property to specify the
+value, overriding the default value or the optional value present
+in DEVID register.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ie3c09dc4891ff9e26c0e61824d57633061e56564
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404539
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+index c106d142e632..dfd54c52deed 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-core.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+@@ -366,7 +366,7 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
+ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
+ {
+ 	int rc;
+-	u32 dma_mask = 0;
++	u32 dma_mask = 32;
+ 	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
+ 
+ 	if (!tmc_etr_has_non_secure_access(drvdata))
+-- 
+2.39.5
+

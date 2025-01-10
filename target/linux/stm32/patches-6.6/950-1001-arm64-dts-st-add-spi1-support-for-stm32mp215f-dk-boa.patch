@@ -1,0 +1,43 @@
+From cad28b0cc6a494fc5c4ad16149ddbdd067e3e62c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 10 Apr 2024 09:45:37 +0200
+Subject: [PATCH] arm64: dts: st: add spi1 support for stm32mp215f-dk board
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add SPI1 node for stm32mp215f-dk board.
+SPI1 is on the GPIO connector.
+
+Change-Id: I1fdb9929416277017f33e7721d55a1c3fbaad5f5
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372689
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index cc726cef0946..8a1b9a84ce69 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -44,6 +44,13 @@ fw@80000000 {
+ 	};
+ };
+ 
++&spi1 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi1_pins_a>;
++	pinctrl-1 = <&spi1_sleep_pins_a>;
++	status = "disabled";
++};
++
+ &uart4 {
+ 	pinctrl-names = "default", "idle", "sleep";
+ 	pinctrl-0 = <&uart4_pins_a>;
+-- 
+2.39.5
+

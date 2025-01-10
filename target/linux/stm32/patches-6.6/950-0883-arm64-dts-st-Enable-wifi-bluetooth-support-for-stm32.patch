@@ -1,0 +1,42 @@
+From 23bfa3e33d26be0f2839f41024a2b81457d6a821 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 12 Mar 2024 09:11:02 +0100
+Subject: [PATCH] arm64: dts: st: Enable wifi/bluetooth support for
+ stm32mp257f-dk board
+
+Enable wifi/bluetooth support for stm32mp257f-dk board
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I3e0780e03cbb67dd1f3139c43d58d9ceed13da77
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365944
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 6755b69a9af8..471189b62cfa 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -634,7 +634,7 @@ &sdmmc3 {
+ 	cap-sdio-irq;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	status = "disabled";
++	status = "okay";
+ 
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+@@ -650,7 +650,7 @@ &usart1 {
+ 	pinctrl-1 = <&usart1_sleep_pins_a>;
+ 	pinctrl-2 = <&usart1_idle_pins_a>;
+ 	uart-has-rtscts;
+-	status = "disabled";
++	status = "okay";
+ 
+ 	bluetooth {
+ 		shutdown-gpios = <&gpiog 4 GPIO_ACTIVE_HIGH>;
+-- 
+2.39.5
+

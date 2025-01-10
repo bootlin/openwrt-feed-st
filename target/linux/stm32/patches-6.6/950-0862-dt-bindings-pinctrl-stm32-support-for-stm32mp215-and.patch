@@ -1,0 +1,59 @@
+From 66c172f0091e7ea4124bf516c8761ce0490da092 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 16 Feb 2024 16:39:35 +0100
+Subject: [PATCH] dt-bindings: pinctrl: stm32: support for stm32mp215 and
+ additional packages
+
+Add support for st,stm32mp215-pinctrl and st,stm32mp215-z-pinctrl.
+Add packages AM, AN and AO (values : 0x1000, 0x2000 and 0x8000)
+
+Change-Id: I72c9af31d48dbd90cb9f5ec059ad8ecd4242546b
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361909
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml         | 4 +++-
+ include/dt-bindings/pinctrl/stm32-pinfunc.h                   | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+index a893ca500d00..5d4e3cc812dd 100644
+--- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+@@ -27,6 +27,8 @@ properties:
+       - st,stm32mp135-pinctrl
+       - st,stm32mp157-pinctrl
+       - st,stm32mp157-z-pinctrl
++      - st,stm32mp215-pinctrl
++      - st,stm32mp215-z-pinctrl
+       - st,stm32mp257-pinctrl
+       - st,stm32mp257-z-pinctrl
+ 
+@@ -58,7 +60,7 @@ properties:
+       Indicates the SOC package used.
+       More details in include/dt-bindings/pinctrl/stm32-pinfunc.h
+     $ref: /schemas/types.yaml#/definitions/uint32
+-    enum: [0x1, 0x2, 0x4, 0x8, 0x100, 0x400, 0x800]
++    enum: [0x1, 0x2, 0x4, 0x8, 0x100, 0x400, 0x800, 0x1000, 0x2000, 0x4000]
+ 
+ patternProperties:
+   '^gpio@[0-9a-f]*$':
+diff --git a/include/dt-bindings/pinctrl/stm32-pinfunc.h b/include/dt-bindings/pinctrl/stm32-pinfunc.h
+index af3fd388329a..01bc8be78ef7 100644
+--- a/include/dt-bindings/pinctrl/stm32-pinfunc.h
++++ b/include/dt-bindings/pinctrl/stm32-pinfunc.h
+@@ -41,6 +41,9 @@
+ #define STM32MP_PKG_AI	0x100
+ #define STM32MP_PKG_AK	0x400
+ #define STM32MP_PKG_AL	0x800
++#define STM32MP_PKG_AM	0x1000
++#define STM32MP_PKG_AN	0x2000
++#define STM32MP_PKG_AO	0x4000
+ 
+ #endif /* _DT_BINDINGS_STM32_PINFUNC_H */
+ 
+-- 
+2.39.5
+

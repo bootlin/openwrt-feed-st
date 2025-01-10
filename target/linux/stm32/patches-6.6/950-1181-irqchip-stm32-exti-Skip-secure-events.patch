@@ -1,0 +1,125 @@
+From 1df59a85349fd5e8487db493205e13efa35f7627 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 15 Apr 2024 15:49:20 +0200
+Subject: [PATCH] irqchip/stm32-exti: Skip secure events
+
+Secure OS can reserve some EXTI events, marking them as "secure" by setting
+the corresponding bit in register SECCFGR (aka TZENR).  These events cannot
+be used by Linux.
+
+Read the list of reserved events and check it during interrupt domain
+allocation.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I6853fc760fb472e14bf5b7d13bdf2991a80ddc4e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383182
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 1abe06009788..c0a020aab557 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -36,6 +36,7 @@ struct stm32_exti_bank {
+ 	u32 rpr_ofst;
+ 	u32 fpr_ofst;
+ 	u32 trg_ofst;
++	u32 seccfgr_ofst;
+ };
+ 
+ #define UNDEF_REG ~0
+@@ -54,6 +55,7 @@ struct stm32_exti_chip_data {
+ 	u32 mask_cache;
+ 	u32 rtsr_cache;
+ 	u32 ftsr_cache;
++	u32 event_reserved;
+ };
+ 
+ struct stm32_exti_host_data {
+@@ -74,6 +76,7 @@ static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
+ 	.rpr_ofst	= 0x14,
+ 	.fpr_ofst	= UNDEF_REG,
+ 	.trg_ofst	= UNDEF_REG,
++	.seccfgr_ofst	= UNDEF_REG,
+ };
+ 
+ static const struct stm32_exti_bank *stm32f4xx_exti_banks[] = {
+@@ -94,6 +97,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b1 = {
+ 	.rpr_ofst	= 0x88,
+ 	.fpr_ofst	= UNDEF_REG,
+ 	.trg_ofst	= UNDEF_REG,
++	.seccfgr_ofst	= UNDEF_REG,
+ };
+ 
+ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
+@@ -105,6 +109,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
+ 	.rpr_ofst	= 0x98,
+ 	.fpr_ofst	= UNDEF_REG,
+ 	.trg_ofst	= UNDEF_REG,
++	.seccfgr_ofst	= UNDEF_REG,
+ };
+ 
+ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
+@@ -116,6 +121,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
+ 	.rpr_ofst	= 0xA8,
+ 	.fpr_ofst	= UNDEF_REG,
+ 	.trg_ofst	= UNDEF_REG,
++	.seccfgr_ofst	= UNDEF_REG,
+ };
+ 
+ static const struct stm32_exti_bank *stm32h7xx_exti_banks[] = {
+@@ -138,6 +144,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b1 = {
+ 	.rpr_ofst	= 0x0C,
+ 	.fpr_ofst	= 0x10,
+ 	.trg_ofst	= 0x3EC,
++	.seccfgr_ofst	= 0x14,
+ };
+ 
+ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
+@@ -149,6 +156,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
+ 	.rpr_ofst	= 0x2C,
+ 	.fpr_ofst	= 0x30,
+ 	.trg_ofst	= 0x3E8,
++	.seccfgr_ofst	= 0x34,
+ };
+ 
+ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
+@@ -160,6 +168,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
+ 	.rpr_ofst	= 0x4C,
+ 	.fpr_ofst	= 0x50,
+ 	.trg_ofst	= 0x3E4,
++	.seccfgr_ofst	= 0x54,
+ };
+ 
+ static const struct stm32_exti_bank *stm32mp1_exti_banks[] = {
+@@ -707,6 +716,12 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+ 	bank  = hwirq / IRQS_PER_BANK;
+ 	chip_data = &host_data->chips_data[bank];
+ 
++	/* Check if event is reserved (Secure) */
++	if (chip_data->event_reserved & BIT(hwirq % IRQS_PER_BANK)) {
++		dev_err(host_data->dev, "event %lu is reserved, secure\n", hwirq);
++		return -EPERM;
++	}
++
+ 	event_trg = readl_relaxed(host_data->base + chip_data->reg_bank->trg_ofst);
+ 	chip = (event_trg & BIT(hwirq % IRQS_PER_BANK)) ?
+ 	       &stm32_exti_h_chip : &stm32_exti_h_chip_direct;
+@@ -804,6 +819,10 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
+ 	if (stm32_bank->emr_ofst != UNDEF_REG)
+ 		writel_relaxed(0, base + stm32_bank->emr_ofst);
+ 
++	/* reserve Secure events */
++	if (stm32_bank->seccfgr_ofst != UNDEF_REG)
++		chip_data->event_reserved = readl_relaxed(base + stm32_bank->seccfgr_ofst);
++
+ 	pr_info("%pOF: bank%d\n", node, bank_idx);
+ 
+ 	return chip_data;
+-- 
+2.39.5
+

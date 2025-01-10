@@ -1,0 +1,30 @@
+From 88b2231f34674e422f41d8cd3f5bb25d7f12ce94 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 25 Aug 2023 09:41:21 +0200
+Subject: [PATCH] dt-bindings: st,stm32-syscon: remove 'bindings' in title
+
+checkpatch complains about 'bindings' redondancy.
+
+Change-Id: I85c0ae6f32892897be3473797b830d847001a345
+(cherry picked from commit d16cb61781a062be3ca29f1fc5fa6318418a9ed7)
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml          | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 456b8417b32a..106fe7705fa3 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -4,7 +4,7 @@
+ $id: "http://devicetree.org/schemas/arm/stm32/st,stm32-syscon.yaml#"
+ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ 
+-title: STMicroelectronics STM32 Platforms System Controller bindings
++title: STMicroelectronics STM32 Platforms System Controller
+ 
+ maintainers:
+   - Alexandre Torgue <alexandre.torgue@foss.st.com>
+-- 
+2.39.5
+

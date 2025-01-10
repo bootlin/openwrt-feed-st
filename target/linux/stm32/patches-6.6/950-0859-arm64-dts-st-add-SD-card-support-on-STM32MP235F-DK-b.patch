@@ -1,0 +1,64 @@
+From ac0e5a0632d72867005b3e4ae6bf70663297905f Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 7 Feb 2024 10:41:26 +0100
+Subject: [PATCH] arm64: dts: st: add SD-card support on STM32MP235F-DK board
+
+Add the configuration node for SD-card support on STM32MP235F-DK board.
+For the moment it uses a fixed regulator for vmmc, and vqmmc is skipped
+until regulator driver is available.
+
+Change-Id: I51c7e390051e42ba7338b1973b8c91f9878058e1
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358024
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Francois CHOLEAU <francois.choleau@st.com>
+Domain-Review: Francois CHOLEAU <francois.choleau@st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+index 258a21d09fe0..1927a6450c83 100644
+--- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+@@ -6,6 +6,7 @@
+ 
+ /dts-v1/;
+ 
++#include <dt-bindings/gpio/gpio.h>
+ #include "stm32mp235.dtsi"
+ #include "stm32mp23xf.dtsi"
+ #include "stm32mp25-pinctrl.dtsi"
+@@ -39,6 +40,27 @@ fw@80000000 {
+ 			no-map;
+ 		};
+ 	};
++
++	vdd_sdcard: vdd-sdcard {
++		compatible = "regulator-fixed";
++		regulator-name = "vdd_sdcard";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++	};
++};
++
++&sdmmc1 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc1_b4_pins_a>;
++	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
++	cd-gpios = <&gpiod 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++	disable-wp;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&vdd_sdcard>;
++	status = "okay";
+ };
+ 
+ &usart2 {
+-- 
+2.39.5
+

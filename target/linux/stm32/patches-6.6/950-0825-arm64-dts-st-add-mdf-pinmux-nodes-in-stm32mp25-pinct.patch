@@ -1,0 +1,64 @@
+From c052273e613325d453bcd9f15665bd3daf1196d4 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 17 Jan 2024 18:27:31 +0100
+Subject: [PATCH] arm64: dts: st: add mdf pinmux nodes in
+ stm32mp25-pinctrl.dtsi
+
+Add mdf pinmux nodes in stm32mp25-pinctrl.dtsi.
+
+Change-Id: I7a9bd6cb5f64f5dbd9f5dd509d1a0ea2bec1f00b
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361877
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 49eeb04f9fb2..1d74df2c9553 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -348,6 +348,36 @@ pins {
+ 		};
+ 	};
+ 
++	mdf_cck0_pins_a: mdf-cck0-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('A', 7, AF5)>; /* MDF1_CCK */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++	};
++
++	mdf_cck0_sleep_pins_a: mdf-cck0-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('A', 7, ANALOG)>; /* MDF1_CCK */
++		};
++	};
++
++	mdf_sdi6_pins_a: mdf-sdi6-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('A', 6, AF5)>; /* MDF1_SDI6 */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++	};
++
++	mdf_sdi6_sleep_pins_a: mdf-sdi6-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('A', 6, ANALOG)>; /* MDF1_SDI6 */
++		};
++	};
++
+ 	ospi1_clk_pins_a: ospi1-clk-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
+-- 
+2.39.5
+

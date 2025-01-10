@@ -1,0 +1,37 @@
+From 459c08e245c42cd5769c13fc8a8813ab12cc93fa Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Wed, 7 Jun 2023 10:47:48 +0200
+Subject: [PATCH] arm64: dts: st: add GPU on stm32mp25
+
+Add GPU support for stm32mp25
+
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Change-Id: Ib901afe556d318f40cd2e7c8064fc1bbcf7206a7
+---
+ arch/arm64/boot/dts/st/stm32mp255.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index b554f095e797..24ad936f9a1a 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -23,4 +23,16 @@ venc: venc@480e0000 {
+ 		clocks = <&rcc CK_BUS_VENC>;
+ 		access-controllers = <&rifsc 90>;
+ 	};
++
++	gpu: gpu@48280000 {
++		compatible = "vivante,gc";
++		reg = <0x48280000 0x800>;
++		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
++		resets = <&rcc GPU_R>;
++		clock-names = "axi", "core";
++		clocks = <&rcc CK_BUS_GPU>, <&rcc CK_KER_GPU>;
++		gpu-supply =  <&scmi_vddgpu>;
++		access-controllers = <&rifsc 79>;
++		status = "disabled";
++	};
+ };
+-- 
+2.39.5
+

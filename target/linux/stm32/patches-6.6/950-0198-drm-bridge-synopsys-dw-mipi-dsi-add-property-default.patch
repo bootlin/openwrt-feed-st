@@ -1,0 +1,68 @@
+From b6f1f7ad4ca6098989f7b53831e9f1de2875ad18 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 3 Jan 2024 14:56:01 +0100
+Subject: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: add property default-on
+
+Add support of a new property 'default-on' to avoid reset
+of DSI at probe.
+
+Change-Id: Iddd5cf90c5ca5f1c23de72e000066ba0f7207525
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 34 ++++++++++---------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+index 4a80ca98053f..1eccb46cc421 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+@@ -1229,28 +1229,30 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+ 	 * Note that the reset was not defined in the initial device tree, so
+ 	 * we have to be prepared for it not being found.
+ 	 */
+-	apb_rst = devm_reset_control_get_optional_exclusive(dev, "apb");
+-	if (IS_ERR(apb_rst)) {
+-		ret = PTR_ERR(apb_rst);
++	if (!device_property_read_bool(dev, "default-on")) {
++		apb_rst = devm_reset_control_get_optional_exclusive(dev, "apb");
++		if (IS_ERR(apb_rst)) {
++			ret = PTR_ERR(apb_rst);
+ 
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "Unable to get reset control: %d\n", ret);
++			if (ret != -EPROBE_DEFER)
++				dev_err(dev, "Unable to get reset control: %d\n", ret);
+ 
+-		return ERR_PTR(ret);
+-	}
+-
+-	if (apb_rst) {
+-		ret = clk_prepare_enable(dsi->pclk);
+-		if (ret) {
+-			dev_err(dev, "%s: Failed to enable pclk\n", __func__);
+ 			return ERR_PTR(ret);
+ 		}
+ 
+-		reset_control_assert(apb_rst);
+-		usleep_range(10, 20);
+-		reset_control_deassert(apb_rst);
++		if (apb_rst) {
++			ret = clk_prepare_enable(dsi->pclk);
++			if (ret) {
++				dev_err(dev, "%s: Failed to enable pclk\n", __func__);
++				return ERR_PTR(ret);
++			}
++
++			reset_control_assert(apb_rst);
++			usleep_range(10, 20);
++			reset_control_deassert(apb_rst);
+ 
+-		clk_disable_unprepare(dsi->pclk);
++			clk_disable_unprepare(dsi->pclk);
++		}
+ 	}
+ 
+ 	dw_mipi_dsi_debugfs_init(dsi);
+-- 
+2.39.5
+

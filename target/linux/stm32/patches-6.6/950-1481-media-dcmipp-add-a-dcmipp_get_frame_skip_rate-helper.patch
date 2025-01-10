@@ -1,0 +1,93 @@
+From dfd1cffce3d69b51e0bb50deb9399a179bdbd63a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 25 Sep 2024 09:45:02 +0200
+Subject: [PATCH] media: dcmipp: add a dcmipp_get_frame_skip_rate helper
+
+Add a dcmipp_get_frame_skip_rate helper function which retrieve
+frame_interval on both sink and source pad of a subdevice and
+return the skip rate.
+Since configuration of the frame_interval done by postproc subdev
+already include sanitising of the data, rate is guarantted to be
+either 1/2/4 or 8.
+
+Change-Id: Ib9f7f0c6c3a78b13f58d85807a360ebefeda38cb
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/406667
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-common.c     | 33 +++++++++++++++++++
+ .../st/stm32/stm32-dcmipp/dcmipp-common.h     | 12 +++++++
+ 2 files changed, 45 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+index 13b6c63bdb26..bf6203c9116e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+@@ -110,3 +110,36 @@ dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved, struct v4l2_subdev *sd)
+ 	v4l2_device_unregister_subdev(sd);
+ 	dcmipp_pads_cleanup(ved->pads);
+ }
++
++int dcmipp_get_frame_skip_rate(struct v4l2_subdev *source,
++			       u32 *frame_skip_rate)
++{
++	struct v4l2_subdev_frame_interval sink_fi = { .pad = 0, };
++	struct v4l2_subdev_frame_interval source_fi = { .pad = 1, };
++	u32 ratio = 1;
++	int ret;
++
++	/*
++	 * Retrieve the frame rate adjustment info from postproc subdev
++	 * if frame_interval are not available, rate will be 1
++	 */
++	ret = v4l2_subdev_call(source, video, g_frame_interval, &sink_fi);
++	if (ret < 0)
++		goto end;
++
++	ret = v4l2_subdev_call(source, video, g_frame_interval, &source_fi);
++	if (ret < 0)
++		goto end;
++
++	if (!sink_fi.interval.numerator || !sink_fi.interval.denominator ||
++	    !source_fi.interval.numerator || !source_fi.interval.denominator)
++		goto end;
++
++	ratio = (sink_fi.interval.denominator * source_fi.interval.numerator) /
++		(sink_fi.interval.numerator * source_fi.interval.denominator);
++
++end:
++	*frame_skip_rate = ratio;
++
++	return 0;
++}
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+index 4d0539289eb8..00feca94d5cc 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+@@ -198,6 +198,18 @@ int dcmipp_ent_sd_register(struct dcmipp_ent_device *ved,
+ void dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved,
+ 			      struct v4l2_subdev *sd);
+ 
++/**
++ * dcmipp_get_frame_skip_rate - compute skip ratio
++ *
++ * @source:	v4l2_subdev device
++ * @frame_skip_rate:	pointer to return skip ratio
++ *
++ * Helper function to compute the skip ratio by comparing
++ * the sink and source pad frame_interval
++ */
++int dcmipp_get_frame_skip_rate(struct v4l2_subdev *source,
++			       u32 *frame_skip_rate);
++
+ #define reg_write(device, reg, val) \
+ 	(__reg_write((device)->dev, (device)->regs, (reg), (val)))
+ #define reg_read(device, reg) \
+-- 
+2.39.5
+

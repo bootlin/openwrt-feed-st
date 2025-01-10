@@ -1,0 +1,67 @@
+From 99b0494652ba31e945590beda0ea5a3fd0869b25 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 18:06:18 +0100
+Subject: [PATCH] arm64: dts: st: add eth1_rgmii_pins_b pinmux nodes in
+ stm32mp25-pinctrl.dtsi
+
+add eth1_rgmii_pins_b pinmux nodes in stm32mp25-pinctrl.dtsi
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I6fb1e2de1e1052c4239cb15f2910cc392881db8d
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 5bf7facd5e3a..0668d162e585 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -82,6 +82,44 @@ pins {
+ 		};
+ 	};
+ 
++	eth1_rgmii_pins_b: eth1-rgmii-1 {
++		pins1 {
++			pinmux = <STM32_PINMUX('A', 15, AF10)>, /* ETH_RGMII_TXD0 */
++				 <STM32_PINMUX('C', 1, AF10)>, /* ETH_RGMII_TXD1 */
++				 <STM32_PINMUX('H', 10, AF10)>, /* ETH_RGMII_TXD2 */
++				 <STM32_PINMUX('H', 11, AF10)>, /* ETH_RGMII_TXD3 */
++				 <STM32_PINMUX('A', 13, AF10)>; /* ETH_RGMII_TX_CTL */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <3>;
++			st,io-retime = <1>;
++			st,io-clk-edge = <1>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('H', 9, AF10)>, /* ETH_RGMII_CLK125 */
++				 <STM32_PINMUX('C', 0, AF12)>, /* ETH_RGMII_GTX_CLK */
++				 <STM32_PINMUX('A', 9, AF10)>, /* ETH_MDC */
++				 <STM32_PINMUX('A', 10, AF10)>; /* ETH_MDIO */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <3>;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('F', 1, AF10)>, /* ETH_RGMII_RXD0 */
++				 <STM32_PINMUX('C', 2, AF10)>, /* ETH_RGMII_RXD1 */
++				 <STM32_PINMUX('H', 12, AF10)>, /* ETH_RGMII_RXD2 */
++				 <STM32_PINMUX('H', 13, AF10)>, /* ETH_RGMII_RXD3 */
++				 <STM32_PINMUX('A', 11, AF10)>; /* ETH_RGMII_RX_CTL */
++			bias-disable;
++			st,io-retime = <1>;
++			st,io-clk-edge = <1>;
++		};
++		pins4 {
++			pinmux = <STM32_PINMUX('A', 14, AF10)>; /* ETH_RGMII_RX_CLK */
++			bias-disable;
++		};
++	};
++
+ 	eth2_rgmii_pins_a: eth2-rgmii-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('C', 7, AF10)>, /* ETH_RGMII_TXD0 */
+-- 
+2.39.5
+

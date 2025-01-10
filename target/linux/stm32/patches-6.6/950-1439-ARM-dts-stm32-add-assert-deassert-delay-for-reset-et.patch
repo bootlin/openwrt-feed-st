@@ -1,0 +1,42 @@
+From 2164620eb151f91902324909a2b44c65394bdc83 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 10 Sep 2024 11:58:56 +0200
+Subject: [PATCH] ARM: dts: stm32: add assert/deassert delay for reset ethernet
+ on stm32mp135f-dk
+
+To be compliant with SMSC datasheet,
+add delay assert/deassert for reset PHY
+
+Change-Id: If57e4347244de6d2055781bbaf8345459a744d8a
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404475
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 5ce9f62c172d..9cb6c21462ad 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -233,6 +233,8 @@ mdio {
+ 		phy0_eth1: ethernet-phy@0 {
+ 			compatible = "ethernet-phy-id0007.c131";
+ 			reset-gpios =  <&mcp23017 9 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <1000>;
++			reset-deassert-us = <30000>;
+ 			reg = <0>;
+ 			wakeup-source;
+ 		};
+@@ -259,6 +261,8 @@ mdio {
+ 		phy0_eth2: ethernet-phy@0 {
+ 			compatible = "ethernet-phy-id0007.c131";
+ 			reset-gpios = <&mcp23017 10 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <1000>;
++			reset-deassert-us = <30000>;
+ 			reg = <0>;
+ 		};
+ 	};
+-- 
+2.39.5
+

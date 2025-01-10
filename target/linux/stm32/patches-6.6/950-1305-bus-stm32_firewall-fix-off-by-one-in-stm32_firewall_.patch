@@ -1,0 +1,42 @@
+From df3f1c61909369409a0c87f020e6293f623cc427 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@linaro.org>
+Date: Fri, 12 Apr 2024 11:25:37 +0300
+Subject: [PATCH] bus: stm32_firewall: fix off by one in
+ stm32_firewall_get_firewall()
+
+The "nb_firewall" variable is the number of elements in the firewall[]
+array, which is allocated in stm32_firewall_populate_bus().  So change
+this > comparison to >= to prevent an out of bound access.
+
+Fixes: 5c9668cfc6d7 ("firewall: introduce stm32_firewall framework")
+Change-Id: Id901778d5081b649256165bb460c953da69e1ead
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395249
+Tested-by: Clement LE GOFFIC <clement.legoffic@foss.st.com>
+Domain-Review: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Clement LE GOFFIC <clement.legoffic@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/bus/stm32_firewall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
+index decb79449047..2fc9761dadec 100644
+--- a/drivers/bus/stm32_firewall.c
++++ b/drivers/bus/stm32_firewall.c
+@@ -53,7 +53,7 @@ int stm32_firewall_get_firewall(struct device_node *np, struct stm32_firewall *f
+ 			return err;
+ 		}
+ 
+-		if (j > nb_firewall) {
++		if (j >= nb_firewall) {
+ 			pr_err("Too many firewall controllers");
+ 			of_node_put(provider);
+ 			return -EINVAL;
+-- 
+2.39.5
+

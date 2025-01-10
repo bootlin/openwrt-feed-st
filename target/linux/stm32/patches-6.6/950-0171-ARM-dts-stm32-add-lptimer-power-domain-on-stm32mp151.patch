@@ -1,0 +1,62 @@
+From 07aa0063cf569738ca7eaa5f424b3c1861bab236 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 25 Nov 2020 18:03:51 +0100
+Subject: [PATCH] ARM: dts: stm32: add lptimer power domain on stm32mp151
+
+LPtimer can be used to wakeup from stop mode on stm32mp151.
+Add pd_core PM domain properties on LPtimer instances.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Change-Id: Id3ecad5d5bf4a44e786f989453cced351d27c2b4
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index b97513574b50..84ef281ae812 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -405,6 +405,7 @@ lptimer1: timer@40009000 {
+ 			interrupts-extended = <&exti 47 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM1_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1347,6 +1348,7 @@ lptimer2: timer@50021000 {
+ 			interrupts-extended = <&exti 48 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM2_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1376,6 +1378,7 @@ lptimer3: timer@50022000 {
+ 			interrupts-extended = <&exti 50 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM3_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1398,6 +1401,7 @@ lptimer4: timer@50023000 {
+ 			interrupts-extended = <&exti 52 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM4_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1414,6 +1418,7 @@ lptimer5: timer@50024000 {
+ 			interrupts-extended = <&exti 53 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM5_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,54 @@
+From a3b0080290c0b4d03a7f5a22883c4298bf4ba8c0 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Mon, 5 Aug 2024 18:35:24 +0200
+Subject: [PATCH] arm64: dts: st: enable arm watchdog for stm32mp21
+
+Enable ARM WDT for stm32mp21
+
+Change-Id: I60c35ca5385ecb59669fe9be1216b5f2d4e21c28
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397432
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi    | 6 ++++++
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 5 +++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 7d5a31630662..95ffbd289d40 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -35,6 +35,12 @@ arm-pmu {
+ 		interrupt-parent = <&intc>;
+ 	};
+ 
++	arm_wdt: watchdog {
++		compatible = "arm,smc-wdt";
++		arm,smc-id = <0xbc000000>;
++		status = "disabled";
++	};
++
+ 	cs_replicator: replicator {
+ 		compatible = "arm,coresight-static-replicator";
+ 		clocks = <&scmi_clk CK_SCMI_SYSATB>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index a843c84ca8ce..be0a56bbab08 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -131,6 +131,11 @@ &a35ss_syscfg {
+ 	status = "okay";
+ };
+ 
++&arm_wdt {
++	timeout-sec = <32>;
++	status = "okay";
++};
++
+ &crc {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

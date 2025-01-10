@@ -1,0 +1,344 @@
+From 6da1edfd2cf899b4524e1bb3e04209cd05a91b7a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 25 Mar 2024 13:48:33 +0100
+Subject: [PATCH] media: dcmipp: statcap: stat region & pixel count rework
+
+Rework the way stat region ctrl (and ctrls more globally) are handled.
+First of all, ensure that ctrls are always properly applied when
+start stat capture (aka start_streaming) by moving the
+v4l2_ctrl_handler_setup call at the end of the start_streaming
+callback.
+stm32mp25 only supports a single region of statistics hence
+simplifie the code by only handling a single region.  During the
+ctrl set, check the input frame size in order to validate the
+stat region information provided by the application and reject
+the ctrl (and potentially start_streaming) if frame size & stat
+region do not match.
+The number of pixel to be taken into account depends on the location of
+the statistics and the frame format.  In preparation of addition of full
+(both up & down) statistics capture, move the number of pixel calculation
+during the average stage.
+During processing of the average statistics, check the stat_region
+information stored locally, ensuring proper lock to avoid race between
+s_ctrl and irq handler.
+With that correction done, ctrl handler can use its own mutex lock
+hence this commit also remove the ctrl_lock variable.
+
+Change-Id: Id95998f04ac129794fc126bc88be3939b82700b6
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374628
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 189 +++++++++---------
+ 1 file changed, 97 insertions(+), 92 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 3d9211158a65..629670dc8de4 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -82,7 +82,6 @@ struct dcmipp_statcap_device {
+ 	struct device *dev;
+ 	struct v4l2_ctrl_handler ctrls;
+ 	/* Protect ctrls */
+-	struct mutex ctrl_lock;
+ 	struct vb2_queue queue;
+ 	struct list_head buffers;
+ 	/* Protects the access of variables shared within the interrupt */
+@@ -91,14 +90,11 @@ struct dcmipp_statcap_device {
+ 	struct mutex lock;
+ 	struct v4l2_subdev *s_subdev;
+ 	u32 sequence;
+-	u32 frame_width;
+-	u32 frame_height;
+ 	u32 frame_format;
+-	struct v4l2_rect stat_region[DCMIPP_NB_STAT_REGION];
++	struct v4l2_rect stat_region;
+ 	enum v4l2_isp_stat_location location;
+ 	enum v4l2_isp_stat_avg_filter avg_filter;
+ 	enum v4l2_isp_stat_bin_comp bin_comp;
+-	u32 nb_comp_pix[COMP_MAX];
+ 
+ 	/*
+ 	 * indicate the current state of the capture stat machine,
+@@ -180,35 +176,6 @@ static const struct v4l2_ioctl_ops dcmipp_statcap_ioctl_ops = {
+ 	.vidioc_streamoff = vb2_ioctl_streamoff,
+ };
+ 
+-static int dcmipp_statcap_get_nb_comp_pix(struct dcmipp_statcap_device *vcap,
+-					  enum component comp)
+-{
+-	int nb_comp_pix, comp_divider;
+-
+-	if (vcap->stat_region[0].width) {
+-		/* Stat are captured in region 0 */
+-		nb_comp_pix = vcap->stat_region[0].width *
+-			      vcap->stat_region[0].height;
+-	} else {
+-		/* Stat are captured in the whole frame */
+-		nb_comp_pix = vcap->frame_width * vcap->frame_height;
+-	}
+-	/* By default, component present for all pixels */
+-	comp_divider = 1;
+-
+-	if (vcap->location == V4L2_STAT_LOCATION_BEFORE_PROC &&
+-	    vcap->frame_format >= MEDIA_BUS_FMT_SBGGR8_1X8 &&
+-	    vcap->frame_format <= MEDIA_BUS_FMT_SRGGB16_1X16) {
+-		/* raw bayer: RGB component not present for all pixels */
+-		if (comp == COMP_RED || comp == COMP_BLUE)
+-			comp_divider = 4;
+-		else if (comp == COMP_GREEN)
+-			comp_divider = 2;
+-	}
+-
+-	return nb_comp_pix / comp_divider;
+-}
+-
+ static int dcmipp_pipeline_s_stream(struct dcmipp_statcap_device *vcap,
+ 				    int state)
+ {
+@@ -242,9 +209,9 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ 	struct dcmipp_statcap_device *vcap = vb2_get_drv_priv(vq);
+ 	struct media_entity *entity = &vcap->vdev.entity;
+ 	struct dcmipp_buf *buf, *node;
+-	struct v4l2_subdev_selection sel;
+ 	struct v4l2_subdev_format fmt;
+-	int i, ret;
++	struct media_pad *pad;
++	int ret;
+ 
+ 	vcap->sequence = 0;
+ 
+@@ -267,6 +234,18 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ 	if (ret)
+ 		goto err_media_pipeline_stop;
+ 
++	/* Get pointer to the source subdev (if case of not yet set */
++	if (!vcap->s_subdev) {
++		pad = media_pad_remote_pad_first(&entity->pads[0]);
++		if (!pad || !is_media_entity_v4l2_subdev(pad->entity)) {
++			dev_err(vcap->dev, "%s: Failed to start streaming, can't find remote entity\n",
++				__func__);
++			ret = -EIO;
++			goto err_media_pipeline_stop;
++		}
++		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
++	}
++
+ 	/* Get frame format info from ISP sink pad */
+ 	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+ 	fmt.pad = 0;
+@@ -278,21 +257,12 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+ 	}
+ 	vcap->frame_format = fmt.format.code;
+ 
+-	sel.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+-	sel.pad = 0;
+-	sel.target = V4L2_SEL_TGT_COMPOSE;
+-	ret = v4l2_subdev_call(vcap->s_subdev, pad, get_selection, NULL, &sel);
++	/* Apply controls if not yet done */
++	ret = v4l2_ctrl_handler_setup(&vcap->ctrls);
+ 	if (ret < 0) {
+-		dev_err(vcap->dev, "%s: Failed to start streaming, can't get selection (%d)\n",
+-			__func__, ret);
++		dev_err(vcap->dev, "Failed to set up control handlers (%d)\n", ret);
+ 		goto err_media_pipeline_stop;
+ 	}
+-	vcap->frame_width = sel.r.width;
+-	vcap->frame_height = sel.r.height;
+-
+-	/* Set number of pixels per components */
+-	for (i = 0; i < COMP_MAX; i++)
+-		vcap->nb_comp_pix[i] = dcmipp_statcap_get_nb_comp_pix(vcap, i);
+ 
+ 	return 0;
+ 
+@@ -326,7 +296,6 @@ static void dcmipp_statcap_stop_streaming(struct vb2_queue *vq)
+ 
+ 	/* Reset the capture state machine */
+ 	vcap->capture_state = COLD_START;
+-	memset(vcap->nb_comp_pix, 0, sizeof(vcap->nb_comp_pix));
+ 
+ 	dcmipp_pipeline_s_stream(vcap, 0);
+ 
+@@ -425,54 +394,83 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ {
+ 	struct dcmipp_statcap_device *vcap =
+ 			container_of(ctrl->handler, struct dcmipp_statcap_device, ctrls);
++	struct media_entity *entity = &vcap->vdev.entity;
+ 	struct v4l2_ctrl_isp_stat_region *region;
+-	int i;
++	struct v4l2_subdev_selection sel;
++	struct media_pad *pad;
++	int ret;
+ 
+ 	dev_dbg(vcap->dev, ">> %s: ctrl->id = 0x%x\n", __func__, ctrl->id);
+ 
++	if (pm_runtime_get_if_in_use(vcap->dev) == 0)
++		return 0;
++
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_ISP_STAT_REGION:
++		/* Get pointer to the source subdev (if case of not yet set */
++		if (!vcap->s_subdev) {
++			pad = media_pad_remote_pad_first(&entity->pads[0]);
++			if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
++				return -EIO;
++			vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
++		}
++
+ 		region = (struct v4l2_ctrl_isp_stat_region *)ctrl->p_new.p;
+ 		if (region->nb_regions > DCMIPP_NB_STAT_REGION) {
+ 			dev_dbg(vcap->dev, "Unsupported number of stat region: %d vs max=%d\n",
+ 				region->nb_regions, DCMIPP_NB_STAT_REGION);
+ 			return -EINVAL;
+ 		}
+-		for (i = 0; i < region->nb_regions; i++) {
+-			vcap->stat_region[i].width = region->width[i];
+-			vcap->stat_region[i].height = region->height[i];
+-			vcap->stat_region[i].left = region->left[i];
+-			vcap->stat_region[i].top = region->top[i];
+-
+-			/* This hardware supports only one region */
+-			if (!i) {
+-				/* Update window size and start */
+-				reg_clear(vcap, DCMIPP_P1STSTR,
+-					  DCMIPP_P1STSTR_HSTART_MASK | DCMIPP_P1STSTR_VSTART_MASK);
+-				reg_set(vcap, DCMIPP_P1STSTR,
+-					(region->left[i] << DCMIPP_P1STSTR_HSTART_SHIFT) |
+-					(region->top[i] << DCMIPP_P1STSTR_VSTART_SHIFT));
+-
+-				reg_clear(vcap, DCMIPP_P1STSZR,
+-					  DCMIPP_P1STSZR_HSIZE_MASK | DCMIPP_P1STSZR_VSIZE_MASK);
+-				reg_set(vcap, DCMIPP_P1STSZR,
+-					(region->width[i] << DCMIPP_P1STSZR_HSIZE_SHIFT) |
+-					(region->height[i] << DCMIPP_P1STSZR_VSIZE_SHIFT) |
+-					DCMIPP_P1STSZR_ENABLE);
+-			}
++
++		/* Get frame information */
++		sel.which = V4L2_SUBDEV_FORMAT_ACTIVE;
++		sel.pad = 0;
++		sel.target = V4L2_SEL_TGT_COMPOSE;
++		ret = v4l2_subdev_call(vcap->s_subdev, pad, get_selection, NULL, &sel);
++		if (ret < 0) {
++			dev_err(vcap->dev, "Failed to get frame size\n");
++			return ret;
++		}
++
++		if (!region->nb_regions ||
++		    (!region->width[0] && !region->height[0] &&
++		     !region->left[0] && !region->top[0])) {
++			spin_lock_irq(&vcap->irqlock);
++			vcap->stat_region.width = sel.r.width;
++			vcap->stat_region.height = sel.r.height;
++			reg_clear(vcap, DCMIPP_P1STSZR, DCMIPP_P1STSZR_ENABLE);
++			spin_unlock_irq(&vcap->irqlock);
++			break;
++		} else if (!region->width[0] || !region->height[0] ||
++			   (region->left[0] + region->width[0]) > sel.r.width ||
++			   (region->top[0] + region->height[0]) > sel.r.height) {
++			dev_err(vcap->dev, "Invalid or stat region not fitting into frame\n");
++			return -EINVAL;
+ 		}
+ 
+-		/* Update number of pixels per components */
+-		for (i = 0; i < COMP_MAX; i++)
+-			vcap->nb_comp_pix[i] =
+-				dcmipp_statcap_get_nb_comp_pix(vcap, i);
++		spin_lock_irq(&vcap->irqlock);
++		vcap->stat_region.width = region->width[0];
++		vcap->stat_region.height = region->height[0];
++		vcap->stat_region.left = region->left[0];
++		vcap->stat_region.top = region->top[0];
++
++		/* Update window size and start */
++		reg_clear(vcap, DCMIPP_P1STSTR,
++			  DCMIPP_P1STSTR_HSTART_MASK | DCMIPP_P1STSTR_VSTART_MASK);
++		reg_set(vcap, DCMIPP_P1STSTR,
++			(region->left[0] << DCMIPP_P1STSTR_HSTART_SHIFT) |
++			(region->top[0] << DCMIPP_P1STSTR_VSTART_SHIFT));
++
++		reg_clear(vcap, DCMIPP_P1STSZR,
++			  DCMIPP_P1STSZR_HSIZE_MASK | DCMIPP_P1STSZR_VSIZE_MASK);
++		reg_set(vcap, DCMIPP_P1STSZR,
++			(region->width[0] << DCMIPP_P1STSZR_HSIZE_SHIFT) |
++			(region->height[0] << DCMIPP_P1STSZR_VSIZE_SHIFT) |
++			DCMIPP_P1STSZR_ENABLE);
++		spin_unlock_irq(&vcap->irqlock);
+ 		break;
+ 	case V4L2_CID_ISP_STAT_LOCATION:
+ 		vcap->location = ctrl->val;
+-		/* Update number of pixels per components */
+-		for (i = 0; i < COMP_MAX; i++)
+-			vcap->nb_comp_pix[i] =
+-				dcmipp_statcap_get_nb_comp_pix(vcap, i);
+ 		break;
+ 	case V4L2_CID_ISP_STAT_AVG_FILTER:
+ 		vcap->avg_filter = ctrl->val;
+@@ -586,12 +584,12 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	static bool stat_ready;
+ 	int i;
+ 
+-	/* We are only interested in VSYNC interrupts */
+-	if (!(ved->cmsr2 & DCMIPP_CMSR2_P1VSYNCF))
++	/* We only to do things if we are streaming */
++	if (!vb2_is_streaming(&vcap->queue))
+ 		return IRQ_HANDLED;
+ 
+-	/* Do not compute stats until the frame format is known */
+-	if (!vcap->nb_comp_pix[0])
++	/* We are only interested in VSYNC interrupts */
++	if (!(ved->cmsr2 & DCMIPP_CMSR2_P1VSYNCF))
+ 		return IRQ_HANDLED;
+ 
+ 	spin_lock_irq(&vcap->irqlock);
+@@ -654,7 +652,21 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 			vcap->local_buf.average_RGB[i] = reg_read(vcap, DCMIPP_P1STXSR(i));
+ 			/* Normalize values */
+ 			vcap->local_buf.average_RGB[i] <<= 8;
+-			vcap->local_buf.average_RGB[i] /= vcap->nb_comp_pix[i];
++
++			/* Depending on the position & component, need to adjust in case of Bayer */
++			if (vcap->location == V4L2_STAT_LOCATION_BEFORE_PROC &&
++			    vcap->frame_format >= MEDIA_BUS_FMT_SBGGR8_1X8 &&
++			    vcap->frame_format <= MEDIA_BUS_FMT_SRGGB16_1X16) {
++				/* raw bayer: RGB component not present for all pixels */
++				if (i == COMP_RED || i == COMP_BLUE)
++					vcap->local_buf.average_RGB[i] *= 4;
++				else if (i == COMP_GREEN)
++					vcap->local_buf.average_RGB[i] *= 2;
++			}
++
++			/* Divide by number of pixels */
++			vcap->local_buf.average_RGB[i] /=
++				(vcap->stat_region.width * vcap->stat_region.height);
+ 		}
+ 		break;
+ 
+@@ -799,7 +811,6 @@ dcmipp_statcap_ent_init(const char *entity_name, struct dcmipp_device *dcmipp)
+ 
+ 	/* Add controls */
+ 	v4l2_ctrl_handler_init(&vcap->ctrls, ARRAY_SIZE(dcmipp_statcap_ctrls));
+-	vcap->ctrls.lock = &vcap->ctrl_lock;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(dcmipp_statcap_ctrls); i++) {
+ 		v4l2_ctrl_new_custom(&vcap->ctrls, &dcmipp_statcap_ctrls[i], NULL);
+@@ -811,12 +822,6 @@ dcmipp_statcap_ent_init(const char *entity_name, struct dcmipp_device *dcmipp)
+ 	}
+ 	vcap->vdev.ctrl_handler = &vcap->ctrls;
+ 
+-	ret = v4l2_ctrl_handler_setup(&vcap->ctrls);
+-	if (ret < 0) {
+-		dev_err(vcap->dev, "Failed to set up control handlers (%d)\n", ret);
+-		goto err_clean_ctrl_hdl;
+-	}
+-
+ 	/* Register the video_device with the v4l2 and the media framework */
+ 	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+-- 
+2.39.5
+

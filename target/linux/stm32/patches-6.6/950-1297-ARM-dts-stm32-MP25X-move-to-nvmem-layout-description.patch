@@ -1,0 +1,60 @@
+From 333bdcf49e523f016773438cb5ac6b14b2466503 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:20:45 +0200
+Subject: [PATCH] ARM: dts: stm32: MP25X move to nvmem layout description
+
+Legacy description is not any more supported by st,stm32mp25-tamp-nvram
+driver
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: I29b767b0f7626114a012ac9ea7b568cdeab9abdc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397671
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 8f1d8c2659f4..bab80efcd8a1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2809,18 +2809,20 @@ tamp: tamp@46010000 {
+ 
+ 			nvram: nvram@46010100 {
+ 				compatible = "st,stm32mp25-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+ 				reg = <0x46010100 0x200>;
+-
+-				boot_mode: tamp-bkp@180 {
+-					reg = <0x180 0x4>;
+-				};
+-				rsc_tbl_addr: tamp-bkp@184 {
+-					reg = <0x184 0x4>;
+-				};
+-				rsc_tbl_size: tamp-bkp@188 {
+-					reg = <0x188 0x4>;
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					boot_mode: tamp-bkp@180 {
++						reg = <0x180 0x4>;
++					};
++					rsc_tbl_addr: tamp-bkp@184 {
++						reg = <0x184 0x4>;
++					};
++					rsc_tbl_size: tamp-bkp@188 {
++						reg = <0x188 0x4>;
++					};
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

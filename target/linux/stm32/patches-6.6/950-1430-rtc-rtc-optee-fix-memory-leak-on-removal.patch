@@ -1,0 +1,39 @@
+From ee48aa9e597949e49b9c5373416df00333def375 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 3 Apr 2024 18:20:19 +0200
+Subject: [PATCH] rtc: rtc-optee: fix memory leak on removal
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fix a memory leak in case of driver removal.
+With this patch we fix it by freeing the shared memory used for
+arguments exchanges between kernel and OP-TEE RTC PTA.
+
+Fixes: 81c2f059ab90 ("rtc: optee: add RTC driver for OP-TEE RTC PTA")
+Change-Id: I91bd92cd468a0a76f2bc2445ac94d7dbc485e4e4
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402370
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/rtc/rtc-optee.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/rtc/rtc-optee.c b/drivers/rtc/rtc-optee.c
+index 9f8b5d4a8f6b..6b77c122fdc1 100644
+--- a/drivers/rtc/rtc-optee.c
++++ b/drivers/rtc/rtc-optee.c
+@@ -320,6 +320,7 @@ static int optee_rtc_remove(struct device *dev)
+ {
+ 	struct optee_rtc *priv = dev_get_drvdata(dev);
+ 
++	tee_shm_free(priv->shm);
+ 	tee_client_close_session(priv->ctx, priv->session_id);
+ 	tee_client_close_context(priv->ctx);
+ 
+-- 
+2.39.5
+

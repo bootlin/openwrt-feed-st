@@ -1,0 +1,50 @@
+From 83b6785f5c12016a3726bfbdfc6bdc9789b61dd5 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 12 Mar 2024 08:50:48 +0100
+Subject: [PATCH] ARM: dts: stm32: Enable support of WLAN/BT on stm32mp135f-dk
+
+Enable support of WLAN/BT Murata chip
+usart2 is used for Bluetooth interface
+sdmmc2 is used for WLAN (sdio) interface
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I21b12a884ce8c24667f4a5437622ad2506427756
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365943
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 9f04cd85927f..e0cd6e1363f6 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -495,7 +495,7 @@ &sdmmc2 {
+ 	mmc-pwrseq = <&wifi_pwrseq>;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	status = "disabled";
++	status = "okay";
+ 
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+@@ -503,7 +503,6 @@ brcmf: bcrmf@1 {
+ 		interrupt-parent = <&gpiof>;
+ 		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
+ 		interrupt-names = "host-wake";
+-		status = "disabled";
+ 	};
+ };
+ 
+@@ -628,7 +627,6 @@ bluetooth {
+ 		max-speed = <3000000>;
+ 		vbat-supply = <&v3v3_ao>;
+ 		vddio-supply = <&v3v3_ao>;
+-		status = "disabled";
+ 	};
+ };
+ 
+-- 
+2.39.5
+

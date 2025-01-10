@@ -1,0 +1,51 @@
+From e5d9bc98c36e2829fd9b4d3a97d572c6bd535e81 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Wed, 16 Oct 2024 14:53:46 +0200
+Subject: [PATCH] clk: clk-regmap: add messon macros
+
+clk-remap driver was created from messon driver and need these macros.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I234fce19fb1fb90d36b2298708c95d57ea8dd35a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411783
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ include/linux/clk-regmap.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/include/linux/clk-regmap.h b/include/linux/clk-regmap.h
+index 0666c747fa80..48ccd3b89750 100644
+--- a/include/linux/clk-regmap.h
++++ b/include/linux/clk-regmap.h
+@@ -114,4 +114,25 @@ clk_get_regmap_mux_data(struct clk_regmap *clk)
+ extern const struct clk_ops clk_regmap_mux_ops;
+ extern const struct clk_ops clk_regmap_mux_ro_ops;
+ 
++#define __MESON_PCLK(_name, _reg, _bit, _ops, _pname)			\
++struct clk_regmap _name = {						\
++	.data = &(struct clk_regmap_gate_data){				\
++		.offset = (_reg),					\
++		.bit_idx = (_bit),					\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = #_name,						\
++		.ops = _ops,						\
++		.parent_hws = (const struct clk_hw *[]) { _pname },	\
++		.num_parents = 1,					\
++		.flags = (CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED),	\
++	},								\
++}
++
++#define MESON_PCLK(_name, _reg, _bit, _pname)	\
++	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ops, _pname)
++
++#define MESON_PCLK_RO(_name, _reg, _bit, _pname)	\
++	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ro_ops, _pname)
++
+ #endif /* __CLK_REGMAP_H */
+-- 
+2.39.5
+

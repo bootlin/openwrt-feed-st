@@ -1,0 +1,32 @@
+From b8715c333933818034abcef372207574eb07440c Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Wed, 23 Feb 2022 14:12:36 +0100
+Subject: [PATCH] ARM: dts: stm32: enable crypto accelerator on stm32mp135f-dk
+
+Add the crypto accelerator enable on stm32mp135f-dk that has
+the crypto peripheral available.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: Ica34c8f10988a95e0c71228d62ca2a0e0802a60e
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index cab814526ad6..11c46284dd9b 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -176,6 +176,10 @@ &crc1 {
+ 	status = "okay";
+ };
+ 
++&cryp {
++	status = "okay";
++};
++
+ &dcmipp {
+ 	status = "okay";
+ 	pinctrl-names = "default", "sleep";
+-- 
+2.39.5
+

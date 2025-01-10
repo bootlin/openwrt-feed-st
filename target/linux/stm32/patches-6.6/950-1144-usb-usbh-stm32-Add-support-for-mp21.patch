@@ -1,0 +1,100 @@
+From cf0418fb4ad3b39353e043ae5e58faae102c6728 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Tue, 14 May 2024 14:07:43 +0530
+Subject: [PATCH] usb: usbh-stm32: Add support for mp21
+
+Add new compatible to support stm32mp21
+Enable AXI DMA translation for stm32mp21, when the
+dma-ranges is specified in the DT (through dma_range_map)
+
+Change-Id: I35f0e4e2e570696f5d2b70344532a707964b09ed
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379520
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/usb/host/usbh-stm32.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/usb/host/usbh-stm32.c b/drivers/usb/host/usbh-stm32.c
+index 75fa1b06a984..0451b728e00d 100644
+--- a/drivers/usb/host/usbh-stm32.c
++++ b/drivers/usb/host/usbh-stm32.c
+@@ -17,6 +17,16 @@
+ 
+ #define SYSCFG_USBHCR_OVRCUR_POLARITY_MASK      BIT(0)
+ #define SYSCFG_USBHCR_VBUSEN_POLARITY_MASK      BIT(1)
++#define SYSCFG_USBHARCR_OFFSET                  0x0004
++#define SYSCFG_USBHARCR_OFFSET_AREN_MASK        BIT(0)
++
++struct stm32_usb2h_cfg {
++	bool has_addr_remapping;
++};
++
++static const struct stm32_usb2h_cfg stm32mp21_usb2h_cfg = {
++	.has_addr_remapping = true,
++};
+ 
+ /**
+  * struct stm32_usbh - usbh-stm32 driver private structure
+@@ -26,6 +36,7 @@
+  * @vbusen_polarity_low:	vbusen signal polarity
+  * @ovrcur_polarity_low:	ovrcur signal polarity
+  * @irq_wakeup:			wakeup irq
++ * @enable_addr_remapping:	dma ranges flag
+  */
+ struct stm32_usbh {
+ 	struct device *dev;
+@@ -34,6 +45,7 @@ struct stm32_usbh {
+ 	bool vbusen_polarity_low;
+ 	bool ovrcur_polarity_low;
+ 	int irq_wakeup;
++	bool enable_addr_remapping;
+ };
+ 
+ /**
+@@ -42,6 +54,13 @@ struct stm32_usbh {
+  */
+ static int stm32_usbh_init(struct stm32_usbh *usbh_data)
+ {
++	if (usbh_data->enable_addr_remapping)
++		regmap_update_bits(usbh_data->regmap, usbh_data->syscfg_usbhcr_reg_off +
++				  SYSCFG_USBHARCR_OFFSET,
++				  SYSCFG_USBHARCR_OFFSET_AREN_MASK,
++				  FIELD_PREP(SYSCFG_USBHARCR_OFFSET_AREN_MASK,
++					     usbh_data->enable_addr_remapping));
++
+ 	return regmap_update_bits(usbh_data->regmap, usbh_data->syscfg_usbhcr_reg_off,
+ 				  SYSCFG_USBHCR_OVRCUR_POLARITY_MASK |
+ 				  SYSCFG_USBHCR_VBUSEN_POLARITY_MASK,
+@@ -63,6 +82,7 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+ 	struct regmap *regmap;
+ 	struct stm32_usbh *usbh_data;
+ 	int ret, irq;
++	struct stm32_usb2h_cfg *hwdata_cfg;
+ 
+ 	if (usb_disabled())
+ 		return -ENODEV;
+@@ -89,6 +109,10 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+ 	if (device_property_read_bool(dev, "st,ovrcur-active-low"))
+ 		usbh_data->ovrcur_polarity_low = true;
+ 
++	hwdata_cfg = (struct stm32_usb2h_cfg *)of_device_get_match_data(dev);
++	if (pdev->dev.dma_range_map && hwdata_cfg && hwdata_cfg->has_addr_remapping)
++		usbh_data->enable_addr_remapping = true;
++
+ 	/* ST USBH glue logic init */
+ 	ret = stm32_usbh_init(usbh_data);
+ 	if (ret)
+@@ -162,6 +186,7 @@ static SIMPLE_DEV_PM_OPS(stm32_usbh_pm_ops, stm32_usbh_suspend, stm32_usbh_resum
+ 
+ static const struct of_device_id stm32_usbh_match[] = {
+ 	{ .compatible = "st,stm32mp25-usbh" },
++	{ .compatible = "st,stm32mp21-usbh", .data = (void *)&stm32mp21_usb2h_cfg },
+ 	{ /* sentinel */ },
+ };
+ 
+-- 
+2.39.5
+

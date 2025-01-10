@@ -1,0 +1,34 @@
+From f066bf958995ce1934afe6a555a0ff144237fa36 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Mon, 8 Nov 2021 11:46:18 +0100
+Subject: [PATCH] ARM: dts: stm32: remove thermal passive trip point on
+ stm32mp151
+
+Remove thermal passive trip point because it is useless.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: I18a3b34c7cfc589b3e4f6aa2a03a4e0c0b65b157
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index a8b456b0b9d3..8d8f3a0b02dd 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -98,12 +98,6 @@ cpu_thermal: cpu-thermal {
+ 			thermal-sensors = <&dts>;
+ 
+ 			trips {
+-				cpu_alert1: cpu-alert1 {
+-					temperature = <85000>;
+-					hysteresis = <0>;
+-					type = "passive";
+-				};
+-
+ 				cpu-crit {
+ 					temperature = <120000>;
+ 					hysteresis = <0>;
+-- 
+2.39.5
+

@@ -1,0 +1,48 @@
+From 2050531db7e614ae776320a163cab579f6767158 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 6 Dec 2023 18:09:35 +0100
+Subject: [PATCH] arm64: dts: st: describe power supplies for stm32mp257f-dk
+ board
+
+Describe power supplies for stm32mp257f-dk board.
+
+Change-Id: Icd11ee9f1d38cb7563880f01ba7194111a10a5e5
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 79aea8039e8d..4955dd9c11ec 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -66,6 +66,26 @@ scmi_vddio1: regulator@0 {
+ 		regulator-min-microvolt = <1800000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
++	scmi_v1v8: regulator@14  {
++		reg = <VOLTD_SCMI_STPMIC2_BUCK5>;
++		regulator-name = "v1v8";
++	};
++	scmi_v3v3: regulator@16 {
++		reg = <VOLTD_SCMI_STPMIC2_BUCK7>;
++		regulator-name = "v3v3";
++	};
++	scmi_vdd_emmc: regulator@18 {
++		reg = <VOLTD_SCMI_STPMIC2_LDO2>;
++		regulator-name = "vdd_emmc";
++	};
++	scmi_v5v_hdmi: regulator@21 {
++		reg = <VOLTD_SCMI_STPMIC2_LDO5>;
++		regulator-name = "v5v_hdmi";
++	};
++	scmi_v5v_vconn: regulator@22 {
++		reg = <VOLTD_SCMI_STPMIC2_LDO6>;
++		regulator-name = "v5v_vconn";
++	};
+ 	scmi_vdd_sdcard: regulator@23 {
+ 		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
+ 		regulator-name = "vdd_sdcard";
+-- 
+2.39.5
+

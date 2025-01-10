@@ -1,0 +1,34 @@
+From f7afd698077f1abe6503f372b0e33be71aeb51a3 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Thu, 5 Sep 2024 14:23:32 +0200
+Subject: [PATCH] misc: stm32_omm: add tristate option
+
+Add tristate option to STM32_OMM driver so that it can be built as module.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: Ie45fa0244dfa2c6900d066830846ef869cce8532
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402990
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/misc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index b1bd4e35e934..db2e0319effa 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -459,7 +459,7 @@ config DW_XDATA_PCIE
+ 	  If unsure, say N.
+ 
+ config STM32_OMM
+-	bool "STM32 Octo Memory Manager"
++	tristate "STM32 Octo Memory Manager"
+ 	depends on SPI_STM32_OSPI || TEST_COMPILE
+ 	help
+ 	  This driver manages the muxing between the 2 OSPI busses and
+-- 
+2.39.5
+

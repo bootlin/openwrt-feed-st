@@ -1,0 +1,38 @@
+From 0b9240f10e586bb8fd317a1566f05105af451b3d Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:15:31 +0200
+Subject: [PATCH] drivers: nvmem: stm32: move to nvmem-layout
+
+Remove the support of legacy_fixed_of_cells inserted by
+nvmem: stm32: tamp: add config option to read old syntax fixed OF cells
+(Change-Id: Ia0bcbb470f33cbdea7800b080139ed77ebc6f662)
+as we don't have legacy cell anymore.
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: I448ffdad30a7da83e2c8de7c4101d146a2b44716
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/391154
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/nvmem/stm32-tamp-nvram.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/nvmem/stm32-tamp-nvram.c b/drivers/nvmem/stm32-tamp-nvram.c
+index 99c8feb6efde..fcada8d1c21c 100644
+--- a/drivers/nvmem/stm32-tamp-nvram.c
++++ b/drivers/nvmem/stm32-tamp-nvram.c
+@@ -539,7 +539,6 @@ static int stm32_tamp_nvram_probe(struct platform_device *pdev)
+ 	priv->cfg.priv = priv;
+ 	priv->cfg.owner = THIS_MODULE;
+ 	priv->cfg.type = NVMEM_TYPE_BATTERY_BACKED;
+-	priv->cfg.add_legacy_fixed_of_cells = true;
+ 	priv->cfg.size = resource_size(res);
+ 	priv->cfg.reg_read = stm32_tamp_nvram_read;
+ 	priv->cfg.reg_write = stm32_tamp_nvram_write;
+-- 
+2.39.5
+

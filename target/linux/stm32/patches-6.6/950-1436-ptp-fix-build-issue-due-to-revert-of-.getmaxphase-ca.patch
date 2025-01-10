@@ -1,0 +1,33 @@
+From 69f903e12c2c0de406057655df37539e2cec041a Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Mon, 9 Sep 2024 09:19:40 +0200
+Subject: [PATCH] ptp: fix build issue due to revert of .getmaxphase callback
+ to ptp_clock_info
+
+TEMPORARY PATCH
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: I2eba888cb8aead708fdf6381a9f1d30a08b8379a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404471
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/ptp/ptp_sysfs.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
+index 24d4aa23101e..1263612ef275 100644
+--- a/drivers/ptp/ptp_sysfs.c
++++ b/drivers/ptp/ptp_sysfs.c
+@@ -346,9 +346,6 @@ static umode_t ptp_is_attribute_visible(struct kobject *kobj,
+ 		   attr == &dev_attr_max_vclocks.attr) {
+ 		if (ptp->is_virtual_clock)
+ 			mode = 0;
+-	} else if (attr == &dev_attr_max_phase_adjustment.attr) {
+-		if (!info->adjphase || !info->getmaxphase)
+-			mode = 0;
+ 	}
+ 
+ 	return mode;
+-- 
+2.39.5
+

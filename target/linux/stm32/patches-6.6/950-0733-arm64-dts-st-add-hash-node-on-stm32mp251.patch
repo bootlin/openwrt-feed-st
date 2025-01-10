@@ -1,0 +1,39 @@
+From 972f11dea03143c9e0e3e586e81836381ddc6fb8 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Tue, 4 Jul 2023 16:55:44 +0200
+Subject: [PATCH] arm64: dts: st: add hash node on stm32mp251
+
+Add node HASH on stm32mp251 with dma support.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: I6726eedf01cbb5883ac13b10fc2435267542970e
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 52f0b9a29638..6c564ab7c268 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1678,6 +1678,18 @@ channel@18 {
+ 				};
+ 			};
+ 
++			hash: hash@42010000 {
++				compatible = "st,stm32mp13-hash";
++				reg = <0x42010000 0x400>;
++				interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_BUS_HASH>;
++				resets = <&rcc HASH_R>;
++				dmas = <&hpdma 6 0x40 0x3021>;
++				dma-names = "in";
++				access-controllers = <&rifsc 95>;
++				status = "disabled";
++			};
++
+ 			rng: rng@42020000 {
+ 				compatible = "st,stm32mp25-rng";
+ 				reg = <0x42020000 0x400>;
+-- 
+2.39.5
+

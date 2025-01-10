@@ -1,0 +1,54 @@
+From 700d5a32bc91308588ebc6c932420872c7b21117 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Wed, 24 Apr 2024 14:49:34 +0200
+Subject: [PATCH] arm64: dts: st: add rproc node for Cortex-M0
+
+Define remoteproc node used by Cortex-M0.
+
+Change-Id: I3cc01e6594f8de5c63f1eb73bbd57fa89db79a49
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/376631
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 24e9fbfa661c..4ed74b01a0a0 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -3288,4 +3288,25 @@ m33_rproc: m33@0 {
+ 		};
+ 	};
+ 
++	ahbsr: ahb@2 {
++		compatible = "st,mlahb", "simple-bus";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x0 0xfffffffc>;
++		dma-ranges = <0x0 0x0 0x0 0xfffffffc>;
++
++		m0_rproc: m0@0 {
++			compatible = "st,stm32mp2-m0";
++			reg = <0 0>;
++			clocks = <&rcc CK_CPU3>;
++			clock-names = "c3_clk";
++			resets = <&rcc C3_R>;
++			reset-names = "mcu_rst";
++			interrupt-parent = <&intc>;
++			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
++
++			status = "disabled";
++		};
++	};
++
+ };
+-- 
+2.39.5
+

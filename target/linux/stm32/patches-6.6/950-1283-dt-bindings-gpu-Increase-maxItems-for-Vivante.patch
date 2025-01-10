@@ -1,0 +1,36 @@
+From f18b6a5a8500760007f8fdda2b3cf2cdffff1385 Mon Sep 17 00:00:00 2001
+From: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Date: Tue, 25 Jun 2024 14:06:38 +0200
+Subject: [PATCH] dt-bindings: gpu: Increase maxItems for Vivante
+
+In order to add new cluster power domains for GPU, Vivante max-items
+power-domains has to be increased accordingly.
+
+Change-Id: I8725a94f620bf479f09e62298fa702183a6ead5a
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390002
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ Documentation/devicetree/bindings/gpu/vivante,gc.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+index 092643bef199..589cf4c31de6 100644
+--- a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
++++ b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+@@ -47,7 +47,7 @@ properties:
+     maxItems: 1
+ 
+   power-domains:
+-    maxItems: 1
++    maxItems: 2
+ 
+   contiguous-area:
+     maxItems: 1
+-- 
+2.39.5
+

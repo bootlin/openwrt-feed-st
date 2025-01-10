@@ -1,0 +1,108 @@
+From d699d2cbde3f951bb2321835e9201cef94fd8a5f Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Fri, 8 Dec 2023 09:53:54 +0100
+Subject: [PATCH] reset: stm32: implement reset_control_reset() command.
+
+This command execute and assert + reset delay + deassert + check if
+deassert is ok.
+In a driver we can replace these lines
+   reset_control_assert(reset);
+   reset_control_deassert(reset);
+by
+   reset_control_reset(reset);
+
+Change-Id: I7852084b78a641ae1ff7e1c7c954af0d3b2e1538
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/234580
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/clk/stm32/reset-stm32.c | 42 +++++++++++++++++++++++++++++++++
+ drivers/clk/stm32/reset-stm32.h |  1 +
+ 2 files changed, 43 insertions(+)
+
+diff --git a/drivers/clk/stm32/reset-stm32.c b/drivers/clk/stm32/reset-stm32.c
+index 5a8f525842ce..24b9d54b8388 100644
+--- a/drivers/clk/stm32/reset-stm32.c
++++ b/drivers/clk/stm32/reset-stm32.c
+@@ -19,6 +19,7 @@ struct stm32_reset_data {
+ 	struct reset_controller_dev	rcdev;
+ 	void __iomem			*membase;
+ 	u32				clear_offset;
++	unsigned int			reset_us;
+ 	const struct stm32_reset_cfg	**reset_lines;
+ };
+ 
+@@ -119,9 +120,49 @@ static int stm32_reset_status(struct reset_controller_dev *rcdev,
+ 	return !!(reg & BIT(ptr_line->bit_idx));
+ }
+ 
++static int stm32_check_deassert(struct reset_controller_dev *rcdev,
++				unsigned long id)
++{
++	struct stm32_reset_data *data = to_stm32_reset_data(rcdev);
++	struct stm32_reset_cfg line_reset;
++	const struct stm32_reset_cfg *ptr_line;
++	u32 reg;
++
++	ptr_line = stm32_get_reset_line(rcdev, id, &line_reset);
++	if (!ptr_line)
++		return -EPERM;
++
++	return readl_poll_timeout(data->membase + ptr_line->offset, reg,
++				  !(reg & BIT(ptr_line->bit_idx)), 10, 10 * USEC_PER_MSEC);
++}
++
++static int stm32_reset(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct stm32_reset_data *data = to_stm32_reset_data(rcdev);
++	int ret;
++
++	ret = stm32_reset_assert(rcdev, id);
++	if (ret)
++		return ret;
++
++	if (!data->reset_us)
++		usleep_range(data->reset_us, data->reset_us * 2);
++
++	ret = stm32_reset_deassert(rcdev, id);
++	if (ret)
++		return ret;
++
++	ret = stm32_check_deassert(rcdev, id);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
+ static const struct reset_control_ops stm32_reset_ops = {
+ 	.assert		= stm32_reset_assert,
+ 	.deassert	= stm32_reset_deassert,
++	.reset		= stm32_reset,
+ 	.status		= stm32_reset_status,
+ };
+ 
+@@ -143,6 +184,7 @@ int stm32_rcc_reset_init(struct device *dev, struct clk_stm32_reset_data *data,
+ 	reset_data->rcdev.nr_resets = data->nr_lines;
+ 	reset_data->reset_lines = data->reset_lines;
+ 	reset_data->clear_offset = data->clear_offset;
++	reset_data->reset_us = data->reset_us;
+ 
+ 	return reset_controller_register(&reset_data->rcdev);
+ }
+diff --git a/drivers/clk/stm32/reset-stm32.h b/drivers/clk/stm32/reset-stm32.h
+index f79cad21dfd6..10f9f468d115 100644
+--- a/drivers/clk/stm32/reset-stm32.h
++++ b/drivers/clk/stm32/reset-stm32.h
+@@ -15,6 +15,7 @@ struct clk_stm32_reset_data {
+ 	const struct stm32_reset_cfg **reset_lines;
+ 	unsigned int nr_lines;
+ 	u32 clear_offset;
++	u32 reset_us;
+ };
+ 
+ int stm32_rcc_reset_init(struct device *dev, struct clk_stm32_reset_data *data,
+-- 
+2.39.5
+

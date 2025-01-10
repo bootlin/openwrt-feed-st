@@ -1,0 +1,108 @@
+From 7731ffa253f4365ce0a4b4e7f07fe587f9f63c3f Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 6 May 2021 10:34:00 +0200
+Subject: [PATCH] remoteproc: stm32: Add support of the stm32mp2 platform
+
+Add the support of the stm32mp2 device.
+
+Change-Id: Ia59f059bd8e1fbe3a9a7255fcece5c672dd69c4c
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/244377
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347951
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index c526ded399f5..d95ecccebba5 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -49,6 +49,9 @@
+ 
+ /* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
+ #define STM32_MP1_M4_PROC_ID    0
++#define STM32_MP2_M33_PROC_ID   1
++
++struct stm32_rproc;
+ 
+ struct stm32_syscon {
+ 	struct regmap *map;
+@@ -64,6 +67,11 @@ struct stm32_rproc_mem {
+ 	size_t size;
+ };
+ 
++struct stm32_rproc_data {
++	int proc_id;
++	int (*get_status)(struct stm32_rproc *ddata, unsigned int *state);
++};
++
+ struct stm32_mbox {
+ 	const unsigned char name[10];
+ 	struct mbox_chan *chan;
+@@ -85,6 +93,7 @@ struct stm32_rproc {
+ 	bool hold_boot_smc;
+ 	bool fw_loaded;
+ 	struct tee_rproc *trproc;
++	const struct stm32_rproc_data *desc;
+ 	void __iomem *rsc_va;
+ };
+ 
+@@ -790,9 +799,19 @@ static const struct rproc_ops st_rproc_tee_ops = {
+ 	.load		= stm32_rproc_tee_elf_load,
+ };
+ 
++
++static const struct stm32_rproc_data stm32_rproc_stm32pm15 = {
++	.proc_id = STM32_MP1_M4_PROC_ID,
++};
++
++static const struct stm32_rproc_data stm32_rproc_stm32pm25 = {
++	.proc_id = STM32_MP2_M33_PROC_ID,
++};
++
+ static const struct of_device_id stm32_rproc_match[] = {
+-	{.compatible = "st,stm32mp1-m4"},
+-	{.compatible = "st,stm32mp1-m4-tee"},
++	{.compatible = "st,stm32mp1-m4", .data = &stm32_rproc_stm32pm15},
++	{.compatible = "st,stm32mp1-m4-tee", .data = &stm32_rproc_stm32pm15},
++	{.compatible = "st,stm32mp2-m33", .data = &stm32_rproc_stm32pm25},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+@@ -951,17 +970,20 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct stm32_rproc *ddata;
+ 	struct device_node *np = dev->of_node;
++	const struct stm32_rproc_data *desc;
+ 	struct tee_rproc *trproc = NULL;
+ 	struct rproc *rproc;
+ 	unsigned int state;
+ 	int ret;
+ 
++	desc = device_get_match_data(&pdev->dev);
++
+ 	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+ 	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
+-		trproc = tee_rproc_register(dev, STM32_MP1_M4_PROC_ID);
++		trproc = tee_rproc_register(dev, desc->proc_id);
+ 		if (IS_ERR(trproc)) {
+ 			dev_err_probe(dev, PTR_ERR(trproc),
+ 				      "signed firmware not supported by TEE\n");
+@@ -982,6 +1004,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ddata = rproc->priv;
++	ddata->desc = desc;
+ 	ddata->trproc = trproc;
+ 	if (trproc) {
+ 		trproc->rproc = rproc;
+-- 
+2.39.5
+

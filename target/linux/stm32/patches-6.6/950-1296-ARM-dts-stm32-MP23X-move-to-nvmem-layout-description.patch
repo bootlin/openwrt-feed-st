@@ -1,0 +1,60 @@
+From 50361bc64ae0483019aa21445dc22a3099b60c24 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:20:26 +0200
+Subject: [PATCH] ARM: dts: stm32: MP23X move to nvmem layout description
+
+Legacy description is not any more supported by st,stm32mp25-tamp-nvram
+driver
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: Iebc9b8627b33a976eed67966c85775f0fc23a337
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397670
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index e338110553a4..3b7c6db3a3ec 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -2468,18 +2468,20 @@ tamp: tamp@46010000 {
+ 
+ 			nvram: nvram@46010100 {
+ 				compatible = "st,stm32mp25-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+ 				reg = <0x46010100 0x200>;
+-
+-				boot_mode: tamp-bkp@180 {
+-					reg = <0x180 0x4>;
+-				};
+-				rsc_tbl_addr: tamp-bkp@184 {
+-					reg = <0x184 0x4>;
+-				};
+-				rsc_tbl_size: tamp-bkp@188 {
+-					reg = <0x188 0x4>;
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					boot_mode: tamp-bkp@180 {
++						reg = <0x180 0x4>;
++					};
++					rsc_tbl_addr: tamp-bkp@184 {
++						reg = <0x184 0x4>;
++					};
++					rsc_tbl_size: tamp-bkp@188 {
++						reg = <0x188 0x4>;
++					};
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

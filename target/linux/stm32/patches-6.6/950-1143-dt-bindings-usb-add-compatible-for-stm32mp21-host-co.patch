@@ -1,0 +1,38 @@
+From b132643b4d0ea7c6d4010dd018ec83055473ba54 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Mon, 13 May 2024 16:24:58 +0530
+Subject: [PATCH] dt-bindings: usb: add compatible for stm32mp21 host
+ controller
+
+New syscfg bits required to be managed on mp21
+for memory remapping
+
+Change-Id: Ifd318ccdc0e9ecfe2f880ec60f1805d13f30d821
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/378217
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/usb/stm32,usbh.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
+index 22896673c078..572c8fe52712 100644
+--- a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
++++ b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
+@@ -11,7 +11,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32mp25-usbh
++    enum:
++      - const: st,stm32mp21-usbh
++      - const: st,stm32mp25-usbh
+ 
+   "#address-cells":
+     const: 1
+-- 
+2.39.5
+

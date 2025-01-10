@@ -1,0 +1,147 @@
+From 47842245bc5e2679f324c86a5fdd6f41acd561e7 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 5 Oct 2023 18:53:12 +0200
+Subject: [PATCH] mtd: spi-nor: Add manufacturer read id function
+
+Add manufacturer read id function because of some flash
+may change data format when read id in octal dtr mode.
+
+Change-Id: I127ad89fee507b40e2860148b3cdbe54ff27475d
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/333807
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+---
+ drivers/mtd/spi-nor/core.c     | 32 +++++++++++++++++++++++++++++---
+ drivers/mtd/spi-nor/core.h     |  6 ++++++
+ drivers/mtd/spi-nor/macronix.c | 18 ++++++++++++++++++
+ 3 files changed, 53 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1b0c6770c14e..8ae0cd3ab01a 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -408,7 +408,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
+ }
+ 
+ /**
+- * spi_nor_read_id() - Read the JEDEC ID.
++ * spi_nor_default_read_id() - Read the JEDEC ID.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @naddr:	number of address bytes to send. Can be zero if the operation
+  *		does not need to send an address.
+@@ -420,8 +420,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
+-		    enum spi_nor_protocol proto)
++int spi_nor_default_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
++			    enum spi_nor_protocol proto)
+ {
+ 	int ret;
+ 
+@@ -438,6 +438,32 @@ int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
+ 	return ret;
+ }
+ 
++/**
++ * spi_nor_read_id() - Read ID by manufacturer read id function.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @naddr:	number of address bytes to send. Can be zero if the operation
++ *		does not need to send an address.
++ * @ndummy:	number of dummy bytes to send after an opcode or address. Can
++ *		be zero if the operation does not require dummy bytes.
++ * @id:		pointer to a DMA-able buffer where the value of the JEDEC ID
++ *		will be written.
++ * @proto:	the SPI protocol for register operation.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
++		    enum spi_nor_protocol proto)
++{
++	int ret;
++
++	if (nor->manufacturer && nor->manufacturer->fixups && nor->manufacturer->fixups->read_id)
++		ret = nor->manufacturer->fixups->read_id(nor, naddr, ndummy, id, proto);
++	else
++		ret = spi_nor_default_read_id(nor, naddr, ndummy, id, proto);
++
++	return ret;
++}
++
+ /**
+  * spi_nor_read_sr() - Read the Status Register.
+  * @nor:	pointer to 'struct spi_nor'.
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 9217379b9cfe..92cbc2d3f7fe 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -424,6 +424,8 @@ struct spi_nor_flash_parameter {
+  * @late_init: used to initialize flash parameters that are not declared in the
+  *             JESD216 SFDP standard, or where SFDP tables not defined at all.
+  *             Will replace the default_init() hook.
++ * @read_id:   used to read id which may change format after enter into
++	       octal dtr mode.
+  *
+  * Those hooks can be used to tweak the SPI NOR configuration when the SFDP
+  * table is broken or not available.
+@@ -435,6 +437,8 @@ struct spi_nor_fixups {
+ 			 const struct sfdp_bfpt *bfpt);
+ 	int (*post_sfdp)(struct spi_nor *nor);
+ 	int (*late_init)(struct spi_nor *nor);
++	int (*read_id)(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
++		       enum spi_nor_protocol reg_proto);
+ };
+ 
+ /**
+@@ -667,6 +671,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
+ int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
+ int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
+ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
++int spi_nor_default_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
++			    enum spi_nor_protocol reg_proto);
+ int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
+ 		    enum spi_nor_protocol reg_proto);
+ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index eb149e517c1f..309182664870 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -118,9 +118,27 @@ static int macronix_nor_late_init(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++static int macronix_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
++				enum spi_nor_protocol proto)
++{
++	int i, ret;
++
++	ret = spi_nor_default_read_id(nor, naddr, ndummy, id, proto);
++	/* Retrieve odd array and re-sort id because of read id format will be A-A-B-B-C-C
++	 * after enter into octal dtr mode for Macronix flashes.
++	 */
++	if (proto == SNOR_PROTO_8_8_8_DTR) {
++		for (i = 0; i < nor->info->id_len; i++)
++			id[i] = id[i * 2];
++	}
++
++	return ret;
++}
++
+ static const struct spi_nor_fixups macronix_nor_fixups = {
+ 	.default_init = macronix_nor_default_init,
+ 	.late_init = macronix_nor_late_init,
++	.read_id = macronix_nor_read_id,
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_macronix = {
+-- 
+2.39.5
+

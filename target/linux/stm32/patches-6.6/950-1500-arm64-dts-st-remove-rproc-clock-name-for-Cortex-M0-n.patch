@@ -1,0 +1,35 @@
+From aa833485598ce03cbf9201e2c7a82fa2a40eb422 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Wed, 25 Sep 2024 17:47:48 +0200
+Subject: [PATCH] arm64: dts: st: remove rproc clock name for Cortex-M0 node
+
+The "clock-names" property is no more used.
+
+Change-Id: Ib47a8f3dc0738387fd513e1b474fd249d494e051
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407622
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 45c439840520..59f937aeb300 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -3307,7 +3307,6 @@ m0_rproc: m0@0 {
+ 			compatible = "st,stm32mp2-m0";
+ 			reg = <0 0>;
+ 			clocks = <&rcc CK_CPU3>;
+-			clock-names = "c3_clk";
+ 			resets = <&rcc C3_R>;
+ 			reset-names = "mcu_rst";
+ 			interrupt-parent = <&intc>;
+-- 
+2.39.5
+

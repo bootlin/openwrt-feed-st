@@ -1,0 +1,35 @@
+From aa3fb6291c50ec2cdc24d2e1d854323d47f9c838 Mon Sep 17 00:00:00 2001
+From: Michel JAOUEN <michel.jaouen@st.com>
+Date: Wed, 4 Sep 2024 17:32:50 +0200
+Subject: [PATCH] dt-bindings: mailbox: remove clock required for st,stm32-ipcc
+
+Since ipcc is used for scmi server to provide clock service, the clock can
+not be required in this config
+
+
+Change-Id: I703c146f2fb517aa2b74f3ab6e731efb5d185bed
+Signed-off-by: Michel JAOUEN <michel.jaouen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402233
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
+index 134fd223a02b..edd253e4c35b 100644
+--- a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
++++ b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
+@@ -50,7 +50,6 @@ required:
+   - compatible
+   - reg
+   - st,proc-id
+-  - clocks
+   - interrupt-names
+   - "#mbox-cells"
+   - interrupts
+-- 
+2.39.5
+

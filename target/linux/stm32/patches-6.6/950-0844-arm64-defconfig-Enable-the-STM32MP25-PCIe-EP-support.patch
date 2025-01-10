@@ -1,0 +1,34 @@
+From cc98455f25eb8388c14232f0c708d9a557c6fab7 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 8 Dec 2022 17:51:16 +0100
+Subject: [PATCH] arm64: defconfig Enable the STM32MP25 PCIe EP support based
+ on the DesignWare core
+
+Enable STM32 PCIe endpoint driver based on the DesignWare core
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: Iaf99ac8edca2766926122a693388f88d88ad657a
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361774
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 67b26c2fe163..ec06caa400b7 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -42,6 +42,7 @@ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_NVMEM_STM32_TAMP=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_PCIE_STM32=y
++CONFIG_PCIE_STM32_EP=y
+ CONFIG_PHY_STM32_COMBOPHY=y
+ CONFIG_PHY_STM32_USB2PHY=y
+ CONFIG_PWM_STM32=m
+-- 
+2.39.5
+

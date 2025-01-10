@@ -1,0 +1,51 @@
+From f518e364f158369a573e8b81ce88e8e4381c385d Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Wed, 7 Aug 2024 17:49:47 +0200
+Subject: [PATCH] arm64: dts: st: add LED heart beat stm32mp215f-dk
+
+Add LED heart beat on stm32mp215f-dk.
+
+Change-Id: I5bd7ad1afea9341eefd0d9db7be3cf27cd1db620
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397434
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index be0a56bbab08..9452ef27961b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/leds/common.h>
+ #include "stm32mp215.dtsi"
+ #include "stm32mp21xf.dtsi"
+ #include "stm32mp21-pinctrl.dtsi"
+@@ -72,6 +73,18 @@ dmic1_endpoint: endpoint {
+ 		};
+ 	};
+ 
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		led-blue {
++			function = LED_FUNCTION_HEARTBEAT;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&gpioz 3 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			default-state = "off";
++		};
++	};
++
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x0 0x80000000>;
+-- 
+2.39.5
+

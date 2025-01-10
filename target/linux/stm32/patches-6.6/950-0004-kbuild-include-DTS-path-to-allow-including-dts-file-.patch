@@ -1,0 +1,34 @@
+From 2051da2b40c2c383dfa534bd1c4f190b7eea716e Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Sat, 6 May 2023 18:21:52 +0200
+Subject: [PATCH] kbuild: include DTS path to allow including dts file in
+ external dts
+
+This allows to include a dts file in an external device tree without
+specifying its path, e.g.:
+	include <stm32mp257f-ev.dts>
+instead of:
+	include "../../stm32mp257f-ev.dts>
+
+Change-Id: Ifc2d8935d30a3cc2fb8eca3f4afc37060b382870
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ scripts/Makefile.lib | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index e702552fb131..b51112decaa0 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -245,7 +245,7 @@ ld_flags       = $(KBUILD_LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F))
+ DTC_INCLUDE    := $(srctree)/scripts/dtc/include-prefixes
+ 
+ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+-		 $(addprefix -I,$(DTC_INCLUDE))                          \
++		 $(addprefix -I,$(DTC_INCLUDE) $(DTS_INCLUDE))            \
+ 		 -undef -D__DTS__
+ 
+ ifdef CONFIG_OBJTOOL
+-- 
+2.39.5
+

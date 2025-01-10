@@ -1,0 +1,81 @@
+From 456f4d0e92cf71b6cb662f475edfce2e5489607b Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Wed, 9 Aug 2023 15:20:31 +0200
+Subject: [PATCH] dt-bindings: interrupt-controller: stm32-exti: deprecate
+ syscon compatible
+
+The syscon compatible is used by pinctrl-stm32 to get direct
+access to the GPIO interrupt routing registers EXTI_CR.
+This backdoor access does not scale for multiple-EXTI SoC.
+
+The drivers pinctrl-stm32 and stm32-exti are modified to drop this
+backdoor and pass the relevant info inside the interrupt specifier.
+This makes the driver stm32-exti self-contained, able to locally
+program all it's own register.
+This also makes the syscon compatible obsolete.
+
+For backward compatibility with old DTs the syscon method is still
+supported but deprecated.
+
+Deprecate the syscon compatible.
+Add 'st,stm32mp1-exti' to the compatible list.
+Add description about usage of compatible.
+Remove "syscon" from the examples.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ic21b64e568dba22c4ec720f85d0b6f63a16eda02
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383196
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ .../bindings/interrupt-controller/st,stm32-exti.yaml     | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+index 0a516e51fcb5..b4bc1d4132ef 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+@@ -12,16 +12,21 @@ maintainers:
+ 
+ properties:
+   compatible:
++    description:
++      Legacy syscon is allowed for backward compatibility with old devicetree.
++      Don't use it on new devicetree.
+     oneOf:
+       - items:
+           - enum:
+               - st,stm32-exti
+               - st,stm32h7-exti
++              - st,stm32mp1-exti
+       - items:
+           - enum:
+               - st,stm32mp1-exti
+               - st,stm32mp13-exti
+           - const: syscon
++        deprecated: true
+ 
+   "#interrupt-cells":
+     const: 2
+@@ -85,7 +90,7 @@ examples:
+   - |
+     //Example 1
+     exti1: interrupt-controller@5000d000 {
+-        compatible = "st,stm32mp1-exti", "syscon";
++        compatible = "st,stm32mp1-exti";
+         interrupt-controller;
+         #interrupt-cells = <2>;
+         reg = <0x5000d000 0x400>;
+@@ -95,7 +100,7 @@ examples:
+     //Example 2
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+     exti2: interrupt-controller@5000d000 {
+-        compatible = "st,stm32mp1-exti", "syscon";
++        compatible = "st,stm32mp1-exti";
+         interrupt-controller;
+         #interrupt-cells = <2>;
+         reg = <0x5000d000 0x400>;
+-- 
+2.39.5
+

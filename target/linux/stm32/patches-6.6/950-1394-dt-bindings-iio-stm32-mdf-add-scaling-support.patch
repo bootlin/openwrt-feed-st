@@ -1,0 +1,55 @@
+From fc236f022e16c9bb56d4462f3c2592036a930fa6 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 8 Aug 2024 15:20:14 +0200
+Subject: [PATCH] dt-bindings: iio: stm32-mdf: add scaling support
+
+In analog context, the serial interface of the MDF typically expects data
+from a sigma delta modulator.
+This SD modulator is registered as an IIO backend. Thus, the cascaded
+SD modulator and MDF are exposed as a single aggregate IIO device.
+This allows to report the global scaling information on MDF device.
+Add io-backend property in MDF binding to declare the MDF as an IIO
+backend consumer in analog context.
+
+Change-Id: Ic775ea413378b42337af35ebe638be513a999e1b
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397591
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml     | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+index e4209e42db47..f51c2831aaf6 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+@@ -249,8 +249,15 @@ patternProperties:
+                     minimum: 0
+                     maximum: 8
+ 
++                io-backends:
++                  description:
++                    Used to pipe external sigma delta modulator or internal ADC backend to MDF
++                    channel.
++                  maxItems: 1
++
+               required:
+                 - reg
++                - io-backends
+ 
+               additionalProperties: false
+ 
+@@ -348,6 +355,7 @@ examples:
+ 
+         channel@1 {
+           reg = <1>;
++          io-backends = <&sd_adc1>;
+         };
+       };
+     };
+-- 
+2.39.5
+

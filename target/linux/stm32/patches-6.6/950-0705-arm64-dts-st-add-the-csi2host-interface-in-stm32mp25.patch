@@ -1,0 +1,39 @@
+From f86c409201f237773de1fbeb6fd5357d5d7219b5 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 31 May 2023 18:31:10 +0200
+Subject: [PATCH] arm64: dts: st: add the csi2host interface in stm32mp251.dtsi
+
+Add the csi2host csi input interface for the dcmipp in stm32mp251.dtsi
+
+Change-Id: I60d65fdb40890a5c1bd4c11a1b4349f9f9f2f45d
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index dbf5dbae98d1..c2c0ee5ac0a3 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1842,6 +1842,18 @@ ltdc: display-controller@48010000 {
+ 				status = "disabled";
+ 			};
+ 
++			csi2host: csi2host@48020000 {
++				compatible = "st,stm32-csi2host";
++				reg = <0x48020000 0x2000>;
++				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc CSI_R>;
++				clocks = <&rcc CK_KER_CSI>, <&rcc CK_KER_CSITXESC>,
++					 <&rcc CK_KER_CSIPHY>;
++				clock-names = "pclk", "txesc", "csi2phy";
++				access-controllers = <&rifsc 86>;
++				status = "disabled";
++			};
++
+ 			combophy: phy@480c0000 {
+ 				compatible = "st,stm32mp25-combophy";
+ 				reg = <0x480c0000 0x1000>;
+-- 
+2.39.5
+

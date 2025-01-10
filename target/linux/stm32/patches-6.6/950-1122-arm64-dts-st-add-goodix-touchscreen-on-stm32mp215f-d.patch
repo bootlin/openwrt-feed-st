@@ -1,0 +1,84 @@
+From d188bee8ace6beb548705cc3f8e95c2e8193e9bc Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 16 May 2024 11:29:21 +0200
+Subject: [PATCH] arm64: dts: st: add goodix touchscreen on stm32mp215f-dk
+
+Don't expose the reset gpio to avoid a conflict between the driver
+& the hardware implementation.
+Touchscreen reset needs to be configured
+via the pinctrl not the driver (a pull-down resistor
+has been soldered onto the reset line which forces
+the touchscreen to reset state).
+Interrupt line must have a pull-down resistor
+in order to freeze the i2c address at 0x5D.
+
+Change-Id: I35f791e559459f33d7c27055f7dc5aa7d6399013
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi | 22 +++++++++++++++++++
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts     | 16 +++++++++++++-
+ 2 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+index 6da24b73fa39..03c850cb51bc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+@@ -6,6 +6,28 @@
+ #include <dt-bindings/pinctrl/stm32-pinfunc.h>
+ 
+ &pinctrl {
++	goodix_pins_a: goodix-0 {
++		/*
++		 * touchscreen reset needs to be configured
++		 * via the pinctrl not the driver (a pull-down resistor
++		 * has been soldered onto the reset line which forces
++		 * the touchscreen to reset state).
++		 */
++		pins1 {
++			pinmux = <STM32_PINMUX('I', 8, GPIO)>;
++			output-high;
++			bias-pull-up;
++		};
++		/*
++		 * Interrupt line must have a pull-down resistor
++		 * in order to freeze the i2c address at 0x5D
++		 */
++		pins2 {
++			pinmux = <STM32_PINMUX('F', 4, GPIO)>;
++			bias-pull-down;
++		};
++	};
++
+ 	i2c2_pins_a: i2c2-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('B', 5, AF9)>, /* I2C2_SCL */
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 213455189466..e7f6a6ed6b92 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -150,7 +150,21 @@ &i2c2 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c2_pins_a>;
+ 	pinctrl-1 = <&i2c2_sleep_pins_a>;
+-	status = "disabled";
++	status = "okay";
++
++	goodix: goodix-ts@5d {
++		compatible = "goodix,gt911";
++		reg = <0x5d>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&goodix_pins_a>;
++		interrupt-parent = <&gpiof>;
++		interrupts = <4 IRQ_TYPE_EDGE_FALLING>;
++		AVDD28-supply = <&scmi_v3v3>;
++		VDDIO-supply = <&scmi_v3v3>;
++		touchscreen-size-x = <480>;
++		touchscreen-size-y = <272>;
++		status = "okay" ;
++	};
+ 
+ 	imx335: imx335@1a {
+ 		compatible = "sony,imx335";
+-- 
+2.39.5
+

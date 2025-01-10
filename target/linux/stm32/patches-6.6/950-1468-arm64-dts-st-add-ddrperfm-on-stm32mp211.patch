@@ -1,0 +1,44 @@
+From cf72b0a54a106952d9b80f137536a314f119e858 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Mon, 22 Jul 2024 11:08:27 +0200
+Subject: [PATCH] arm64: dts: st: add ddrperfm on stm32mp211
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add the support for the DDR performance monitor.
+
+Change-Id: I6bae659aa955192951ed9d3a380ee2216b87d9fe
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395153
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 134417d9ff86..f8df6101da4d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1709,6 +1709,15 @@ trigger@4 {
+ 				};
+ 			};
+ 
++			ddrperfm: perf@480c0000 {
++				compatible = "st,stm32mp25-ddr-pmu";
++				reg = <0x480c0000 0x0 0x400>;
++				clocks = <&rcc CK_BUS_DDRPERFM>;
++				resets = <&rcc DDRPERFM_R>;
++				access-controllers = <&rifsc 67>;
++				status = "disabled";
++			};
++
+ 			sdmmc1: mmc@48220000 {
+ 				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+ 				arm,primecell-periphid = <0x00353180>;
+-- 
+2.39.5
+

@@ -1,0 +1,55 @@
+From 8a095e873ca5aec35efb03ef7877121cf2980956 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 21 Feb 2024 14:52:52 +0100
+Subject: [PATCH] iio: trigger: stm32-timer: fix triggers cleanup on error case
+
+Ensure all triggers are released in case of error while registering the
+timer triggers. In case of error on devm_iio_trigger_alloc() the triggers
+previously registered won't be released.
+Call stm32_unregister_iio_triggers() on error returned by
+stm32_register_iio_triggers(), to cleanup triggers in all cases.
+
+Fixes: 3192ade7b6f6 ("iio: trigger: stm32-timer: enable clock when in master mode")
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I2d2c027113d57fce1018c1c02b499571772db261
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366471
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/trigger/stm32-timer-trigger.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
+index a5253b4f3e8b..cd78a7f6be3e 100644
+--- a/drivers/iio/trigger/stm32-timer-trigger.c
++++ b/drivers/iio/trigger/stm32-timer-trigger.c
+@@ -433,10 +433,8 @@ static int stm32_register_iio_triggers(struct stm32_timer_trigger *priv)
+ 		iio_trigger_set_drvdata(trig, priv);
+ 
+ 		ret = iio_trigger_register(trig);
+-		if (ret) {
+-			stm32_unregister_iio_triggers(priv);
++		if (ret)
+ 			return ret;
+-		}
+ 
+ 		list_add_tail(&trig->alloc_list, &priv->tr_list);
+ 		cur++;
+@@ -805,8 +803,10 @@ static int stm32_timer_trigger_probe(struct platform_device *pdev)
+ 	mutex_init(&priv->lock);
+ 
+ 	ret = stm32_register_iio_triggers(priv);
+-	if (ret)
++	if (ret) {
++		stm32_unregister_iio_triggers(priv);
+ 		return ret;
++	}
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 
+-- 
+2.39.5
+

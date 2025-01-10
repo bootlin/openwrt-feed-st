@@ -1,0 +1,192 @@
+From 9e191e6d69241750355a818542f0ef1bf0e0082c Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 22 Feb 2024 10:09:49 +0100
+Subject: [PATCH] media: dcmipp: pixelproc: addition of frame control
+
+The DCMIPP pixelproc is able to drop frames to reach either
+1, 1/2, 1/4, 1/8 of the input framerate. Add this support via the
+frame_interval ops on the pixelproc subdev.
+
+Change-Id: I50b16dec47bfa734f77d61b4c1966643799bd7ae
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 117 ++++++++++++++++++
+ 1 file changed, 117 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index aeabc81e748e..b0c893d52ee7 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -455,6 +455,10 @@ struct dcmipp_pixelproc_device {
+ 	struct v4l2_ctrl_handler ctrls;
+ 
+ 	u32 pipe_id;
++
++	struct v4l2_fract src_interval;
++	struct v4l2_fract sink_interval;
++	unsigned int frate;
+ };
+ 
+ static const struct v4l2_mbus_framefmt fmt_default = {
+@@ -799,10 +803,41 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+ 	return 0;
+ }
+ 
++static const unsigned int dcmipp_frates[] = {1, 2, 4, 8};
++
++static int
++dcmipp_pixelproc_enum_frame_interval(struct v4l2_subdev *sd,
++				     struct v4l2_subdev_state *sd_state,
++				     struct v4l2_subdev_frame_interval_enum *fie)
++{
++	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
++	struct v4l2_fract *sink_interval = &pixelproc->sink_interval;
++	unsigned int ratio;
++
++	if (fie->pad > 1 ||
++	    fie->index >= (IS_SRC(fie->pad) ? ARRAY_SIZE(dcmipp_frates) : 1) ||
++	    fie->width > DCMIPP_FRAME_MAX_WIDTH ||
++	    fie->height > DCMIPP_FRAME_MAX_HEIGHT)
++		return -EINVAL;
++
++	if (IS_SINK(fie->pad)) {
++		fie->interval = *sink_interval;
++		return 0;
++	}
++
++	ratio = dcmipp_frates[fie->index];
++
++	fie->interval.numerator = sink_interval->numerator * ratio;
++	fie->interval.denominator = sink_interval->denominator;
++
++	return 0;
++}
++
+ static const struct v4l2_subdev_pad_ops dcmipp_pixelproc_pad_ops = {
+ 	.init_cfg		= dcmipp_pixelproc_init_cfg,
+ 	.enum_mbus_code		= dcmipp_pixelproc_enum_mbus_code,
+ 	.enum_frame_size	= dcmipp_pixelproc_enum_frame_size,
++	.enum_frame_interval	= dcmipp_pixelproc_enum_frame_interval,
+ 	.get_fmt		= v4l2_subdev_get_fmt,
+ 	.set_fmt		= dcmipp_pixelproc_set_fmt,
+ 	.get_selection		= dcmipp_pixelproc_get_selection,
+@@ -929,6 +964,76 @@ dcmipp_pixelproc_set_downscale(struct dcmipp_pixelproc_device *pixelproc,
+ 		  DCMIPP_PxDSCR_ENABLE);
+ }
+ 
++static void
++dcmipp_pixelproc_configure_framerate(struct dcmipp_pixelproc_device *pixelproc)
++{
++	/* Frame skipping */
++	reg_clear(pixelproc, DCMIPP_PxFCTCR(pixelproc->pipe_id),
++		  DCMIPP_PxFCTCR_FRATE_MASK);
++	reg_set(pixelproc, DCMIPP_PxFCTCR(pixelproc->pipe_id),
++		pixelproc->frate);
++}
++
++static int
++dcmipp_pixelproc_g_frame_interval(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_frame_interval *fi)
++{
++	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
++
++	if (IS_SINK(fi->pad))
++		fi->interval = pixelproc->sink_interval;
++	else
++		fi->interval = pixelproc->src_interval;
++
++	return 0;
++}
++
++static int
++dcmipp_pixelproc_s_frame_interval(struct v4l2_subdev *sd,
++				  struct v4l2_subdev_frame_interval *fi)
++{
++	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
++
++	if (pixelproc->streaming)
++		return -EBUSY;
++
++	if (fi->interval.numerator == 0 || fi->interval.denominator == 0)
++		fi->interval = pixelproc->sink_interval;
++
++	if (IS_SINK(fi->pad)) {
++		/*
++		 * Setting sink frame interval resets frame skipping.
++		 * Sink frame interval is propagated to src.
++		 */
++		pixelproc->frate = 0;
++		pixelproc->sink_interval = fi->interval;
++		pixelproc->src_interval = pixelproc->sink_interval;
++	} else {
++		unsigned int ratio;
++
++		/* Normalize ratio */
++		ratio = (pixelproc->sink_interval.denominator *
++			 fi->interval.numerator) /
++			(pixelproc->sink_interval.numerator *
++			 fi->interval.denominator);
++
++		/* Hardware can skip 1 frame over 2, 4 or 8 */
++		pixelproc->frate = ratio >= 8 ? 3 :
++				   ratio >= 4 ? 2 :
++				   ratio >= 2 ? 1 : 0;
++
++		ratio = dcmipp_frates[pixelproc->frate];
++
++		/* Adjust src frame interval to what hardware can really do */
++		pixelproc->src_interval.numerator =
++			pixelproc->sink_interval.numerator * ratio;
++		pixelproc->src_interval.denominator =
++			pixelproc->sink_interval.denominator;
++	}
++
++	return 0;
++}
++
+ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
+@@ -963,6 +1068,9 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 	compose = v4l2_subdev_state_get_compose(state, 0);
+ 	v4l2_subdev_unlock_state(state);
+ 
++	/* Configure framerate */
++	dcmipp_pixelproc_configure_framerate(pixelproc);
++
+ 	/* Configure cropping */
+ 	reg_write(pixelproc, DCMIPP_PxCRSTR(pixelproc->pipe_id),
+ 		  (crop->top << DCMIPP_PxCRSTR_VSTART_SHIFT) |
+@@ -1021,6 +1129,8 @@ static const struct v4l2_subdev_core_ops dcmipp_pixelproc_core_ops = {
+ };
+ 
+ static const struct v4l2_subdev_video_ops dcmipp_pixelproc_video_ops = {
++	.g_frame_interval = dcmipp_pixelproc_g_frame_interval,
++	.s_frame_interval = dcmipp_pixelproc_s_frame_interval,
+ 	.s_stream = dcmipp_pixelproc_s_stream,
+ };
+ 
+@@ -1065,6 +1175,10 @@ dcmipp_pixelproc_ent_init(const char *entity_name,
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc;
+ 	struct device *dev = dcmipp->dev;
++	struct v4l2_fract interval = {
++		.numerator = 1,
++		.denominator = 30,
++	};
+ 	int ret, i;
+ 
+ 	/* Allocate the pixelproc struct */
+@@ -1083,6 +1197,9 @@ dcmipp_pixelproc_ent_init(const char *entity_name,
+ 		return ERR_PTR(-EIO);
+ 	}
+ 
++	pixelproc->src_interval = interval;
++	pixelproc->sink_interval = interval;
++
+ 	/* Initialize controls */
+ 	v4l2_ctrl_handler_init(&pixelproc->ctrls,
+ 			       ARRAY_SIZE(dcmipp_pixelproc_ctrls));
+-- 
+2.39.5
+

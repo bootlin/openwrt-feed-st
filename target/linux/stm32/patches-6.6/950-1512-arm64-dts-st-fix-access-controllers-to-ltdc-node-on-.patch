@@ -1,0 +1,43 @@
+From d1b0bede1157bd1ded103e02b9c885b2249ffdb3 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 2 Oct 2024 10:55:24 +0200
+Subject: [PATCH] arm64: dts: st: fix access controllers to ltdc node on
+ stm32mp251
+
+Split accesses to main node (common access) and sub-nodes which contains
+specific features (layer1/2, layer3, rotation).
+
+Change-Id: I3b6c55f972a46695e934de7c6a406d9c8e28da12
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/409115
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index f306064d4b03..a8a888b8a722 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2172,13 +2172,13 @@ ltdc: display-controller@48010000 {
+ 				access-controllers = <&rifsc 80>;
+ 				access-controller-names = "cmn";
+ 
+-				l0l1 {
++				l1l2 {
+ 					access-controllers = <&rifsc 119>;
+-					access-controller-names = "l0l1";
++					access-controller-names = "l1l2";
+ 				};
+-				l2 {
++				l3 {
+ 					access-controllers = <&rifsc 120>;
+-					access-controller-names = "l2";
++					access-controller-names = "l3";
+ 				};
+ 				rot {
+ 					access-controllers = <&rifsc 121>;
+-- 
+2.39.5
+

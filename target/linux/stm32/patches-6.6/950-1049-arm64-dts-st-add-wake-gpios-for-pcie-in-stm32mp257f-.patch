@@ -1,0 +1,37 @@
+From 14446b1eb88e4f1077b9e71bbcacbe9c36d4cd9c Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 4 Jan 2024 17:31:18 +0100
+Subject: [PATCH] arm64: dts: st: add wake-gpios for pcie in stm32mp257f-ev1
+
+Add wake-gpios to manage wake# signal for RC mode
+
+Deasserting the input wake# triggers an irq used to resume
+the system when in low power mode.
+
+Change-Id: I8f086396284d5783b78d234f44a0ec8781d86ac0
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374583
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 885b294dc4b5..730adfcc0bc6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -627,6 +627,8 @@ &pcie_rc {
+ 	pinctrl-1 = <&pcie_init_pins_a>;
+ 	pinctrl-2 = <&pcie_sleep_pins_a>;
+ 	reset-gpios = <&gpioj 8 GPIO_ACTIVE_LOW>;
++	wakeup-source;
++	wake-gpios = <&gpioh 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,43 @@
+From 3ea23cd4bb432db59958bc310f0a5f86b2617e37 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Fri, 16 Apr 2021 16:31:08 +0200
+Subject: [PATCH] ARM: dts: stm32: Add support to retrieve Ethernet @MAC with
+ nvmem on stm32mp13
+
+MAC1 and MAC2 are fused on OTP (57/58), two mechanisms to retrieve them:
+- use "aliases": bootloader retrieve it and set "local-mac-address",
+which is used during probe to set MAC address
+- if "aliases" not set for ethernet, nvmem read directly OTP fused at
+probe to set MAC address
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Iad564edd07682d7ad6e7ef0e529987180d22c14e
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 16368c82a4bc..2ee0a76394d1 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -201,6 +201,8 @@ &ethernet1 {
+ 	phy-mode = "rmii";
+ 	max-speed = <100>;
+ 	phy-handle = <&phy0_eth1>;
++	nvmem-cells = <&ethernet_mac1_address>;
++	nvmem-cell-names = "mac-address";
+ 
+ 	mdio {
+ 		#address-cells = <1>;
+@@ -226,6 +228,8 @@ &ethernet2 {
+ 	phy-handle = <&phy0_eth2>;
+ 	st,ext-phyclk;
+ 	phy-supply = <&scmi_v3v3_sw>;
++	nvmem-cells = <&ethernet_mac2_address>;
++	nvmem-cell-names = "mac-address";
+ 
+ 	mdio {
+ 		#address-cells = <1>;
+-- 
+2.39.5
+

@@ -1,0 +1,80 @@
+From 9e3e39a05e2e4cdfe8e793c3a551af614d2fa230 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Fri, 19 Jul 2024 12:02:35 +0530
+Subject: [PATCH] phy: stm32: add vbus support in stm32mp21x
+
+Add support for vbus regulator for usb host.
+
+Change-Id: I4f23102db26d15893b46b885acbbb6f96c3a5fdf
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/394212
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/phy/st/phy-stm32-usb2phy.c | 31 ++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
+index b7515c0db318..37a015872eff 100644
+--- a/drivers/phy/st/phy-stm32-usb2phy.c
++++ b/drivers/phy/st/phy-stm32-usb2phy.c
+@@ -77,6 +77,7 @@ struct stm32_usb2phy {
+ 	struct regmap *regmap;
+ 	struct device *dev;
+ 	struct reset_control *rstc;
++	struct regulator *vbus;
+ 	struct clk *phyref;
+ 	struct regulator *vdd33, *vdda18;
+ 	enum phy_mode mode;
+@@ -491,9 +492,31 @@ static int stm32_usb2phy_exit(struct phy *phy)
+ 	return 0;
+ }
+ 
++static int stm32_usb2phy_phy_power_on(struct phy *phy)
++{
++	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
++
++	if (phy_dev->vbus)
++		return regulator_enable(phy_dev->vbus);
++
++	return 0;
++}
++
++static int stm32_usb2phy_phy_power_off(struct phy *phy)
++{
++	struct stm32_usb2phy *phy_dev = phy_get_drvdata(phy);
++
++	if (phy_dev->vbus)
++		return regulator_disable(phy_dev->vbus);
++
++	return 0;
++}
++
+ static const struct phy_ops stm32_usb2phy_data = {
+ 	.init = stm32_usb2phy_init,
+ 	.exit = stm32_usb2phy_exit,
++	.power_on = stm32_usb2phy_phy_power_on,
++	.power_off = stm32_usb2phy_phy_power_off,
+ 	.set_mode = stm32_usb2phy_set_mode,
+ 	.owner = THIS_MODULE,
+ };
+@@ -774,6 +797,14 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+ 	if (IS_ERR(phy))
+ 		return dev_err_probe(dev, PTR_ERR(phy), "failed to create USB2-PHY\n");
+ 
++	phy_dev->vbus = devm_regulator_get_optional(dev, "vbus");
++	if (IS_ERR(phy_dev->vbus)) {
++		ret = PTR_ERR(phy_dev->vbus);
++		if (ret != -ENODEV)
++			return dev_err_probe(dev, ret, "failed to get vbus\n");
++		phy_dev->vbus = NULL;
++	}
++
+ 	phy_dev->phy = phy;
+ 	phy_set_drvdata(phy, phy_dev);
+ 
+-- 
+2.39.5
+

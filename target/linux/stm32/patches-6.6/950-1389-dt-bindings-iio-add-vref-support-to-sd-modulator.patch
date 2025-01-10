@@ -1,0 +1,46 @@
+From 87cc7b32187b714ce4fc57510125ab3a563a9cda Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 24 Jul 2024 08:58:57 +0200
+Subject: [PATCH] dt-bindings: iio: add vref support to sd modulator
+
+Allow to specify the reference voltage used by the SD modulator.
+When the SD modulator is defined as an IIO backend, the reference
+voltage can be used to evaluate scaling information of the IIO device.
+The reference voltage is not used otherwise.
+
+Change-Id: I5b75d83d5fb0f8f6c5e2276b7fdabe403a558b9c
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397588
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml    | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+index d1033bfc0f1b..c3a116427dc3 100644
+--- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+@@ -27,6 +27,9 @@ properties:
+   vref-supply:
+     description: Phandle to the vref input analog reference voltage.
+ 
++dependencies:
++  vref-supply: [ '#io-backend-cells' ]
++
+ required:
+   - compatible
+ 
+@@ -41,6 +44,7 @@ examples:
+     // Backend binding example. SD modulator configured as an IIO backend device
+     ads1201_0: adc {
+       compatible = "sd-modulator";
++      vref-supply = <&vdd_adc>;
+       #io-backend-cells = <0>;
+     };
+ 
+-- 
+2.39.5
+

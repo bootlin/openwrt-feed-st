@@ -1,0 +1,67 @@
+From 5427738ad8d47efdc695479c35e529a5d6c92309 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 6 Dec 2022 15:32:02 +0100
+Subject: [PATCH] ARM: dts: stm32: add pins for spi4 and spi5 in
+ stm32mp15-pinctrl
+
+Add pins for spi4 and spi5 in stm32mp15-pinctrl.dtsi
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ibda61b11be277b2e488a20dd4d1362c3631adf82
+---
+ arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 31 +++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+index a9b36f408a88..ce08af4e3925 100644
+--- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
+@@ -2227,6 +2227,29 @@ pins2 {
+ 		};
+ 	};
+ 
++	spi4_pins_b: spi4-1 {
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
++				 <STM32_PINMUX('E', 14, AF5)>; /* SPI4_MOSI */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <1>;
++		};
++
++		pins2 {
++			pinmux = <STM32_PINMUX('E', 13, AF5)>; /* SPI4_MISO */
++			bias-disable;
++		};
++	};
++
++	spi4_sleep_pins_b: spi4-sleep-1 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 12, ANALOG)>, /* SPI4_SCK */
++				 <STM32_PINMUX('E', 13, ANALOG)>, /* SPI4_MISO */
++				 <STM32_PINMUX('E', 14, ANALOG)>; /* SPI4_MOSI */
++		};
++	};
++
+ 	spi5_pins_a: spi5-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('F', 7, AF5)>, /* SPI5_SCK */
+@@ -2242,6 +2265,14 @@ pins2 {
+ 		};
+ 	};
+ 
++	spi5_sleep_pins_a: spi5-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('F', 7, ANALOG)>, /* SPI5_SCK */
++				 <STM32_PINMUX('F', 8, ANALOG)>, /* SPI5_MISO */
++				 <STM32_PINMUX('F', 9, ANALOG)>; /* SPI5_MOSI */
++		};
++	};
++
+ 	stusb1600_pins_a: stusb1600-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('I', 11, GPIO)>;
+-- 
+2.39.5
+

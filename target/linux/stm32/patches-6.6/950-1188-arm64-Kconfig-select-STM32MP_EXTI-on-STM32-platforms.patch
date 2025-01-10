@@ -1,0 +1,34 @@
+From cde890a37c046177d87d2e2a97b7d3fc3b581a86 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 15 Dec 2023 12:03:59 +0100
+Subject: [PATCH] arm64: Kconfig: select STM32MP_EXTI on STM32 platforms
+
+Use the new config flag to build the correct driver that will be
+extracted from the old code.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I20d4cee74785d51e1408338dc3f387bea1a425c4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383189
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/Kconfig.platforms | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 407c87aada48..7e27639f949a 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -289,7 +289,7 @@ config ARCH_STM32
+ 	bool "STMicroelectronics STM32 SoC Family"
+ 	select GPIOLIB
+ 	select PINCTRL
+-	select STM32_EXTI
++	select STM32MP_EXTI
+ 	select ARM_SMC_MBOX
+ 	select ARM_SCMI_PROTOCOL
+ 	select COMMON_CLK_SCMI
+-- 
+2.39.5
+

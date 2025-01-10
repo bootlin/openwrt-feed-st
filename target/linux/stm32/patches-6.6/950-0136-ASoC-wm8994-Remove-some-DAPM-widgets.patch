@@ -1,0 +1,41 @@
+From df7ce055334283e483eea4d1ce79f527ed30c170 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 25 Apr 2018 15:47:29 +0200
+Subject: [PATCH] ASoC: wm8994: Remove some DAPM widgets
+
+NOT_UPSTREAMABLE
+
+Due to these DAPM widgets the audio path is powered up
+at codec configuration time, while it should be powered up
+on stream start instead.
+Probably, these widgets have to be made conditional
+through a control, to make this patch upstreamable.
+
+Change-Id: I5a720aaa8e7227f7c2541bbcbab0d94d7725935a
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ sound/soc/codecs/wm8994.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index a48e904a9740..4ea76bda1a66 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2071,10 +2071,10 @@ static const struct snd_soc_dapm_route wm8994_lateclk_intercon[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route wm8994_revd_intercon[] = {
+-	{ "AIF1DACDAT", NULL, "AIF2DACDAT" },
+-	{ "AIF2DACDAT", NULL, "AIF1DACDAT" },
+-	{ "AIF1ADCDAT", NULL, "AIF2ADCDAT" },
+-	{ "AIF2ADCDAT", NULL, "AIF1ADCDAT" },
++//	{ "AIF1DACDAT", NULL, "AIF2DACDAT" },
++//	{ "AIF2DACDAT", NULL, "AIF1DACDAT" },
++//	{ "AIF1ADCDAT", NULL, "AIF2ADCDAT" },
++//	{ "AIF2ADCDAT", NULL, "AIF1ADCDAT" },
+ 	{ "MICBIAS1", NULL, "CLK_SYS" },
+ 	{ "MICBIAS1", NULL, "MICBIAS Supply" },
+ 	{ "MICBIAS2", NULL, "CLK_SYS" },
+-- 
+2.39.5
+

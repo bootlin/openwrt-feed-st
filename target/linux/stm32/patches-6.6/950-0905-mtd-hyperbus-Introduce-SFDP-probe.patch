@@ -1,0 +1,426 @@
+From 65779444351ef65eece101cb543b4f064bf0d810 Mon Sep 17 00:00:00 2001
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Date: Wed, 17 Jan 2024 15:13:01 +0100
+Subject: [PATCH] mtd: hyperbus: Introduce SFDP probe
+
+!! Patch present on MTD mailing but never merge !!
+
+Infineon(Cypress) S26HL-T/S26HS-T family of flash devices support both
+legacy SPI mode and HyperBus (JESD251C xSPI profile 2.0) mode. In
+HyperBus mode, it is compatible with Cypress S26KL-S/S26KS-S HyperFlash
+family with some exceptions. One significant difference is that the CFI
+is replaced by SFDP. This patch intends to support Hyperbus devices that
+has SFDP instead of CFI, by adding new probing method that detects SFDP
+signature and setting up CFI structure to make SFDP chips work with
+cfi_cmdset_xxxx.
+
+The probe flow implemented in hyperbus_sfdp_probe_chip() is same as
+cfi_probe_chip() in chips/cfi_probe.c. The CFI "QRY" detection is
+replaced by "SFDP" signature detection.
+
+Device identification and setup functions specific for S26Hx-T are also
+implemented in the same source file as SFDP probe and called from probe
+function. Once other devices that supports SFDP come up, we will implement
+generic detection and setup flow.
+
+Change-Id: I2e9b2808a5e1fe270c3d62a58c7ad7c98835d945
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369127
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/mtd/hyperbus/Makefile        |   4 +-
+ drivers/mtd/hyperbus/hyperbus-core.c |  14 +-
+ drivers/mtd/hyperbus/hyperbus-sfdp.c | 311 +++++++++++++++++++++++++++
+ include/linux/mtd/sfdp.h             |   9 +
+ 4 files changed, 336 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/mtd/hyperbus/hyperbus-sfdp.c
+ create mode 100644 include/linux/mtd/sfdp.h
+
+diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
+index 53195bf31f2d..6f0daf06423a 100644
+--- a/drivers/mtd/hyperbus/Makefile
++++ b/drivers/mtd/hyperbus/Makefile
+@@ -1,6 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
++obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus.o
+ obj-$(CONFIG_HBMC_AM654)	+= hbmc-am654.o
+ obj-$(CONFIG_RPCIF_HYPERBUS)	+= rpc-if.o
+ obj-$(CONFIG_STM32_HYPERBUS)	+= hyperbus-stm32.o
++
++hyperbus-objs	:= hyperbus-core.o hyperbus-sfdp.o
+diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
+index 4d8047d43e48..473c8f544f9f 100644
+--- a/drivers/mtd/hyperbus/hyperbus-core.c
++++ b/drivers/mtd/hyperbus/hyperbus-core.c
+@@ -9,9 +9,21 @@
+ #include <linux/mtd/hyperbus.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/sfdp.h>
+ #include <linux/of.h>
+ #include <linux/types.h>
+ 
++static struct mtd_info *hyperbus_map_probe(struct map_info *map)
++{
++	struct mtd_info *mtd;
++
++	mtd = do_map_probe("cfi_probe", map);
++	if (!mtd)
++		mtd = hyperbus_sfdp_probe(map);
++
++	return mtd;
++}
++
+ static struct hyperbus_device *map_to_hbdev(struct map_info *map)
+ {
+ 	return container_of(map, struct hyperbus_device, map);
+@@ -106,7 +118,7 @@ int hyperbus_register_device(struct hyperbus_device *hbdev)
+ 		}
+ 	}
+ 
+-	hbdev->mtd = do_map_probe("cfi_probe", map);
++	hbdev->mtd = hyperbus_map_probe(map);
+ 	if (!hbdev->mtd) {
+ 		dev_err(dev, "probing of hyperbus device failed\n");
+ 		return -ENODEV;
+diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
+new file mode 100644
+index 000000000000..5ba010aeeb3c
+--- /dev/null
++++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
+@@ -0,0 +1,311 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2023, Infineon Technologies.
++ */
++#include <linux/mtd/sfdp.h>
++#include <linux/mtd/xip.h>
++#include <linux/mtd/gen_probe.h>
++
++/* HyperBus Commands */
++#define HYPERBUS_ADDR_UNLOCK1	0x555
++#define HYPERBUS_ADDR_UNLOCK2	0x2AA
++#define HYPERBUS_CMD_UNLOCK1	0xAA
++#define HYPERBUS_CMD_UNLOCK2	0x55
++#define HYPERBUS_CMD_RDSFDP	0x90
++#define HYPERBUS_CMD_RDVCR1	0xC7
++#define HYPERBUS_CMD_RDVCR2	0xC9
++#define HYPERBUS_CMD_ASOEXT	0xF0
++#define HYPERBUS_CMD_ERSCTR	0x30
++
++/* For Infineon S26Hx family */
++#define S26HX_ADDR_MFR_ID	0x800
++#define S26HX_ADDR_DEV_ID1	0x801
++#define S26HX_ADDR_DEV_ID2	0x802
++#define S26HX_DEV_ID1_3V0	0x006A
++#define S26HX_DEV_ID1_1V8	0x007B
++#define S26HX_DEV_ID2_512	0x001A
++#define S26HX_DEV_ID2_01G	0x001B
++#define S26HX_CFR1_UNIFORM	BIT(9)
++#define S26HX_CFR1_TP4KBS	BIT(8)
++#define S26HX_CFR2_SP4KBS	BIT(2)
++#define ERASEINFO(s, b)		(((s) << 8) | ((b) - 1))
++
++static inline u16 hyperbus_read(u32 addr, struct map_info *map,
++				struct cfi_private *cfi)
++{
++	return cfi_read_query16(map, addr * cfi->interleave * cfi->device_type);
++}
++
++static inline void hyperbus_write(u8 cmd, u32 addr, struct map_info *map,
++				  struct cfi_private *cfi)
++{
++	cfi_send_gen_cmd(cmd, addr, 0, map, cfi, cfi->device_type, NULL);
++}
++
++static int __xipram hyperbus_sfdp_present(struct map_info *map, __u32 base,
++					  struct cfi_private *cfi)
++{
++	int osf = cfi->interleave * cfi->device_type; /* scale factor */
++	map_word val[2];
++	map_word sfdp[2];
++
++	sfdp[0] = cfi_build_cmd(0x4653, map, cfi); /* "SF" */
++	sfdp[1] = cfi_build_cmd(0x5044, map, cfi); /* "DP" */
++
++	val[0] = map_read(map, base + osf * 0x0);
++	val[1] = map_read(map, base + osf * 0x1);
++
++	if (!map_word_equal(map, sfdp[0], val[0]))
++		return 0;
++
++	if (!map_word_equal(map, sfdp[1], val[1]))
++		return 0;
++
++	return 1; /* "SFDP" found */
++}
++
++static int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
++					  struct cfi_private *cfi)
++{
++	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_RDSFDP, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	return hyperbus_sfdp_present(map, 0, cfi);
++}
++
++static void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
++					    struct cfi_private *cfi)
++{
++	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
++}
++
++static u16 __xipram hyperbus_s26hx_rdvcr1(struct map_info *map,
++					  struct cfi_private *cfi)
++{
++	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_RDVCR1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	return hyperbus_read(0, map, cfi);
++}
++
++static u16 __xipram hyperbus_s26hx_rdvcr2(struct map_info *map,
++					  struct cfi_private *cfi)
++{
++	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
++	hyperbus_write(HYPERBUS_CMD_RDVCR2, HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	return hyperbus_read(0, map, cfi);
++}
++
++static int __xipram hyperbus_s26hx_chip_setup(struct map_info *map,
++					      struct cfi_private *cfi)
++{
++	u16 mfr_id, dev_id1, dev_id2, cfr1v, cfr2v;
++	u8 nregions, nbtm4ks, ntop4ks, n256ks;
++	u32 *erase;
++
++	/* Read manufacturer and Device ID */
++	mfr_id = hyperbus_read(S26HX_ADDR_MFR_ID, map, cfi);
++	dev_id1 = hyperbus_read(S26HX_ADDR_DEV_ID1, map, cfi);
++	dev_id2 = hyperbus_read(S26HX_ADDR_DEV_ID2, map, cfi);
++
++	if (mfr_id != CFI_MFR_CYPRESS ||
++	    (dev_id1 != S26HX_DEV_ID1_3V0 && dev_id1 != S26HX_DEV_ID1_1V8) ||
++	    (dev_id2 != S26HX_DEV_ID2_512 && dev_id2 != S26HX_DEV_ID2_01G))
++		return 0;
++
++	/* Exit SFDP ASO then read CFR1V and CFR2V */
++	hyperbus_sfdp_mode_off(0, map, cfi);
++	cfr1v = hyperbus_s26hx_rdvcr1(map, cfi);
++	cfr2v = hyperbus_s26hx_rdvcr2(map, cfi);
++
++	/*
++	 * Determine number of regions (nregions), number of bottom 4KB sectors
++	 * (nbtm4ks), and number of top 4KB sectors (ntop4ks)
++	 */
++	if (cfr1v & S26HX_CFR1_UNIFORM) {
++		nregions = 1;
++		nbtm4ks = 0;
++		ntop4ks = 0;
++	} else if (cfr2v & S26HX_CFR2_SP4KBS) {
++		nregions = 5;
++		nbtm4ks = 16;
++		ntop4ks = 16;
++	} else if (cfr1v & S26HX_CFR1_TP4KBS) {
++		nregions = 3;
++		nbtm4ks = 0;
++		ntop4ks = 32;
++	} else {
++		nregions = 3;
++		nbtm4ks = 32;
++		ntop4ks = 0;
++	}
++
++	cfi->cfiq = kmalloc(sizeof(*cfi->cfiq) + nregions * sizeof(u32),
++			    GFP_KERNEL);
++	if (!cfi->cfiq)
++		return 0;
++
++	memset(cfi->cfiq, 0, sizeof(struct cfi_ident));
++
++	cfi->mfr = mfr_id;
++	cfi->id = dev_id1 << 8 | dev_id2;
++	cfi->cfi_mode = CFI_MODE_CFI;
++	cfi->addr_unlock1 = HYPERBUS_ADDR_UNLOCK1;
++	cfi->addr_unlock2 = HYPERBUS_ADDR_UNLOCK2;
++	cfi->sector_erase_cmd = CMD(HYPERBUS_CMD_ERSCTR);
++
++	cfi->cfiq->P_ID = P_ID_AMD_STD;
++	cfi->cfiq->DevSize = dev_id2; /* dev_id2 indicates size in 2^N */
++	cfi->cfiq->MaxBufWriteSize = 9; /* 2^9 = 512 */
++
++	/*
++	 * cfi_cmdset_0002 uses fixed timeout for word write (1ms + 1 jiffies)
++	 * and sector erase (20s) that should be enough for s26hx. For buffer
++	 * write, 2000us is used if cfiq->BufWriteTimeoutXXX is 0. The typical
++	 * and maximum 512B page programming times are 680us and 2175us
++	 * respectively. Specify proper values here to extend buffer write
++	 * timeout.
++	 */
++	cfi->cfiq->BufWriteTimeoutTyp = 10; /* 2^10 = 1024 */
++	cfi->cfiq->BufWriteTimeoutMax = 2; /* 1024 x 2^2 = 4096 */
++
++	/* Setup erase region info */
++	cfi->cfiq->NumEraseRegions = nregions;
++	erase = cfi->cfiq->EraseRegionInfo;
++
++	/* Bottom 4KB sectors and remaining portion */
++	if (nbtm4ks) {
++		*erase++ = ERASEINFO(SZ_4K, nbtm4ks);
++		*erase++ = ERASEINFO(SZ_256K - (SZ_4K * nbtm4ks), 1);
++	}
++
++	/*
++	 * The number of uniform 256KB sectors is obtained by dividing 'device
++	 * size' by 256K(=2^18). Deduct overlaid sector(s) from uniform number
++	 * if top and/or bottom 4KB sectors exist.
++	 */
++	n256ks = (1 << (cfi->cfiq->DevSize - 18)) - !!(nbtm4ks) - !!(ntop4ks);
++	*erase++ = ERASEINFO(SZ_256K, n256ks);
++
++	/* Top 4KB sectors and remaining portion */
++	if (ntop4ks) {
++		*erase++ = ERASEINFO(SZ_256K - (SZ_4K * ntop4ks), 1);
++		*erase = ERASEINFO(SZ_4K, ntop4ks);
++	}
++
++	return 1;
++}
++
++static int __xipram hyperbus_sfdp_chip_setup(struct map_info *map,
++					     struct cfi_private *cfi)
++{
++	/*
++	 * Just call setup for S26Hx since it is only chip supported.
++	 * Once other devices come up, we will implement vendor/chip specific
++	 * detection and setup flow here.
++	 */
++	return hyperbus_s26hx_chip_setup(map, cfi);
++}
++
++static int __xipram hyperbus_sfdp_probe_chip(struct map_info *map, __u32 base,
++					     unsigned long *chip_map,
++					     struct cfi_private *cfi)
++{
++	u32 probe_addr;
++	int i;
++
++	if (base >= map->size) {
++		pr_notice("Probe at base(0x%08x) past the end of the map(0x%08lx)\n",
++			  base, map->size - 1);
++		return 0;
++	}
++
++	probe_addr = base + cfi_build_cmd_addr(HYPERBUS_ADDR_UNLOCK1, map, cfi);
++	if (probe_addr >= map->size) {
++		pr_notice("Probe at base[unlock](0x%08x) past the end of the map(0x%08lx)\n",
++			  probe_addr, map->size - 1);
++		return 0;
++	}
++
++	if (!hyperbus_sfdp_mode_on(base, map, cfi))
++		return 0;
++
++	/*
++	 * This is the first time we're called. Set up the CFI stuff accordingly
++	 * and return
++	 */
++	if (!cfi->numchips)
++		return hyperbus_sfdp_chip_setup(map, cfi);
++
++	/* Check each previous chip to see if it's an alias */
++	for (i = 0; i < (base >> cfi->chipshift); i++) {
++		unsigned long start;
++
++		/* Skip location; no valid chip at this address */
++		if (!test_bit(i, chip_map))
++			continue;
++
++		start = i << cfi->chipshift;
++
++		/*
++		 * This chip should be in read mode if it's one we've already
++		 * touched.
++		 */
++		if (hyperbus_sfdp_present(map, start, cfi)) {
++			/*
++			 * Eep. This chip also had the SFDP signature. Is it an
++			 * alias or the new one?
++			 */
++			hyperbus_sfdp_mode_off(start, map, cfi);
++
++			/* If the SFDP signature goes away, it's an alias */
++			if (!hyperbus_sfdp_present(map, start, cfi)) {
++				pr_debug("%s: Found an alias at 0x%x for the chip at 0x%lx\n",
++					 map->name, base, start);
++				return 0;
++			}
++
++			/*
++			 * Yes, it's actually got SFDP for data. Most
++			 * unfortunate. Stick the new chip in read mode too and
++			 * if it's the same, assume it's an alias.
++			 * FIXME: Use other modes to do a proper check
++			 */
++			hyperbus_sfdp_mode_off(base, map, cfi);
++
++			if (hyperbus_sfdp_present(map, base, cfi)) {
++				pr_debug("%s: Found an alias at 0x%x for the chip at 0x%lx\n",
++					 map->name, base, start);
++				return 0;
++			}
++		}
++	}
++
++	/*
++	 * OK, if we got to here, then none of the previous chips appear to
++	 * be aliases for the current one.
++	 */
++	set_bit((base >> cfi->chipshift), chip_map);  /* Update chip map */
++	cfi->numchips++;
++
++	/* Put it back into Read Mode */
++	hyperbus_sfdp_mode_off(base, map, cfi);
++
++	pr_info("%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
++		map->name, cfi->interleave, cfi->device_type * 8, base,
++		map->bankwidth * 8);
++
++	return 1;
++}
++
++static struct chip_probe hyperbus_sfdp_chip_probe = {
++	.name		= "SFDP",
++	.probe_chip	= hyperbus_sfdp_probe_chip
++};
++
++struct mtd_info *hyperbus_sfdp_probe(struct map_info *map)
++{
++	return mtd_do_chip_probe(map, &hyperbus_sfdp_chip_probe);
++}
+diff --git a/include/linux/mtd/sfdp.h b/include/linux/mtd/sfdp.h
+new file mode 100644
+index 000000000000..2bdb8cdc8170
+--- /dev/null
++++ b/include/linux/mtd/sfdp.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++#ifndef __MTD_SFDP_H__
++#define __MTD_SFDP_H__
++#include <linux/mtd/gen_probe.h>
++
++struct mtd_info *hyperbus_sfdp_probe(struct map_info *map);
++
++#endif /* __MTD_SFDP_H__ */
+-- 
+2.39.5
+

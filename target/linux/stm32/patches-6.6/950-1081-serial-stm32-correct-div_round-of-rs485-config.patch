@@ -1,0 +1,47 @@
+From af60e6c45883a0c7057a809631a8ddbde8efab6a Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 12 Apr 2024 14:33:55 +0200
+Subject: [PATCH] serial: stm32: correct div_round of rs485 config
+
+RS485 delays configured into USART hardware block should be "at least",
+delays asked by the serial framework with serial_rs485 structure.
+
+Use DIV_ROUND_UP() to guarantee theses values until the maximum that can
+support the hardware block.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I9c3df758948aea4391c04722c6e2b207d753f5e0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373289
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index be809e8032a0..8ac74b8bd46b 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -200,7 +200,7 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+ 	else
+ 		rs485_deat_dedt = delay_ADE * baud * 16;
+ 
+-	rs485_deat_dedt = DIV_ROUND_CLOSEST(rs485_deat_dedt, 1000);
++	rs485_deat_dedt = DIV_ROUND_UP(rs485_deat_dedt, 1000);
+ 	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
+ 			  rs485_deat_dedt_max : rs485_deat_dedt;
+ 	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEAT_SHIFT) &
+@@ -212,7 +212,7 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+ 	else
+ 		rs485_deat_dedt = delay_DDE * baud * 16;
+ 
+-	rs485_deat_dedt = DIV_ROUND_CLOSEST(rs485_deat_dedt, 1000);
++	rs485_deat_dedt = DIV_ROUND_UP(rs485_deat_dedt, 1000);
+ 	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
+ 			  rs485_deat_dedt_max : rs485_deat_dedt;
+ 	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEDT_SHIFT) &
+-- 
+2.39.5
+

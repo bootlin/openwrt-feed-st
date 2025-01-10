@@ -1,0 +1,68 @@
+From e4cd6c389b05c450ada72e96fb09daf7a24bcbf5 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 15 Dec 2022 16:01:34 +0100
+Subject: [PATCH] ARM: dts: stm32: declare rproc as wakeup-source on
+ stm32mp15x-ed1
+
+Allow rproc to wakeup the system when getting the WDG irq.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I09de2f0923f637b580527cdce1f0cb42f648bcbc
+---
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts | 1 +
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts | 1 +
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts | 1 +
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index 9d4c85be8d83..9d0938239d1c 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -333,6 +333,7 @@ &m4_rproc {
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+ 	interrupts = <68 1>;
++	wakeup-source;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index ba0944de649c..7b80bbe2abfd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -337,6 +337,7 @@ &m4_rproc {
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+ 	interrupts = <68 1>;
++	wakeup-source;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 1527f2ae5d37..c1d48e47d808 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -333,6 +333,7 @@ &m4_rproc {
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+ 	interrupts = <68 1>;
++	wakeup-source;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index 10cac0bde991..8c350df748e9 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -337,6 +337,7 @@ &m4_rproc {
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+ 	interrupts = <68 1>;
++	wakeup-source;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

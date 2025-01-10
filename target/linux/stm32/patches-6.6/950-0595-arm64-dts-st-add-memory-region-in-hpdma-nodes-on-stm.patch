@@ -1,0 +1,41 @@
+From ba05b5a4f5a6d1694f9689f0d7703d7dc490254a Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 14 Jun 2023 16:46:19 +0200
+Subject: [PATCH] arm64: dts: st: add memory-region in hpdma nodes on
+ stm32mp257f-ev1
+
+Linked-List Items (LLI) can be allocated in internal ram defined under
+reserved-memory node.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I5afb22351089bad1702116736df3253df3eb93e8
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 0d8a1710a50d..71b1a8aeda30 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -37,6 +37,18 @@ &arm_wdt {
+ 	status = "okay";
+ };
+ 
++&hpdma {
++	memory-region = <&hpdma1_lli>;
++};
++
++&hpdma2 {
++	memory-region = <&hpdma2_lli>;
++};
++
++&hpdma3 {
++	memory-region = <&hpdma3_lli>;
++};
++
+ &scmi_regu {
+ 	scmi_vddio1: regulator@0 {
+ 		regulator-min-microvolt = <1800000>;
+-- 
+2.39.5
+

@@ -1,0 +1,40 @@
+From 3fd4b1c2ba80f8972f688f08eb46a5b154503e47 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.i.king@gmail.com>
+Date: Tue, 19 Dec 2023 13:30:15 +0000
+Subject: [PATCH] tools/counter: Fix spelling mistake "componend" ->
+ "component"
+
+There are two spelling mistakes in the help text. Fix them.
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Link: https://lore.kernel.org/r/20231219133015.365943-1-colin.i.king@gmail.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Change-Id: Icfeb4fae3dd603a2b5b030df564e26e5b738dce3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388576
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ tools/counter/counter_watch_events.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
+index 3898fe7e35ec..37d1b4b3e63d 100644
+--- a/tools/counter/counter_watch_events.c
++++ b/tools/counter/counter_watch_events.c
+@@ -120,8 +120,8 @@ static void print_usage(void)
+ 		"  evt_capture                (COUNTER_EVENT_CAPTURE)\n"
+ 		"\n"
+ 		"  chan=<n>                   channel <n> for this watch [default: 0]\n"
+-		"  id=<n>                     componend id <n> for this watch [default: 0]\n"
+-		"  parent=<n>                 componend parent <n> for this watch [default: 0]\n"
++		"  id=<n>                     component id <n> for this watch [default: 0]\n"
++		"  parent=<n>                 component parent <n> for this watch [default: 0]\n"
+ 		"\n"
+ 		"Example with two watched events:\n\n"
+ 		"counter_watch_events -d \\\n"
+-- 
+2.39.5
+

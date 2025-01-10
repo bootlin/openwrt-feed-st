@@ -1,0 +1,29 @@
+From 98ba8591089d32aa687e5572f038c22d6b58aa78 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Thu, 1 Oct 2020 16:04:03 +0200
+Subject: [PATCH] ARM: dts: stm32: Add IPCC wakeup management on stm32mp151
+
+This commit adds the EXTI line 61 to IPCC node which will be used for
+wakeup from CStop and adds IPCC device to "pd_core" power domain.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: I2f1899f5dfd2e5e5de895c235614d7f856efe6d2
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 247518c335c9..22a387caa3d1 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1223,6 +1223,7 @@ ipcc: mailbox@4c001000 {
+ 			interrupt-names = "rx", "tx";
+ 			clocks = <&rcc IPCC>;
+ 			wakeup-source;
++			power-domains = <&pd_core>;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.39.5
+

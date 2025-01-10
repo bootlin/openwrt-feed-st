@@ -1,0 +1,41 @@
+From ec93056e2c62a12120005b08aa7a2c4eba951c10 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 2 Jun 2023 11:09:33 +0200
+Subject: [PATCH] arm64: dts: st: add spdifrx support on stm32mp251
+
+Add S/PDIFRX support to STM32MP25 SoC family.
+
+Change-Id: I06ffaf5477ce84065ad9d4f74cc2077b5aecbc21
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 3b7ea608e853..c53eeec8a453 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -671,6 +671,20 @@ spi3: spi@400c0000 {
+ 				status = "disabled";
+ 			};
+ 
++			spdifrx: audio-controller@400d0000 {
++				compatible = "st,stm32h7-spdifrx";
++				#sound-dai-cells = <0>;
++				reg = <0x400d0000 0x400>;
++				clocks = <&rcc CK_KER_SPDIFRX>;
++				clock-names = "kclk";
++				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 71 0x43 0x212>,
++					<&hpdma 72 0x43 0x212>;
++				dma-names = "rx", "rx-ctrl";
++				access-controllers = <&rifsc 30>;
++				status = "disabled";
++			};
++
+ 			usart2: serial@400e0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400e0000 0x400>;
+-- 
+2.39.5
+

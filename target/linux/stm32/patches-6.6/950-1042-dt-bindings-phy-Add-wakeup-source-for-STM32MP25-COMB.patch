@@ -1,0 +1,73 @@
+From ca3391766e6227a3bafeed8961789df5fdb0f9f0 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Mon, 26 Feb 2024 23:01:58 +0530
+Subject: [PATCH] dt-bindings: phy: Add wakeup-source for STM32MP25 COMBOPHY
+ bindings
+
+Add wakeup-source capability
+
+Change-Id: Ibb5f2473aab102ce14c3652df0cf2fdd2d647a48
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373821
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../bindings/phy/st,stm32-combophy.yaml       | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+index 5c46225f4e7e..132a7c3e4f9f 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+@@ -94,6 +94,12 @@ properties:
+       Voltage Swing to change the Vlo, Vhi for a VDDP = 0.8V.
+       The hardware accepts discrete values in this range.
+ 
++  wakeup-source: true
++
++  interrupts:
++    maxItems: 1
++    description: interrupt used for wakeup
++
+ required:
+   - compatible
+   - reg
+@@ -104,6 +110,15 @@ required:
+   - clocks
+   - clock-names
+ 
++allOf:
++  - if:
++      required:
++        - wakeup-source
++    then:
++      anyOf:
++        - required: [interrupts]
++        - required: [interrupts-extended]
++
+ additionalProperties: false
+ 
+ examples:
+@@ -121,6 +136,8 @@ examples:
+               resets = <&rcc USB3PCIEPHY_R>;
+               reset-names = "phy-rst";
+               st,syscfg = <&syscfg>;
++              wakeup-source;
++              interrupts-extended = <&exti1 45 IRQ_TYPE_EDGE_FALLING>;
+     };
+ 
+   - |
+@@ -146,5 +163,7 @@ examples:
+               resets = <&rcc USB3PCIEPHY_R>;
+               reset-names = "phy-rst";
+               st,syscfg = <&syscfg>;
++              wakeup-source;
++              interrupts-extended = <&exti1 45 IRQ_TYPE_EDGE_FALLING>;
+     };
+ ...
+-- 
+2.39.5
+

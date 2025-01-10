@@ -1,0 +1,131 @@
+From 6a3c118a453f5fadf18faeea755e0b4f78c72882 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Fri, 26 Jan 2024 13:27:31 +0100
+Subject: [PATCH] PCI: pci-epf-test: Fix free_mem in case of epc_set_bar
+ failure
+
+This fixes a double free bug exhibited by the pci_epf_test_set_bar function
+
+in sequence from pci_epf_test_set_bar
+
+        ret = pci_epc_set_bar(epc, epf->func_no, epf->vfunc_no,
+                                 epf_bar);
+           if (ret) {
+                   pci_epf_free_space(epf, epf_test->reg[bar], bar,
+                                      PRIMARY_INTERFACE);
+                   dev_err(dev, "Failed to set BAR%d\n", bar);
+                   if (bar == test_reg_bar)
+                           return ret;
+           }
+
+pci_epf_test_core_init from two contexts: either in bind or from
+init_notifier. epf_space should be freed only from bind in case
+of error to avoid double free.
+
+This can happens with the init_notifier that is called upon a perst
+interrupt from the host (bind/unbind RC driver for instance).
+
+to reproduce:
+on the EP . start the epf-test driver
+on the RC . unbind / rebind the pcie-stm32 driver 2 times
+
+   22.877524] stm32-ep-pcie 48400000.pcie-ep: No free inbound window
+[   22.883688] ------------[ cut here ]------------
+[   22.888324] Trying to vfree() nonexistent vm area (00000000fe826670)
+[   22.894685] WARNING: CPU: 0 PID: 94 at mm/vmalloc.c:2693 __vunmap+0x2d0/0x310
+[   22.901741] Modules linked in: pci_epf_test crct10dif_ce irq_rpmsg
+[   22.907892] CPU: 0 PID: 94 Comm: irq/56-perst_ir Not tainted 6.1.73 #36  [   22.914535] Hardware name: STMicroelectronics STM32MP257F VALID3 REVB/ MB1706 (DDR4 Power discrete) + MB1703 (DT)
+[   22.924692] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   22.931635] pc : __vunmap+0x2d0/0x310
+[   22.935364] lr : __vunmap+0x2d0/0x310
+[   22.938993] sp : ffff800009ed3b70
+[   22.942314] x29: ffff800009ed3b70 x28: ffff0000066fac80 x27: ffff0000050bc000
+[   22.949365] x26: 0000000000000000 x25: ffff800008f41968 x24: 0000000000000000
+[   22.956515] x23: 0000000000000000 x22: ffff0000048cd010 x21: 0000000000000000
+[   22.963664] x20: ffff80000a415000 x19: 0000000000000000 x18: ffff000004eb5d10
+[   22.970714] x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
+[   22.977864] x14: 0000000000000000 x13: 00000000000001bf x12: ffff000004eb5d10
+[   22.985014] x11: 00000000ffffffea x10: ffff8000097da970 x9 : 0000000000000001
+[   22.992064] x8 : 0000000000000001 x7 : 0000000000017fe8 x6 : c0000000ffffefff
+[   22.999213] x5 : 0000000000057fa8 x4 : 0000000000000000 x3 : ffff800009ed3908
+[   23.006363] x2 : ffff800009782868 x1 : 3776615508e77000 x0 : 0000000000000000
+[   23.013413] Call trace:
+[   23.015830]  __vunmap+0x2d0/0x310
+[   23.019158]  vunmap+0x28/0x40
+[   23.022083]  dma_direct_free+0xf8/0x120
+[   23.025914]  dma_free_attrs+0x98/0xe0
+[   23.029641]  pci_epf_free_space+0x48/0x80
+[   23.033573]  pci_epf_test_core_init+0x1d0/0x1f0 [pci_epf_test]
+[   23.039421]  pci_epf_test_notifier+0x18/0x90 [pci_epf_test]
+[   23.044964]  atomic_notifier_call_chain+0x60/0x90
+[   23.049599]  pci_epc_init_notify+0x28/0x40
+[   23.053730]  dw_pcie_ep_init_notify+0x14/0x20
+[   23.058061]  stm32_pcie_ep_perst_irq_thread+0x120/0x220
+[   23.063297]  irq_thread_fn+0x2c/0xb0
+[   23.066824]  irq_thread+0x174/0x260
+[   23.070350]  kthread+0x110/0x120
+[   23.073475]  ret_from_fork+0x10/0x20
+[   23.077104] ---[ end trace 0000000000000000 ]---
+[   23.081670] Unable to handle kernel paging request at virtual address fffffbfffe000000
+
+Fixes: 349e7a85b25f ("PCI: endpoint: functions: Add an EP function to test PCI")
+Change-Id: Id9d4137cf48c7ae101647e8b76e89978a34523d7
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/380530
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/pci/endpoint/functions/pci-epf-test.c | 20 ++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+index fea7c3d8eabd..39678135f80c 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -735,8 +735,6 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+ 		ret = pci_epc_set_bar(epc, epf->func_no, epf->vfunc_no,
+ 				      epf_bar);
+ 		if (ret) {
+-			pci_epf_free_space(epf, epf_test->reg[bar], bar,
+-					   PRIMARY_INTERFACE);
+ 			dev_err(dev, "Failed to set BAR%d\n", bar);
+ 			if (bar == test_reg_bar)
+ 				return ret;
+@@ -877,6 +875,20 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
+ 	return 0;
+ }
+ 
++static void pci_epf_test_free_space(struct pci_epf *epf)
++{
++	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
++	int bar;
++
++	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
++		if (epf_test->reg[bar]) {
++			pci_epf_free_space(epf, epf_test->reg[bar],
++					   bar, PRIMARY_INTERFACE);
++			epf_test->reg[bar] = NULL;
++		}
++	}
++}
++
+ static void pci_epf_configure_bar(struct pci_epf *epf,
+ 				  const struct pci_epc_features *epc_features)
+ {
+@@ -931,8 +943,10 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+ 
+ 	if (!core_init_notifier || force_core_init) {
+ 		ret = pci_epf_test_core_init(epf);
+-		if (ret)
++		if (ret) {
++			pci_epf_test_free_space(epf);
+ 			return ret;
++		}
+ 	}
+ 
+ 	epf_test->dma_supported = true;
+-- 
+2.39.5
+

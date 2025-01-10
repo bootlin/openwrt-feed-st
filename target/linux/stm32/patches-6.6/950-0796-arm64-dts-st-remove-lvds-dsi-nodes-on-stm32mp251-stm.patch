@@ -1,0 +1,103 @@
+From 3a55463f07f752a6b010b25149ca062585701f37 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 31 Jan 2024 10:36:41 +0100
+Subject: [PATCH] arm64: dts: st: remove lvds & dsi nodes on stm32mp251 &
+ stm32mp253
+
+Dsi & lvds are no more supported by SOCs stm32mp251 & stm32mp253
+
+Change-Id: I4d7197af4706a9fa60a5ae7814587cff42f5a6f2
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 23 +----------------------
+ arch/arm64/boot/dts/st/stm32mp253.dtsi | 22 ----------------------
+ 2 files changed, 1 insertion(+), 44 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 3cebbec05ccd..f1bbce1e4afd 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -83,12 +83,6 @@ arm_wdt: watchdog {
+ 	};
+ 
+ 	clocks {
+-		clk_dsi_txbyte: txbyteclk {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <0>;
+-		};
+-
+ 		clk_rcbsec: clk-rcbsec {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -2066,20 +2060,6 @@ i3c4: i3c@46080000 {
+ 				status = "disabled";
+ 			};
+ 
+-			dsi: dsi@48000000 {
+-				compatible = "st,stm32-dsi";
+-				reg = <0x48000000 0x800>;
+-				#clock-cells = <0>;
+-				clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
+-					 <&rcc CK_KER_LTDC>;
+-				clock-names = "pclk", "ref", "px_clk";
+-				resets = <&rcc DSI_R>;
+-				reset-names = "apb";
+-				access-controllers = <&rifsc 81>;
+-				power-domains = <&CLUSTER_PD>;
+-				status = "disabled";
+-			};
+-
+ 			ltdc: display-controller@48010000 {
+ 				compatible = "st,stm32-ltdc";
+ 				reg = <0x48010000 0x400>;
+@@ -2452,8 +2432,7 @@ rcc: clock-controller@44200000 {
+ 				<&scmi_clk CK_SCMI_ICN_APBDBG>,
+ 				<&scmi_clk CK_SCMI_TIMG1>,
+ 				<&scmi_clk CK_SCMI_TIMG2>,
+-				<&scmi_clk CK_SCMI_PLL3>,
+-				<&clk_dsi_txbyte>;
++				<&scmi_clk CK_SCMI_PLL3>;
+ 			access-controllers = <&rifsc 156>;
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 5e1725e11a65..d98a270da0ea 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -69,18 +69,6 @@ m_can3: can@402f0000 {
+ 		status = "disabled";
+ 	};
+ 
+-	lvds: lvds@48060000 {
+-		#clock-cells = <0>;
+-		compatible = "st,stm32-lvds";
+-		reg = <0x48060000 0x2000>;
+-		clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>, <&syscfg 0>;
+-		clock-names = "pclk", "ref", "pixclk";
+-		resets = <&rcc LVDS_R>;
+-		access-controllers = <&rifsc 84>;
+-		power-domains = <&CLUSTER_PD>;
+-		status = "disabled";
+-	};
+-
+ 	eth2: eth2@482d0000 {
+ 		compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
+ 		reg = <0x482d0000 0x4000>;
+@@ -131,13 +119,3 @@ mtl_tx_setup_2: tx-queues-config {
+ 		};
+ 	};
+ };
+-
+-&dsi {
+-	clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
+-	clock-names = "pclk", "ref", "px_clk", "pixclk";
+-};
+-
+-&ltdc {
+-	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
+-	clock-names = "bus", "ref", "lcd";
+-};
+-- 
+2.39.5
+

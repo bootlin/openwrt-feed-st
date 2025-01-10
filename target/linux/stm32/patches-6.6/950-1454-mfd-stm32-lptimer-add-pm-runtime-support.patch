@@ -1,0 +1,44 @@
+From aa4e99003a50531684807217a19bb7f1749b414f Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 5 Sep 2024 11:02:31 +0200
+Subject: [PATCH] mfd: stm32-lptimer: add pm runtime support
+
+Add pm runtime support to lptimer MFD driver.
+
+Change-Id: Ic5467badbc3f82c289180808707b6b9dbaeaf0c4
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402585
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/mfd/stm32-lptimer.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mfd/stm32-lptimer.c b/drivers/mfd/stm32-lptimer.c
+index 744e39f22c11..9fc94122ffb2 100644
+--- a/drivers/mfd/stm32-lptimer.c
++++ b/drivers/mfd/stm32-lptimer.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #define STM32_LPTIM_MAX_REGISTER	0x3fc
+ 
+@@ -114,6 +115,10 @@ static int stm32_lptimer_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, ddata);
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return ret;
++
+ 	return devm_of_platform_populate(&pdev->dev);
+ }
+ 
+-- 
+2.39.5
+

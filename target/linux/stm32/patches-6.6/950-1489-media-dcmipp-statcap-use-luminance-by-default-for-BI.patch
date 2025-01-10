@@ -1,0 +1,39 @@
+From f6a5a84cd1fc7d2d9b86e0de26b70bdfcc399a15 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 2 Oct 2024 17:15:24 +0200
+Subject: [PATCH] media: dcmipp: statcap: use luminance by default for BINS
+
+By default use the luminance value when processing BINS.  This
+value can later on be changed by the application by using the
+ctrl V4L2_CID_ISP_STAT_BIN_COMP.
+
+Change-Id: I019fbe1fee2b0eac70e4cda73054b85f799e35e0
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408596
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index fddc8b637db1..50e52758ac26 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -537,7 +537,7 @@ static const struct v4l2_ctrl_config dcmipp_statcap_ctrls[] = {
+ 		.min	= 0,
+ 		.max	= V4L2_STAT_BIN_COMP_L,
+ 		.step	= 1,
+-		.def	= 0,
++		.def	= V4L2_STAT_BIN_COMP_L,
+ 		.flags	= 0,
+ 	}, {
+ 		.ops	= &dcmipp_statcap_ctrl_ops,
+-- 
+2.39.5
+

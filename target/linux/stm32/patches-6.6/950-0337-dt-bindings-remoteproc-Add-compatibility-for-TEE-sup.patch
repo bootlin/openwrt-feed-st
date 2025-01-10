@@ -1,0 +1,108 @@
+From d6eff12f5a396c53ebe073bdaff543519f4bc427 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 2 Sep 2020 11:17:37 +0200
+Subject: [PATCH] dt-bindings: remoteproc: Add compatibility for TEE support
+
+The "st,stm32mp1-m4-tee" compatible is utilized in a system configuration
+where the Cortex-M4 firmware is loaded by the Trusted execution Environment
+(TEE).
+For instance, this compatible is used in both the Linux and OP-TEE
+device-tree:
+- In OP-TEE, a node is defined in the device tree with the
+  st,stm32mp1-m4-tee to support signed remoteproc firmware.
+  Based on DT properties, OP-TEE authenticates, loads, starts, and stops
+  the firmware.
+- On Linux, when the compatibility is set, the Cortex-M resets should not
+  be declared in the device tree.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ .../bindings/remoteproc/st,stm32-rproc.yaml   | 52 +++++++++++++++----
+ 1 file changed, 43 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index 370af61d8f28..6af821b15736 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -16,7 +16,12 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32mp1-m4
++    enum:
++      - st,stm32mp1-m4
++      - st,stm32mp1-m4-tee
++    description:
++      Use "st,stm32mp1-m4" for the Cortex-M4 coprocessor management by non-secure context
++      Use "st,stm32mp1-m4-tee" for the Cortex-M4 coprocessor management by secure context
+ 
+   reg:
+     description:
+@@ -142,21 +147,40 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - resets
+ 
+ allOf:
+   - if:
+       properties:
+-        reset-names:
+-          not:
+-            contains:
+-              const: hold_boot
++        compatible:
++          contains:
++            const: st,stm32mp1-m4
++    then:
++      if:
++        properties:
++          reset-names:
++            not:
++              contains:
++                const: hold_boot
++      then:
++        required:
++          - st,syscfg-holdboot
++          - resets
++      else:
++        properties:
++          st,syscfg-holdboot: false
++        required:
++          - resets
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: st,stm32mp1-m4-tee
+     then:
+-      required:
+-        - st,syscfg-holdboot
+-    else:
+       properties:
+         st,syscfg-holdboot: false
++        reset-names: false
++        resets: false
+ 
+ additionalProperties: false
+ 
+@@ -188,5 +212,15 @@ examples:
+       st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+       st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+     };
++  - |
++    #include <dt-bindings/reset/stm32mp1-resets.h>
++    m4@10000000 {
++      compatible = "st,stm32mp1-m4-tee";
++      reg = <0x10000000 0x40000>,
++            <0x30000000 0x40000>,
++            <0x38000000 0x10000>;
++      st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
++      st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
++    };
+ 
+ ...
+-- 
+2.39.5
+

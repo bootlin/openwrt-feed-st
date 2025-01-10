@@ -1,0 +1,42 @@
+From 24761d566965fcd8952d324e153b78638bbbf497 Mon Sep 17 00:00:00 2001
+From: Ram Dayal <ram.dayal@st.com>
+Date: Wed, 18 Sep 2024 10:22:13 +0200
+Subject: [PATCH] arm64: dts: st: Add node for on-board hub connected on
+ stm32mp257f-dk
+
+It's a High-Speed USB Hub, used on the USBH port. So add it as a child
+of the USBH EHCI (High Speed controller) DT node.
+
+Change-Id: Id315445f93568bd33df424c8932e337155cc2c6e
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/405253
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index c3cfb5ad0198..7ceef18c72c9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -859,6 +859,17 @@ &usb2_phy2 {
+ &usbh {
+ 	status = "okay";
+ 
++	usbh_ehci: usb@482f0000 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		/* onboard HUB */
++		hub@1 {
++			compatible = "usb424,2514";
++			reg = <1>;
++			vdd-supply = <&scmi_v3v3>;
++		};
++	};
++
+ 	usbh_ohci: usb@482e0000 {
+ 		status = "disabled";
+ 	};
+-- 
+2.39.5
+

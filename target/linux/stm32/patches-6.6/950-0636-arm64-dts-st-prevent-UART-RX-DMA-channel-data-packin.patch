@@ -1,0 +1,106 @@
+From a925b0ea46d22d0104c59c975acd547546ad85ba Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 12 Dec 2022 15:47:36 +0100
+Subject: [PATCH] arm64: dts: st: prevent UART RX DMA channel data packing on
+ stm32mp251
+
+To avoid potential bytes lost when stopping UART RX DMA channel, prevent
+data packing.
+Memory accesses will be penalized. But it is the only way to avoid bytes
+lost.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: I3edec5448a0a90d3d9983885ff2a223cf4cbed99
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 9617049339c4..03bc70402159 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -302,6 +302,9 @@ usart2: serial@400e0000 {
+ 				reg = <0x400e0000 0x400>;
+ 				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART2>;
++				dmas = <&hpdma 11 0x20 0x10012>,
++				       <&hpdma 12 0x20 0x3021>;
++				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 32>;
+ 				status = "disabled";
+ 			};
+@@ -311,7 +314,7 @@ usart3: serial@400f0000 {
+ 				reg = <0x400f0000 0x400>;
+ 				interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART3>;
+-				dmas = <&hpdma 13 0x20 0x12>,
++				dmas = <&hpdma 13 0x20 0x10012>,
+ 				       <&hpdma 14 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 33>;
+@@ -323,7 +326,7 @@ uart4: serial@40100000 {
+ 				reg = <0x40100000 0x400>;
+ 				interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART4>;
+-				dmas = <&hpdma 15 0x20 0x12>,
++				dmas = <&hpdma 15 0x20 0x10012>,
+ 				       <&hpdma 16 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 34>;
+@@ -335,7 +338,7 @@ uart5: serial@40110000 {
+ 				reg = <0x40110000 0x400>;
+ 				interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART5>;
+-				dmas = <&hpdma 17 0x20 0x12>,
++				dmas = <&hpdma 17 0x20 0x10012>,
+ 				       <&hpdma 18 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 35>;
+@@ -459,7 +462,7 @@ usart6: serial@40220000 {
+ 				reg = <0x40220000 0x400>;
+ 				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART6>;
+-				dmas = <&hpdma 19 0x20 0x12>,
++				dmas = <&hpdma 19 0x20 0x10012>,
+ 				       <&hpdma 20 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 36>;
+@@ -516,7 +519,7 @@ uart9: serial@402c0000 {
+ 				reg = <0x402c0000 0x400>;
+ 				interrupts = <GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART9>;
+-				dmas = <&hpdma 25 0x20 0x12>,
++				dmas = <&hpdma 25 0x20 0x10012>,
+ 				       <&hpdma 26 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 39>;
+@@ -528,7 +531,7 @@ usart1: serial@40330000 {
+ 				reg = <0x40330000 0x400>;
+ 				interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART1>;
+-				dmas = <&hpdma 9 0x20 0x12>,
++				dmas = <&hpdma 9 0x20 0x10012>,
+ 				       <&hpdma 10 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 31>;
+@@ -570,7 +573,7 @@ uart7: serial@40370000 {
+ 				reg = <0x40370000 0x400>;
+ 				interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART7>;
+-				dmas = <&hpdma 21 0x20 0x12>,
++				dmas = <&hpdma 21 0x20 0x10012>,
+ 				       <&hpdma 22 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 37>;
+@@ -582,7 +585,7 @@ uart8: serial@40380000 {
+ 				reg = <0x40380000 0x400>;
+ 				interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART8>;
+-				dmas = <&hpdma 23 0x20 0x12>,
++				dmas = <&hpdma 23 0x20 0x10012>,
+ 				       <&hpdma 24 0x20 0x3021>;
+ 				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 38>;
+-- 
+2.39.5
+

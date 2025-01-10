@@ -1,0 +1,99 @@
+From ff90679ca206e1bf0aada242e45ecbac4fe2cd89 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 29 May 2024 11:14:59 +0200
+Subject: [PATCH] iio: adc: stm32-mdf: add extended channel info for audio
+
+In the case of interleaved mode the number of audio channels exposed by
+the device is in the range [2..n], where n in the total number of filters
+provided by the MDF peripheral.
+Add the extended channel info attribute "sub_channels_nb", to allow the
+iio channel consumer, to retrieve the number of channels supported by
+the audio devices.
+
+Change-Id: I60dbff8a2e30855ca401c0766ad10159082a216c
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383790
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/iio/adc/stm32-mdf-adc.c       | 28 +++++++++++++++++++++++++++
+ include/linux/iio/adc/stm32-mdf-adc.h |  9 ++++++++-
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index 36cd7f7355c0..5b6320d41b7f 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -984,6 +984,31 @@ static const struct iio_buffer_setup_ops stm32_mdf_buffer_setup_ops = {
+ 	.predisable = &stm32_mdf_adc_predisable,
+ };
+ 
++static ssize_t stm32_mdf_adc_audio_get_channels(struct iio_dev *indio_dev, uintptr_t priv,
++						const struct iio_chan_spec *chan, char *buf)
++{
++	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	unsigned int sub_channels_nb = 1;
++
++	if (MDF_IS_FILTER0(adc) && adc->mdf->nb_interleave)
++		sub_channels_nb = adc->mdf->nb_interleave;
++
++	return snprintf(buf, STM32_MDF_EXT_INFO_BUZ_SZ, "%u", sub_channels_nb);
++}
++
++/*
++ * IIO channel extended info used by the audio device IIO channel consumer.
++ * sub_channels_nb: provides the number of audio channels associated to the IIO channel.
++ */
++static const struct iio_chan_spec_ext_info stm32_mdf_adc_audio_ext_info[] = {
++	{
++		.name = "sub_channels_nb",
++		.shared = IIO_SHARED_BY_TYPE,
++		.read = stm32_mdf_adc_audio_get_channels,
++	},
++	{},
++};
++
+ static void stm32_mdf_dma_release(struct iio_dev *indio_dev)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
+@@ -1044,6 +1069,9 @@ static int stm32_mdf_adc_chan_init_one(struct iio_dev *indio_dev, struct fwnode_
+ 		}
+ 	}
+ 
++	if (adc->dev_data->type == STM32_MDF_AUDIO)
++		ch->ext_info = stm32_mdf_adc_audio_ext_info;
++
+ 	ch->type = IIO_VOLTAGE;
+ 	ch->indexed = 1;
+ 	ch->scan_index = idx;
+diff --git a/include/linux/iio/adc/stm32-mdf-adc.h b/include/linux/iio/adc/stm32-mdf-adc.h
+index b4b4d078a2a8..64adb71e80be 100644
+--- a/include/linux/iio/adc/stm32-mdf-adc.h
++++ b/include/linux/iio/adc/stm32-mdf-adc.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+- * This file discribe the STM32 MDF IIO driver API for audio part
++ * This file describe the STM32 MDF IIO driver API for audio part
+  *
+  * Copyright (C) 2023, STMicroelectronics.
+  * Author(s): Olivier Moysan <olivier.moysan@foss.st.com>.
+@@ -11,6 +11,13 @@
+ 
+ #include <linux/iio/iio.h>
+ 
++/*
++ * Size of the buffer used to read IIO channel extended info.
++ * "sub_channels_nb" info maximum value corresponds to the MDF filter number.
++ * Use 3 bytes for 2 digit numbers plus the null trailing character.
++ */
++#define STM32_MDF_EXT_INFO_BUZ_SZ 3
++
+ int stm32_mdf_get_buff_cb(struct iio_dev *iio_dev,
+ 			  int (*cb)(const void *data, size_t size, void *private), void *private);
+ int stm32_mdf_release_buff_cb(struct iio_dev *iio_dev);
+-- 
+2.39.5
+

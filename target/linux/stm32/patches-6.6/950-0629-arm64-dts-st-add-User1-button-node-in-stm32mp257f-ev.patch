@@ -1,0 +1,46 @@
+From 7ac8c818472778f885bf8405069deb70b2a0eb8d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 26 May 2023 12:14:54 +0200
+Subject: [PATCH] arm64: dts: st: add User1 button node in stm32mp257f-ev1
+
+Add the gpio-keys node for the 'User1' button on the stm32mp257f-ev1 board.
+
+Change-Id: I9370b9d27dd6aa4552ea61428538084c4e241386
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index cd282e70c74c..c3b4901b41e1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
+ #include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/st,stm32mp25-regulator.h>
+ #include "stm32mp257.dtsi"
+@@ -37,6 +38,17 @@ pad_clk: pad-clk {
+ 		};
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		button-user-1 {
++			label = "User-1";
++			linux,code = <BTN_1>;
++			gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++	};
++
+ 	gpio-leds {
+ 		compatible = "gpio-leds";
+ 
+-- 
+2.39.5
+

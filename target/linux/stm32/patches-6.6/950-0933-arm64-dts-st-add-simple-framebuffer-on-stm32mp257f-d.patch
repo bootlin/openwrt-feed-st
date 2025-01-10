@@ -1,0 +1,41 @@
+From 1c62150ee1d08c44b167c47e0865f74644bbaa35 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 9 Jan 2024 08:52:17 +0100
+Subject: [PATCH] arm64: dts: st: add simple-framebuffer on stm32mp257f-dk
+ board
+
+Implement a node dedicated to the handling of a simple-framebuffer
+through the boot stages.
+
+Change-Id: Ic67ba46bad24a3a15a84754dcedef9846c2c7e4b
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/349889
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372053
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index eb3dd0ced539..2e208042228c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -29,6 +29,14 @@ aliases {
+ 
+ 	chosen {
+ 		stdout-path = "serial0:115200n8";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		framebuffer {
++			compatible = "simple-framebuffer";
++			status = "disabled";
++		};
+ 	};
+ 
+ 	clocks {
+-- 
+2.39.5
+

@@ -1,0 +1,53 @@
+From 77a4815f42480811cd60acc23bc25f43827d160b Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore@foss.st.com>
+Date: Wed, 2 Oct 2024 14:19:32 +0200
+Subject: [PATCH] arm64: dts: st: Add property in ADC node to manage trigger
+ diversity on stm32mp23
+
+Add a property in ADC nodes to permit to make difference between ADC
+devices and choose the correct trigger configuration to apply.
+
+Change-Id: I9afc6fd8281cb2d3f6a2a2fbe8948a42745c913c
+Signed-off-by: Cheick Traore <cheick.traore@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408461
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index b9322a66e8b0..09f81d5dcc4c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -1535,6 +1535,7 @@ adc1: adc@0 {
+ 					#size-cells = <0>;
+ 					nvmem-cells = <&vrefint>;
+ 					nvmem-cell-names = "vrefint";
++					st,adc-trigger-sel = <0>;
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+@@ -1554,6 +1555,7 @@ adc2: adc@100 {
+ 					#size-cells = <0>;
+ 					nvmem-cells = <&vrefint>;
+ 					nvmem-cell-names = "vrefint";
++					st,adc-trigger-sel = <0>;
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+@@ -1680,6 +1682,7 @@ adc3: adc@0 {
+ 					#size-cells = <0>;
+ 					nvmem-cells = <&vrefint>;
+ 					nvmem-cell-names = "vrefint";
++					st,adc-trigger-sel = <1>;
+ 					status = "disabled";
+ 					channel@14 {
+ 						reg = <14>;
+-- 
+2.39.5
+

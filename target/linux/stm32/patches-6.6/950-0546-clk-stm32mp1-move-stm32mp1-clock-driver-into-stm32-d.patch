@@ -1,0 +1,111 @@
+From 1fed6a0a274325fac7df2d26990101bd8763b1bb Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Fri, 8 Dec 2023 15:36:56 +0100
+Subject: [PATCH] clk: stm32mp1: move stm32mp1 clock driver into stm32
+ directory
+
+Move all STM32MP clock drivers into same directory (stm32).
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Link: https://lore.kernel.org/r/20231208143700.354785-2-gabriel.fernandez@foss.st.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/clk/Kconfig                    | 11 +---------
+ drivers/clk/Makefile                   |  1 -
+ drivers/clk/stm32/Kconfig              | 29 ++++++++++++++++++++++++++
+ drivers/clk/stm32/Makefile             |  1 +
+ drivers/clk/{ => stm32}/clk-stm32mp1.c |  0
+ 5 files changed, 31 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/clk/stm32/Kconfig
+ rename drivers/clk/{ => stm32}/clk-stm32mp1.c (100%)
+
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index c30099866174..693e3ab14c89 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -405,16 +405,6 @@ config COMMON_CLK_VC7
+ 	  Renesas Versaclock7 is a family of configurable clock generator
+ 	  and jitter attenuator ICs with fractional and integer dividers.
+ 
+-config COMMON_CLK_STM32MP135
+-	def_bool COMMON_CLK && MACH_STM32MP13
+-	help
+-	  Support for stm32mp135 SoC family clocks
+-
+-config COMMON_CLK_STM32MP157
+-	def_bool COMMON_CLK && MACH_STM32MP157
+-	help
+-	  Support for stm32mp157 SoC family clocks
+-
+ config COMMON_CLK_STM32F
+ 	def_bool COMMON_CLK && (MACH_STM32F429 || MACH_STM32F469 || MACH_STM32F746)
+ 	help
+@@ -495,6 +485,7 @@ source "drivers/clk/starfive/Kconfig"
+ source "drivers/clk/sunxi/Kconfig"
+ source "drivers/clk/sunxi-ng/Kconfig"
+ source "drivers/clk/tegra/Kconfig"
++source "drivers/clk/stm32/Kconfig"
+ source "drivers/clk/ti/Kconfig"
+ source "drivers/clk/uniphier/Kconfig"
+ source "drivers/clk/visconti/Kconfig"
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 18969cbd4bb1..7ba05060ed7f 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -69,7 +69,6 @@ obj-$(CONFIG_COMMON_CLK_SI570)		+= clk-si570.o
+ obj-$(CONFIG_COMMON_CLK_SP7021)		+= clk-sp7021.o
+ obj-$(CONFIG_COMMON_CLK_STM32F)		+= clk-stm32f4.o
+ obj-$(CONFIG_COMMON_CLK_STM32H7)	+= clk-stm32h7.o
+-obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
+ obj-$(CONFIG_COMMON_CLK_TPS68470)      += clk-tps68470.o
+ obj-$(CONFIG_CLK_TWL6040)		+= clk-twl6040.o
+ obj-$(CONFIG_ARCH_VT8500)		+= clk-vt8500.o
+diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
+new file mode 100644
+index 000000000000..3c8493a94a11
+--- /dev/null
++++ b/drivers/clk/stm32/Kconfig
+@@ -0,0 +1,29 @@
++# SPDX-License-Identifier: GPL-2.0-only
++# common clock support for STMicroelectronics SoC family.
++
++menuconfig COMMON_CLK_STM32MP
++	bool "Clock support for common STM32MP clocks"
++	depends on ARCH_STM32 || COMPILE_TEST
++	default y
++	select RESET_CONTROLLER
++	help
++	  Support for STM32MP SoC family clocks.
++
++if COMMON_CLK_STM32MP
++
++config COMMON_CLK_STM32MP135
++	bool "Clock driver for stm32mp13x clocks"
++	depends on ARM || COMPILE_TEST
++	default y
++	help
++	  Support for stm32mp13x SoC family clocks.
++
++config COMMON_CLK_STM32MP157
++	bool "Clock driver for stm32mp15x clocks"
++	depends on ARM || COMPILE_TEST
++	default y
++	help
++	  Support for stm32mp15x SoC family clocks.
++
++endif
++
+diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
+index 95bd2230bba0..c154ef3e88f9 100644
+--- a/drivers/clk/stm32/Makefile
++++ b/drivers/clk/stm32/Makefile
+@@ -1 +1,2 @@
+ obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
++obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
+diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
+similarity index 100%
+rename from drivers/clk/clk-stm32mp1.c
+rename to drivers/clk/stm32/clk-stm32mp1.c
+-- 
+2.39.5
+

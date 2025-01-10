@@ -1,0 +1,41 @@
+From ad2c87544f9d3992d68fceb60ed0fa702c3d25cd Mon Sep 17 00:00:00 2001
+From: Stephane Danieau <stephane.danieau@st.com>
+Date: Wed, 2 Oct 2024 14:02:37 +0200
+Subject: [PATCH] arm64: dts: st: add ddrperfm on stm32mp23
+
+The ddrperfm is the DDR Performance Monitor.
+
+Change-Id: Ifa42d55e2dbb5dc08cb950575b90be918784c759
+Signed-off-by: Stephane Danieau <stephane.danieau@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408441
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index d8135f371a54..5b097d549b66 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -2662,6 +2662,13 @@ exti2: interrupt-controller@46230000 {
+ 				<&intc GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;	/* EXTI_70 */
+ 		};
+ 
++		ddrperfm: perf@48041000 {
++			compatible = "st,stm32mp25-ddr-pmu";
++			reg = <0x48041000 0x400>;
++			access-controllers = <&rcc 104>;
++			status = "disabled";
++		};
++
+ 		fmc: memory-controller@48200000 {
+ 			compatible = "st,stm32mp25-fmc2-ebi";
+ 			reg = <0x48200000 0x400>;
+-- 
+2.39.5
+

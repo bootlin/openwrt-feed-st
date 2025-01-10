@@ -1,0 +1,32 @@
+From 056b2de2f7e737ec3ad3237acc6b4ffa0392e6d2 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Wed, 16 Oct 2024 17:16:36 +0200
+Subject: [PATCH] dt-bindings: pinctrl: stm32: add support for stm32mp235
+
+Add the compatibles st,stm32mp235-pinctrl and st,stm32mp235-z-pinctrl.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia3dfc678b4a9ec715244f86481d72aee5455fdd3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411861
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+index 5d4e3cc812dd..b3222e6b6f00 100644
+--- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+@@ -29,6 +29,8 @@ properties:
+       - st,stm32mp157-z-pinctrl
+       - st,stm32mp215-pinctrl
+       - st,stm32mp215-z-pinctrl
++      - st,stm32mp235-pinctrl
++      - st,stm32mp235-z-pinctrl
+       - st,stm32mp257-pinctrl
+       - st,stm32mp257-z-pinctrl
+ 
+-- 
+2.39.5
+

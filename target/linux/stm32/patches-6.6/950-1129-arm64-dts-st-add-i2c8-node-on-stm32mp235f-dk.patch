@@ -1,0 +1,43 @@
+From c501991c33f32e93524e5285f4f8a68b5bfbf031 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 21:24:25 +0200
+Subject: [PATCH] arm64: dts: st: add i2c8 node on stm32mp235f-dk
+
+Add the i2c8 node in order to enable the i2c8 on stm32mp235f
+discovery board.
+
+Change-Id: Icb160aae669d062df108e166f4d0165caff0f3ab
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381861
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+index 2c01587259c9..f89ccbf78f36 100644
+--- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+@@ -128,6 +128,17 @@ imx335_ep: endpoint {
+ 	};
+ };
+ 
++&i2c8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c8_pins_a>;
++	pinctrl-1 = <&i2c8_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <185>;
++	i2c-scl-falling-time-ns = <20>;
++	clock-frequency = <100000>;
++	status = "disabled";
++	/* spare dmas for other usage */
++	/delete-property/dmas;
++	/delete-property/dma-names;
+ };
+ 
+ &scmi_regu {
+-- 
+2.39.5
+

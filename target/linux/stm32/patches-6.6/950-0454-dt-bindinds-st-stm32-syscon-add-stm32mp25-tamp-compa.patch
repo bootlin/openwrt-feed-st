@@ -1,0 +1,37 @@
+From 8bb95b53d31c98ce0663b52597969c13bc35f8a1 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 25 Aug 2023 09:24:52 +0200
+Subject: [PATCH] dt-bindinds: st,stm32-syscon: add stm32mp25 tamp compatible
+
+TAMP address space differs from st,stm32-tamp (for STM32MP15 and
+STM32MP13) for STM32MP25. It will be used for st,stm32mp25-tamp-nvram
+driver
+
+Change-Id: Iee8276ac2b2dd87473714d928c5c087b8a207724
+(cherry picked from commit c1741fe6aae6b2332381e1fa24d4b6274b265217)
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml        | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 106fe7705fa3..59b06605d447 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -18,10 +18,12 @@ properties:
+               - st,stm32-power-config
+               - st,stm32-syscfg
+               - st,stm32-tamp
++              - st,stm32mp25-tamp
+               - st,stm32f4-gcan
+               - st,stm32mp151-pwr-mcu
+               - st,stm32mp157-syscfg
+-              - st,stm32mp25-syscfg
++              - st,stm32mp25-syscfg              
++
+               - st,stm32mp25-a35ssc-m33
+           - const: syscon
+       - items:
+-- 
+2.39.5
+

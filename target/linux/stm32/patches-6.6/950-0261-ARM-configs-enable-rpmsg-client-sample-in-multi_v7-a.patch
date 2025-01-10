@@ -1,0 +1,31 @@
+From 369c07a8d88d18d36c23aff804441a121424e1c0 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Mon, 21 Oct 2019 14:46:29 +0200
+Subject: [PATCH] ARM: configs: enable rpmsg client sample in multi_v7 addons
+ fragment
+
+Enable rpmsg client sample.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283868
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: Id0dfab21a140243bcd31a794418a71c0a604c8a5
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 902eb69a10ba..71fe9f46e581 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -35,6 +35,8 @@ CONFIG_RPMSG_CHAR=m
+ CONFIG_RPMSG_CTRL=m
+ CONFIG_RPMSG_TTY=m
+ CONFIG_RPMSG_VIRTIO=y
++CONFIG_SAMPLES=y
++CONFIG_SAMPLE_RPMSG_CLIENT=m
+ CONFIG_SCHED_MC=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+-- 
+2.39.5
+

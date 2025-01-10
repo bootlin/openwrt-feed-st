@@ -1,0 +1,42 @@
+From a5e878048fb657adbd6cc716995fcb0f9c4a5c9e Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 9 Dec 2022 17:34:36 +0100
+Subject: [PATCH] ARM: dts: stm32: add link between panel & touchscreen in
+ stm32mp157c-dk2 board
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Make sure that panel is suspended after ft6x36 touchscreen and
+resumed before it.
+
+Signed-off-by: Yannick Fertré <yannick.fertre@st.com>
+Change-Id: Iff7ad9028aec980cb41f5fe8a70cda72b32af6a7
+---
+ arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+index ab025098fa34..fc306b9f99b0 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+@@ -37,7 +37,7 @@ &dsi {
+ 	#size-cells = <0>;
+ 	status = "okay";
+ 
+-	panel@0 {
++	panel_otm8009a: panel-otm8009a@0 {
+ 		compatible = "orisetech,otm8009a";
+ 		reg = <0>;
+ 		reset-gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
+@@ -70,6 +70,7 @@ touchscreen@38 {
+ 		touchscreen-size-y = <800>;
+ 		vcc-supply = <&v3v3>;
+ 		iovcc-supply = <&v3v3>;
++		panel = <&panel_otm8009a>;
+ 		status = "okay";
+ 	};
+ };
+-- 
+2.39.5
+

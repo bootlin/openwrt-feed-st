@@ -1,0 +1,43 @@
+From 92f266d9d35396574d1274d1b3053c877b6e4a80 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Wed, 24 Jul 2024 16:08:21 +0200
+Subject: [PATCH] firmware: arm_scmi: fix voltage description in failure cases
+
+Reset the reception buffer max size when a voltage domain description
+request fails, for example when the voltage domain returns an access
+permission error (SCMI_ERR_ACCESS) unless what only a single 32bit
+word is read back for the remaining voltage description requests
+responses leading to invalid information. The side effect of this
+issue is that the voltage regulators registered from those remaining
+SCMI voltage domain were assigned a wrong regulator name.
+
+Change-Id: Ib6021b77ea99cf28c5e5360b4ed58efd6885083d
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/394997
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/firmware/arm_scmi/voltage.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
+index eaa8d944926a..11ace7447c8b 100644
+--- a/drivers/firmware/arm_scmi/voltage.c
++++ b/drivers/firmware/arm_scmi/voltage.c
+@@ -226,8 +226,10 @@ static int scmi_voltage_descriptors_get(const struct scmi_protocol_handle *ph,
+ 		/* Retrieve domain attributes at first ... */
+ 		put_unaligned_le32(dom, td->tx.buf);
+ 		/* Skip domain on comms error */
+-		if (ph->xops->do_xfer(ph, td))
++		if (ph->xops->do_xfer(ph, td)) {
++			ph->xops->reset_rx_to_maxsz(ph, td);
+ 			continue;
++		}
+ 
+ 		v = vinfo->domains + dom;
+ 		v->id = dom;
+-- 
+2.39.5
+

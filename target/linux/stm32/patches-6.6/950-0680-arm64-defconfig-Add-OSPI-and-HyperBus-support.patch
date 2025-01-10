@@ -1,0 +1,49 @@
+From 00109a7b39fd8707edc41773a99c72df8ef6cc09 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 12 May 2023 13:58:26 +0200
+Subject: [PATCH] arm64: defconfig: Add OSPI and HyperBus support
+
+Enable OSPI and HyperBus relative flags.
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ia19df7417af4b8f8a427f3dd91adbb9485e0c990
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/307843
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 4f60ee05227f..e9820f84da47 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -10,6 +10,7 @@ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+ CONFIG_MTD_NAND_STM32_FMC2=y
++CONFIG_MTD_HYPERBUS=y
+ CONFIG_MTD_UBI=y
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_OF_OVERLAY=y
+@@ -25,6 +26,7 @@ CONFIG_SND_SOC_STM32_SAI=m
+ CONFIG_SND_SOC_STM32_SPDIFRX=m
+ CONFIG_SND_SOC_WM8994=m
+ CONFIG_SPI_STM32=m
++CONFIG_SPI_STM32_OSPI=y
+ CONFIG_STM32_ADC=m
+ CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_DMA3=y
+@@ -36,6 +38,8 @@ CONFIG_STM32_LPTIMER_CNT=m
+ CONFIG_STM32_TIMER_CNT=m
+ CONFIG_TEE_REMOTEPROC=y
+ CONFIG_UBIFS_FS=y
++CONFIG_STM32_HYPERBUS=y
++CONFIG_STM32_OMI=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+-- 
+2.39.5
+

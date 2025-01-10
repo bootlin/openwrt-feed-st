@@ -1,0 +1,28 @@
+From 349790e11d543c81668fbca2d24b2d5a50d70489 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Fri, 1 Sep 2023 15:52:57 +0200
+Subject: [PATCH] PCI/AER: export pci_aer_available
+
+pci_aer_available() can be used in stm32_pcie.c built as a module.
+
+Change-Id: I7f1076dfe1d1f2e40530f8d3ab85b6d0bc7b888d
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+---
+ drivers/pci/pcie/aer.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index c9afe4362835..241a27613974 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -119,6 +119,7 @@ bool pci_aer_available(void)
+ {
+ 	return !pcie_aer_disable && pci_msi_enabled();
+ }
++EXPORT_SYMBOL_GPL(pci_aer_available);
+ 
+ #ifdef CONFIG_PCIE_ECRC
+ 
+-- 
+2.39.5
+

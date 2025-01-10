@@ -1,0 +1,53 @@
+From 96edb5f6887c6f1b71f74cff671752792287e7ae Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Wed, 24 Apr 2024 14:14:40 +0200
+Subject: [PATCH] arm64: dts: st: add memory mapping for Cortex-M0 cube
+ firmware
+
+Define memories region used by Cortex-M0.
+
+Change-Id: I7f3daa412ec27a724891f1e7d0ea6f1826413ac6
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/376628
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ .../st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi   | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi b/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
+index fba1febc6efb..58266b81c7cf 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
+@@ -62,6 +62,24 @@ ddr_param: ddr-param@a09f000 {
+ 			no-map;
+ 		};
+ 
++		cm0_cube_fw: cm0-cube-fw@200C0000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0x200C0000 0x0 0x4000>;
++			no-map;
++		};
++
++		cm0_cube_data: cm0-cube-data@200C4000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0x200C4000 0x0 0x2000>;
++			no-map;
++		};
++
++		ipc_shmem_2: ipc-shmem-2@200C6000{
++			compatible = "shared-dma-pool";
++			reg = <0x0 0x200C6000 0x0 0x2000>;
++			no-map;
++		};
++
+ 		/* Backup RAM reserved memory declaration */
+ 		bl31_lowpower: bl31-lowpower@42000000 {
+ 			reg = <0x0 0x42000000 0x0 0x1000>;
+-- 
+2.39.5
+

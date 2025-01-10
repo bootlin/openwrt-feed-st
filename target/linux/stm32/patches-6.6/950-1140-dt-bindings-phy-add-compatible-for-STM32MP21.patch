@@ -1,0 +1,39 @@
+From 24a766ff48c18aa0b06ab1aa00d33fca470cf7fa Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Mon, 13 May 2024 15:39:48 +0530
+Subject: [PATCH] dt-bindings: phy: add compatible for STM32MP21
+
+Introduced compatible st,stm32mp21-usb2phy here to address the
+diversity on STM32MP21:
+  PHY1 is connected to USBH
+  PHY2 is connceted to OTG.
+
+Change-Id: Ia431b460356f68813470a31f492565fd4fbd3866
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/378214
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
+index 2b2222e4af3b..348fda52d711 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
+@@ -17,7 +17,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32mp25-usb2phy
++    - enum:
++      - st,stm32mp21-usb2phy
++      - st,stm32mp25-usb2phy
+ 
+   "#phy-cells":
+     const: 0
+-- 
+2.39.5
+

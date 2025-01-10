@@ -1,0 +1,221 @@
+From 85c62f405738f0b60c3c114f01ef8220dda0b3bc Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 22 Aug 2024 09:43:32 +0200
+Subject: [PATCH] media: stm32: dcmipp: avoid calling s_stream if state already
+ correct
+
+Since introduction of commit
+(media: v4l2-subdev: Document and enforce .s_stream() requirements)
+the V4L2 framework enforce that subdev s_stream ops is not called
+if the subdev state is already in the state requested by s_stream.
+
+Drivers should now, depending on their configuration use following
+helper functions such below to handle streaming handling.
+	v4l2_subdev_s_stream_helper
+	v4l2_subdev_enable_streams
+	v4l2_subdev_disable_streams
+
+Subdevs only having a single source pad can directly use the
+v4l2_subdev_s_stream_helper, however for subdevs having multiple
+source pad (such as dcmipp_input), the helper can't be use (it would
+return an error for such subdevs) and proper stream_api (including
+streams pad ops) should be used.  Considering that, as of linux v6.6
+since api is still considered experimental and is disabled by default,
+solution is to replace direct calls of v4l2_subdev_call with a our
+helper function performing check of current state prior to calling
+the v4l2_subdev_call.
+dcmipp_s_stream_helper inline function is introduced for that purpose
+and all call to v4l2_subdev_call(..,s_stream,...) and replaced by
+a call to this helper.
+
+Change-Id: I4ab5695ae8e3694a9c3b75aace07a5db57404a5c
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/399727
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    |  2 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   |  4 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-common.h     | 39 +++++++++++++++++++
+ .../st/stm32/stm32-dcmipp/dcmipp-input.c      |  4 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        |  2 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   |  2 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  |  4 +-
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    |  2 +-
+ 8 files changed, 49 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 99ffc3843d93..b7eb9a05dfc2 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -364,7 +364,7 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+ 		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 	}
+ 
+-	ret = v4l2_subdev_call(vcap->s_subdev, video, s_stream, state);
++	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
+ 			state ? "start" : "stop", ret);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index 33e457f7ec30..b40eb956d52c 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -599,7 +599,7 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++		ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 		if (ret < 0) {
+ 			dev_err(byteproc->dev,
+ 				"failed to start source subdev streaming (%d)\n",
+@@ -607,7 +607,7 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 			return ret;
+ 		}
+ 	} else {
+-		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++		ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 		if (ret < 0) {
+ 			dev_err(byteproc->dev,
+ 				"failed to stop source subdev streaming (%d)\n",
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+index f03f6a5df5d5..763b2ea57518 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+@@ -236,6 +236,45 @@ static inline void __reg_clear(struct device *dev, void __iomem *base, u32 reg,
+ 	__reg_write(dev, base, reg, readl_relaxed(base + reg) & ~mask);
+ }
+ 
++/*
++ * Helper function to avoid calling s_stream if v4l2_subdev streaming state
++ * is already correct
++ * This helper is here temporarily while waiting to move to proper
++ * v4l2_subdev_stream_ functions
++ * The move isn't yet done since this would require a much larger rework such
++ * as implementing pad->enable_streams ops for subdev having multiple source
++ * pads (such as dcmipp_input).  Moreover the stream API is still considered
++ * as experimental as of linux v6.6
++ *
++ * This function reuse the enabled_streams counter within v4l2-subdev to count
++ * the number of users of a subdevice.  Below we need to use a local variable
++ * and not directly enabled_streams otherwise we would have v4l2_subdev_call
++ * complain that the value are already matching when enabling and disable the
++ * subdev.
++ */
++static inline int dcmipp_s_stream_helper(struct v4l2_subdev *sd, int state)
++{
++	u64 count = sd->enabled_streams;
++	int ret;
++
++	/*
++	 * If enabling, don't do anything if enabled_streams was already > 0
++	 * if disabling, don't do anything if decreamented enabled_streams is still > 0
++	 */
++	if ((state && count++) || (!state && --count)) {
++		sd->enabled_streams = count;
++		return 0;
++	}
++
++	ret = v4l2_subdev_call(sd, video, s_stream, state);
++	if (ret)
++		return ret;
++
++	sd->enabled_streams = count;
++
++	return 0;
++}
++
+ /* DCMIPP subdev init / release entry points */
+ struct dcmipp_ent_device *dcmipp_inp_ent_init(const char *entity_name,
+ 					      struct dcmipp_device *dcmipp);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+index a45d6ebbe865..389030fb826f 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
+@@ -484,7 +484,7 @@ static int dcmipp_inp_s_stream(struct v4l2_subdev *sd, int enable)
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++		ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 		if (ret < 0) {
+ 			dev_err(inp->dev,
+ 				"failed to start source subdev streaming (%d)\n",
+@@ -492,7 +492,7 @@ static int dcmipp_inp_s_stream(struct v4l2_subdev *sd, int enable)
+ 			return ret;
+ 		}
+ 	} else {
+-		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++		ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 		if (ret < 0) {
+ 			dev_err(inp->dev,
+ 				"failed to stop source subdev streaming (%d)\n",
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index c5b64e2fd4c6..2edd44340e08 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -593,7 +593,7 @@ static int dcmipp_isp_s_stream(struct v4l2_subdev *sd, int enable)
+ 			return 0;
+ 	}
+ 
+-	ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++	ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 	if (ret < 0) {
+ 		dev_err(isp->dev,
+ 			"failed to start source subdev streaming (%d)\n", ret);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index 020021ab828b..7609ef26bf5a 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -480,7 +480,7 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_pixelcap_device *vcap,
+ 		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 	}
+ 
+-	ret = v4l2_subdev_call(vcap->s_subdev, video, s_stream, state);
++	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
+ 			state ? "start" : "stop", ret);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index b8d5156b420b..6d5940cf42a1 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -1050,7 +1050,7 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 	s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 
+ 	if (!enable) {
+-		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++		ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 		if (ret < 0)
+ 			dev_err(pixelproc->dev,
+ 				"failed to stop source subdev streaming (%d)\n",
+@@ -1096,7 +1096,7 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+ 		return ret;
+ 	}
+ 
+-	ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
++	ret = dcmipp_s_stream_helper(s_subdev, enable);
+ 	if (ret < 0) {
+ 		dev_err(pixelproc->dev,
+ 			"failed to start source subdev streaming (%d)\n", ret);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 6016ea30fb00..b84ee2fdcc34 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -199,7 +199,7 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_statcap_device *vcap,
+ 		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 	}
+ 
+-	ret = v4l2_subdev_call(vcap->s_subdev, video, s_stream, state);
++	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
+ 			state ? "start" : "stop", ret);
+-- 
+2.39.5
+

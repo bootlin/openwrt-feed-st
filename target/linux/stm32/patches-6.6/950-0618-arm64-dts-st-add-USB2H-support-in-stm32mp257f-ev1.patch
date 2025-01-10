@@ -1,0 +1,35 @@
+From 13ace4b658b6042a5b944724e58195ca7707795b Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Wed, 23 Nov 2022 20:22:58 +0530
+Subject: [PATCH] arm64: dts: st: add USB2H support in stm32mp257f-ev1
+
+Add the required node(s) for USB2Host support : USB2H
+
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+Change-Id: I522633f2ad3a3dd4c68500febac99d1871da083b
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 6dfe4ced4b19..6c5b823b0fdc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -115,6 +115,14 @@ &usb2_phy2 {
+ 	status = "okay";
+ };
+ 
++&usbh {
++	status = "okay";
++
++	usbh_ohci: usb@482e0000 {
++		status = "disabled";
++	};
++};
++
+ &usb3dr {
+ 	status = "okay";
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,42 @@
+From e29fe58b73a1ee57488f701602e779f7d7cbc222 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Fri, 24 May 2024 14:13:35 +0530
+Subject: [PATCH] arm64: dts: st: add usb2phy support on stm32mp21
+
+Update device-tree stm32mp211.dtsi to add usb2phy features.
+USB2PHY2 is for the OTG controller
+
+Change-Id: If8dc5d748f03c53717cb9b0b81309a67c604a0a6
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381993
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 119e39f1cc31..d5ebe0b3745c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -135,6 +135,15 @@ usb2_phy1: usb2-phy1 {
+ 		status          = "disabled";
+ 	};
+ 
++	usb2_phy2: usb2-phy2 {
++		compatible      = "st,stm32mp21-usb2phy";
++		#phy-cells      = <0>;
++		st,syscfg       = <&syscfg 0x2800>;
++		clocks          = <&rcc CK_KER_USB2PHY2EN>;
++		resets          = <&rcc USB2PHY2_R>;
++		status          = "disabled";
++	};
++
+ 	soc@0 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+-- 
+2.39.5
+

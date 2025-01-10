@@ -1,0 +1,57 @@
+From 79e25bfdd62689e297d183501ae33bae6904629b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 27 Sep 2023 10:50:12 +0200
+Subject: [PATCH] drm/stm: ltdc: add mask for lxcr register
+
+The purpose of this mask is to simplify writing the lxcr register
+and not forget any fields.
+
+Change-Id: I9782c0cd2b5483fcb7077dcafe43d0ca64b39436
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 0640850e944a..747e3ba3b9d3 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -187,6 +187,7 @@
+ #define LXCR_COLKEN	BIT(1)		/* Color Keying Enable */
+ #define LXCR_CLUTEN	BIT(4)		/* Color Look-Up Table ENable */
+ #define LXCR_HMEN	BIT(8)		/* Horizontal Mirroring ENable */
++#define LXCR_MASK (LXCR_LEN | LXCR_COLKEN | LXCR_CLUTEN | LXCR_HMEN)
+ 
+ #define LXWHPCR_WHSTPOS	GENMASK(11, 0)	/* Window Horizontal StarT POSition */
+ #define LXWHPCR_WHSPPOS	GENMASK(27, 16)	/* Window Horizontal StoP POSition */
+@@ -806,8 +807,7 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 
+ 	/* Disable all layers */
+ 	for (layer_index = 0; layer_index < ldev->caps.nb_layers; layer_index++)
+-		regmap_write_bits(ldev->regmap, LTDC_L1CR + layer_index * LAY_OFS,
+-				  LXCR_CLUTEN | LXCR_LEN, 0);
++		regmap_write_bits(ldev->regmap, LTDC_L1CR + layer_index * LAY_OFS, LXCR_MASK, 0);
+ 
+ 	/* disable IRQ */
+ 	regmap_clear_bits(ldev->regmap, LTDC_IER, IER_FUWIE | IER_FUEIE | IER_RRIE | IER_TERRIE);
+@@ -1474,7 +1474,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 	if (newstate->rotation & DRM_MODE_REFLECT_X)
+ 		val |= LXCR_HMEN;
+ 
+-	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_LEN | LXCR_CLUTEN | LXCR_HMEN, val);
++	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_MASK, val);
+ 
+ 	/* Commit shadow registers = update plane at next vblank */
+ 	if (ldev->caps.plane_reg_shadow)
+@@ -1512,7 +1512,7 @@ static void ltdc_plane_atomic_disable(struct drm_plane *plane,
+ 	u32 lofs = plane->index * LAY_OFS;
+ 
+ 	/* Disable layer */
+-	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_LEN | LXCR_CLUTEN |  LXCR_HMEN, 0);
++	regmap_write_bits(ldev->regmap, LTDC_L1CR + lofs, LXCR_MASK, 0);
+ 
+ 	/* Set the transparency of the layer to the default value */
+ 	regmap_write_bits(ldev->regmap, LTDC_L1CACR + lofs, LXCACR_CONSTA, 0x00);
+-- 
+2.39.5
+

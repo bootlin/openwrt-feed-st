@@ -1,0 +1,68 @@
+From 2c4e2306ddaa71f26756c35fb9dad2d0f2478ffa Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 29 Mar 2021 16:27:55 +0200
+Subject: [PATCH] backlight: gpio_backlight: add new property
+ default-brightness-level
+
+Add new property to set a brightness by default at probe.
+
+Change-Id: If89ef2068a097027dd162c8fe4fe18dd08bbfa02
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228192
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379637
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../bindings/leds/backlight/gpio-backlight.yaml          | 9 +++++++++
+ drivers/video/backlight/gpio_backlight.c                 | 7 ++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+index 584030b6b0b9..d83c18549923 100644
+--- a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
++++ b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
+@@ -23,6 +23,15 @@ properties:
+     description: enable the backlight at boot.
+     type: boolean
+ 
++  default-brightness-level:
++    description:
++      The default brightness level (index into the array defined by the
++      "brightness-levels" property).
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++dependencies:
++  default-brightness-level: [brightness-levels]
++
+ required:
+   - compatible
+   - gpios
+diff --git a/drivers/video/backlight/gpio_backlight.c b/drivers/video/backlight/gpio_backlight.c
+index d28c30b2a35d..1ab314207334 100644
+--- a/drivers/video/backlight/gpio_backlight.c
++++ b/drivers/video/backlight/gpio_backlight.c
+@@ -53,6 +53,7 @@ static int gpio_backlight_probe(struct platform_device *pdev)
+ 	struct backlight_device *bl;
+ 	struct gpio_backlight *gbl;
+ 	int ret, init_brightness, def_value;
++	u32 value;
+ 
+ 	gbl = devm_kzalloc(dev, sizeof(*gbl), GFP_KERNEL);
+ 	if (gbl == NULL)
+@@ -92,7 +93,11 @@ static int gpio_backlight_probe(struct platform_device *pdev)
+ 	else
+ 		bl->props.power = FB_BLANK_UNBLANK;
+ 
+-	bl->props.brightness = 1;
++	ret = device_property_read_u32(dev, "default-brightness-level", &value);
++	if (!ret && value <= props.max_brightness)
++		bl->props.brightness = value;
++	else
++		bl->props.brightness = 1;
+ 
+ 	init_brightness = backlight_get_brightness(bl);
+ 	ret = gpiod_direction_output(gbl->gpiod, init_brightness);
+-- 
+2.39.5
+

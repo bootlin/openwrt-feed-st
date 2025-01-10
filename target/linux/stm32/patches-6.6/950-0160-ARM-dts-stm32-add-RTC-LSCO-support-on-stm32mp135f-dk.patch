@@ -1,0 +1,58 @@
+From 3d2c202b107b4a42eabbf37559d8f750529509a4 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Thu, 28 Jan 2021 14:56:38 +0100
+Subject: [PATCH] ARM: dts: stm32: add RTC LSCO support on stm32mp135f-dk
+
+Add LSCO support on stm32mp135f-dk board. LSCO output is mapped on
+RTC_OUT2_RMP (PI1), directly routed on LPO_IN pin of Wifi/Bluetooth
+module.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I3b1c0efd706252e4fed182cbf9542a5cbb83c5ce
+---
+ arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 6 ++++++
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts     | 4 ++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+index 6d53579ed2a9..9d02a40fed9f 100644
+--- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+@@ -153,6 +153,12 @@ pins {
+ 		};
+ 	};
+ 
++	rtc_out2_rmp_pins_a: rtc-out2-rmp-pins-0 {
++		pins {
++			pinmux = <STM32_PINMUX('I', 1, ANALOG)>; /* RTC_OUT2_RMP */
++		};
++	};
++
+ 	sai1_pins_a: sai1-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('A', 4, AF12)>, /* SAI1_SCK_A */
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 5eda7f4cec74..db4261a6b114 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -10,6 +10,7 @@
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/st,stm32mp13-regulator.h>
++#include <dt-bindings/rtc/rtc-stm32.h>
+ #include "stm32mp135.dtsi"
+ #include "stm32mp13xf.dtsi"
+ #include "stm32mp13-pinctrl.dtsi"
+@@ -161,6 +162,9 @@ &i2c5 {
+ };
+ 
+ &rtc {
++	st,lsco = <RTC_OUT2_RMP>;
++	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
++	pinctrl-names = "default";
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

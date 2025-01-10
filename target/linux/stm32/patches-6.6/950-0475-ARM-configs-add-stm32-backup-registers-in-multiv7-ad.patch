@@ -1,0 +1,29 @@
+From 31555ddb6cf00918061acee251d3b54c1da797d8 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Tue, 20 Jun 2023 14:36:57 +0200
+Subject: [PATCH] ARM: configs: add stm32 backup registers in multiv7 addons
+ fragment
+
+Enable STM32 TAMP backup registers with fragment-02-multiv7_addons.config
+
+Change-Id: Ibd3d4db39b6179bcec89aef3b63bb8b59e375d8f
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 750e925ada61..d8186a79902b 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -23,6 +23,7 @@ CONFIG_MTD_MCHP23K256=m
+ CONFIG_MTD_SPI_NAND=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
++CONFIG_NVMEM_STM32_TAMP=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_OVERLAY_FS=y
+ CONFIG_PINCTRL_MCP23S08=y
+-- 
+2.39.5
+

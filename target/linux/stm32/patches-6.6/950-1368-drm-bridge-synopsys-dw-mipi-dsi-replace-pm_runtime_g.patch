@@ -1,0 +1,38 @@
+From 3fac835ddb52f6a306290424093387bf600a4ca9 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 22 Aug 2024 11:41:33 +0200
+Subject: [PATCH] drm/bridge: synopsys: dw-mipi-dsi: replace
+ pm_runtime_get_sync by pm_runtime_resume_and_get
+
+The function pm_runtime_resume_and_get() offers a better error
+management than pm_runtime_get_sync().
+
+Change-Id: If0038498b57c987a6cad5b0ef8e3a23b81537496
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/399656
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+index 1eccb46cc421..0d7394bb2c77 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+@@ -990,7 +990,12 @@ static void dw_mipi_dsi_mode_set(struct dw_mipi_dsi *dsi,
+ 	if (ret)
+ 		DRM_DEBUG_DRIVER("Phy get_lane_mbps() failed\n");
+ 
+-	pm_runtime_get_sync(dsi->dev);
++	ret = pm_runtime_resume_and_get(dsi->dev);
++	if (ret < 0) {
++		DRM_DEBUG_DRIVER("Failed to set mode, cannot resume pm\n");
++		return;
++	}
++
+ 	dw_mipi_dsi_init(dsi);
+ 	dw_mipi_dsi_dpi_config(dsi, adjusted_mode);
+ 	dw_mipi_dsi_packet_handler_config(dsi);
+-- 
+2.39.5
+

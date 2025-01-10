@@ -1,0 +1,52 @@
+From cb44ae0a315fd11354e68d1a197208cecca45968 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 28 Jun 2024 11:14:40 +0200
+Subject: [PATCH] arm64: dts: st: add access controllers to ltdc node on
+ stm32mp251
+
+The display controller has several register areas/handles various
+resources that represent several RIFSC entries.
+Access for all of these resources must be checked when the RIFSC
+bus is populated.
+
+Change-Id: I3b47b73534c54c08c1f72fc0ad75bb5adbad1e7e
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390725
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 47ac60f8ca7b..8f1d8c2659f4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2133,9 +2133,23 @@ ltdc: display-controller@48010000 {
+ 				clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
+ 				clock-names = "bus", "lcd";
+ 				resets = <&rcc LTDC_R>;
+-				access-controllers = <&rifsc 80>;
+ 				power-domains = <&CLUSTER_PD>;
+ 				status = "disabled";
++				access-controllers = <&rifsc 80>;
++				access-controller-names = "cmn";
++
++				l0l1 {
++					access-controllers = <&rifsc 119>;
++					access-controller-names = "l0l1";
++				};
++				l2 {
++					access-controllers = <&rifsc 120>;
++					access-controller-names = "l2";
++				};
++				rot {
++					access-controllers = <&rifsc 121>;
++					access-controller-names = "rot";
++				};
+ 			};
+ 
+ 			csi: csi@48020000 {
+-- 
+2.39.5
+

@@ -1,0 +1,47 @@
+From f0be631e928715ad839b5e21b38249cd4e5f7ff2 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 8 Oct 2024 11:00:36 +0200
+Subject: [PATCH] iio: adc: stm32-dfsdm: handle label as an optional property
+
+The label property is defined as optional in the DFSDM binding.
+Parse the label property only when it exists in the device tree.
+
+Fixes: 1eb4817d914a ("iio: adc: stm32-dfsdm: adopt generic channels bindings")
+Change-Id: Ife497c07413cf2cc4d3a4750d0250c964586c3fe
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/409746
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/iio/adc/stm32-dfsdm-adc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+index 31f9f1f2a51b..b18e1df55821 100644
+--- a/drivers/iio/adc/stm32-dfsdm-adc.c
++++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+@@ -691,11 +691,14 @@ static int stm32_dfsdm_generic_channel_parse_of(struct stm32_dfsdm *dfsdm,
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = fwnode_property_read_string(node, "label", &ch->datasheet_name);
+-	if (ret < 0) {
+-		dev_err(&indio_dev->dev,
+-			" Error parsing 'label' for idx %d\n", ch->channel);
+-		return ret;
++	if (fwnode_property_present(node, "label")) {
++		/* label is optional */
++		ret = fwnode_property_read_string(node, "label", &ch->datasheet_name);
++		if (ret < 0) {
++			dev_err(&indio_dev->dev,
++				" Error parsing 'label' for idx %d\n", ch->channel);
++			return ret;
++		}
+ 	}
+ 
+ 	df_ch =  &dfsdm->ch_list[ch->channel];
+-- 
+2.39.5
+

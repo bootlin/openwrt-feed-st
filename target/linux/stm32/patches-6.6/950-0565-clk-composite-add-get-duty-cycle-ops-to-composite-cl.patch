@@ -1,0 +1,53 @@
+From e473a96ef9056f3f56307ba45c12d873dbdf2a3c Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@st.com>
+Date: Wed, 3 Jun 2020 08:38:27 +0200
+Subject: [PATCH] clk: composite: add get duty cycle ops to composite clock
+
+Add support of duty cycle functionality to composite clock.
+
+Change-Id: Ib5179e5cc720c65dfbfa22c4a50da7e43302ce31
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/168777
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/clk/clk-composite.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
+index 1c703e1a49c2..f455dea48ba4 100644
+--- a/drivers/clk/clk-composite.c
++++ b/drivers/clk/clk-composite.c
+@@ -42,6 +42,18 @@ static unsigned long clk_composite_recalc_rate(struct clk_hw *hw,
+ 	return rate_ops->recalc_rate(rate_hw, parent_rate);
+ }
+ 
++static int clk_composite_get_duty_cycle(struct clk_hw *hw,
++					struct clk_duty *duty)
++{
++	struct clk_composite *composite = to_clk_composite(hw);
++	const struct clk_ops *rate_ops = composite->rate_ops;
++	struct clk_hw *rate_hw = composite->rate_hw;
++
++	__clk_hw_set_clk(rate_hw, hw);
++
++	return rate_ops->get_duty_cycle(rate_hw, duty);
++}
++
+ static int clk_composite_determine_rate_for_parent(struct clk_hw *rate_hw,
+ 						   struct clk_rate_request *req,
+ 						   struct clk_hw *parent_hw,
+@@ -285,6 +297,9 @@ static struct clk_hw *__clk_hw_register_composite(struct device *dev,
+ 		}
+ 		clk_composite_ops->recalc_rate = clk_composite_recalc_rate;
+ 
++		if (rate_ops->get_duty_cycle)
++			clk_composite_ops->get_duty_cycle = clk_composite_get_duty_cycle;
++
+ 		if (rate_ops->determine_rate)
+ 			clk_composite_ops->determine_rate =
+ 				clk_composite_determine_rate;
+-- 
+2.39.5
+

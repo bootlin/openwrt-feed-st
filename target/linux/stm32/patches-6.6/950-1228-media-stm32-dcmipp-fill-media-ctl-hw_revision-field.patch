@@ -1,0 +1,72 @@
+From 9afb0f190175da815f315d9ea09b08c369b61133 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 18:24:31 +0200
+Subject: [PATCH] media: stm32: dcmipp: fill media ctl hw_revision field
+
+Add hw_revision field information of the media controller so that
+application can distinguish between variants of DCMIPP implementations.
+
+Change-Id: If5be8c8b3c2688af705a9c4789ffa48c52b9111d
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384903
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index ea511b8e4abd..9d205ff2c574 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -65,6 +65,7 @@ struct dcmipp_pipeline_config {
+ 	size_t num_ents;
+ 	const struct dcmipp_ent_link *links;
+ 	size_t num_links;
++	u32 hw_revision;
+ };
+ 
+ /* --------------------------------------------------------------------------
+@@ -100,11 +101,13 @@ static const struct dcmipp_ent_link stm32mp13_ent_links[] = {
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ };
+ 
++#define DCMIPP_STM32MP13_VERR	0x10
+ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ 	.ents		= stm32mp13_ent_config,
+ 	.num_ents	= ARRAY_SIZE(stm32mp13_ent_config),
+ 	.links		= stm32mp13_ent_links,
+-	.num_links	= ARRAY_SIZE(stm32mp13_ent_links)
++	.num_links	= ARRAY_SIZE(stm32mp13_ent_links),
++	.hw_revision	= DCMIPP_STM32MP13_VERR
+ };
+ 
+ #define	ID_MAIN_ISP 3
+@@ -186,11 +189,13 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ };
+ 
++#define DCMIPP_STM32MP25_VERR	0x30
+ static const struct dcmipp_pipeline_config stm32mp25_pipe_cfg = {
+ 	.ents		= stm32mp25_ent_config,
+ 	.num_ents	= ARRAY_SIZE(stm32mp25_ent_config),
+ 	.links		= stm32mp25_ent_links,
+-	.num_links	= ARRAY_SIZE(stm32mp25_ent_links)
++	.num_links	= ARRAY_SIZE(stm32mp25_ent_links),
++	.hw_revision	= DCMIPP_STM32MP25_VERR
+ };
+ 
+ #define LINK_FLAG_TO_STR(f) ((f) == 0 ? "" :\
+@@ -588,6 +593,7 @@ static int dcmipp_probe(struct platform_device *pdev)
+ 	/* Initialize media device */
+ 	strscpy(dcmipp->mdev.model, DCMIPP_MDEV_MODEL_NAME,
+ 		sizeof(dcmipp->mdev.model));
++	dcmipp->mdev.hw_revision = pipe_cfg->hw_revision;
+ 	dcmipp->mdev.dev = &pdev->dev;
+ 	media_device_init(&dcmipp->mdev);
+ 
+-- 
+2.39.5
+

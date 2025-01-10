@@ -1,0 +1,90 @@
+From d247bababb186ef6d959eba5d24cc1a5b8693e6f Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 12 Mar 2024 09:44:28 +0100
+Subject: [PATCH] net: stmmac: add possibility to use ptp external time
+
+On GMAC, the PTP system time is either provided by the PTP protocol
+or by an external bus
+
+Change-Id: I507113c3104b8a0e7aaa8ba1850cc49c2db601dc
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@st.com>
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/294637
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365955
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     | 6 +++++-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 4 ++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h      | 2 ++
+ include/linux/stmmac.h                                | 1 +
+ 4 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index d6167a7b19f2..41d3770b739c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -883,12 +883,16 @@ EXPORT_SYMBOL_GPL(stmmac_init_tstamp_counter);
+ static int stmmac_init_ptp(struct stmmac_priv *priv)
+ {
+ 	bool xmac = priv->plat->has_gmac4 || priv->plat->has_xgmac;
++	u32 hwts_active = STMMAC_HWTS_ACTIVE;
+ 	int ret;
+ 
+ 	if (priv->plat->ptp_clk_freq_config)
+ 		priv->plat->ptp_clk_freq_config(priv);
+ 
+-	ret = stmmac_init_tstamp_counter(priv, STMMAC_HWTS_ACTIVE);
++	if (priv->plat->ext_systime)
++		hwts_active |= PTP_TCR_ESTI;
++
++	ret = stmmac_init_tstamp_counter(priv, hwts_active);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 30d5e635190e..e9d67edae22b 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -436,6 +436,10 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+ 	of_property_read_u32(np, "max-speed", &plat->max_speed);
+ 
+ 	plat->bus_id = of_alias_get_id(np, "ethernet");
++
++	/* Get external system time state from device tree */
++	plat->ext_systime = of_property_read_bool(np, "snps,ext-systime");
++
+ 	if (plat->bus_id < 0)
+ 		plat->bus_id = 0;
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+index d1fe4b46f162..29fc41eeae25 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+@@ -58,6 +58,8 @@
+ #define	PTP_TCR_TSEVNTENA	BIT(14)
+ /* Enable Snapshot for Messages Relevant to Master */
+ #define	PTP_TCR_TSMSTRENA	BIT(15)
++/* Enable External System Time input */
++#define	PTP_TCR_ESTI		BIT(20)
+ /* Select PTP packets for Taking Snapshots
+  * On gmac4 specifically:
+  * Enable SYNC, Pdelay_Req, Pdelay_Resp when TSEVNTENA is enabled.
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 5acb77968902..d32c22f70594 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -264,6 +264,7 @@ struct plat_stmmacenet_data {
+ 	int unicast_filter_entries;
+ 	int tx_fifo_size;
+ 	int rx_fifo_size;
++	int ext_systime;
+ 	u32 host_dma_width;
+ 	u32 rx_queues_to_use;
+ 	u32 tx_queues_to_use;
+-- 
+2.39.5
+

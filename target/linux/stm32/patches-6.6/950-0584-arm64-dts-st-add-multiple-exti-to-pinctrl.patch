@@ -1,0 +1,36 @@
+From e4efaa8fed9939d891a5d77784319eb3b9dece8b Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 11 Aug 2023 15:24:00 +0200
+Subject: [PATCH] arm64: dts: st: add multiple exti to pinctrl
+
+Specify the multiple EXTI through the property interrupt-extended.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I670aa8e0d0fc272db1531c7a368c7d8151a3083b
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a0242b804672..7283f7805f60 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -388,6 +388,15 @@ pinctrl: pinctrl@44240000 {
+ 			interrupt-parent = <&exti1>;
+ 			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
++			interrupts-extended =
++				<&exti1  0 0>, <&exti1  1 0>, <&exti1  2 0>, <&exti1  3 0>,
++				<&exti1  4 0>, <&exti1  5 0>, <&exti1  6 0>, <&exti1  7 0>,
++				<&exti1  8 0>, <&exti1  9 0>, <&exti1 10 0>, <&exti1 11 0>,
++				<&exti1 12 0>, <&exti1 13 0>, <&exti1 14 0>, <&exti1 15 0>,
++				<&exti2  0 0>, <&exti2  1 0>, <&exti2  2 0>, <&exti2  3 0>,
++				<&exti2  4 0>, <&exti2  5 0>, <&exti2  6 0>, <&exti2  7 0>,
++				<&exti2  8 0>, <&exti2  9 0>, <&exti2 10 0>, <&exti2 11 0>,
++				<&exti2 12 0>, <&exti2 13 0>, <&exti2 14 0>, <&exti2 15 0>;
+ 
+ 			gpioa: gpio@44240000 {
+ 				gpio-controller;
+-- 
+2.39.5
+

@@ -1,0 +1,57 @@
+From 20e073dd31478e95deb5643d634bd6a1e52538bd Mon Sep 17 00:00:00 2001
+From: Yann Gautier <yann.gautier@foss.st.com>
+Date: Wed, 3 May 2023 16:33:27 +0200
+Subject: [PATCH] arm64: dts: st: add sdmmc nodes for STM32MP25
+
+Add sdmmc2 and sdmmc3 nodes, on the basis of sdmmc1 node.
+
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+Change-Id: Ia58d29d3ad0c45ae50c7a6a240093b177d54db68
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 30 ++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 9915df6fc435..3b7ea608e853 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1483,6 +1483,36 @@ sdmmc1: mmc@48220000 {
+ 				status = "disabled";
+ 			};
+ 
++			sdmmc2: mmc@48230000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48230000 0x400>, <0x44230800 0x8>;
++				interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SDMMC2>;
++				clock-names = "apb_pclk";
++				resets = <&rcc SDMMC2_R>;
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				access-controllers = <&rifsc 77>;
++				status = "disabled";
++			};
++
++			sdmmc3: mmc@48240000 {
++				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
++				arm,primecell-periphid = <0x00353180>;
++				reg = <0x48240000 0x400>, <0x44230c00 0x8>;
++				interrupts = <GIC_SPI 214 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SDMMC3>;
++				clock-names = "apb_pclk";
++				resets = <&rcc SDMMC3_R>;
++				cap-sd-highspeed;
++				cap-mmc-highspeed;
++				max-frequency = <120000000>;
++				access-controllers = <&rifsc 78>;
++				status = "disabled";
++			};
++
+ 			eth1: eth1@482c0000 {
+ 				compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
+ 				reg = <0x482c0000 0x4000>;
+-- 
+2.39.5
+

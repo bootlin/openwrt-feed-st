@@ -1,0 +1,41 @@
+From 8e505b0e86054fb45de9aa005b930aa7e7dbda80 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Mon, 13 May 2024 15:48:10 +0530
+Subject: [PATCH] arm64: dts: st: add usb1phy support on stm32mp21
+
+Add usb1phy support on stm32mp21, dedicated to usb 2.0 host
+
+Change-Id: I2609a49080a72b9ef4f09aae9e29f9d4448c28b2
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/378216
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 30acf37809e3..ef1c312c9e84 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -126,6 +126,15 @@ timer {
+ 		arm,no-tick-in-suspend;
+ 	};
+ 
++	usb2_phy1: usb2-phy1 {
++		compatible      = "st,stm32mp21-usb2phy";
++		#phy-cells      = <0>;
++		st,syscfg       = <&syscfg 0x2400>;
++		clocks          = <&rcc CK_KER_USB2PHY1>;
++		resets          = <&rcc USB2PHY1_R>;
++		status          = "disabled";
++	};
++
+ 	soc@0 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+-- 
+2.39.5
+

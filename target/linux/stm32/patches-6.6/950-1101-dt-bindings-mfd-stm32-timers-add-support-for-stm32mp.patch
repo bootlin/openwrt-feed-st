@@ -1,0 +1,58 @@
+From d625f4974a639b3f3a08812b58b609d6a606b7fc Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 23 May 2024 11:52:02 +0200
+Subject: [PATCH] dt-bindings: mfd: stm32-timers: add support for stm32mp21
+
+Add a new stm32mp21 compatible to stm32-timer dt-bindings in order to
+support the STM32MP21 SoC
+
+Change-Id: I404f3fee6503878681ee6f7bcae9728d2bb133a2
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382220
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index 6be0e3061aa3..8f259cc02f34 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -23,6 +23,7 @@ properties:
+   compatible:
+     enum:
+       - st,stm32-timers
++      - st,stm32mp21-timers
+       - st,stm32mp25-timers
+ 
+   reg:
+@@ -84,6 +85,7 @@ properties:
+       compatible:
+         enum:
+           - st,stm32-pwm
++          - st,stm32mp21-pwm
+           - st,stm32mp25-pwm
+ 
+       "#pwm-cells":
+@@ -122,6 +124,7 @@ properties:
+       compatible:
+         enum:
+           - st,stm32-timer-counter
++          - st,stm32mp21-timer-counter
+           - st,stm32mp25-timer-counter
+ 
+     required:
+@@ -137,6 +140,7 @@ patternProperties:
+         enum:
+           - st,stm32-timer-trigger
+           - st,stm32h7-timer-trigger
++          - st,stm32mp21-timer-trigger
+           - st,stm32mp25-timer-trigger
+ 
+       reg:
+-- 
+2.39.5
+

@@ -1,0 +1,29 @@
+From 60d7985f522ea7830a131779c3a951321b39ddfa Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Fri, 2 Feb 2024 11:49:53 +0100
+Subject: [PATCH] arm64: defconfig: Enable stm32_rproc support
+
+This patch adds in built-in the remoteproc driver used by STM32MP SOCs.
+
+Change-Id: Ie903111f4f36fed1a36948c9816e1c3ca39a9759
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310426
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 91703fe58736..b973951e7918 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -2,4 +2,7 @@
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_REGULATOR_ARM_SCMI=y
++CONFIG_REMOTEPROC=y
++CONFIG_STM32_RPROC=y
++CONFIG_TEE_REMOTEPROC=y
+ CONFIG_USB_HIDDEV=y
+-- 
+2.39.5
+

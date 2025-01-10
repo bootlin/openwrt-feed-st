@@ -1,0 +1,70 @@
+From c4f73108c2607a31950ac6c731e362614a6d4410 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 27 Mar 2024 14:25:16 +0100
+Subject: [PATCH] dmaengine: stm32-dma3: configure LL allocated port using
+ lli-bus-interface
+
+Linked-list Allocated Port (LAP), if the STM32 DMA3 has two ports, can be
+either port 0 or port 1. Using lli-bus-interface device tree property, the
+user can choose which port to use. If there is only one port, or if the
+DT property is not defined, port 0 is used by default.
+
+Change-Id: I3778363e899f1385ec05e69c3509a4a7ac9c700d
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370781
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/dma/stm32/stm32-dma3.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
+index 9926f3f6a126..d2f0bc1fbe40 100644
+--- a/drivers/dma/stm32/stm32-dma3.c
++++ b/drivers/dma/stm32/stm32-dma3.c
+@@ -308,6 +308,7 @@ struct stm32_dma3_ddata {
+ 	u32 dma_requests;
+ 	enum stm32_dma3_port_data_width ports_max_dw[2];
+ 	u32 axi_max_burst_len;
++	u32 lap;
+ 	struct gen_pool *gen_pool;
+ 	struct dma_pool *dma_pool;
+ };
+@@ -556,14 +557,13 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+ 		return NULL;
+ 	}
+ 	swdesc->lli_size = count;
+-	swdesc->ccr = 0;
+ 
+ 	/* Set LL base address */
+ 	writel_relaxed(swdesc->lli[0].hwdesc_addr & CLBAR_LBA,
+ 		       ddata->base + STM32_DMA3_CLBAR(chan->id));
+ 
+-	/* Set LL allocated port (AXI) */
+-	swdesc->ccr &= ~CCR_LAP;
++	/* Set LL allocated port */
++	swdesc->ccr = FIELD_PREP(CCR_LAP, ddata->lap);
+ 
+ 	return swdesc;
+ }
+@@ -1924,10 +1924,15 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+ 	master_ports = FIELD_GET(G_MASTER_PORTS, hwcfgr);
+ 
+ 	ddata->ports_max_dw[0] = FIELD_GET(G_M0_DATA_WIDTH_ENC, hwcfgr);
+-	if (master_ports == AXI64 || master_ports == AHB32) /* Single master port */
++	if (master_ports == AXI64 || master_ports == AHB32) { /* Single master port */
+ 		ddata->ports_max_dw[1] = DW_INVALID;
+-	else /* Dual master ports */
++		ddata->lap = 0;
++	} else { /* Dual master ports */
+ 		ddata->ports_max_dw[1] = FIELD_GET(G_M1_DATA_WIDTH_ENC, hwcfgr);
++		/* lli-bus-interface is optional, Link Allocated Port is set to port 0 by default */
++		if (of_property_read_u32(np, "lli-bus-interface", &ddata->lap))
++			ddata->lap = 0;
++	}
+ 
+ 	/* st,axi-max-burst-len is optional, if not defined, use STM32_DMA3_MAX_BURST_LEN  */
+ 	if (of_property_read_u32(np, "st,axi-max-burst-len", &ddata->axi_max_burst_len))
+-- 
+2.39.5
+

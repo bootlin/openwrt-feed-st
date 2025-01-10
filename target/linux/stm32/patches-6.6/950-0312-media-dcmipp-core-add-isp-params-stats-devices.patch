@@ -1,0 +1,57 @@
+From 404337b93a2954793c29fdc3d10859465476e055 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 15 Feb 2024 16:16:42 +0100
+Subject: [PATCH] media: dcmipp: core: add isp-params & stats devices
+
+Connect dcmipp-statcap and dcmipp-isp-param devices to the isp subdev
+
+Change-Id: I8080b1430058ee690eb1f5eee491521e2a98a163
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 65919b99738a..cfe539cd20ea 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -112,6 +112,8 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ #define	ID_MAIN_CAPTURE	5
+ #define	ID_AUX_POSTPROC 6
+ #define	ID_AUX_CAPTURE 7
++#define	ID_ISP_STAT_CAPTURE 8
++#define	ID_ISP_PARAMS_OUTPUT 9
+ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 	{
+ 		.name = "dcmipp_input",
+@@ -153,6 +155,16 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 		.init = dcmipp_pixelcap_ent_init,
+ 		.release = dcmipp_pixelcap_ent_release,
+ 	},
++	{
++		.name = "dcmipp_main_isp_stat_capture",
++		.init = dcmipp_statcap_ent_init,
++		.release = dcmipp_statcap_ent_release,
++	},
++	{
++		.name = "dcmipp_main_isp_params_output",
++		.init = dcmipp_isp_params_ent_init,
++		.release = dcmipp_isp_params_ent_release,
++	},
+ };
+ 
+ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -168,6 +180,10 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+ 	DCMIPP_ENT_LINK(ID_INPUT,	3, ID_AUX_POSTPROC,  0, 0),
+ 	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_ISP_PARAMS_OUTPUT,	0, ID_MAIN_ISP,	2,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_MAIN_ISP,	3, ID_ISP_STAT_CAPTURE,  0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ };
+ 
+ static const struct dcmipp_pipeline_config stm32mp25_pipe_cfg = {
+-- 
+2.39.5
+

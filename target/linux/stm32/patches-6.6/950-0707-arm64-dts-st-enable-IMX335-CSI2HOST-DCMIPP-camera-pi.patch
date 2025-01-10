@@ -1,0 +1,99 @@
+From 49ecafc70acf04bad0fe288448c486badf8f8144 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 5 Jun 2023 23:28:10 +0200
+Subject: [PATCH] arm64: dts: st: enable IMX335/CSI2HOST/DCMIPP camera pipe on
+ stm32mp257f-ev1
+
+Enable the camera pipeline composed of the IMX335 CSI camera connected
+to the dcmipp via the csi2host.
+
+Change-Id: I41c26173dc2a27405111b154ba50a3bd289eb425
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 56 ++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 44dac39313e1..6ab3512efa3b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -32,6 +32,12 @@ chosen {
+ 	};
+ 
+ 	clocks {
++		clk_ext_camera: clk-ext-camera {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
++		};
++
+ 		pad_clk: pad-clk {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+@@ -122,6 +128,38 @@ &combophy {
+ 	status = "okay";
+ };
+ 
++&csi2host {
++	status = "disabled";
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			csi2host_sink: endpoint {
++				remote-endpoint = <&imx335_ep>;
++				data-lanes = <0 1>;
++				bus-type = <4>;
++			};
++		};
++		port@1 {
++			reg = <1>;
++			csi2host_source: endpoint {
++				remote-endpoint = <&dcmipp_0>;
++			};
++		};
++	};
++};
++
++&dcmipp {
++	status = "disabled";
++	port {
++		dcmipp_0: endpoint {
++			remote-endpoint = <&csi2host_source>;
++			bus-type = <4>;
++		};
++	};
++};
++
+ &dsi {
+ 	status = "disabled";
+ 
+@@ -230,6 +268,24 @@ &i2c2 {
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
+ 
++	imx335: imx335@1a {
++		compatible = "sony,imx335";
++		reg = <0x1a>;
++		clocks = <&clk_ext_camera>;
++		reset-gpios = <&gpioi 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		powerdown-gpios = <&gpioi 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		status = "disabled";
++
++		port {
++			imx335_ep: endpoint {
++				remote-endpoint = <&csi2host_sink>;
++				clock-lanes = <0>;
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <594000000>;
++			};
++		};
++	};
++
+ 	adv7535: hdmi@3d {
+ 		compatible = "adi,adv7535";
+ 		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
+-- 
+2.39.5
+

@@ -1,0 +1,52 @@
+From 04ffc657adcaab6fe510be31cae28897f09a9752 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Tue, 18 Jan 2022 12:32:30 +0100
+Subject: [PATCH] arm64: dts: st: add de-ip support on stm32mp257
+
+Add TTTech DE-IP 1+2 switch support. Port0 is connected to ethernet1
+controller through rgmii interface inside SoC. Other ports are external
+ports for various purpose depending on board configuration. For each port,
+8 queues are defined for Tx.
+
+This switch embeds TSN standards like 802.1AS (gPTP), 802.1Qbv, 802.1Qav.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Change-Id: I0785de932af3c704b361a2043f86abd9d570e61b
+---
+ arch/arm64/boot/dts/st/stm32mp257.dtsi | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
+index 5c5000d3d9db..798e5ede7c5c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
+@@ -5,5 +5,25 @@
+  */
+ #include "stm32mp255.dtsi"
+ 
+-/ {
++&rifsc {
++	switch0: ttt-sw@4c000000 {
++		#address-cells  = <1>;
++		#size-cells     = <1>;
++		compatible = "st,stm32-deip";
++		clock-names = "ethsw-bus-clk", "ethsw-clk";
++		clocks = <&rcc CK_BUS_ETHSW>,
++			 <&rcc CK_KER_ETHSW>;
++
++		st,syscon = <&syscfg 0x3800>;
++		ranges = <0x4c000000 0x4c000000 0x2000000>;
++		access-controllers = <&rifsc 70>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++
++		deip_sw0: deip-sw@4c000000 {
++			compatible =  "ttt,deip-sw";
++			reg = <0x4c000000 0x2000000>;
++			interrupts = <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>;
++		};
++	};
+ };
+-- 
+2.39.5
+

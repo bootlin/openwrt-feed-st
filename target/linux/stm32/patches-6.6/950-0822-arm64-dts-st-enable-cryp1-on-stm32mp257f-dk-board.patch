@@ -1,0 +1,36 @@
+From 0a8bf2f76f7844844b54d39466aec08fcb4d301e Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Thu, 15 Feb 2024 18:31:10 +0100
+Subject: [PATCH] arm64: dts: st: enable cryp1 on stm32mp257f-dk board
+
+Set STM32 CRYP peripheral enabled.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: I4f6e4c22da90150faad405213b896187e75604d0
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/360579
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 639381ab5bd3..9566f8b452bd 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -142,6 +142,10 @@ &crc {
+ 	status = "okay";
+ };
+ 
++&cryp1 {
++	status = "okay";
++};
++
+ &csi2host {
+ 	status = "disabled";
+ 	ports {
+-- 
+2.39.5
+

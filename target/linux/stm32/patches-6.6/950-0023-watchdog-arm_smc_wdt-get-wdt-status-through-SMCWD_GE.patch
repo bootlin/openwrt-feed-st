@@ -1,0 +1,67 @@
+From ce9e7ce49df4d8e86f5d71ae104917f13d82c863 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 22 May 2023 17:21:29 +0200
+Subject: [PATCH] watchdog: arm_smc_wdt: get wdt status through
+ SMCWD_GET_TIMELEFT
+
+The optional SMCWD_GET_TIMELEFT command can be used to detect if
+the watchdog has already been started.
+
+If CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is set, at probe time check
+if the watchdog is already started and then set WDOG_HW_RUNNING in
+the watchdog status. This will cause the watchdog framework to
+ping the watchdog until a userspace watchdog daemon takes over the
+control.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I489b7f32eaab3b6462af0bc75144f6ec243fbc8e
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/314007
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/watchdog/arm_smc_wdt.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/watchdog/arm_smc_wdt.c b/drivers/watchdog/arm_smc_wdt.c
+index 8f3d0c3a005f..f1268f43327e 100644
+--- a/drivers/watchdog/arm_smc_wdt.c
++++ b/drivers/watchdog/arm_smc_wdt.c
+@@ -46,6 +46,8 @@ static int smcwd_call(struct watchdog_device *wdd, enum smcwd_call call,
+ 		return -ENODEV;
+ 	if (res->a0 == PSCI_RET_INVALID_PARAMS)
+ 		return -EINVAL;
++	if (res->a0 == PSCI_RET_DISABLED)
++		return -ENODATA;
+ 	if (res->a0 != PSCI_RET_SUCCESS)
+ 		return -EIO;
+ 	return 0;
+@@ -131,10 +133,20 @@ static int smcwd_probe(struct platform_device *pdev)
+ 
+ 	wdd->info = &smcwd_info;
+ 	/* get_timeleft is optional */
+-	if (smcwd_call(wdd, SMCWD_GET_TIMELEFT, 0, NULL))
+-		wdd->ops = &smcwd_ops;
+-	else
++	err = smcwd_call(wdd, SMCWD_GET_TIMELEFT, 0, NULL);
++	switch (err) {
++	case 0:
++		if (IS_ENABLED(CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED))
++			set_bit(WDOG_HW_RUNNING, &wdd->status);
++		fallthrough;
++	case -ENODATA:
+ 		wdd->ops = &smcwd_timeleft_ops;
++		break;
++	default:
++		wdd->ops = &smcwd_ops;
++		break;
++	}
++
+ 	wdd->timeout = res.a2;
+ 	wdd->max_timeout = res.a2;
+ 	wdd->min_timeout = res.a1;
+-- 
+2.39.5
+

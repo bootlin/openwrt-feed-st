@@ -1,0 +1,621 @@
+From 231f1fcfcca4042e6c7cb9384d734629023ed14f Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Fri, 2 Feb 2024 18:33:27 +0100
+Subject: [PATCH] tee: optee: Ocall2 implementation
+
+Add kernel client API function tee_client_invoke_ocall2() to invoke
+a session command with support for an Ocall command from the TEE service
+back to caller client. On return of that function, caller can call that
+function again providing the Ocall argument to return to TEE from the
+Ocall.
+
+The interface allows Ocall command to pass 2 32bit arguments: an Ocall
+command ID and a value parameter. On return, the Ocall passes 2 32bit
+arguments to output value parameters upon success and an error result.
+
+This implementation is based on the OP-TEE OCALL implementation proposed
+by Hernan Gatta in https://github.com/linaro-swg/linux/pull/72 and
+https://github.com/OP-TEE/optee_os/pull/3673.
+
+Change-Id: Idce8218a6f1c5d45e0a09f33eb2370c1790a571a
+Co-developed-by: Hernan Gatta <hegatta@microsoft.com>
+Signed-off-by: Hernan Gatta <hegatta@microsoft.com>
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357079
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/tee/optee/call.c          | 102 ++++++++++++++++++++++++++++--
+ drivers/tee/optee/core.c          |   3 +-
+ drivers/tee/optee/ffa_abi.c       |   3 +-
+ drivers/tee/optee/optee_private.h |  45 ++++++++++++-
+ drivers/tee/optee/optee_smc.h     |  23 +++++++
+ drivers/tee/optee/smc_abi.c       |  66 ++++++++++++++++---
+ drivers/tee/tee_core.c            |  12 ++++
+ include/linux/tee_drv.h           |  72 +++++++++++++++++++++
+ 8 files changed, 309 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+index df5fb5410b72..91df4a17a8a5 100644
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -328,7 +328,7 @@ int optee_open_session(struct tee_context *ctx,
+ 		goto out;
+ 	}
+ 
+-	if (optee->ops->do_call_with_arg(ctx, shm, offs)) {
++	if (optee->ops->do_call_with_arg(ctx, shm, offs, NULL)) {
+ 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 	}
+@@ -374,7 +374,7 @@ int optee_close_session_helper(struct tee_context *ctx, u32 session)
+ 
+ 	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
+ 	msg_arg->session = session;
+-	optee->ops->do_call_with_arg(ctx, shm, offs);
++	optee->ops->do_call_with_arg(ctx, shm, offs, NULL);
+ 
+ 	optee_free_msg_arg(ctx, entry, offs);
+ 
+@@ -389,11 +389,14 @@ int optee_close_session(struct tee_context *ctx, u32 session)
+ 	/* Check that the session is valid and remove it from the list */
+ 	mutex_lock(&ctxdata->mutex);
+ 	sess = find_session(ctxdata, session);
+-	if (sess)
++	if (sess && !sess->ocall_ctx.thread_p1)
+ 		list_del(&sess->list_node);
+ 	mutex_unlock(&ctxdata->mutex);
+ 	if (!sess)
+ 		return -EINVAL;
++	if (WARN_ONCE(sess->ocall_ctx.thread_p1, "Can't close, on going Ocall\n"))
++		return -EINVAL;
++
+ 	kfree(sess);
+ 
+ 	return optee_close_session_helper(ctx, session);
+@@ -401,23 +404,61 @@ int optee_close_session(struct tee_context *ctx, u32 session)
+ 
+ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 		      struct tee_param *param)
++{
++	return optee_invoke_func_helper(ctx, arg, param, NULL);
++}
++
++int optee_invoke_func_helper(struct tee_context *ctx,
++			     struct tee_ioctl_invoke_arg *arg,
++			     struct tee_param *param,
++			     struct tee_ocall2_arg *ocall_arg)
+ {
+ 	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_context_data *ctxdata = ctx->data;
++	struct optee_call_extra call_extra;
+ 	struct optee_shm_arg_entry *entry;
+ 	struct optee_msg_arg *msg_arg;
+ 	struct optee_session *sess;
+ 	struct tee_shm *shm;
++	u32 session_id;
+ 	u_int offs;
+ 	int rc;
+ 
++	if (tee_ocall_in_progress(ocall_arg))
++		session_id = ocall_arg->session;
++	else
++		session_id = arg->session;
++
+ 	/* Check that the session is valid */
+ 	mutex_lock(&ctxdata->mutex);
+-	sess = find_session(ctxdata, arg->session);
++	sess = find_session(ctxdata, session_id);
+ 	mutex_unlock(&ctxdata->mutex);
+ 	if (!sess)
+ 		return -EINVAL;
+ 
++	if (tee_ocall_in_progress(ocall_arg) && !sess->ocall_ctx.thread_p1) {
++		pr_err("Unexpected return from Ocall for the session\n");
++		return -EINVAL;
++	}
++	if (!tee_ocall_is_used(ocall_arg) && sess->ocall_ctx.thread_p1) {
++		pr_err("Session is busy with an on-going Ocall\n");
++		return -EINVAL;
++	}
++
++	/* Setup TEE call extra data */
++	memset(&call_extra, 0, sizeof(call_extra));
++
++	if (tee_ocall_is_used(ocall_arg)) {
++		call_extra.ocall_arg = ocall_arg;
++		call_extra.ocall_call_waiter = &sess->ocall_ctx.call_waiter;
++	}
++
++	if (tee_ocall_in_progress(ocall_arg)) {
++		call_extra.tee_thread_id = sess->ocall_ctx.thread_p1 - 1;
++		/* Skip shared memory buffer part, not needed with ocall2 */
++		goto do_call;
++	}
++
+ 	msg_arg = optee_get_msg_arg(ctx, arg->num_params,
+ 				    &entry, &shm, &offs);
+ 	if (IS_ERR(msg_arg))
+@@ -432,7 +473,54 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 	if (rc)
+ 		goto out;
+ 
+-	if (optee->ops->do_call_with_arg(ctx, shm, offs)) {
++	if (tee_ocall_is_used(ocall_arg)) {
++		/* Save initial call context in ocall context */
++		memcpy(&sess->ocall_ctx.call_arg, arg, sizeof(*arg));
++		sess->ocall_ctx.msg_arg = msg_arg;
++		sess->ocall_ctx.msg_entry = entry;
++		sess->ocall_ctx.msg_offs = offs;
++	}
++
++do_call:
++	rc = optee->ops->do_call_with_arg(ctx, shm, offs, &call_extra);
++	if (rc == -EAGAIN) {
++		/* We are executing an Ocall request from TEE */
++		if (tee_ocall_in_progress(ocall_arg)) {
++			mutex_lock(&ctxdata->mutex);
++			ocall_arg->session = session_id;
++			sess->ocall_ctx.thread_p1 = call_extra.tee_thread_id + 1;
++			mutex_unlock(&ctxdata->mutex);
++
++			return 0;
++		}
++		WARN_ONCE(1, "optee: unexpected ocall\n");
++	}
++
++	/* Session may be leaving an Ocall */
++	mutex_lock(&ctxdata->mutex);
++	sess->ocall_ctx.thread_p1 = 0;
++
++	if (tee_ocall_is_used(ocall_arg)) {
++		/* We are returning from initial call, get initial call msg */
++		msg_arg = sess->ocall_ctx.msg_arg;
++		entry = sess->ocall_ctx.msg_entry;
++		offs = sess->ocall_ctx.msg_offs;
++		if (arg) {
++			unsigned int num_params = arg->num_params;
++
++			memcpy(arg, &sess->ocall_ctx.call_arg, sizeof(*arg));
++			if (num_params < sess->ocall_ctx.call_arg.num_params) {
++				arg->num_params = 0;
++				rc = -EINVAL;
++			}
++		}
++
++		/* Wipe Ocall context deprecated information */
++		memset(&sess->ocall_ctx, 0, sizeof(sess->ocall_ctx));
++	}
++	mutex_unlock(&ctxdata->mutex);
++
++	if (rc) {
+ 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 	}
+@@ -466,6 +554,8 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+ 	mutex_unlock(&ctxdata->mutex);
+ 	if (!sess)
+ 		return -EINVAL;
++	if (WARN_ONCE(sess->ocall_ctx.thread_p1, "Can't cancel, on going Ocall\n"))
++		return -EINVAL;
+ 
+ 	msg_arg = optee_get_msg_arg(ctx, 0, &entry, &shm, &offs);
+ 	if (IS_ERR(msg_arg))
+@@ -474,7 +564,7 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+ 	msg_arg->cmd = OPTEE_MSG_CMD_CANCEL;
+ 	msg_arg->session = session;
+ 	msg_arg->cancel_id = cancel_id;
+-	optee->ops->do_call_with_arg(ctx, shm, offs);
++	optee->ops->do_call_with_arg(ctx, shm, offs, NULL);
+ 
+ 	optee_free_msg_arg(ctx, entry, offs);
+ 	return 0;
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index 2a258bd3b6b5..4f1abccd9022 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -141,7 +141,8 @@ static void optee_release_helper(struct tee_context *ctx,
+ 	list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
+ 				 list_node) {
+ 		list_del(&sess->list_node);
+-		close_session(ctx, sess->session_id);
++		if (!WARN_ONCE(sess->ocall_ctx.thread_p1, "Can't close, on going Ocall\n"))
++			close_session(ctx, sess->session_id);
+ 		kfree(sess);
+ 	}
+ 	kfree(ctxdata);
+diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
+index b8ba360e863e..cb4bedf8d29d 100644
+--- a/drivers/tee/optee/ffa_abi.c
++++ b/drivers/tee/optee/ffa_abi.c
+@@ -612,7 +612,8 @@ static int optee_ffa_yielding_call(struct tee_context *ctx,
+  */
+ 
+ static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
+-				      struct tee_shm *shm, u_int offs)
++				      struct tee_shm *shm, u_int offs,
++				      struct optee_call_extra *call_extra)
+ {
+ 	struct ffa_send_direct_data data = {
+ 		.data0 = OPTEE_FFA_YIELDING_CALL_WITH_ARG,
+diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+index 6bb5cae09688..3ef3d7792380 100644
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -142,6 +142,18 @@ struct optee_ffa {
+ 
+ struct optee;
+ 
++/**
++ * struct optee_call_extra - Extra data used by calling TEE
++ * @ocall_arg: OCall arguments related to the call or NULL
++ * @tee_thread_id: TEE thread ID to use to return from an OCall, or 0
++ * @ocall_call_waiter: Reference to the waiter that tracks TEE entry
++ */
++struct optee_call_extra {
++	struct tee_ocall2_arg *ocall_arg;
++	u32 tee_thread_id;
++	struct optee_call_waiter *ocall_call_waiter;
++};
++
+ /**
+  * struct optee_ops - OP-TEE driver internal operations
+  * @do_call_with_arg:	enters OP-TEE in secure world
+@@ -154,7 +166,8 @@ struct optee;
+  */
+ struct optee_ops {
+ 	int (*do_call_with_arg)(struct tee_context *ctx,
+-				struct tee_shm *shm_arg, u_int offs);
++				struct tee_shm *shm_arg, u_int offs,
++				struct optee_call_extra *extra);
+ 	int (*to_msg_param)(struct optee *optee,
+ 			    struct optee_msg_param *msg_params,
+ 			    size_t num_params, const struct tee_param *params);
+@@ -201,9 +214,34 @@ struct optee {
+ 	struct work_struct scan_bus_work;
+ };
+ 
++/**
++ * struct tee_session_ocall - Ocall context of a session
++ * @thread_p1:    TEE thread ID plus 1 (0 means no suspended TEE thread)
++ * @call_waiter:  Waiter for the call entry completed at Ocall return entry
++ * @call_arg:     Invocation argument from initial call that issued the Ocall
++ * @msg_arg:      Reference to optee msg used at initial call
++ * @msg_entry:    Reference to optee msg allocation entry
++ * @msg_offs:     Reference to optee msg allocation offset
++ */
++struct tee_session_ocall {
++	u32 thread_p1;
++	struct optee_call_waiter call_waiter;
++	struct tee_ioctl_invoke_arg call_arg;
++	struct optee_msg_arg *msg_arg;
++	struct optee_shm_arg_entry *msg_entry;
++	u_int msg_offs;
++};
++
++/**
++ * struct tee_session - Session between a client and a TEE service (TA)
++ * @list_node: User list for the session
++ * @session_id:        Session identifier provided by the TEE
++ * @ocall_ctx:         OCall context
++ */
+ struct optee_session {
+ 	struct list_head list_node;
+ 	u32 session_id;
++	struct tee_session_ocall ocall_ctx;
+ };
+ 
+ struct optee_context_data {
+@@ -256,6 +294,11 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 		      struct tee_param *param);
+ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session);
+ 
++int optee_invoke_func_helper(struct tee_context *ctx,
++			     struct tee_ioctl_invoke_arg *arg,
++			     struct tee_param *param,
++			     struct tee_ocall2_arg *ocall_arg);
++
+ #define PTA_CMD_GET_DEVICES		0x0
+ #define PTA_CMD_GET_DEVICES_SUPP	0x1
+ int optee_enumerate_devices(u32 func);
+diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
+index 7d9fa426505b..d97141a4bd0c 100644
+--- a/drivers/tee/optee/optee_smc.h
++++ b/drivers/tee/optee/optee_smc.h
+@@ -579,6 +579,29 @@ struct optee_smc_disable_shm_cache_result {
+ #define OPTEE_SMC_RETURN_RPC_CMD \
+ 	OPTEE_SMC_RPC_VAL(OPTEE_SMC_RPC_FUNC_CMD)
+ 
++/*
++ * Do an OCall RPC request to caller client. The Ocall request ABI is very
++ * minimal: 2 input arguments and 2 output arguments. 1st output argument
++ * value 0 is reserved to error management requesting OCall termination.
++ * When 1st output argument is 0, 2nd output argument is either 0 or can
++ * carry a TEEC_Result like error code.
++ *
++ * "Call" register usage:
++ * a0	OPTEE_SMC_RETURN_RPC_OCALL2
++ * a1	OCall input argument 1 (32 bit)
++ * a2	OCall input argument 2 (32 bit)
++ * a3-7	Resume information, must be preserved
++ *
++ * "Return" register usage:
++ * a0	SMC Function ID, OPTEE_SMC_CALL_RETURN_FROM_RPC.
++ * a1	OCall output argument 1 (32 bit), value 0 upon error
++ * a2	OCall output argument 2 (32 bit), TEEC_Result error if @a1 is 0
++ * a3-7	Preserved
++ */
++#define OPTEE_SMC_RPC_FUNC_OCALL2		2048
++#define OPTEE_SMC_RETURN_RPC_OCALL2 \
++	OPTEE_SMC_RPC_VAL(OPTEE_SMC_RPC_FUNC_OCALL2)
++
+ /* Returned in a0 */
+ #define OPTEE_SMC_RETURN_UNKNOWN_FUNCTION 0xFFFFFFFF
+ 
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index d5b28fd35d66..7d413d0ed14e 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -507,7 +507,7 @@ static int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 	msg_arg->params->u.tmem.buf_ptr = virt_to_phys(pages_list) |
+ 	  (tee_shm_get_page_offset(shm) & (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+ 
+-	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0) ||
++	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0, NULL) ||
+ 	    msg_arg->ret != TEEC_SUCCESS)
+ 		rc = -EINVAL;
+ 
+@@ -550,7 +550,7 @@ static int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+ 	msg_arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+ 	msg_arg->params[0].u.rmem.shm_ref = (unsigned long)shm;
+ 
+-	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0) ||
++	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0, NULL) ||
+ 	    msg_arg->ret != TEEC_SUCCESS)
+ 		rc = -EINVAL;
+ out:
+@@ -885,15 +885,31 @@ static void optee_handle_rpc(struct tee_context *ctx,
+  * Returns return code from secure world, 0 is OK
+  */
+ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+-				      struct tee_shm *shm, u_int offs)
++				      struct tee_shm *shm, u_int offs,
++				      struct optee_call_extra *extra)
+ {
+ 	struct optee *optee = tee_get_drvdata(ctx->teedev);
+-	struct optee_call_waiter w;
++	struct optee_call_waiter waiter;
++	struct optee_call_waiter *w = &waiter;
+ 	struct optee_rpc_param param = { };
+ 	struct optee_call_ctx call_ctx = { };
+ 	struct optee_msg_arg *rpc_arg = NULL;
+ 	int rc;
+ 
++	if (extra) {
++		if (tee_ocall_is_used(extra->ocall_arg))
++			w = extra->ocall_call_waiter;
++
++		if (tee_ocall_in_progress(extra->ocall_arg)) {
++			/* We are returning to TEE from an Ocall in REE */
++			param.a0 = OPTEE_SMC_CALL_RETURN_FROM_RPC;
++			param.a1 = extra->ocall_arg->out_param1;
++			param.a2 = extra->ocall_arg->out_param2;
++			param.a3 = extra->tee_thread_id;
++			goto call_optee;
++		}
++	}
++
+ 	if (optee->rpc_param_count) {
+ 		struct optee_msg_arg *arg;
+ 		unsigned int rpc_arg_offs;
+@@ -926,7 +942,9 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+ 		reg_pair_from_64(&param.a1, &param.a2, parg);
+ 	}
+ 	/* Initialize waiter */
+-	optee_cq_wait_init(&optee->call_queue, &w);
++	optee_cq_wait_init(&optee->call_queue, w);
++
++call_optee:
+ 	while (true) {
+ 		struct arm_smccc_res res;
+ 
+@@ -941,7 +959,24 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+ 			 * Out of threads in secure world, wait for a thread
+ 			 * become available.
+ 			 */
+-			optee_cq_wait_for_completion(&optee->call_queue, &w);
++			optee_cq_wait_for_completion(&optee->call_queue, w);
++		} else if (res.a0 == OPTEE_SMC_RETURN_RPC_OCALL2) {
++			cond_resched();
++			if (extra && tee_ocall_is_used(extra->ocall_arg)) {
++				extra->ocall_arg->state = TEE_OCALL2_IN_PROGRESS;
++				extra->ocall_arg->in_param1 = res.a1;
++				extra->ocall_arg->in_param2 = res.a2;
++				extra->ocall_arg->out_param1 = TEE_OCALL2_OUT_PARAM1_ERROR;
++				extra->ocall_arg->out_param2 = 0;
++				extra->tee_thread_id = res.a3;
++
++				return -EAGAIN;
++			}
++
++			WARN_ONCE(1, "optee unexpected Ocall2\n");
++			param.a0 = OPTEE_SMC_CALL_RETURN_FROM_RPC;
++			param.a1 = TEE_OCALL2_OUT_PARAM1_ERROR;
++			param.a2 = 0;
+ 		} else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
+ 			cond_resched();
+ 			param.a0 = res.a0;
+@@ -955,12 +990,18 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+ 		}
+ 	}
+ 
++	if (extra && tee_ocall_is_used(extra->ocall_arg)) {
++		w = extra->ocall_call_waiter;
++		extra->ocall_arg->state = TEE_OCALL2_IDLE;
++		extra->tee_thread_id = 0;
++	}
++
+ 	optee_rpc_finalize_call(&call_ctx);
+ 	/*
+ 	 * We're done with our thread in secure world, if there's any
+ 	 * thread waiters wake up one.
+ 	 */
+-	optee_cq_wait_final(&optee->call_queue, &w);
++	optee_cq_wait_final(&optee->call_queue, w);
+ 
+ 	return rc;
+ }
+@@ -977,7 +1018,7 @@ static int simple_call_with_arg(struct tee_context *ctx, u32 cmd)
+ 		return PTR_ERR(msg_arg);
+ 
+ 	msg_arg->cmd = cmd;
+-	optee_smc_do_call_with_arg(ctx, shm, offs);
++	optee_smc_do_call_with_arg(ctx, shm, offs, NULL);
+ 
+ 	optee_free_msg_arg(ctx, entry, offs);
+ 	return 0;
+@@ -1204,6 +1245,14 @@ static int optee_smc_open(struct tee_context *ctx)
+ 	return optee_open(ctx, sec_caps & OPTEE_SMC_SEC_CAP_MEMREF_NULL);
+ }
+ 
++int optee_invoke_func_ocall2(struct tee_context *ctx,
++			     struct tee_ioctl_invoke_arg *arg,
++			     struct tee_param *param,
++			     struct tee_ocall2_arg *ocall_arg)
++{
++	return optee_invoke_func_helper(ctx, arg, param, ocall_arg);
++}
++
+ static const struct tee_driver_ops optee_clnt_ops = {
+ 	.get_version = optee_get_version,
+ 	.open = optee_smc_open,
+@@ -1211,6 +1260,7 @@ static const struct tee_driver_ops optee_clnt_ops = {
+ 	.open_session = optee_open_session,
+ 	.close_session = optee_close_session,
+ 	.invoke_func = optee_invoke_func,
++	.invoke_func_ocall2 = optee_invoke_func_ocall2,
+ 	.cancel_req = optee_cancel_req,
+ 	.shm_register = optee_shm_register,
+ 	.shm_unregister = optee_shm_unregister,
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 0eb342de0b00..0491f254fe4b 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -1180,6 +1180,18 @@ int tee_client_invoke_func(struct tee_context *ctx,
+ }
+ EXPORT_SYMBOL_GPL(tee_client_invoke_func);
+ 
++int tee_client_invoke_func_ocall2(struct tee_context *ctx,
++				  struct tee_ioctl_invoke_arg *arg,
++				  struct tee_param *param,
++				  struct tee_ocall2_arg *ocall_arg)
++{
++	if (!ctx->teedev->desc->ops->invoke_func_ocall2)
++		return -EINVAL;
++	return ctx->teedev->desc->ops->invoke_func_ocall2(ctx, arg, param,
++							  ocall_arg);
++}
++EXPORT_SYMBOL_GPL(tee_client_invoke_func_ocall2);
++
+ int tee_client_cancel_req(struct tee_context *ctx,
+ 			  struct tee_ioctl_cancel_arg *arg)
+ {
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 17eb1c5205d3..e786a2a766ee 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -77,6 +77,36 @@ struct tee_param {
+ 	} u;
+ };
+ 
++/* State an Ocall2 context for argument passed with struct tee_ocall2_arg */
++enum tee_ocall2_state {
++	TEE_OCALL2_IDLE,
++	TEE_OCALL2_IN_PROGRESS,
++};
++
++/*
++ * struct tee_ocall2_arg - Ocall2 context argument passed by caller
++ *
++ * @state: Ocall2 state: unused, ready or in-progress
++ * @session: Session the Ocall2 relates to
++ * @in_param1: Ocall2 command 32bit ID from the TEE service
++ * @in_param2: Ocall2 32bit input parameter value from the TEE service
++ * @out_param1: Ocall2 32bit result ID. Value 0 indicates an error.
++ * @out_param2: Ocall2 32bit output parameter. TEEC_ERROR_* when @out_result is 0.
++ */
++struct tee_ocall2_arg {
++	enum tee_ocall2_state state;
++	u32 session;
++	u32 in_param1;
++	u32 in_param2;
++	u32 out_param1;
++	u32 out_param2;
++};
++
++#define TEE_OCALL2_OUT_PARAM1_ERROR	0
++
++#define TEE_OCALL2_ARG_INIT \
++		((struct tee_ocall2_arg){ .state = TEE_OCALL2_IDLE })
++
+ /**
+  * struct tee_driver_ops - driver operations vtable
+  * @get_version:	returns version of driver
+@@ -103,6 +133,10 @@ struct tee_driver_ops {
+ 	int (*invoke_func)(struct tee_context *ctx,
+ 			   struct tee_ioctl_invoke_arg *arg,
+ 			   struct tee_param *param);
++	int (*invoke_func_ocall2)(struct tee_context *ctx,
++				  struct tee_ioctl_invoke_arg *arg,
++				  struct tee_param *param,
++				  struct tee_ocall2_arg *ocall_arg);
+ 	int (*cancel_req)(struct tee_context *ctx, u32 cancel_id, u32 session);
+ 	int (*supp_recv)(struct tee_context *ctx, u32 *func, u32 *num_params,
+ 			 struct tee_param *param);
+@@ -507,4 +541,42 @@ struct tee_context *teedev_open(struct tee_device *teedev);
+  */
+ void teedev_close_context(struct tee_context *ctx);
+ 
++/* Ocall2 helper macros & functions */
++#define TEE_OCALL2_PARAM1_ERROR		0
++
++static inline bool tee_ocall_is_used(struct tee_ocall2_arg *arg)
++{
++	return arg != NULL;
++}
++
++static inline bool tee_ocall_in_progress(struct tee_ocall2_arg *arg)
++{
++	return arg != NULL && arg->state == TEE_OCALL2_IN_PROGRESS;
++}
++
++static inline void tee_ocall_failure(struct tee_ocall2_arg *arg)
++{
++	arg->out_param1 = TEE_OCALL2_PARAM1_ERROR;
++	arg->out_param2 = 0;
++}
++
++/**
++ * tee_client_invoke_func_ocall2() - Invoke a TEE service with Ocall2 support
++ * @ctx:        TEE Context
++ * @arg:        Invoke arguments, see description of struct tee_ioctl_invoke_arg
++ * @param:      Parameters passed to the Trusted Application
++ * @ocall_arg:  Input/output arguments for the Ocall or NULL
++ *
++ * Returns < 0 on error else see @arg->ret for result.
++ * On successful return, use tee_ocall_in_progress() to distinguish between
++ * a regular invocation return and an Ocall command from TEE.
++ *
++ * In order to return from an Ocall, call tee_client_invoke_with_ocall2()
++ * with the same @context, @ocall_arg arguments and allocated @arg and
++ * @param memory areas.
++ */
++int tee_client_invoke_func_ocall2(struct tee_context *ctx,
++				  struct tee_ioctl_invoke_arg *arg,
++				  struct tee_param *param,
++				  struct tee_ocall2_arg *ocall_arg);
+ #endif /*__TEE_DRV_H*/
+-- 
+2.39.5
+

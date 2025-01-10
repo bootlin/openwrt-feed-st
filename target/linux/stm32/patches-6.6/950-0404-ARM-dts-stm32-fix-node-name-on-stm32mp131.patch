@@ -1,0 +1,38 @@
+From 626927c17e4f0c6b7592a3df15b2192bdb47adfa Mon Sep 17 00:00:00 2001
+From: Eric Fourmont <eric.fourmont-ext@st.com>
+Date: Tue, 14 Nov 2023 09:56:09 +0100
+Subject: [PATCH] ARM: dts: stm32: fix node name on stm32mp131
+
+node name must following rules from https://elinux.org/Device_Tree_Linux
+    node names
+        should begin with a character in the range 'a' to 'z', 'A' to 'Z'
+        unit-address does not have a leading "0x" (the number is assumed to be hexadecimal)
+        unit-address does not have leading zeros
+        use dash "-" instead of underscore "_"
+
+        hex constants are lower case
+        use "0x" instead of "0X"
+        use a..f instead of A..F, eg 0xf instead of 0xF
+
+Change-Id: Iad332d6dda8ee35f615576afb4bd0c356da3fa2a
+Signed-off-by: Eric Fourmont <eric.fourmont-ext@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 062001de24f4..94e476801c79 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1574,7 +1574,7 @@ bsec: efuse@5c005000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 
+-			part_number_otp: part_number_otp@4 {
++			part_number_otp: part-number-otp@4 {
+ 				reg = <0x4 0x2>;
+ 				bits = <0 12>;
+ 			};
+-- 
+2.39.5
+

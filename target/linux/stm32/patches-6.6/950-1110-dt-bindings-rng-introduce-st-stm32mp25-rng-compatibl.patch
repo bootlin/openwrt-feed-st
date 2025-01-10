@@ -1,0 +1,39 @@
+From 886934706122fb63b1b674ca4edbbb7616d6cb87 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 29 Apr 2024 10:32:15 +0200
+Subject: [PATCH] dt-bindings: rng: introduce st,stm32mp25-rng compatible
+
+Add RNG STM32MP25x platforms compatible.
+
+It supports RNG configuration lock.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I60c2fff5674cf816a0ae380cb9dd24fba6964dfa
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/325019
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Etienne CARRIERE <etienne.carriere@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377073
+---
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 340d01d481d1..c6ab47e4e9e5 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -18,6 +18,7 @@ properties:
+     enum:
+       - st,stm32-rng
+       - st,stm32mp13-rng
++      - st,stm32mp25-rng
+ 
+   reg:
+     maxItems: 1
+-- 
+2.39.5
+

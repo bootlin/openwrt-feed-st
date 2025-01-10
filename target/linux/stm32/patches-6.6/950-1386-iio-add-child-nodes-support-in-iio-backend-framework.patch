@@ -1,0 +1,138 @@
+From 503f4310d53b46e11280af30a5015ece2a062926 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 7 Aug 2024 17:01:30 +0200
+Subject: [PATCH] iio: add child nodes support in iio backend framework
+
+Add an API to support IIO generic channels binding:
+http://devicetree.org/schemas/iio/adc/adc.yaml#
+This new API is needed, as generic channel DT node isn't populated as a
+device.
+Add devm_iio_backend_fwnode_get() to allow an IIO device backend
+consumer to reference backend phandles in its child nodes.
+
+Change-Id: I3f9dfced41b36e2dc89883e9afea9634d6c36472
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397586
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/iio/industrialio-backend.c | 57 +++++++++++++++++++++---------
+ include/linux/iio/backend.h        |  3 ++
+ 2 files changed, 44 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index 62d3323dd156..ee38fe6331c7 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -577,19 +577,10 @@ static int __devm_iio_backend_get(struct device *dev, struct iio_backend *back)
+ 	return 0;
+ }
+ 
+-/**
+- * devm_iio_backend_get - Device managed backend device get
+- * @dev: Consumer device for the backend
+- * @name: Backend name
+- *
+- * Get's the backend associated with @dev.
+- *
+- * RETURNS:
+- * A backend pointer, negative error pointer otherwise.
+- */
+-struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
++static struct iio_backend *__devm_iio_backend_fwnode_get(struct device *dev, const char *name,
++							 struct fwnode_handle *fwnode)
+ {
+-	struct fwnode_handle *fwnode;
++	struct fwnode_handle *fwnode_back;
+ 	struct iio_backend *back;
+ 	unsigned int index;
+ 	int ret;
+@@ -604,7 +595,7 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+ 		index = 0;
+ 	}
+ 
+-	fwnode = fwnode_find_reference(dev_fwnode(dev), "io-backends", index);
++	fwnode_back = fwnode_find_reference(fwnode, "io-backends", index);
+ 	if (IS_ERR(fwnode)) {
+ 		dev_err_probe(dev, PTR_ERR(fwnode),
+ 			      "Cannot get Firmware reference\n");
+@@ -613,10 +604,10 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+ 
+ 	guard(mutex)(&iio_back_lock);
+ 	list_for_each_entry(back, &iio_back_list, entry) {
+-		if (!device_match_fwnode(back->dev, fwnode))
++		if (!device_match_fwnode(back->dev, fwnode_back))
+ 			continue;
+ 
+-		fwnode_handle_put(fwnode);
++		fwnode_handle_put(fwnode_back);
+ 		ret = __devm_iio_backend_get(dev, back);
+ 		if (ret)
+ 			return ERR_PTR(ret);
+@@ -624,11 +615,45 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+ 		return back;
+ 	}
+ 
+-	fwnode_handle_put(fwnode);
++	fwnode_handle_put(fwnode_back);
+ 	return ERR_PTR(-EPROBE_DEFER);
+ }
++
++/**
++ * devm_iio_backend_get - Device managed backend device get
++ * @dev: Consumer device for the backend
++ * @name: Backend name
++ *
++ * Get the backend associated with @dev.
++ *
++ * RETURNS:
++ * A backend pointer, negative error pointer otherwise.
++ */
++struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
++{
++	return __devm_iio_backend_fwnode_get(dev, name, dev_fwnode(dev));
++}
+ EXPORT_SYMBOL_NS_GPL(devm_iio_backend_get, IIO_BACKEND);
+ 
++/**
++ * devm_iio_backend_fwnode_get - Device managed backend firmware node get
++ * @dev: Consumer device for the backend
++ * @name: Backend name
++ * @fwnode: Firmware node of the backend consumer
++ *
++ * Get the backend associated with a firmware node.
++ *
++ * RETURNS:
++ * A backend pointer, negative error pointer otherwise.
++ */
++struct iio_backend *devm_iio_backend_fwnode_get(struct device *dev,
++						const char *name,
++						struct fwnode_handle *fwnode)
++{
++	return __devm_iio_backend_fwnode_get(dev, name, fwnode);
++}
++EXPORT_SYMBOL_NS_GPL(devm_iio_backend_fwnode_get, IIO_BACKEND);
++
+ /**
+  * __devm_iio_backend_get_from_fwnode_lookup - Device managed fwnode backend device get
+  * @dev: Consumer device for the backend
+diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
+index c1eff3dbe5eb..d3020446ee45 100644
+--- a/include/linux/iio/backend.h
++++ b/include/linux/iio/backend.h
+@@ -165,6 +165,9 @@ int iio_backend_extend_chan_spec(struct iio_backend *back,
+ 				 struct iio_chan_spec *chan);
+ void *iio_backend_get_priv(const struct iio_backend *conv);
+ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name);
++struct iio_backend *devm_iio_backend_fwnode_get(struct device *dev,
++						const char *name,
++						struct fwnode_handle *fwnode);
+ struct iio_backend *
+ __devm_iio_backend_get_from_fwnode_lookup(struct device *dev,
+ 					  struct fwnode_handle *fwnode);
+-- 
+2.39.5
+

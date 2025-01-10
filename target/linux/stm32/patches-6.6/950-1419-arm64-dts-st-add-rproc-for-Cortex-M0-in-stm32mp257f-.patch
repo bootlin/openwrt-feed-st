@@ -1,0 +1,41 @@
+From 54517f4b915ab3cdf9bcc2eef28b03279b9d5264 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Tue, 10 Sep 2024 13:47:02 +0200
+Subject: [PATCH] arm64: dts: st: add rproc for Cortex-M0 in stm32mp257f-dk
+
+Add remoteproc node used for Cortex-M0.
+
+Change-Id: I52fe4e3dda6ce968fbea5c20acb1d41d8f3c49af
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403321
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 0960e7e39099..08f9943cc773 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -562,6 +562,13 @@ lvds_out0: endpoint {
+ 	};
+ };
+ 
++&m0_rproc {
++	mboxes = <&ipcc2 0>, <&ipcc2 1>, <&ipcc2 2>;
++	mbox-names = "rx", "tx", "shutdown";
++	memory-region = <&cm0_cube_fw>, <&cm0_cube_data>;
++	status = "okay";
++};
++
+ &m33_rproc {
+ 	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
+ 	mbox-names = "vq0", "vq1", "shutdown";
+-- 
+2.39.5
+

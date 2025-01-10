@@ -1,0 +1,37 @@
+From 1427b48a90c66757e929b2260904b0a9726ae77b Mon Sep 17 00:00:00 2001
+From: Stephane Danieau <stephane.danieau@st.com>
+Date: Thu, 20 Jun 2024 18:11:42 +0200
+Subject: [PATCH] nvmem: stm32: tamp: add config option to read old syntax
+ fixed OF cells
+
+This commit is linked to the following nvmem updates (sha1 26e2fe4cab10)
+"nvmem: add explicit config option to read old syntax fixed OF cells"
+
+Change-Id: Ia0bcbb470f33cbdea7800b080139ed77ebc6f662
+Signed-off-by: Stephane Danieau <stephane.danieau@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388936
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/nvmem/stm32-tamp-nvram.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/nvmem/stm32-tamp-nvram.c b/drivers/nvmem/stm32-tamp-nvram.c
+index fcada8d1c21c..99c8feb6efde 100644
+--- a/drivers/nvmem/stm32-tamp-nvram.c
++++ b/drivers/nvmem/stm32-tamp-nvram.c
+@@ -539,6 +539,7 @@ static int stm32_tamp_nvram_probe(struct platform_device *pdev)
+ 	priv->cfg.priv = priv;
+ 	priv->cfg.owner = THIS_MODULE;
+ 	priv->cfg.type = NVMEM_TYPE_BATTERY_BACKED;
++	priv->cfg.add_legacy_fixed_of_cells = true;
+ 	priv->cfg.size = resource_size(res);
+ 	priv->cfg.reg_read = stm32_tamp_nvram_read;
+ 	priv->cfg.reg_write = stm32_tamp_nvram_write;
+-- 
+2.39.5
+

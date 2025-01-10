@@ -1,0 +1,128 @@
+From 6c72e67461f2f539805b3594bd6bd09779c95484 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Tue, 10 Sep 2024 18:00:18 +0200
+Subject: [PATCH] remoteproc: stm32: Add support of C3 peripherals for the
+ stm32mp2 platform
+
+This update add the support of C3 peripherals for low power and autonomous
+mode.
+
+Change-Id: I1f3fc975977709369e81c3744c6ac40b895be132
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403708
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/stm32_m0_rproc.c | 55 +++++++++++------------------
+ 1 file changed, 21 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/remoteproc/stm32_m0_rproc.c b/drivers/remoteproc/stm32_m0_rproc.c
+index fd72590d216b..0bcf4b69f988 100644
+--- a/drivers/remoteproc/stm32_m0_rproc.c
++++ b/drivers/remoteproc/stm32_m0_rproc.c
+@@ -45,8 +45,8 @@ struct stm32_mbox {
+ 
+ struct stm32_rproc {
+ 	struct reset_control *rst;
+-	struct clk *c3_clk;
+-	struct clk *lpuart1_clk;
++	struct clk_bulk_data *clks;
++	int num_clks;
+ 	int wdg_irq;
+ 	u32 nb_rmems;
+ 	struct stm32_m0_rproc_mem *rmems;
+@@ -357,37 +357,33 @@ static int stm32_m0_rproc_start(struct rproc *rproc)
+ 	struct stm32_rproc *ddata = rproc->priv;
+ 	int err;
+ 
+-	/* Enable LPUART1 clock */
+-	if (ddata->lpuart1_clk) {
+-		err = clk_prepare_enable(ddata->lpuart1_clk);
+-		if (err) {
+-			dev_err(&rproc->dev, "failed to enable the lpuart1 clock\n");
+-			return err;
+-		}
+-	}
+-
+-	/* Enable C3 clock */
+-	err = clk_prepare_enable(ddata->c3_clk);
++	/* Enable all C3 clocks */
++	err = clk_bulk_prepare_enable(ddata->num_clks, ddata->clks);
+ 	if (err) {
+-		dev_err(&rproc->dev, "failed to enable the c3 clock\n");
+-		return err;
++		dev_err(&rproc->dev, "failed to enable the C3 clocks\n");
++		goto err_start;
+ 	}
+ 
+ 	/* Assert the reset of the cm0 */
+ 	err = reset_control_assert(ddata->rst);
+ 	if (err) {
+ 		dev_err(&rproc->dev, "failed to assert the reset\n");
+-		return err;
++		goto err_start;
+ 	}
+ 
+ 	/* Deassert the reset of the cm0 */
+ 	err = reset_control_deassert(ddata->rst);
+ 	if (err) {
+ 		dev_err(&rproc->dev, "failed to deassert the reset\n");
+-		return err;
++		goto err_start;
+ 	}
+ 
+ 	return 0;
++
++err_start:
++	/* Disable all C3 clocks */
++	clk_bulk_disable_unprepare(ddata->num_clks, ddata->clks);
++	return err;
+ }
+ 
+ static int stm32_m0_rproc_stop(struct rproc *rproc)
+@@ -404,12 +400,8 @@ static int stm32_m0_rproc_stop(struct rproc *rproc)
+ 		return err;
+ 	}
+ 
+-	/* Disable C3 clock */
+-	clk_disable_unprepare(ddata->c3_clk);
+-
+-	/* Disable LPUART1 clock */
+-	if (ddata->lpuart1_clk)
+-		clk_disable_unprepare(ddata->lpuart1_clk);
++	/* Disable all C3 clocks */
++	clk_bulk_disable_unprepare(ddata->num_clks, ddata->clks);
+ 
+ 	return 0;
+ }
+@@ -479,17 +471,12 @@ static int stm32_m0_rproc_parse_dt(struct platform_device *pdev,
+ 		return dev_err_probe(dev, PTR_ERR(ddata->rst),
+ 				     "failed to get mcu_reset\n");
+ 
+-	/* Get C3 clock */
+-	ddata->c3_clk = devm_clk_get(dev, "c3_clk");
+-	if (IS_ERR(ddata->c3_clk))
+-		return dev_err_probe(dev, PTR_ERR(ddata->c3_clk),
+-				"failed to get c3_clk\n");
+-
+-	/* Get LPUART1 clock */
+-	ddata->lpuart1_clk = devm_clk_get_optional(dev, "lpuart1_clk");
+-	if (IS_ERR(ddata->lpuart1_clk))
+-		return dev_err_probe(dev, PTR_ERR(ddata->lpuart1_clk),
+-				"failed to get lpuart1_clk\n");
++	/* Get all clocks defined in dt node */
++	err = devm_clk_bulk_get_all(dev, &ddata->clks);
++	if (err < 0)
++		return dev_err_probe(dev, err, "Unable to get C3 clocks\n");
++
++	ddata->num_clks = err;
+ 
+ 	*auto_boot = of_property_read_bool(np, "st,auto-boot");
+ 
+-- 
+2.39.5
+

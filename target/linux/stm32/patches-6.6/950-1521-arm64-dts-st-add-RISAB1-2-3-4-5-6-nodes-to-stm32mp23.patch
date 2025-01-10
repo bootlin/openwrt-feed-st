@@ -1,0 +1,81 @@
+From 1cfe94c73190bfb1193fbd7e578946ea8a2619f4 Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Mon, 30 Sep 2024 14:56:25 +0200
+Subject: [PATCH] arm64: dts: st: add RISAB1/2/3/4/5/6 nodes to stm32mp231.dtsi
+
+Add RISAB1/2/3/4/5/6 nodes to this device tree SoC file.
+
+Change-Id: Iee0124f1c0f97c4126ffcdb9b8378b42a1234b97
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407785
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 49 ++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index f3567c550991..7d320d762171 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -2142,6 +2142,55 @@ risaf4: risaf@420d0000 {
+ 			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
+ 		};
+ 
++		risab1: risab@420f0000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x420f0000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa000000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab2: risab@42100000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42100000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa020000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab3: risab@42110000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42110000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa040000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab4: risab@42120000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42120000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa060000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab5: risab@42130000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42130000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa080000 0x20000>;
++			#access-controller-cells = <1>;
++		};
++
++		risab6: risab@42140000 {
++			compatible = "st,stm32mp25-risab";
++			reg = <0x42140000 0x1000>;
++			clocks = <&scmi_clk CK_SCMI_ICN_LS_MCU>;
++			st,mem-map = <0xa0a0000 0x20000>;
++			#access-controller-cells = <1>;
++			status = "disabled";
++		};
++
+ 		bsec: efuse@44000000 {
+ 			compatible = "st,stm32mp25-bsec";
+ 			reg = <0x44000000 0x1000>;
+-- 
+2.39.5
+

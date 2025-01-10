@@ -1,0 +1,47 @@
+From f3d668ea7a4445a80a46fbba113c3a29fcfc8f8a Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Tue, 20 Jun 2023 14:36:59 +0200
+Subject: [PATCH] ARM: dts: stm32: add reboot mode based on NVMEM on STM32MP15
+
+We use nvmem-cells to pass reboot mode to bootloader.
+Normal, fastboot, recovery, serialx and usb boot modes are declared.
+Boot mode value is stored in TAMP backup registers
+(register 20 offset 0x50).
+
+systemd command is need to set the boot mode.
+e.g.
+$ systemctl reboot ums_mmc0
+Change-Id: If3a26b5bb14fc251e36cbf31c3afff10259e5ae5
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 6c7f511133c3..1281be41d7c9 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -2021,6 +2021,20 @@ m4_wakeup_area_hash: tamp-bkp@60 {
+ 					reg = <0x60 0x20>;
+ 				};
+ 			};
++
++			reboot_mode: reboot-mode {
++				compatible = "nvmem-reboot-mode";
++				nvmem-cells = <&boot_mode>;
++				nvmem-cell-names = "reboot-mode";
++				mode-normal = <0x00>;
++				mode-fastboot = <0x01>;
++				mode-recovery = <0x02>;
++				mode-stm32cubeprogrammer = <0x03>;
++				mode-ums_mmc0 = <0x10>;
++				mode-ums_mmc1 = <0x11>;
++				mode-ums_mmc2 = <0x12>;
++				mode-romcode_serial = <0xff>;
++			};
+ 		};
+ 
+ 		/*
+-- 
+2.39.5
+

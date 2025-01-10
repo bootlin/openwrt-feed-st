@@ -1,0 +1,40 @@
+From fd6802a211686be25353fa0995c8837a835a9126 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Fri, 22 Mar 2024 11:34:37 +0100
+Subject: [PATCH] rtc: stm32: add range_min and range_max field
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Those fields are needed to not allow the user to set the time after/before
+our hardware maximum/minimum capability.
+
+Change-Id: I9d8135ad1f086b5afee19a4aba264c9013d095a9
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372825
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ drivers/rtc/rtc-stm32.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+index 83978fbe8c64..2929cc9381fd 100644
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -1080,6 +1080,9 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
++	rtc->rtc_dev->range_min = RTC_TIMESTAMP_BEGIN_2000;
++	rtc->rtc_dev->range_max = RTC_TIMESTAMP_END_2099;
++
+ 	/* Handle RTC alarm interrupts */
+ 	ret = devm_request_threaded_irq(&pdev->dev, rtc->irq_alarm, NULL,
+ 					stm32_rtc_alarm_irq, IRQF_ONESHOT,
+-- 
+2.39.5
+

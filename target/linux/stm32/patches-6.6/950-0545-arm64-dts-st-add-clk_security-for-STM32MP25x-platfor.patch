@@ -1,0 +1,34 @@
+From 07ebb6bf3e38f1df111d80563d0f5a7477c1c4c3 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 1 Sep 2023 15:35:38 +0200
+Subject: [PATCH] arm64: dts: st: add clk_security for STM32MP25x platforms
+
+The secure components of the platform share a secure clock. Implement
+it in the device tree so the secure hardware blocks can refer to it.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Iaf9d31a46f3694601cbc600bd353433e23fff6b4
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index dc98181f0f13..e33bc5c68a24 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -52,6 +52,12 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+ 			compatible = "fixed-clock";
+ 			clock-frequency = <200000000>;
+ 		};
++
++		clk_rcbsec: clk-rcbsec {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <64000000>;
++		};
+ 	};
+ 
+ 	firmware {
+-- 
+2.39.5
+

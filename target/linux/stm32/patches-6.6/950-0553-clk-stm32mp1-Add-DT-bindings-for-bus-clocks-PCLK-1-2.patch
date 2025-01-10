@@ -1,0 +1,69 @@
+From ead4a1aafa6da93885121bcc292ad800fecb9280 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@st.com>
+Date: Mon, 10 Feb 2020 08:24:49 +0100
+Subject: [PATCH] clk: stm32mp1: Add DT bindings for bus clocks PCLK 1/2/3/4/5
+
+Some Kernel clocks can have a bus clocks as parent (pclk 1/2/3/4/5),
+but we can't make an assigned clock parents through DT because
+these clocks has no binding.
+
+Change-Id: I0d1b4a85487de4bdeaba33ff68392f005e934ace
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/159961
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/clk/stm32/clk-stm32mp1.c          | 10 +++++-----
+ include/dt-bindings/clock/stm32mp1-clks.h |  6 ++++++
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
+index 07cb42515104..323b2ee79270 100644
+--- a/drivers/clk/stm32/clk-stm32mp1.c
++++ b/drivers/clk/stm32/clk-stm32mp1.c
+@@ -1849,19 +1849,19 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+ 		   _MUX(RCC_MSSCKSELR, 0, 2, 0),
+ 		   _DIV(RCC_MCUDIVR, 0, 4, 0, mcu_div_table)),
+ 
+-	DIV_TABLE(NO_ID, "pclk1", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB1DIVR, 0,
++	DIV_TABLE(PCLK1, "pclk1", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB1DIVR, 0,
+ 		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
+ 
+-	DIV_TABLE(NO_ID, "pclk2", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB2DIVR, 0,
++	DIV_TABLE(PCLK2, "pclk2", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB2DIVR, 0,
+ 		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
+ 
+-	DIV_TABLE(NO_ID, "pclk3", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB3DIVR, 0,
++	DIV_TABLE(PCLK3, "pclk3", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB3DIVR, 0,
+ 		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
+ 
+-	DIV_TABLE(NO_ID, "pclk4", "ck_axi", CLK_IGNORE_UNUSED, RCC_APB4DIVR, 0,
++	DIV_TABLE(PCLK4, "pclk4", "ck_axi", CLK_IGNORE_UNUSED, RCC_APB4DIVR, 0,
+ 		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
+ 
+-	DIV_TABLE(NO_ID, "pclk5", "ck_axi", CLK_IGNORE_UNUSED, RCC_APB5DIVR, 0,
++	DIV_TABLE(PCLK5, "pclk5", "ck_axi", CLK_IGNORE_UNUSED, RCC_APB5DIVR, 0,
+ 		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
+ 
+ 	/* Kernel Timers */
+diff --git a/include/dt-bindings/clock/stm32mp1-clks.h b/include/dt-bindings/clock/stm32mp1-clks.h
+index 0a5324bcdbda..ff3a40ac5b59 100644
+--- a/include/dt-bindings/clock/stm32mp1-clks.h
++++ b/include/dt-bindings/clock/stm32mp1-clks.h
+@@ -179,6 +179,12 @@
+ #define DAC12_K		168
+ #define ETHPTP_K	169
+ 
++#define PCLK1		170
++#define PCLK2		171
++#define PCLK3		172
++#define PCLK4		173
++#define PCLK5		174
++
+ /* PLL */
+ #define PLL1		176
+ #define PLL2		177
+-- 
+2.39.5
+

@@ -1,0 +1,117 @@
+From dacc45c04f208c43707fe331cce135ef2bacdab5 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Tue, 11 Apr 2023 00:08:33 +0200
+Subject: [PATCH] ARM: dts: stm32: disable IWDG2 for STM32MP1x boards
+
+Disable the iwdg2 watchdog for all STM32MP1x boards.
+
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Change-Id: I6395c2241ba57129d7786b80347cd986647e0005
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts   | 5 -----
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts  | 5 -----
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts  | 5 -----
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts  | 5 -----
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts  | 5 -----
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 5 -----
+ 6 files changed, 30 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index eea740d097c7..5e2dd4eb65c2 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -155,11 +155,6 @@ &i2c5 {
+ 	/delete-property/dma-names;
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index 4473585bc8aa..6f9fa51c179e 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -303,11 +303,6 @@ &ipcc {
+ 	status = "okay";
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index f18a8d6065d6..15343c45aac3 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -307,11 +307,6 @@ &ipcc {
+ 	status = "okay";
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 36be250a31ec..9f9fb7e4e829 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -303,11 +303,6 @@ &ipcc {
+ 	status = "okay";
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index faa106fce46a..4f4b7cb1af6e 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -307,11 +307,6 @@ &ipcc {
+ 	status = "okay";
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+ 			<&vdev0vring1>, <&vdev0buffer>;
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 511113f2e399..1cfd6e521075 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -456,11 +456,6 @@ &ipcc {
+ 	status = "okay";
+ };
+ 
+-&iwdg2 {
+-	timeout-sec = <32>;
+-	status = "okay";
+-};
+-
+ &ltdc {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&ltdc_pins_a>;
+-- 
+2.39.5
+

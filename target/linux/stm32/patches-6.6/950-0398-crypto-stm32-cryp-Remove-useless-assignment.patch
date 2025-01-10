@@ -1,0 +1,39 @@
+From ed1a77bad9d696cb71565c79accf13cd3a3eb3cf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Mon, 20 Nov 2023 10:03:47 +0100
+Subject: [PATCH] crypto: stm32/cryp - Remove useless assignment
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This assignment is redundant because 'cryp' has already been assigned to
+'ctx->cryp' a few lines earlier, so assigning it again to 'cryp' is
+unnecessary.
+
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Change-Id: I25bd17e611bc27d0e9f9172740cdf72f0b56891b
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/340753
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-cryp.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 6f98b66bc985..2535e55be433 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -1680,8 +1680,6 @@ static int stm32_cryp_prepare_req(struct skcipher_request *req,
+ 	rctx = req ? skcipher_request_ctx(req) : aead_request_ctx(areq);
+ 	rctx->mode &= FLG_MODE_MASK;
+ 
+-	ctx->cryp = cryp;
+-
+ 	cryp->flags = (cryp->flags & ~FLG_MODE_MASK) | rctx->mode;
+ 	cryp->hw_blocksize = is_aes(cryp) ? AES_BLOCK_SIZE : DES_BLOCK_SIZE;
+ 	cryp->ctx = ctx;
+-- 
+2.39.5
+

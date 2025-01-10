@@ -1,0 +1,50 @@
+From 07f1d3a19a689d1bc0ce47d8b304eabe9e5e3ce4 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Thu, 5 May 2022 20:43:12 +0530
+Subject: [PATCH] arm64: dts: st: add USB3 DWC3-DRD ctrl node for stm32mp25
+
+USB3 DWC3 Dual-Role Controller, supporting both Host mode in
+Low/Full/High/Super-Speed and Device mode in Full/High/Super-Speed
+
+Change-Id: I89edf5294b3bd37fbc9bd3d36a061521f3ecc3b4
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index e92ba3f0e939..aa1d9cd4ac52 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -439,6 +439,28 @@ usbh_ehci: usb@482f0000 {
+ 					phy-names = "usb";
+ 				};
+ 			};
++
++			usb3dr: usb@48300000 {
++				compatible = "st,stm32mp25-dwc3";
++				st,syscfg = <&syscfg 0x4800>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x48300000 0x48300000 0x100000>;
++				access-controllers = <&rifsc 66>;
++				status = "disabled";
++
++				dwc3: usb@48300000 {
++					compatible = "snps,dwc3";
++					reg = <0x48300000 0x100000>;
++					interrupts = <GIC_SPI 228 IRQ_TYPE_LEVEL_HIGH>;
++					clock-names = "ref", "bus_early", "suspend";
++					clocks = <&rcc CK_KER_USB2PHY2>, <&rcc CK_BUS_USB3DR>,
++						 <&rcc CK_KER_USB2PHY2>;
++					resets = <&rcc USB3DR_R>;
++					phys = <&usb2_phy2>;
++					phy-names = "usb2-phy";
++				};
++			};
+ 		};
+ 
+ 		rcc: clock-controller@44200000 {
+-- 
+2.39.5
+

@@ -1,0 +1,82 @@
+From bd1e8de1c709fa3ec644e67a6f21bb39b913008d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 10 Aug 2023 16:06:12 +0200
+Subject: [PATCH] dt-bindings: i3c: Document the STM32 I3C controller
+
+STM32 I3C supports both controller and target role, SDR-only, and
+implements all the feature required by the MIPI I3C v1.1 specification.
+
+It requires at least a register mapping, a clock and an interrupt.
+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-Id: Ie634b15584f5839f97f7d634f5cc12a2385176d4
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/322413
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/i3c/st,stm32-i3c.yaml | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/i3c/st,stm32-i3c.yaml
+
+diff --git a/Documentation/devicetree/bindings/i3c/st,stm32-i3c.yaml b/Documentation/devicetree/bindings/i3c/st,stm32-i3c.yaml
+new file mode 100644
+index 000000000000..49191851be44
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i3c/st,stm32-i3c.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/i3c/st,stm32-i3c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 I3C controller
++
++maintainers:
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
++
++allOf:
++  - $ref: "i3c.yaml#"
++
++properties:
++  compatible:
++    const: st,stm32-i3c
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++additionalProperties: true
++
++examples:
++  - |
++    #include <dt-bindings/clock/st,stm32mp25-rcc.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/reset/st,stm32mp25-rcc.h>
++    i3c@40190000 {
++      #address-cells = <3>;
++      #size-cells = <0>;
++      compatible = "st,stm32-i3c";
++      reg = <0x40190000 0x400>;
++      interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&rcc CK_KER_I3C1>;
++      resets = <&rcc I3C4_R>;
++      status = "disabled";
++    };
+\ No newline at end of file
+-- 
+2.39.5
+

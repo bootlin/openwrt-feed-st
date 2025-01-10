@@ -1,0 +1,40 @@
+From de9fb5e8131038dede5fec0dc2dcf313275176ec Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 13 Oct 2022 18:44:08 +0200
+Subject: [PATCH] arm64: dts: st: enable the i2c2 node in stm32mp257f-ev1.dts
+
+Enable the i2c2 node for the STM32MP257F eval board.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I8c1cb756ea46a49d0b0215de658c5909a78e7926
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 97af8259281f..fe4a94a44e59 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -49,6 +49,19 @@ &hpdma3 {
+ 	memory-region = <&hpdma3_lli>;
+ };
+ 
++&i2c2 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c2_pins_a>;
++	pinctrl-1 = <&i2c2_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <100>;
++	i2c-scl-falling-time-ns = <13>;
++	clock-frequency = <400000>;
++	status = "okay";
++	/* spare dmas for other usage */
++	/delete-property/dmas;
++	/delete-property/dma-names;
++};
++
+ &rtc {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

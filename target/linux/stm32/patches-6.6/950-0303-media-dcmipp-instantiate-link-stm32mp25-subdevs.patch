@@ -1,0 +1,87 @@
+From baca8593b8998b39fa7c7b4b654ac2b2ad220aa6 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 13 Feb 2024 11:20:44 +0100
+Subject: [PATCH] media: dcmipp: instantiate & link stm32mp25 subdevs
+
+Add topology of the two pixel pipes (main & aux) of the stm32mp25.
+Do not make the link from dcmipp_input immutable and enabled by
+default since not all pipes are always used together so when a pipeline
+is not being used its link should be disconnected to allow proper
+pipeline check.
+Not doing this would most probably lead to pipeline start failure due
+to incompatible pads configurations on the unused pipe.
+
+Change-Id: I0c7d6d25ae75db6745abe01d9aa18560e0a80f22
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 42 ++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 9b3fa2fd8701..8f054d433aec 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -107,6 +107,11 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+ 	.num_links	= ARRAY_SIZE(stm32mp13_ent_links)
+ };
+ 
++#define	ID_MAIN_ISP 3
++#define	ID_MAIN_POSTPROC 4
++#define	ID_MAIN_CAPTURE	5
++#define	ID_AUX_POSTPROC 6
++#define	ID_AUX_CAPTURE 7
+ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 	{
+ 		.name = "dcmipp_input",
+@@ -123,13 +128,46 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+ 		.init = dcmipp_bytecap_ent_init,
+ 		.release = dcmipp_bytecap_ent_release,
+ 	},
++	{
++		.name = "dcmipp_main_isp",
++		.init = dcmipp_isp_ent_init,
++		.release = dcmipp_isp_ent_release,
++	},
++	{
++		.name = "dcmipp_main_postproc",
++		.init = dcmipp_pixelproc_ent_init,
++		.release = dcmipp_pixelproc_ent_release,
++	},
++	{
++		.name = "dcmipp_main_capture",
++		.init = dcmipp_pixelcap_ent_init,
++		.release = dcmipp_pixelcap_ent_release,
++	},
++	{
++		.name = "dcmipp_aux_postproc",
++		.init = dcmipp_pixelproc_ent_init,
++		.release = dcmipp_pixelproc_ent_release,
++	},
++	{
++		.name = "dcmipp_aux_capture",
++		.init = dcmipp_pixelcap_ent_init,
++		.release = dcmipp_pixelcap_ent_release,
++	},
+ };
+ 
+ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+-	DCMIPP_ENT_LINK(ID_INPUT, 1, ID_DUMP_BYTEPROC, 0,
+-			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_INPUT, 1, ID_DUMP_BYTEPROC, 0, 0),
+ 	DCMIPP_ENT_LINK(ID_DUMP_BYTEPROC, 1, ID_DUMP_CAPTURE,  0,
+ 			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_INPUT,	2, ID_MAIN_ISP,  0, 0),
++	DCMIPP_ENT_LINK(ID_MAIN_ISP,	1, ID_MAIN_POSTPROC,  0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_MAIN_ISP,	1, ID_AUX_POSTPROC,  0, 0),
++	DCMIPP_ENT_LINK(ID_MAIN_POSTPROC,	1, ID_MAIN_CAPTURE,  0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
++	DCMIPP_ENT_LINK(ID_INPUT,	3, ID_AUX_POSTPROC,  0, 0),
++	DCMIPP_ENT_LINK(ID_AUX_POSTPROC,	1, ID_AUX_CAPTURE,  0,
++			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
+ };
+ 
+ static const struct dcmipp_pipeline_config stm32mp25_pipe_cfg = {
+-- 
+2.39.5
+

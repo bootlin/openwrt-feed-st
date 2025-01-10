@@ -1,0 +1,264 @@
+From d5f45d52f790e51eba5a1a161afc2b7b1ed1a0a4 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 10 Sep 2024 11:19:41 +0200
+Subject: [PATCH] dt-bindings: iio: dfsdm: move to backend framework
+
+Change the DFSDM binding to use the new IIO backend framework,
+along with the adoption of IIO generic channels.
+This binding change allows to add scaling support to the DFSDM.
+
+Keep the legacy binding as deprecated for backward compatibility.
+
+The io-backends property is supported only in generic IIO channel
+binding.
+
+- Channel description with the generic binding (Audio and Analog):
+
+  Properties superseded by generic properties:
+    st,adc-channels: becomes "reg" property in channel node
+    st,adc-channel-names: becomes "label" property in channel node
+  Properties moved to channel child node:
+    st,adc-channel-types: becomes st,adc-channel-type
+    st,adc-channel-clk-src, st,adc-alt-channel
+
+- Analog binding:
+
+  DFSDM filter channel is configured as an IIO backend consumer.
+  Add io-backends property in channel child nodes.
+
+  DFSDM is no more configured as a channel consumer from SD modulator.
+  Use of io-channels in DFSDM node is deprecated.
+
+- Audio binding:
+
+  DFSDM audio DAI is configured as a channel consumer from DFSDM filter.
+  No change compare to legacy.
+
+Change-Id: I7dc38ee5e60816ce7d3500dcdb0e1219d1e85f4e
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Link: https://patch.msgid.link/20240730084640.1307938-5-olivier.moysan@foss.st.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403508
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 122 +++++++++++++++---
+ 1 file changed, 107 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index 4aae5b41a4a1..91e9d0caed13 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -102,9 +102,11 @@ patternProperties:
+         items:
+           minimum: 0
+           maximum: 7
++        deprecated: true
+ 
+       st,adc-channel-names:
+         description: List of single-ended channel names.
++        deprecated: true
+ 
+       st,filter-order:
+         description: |
+@@ -118,6 +120,12 @@ patternProperties:
+       "#io-channel-cells":
+         const: 1
+ 
++      '#address-cells':
++        const: 1
++
++      '#size-cells':
++        const: 0
++
+       st,adc-channel-types:
+         description: |
+           Single-ended channel input type.
+@@ -128,6 +136,7 @@ patternProperties:
+         items:
+           enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
+         $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++        deprecated: true
+ 
+       st,adc-channel-clk-src:
+         description: |
+@@ -139,6 +148,7 @@ patternProperties:
+         items:
+           enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
+         $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++        deprecated: true
+ 
+       st,adc-alt-channel:
+         description:
+@@ -148,6 +158,7 @@ patternProperties:
+         items:
+           enum: [ 0, 1 ]
+         $ref: /schemas/types.yaml#/definitions/uint32-array
++        deprecated: true
+ 
+       st,filter0-sync:
+         description:
+@@ -166,11 +177,60 @@ patternProperties:
+       - compatible
+       - reg
+       - interrupts
+-      - st,adc-channels
+-      - st,adc-channel-names
+       - st,filter-order
+       - "#io-channel-cells"
+ 
++    patternProperties:
++      "^channel@[0-7]$":
++        type: object
++        $ref: adc.yaml
++        unevaluatedProperties: false
++        description: Represents the external channels which are connected to the DFSDM.
++
++        properties:
++          reg:
++            maximum: 7
++
++          label:
++            description:
++              Unique name to identify which channel this is.
++
++          st,adc-channel-type:
++            description: |
++              Single-ended channel input type.
++              - "SPI_R": SPI with data on rising edge (default)
++              - "SPI_F": SPI with data on falling edge
++              - "MANCH_R": manchester codec, rising edge = logic 0, falling edge = logic 1
++              - "MANCH_F": manchester codec, rising edge = logic 1, falling edge = logic 0
++            $ref: /schemas/types.yaml#/definitions/string
++            enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
++
++          st,adc-channel-clk-src:
++            description: |
++              Conversion clock source.
++              - "CLKIN": external SPI clock (CLKIN x)
++              - "CLKOUT": internal SPI clock (CLKOUT) (default)
++              - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
++              - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
++            $ref: /schemas/types.yaml#/definitions/string
++            enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
++
++          st,adc-alt-channel:
++            description:
++              Must be defined if two sigma delta modulators are
++              connected on same SPI input.
++              If not set, channel n is connected to SPI input n.
++              If set, channel n is connected to SPI input n + 1.
++            type: boolean
++
++          io-backends:
++            description:
++              Used to pipe external sigma delta modulator or internal ADC backend to DFSDM channel.
++            maxItems: 1
++
++        required:
++          - reg
++
+     allOf:
+       - if:
+           properties:
+@@ -200,9 +260,19 @@ patternProperties:
+               description:
+                 From common IIO binding. Used to pipe external sigma delta
+                 modulator or internal ADC output to DFSDM channel.
++              deprecated: true
+ 
+-          required:
+-            - io-channels
++          if:
++            required:
++              - st,adc-channels
++          then:
++            required:
++              - io-channels
++
++          patternProperties:
++            "^channel@[0-7]$":
++              required:
++                - io-backends
+ 
+       - if:
+           properties:
+@@ -299,6 +369,7 @@ examples:
+       #address-cells = <1>;
+       #size-cells = <0>;
+ 
++      // Example 1: Audio use case with generic binding
+       dfsdm0: filter@0 {
+         compatible = "st,stm32-dfsdm-dmic";
+         reg = <0>;
+@@ -306,12 +377,18 @@ examples:
+         dmas = <&dmamux1 101 0x400 0x01>;
+         dma-names = "rx";
+         #io-channel-cells = <1>;
+-        st,adc-channels = <1>;
+-        st,adc-channel-names = "dmic0";
+-        st,adc-channel-types = "SPI_R";
+-        st,adc-channel-clk-src = "CLKOUT";
++        #address-cells = <1>;
++        #size-cells = <0>;
+         st,filter-order = <5>;
+ 
++        channel@1 {
++          reg = <1>;
++          label = "dmic0";
++          st,adc-channel-type = "SPI_R";
++          st,adc-channel-clk-src = "CLKOUT";
++          st,adc-alt-channel;
++        };
++
+         asoc_pdm0: dfsdm-dai {
+           compatible = "st,stm32h7-dfsdm-dai";
+           #sound-dai-cells = <0>;
+@@ -319,19 +396,34 @@ examples:
+         };
+       };
+ 
+-      dfsdm_pdm1: filter@1 {
++      // Example 2: Analog use case with generic binding
++      dfsdm1: filter@1 {
+         compatible = "st,stm32-dfsdm-adc";
+         reg = <1>;
+         interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+         dmas = <&dmamux1 102 0x400 0x01>;
+         dma-names = "rx";
+-        #io-channel-cells = <1>;
+-        st,adc-channels = <2 3>;
+-        st,adc-channel-names = "in2", "in3";
+-        st,adc-channel-types = "SPI_R", "SPI_R";
+-        st,adc-channel-clk-src = "CLKOUT_F", "CLKOUT_F";
+-        io-channels = <&sd_adc2 &sd_adc3>;
+         st,filter-order = <1>;
++        #io-channel-cells = <1>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        channel@2 {
++          reg = <2>;
++          label = "in2";
++          st,adc-channel-type = "SPI_F";
++          st,adc-channel-clk-src = "CLKOUT";
++          st,adc-alt-channel;
++          io-backends = <&sd_adc2>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          label = "in3";
++          st,adc-channel-type = "SPI_R";
++          st,adc-channel-clk-src = "CLKOUT";
++          io-backends = <&sd_adc3>;
++        };
+       };
+     };
+ 
+-- 
+2.39.5
+

@@ -1,0 +1,26 @@
+From 8f264be67ffad799ded7f2d00023465e00d07691 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 3 May 2023 15:49:39 +0200
+Subject: [PATCH] arm64: defconfig: Enable scmi regulator support in addons
+ fragment
+
+This patch adds in built-in the SCMI regulator driver
+used by STM32MP SOCs.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: Icf1a08d5e97ca11bb6af611267570aa88ca72607
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 03b4ae05afcf..d8793272beb0 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -1,2 +1,3 @@
+ #  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-defconfig-addons.config -o fragment-02-defconfig-addons.config
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_REGULATOR_ARM_SCMI=y
+-- 
+2.39.5
+

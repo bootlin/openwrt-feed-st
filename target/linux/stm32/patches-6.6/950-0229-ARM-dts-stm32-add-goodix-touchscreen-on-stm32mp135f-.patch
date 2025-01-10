@@ -1,0 +1,75 @@
+From 967c0ab4ec9c9e10a39cd874be7adc23fb138388 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 12 Dec 2022 08:52:56 +0100
+Subject: [PATCH] ARM: dts: stm32: add goodix touchscreen on stm32mp135f-dk
+
+Add goodix touchscreen node.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: Ib740907468d5404001183bc12e60ada5be2be751
+---
+ arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 22 +++++++++++++++++++++
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts     | 14 +++++++++++++
+ 2 files changed, 36 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+index a15c0d5cdd69..cd87deb59c19 100644
+--- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+@@ -52,6 +52,28 @@ pins {
+ 		};
+ 	};
+ 
++	goodix_pins_a: goodix-0 {
++		/*
++		 * touchscreen reset needs to be configured
++		 * via the pinctrl not the driver (a pull-down resistor
++		 * has been soldered onto the reset line which forces
++		 * the touchscreen to reset state).
++		 */
++		pins1 {
++			pinmux = <STM32_PINMUX('H', 2, GPIO)>;
++			output-high;
++			bias-pull-up;
++		};
++		/*
++		 * Interrupt line must have a pull-down resistor
++		 * in order to freeze the i2c address at 0x5D
++		 */
++		pins2 {
++			pinmux = <STM32_PINMUX('F', 5, GPIO)>;
++			bias-pull-down;
++		};
++	};
++
+ 	i2c1_pins_a: i2c1-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 1a53a251a20b..d58b0153cae6 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -201,6 +201,20 @@ &i2c5 {
+ 	/* spare dmas for other usage */
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
++
++	goodix: goodix-ts@5d {
++		compatible = "goodix,gt911";
++		reg = <0x5d>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&goodix_pins_a>;
++		interrupt-parent = <&gpiof>;
++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
++		AVDD28-supply = <&scmi_v3v3_sw>;
++		VDDIO-supply = <&scmi_v3v3_sw>;
++		touchscreen-size-x = <480>;
++		touchscreen-size-y = <272>;
++		status = "okay" ;
++	};
+ };
+ 
+ &ltdc {
+-- 
+2.39.5
+

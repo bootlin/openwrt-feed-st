@@ -1,0 +1,31 @@
+From 539ac746d8be01651e31f2997688dcf0422136f0 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 11:51:08 +0100
+Subject: [PATCH] arm64: dts: st: enable the IPCC support on stm32mp257f-dk
+
+Enable the IPCC node for the Cortex-M33 management.
+
+Change-Id: Ie29f7235885460bcf9b92cd2b40a397e5651dba1
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 31de85df14b9..d15e9e5b7b73 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -327,6 +327,10 @@ &i2c8 {
+ 	/delete-property/dma-names;
+ };
+ 
++&ipcc1 {
++	status = "okay";
++};
++
+ &ltdc {
+ 	status = "okay";
+ 
+-- 
+2.39.5
+

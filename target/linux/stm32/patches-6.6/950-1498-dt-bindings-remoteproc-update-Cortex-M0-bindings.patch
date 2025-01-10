@@ -1,0 +1,54 @@
+From 8962f14a3b73053adf16868f0420c6f31d5ceeec Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Thu, 26 Sep 2024 10:04:42 +0200
+Subject: [PATCH] dt-bindings: remoteproc: update Cortex-M0 bindings
+
+Remove clock-names item as no more used for the Cortex-M0.
+
+Change-Id: Iae5b41d25f13de9ef960b9e7948eb087b91f24fb
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407624
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ .../devicetree/bindings/remoteproc/st,stm32-m0.yaml         | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
+index 36fd06e47b62..a3ff0f412e0f 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
+@@ -25,10 +25,6 @@ properties:
+   clocks:
+     minItems: 1
+ 
+-  clock-names:
+-    items:
+-      - const: c3_clk
+-
+   resets:
+     minItems: 1
+ 
+@@ -86,7 +82,6 @@ required:
+   - compatible
+   - reg
+   - clocks
+-  - clock-names
+   - resets
+   - reset-names
+ 
+@@ -99,7 +94,6 @@ examples:
+       compatible = "st,stm32mp2-m0";
+       reg = <0 0>;
+       clocks = <&rcc CK_CPU3>;
+-      clock-names = "c3_clk";
+       resets = <&rcc C3_R>;
+       reset-names = "mcu_rst";
+     };
+-- 
+2.39.5
+

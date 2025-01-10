@@ -1,0 +1,155 @@
+From bfaf21242ffe6c184bfc98a5ed3b843c53866e42 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 6 Aug 2024 17:48:44 +0200
+Subject: [PATCH] iio: adc: stm32-mdf: change default frequency management
+
+Define a default decimation ratio instead of default sampling frequency.
+If not set, the default frequency is computed from default decimation
+ratio. This ensure that a filter configuration can be found whatever
+the selected filter order. (Most constrained case is order 5)
+
+Also make minor improvements on traces and fix compilation warning:
+"stm32-mdf-core.c:448:30: warning: %s directive argument is null"
+
+Change-Id: Id0471773a957415b85b41d7164d4828bc4b4251d
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397590
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/iio/adc/stm32-mdf-adc.c  | 25 ++++++++++++++++++++-----
+ drivers/iio/adc/stm32-mdf-core.c |  7 ++++---
+ drivers/iio/adc/stm32-mdf.h      |  7 ++-----
+ 3 files changed, 26 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
+index 5b6320d41b7f..054479e06c6c 100644
+--- a/drivers/iio/adc/stm32-mdf-adc.c
++++ b/drivers/iio/adc/stm32-mdf-adc.c
+@@ -32,7 +32,11 @@
+ #define STM32_MDF_DATA_RES 24
+ #define STM32_MDF_HPF_BYPASS -1
+ #define STM32_MDF_TIMEOUT_MS msecs_to_jiffies(100)
+-#define MDF_DEFAULT_SAMPLING_FREQ 1024
++/*
++ * Choose a default sampling ratio supported for all filter orders with RSFLT active.
++ * 32 is the maximum decimation ratio for filter order 5, with RSFLT active.
++ */
++#define MDF_DEFAULT_DECIM_RATIO 32
+ 
+ #define MDF_IS_FILTER0(adc)			(!((adc)->fl_id))
+ #define MDF_IS_INTERLEAVED_FILT(adc)		((adc)->interleaved)
+@@ -653,6 +657,7 @@ static int stm32_mdf_adc_check_clock_config(struct stm32_mdf_adc *adc, unsigned
+ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample_freq, int lock)
+ {
+ 	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
++	struct device *dev = &indio_dev->dev;
+ 	unsigned int decim_ratio;
+ 	unsigned long delta, delta_ppm, sck_freq;
+ 	unsigned long cck_expected_freq;
+@@ -666,11 +671,20 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+ 
+ 	sck_freq = clk_get_rate(adc->sitf->sck);
+ 	if (!sck_freq) {
+-		dev_err(&indio_dev->dev, "Unexpected serial clock frequency: 0Hz\n");
++		dev_err(dev, "Unexpected serial clock frequency: 0Hz\n");
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+ 
++	/*
++	 * If requested sampling frequency is 0, set a default frequency.
++	 * The default frequency is computed from default decimation ratio.
++	 * This ensures that a filter configuration can be found whatever the selected filter
++	 * order. (Most constrained case is order 5)
++	 */
++	if (!sample_freq)
++		sample_freq = sck_freq / MDF_DEFAULT_DECIM_RATIO;
++
+ 	/*
+ 	 * MDF may share its parent clock with SAI, so kernel clock rate may have been changed.
+ 	 * The set_rate ops is called implicitly through clk_get_rate() call, and MDF dividers
+@@ -696,10 +710,10 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+ 	delta = abs(sck_freq - (decim_ratio * sample_freq));
+ 	delta_ppm = (1000000 * delta) / sck_freq;
+ 	if (delta_ppm > 1000)
+-		dev_warn(&indio_dev->dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
++		dev_warn(dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
+ 			 delta_ppm, sck_freq / decim_ratio, sample_freq);
+ 	else if (delta)
+-		dev_dbg(&indio_dev->dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
++		dev_dbg(dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
+ 			delta_ppm, sck_freq / decim_ratio, sample_freq);
+ 
+ 	ret = stm32_mdf_adc_set_filters_config(indio_dev, decim_ratio);
+@@ -768,7 +782,8 @@ static int stm32_mdf_adc_start_conv(struct iio_dev *indio_dev)
+ 	 * before setting the sampling frequency.
+ 	 */
+ 	if (!adc->sample_freq) {
+-		ret = mdf_adc_set_samp_freq(indio_dev, MDF_DEFAULT_SAMPLING_FREQ, 1);
++		/* Setting frequency to 0 means that the default frequency will be applied. */
++		ret = mdf_adc_set_samp_freq(indio_dev, 0, 1);
+ 		if (ret < 0)
+ 			goto stop_sitf;
+ 	}
+diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
+index 7cb8873f5b21..23360563e222 100644
+--- a/drivers/iio/adc/stm32-mdf-core.c
++++ b/drivers/iio/adc/stm32-mdf-core.c
+@@ -308,11 +308,11 @@ static int stm32_mdf_core_cck_divider_set_rate(struct platform_device *pdev,
+ 	 * cck divider. Try to maximize cck divider first, to help fulfilling
+ 	 * frequency ratio requirements between fproc and fcck.
+ 	 */
+-	cckdiv = gcd(ratio, MDF_CCKDIV_MAX);
++	cckdiv = gcd(ratio, MDF_CKG_CCKDIV_MAX);
+ 	procdiv = ratio / cckdiv;
+ 
+ 	if (procdiv > MDF_PROCDIV_MAX) {
+-		dev_err(dev, "Proc divider out of range: %d > %d\n", procdiv, MDF_PROCDIV_MAX);
++		dev_err(dev, "Proc divider out of range: %u > %lu\n", procdiv, MDF_PROCDIV_MAX);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -446,7 +446,8 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+ 	clk_data->num = STM32_MDF_MAX_CCK;
+ 	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
+ 	if (ret) {
+-		dev_err(dev, "Failed to add %s clock provider: %d\n", clk_name, ret);
++		dev_err(dev, "Failed to add %s clock provider: %d\n",
++			clk_name ? clk_name : "", ret);
+ 		return ret;
+ 	}
+ 
+diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
+index 830e3b64eef8..71c51b0b4814 100644
+--- a/drivers/iio/adc/stm32-mdf.h
++++ b/drivers/iio/adc/stm32-mdf.h
+@@ -52,11 +52,11 @@
+ #define MDF_CKG_TRGSRC_MASK GENMASK(15, 12)
+ #define MDF_CKG_TRGSRC(v) FIELD_PREP(MDF_CKG_TRGSRC_MASK, v)
+ #define MDF_CKG_CCKDIV_MASK GENMASK(19, 16)
+-#define MDF_CKG_CCKDIV_SHIFT 16
+-#define MDF_CKG_CCKDIV_WIDTH 4
+ #define MDF_CKG_CCKDIV(v) FIELD_PREP(MDF_CKG_CCKDIV_MASK, v)
++#define MDF_CKG_CCKDIV_MAX (FIELD_MAX(MDF_CKG_CCKDIV_MASK) + 1)
+ #define MDF_CKG_PROCDIV_MASK GENMASK(30, 24)
+ #define MDF_CKG_PROCDIV(v) FIELD_PREP(MDF_CKG_PROCDIV_MASK, v)
++#define MDF_PROCDIV_MAX (FIELD_MAX(MDF_CKG_PROCDIV_MASK) + 1)
+ #define MDF_CKG_ACTIVE BIT(31)
+ 
+ /* MDF_OR: Option Register */
+@@ -236,9 +236,6 @@
+ #define MDF_SIDR_SID_MASK GENMASK(31, 0)
+ #define MDF_SIDR_SID(v) FIELD_PREP(MDF_SIDR_SID_MASK, v)
+ 
+-#define MDF_PROCDIV_MAX 512
+-#define MDF_CCKDIV_MAX 16
+-
+ #define STM32MP25_MDF_IPIDR_NUMBER 0x00110032
+ 
+ #define STM32_MDF_CCK0 "clk_cck0"
+-- 
+2.39.5
+

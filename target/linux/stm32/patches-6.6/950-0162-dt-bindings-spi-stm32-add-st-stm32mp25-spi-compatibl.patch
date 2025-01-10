@@ -1,0 +1,36 @@
+From 9fffa4f3afb81e6260dae3f03d735c94d9906047 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 18 Dec 2023 16:57:14 +0100
+Subject: [PATCH] dt-bindings: spi: stm32: add st,stm32mp25-spi compatible
+
+Add st,stm32mp25-spi compatible in dt-bindings.  STM32MP25 spi is similar
+to the STM32H7 except for the following two points:
+  - Burst should not be enabled with the new DMA used on STM32MP25.
+  - STM32MP25 SPI8 has a limited feature set, it can only send words of
+    8 or 16 bits and with a maximum words number of 1024.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://msgid.link/r/20231218155721.359198-3-alain.volmat@foss.st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index 9ca1a843c820..b66d235805d5 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -33,6 +33,7 @@ properties:
+     enum:
+       - st,stm32f4-spi
+       - st,stm32h7-spi
++      - st,stm32mp25-spi
+ 
+   reg:
+     maxItems: 1
+-- 
+2.39.5
+

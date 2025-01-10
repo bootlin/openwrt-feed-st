@@ -1,0 +1,31 @@
+From dfef3afce82e6adbd8415eba97548e513424c66b Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Tue, 20 Jun 2023 14:37:01 +0200
+Subject: [PATCH] ARM: configs: add stm32 backup registers reboot mode support
+ in multiv7 addons fragment
+
+Enable REBOOT MODE from nvmmem cells with
+fragment-02-multiv7_addons.config (STM32MP13 && STM32MP15 Socs)
+
+Change-Id: I57a73cceedaf575837005aafd226ba0c09c32012
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+(cherry picked from commit 8acd3e5a46f5a2de5d657b6dea9a3f5e2f8fe164)
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index d8186a79902b..ee1740b8b927 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -23,6 +23,7 @@ CONFIG_MTD_MCHP23K256=m
+ CONFIG_MTD_SPI_NAND=y
+ CONFIG_NAMESPACES=y
+ CONFIG_NR_CPUS=2
++CONFIG_NVMEM_REBOOT_MODE=y
+ CONFIG_NVMEM_STM32_TAMP=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_OVERLAY_FS=y
+-- 
+2.39.5
+

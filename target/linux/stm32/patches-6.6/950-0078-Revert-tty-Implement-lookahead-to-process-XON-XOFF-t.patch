@@ -1,0 +1,442 @@
+From 6607451cb739820850b15f5ba02609ae3d6ced76 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 14 Dec 2023 11:03:28 +0100
+Subject: [PATCH] Revert "tty: Implement lookahead to process XON/XOFF timely"
+
+This reverts commit 6bb6fa6908ebd3cb4e14cd4f0ce272ec885d2eb0.
+
+This series seems to introduce some regressions on tty buffer.
+Revert it temporary.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ied4f40eaf6534b23c0c3cd85392d6ae704308c3d
+---
+ drivers/tty/n_tty.c        | 102 ++++++-------------------------------
+ drivers/tty/tty_buffer.c   |  57 ++++-----------------
+ drivers/tty/tty_port.c     |  21 --------
+ include/linux/tty_buffer.h |   1 -
+ include/linux/tty_ldisc.h  |  16 ------
+ include/linux/tty_port.h   |   2 -
+ 6 files changed, 27 insertions(+), 172 deletions(-)
+
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index f6a32e19337d..c566c59cae9d 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -117,9 +117,6 @@ struct n_tty_data {
+ 	size_t read_tail;
+ 	size_t line_start;
+ 
+-	/* # of chars looked ahead (to find software flow control chars) */
+-	size_t lookahead_count;
+-
+ 	/* protected by output lock */
+ 	unsigned int column;
+ 	unsigned int canon_column;
+@@ -329,8 +326,6 @@ static void reset_buffer_flags(struct n_tty_data *ldata)
+ 	ldata->erasing = 0;
+ 	bitmap_zero(ldata->read_flags, N_TTY_BUF_SIZE);
+ 	ldata->push = 0;
+-
+-	ldata->lookahead_count = 0;
+ }
+ 
+ static void n_tty_packet_mode_flush(struct tty_struct *tty)
+@@ -1225,30 +1220,12 @@ static bool n_tty_is_char_flow_ctrl(struct tty_struct *tty, u8 c)
+ 	return c == START_CHAR(tty) || c == STOP_CHAR(tty);
+ }
+ 
+-/**
+- * n_tty_receive_char_flow_ctrl - receive flow control chars
+- * @tty: terminal device
+- * @c: character
+- * @lookahead_done: lookahead has processed this character already
+- *
+- * Receive and process flow control character actions.
+- *
+- * In case lookahead for flow control chars already handled the character in
+- * advance to the normal receive, the actions are skipped during normal
+- * receive.
+- *
+- * Returns true if @c is consumed as flow-control character, the character
+- * must not be treated as normal character.
+- */
+-static bool n_tty_receive_char_flow_ctrl(struct tty_struct *tty, u8 c,
+-					 bool lookahead_done)
++/* Returns true if c is consumed as flow-control character */
++static bool n_tty_receive_char_flow_ctrl(struct tty_struct *tty, u8 c)
+ {
+ 	if (!n_tty_is_char_flow_ctrl(tty, c))
+ 		return false;
+ 
+-	if (lookahead_done)
+-		return true;
+-
+ 	if (c == START_CHAR(tty)) {
+ 		start_tty(tty);
+ 		process_echoes(tty);
+@@ -1356,12 +1333,11 @@ static bool n_tty_receive_char_canon(struct tty_struct *tty, u8 c)
+ 	return false;
+ }
+ 
+-static void n_tty_receive_char_special(struct tty_struct *tty, u8 c,
+-				       bool lookahead_done)
++static void n_tty_receive_char_special(struct tty_struct *tty, u8 c)
+ {
+ 	struct n_tty_data *ldata = tty->disc_data;
+ 
+-	if (I_IXON(tty) && n_tty_receive_char_flow_ctrl(tty, c, lookahead_done))
++	if (I_IXON(tty) && n_tty_receive_char_flow_ctrl(tty, c))
+ 		return;
+ 
+ 	if (L_ISIG(tty)) {
+@@ -1447,8 +1423,7 @@ static void n_tty_receive_char(struct tty_struct *tty, u8 c)
+ 	put_tty_queue(c, ldata);
+ }
+ 
+-static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c,
+-				       bool lookahead_done)
++static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c)
+ {
+ 	if (I_ISTRIP(tty))
+ 		c &= 0x7f;
+@@ -1456,12 +1431,9 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c,
+ 		c = tolower(c);
+ 
+ 	if (I_IXON(tty)) {
+-		if (c == STOP_CHAR(tty)) {
+-			if (!lookahead_done)
+-				stop_tty(tty);
+-		} else if (c == START_CHAR(tty) && lookahead_done) {
+-			return;
+-		} else if (c == START_CHAR(tty) ||
++		if (c == STOP_CHAR(tty))
++			stop_tty(tty);
++		else if (c == START_CHAR(tty) ||
+ 			 (tty->flow.stopped && !tty->flow.tco_stopped && I_IXANY(tty) &&
+ 			  c != INTR_CHAR(tty) && c != QUIT_CHAR(tty) &&
+ 			  c != SUSP_CHAR(tty))) {
+@@ -1507,27 +1479,6 @@ n_tty_receive_char_lnext(struct tty_struct *tty, u8 c, u8 flag)
+ 		n_tty_receive_char_flagged(tty, c, flag);
+ }
+ 
+-/* Caller must ensure count > 0 */
+-static void n_tty_lookahead_flow_ctrl(struct tty_struct *tty, const u8 *cp,
+-				      const u8 *fp, size_t count)
+-{
+-	struct n_tty_data *ldata = tty->disc_data;
+-	u8 flag = TTY_NORMAL;
+-
+-	ldata->lookahead_count += count;
+-
+-	if (!I_IXON(tty))
+-		return;
+-
+-	while (count--) {
+-		if (fp)
+-			flag = *fp++;
+-		if (likely(flag == TTY_NORMAL))
+-			n_tty_receive_char_flow_ctrl(tty, *cp, false);
+-		cp++;
+-	}
+-}
+-
+ static void
+ n_tty_receive_buf_real_raw(const struct tty_struct *tty, const u8 *cp,
+ 			   size_t count)
+@@ -1566,7 +1517,7 @@ n_tty_receive_buf_raw(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+ 
+ static void
+ n_tty_receive_buf_closing(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+-			  size_t count, bool lookahead_done)
++			  size_t count)
+ {
+ 	u8 flag = TTY_NORMAL;
+ 
+@@ -1574,13 +1525,12 @@ n_tty_receive_buf_closing(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+ 		if (fp)
+ 			flag = *fp++;
+ 		if (likely(flag == TTY_NORMAL))
+-			n_tty_receive_char_closing(tty, *cp++, lookahead_done);
++			n_tty_receive_char_closing(tty, *cp++);
+ 	}
+ }
+ 
+ static void n_tty_receive_buf_standard(struct tty_struct *tty, const u8 *cp,
+-				       const u8 *fp, size_t count,
+-				       bool lookahead_done)
++				       const u8 *fp, size_t count)
+ {
+ 	struct n_tty_data *ldata = tty->disc_data;
+ 	u8 flag = TTY_NORMAL;
+@@ -1611,7 +1561,7 @@ static void n_tty_receive_buf_standard(struct tty_struct *tty, const u8 *cp,
+ 		}
+ 
+ 		if (test_bit(c, ldata->char_map))
+-			n_tty_receive_char_special(tty, c, lookahead_done);
++			n_tty_receive_char_special(tty, c);
+ 		else
+ 			n_tty_receive_char(tty, c);
+ 	}
+@@ -1622,40 +1572,21 @@ static void __receive_buf(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+ {
+ 	struct n_tty_data *ldata = tty->disc_data;
+ 	bool preops = I_ISTRIP(tty) || (I_IUCLC(tty) && L_IEXTEN(tty));
+-	size_t la_count = min(ldata->lookahead_count, count);
+ 
+ 	if (ldata->real_raw)
+ 		n_tty_receive_buf_real_raw(tty, cp, count);
+ 	else if (ldata->raw || (L_EXTPROC(tty) && !preops))
+ 		n_tty_receive_buf_raw(tty, cp, fp, count);
+-	else if (tty->closing && !L_EXTPROC(tty)) {
+-		if (la_count > 0) {
+-			n_tty_receive_buf_closing(tty, cp, fp, la_count, true);
+-			cp += la_count;
+-			if (fp)
+-				fp += la_count;
+-			count -= la_count;
+-		}
+-		if (count > 0)
+-			n_tty_receive_buf_closing(tty, cp, fp, count, false);
+-	} else {
+-		if (la_count > 0) {
+-			n_tty_receive_buf_standard(tty, cp, fp, la_count, true);
+-			cp += la_count;
+-			if (fp)
+-				fp += la_count;
+-			count -= la_count;
+-		}
+-		if (count > 0)
+-			n_tty_receive_buf_standard(tty, cp, fp, count, false);
++	else if (tty->closing && !L_EXTPROC(tty))
++		n_tty_receive_buf_closing(tty, cp, fp, count);
++	else {
++		n_tty_receive_buf_standard(tty, cp, fp, count);
+ 
+ 		flush_echoes(tty);
+ 		if (tty->ops->flush_chars)
+ 			tty->ops->flush_chars(tty);
+ 	}
+ 
+-	ldata->lookahead_count -= la_count;
+-
+ 	if (ldata->icanon && !L_EXTPROC(tty))
+ 		return;
+ 
+@@ -2547,7 +2478,6 @@ static struct tty_ldisc_ops n_tty_ops = {
+ 	.receive_buf     = n_tty_receive_buf,
+ 	.write_wakeup    = n_tty_write_wakeup,
+ 	.receive_buf2	 = n_tty_receive_buf2,
+-	.lookahead_buf	 = n_tty_lookahead_flow_ctrl,
+ };
+ 
+ /**
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 3b99774d16de..7460e0364563 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -105,7 +105,6 @@ static void tty_buffer_reset(struct tty_buffer *p, size_t size)
+ 	p->size = size;
+ 	p->next = NULL;
+ 	p->commit = 0;
+-	p->lookahead = 0;
+ 	p->read = 0;
+ 	p->flags = true;
+ }
+@@ -235,7 +234,6 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
+ 		buf->head = next;
+ 	}
+ 	buf->head->read = buf->head->commit;
+-	buf->head->lookahead = buf->head->read;
+ 
+ 	if (ld && ld->ops->flush_buffer)
+ 		ld->ops->flush_buffer(tty);
+@@ -276,15 +274,17 @@ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
+ 
+ 	n->flags = flags;
+ 	buf->tail = n;
++
+ 	/*
+-	 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
+-	 * ensures they see all buffer data.
++	 * Paired w/ acquire in flush_to_ldisc(); ensures
++	 * flush_to_ldisc() sees buffer data.
+ 	 */
+ 	smp_store_release(&b->commit, b->used);
++
+ 	/*
+-	 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
+-	 * ensures the latest commit value can be read before the head
+-	 * is advanced to the next buffer.
++	 * Paired w/ acquire in flush_to_ldisc(); ensures the
++	 * latest commit value can be read before the head is
++	 * advanced to the next buffer
+ 	 */
+ 	smp_store_release(&b->next, n);
+ 
+@@ -394,39 +394,6 @@ size_t tty_ldisc_receive_buf(struct tty_ldisc *ld, const u8 *p, const u8 *f,
+ }
+ EXPORT_SYMBOL_GPL(tty_ldisc_receive_buf);
+ 
+-static void lookahead_bufs(struct tty_port *port, struct tty_buffer *head)
+-{
+-	head->lookahead = max(head->lookahead, head->read);
+-
+-	while (head) {
+-		struct tty_buffer *next;
+-		u8 *p, *f = NULL;
+-		unsigned int count;
+-
+-		/*
+-		 * Paired w/ release in __tty_buffer_request_room();
+-		 * ensures commit value read is not stale if the head
+-		 * is advancing to the next buffer.
+-		 */
+-		next = smp_load_acquire(&head->next);
+-		/*
+-		 * Paired w/ release in __tty_buffer_request_room() or in
+-		 * tty_buffer_flush(); ensures we see the committed buffer data.
+-		 */
+-		count = smp_load_acquire(&head->commit) - head->lookahead;
+-		if (!count) {
+-			head = next;
+-			continue;
+-		}
+-
+-		p = char_buf_ptr(head, head->lookahead);
+-		if (head->flags)
+-			f = flag_buf_ptr(head, head->lookahead);
+-
+-		port->client_ops->lookahead_buf(port, p, f, count);
+-		head->lookahead += count;
+-	}
+-}
+ 
+ static size_t
+ receive_buf(struct tty_port *port, struct tty_buffer *head, size_t count)
+@@ -465,7 +432,7 @@ static void flush_to_ldisc(struct work_struct *work)
+ 	while (1) {
+ 		struct tty_buffer *head = buf->head;
+ 		struct tty_buffer *next;
+-		size_t count, rcvd;
++		size_t count;
+ 
+ 		/* Ldisc or user is trying to gain exclusive access */
+ 		if (atomic_read(&buf->priority))
+@@ -488,12 +455,10 @@ static void flush_to_ldisc(struct work_struct *work)
+ 			continue;
+ 		}
+ 
+-		rcvd = receive_buf(port, head, count);
+-		head->read += rcvd;
+-		if (rcvd < count)
+-			lookahead_bufs(port, head);
+-		if (!rcvd)
++		count = receive_buf(port, head, count);
++		if (!count)
+ 			break;
++		head->read += count;
+ 
+ 		if (need_resched())
+ 			cond_resched();
+diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
+index 624d104bd145..d8645d25ceb7 100644
+--- a/drivers/tty/tty_port.c
++++ b/drivers/tty/tty_port.c
+@@ -41,26 +41,6 @@ static size_t tty_port_default_receive_buf(struct tty_port *port, const u8 *p,
+ 	return count;
+ }
+ 
+-static void tty_port_default_lookahead_buf(struct tty_port *port, const u8 *p,
+-					   const u8 *f, size_t count)
+-{
+-	struct tty_struct *tty;
+-	struct tty_ldisc *ld;
+-
+-	tty = READ_ONCE(port->itty);
+-	if (!tty)
+-		return;
+-
+-	ld = tty_ldisc_ref(tty);
+-	if (!ld)
+-		return;
+-
+-	if (ld->ops->lookahead_buf)
+-		ld->ops->lookahead_buf(ld->tty, p, f, count);
+-
+-	tty_ldisc_deref(ld);
+-}
+-
+ static void tty_port_default_wakeup(struct tty_port *port)
+ {
+ 	struct tty_struct *tty = tty_port_tty_get(port);
+@@ -73,7 +53,6 @@ static void tty_port_default_wakeup(struct tty_port *port)
+ 
+ const struct tty_port_client_operations tty_port_default_client_ops = {
+ 	.receive_buf = tty_port_default_receive_buf,
+-	.lookahead_buf = tty_port_default_lookahead_buf,
+ 	.write_wakeup = tty_port_default_wakeup,
+ };
+ EXPORT_SYMBOL_GPL(tty_port_default_client_ops);
+diff --git a/include/linux/tty_buffer.h b/include/linux/tty_buffer.h
+index 31125e3be3c5..a3ea94a21b4a 100644
+--- a/include/linux/tty_buffer.h
++++ b/include/linux/tty_buffer.h
+@@ -15,7 +15,6 @@ struct tty_buffer {
+ 	unsigned int used;
+ 	unsigned int size;
+ 	unsigned int commit;
+-	unsigned int lookahead;		/* Lazy update on recv, can become less than "read" */
+ 	unsigned int read;
+ 	bool flags;
+ 	/* Data points here */
+diff --git a/include/linux/tty_ldisc.h b/include/linux/tty_ldisc.h
+index af01e89074b2..12b9b8f6189c 100644
+--- a/include/linux/tty_ldisc.h
++++ b/include/linux/tty_ldisc.h
+@@ -204,20 +204,6 @@ int ldsem_down_write_nested(struct ld_semaphore *sem, int subclass,
+  *
+  *	Optional.
+  *
+- * @lookahead_buf: [DRV] ``void ()(struct tty_struct *tty, const u8 *cp,
+- *			 const u8 *fp, size_t count)``
+- *
+- *	This function is called by the low-level tty driver for characters
+- *	not eaten by ->receive_buf() or ->receive_buf2(). It is useful for
+- *	processing high-priority characters such as software flow-control
+- *	characters that could otherwise get stuck into the intermediate
+- *	buffer until tty has room to receive them. Ldisc must be able to
+- *	handle later a ->receive_buf() or ->receive_buf2() call for the
+- *	same characters (e.g. by skipping the actions for high-priority
+- *	characters already handled by ->lookahead_buf()).
+- *
+- *	Optional.
+- *
+  * @owner: module containting this ldisc (for reference counting)
+  *
+  * This structure defines the interface between the tty line discipline
+@@ -260,8 +246,6 @@ struct tty_ldisc_ops {
+ 	void	(*dcd_change)(struct tty_struct *tty, bool active);
+ 	size_t	(*receive_buf2)(struct tty_struct *tty, const u8 *cp,
+ 				const u8 *fp, size_t count);
+-	void	(*lookahead_buf)(struct tty_struct *tty, const u8 *cp,
+-				 const u8 *fp, size_t count);
+ 
+ 	struct  module *owner;
+ };
+diff --git a/include/linux/tty_port.h b/include/linux/tty_port.h
+index 6b367eb17979..e30d572be118 100644
+--- a/include/linux/tty_port.h
++++ b/include/linux/tty_port.h
+@@ -41,8 +41,6 @@ struct tty_port_operations {
+ struct tty_port_client_operations {
+ 	size_t (*receive_buf)(struct tty_port *port, const u8 *cp, const u8 *fp,
+ 			      size_t count);
+-	void (*lookahead_buf)(struct tty_port *port, const u8 *cp,
+-			      const u8 *fp, size_t count);
+ 	void (*write_wakeup)(struct tty_port *port);
+ };
+ 
+-- 
+2.39.5
+

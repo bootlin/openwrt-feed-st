@@ -1,0 +1,118 @@
+From 3ad8f01663450a28c909a2500e1f3d4a08ebd958 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 6 Mar 2024 17:08:26 +0100
+Subject: [PATCH] spi: stm32: Add SPI_READY mode to spi controller
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The spi ready functionality is supported by our peripheral in slave and
+master mode.
+Update our spi controller driver to allow devices to use this
+functionality.
+
+Change-Id: I0433593e33e63e5e54cf22448f01bf4af36fc9fa
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372993
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/spi/spi-stm32.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 6f1a2d6fa742..44ffb3515961 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -146,6 +146,9 @@
+ /* STM32H7_SPI_I2SCFGR bit fields */
+ #define STM32H7_SPI_I2SCFGR_I2SMOD	BIT(0)
+ 
++/* STM32MP25_SPICFG2 bit fields */
++#define STM32MP25_SPI_CFG2_RDIOM	BIT(13)
++
+ /* STM32MP25 SPI registers bit fields */
+ #define STM32MP25_SPI_HWCFGR1			0x3F0
+ 
+@@ -214,6 +217,7 @@ struct stm32_spi_reg {
+  * @rx: SPI RX data register
+  * @tx: SPI TX data register
+  * @fullcfg: SPI full or limited feature set register
++ * @rdy_en: SPI ready feature register
+  */
+ struct stm32_spi_regspec {
+ 	const struct stm32_spi_reg en;
+@@ -227,6 +231,7 @@ struct stm32_spi_regspec {
+ 	const struct stm32_spi_reg rx;
+ 	const struct stm32_spi_reg tx;
+ 	const struct stm32_spi_reg fullcfg;
++	const struct stm32_spi_reg rdy_en;
+ };
+ 
+ struct stm32_spi;
+@@ -403,6 +408,8 @@ static const struct stm32_spi_regspec stm32mp25_spi_regspec = {
+ 	.tx = { STM32H7_SPI_TXDR },
+ 
+ 	.fullcfg = { STM32MP25_SPI_HWCFGR1, STM32MP25_SPI_HWCFGR1_FULLCFG },
++
++	.rdy_en = { STM32H7_SPI_CFG2, STM32MP25_SPI_CFG2_RDIOM },
+ };
+ 
+ static inline void stm32_spi_set_bits(struct stm32_spi *spi,
+@@ -1066,11 +1073,17 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+ 	else
+ 		clrb |= spi->cfg->regs->cs_high.mask;
+ 
+-	dev_dbg(spi->dev, "cpol=%d cpha=%d lsb_first=%d cs_high=%d\n",
++	if (spi_dev->mode & SPI_READY)
++		setb |= spi->cfg->regs->rdy_en.mask;
++	else
++		clrb |= spi->cfg->regs->rdy_en.mask;
++
++	dev_dbg(spi->dev, "cpol=%d cpha=%d lsb_first=%d cs_high=%d rdy=%d\n",
+ 		!!(spi_dev->mode & SPI_CPOL),
+ 		!!(spi_dev->mode & SPI_CPHA),
+ 		!!(spi_dev->mode & SPI_LSB_FIRST),
+-		!!(spi_dev->mode & SPI_CS_HIGH));
++		!!(spi_dev->mode & SPI_CS_HIGH),
++		!!(spi_dev->mode & SPI_READY));
+ 
+ 	/* On STM32H7, messages should not exceed a maximum size setted
+ 	 * afterward via the set_number_of_data function. In order to
+@@ -1088,7 +1101,7 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+ 
+ 	spin_lock_irqsave(&spi->lock, flags);
+ 
+-	/* CPOL, CPHA and LSB FIRST bits have common register */
++	/* CPOL, CPHA, LSB FIRST, CS_HIGH and RDY_EN bits have common register */
+ 	if (clrb || setb)
+ 		writel_relaxed(
+ 			(readl_relaxed(spi->base + spi->cfg->regs->cpol.reg) &
+@@ -1635,6 +1648,13 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
+ 	spi->cur_bpw = transfer->bits_per_word;
+ 	spi->cfg->set_bpw(spi);
+ 
++	if (spi_dev->mode & SPI_READY && spi->cur_bpw < 8) {
++		writel_relaxed(readl_relaxed(spi->base + spi->cfg->regs->rdy_en.reg) &
++				~spi->cfg->regs->rdy_en.mask,
++					spi->base + spi->cfg->regs->rdy_en.reg);
++		dev_dbg(spi->dev, "RDY logic disabled as bits per word < 8\n");
++	}
++
+ 	/* Update spi->cur_speed with real clock speed */
+ 	if (STM32_SPI_MASTER_MODE(spi)) {
+ 		mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
+@@ -2019,7 +2039,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
+ 	ctrl->auto_runtime_pm = true;
+ 	ctrl->bus_num = pdev->id;
+ 	ctrl->mode_bits = SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST |
+-			  SPI_3WIRE;
++			  SPI_3WIRE | SPI_READY;
+ 	ctrl->bits_per_word_mask = spi->cfg->get_bpw_mask(spi);
+ 	ctrl->max_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_min;
+ 	ctrl->min_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_max;
+-- 
+2.39.5
+

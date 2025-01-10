@@ -1,0 +1,55 @@
+From 18697ff35ff038781e60f8c56084c0321590c07d Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Thu, 19 Oct 2023 22:07:04 +0200
+Subject: [PATCH] pwm: stm32: Fix enable count for clk in .probe()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+[ Upstream commit 19f1016ea9600ed89bc24247c36ff5934ad94fbb ]
+
+Make the driver take over hardware state without disabling in .probe()
+and enable the clock for each enabled channel.
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+[ukleinek: split off from a patch that also implemented .get_state()]
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Fixes: 7edf7369205b ("pwm: Add driver for STM32 plaftorm")
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/pwm/pwm-stm32.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+index 4bfedc2989e7..b91a14c895be 100644
+--- a/drivers/pwm/pwm-stm32.c
++++ b/drivers/pwm/pwm-stm32.c
+@@ -583,9 +583,10 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
+ 	priv->have_complementary_output = (ccer != 0);
+ }
+ 
+-static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv)
++static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv,
++					      unsigned int *num_enabled)
+ {
+-	u32 ccer;
++	u32 ccer, ccer_backup;
+ 
+ 	/*
+ 	 * If channels enable bits don't exist writing 1 will have no
+@@ -594,7 +595,9 @@ static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv)
+ 	regmap_read(priv->regmap, TIM_CCER, &ccer_backup);
+ 	regmap_set_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
+ 	regmap_read(priv->regmap, TIM_CCER, &ccer);
+-	regmap_clear_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
++	regmap_write(priv->regmap, TIM_CCER, ccer_backup);
++
++	*num_enabled = hweight32(ccer_backup & TIM_CCER_CCXE);
+ 
+ 	return hweight32(ccer & TIM_CCER_CCXE);
+ }
+-- 
+2.39.5
+

@@ -1,0 +1,78 @@
+From 5dad543e131a824ab43af2e9822d3b753165b467 Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore-ext@st.com>
+Date: Mon, 12 Aug 2024 18:15:24 +0200
+Subject: [PATCH] dt-bindings: iio: adc: stm32-adc: add support for stm32mp23
+
+Add stm32mp23 compatible for STM32MP23 SoC. The new compatible is allows
+to differentiate the trigger list, which differs from MP25.
+As STM32MP25 SoC, STM32MP23 has 3 ADCs, split into two blocks: ADC12 are
+tightly coupled (common registers) and ADC3 which is managed
+independently. As on STM32MP25 SoC, Each ADC is a 12-bits successive
+approximation analog-to-digital converter, with up to 20 multiplexed
+channels that can be configured as single ended or differential.
+
+Change-Id: I2fcb04978f678ec9124e91a25b3a56c6c7e8490b
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397727
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ .../devicetree/bindings/iio/adc/st,stm32-adc.yaml    | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index 4002ed54dae7..27a4414b63ea 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -29,6 +29,7 @@ properties:
+       - st,stm32mp1-adc-core
+       - st,stm32mp13-adc-core
+       - st,stm32mp21-adc-core
++      - st,stm32mp23-adc-core
+       - st,stm32mp25-adc-core
+ 
+   reg:
+@@ -247,7 +248,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: st,stm32mp25-adc-core
++            enum:
++              - st,stm32mp23-adc-core
++              - st,stm32mp25-adc-core
+ 
+     then:
+       properties:
+@@ -298,6 +301,7 @@ patternProperties:
+           - st,stm32mp1-adc
+           - st,stm32mp13-adc
+           - st,stm32mp21-adc
++          - st,stm32mp23-adc
+           - st,stm32mp25-adc
+ 
+       reg:
+@@ -350,7 +354,7 @@ patternProperties:
+             - 16 channels, numbered from 0 to 15 (for in0..in15) on stm32f4
+             - 19 channels, numbered from 0 to 18 (for in0..in18) on stm32mp13.
+             - 20 channels, numbered from 0 to 19 (for in0..in19) on stm32h7,
+-              stm32mp1, stm32mp21 and stm32mp25.
++              stm32mp1, stm32mp21, stm32mp23 and stm32mp25.
+         $ref: /schemas/types.yaml#/definitions/uint32-array
+         deprecated: true
+ 
+@@ -578,7 +582,9 @@ patternProperties:
+           properties:
+             compatible:
+               contains:
+-                const: st,stm32mp25-adc
++                enum:
++                  - st,stm32mp23-adc
++                  - st,stm32mp25-adc
+ 
+         then:
+           properties:
+-- 
+2.39.5
+

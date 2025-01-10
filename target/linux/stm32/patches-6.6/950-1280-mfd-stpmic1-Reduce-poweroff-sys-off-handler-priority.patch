@@ -1,0 +1,38 @@
+From f401cb201fdfa886aae11fa39ed2233aad0c58d8 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Thu, 27 Jun 2024 14:39:15 +0200
+Subject: [PATCH] mfd: stpmic1: Reduce poweroff sys-off handler priority
+
+Reduce poweroff sys-off handler priority to SYS_OFF_PRIO_LOW
+so that psci pm_power_off registered with SYS_OFF_PRIO_DEFAULT
+is called before pmic shutdown.
+
+Change-Id: Id912acb383e1339c60906b0997f55d6ae16ea899
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390186
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/mfd/stpmic1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/stpmic1.c b/drivers/mfd/stpmic1.c
+index 167b15f89018..eeb761134297 100644
+--- a/drivers/mfd/stpmic1.c
++++ b/drivers/mfd/stpmic1.c
+@@ -172,7 +172,7 @@ static int stpmic1_probe(struct i2c_client *i2c)
+ 
+ 	ret = devm_register_sys_off_handler(ddata->dev,
+ 					    SYS_OFF_MODE_POWER_OFF,
+-					    SYS_OFF_PRIO_DEFAULT,
++					    SYS_OFF_PRIO_LOW,
+ 					    stpmic1_power_off,
+ 					    ddata);
+ 	if (ret) {
+-- 
+2.39.5
+

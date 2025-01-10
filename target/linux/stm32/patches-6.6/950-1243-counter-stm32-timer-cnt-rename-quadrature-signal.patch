@@ -1,0 +1,47 @@
+From dafeb818def30aea968dd08c0500caa70f09dcb6 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 7 Mar 2024 14:32:57 +0100
+Subject: [PATCH] counter: stm32-timer-cnt: rename quadrature signal
+
+Drop the Quadrature convention in the signal name. On stm32-timer:
+- Quadrature A signal corresponds to timer input ch1, hence "Channel 1"
+- Quadrature B signal corresponds to timer input ch2, hence "Channel 2".
+So name these signals after their channel. I suspect it referred to the
+(unique) quadrature counter support earlier, but the physical input
+really is CH1/CH2. This will be easier to support other counter modes.
+
+Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Link: https://lore.kernel.org/r/20240307133306.383045-2-fabrice.gasnier@foss.st.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+(cherry picked from commit 74326ec28e2794e352284f619faa967b4744b79f)
+Change-Id: If0ebb16fb30f53a6bedc9dbbb222ca9509e70960
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388141
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index 5865cec8e8ff..7ddcb32be843 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -279,11 +279,11 @@ static const struct counter_ops stm32_timer_cnt_ops = {
+ static struct counter_signal stm32_signals[] = {
+ 	{
+ 		.id = 0,
+-		.name = "Channel 1 Quadrature A"
++		.name = "Channel 1"
+ 	},
+ 	{
+ 		.id = 1,
+-		.name = "Channel 1 Quadrature B"
++		.name = "Channel 2"
+ 	}
+ };
+ 
+-- 
+2.39.5
+

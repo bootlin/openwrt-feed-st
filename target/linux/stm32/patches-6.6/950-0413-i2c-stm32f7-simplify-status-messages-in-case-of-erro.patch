@@ -1,0 +1,67 @@
+From 2b1d2978b2b050678339fb41d443dbf912d3304a Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 15 Dec 2023 18:06:07 +0100
+Subject: [PATCH] i2c: stm32f7: simplify status messages in case of errors
+
+Avoid usage of __func__ when reporting an error message
+since dev_err/dev_dbg are already providing enough details
+to identify the source of the message.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Change-Id: If45c04e8588b853a067a51f12b3417d1c306a001
+---
+ drivers/i2c/busses/i2c-stm32f7.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index dde70e7ec722..15100fed0a3f 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -1602,6 +1602,7 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+ {
+ 	struct stm32f7_i2c_dev *i2c_dev = data;
+ 	struct stm32f7_i2c_msg *f7_msg = &i2c_dev->f7_msg;
++	u16 addr = f7_msg->addr;
+ 	void __iomem *base = i2c_dev->base;
+ 	struct device *dev = i2c_dev->dev;
+ 	struct stm32_i2c_dma *dma = i2c_dev->dma;
+@@ -1611,8 +1612,7 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+ 
+ 	/* Bus error */
+ 	if (status & STM32F7_I2C_ISR_BERR) {
+-		dev_err(dev, "<%s>: Bus error accessing addr 0x%x\n",
+-			__func__, f7_msg->addr);
++		dev_err(dev, "Bus error accessing addr 0x%x\n", addr);
+ 		writel_relaxed(STM32F7_I2C_ICR_BERRCF, base + STM32F7_I2C_ICR);
+ 		stm32f7_i2c_release_bus(&i2c_dev->adap);
+ 		f7_msg->result = -EIO;
+@@ -1620,21 +1620,19 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+ 
+ 	/* Arbitration loss */
+ 	if (status & STM32F7_I2C_ISR_ARLO) {
+-		dev_dbg(dev, "<%s>: Arbitration loss accessing addr 0x%x\n",
+-			__func__, f7_msg->addr);
++		dev_dbg(dev, "Arbitration loss accessing addr 0x%x\n", addr);
+ 		writel_relaxed(STM32F7_I2C_ICR_ARLOCF, base + STM32F7_I2C_ICR);
+ 		f7_msg->result = -EAGAIN;
+ 	}
+ 
+ 	if (status & STM32F7_I2C_ISR_PECERR) {
+-		dev_err(dev, "<%s>: PEC error in reception accessing addr 0x%x\n",
+-			__func__, f7_msg->addr);
++		dev_err(dev, "PEC error in reception accessing addr 0x%x\n", addr);
+ 		writel_relaxed(STM32F7_I2C_ICR_PECCF, base + STM32F7_I2C_ICR);
+ 		f7_msg->result = -EINVAL;
+ 	}
+ 
+ 	if (status & STM32F7_I2C_ISR_ALERT) {
+-		dev_dbg(dev, "<%s>: SMBus alert received\n", __func__);
++		dev_dbg(dev, "SMBus alert received\n");
+ 		writel_relaxed(STM32F7_I2C_ICR_ALERTCF, base + STM32F7_I2C_ICR);
+ 		i2c_handle_smbus_alert(i2c_dev->alert->ara);
+ 		return IRQ_HANDLED;
+-- 
+2.39.5
+

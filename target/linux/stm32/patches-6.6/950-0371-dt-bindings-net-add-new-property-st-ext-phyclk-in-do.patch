@@ -1,0 +1,47 @@
+From 1c264d98704eead5cb98245ea5b4194e7e2e3cc2 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 27 Sep 2023 15:47:20 +0200
+Subject: [PATCH] dt-bindings: net: add new property st,ext-phyclk in
+ documentation for stm32
+
+Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
+This property can be used with RMII phy without cristal 50Mhz and when we
+want to select RCC clock instead of ETH_REF_CLK
+Can be used also with RGMII phy with no cristal and we select RCC clock
+instead of ETH_CLK125
+This new property replace st,eth-clk-sel and st,eth-ref-clk-sel
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+---
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index fc8c96b08d7d..f892f465b08a 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -82,12 +82,21 @@ properties:
+       Should be phandle/offset pair. The phandle to the syscon node which
+       encompases the glue register, and the offset of the control register
+ 
++  st,ext-phyclk:
++    description:
++      set this property in RMII mode when you have PHY without crystal 50MHz and want to
++      select RCC clock instead of ETH_REF_CLK. or in RGMII mode when you want to select
++      RCC clock instead of ETH_CLK125.
++    type: boolean
++
+   st,eth-clk-sel:
++    deprecated: true
+     description:
+       set this property in RGMII PHY when you want to select RCC clock instead of ETH_CLK125.
+     type: boolean
+ 
+   st,eth-ref-clk-sel:
++    deprecated: true
+     description:
+       set this property in RMII mode when you have PHY without crystal 50MHz and want to
+       select RCC clock instead of ETH_REF_CLK.
+-- 
+2.39.5
+

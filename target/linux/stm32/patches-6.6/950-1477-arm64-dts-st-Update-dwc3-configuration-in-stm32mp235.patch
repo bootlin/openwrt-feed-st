@@ -1,0 +1,39 @@
+From 6feb3e0afc692bdc1f3f8ac975b46e9ac191ac81 Mon Sep 17 00:00:00 2001
+From: Ram Dayal <ram.dayal@st.com>
+Date: Tue, 1 Oct 2024 11:20:01 +0200
+Subject: [PATCH] arm64: dts: st: Update dwc3 configuration in stm32mp235f-dk
+
+- Removed 'phys' and 'phy-names' properties from the dwc3 node
+  as these are already in base stm32mp231.dtsi file
+- Added 'maximum-speed' property set to "high-speed" as only
+  USB2 mode is supported on stm32mp235f-dk board.
+
+Change-Id: I6f19f2ff73cec17ec497b7740909587ab527135b
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407989
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe PRIOUZEAU <christophe.priouzeau@st.com>
+Reviewed-by: Christophe PRIOUZEAU <christophe.priouzeau@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+index ad55a3d58338..71eb71e3028d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
+@@ -737,8 +737,7 @@ &usb3dr {
+ 	status = "okay";
+ 
+ 	dwc3: usb@48300000 {
+-		phys            = <&usb2_phy2>;
+-		phy-names       = "usb2-phy";
++		maximum-speed = "high-speed";
+ 		usb-role-switch;
+ 		port {
+ 			dwc3_ep: endpoint {
+-- 
+2.39.5
+

@@ -1,0 +1,146 @@
+From a6d32e2105a48cdd65916a2614caca6c7008c82b Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 30 Nov 2022 15:08:20 +0100
+Subject: [PATCH] ARM: dts: stm32: add cpufreq support on stm32mp13
+
+This patch adds support for cpufreq with
+thermal monitoring on stm32mp13.
+The CPU opp are set by OPTEE.
+Above 95 degrees the OPP is limited to the lowest one.
+Above 120 degrees a thermal shutdown is initiated to
+protect the SOC.
+
+Change-Id: I51517eef0861e98a2e5850555ec5a9adf8e6e3fb
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi    | 63 +++++++++++++++++++++----
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts |  4 ++
+ 2 files changed, 59 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index b54c8349ae05..cd56d389cf7f 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -6,6 +6,7 @@
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/stm32mp13-clks.h>
+ #include <dt-bindings/reset/stm32mp13-resets.h>
++#include <dt-bindings/thermal/thermal.h>
+ 
+ / {
+ 	#address-cells = <1>;
+@@ -19,6 +20,9 @@ cpu0: cpu@0 {
+ 			compatible = "arm,cortex-a7";
+ 			device_type = "cpu";
+ 			reg = <0>;
++			clocks = <&scmi_perf 0>;
++			clock-names = "cpu";
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ 
+@@ -49,6 +53,11 @@ scmi: scmi {
+ 			#size-cells = <0>;
+ 			linaro,optee-channel-id = <0>;
+ 
++			scmi_perf: protocol@13 {
++				reg = <0x13>;
++				#clock-cells = <1>;
++			};
++
+ 			scmi_clk: protocol@14 {
+ 				reg = <0x14>;
+ 				#clock-cells = <1>;
+@@ -96,6 +105,16 @@ psci {
+ 		method = "smc";
+ 	};
+ 
++	timer {
++		compatible = "arm,armv7-timer";
++		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
++		interrupt-parent = <&intc>;
++		always-on;
++	};
++
+ 	pm_domain {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -116,14 +135,32 @@ pd_core: core-power-domain@2 {
+ 		};
+ 	};
+ 
+-	timer {
+-		compatible = "arm,armv7-timer";
+-		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
+-		interrupt-parent = <&intc>;
+-		always-on;
++	thermal-zones {
++		cpu_thermal: cpu-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&dts>;
++
++			trips {
++				cpu_alert: cpu-alert0 {
++					temperature = <95000>;
++					hysteresis = <10000>;
++					type = "passive";
++				};
++				cpu_crit: cpu-crit0 {
++					temperature = <120000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				map0 {
++					trip = <&cpu_alert>;
++					cooling-device = <&cpu0 1 1>;
++				};
++			};
++		};
+ 	};
+ 
+ 	soc {
+@@ -1300,6 +1337,16 @@ timer {
+ 			};
+ 		};
+ 
++		dts: thermal@50028000 {
++			compatible = "st,stm32-thermal";
++			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&rcc DTS>;
++			clock-names = "pclk";
++			#thermal-sensor-cells = <0>;
++			reg = <0x50028000 0x100>;
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index e3e6a2b8d1e4..8b2f5d786b7d 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -150,6 +150,10 @@ &arm_wdt {
+ 	status = "okay";
+ };
+ 
++&dts {
++	status = "okay";
++};
++
+ &i2c1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c1_pins_a>;
+-- 
+2.39.5
+

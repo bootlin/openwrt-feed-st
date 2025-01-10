@@ -1,0 +1,37 @@
+From 3ee1c07a1f8f6506e5fecd78cd848444d9240b71 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 16 Mar 2021 15:23:28 +0100
+Subject: [PATCH] Input: edt-ft5x06 - add support of FT5336GQQ version
+
+This version has been created for Rocktech Rk043fn48h display.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: If63142ccb6535e55b099e7b1a83153c640a9f2a6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/197949
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/228191
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372056
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/input/touchscreen/edt-ft5x06.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+index 53af040348e9..48fcd6099789 100644
+--- a/drivers/input/touchscreen/edt-ft5x06.c
++++ b/drivers/input/touchscreen/edt-ft5x06.c
+@@ -958,6 +958,10 @@ static int edt_ft5x06_ts_identify(struct i2c_client *client,
+ 			snprintf(model_name, EDT_NAME_LEN, "EP%i%i0ML00",
+ 				 rdbuf[0] >> 4, rdbuf[0] & 0x0F);
+ 			break;
++		case 0x51:   /* Rocktech Rk043fn48h Display */
++			tsdata->version = EV_FT;
++			snprintf(model_name, EDT_NAME_LEN, "FT5336GQQ");
++			break;
+ 		case 0x5a:   /* Solomon Goldentek Display */
+ 			snprintf(model_name, EDT_NAME_LEN, "GKTW50SCED1R0");
+ 			break;
+-- 
+2.39.5
+

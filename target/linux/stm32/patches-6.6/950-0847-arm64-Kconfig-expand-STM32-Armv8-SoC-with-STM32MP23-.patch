@@ -1,0 +1,33 @@
+From 7067015e2502550841c4ae2f2538bba39178f715 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 7 Feb 2024 09:04:08 +0100
+Subject: [PATCH] arm64: Kconfig: expand STM32 Armv8 SoC with STM32MP23 SoCs
+ family
+
+Expand config ARCH_STM32 with the new STM32MP23 SoCs family which is
+composed of STM32MP231, STM32MP233 and STM32MP235 SoCs.
+
+Change-Id: Ic7a4bf2a0d312843499d30c2c915df8cac53a7df
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358020
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/Kconfig.platforms | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 0590a5f34c94..4c8507c030b3 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -299,6 +299,8 @@ config ARCH_STM32
+ 	  STM32 family, including:
+ 		- STM32MP25:
+ 			- STM32MP251, STM32MP253, STM32MP255 and STM32MP257.
++		- STM32MP23:
++			- STM32MP231, STM32MP233, STM32MP235.
+ 
+ config ARCH_SYNQUACER
+ 	bool "Socionext SynQuacer SoC Family"
+-- 
+2.39.5
+

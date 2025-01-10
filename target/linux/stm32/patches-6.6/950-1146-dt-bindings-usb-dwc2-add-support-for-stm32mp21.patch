@@ -1,0 +1,52 @@
+From eca4536c50e3e69a14d460cff2ae3919f452c239 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Tue, 21 May 2024 11:37:08 +0530
+Subject: [PATCH] dt-bindings: usb: dwc2: add support for stm32mp21
+
+Add new usb compatible for stm32mp21 support
+The address translation done through syscfg arcr registers.
+
+Change-Id: I9b7461bc4eb263bcb75f496eda7060da678e4ca3
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/380234
+Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index e798b456b270..bfd1d6cba5a8 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -66,6 +66,9 @@ properties:
+       - items:
+           - const: st,stm32mp15-hsotg
+           - const: snps,dwc2
++      - items:
++          - const: st,stm32mp21-hsotg
++          - const: snps,dwc2
+       - const: samsung,s3c6400-hsotg
+       - const: intel,socfpga-agilex-hsotg
+ 
+@@ -163,6 +166,15 @@ properties:
+     description: If present indicates that we need to reset the PHY when we
+       detect a wakeup. This is due to a hardware errata.
+ 
++  st,syscfg:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: Used to enable address remapping to allow to access
++      the 4 GB of the DDR.
++  items:
++    - items:
++        - description: st,syscfg
++        - description: register offset within syscfg
++
+   port:
+     description:
+       Any connector to the data bus of this controller should be modelled
+-- 
+2.39.5
+

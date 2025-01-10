@@ -1,0 +1,34 @@
+From 6fb42e664e4caf420e03906ab5f54d0a673a5028 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 8 Oct 2024 17:27:00 +0200
+Subject: [PATCH] arm64: dts: st: remove hs200 on dk board
+
+Remove hs200 on dk board.
+
+Change-Id: Ia2f3a0e1ece551d192b8188f6cba2dc8e4d3a7aa
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/409986
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 7ceef18c72c9..11f92191eb9b 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -775,7 +775,6 @@ &sdmmc2 {
+ 	vmmc-supply = <&scmi_vdd_emmc>;
+ 	vqmmc-supply = <&scmi_vddio2>;
+ 	mmc-ddr-1_8v;
+-	mmc-hs200-1_8v;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

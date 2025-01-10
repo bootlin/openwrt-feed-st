@@ -1,0 +1,36 @@
+From bd37d61b750a7819355d90aa9a7a4b8bf1bd9145 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 4 Apr 2024 18:09:26 +0200
+Subject: [PATCH] clk: stm32mp25: allow set_parent rate on mdf clock
+
+Allow the MDF to change its parent clock rate, to manage rate potential
+conflicts with SAI.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ib41e0b54d8719295726362fd4b8dbd7b1e69e393
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/371499
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index 28acd08ca966..a5e653b14556 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -1212,7 +1212,8 @@ static struct clk_stm32_gate ck_icn_p_mdf1 = {
+ 
+ static struct clk_stm32_gate ck_ker_mdf1 = {
+ 	.gate_id = GATE_MDF1,
+-	.hw.init = CLK_HW_INIT_INDEX("ck_ker_mdf1", FLEXGEN_23, &clk_stm32_gate_ops, 0),
++	.hw.init = CLK_HW_INIT_INDEX("ck_ker_mdf1", FLEXGEN_23, &clk_stm32_gate_ops,
++				     CLK_SET_RATE_PARENT),
+ };
+ 
+ /* OSPI */
+-- 
+2.39.5
+

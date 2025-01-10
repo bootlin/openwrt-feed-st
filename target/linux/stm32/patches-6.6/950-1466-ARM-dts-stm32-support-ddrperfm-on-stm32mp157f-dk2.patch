@@ -1,0 +1,39 @@
+From 92a4619265e9b3818806cf0e499f8875518b5b1a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 19 Jun 2024 17:41:35 +0200
+Subject: [PATCH] ARM: dts: stm32: support ddrperfm on stm32mp157f-dk2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Enable ddrperfm node on stm32Mp157f-dk2 board.
+
+Change-Id: I44735890cc88d7015c200780e476a0eedea5da41
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395151
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index 146453a0084a..523d7ef309f2 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -45,6 +45,10 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
++&ddrperfm {
++	status = "okay";
++};
++
+ &dsi {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-- 
+2.39.5
+

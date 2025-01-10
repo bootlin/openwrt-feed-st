@@ -1,0 +1,33 @@
+From 740f4503f5b388fe25d39795141f0b94ef34069e Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Mon, 18 Dec 2023 13:48:51 +0100
+Subject: [PATCH] ARM: stm32: allow build irq-stm32mp-exti driver as module
+
+Drop auto-selecting the driver, so it can be built either as a
+module or built-in.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I10be2f2411777cf7a8b3c932a35c7f69073d2e26
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383193
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/mach-stm32/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
+index a401a991fe08..630b992f32b1 100644
+--- a/arch/arm/mach-stm32/Kconfig
++++ b/arch/arm/mach-stm32/Kconfig
+@@ -11,7 +11,6 @@ menuconfig ARCH_STM32
+ 	select CLKSRC_STM32
+ 	select PINCTRL
+ 	select RESET_CONTROLLER
+-	select STM32MP_EXTI if ARCH_MULTI_V7
+ 	select STM32_EXTI if ARM_SINGLE_ARMV7M
+ 	select STM32_FIREWALL
+ 	help
+-- 
+2.39.5
+

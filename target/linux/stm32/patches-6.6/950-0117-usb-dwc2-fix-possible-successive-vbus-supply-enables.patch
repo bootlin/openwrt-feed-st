@@ -1,0 +1,43 @@
+From 1a9b70eac8cc07092f9dbdb7e23c907767ceec9e Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 18 Nov 2021 09:17:23 +0100
+Subject: [PATCH] usb: dwc2: fix possible successive vbus supply enables
+
+External VBUS supply may have already been enabled, before entering
+dwc2_hcd_reinit (e.g. the controller is in host mode, without any device
+plugged).
+This results in vbus enable count to increase every time this occurs.
+As consequence, dwc2_vbus_supply_exit won't disable vbus upon suspend
+request.
+Fix this by reading PWR bit before and after dwc2_hcd_reinit() call.
+
+Fixes: cd7cd0e6cedf ("usb: dwc2: fix unbalanced use of external vbus-supply")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I2f07ea72cd0410f5e9ceed43cf2c33cd3cd08f31
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229469
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/usb/dwc2/hcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index 70aefd421008..b11d24009cea 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -4271,9 +4271,11 @@ static int _dwc2_hcd_start(struct usb_hcd *hcd)
+ 		return 0;	/* why 0 ?? */
+ 	}
+ 
++	hprt0 = dwc2_read_hprt0(hsotg);
++
+ 	dwc2_hcd_reinit(hsotg);
+ 
+-	hprt0 = dwc2_read_hprt0(hsotg);
++	hprt0 ^= dwc2_read_hprt0(hsotg);
+ 	/* Has vbus power been turned on in dwc2_core_host_init ? */
+ 	if (hprt0 & HPRT0_PWR) {
+ 		/* Enable external vbus supply before resuming root hub */
+-- 
+2.39.5
+

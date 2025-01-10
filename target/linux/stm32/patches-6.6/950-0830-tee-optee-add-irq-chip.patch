@@ -1,0 +1,294 @@
+From 866d4af189531071efba02248d1cee2142162005 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Fri, 2 Feb 2024 18:39:58 +0100
+Subject: [PATCH] tee: optee: add irq chip
+
+Add an irqchip controller in Linux optee driver to generate interrupts
+events from OPTEE to non-secure world using OP-TEE async notification
+interrupt signaling. Upon such interrupt Linux invokes OP-TEE to query
+a pending event. If an interrupt notification is pending the invocation
+return OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT and Linux can get the pending
+interrupt number with invocation SMC function ID
+OPTEE_SMC_FUNCID_GET_IT_VALUE.
+
+SMC function ID OPTEE_SMC_FUNCID_SET_IT_MASK allows Linux to mask/unmask
+an interrupt notification services.
+
+Change-Id: Ie2165a58bdf61e48984c09452156f462353e9a78
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357084
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/tee/optee/optee_private.h |   7 ++
+ drivers/tee/optee/optee_smc.h     |  16 ++++
+ drivers/tee/optee/smc_abi.c       | 149 ++++++++++++++++++++++++++++++
+ 3 files changed, 172 insertions(+)
+
+diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+index 3ef3d7792380..96cdbbf97dc4 100644
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -35,6 +35,9 @@
+  */
+ #define OPTEE_DEFAULT_MAX_NOTIF_VALUE	255
+ 
++/* This value should be larger than max interrupt ID notified by secure world */
++#define OPTEE_MAX_IT 32
++
+ typedef void (optee_invoke_fn)(unsigned long, unsigned long, unsigned long,
+ 				unsigned long, unsigned long, unsigned long,
+ 				unsigned long, unsigned long,
+@@ -113,6 +116,7 @@ struct optee_pcpu {
+  * @notif_pcpu_wq	workqueue for per cpu asynchronous notification or NULL
+  * @notif_pcpu_work	work for per cpu asynchronous notification
+  * @notif_cpuhp_state   CPU hotplug state assigned for pcpu interrupt management
++ * @domain		interrupt domain registered by OP-TEE driver
+  */
+ struct optee_smc {
+ 	optee_invoke_fn *invoke_fn;
+@@ -123,6 +127,7 @@ struct optee_smc {
+ 	struct workqueue_struct *notif_pcpu_wq;
+ 	struct work_struct notif_pcpu_work;
+ 	unsigned int notif_cpuhp_state;
++	struct irq_domain *domain;
+ };
+ 
+ /**
+@@ -193,6 +198,7 @@ struct optee_ops {
+  * @scan_bus_done	flag if device registation was already done.
+  * @scan_bus_wq		workqueue to scan optee bus and register optee drivers
+  * @scan_bus_work	workq to scan optee bus and register optee drivers
++ * @itr_notif		True if OP-TEE offers interrupt notification
+  */
+ struct optee {
+ 	struct tee_device *supp_teedev;
+@@ -212,6 +218,7 @@ struct optee {
+ 	bool   scan_bus_done;
+ 	struct workqueue_struct *scan_bus_wq;
+ 	struct work_struct scan_bus_work;
++	bool itr_notif;
+ };
+ 
+ /**
+diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
+index d97141a4bd0c..b0972f630efb 100644
+--- a/drivers/tee/optee/optee_smc.h
++++ b/drivers/tee/optee/optee_smc.h
+@@ -444,6 +444,22 @@ struct optee_smc_disable_shm_cache_result {
+ #define OPTEE_SMC_GET_ASYNC_NOTIF_VALUE \
+ 	OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_GET_ASYNC_NOTIF_VALUE)
+ 
++#define OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT	1
++
++#define OPTEE_SMC_IT_NOTIF_VALUE_VALID		BIT(0)
++#define OPTEE_SMC_IT_NOTIF_VALUE_PENDING	BIT(1)
++
++/*
++ * Notification that OP-TEE generates and interruption.
++ */
++#define OPTEE_SMC_FUNCID_GET_IT_NOTIF_VALUE	53		// Update will likely change to 20
++#define OPTEE_SMC_GET_IT_NOTIF_VALUE \
++	OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_GET_IT_NOTIF_VALUE)
++
++#define OPTEE_SMC_FUNCID_SET_IT_NOTIF_MASK	54		// Update will likely change to 21
++#define OPTEE_SMC_SET_IT_NOTIF_MASK \
++	OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_SET_IT_NOTIF_MASK)
++
+ /* See OPTEE_SMC_CALL_WITH_RPC_ARG above */
+ #define OPTEE_SMC_FUNCID_CALL_WITH_RPC_ARG	18
+ 
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index 7d413d0ed14e..8034c17d955d 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -1038,6 +1038,128 @@ static int optee_smc_stop_async_notif(struct tee_context *ctx)
+  * 5. Asynchronous notification
+  */
+ 
++static int get_it_value(optee_invoke_fn *invoke_fn, bool *value_valid,
++			bool *value_pending)
++{
++	struct arm_smccc_res res;
++
++	invoke_fn(OPTEE_SMC_GET_IT_NOTIF_VALUE, 0, 0, 0, 0, 0, 0, 0, &res);
++
++	if (res.a0)
++		return -1;
++
++	*value_valid = res.a2 & OPTEE_SMC_IT_NOTIF_VALUE_VALID;
++	*value_pending = res.a2 & OPTEE_SMC_IT_NOTIF_VALUE_PENDING;
++	return (int)res.a1;
++}
++
++static void set_it_mask(optee_invoke_fn *invoke_fn, u32 it_value, bool mask)
++{
++	struct arm_smccc_res res;
++
++	invoke_fn(OPTEE_SMC_SET_IT_NOTIF_MASK, it_value, mask, 0, 0, 0, 0, 0, &res);
++}
++
++static int handle_optee_it(struct optee *optee)
++{
++	bool value_valid;
++	bool value_pending;
++	u32 it;
++
++	do {
++		struct irq_desc *desc;
++		int it_id;
++
++		it_id = get_it_value(optee->smc.invoke_fn, &value_valid, &value_pending);
++		if (it_id < 0) {
++			/*
++			 * OP-TEE interrupt notification is not supported
++			 * hence disable the feature so that current function
++			 * is no more called and we handle async value
++			 * OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT as a generic legacy
++			 * OP-TEE async notif.
++			 */
++			optee->itr_notif = false;
++			optee_notif_send(optee, OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT);
++			return 0;
++		}
++		it = (u32)it_id;
++
++		if (!value_valid)
++			break;
++
++		desc = irq_to_desc(irq_find_mapping(optee->smc.domain, it));
++		if (!desc) {
++			pr_err("no desc for optee IT:%d\n", it);
++			return -EIO;
++		}
++
++		handle_simple_irq(desc);
++
++	} while (value_pending);
++
++	return 0;
++}
++
++static void optee_it_irq_mask(struct irq_data *d)
++{
++	struct optee *optee = d->domain->host_data;
++
++	set_it_mask(optee->smc.invoke_fn, d->hwirq, true);
++}
++
++static void optee_it_irq_unmask(struct irq_data *d)
++{
++	struct optee *optee = d->domain->host_data;
++
++	set_it_mask(optee->smc.invoke_fn, d->hwirq, false);
++}
++
++static struct irq_chip optee_it_irq_chip = {
++	.name = "optee-it",
++	.irq_disable = optee_it_irq_mask,
++	.irq_enable = optee_it_irq_unmask,
++	.flags = IRQCHIP_SKIP_SET_WAKE,
++};
++
++static int optee_it_alloc(struct irq_domain *d, unsigned int virq,
++			  unsigned int nr_irqs, void *data)
++{
++	struct irq_fwspec *fwspec = data;
++	irq_hw_number_t hwirq;
++
++	hwirq = fwspec->param[0];
++
++	irq_domain_set_hwirq_and_chip(d, virq, hwirq, &optee_it_irq_chip, d->host_data);
++
++	return 0;
++}
++
++static const struct irq_domain_ops optee_it_irq_domain_ops = {
++	.alloc = optee_it_alloc,
++	.free = irq_domain_free_irqs_common,
++};
++
++static int optee_irq_domain_init(struct platform_device *pdev, struct optee *optee)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++
++	optee->smc.domain = irq_domain_add_linear(np, OPTEE_MAX_IT,
++						  &optee_it_irq_domain_ops, optee);
++	if (!optee->smc.domain) {
++		dev_err(dev, "Unable to add irq domain\n");
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static void optee_irq_domain_uninit(struct optee *optee)
++{
++	irq_domain_remove(optee->smc.domain);
++}
++
+ static u32 get_async_notif_value(optee_invoke_fn *invoke_fn, bool *value_valid,
+ 				 bool *value_pending)
+ {
+@@ -1069,6 +1191,8 @@ static irqreturn_t irq_handler(struct optee *optee)
+ 
+ 		if (value == OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF)
+ 			do_bottom_half = true;
++		else if (optee->itr_notif && value == OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT)
++			handle_optee_it(optee);
+ 		else
+ 			optee_notif_send(optee, value);
+ 	} while (value_pending);
+@@ -1514,6 +1638,8 @@ static int optee_smc_remove(struct platform_device *pdev)
+ 
+ 	optee_smc_notif_uninit_irq(optee);
+ 
++	optee_irq_domain_uninit(optee);
++
+ 	optee_remove_common(optee);
+ 
+ 	if (optee->smc.memremaped_shm)
+@@ -1753,6 +1879,15 @@ static int optee_probe(struct platform_device *pdev)
+ 	optee->smc.sec_caps = sec_caps;
+ 	optee->rpc_param_count = rpc_param_count;
+ 
++	/*
++	 * Default assume OP-TEE interrupt notification through async notif
++	 * value 1 (OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT) is supported.
++	 * The feature will be disabled if we find SMC function ID
++	 * OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_IT is not supported, meaning OP-TEE
++	 * async value 1 is a generic legacy async notif value.
++	 */
++	optee->itr_notif = true;
++
+ 	teedev = tee_device_alloc(&optee_clnt_desc, NULL, pool, optee);
+ 	if (IS_ERR(teedev)) {
+ 		rc = PTR_ERR(teedev);
+@@ -1808,6 +1943,20 @@ static int optee_probe(struct platform_device *pdev)
+ 			irq_dispose_mapping(irq);
+ 			goto err_notif_uninit;
+ 		}
++
++		if (optee->itr_notif) {
++			rc = optee_irq_domain_init(pdev, optee);
++			if (rc) {
++				if (irq_is_percpu_devid(optee->smc.notif_irq))
++					uninit_pcpu_irq(optee);
++				else
++					free_irq(optee->smc.notif_irq, optee);
++
++				irq_dispose_mapping(irq);
++				goto err_notif_uninit;
++			}
++		}
++
+ 		enable_async_notif(optee->smc.invoke_fn);
+ 		pr_info("Asynchronous notifications enabled\n");
+ 	}
+-- 
+2.39.5
+

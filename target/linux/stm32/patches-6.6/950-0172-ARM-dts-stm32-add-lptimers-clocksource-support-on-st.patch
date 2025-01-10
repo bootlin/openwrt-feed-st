@@ -1,0 +1,81 @@
+From 5765a66081011284f4d4c1a24589f50859234d42 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 7 Jan 2021 10:36:31 +0100
+Subject: [PATCH] ARM: dts: stm32: add lptimers clocksource support on
+ stm32mp15x
+
+Add support of clocksource support for LPTIM on stm32mp15x SoCs.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ic4569d2eff079c1568ba5d1c66c1b40b876ad468
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 84ef281ae812..2207e1a9f6fd 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -425,6 +425,11 @@ counter {
+ 				compatible = "st,stm32-lptimer-counter";
+ 				status = "disabled";
+ 			};
++
++			timer {
++				compatible = "st,stm32-lptimer-timer";
++				status = "disabled";
++			};
+ 		};
+ 
+ 		i2s2: audio-controller@4000b000 {
+@@ -1368,6 +1373,11 @@ counter {
+ 				compatible = "st,stm32-lptimer-counter";
+ 				status = "disabled";
+ 			};
++
++			timer {
++				compatible = "st,stm32-lptimer-timer";
++				status = "disabled";
++			};
+ 		};
+ 
+ 		lptimer3: timer@50022000 {
+@@ -1393,6 +1403,11 @@ trigger@2 {
+ 				reg = <2>;
+ 				status = "disabled";
+ 			};
++
++			timer {
++				compatible = "st,stm32-lptimer-timer";
++				status = "disabled";
++			};
+ 		};
+ 
+ 		lptimer4: timer@50023000 {
+@@ -1410,6 +1425,11 @@ pwm {
+ 				#pwm-cells = <3>;
+ 				status = "disabled";
+ 			};
++
++			timer {
++				compatible = "st,stm32-lptimer-timer";
++				status = "disabled";
++			};
+ 		};
+ 
+ 		lptimer5: timer@50024000 {
+@@ -1427,6 +1447,11 @@ pwm {
+ 				#pwm-cells = <3>;
+ 				status = "disabled";
+ 			};
++
++			timer {
++				compatible = "st,stm32-lptimer-timer";
++				status = "disabled";
++			};
+ 		};
+ 
+ 		vrefbuf: vrefbuf@50025000 {
+-- 
+2.39.5
+

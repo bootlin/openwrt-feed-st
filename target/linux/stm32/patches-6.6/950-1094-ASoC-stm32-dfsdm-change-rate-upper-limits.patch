@@ -1,0 +1,34 @@
+From f23ec26fcf66ce86cfaecd309d1f904ce96a23a7 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 24 Apr 2024 14:38:49 +0200
+Subject: [PATCH] ASoC: stm32: dfsdm: change rate upper limits
+
+Increase rate upper limit to 192kHz to reflect the rate range actually
+supported by STM32 DFSDM peripheral.
+
+Change-Id: I31007e64a90b9e2cc969b27fdd9ac95e7103de43
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/376268
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ sound/soc/stm/stm32_adfsdm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index a8fff7378641..33e90fec0e43 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -142,7 +142,7 @@ static const struct snd_soc_dai_driver stm32_adfsdm_dai = {
+ 			       SNDRV_PCM_FMTBIT_S32_LE,
+ 		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		    .rate_min = 8000,
+-		    .rate_max = 48000,
++		    .rate_max = 192000,
+ 		    },
+ 	.ops = &stm32_adfsdm_dai_ops,
+ };
+-- 
+2.39.5
+

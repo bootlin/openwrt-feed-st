@@ -1,0 +1,41 @@
+From 86baeb587f177c62f1a3227c338e13a627b106b2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 16 Apr 2024 14:14:55 +0200
+Subject: [PATCH] arm64: dts: st: upgrade stm32mp23 Arm SMC watchdog function
+ ID
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Upgrade Arm SMC watchdog function ID to the ID merged at upstream
+in OP-TEE stm32mp1 platform for watchdog services. This is the function
+ID used for all STM32MP platforms.
+
+Change-Id: I45474eccb647065f77ef3aeddb19f7a646299692
+Link: https://github.com/OP-TEE/optee_os/commit/e1bfa2fd6db43854eb259c0b8e8e2f1977f9b141
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373897
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp231.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+index 5fe5ad984cbb..10e0dc9fa5d8 100644
+--- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
+@@ -82,7 +82,7 @@ arm-pmu {
+ 
+ 	arm_wdt: watchdog {
+ 		compatible = "arm,smc-wdt";
+-		arm,smc-id = <0xb200005a>;
++		arm,smc-id = <0xbc000000>;
+ 		status = "disabled";
+ 	};
+ 
+-- 
+2.39.5
+

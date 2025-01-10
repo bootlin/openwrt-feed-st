@@ -1,0 +1,85 @@
+From a70e361d3b1ec30be962ff88e07a87965670ef9b Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 11 Oct 2023 14:52:15 +0200
+Subject: [PATCH] arm64: dts: st: add power domain in sai sub nodes on
+ stm32mp251
+
+Add power domain in SAI sub nodes for STM32MP251 device tree.
+
+Change-Id: I492ba534582c1b8478eaf2326ed69db480122c06
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 56612880d8ed..20cb3a557c60 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1372,6 +1372,7 @@ sai1a: audio-controller@40290004 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 73 0x43 0x21>;
+ 					dma-names = "tx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 
+@@ -1383,6 +1384,7 @@ sai1b: audio-controller@40290024 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 74 0x43 0x12>;
+ 					dma-names = "rx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 			};
+@@ -1408,6 +1410,7 @@ sai2a: audio-controller@402a0004 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 75 0x43 0x21>;
+ 					dma-names = "tx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 
+@@ -1419,6 +1422,7 @@ sai2b: audio-controller@402a0024 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 76 0x43 0x12>;
+ 					dma-names = "rx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 			};
+@@ -1444,6 +1448,7 @@ sai3a: audio-controller@402b0004 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 77 0x43 0x21>;
+ 					dma-names = "tx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 
+@@ -1455,6 +1460,7 @@ sai3b: audio-controller@502b0024 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 78 0x43 0x12>;
+ 					dma-names = "rx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 			};
+@@ -1540,6 +1546,7 @@ sai4a: audio-controller@40340004 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 79 0x63 0x21>;
+ 					dma-names = "tx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 
+@@ -1551,6 +1558,7 @@ sai4b: audio-controller@40340024 {
+ 					clock-names = "sai_ck";
+ 					dmas = <&hpdma 80 0x43 0x12>;
+ 					dma-names = "rx";
++					power-domains = <&CLUSTER_PD>;
+ 					status = "disabled";
+ 				};
+ 			};
+-- 
+2.39.5
+

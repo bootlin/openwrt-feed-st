@@ -1,0 +1,35 @@
+From 14b71bdefdf928e3b1c25773a899f86afd233b6c Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 15 Oct 2024 11:37:36 +0200
+Subject: [PATCH] ARM: dts: stm32: remove unnecessary include for
+ stm32mp135f-dk board
+
+Remove the include of "st,stm32mp13-regulator.h" in stm32mp135f-dk board
+device tree, as it is already included in Soc STM32MP131 dtsi file.
+
+Fixes: 4c757f6b8026 ("ARM: dts: stm32: add SCMI PMIC regulators on stm32mp135f-dk board")
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I89fd9b27a49b7b061935dfffca853c679d864abb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411365
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 9cb6c21462ad..d3b47650d7e0 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -9,7 +9,6 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/leds/common.h>
+-#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
+ #include <dt-bindings/rtc/rtc-stm32.h>
+ #include "stm32mp135.dtsi"
+ #include "stm32mp13xf.dtsi"
+-- 
+2.39.5
+

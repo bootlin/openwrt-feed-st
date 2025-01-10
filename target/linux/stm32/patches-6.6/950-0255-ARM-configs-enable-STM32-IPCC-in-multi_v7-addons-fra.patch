@@ -1,0 +1,29 @@
+From 9d91f345cd0911004a4a49dcf66f578a6c15acc3 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Mon, 18 Oct 2021 12:55:33 +0200
+Subject: [PATCH] ARM: configs: enable STM32 IPCC in multi_v7 addons fragment
+
+This patch adds fragments for the STM32 IPCC driver to multi_v7 addons.
+
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283665
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Change-Id: I8e35e8957f194ef9695f1742c50542450b1c2cd0
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 86257440bf50..571e311cd3d4 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -34,6 +34,7 @@ CONFIG_REGULATOR_PROTECTION_CONSUMER=y
+ CONFIG_SCHED_MC=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
++CONFIG_STM32_IPCC=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_ONBOARD_HUB=y
+ CONFIG_VFP=y
+-- 
+2.39.5
+

@@ -1,0 +1,169 @@
+From 8ec2e2cb25311872e1fbedb7cf4ab8a97ecc50b4 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Mon, 8 Jan 2024 15:33:48 +0100
+Subject: [PATCH] clk: stm32mp13: use platform device APIs
+
+Convert devm_platform_ioremap_resource() and remove unnecessary
+dependency check with SCMI clock driver.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32-core.c | 11 +++--
+ drivers/clk/stm32/clk-stm32mp13.c  | 72 +++---------------------------
+ 2 files changed, 10 insertions(+), 73 deletions(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32-core.c b/drivers/clk/stm32/clk-stm32-core.c
+index 58705fcad334..1721a3ed7386 100644
+--- a/drivers/clk/stm32/clk-stm32-core.c
++++ b/drivers/clk/stm32/clk-stm32-core.c
+@@ -25,7 +25,6 @@ static int stm32_rcc_clock_init(struct device *dev,
+ {
+ 	const struct stm32_rcc_match_data *data = match->data;
+ 	struct clk_hw_onecell_data *clk_data = data->hw_clks;
+-	struct device_node *np = dev_of_node(dev);
+ 	struct clk_hw **hws;
+ 	int n, max_binding;
+ 
+@@ -64,7 +63,7 @@ static int stm32_rcc_clock_init(struct device *dev,
+ 			hws[cfg_clock->id] = hw;
+ 	}
+ 
+-	return of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_data);
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
+ }
+ 
+ int stm32_rcc_init(struct device *dev, const struct of_device_id *match_data,
+@@ -638,7 +637,7 @@ struct clk_hw *clk_stm32_mux_register(struct device *dev,
+ 	mux->lock = lock;
+ 	mux->clock_data = data->clock_data;
+ 
+-	err = clk_hw_register(dev, hw);
++	err = devm_clk_hw_register(dev, hw);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+@@ -659,7 +658,7 @@ struct clk_hw *clk_stm32_gate_register(struct device *dev,
+ 	gate->lock = lock;
+ 	gate->clock_data = data->clock_data;
+ 
+-	err = clk_hw_register(dev, hw);
++	err = devm_clk_hw_register(dev, hw);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+@@ -680,7 +679,7 @@ struct clk_hw *clk_stm32_div_register(struct device *dev,
+ 	div->lock = lock;
+ 	div->clock_data = data->clock_data;
+ 
+-	err = clk_hw_register(dev, hw);
++	err = devm_clk_hw_register(dev, hw);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+@@ -701,7 +700,7 @@ struct clk_hw *clk_stm32_composite_register(struct device *dev,
+ 	composite->lock = lock;
+ 	composite->clock_data = data->clock_data;
+ 
+-	err = clk_hw_register(dev, hw);
++	err = devm_clk_hw_register(dev, hw);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
+index d4ecb3c34a1b..bf81d7491708 100644
+--- a/drivers/clk/stm32/clk-stm32mp13.c
++++ b/drivers/clk/stm32/clk-stm32mp13.c
+@@ -1536,77 +1536,16 @@ static const struct of_device_id stm32mp13_match_data[] = {
+ };
+ MODULE_DEVICE_TABLE(of, stm32mp13_match_data);
+ 
+-static int stm32mp1_rcc_init(struct device *dev)
+-{
+-	void __iomem *rcc_base;
+-	int ret = -ENOMEM;
+-
+-	rcc_base = of_iomap(dev_of_node(dev), 0);
+-	if (!rcc_base) {
+-		dev_err(dev, "%pOFn: unable to map resource", dev_of_node(dev));
+-		goto out;
+-	}
+-
+-	ret = stm32_rcc_init(dev, stm32mp13_match_data, rcc_base);
+-out:
+-	if (ret) {
+-		if (rcc_base)
+-			iounmap(rcc_base);
+-
+-		of_node_put(dev_of_node(dev));
+-	}
+-
+-	return ret;
+-}
+-
+-static int get_clock_deps(struct device *dev)
+-{
+-	static const char * const clock_deps_name[] = {
+-		"hsi", "hse", "csi", "lsi", "lse",
+-	};
+-	size_t deps_size = sizeof(struct clk *) * ARRAY_SIZE(clock_deps_name);
+-	struct clk **clk_deps;
+-	int i;
+-
+-	clk_deps = devm_kzalloc(dev, deps_size, GFP_KERNEL);
+-	if (!clk_deps)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < ARRAY_SIZE(clock_deps_name); i++) {
+-		struct clk *clk = of_clk_get_by_name(dev_of_node(dev),
+-						     clock_deps_name[i]);
+-
+-		if (IS_ERR(clk)) {
+-			if (PTR_ERR(clk) != -EINVAL && PTR_ERR(clk) != -ENOENT)
+-				return PTR_ERR(clk);
+-		} else {
+-			/* Device gets a reference count on the clock */
+-			clk_deps[i] = devm_clk_get(dev, __clk_get_name(clk));
+-			clk_put(clk);
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+ static int stm32mp1_rcc_clocks_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	int ret = get_clock_deps(dev);
++	void __iomem *base;
+ 
+-	if (!ret)
+-		ret = stm32mp1_rcc_init(dev);
+-
+-	return ret;
+-}
+-
+-static void stm32mp1_rcc_clocks_remove(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct device_node *child, *np = dev_of_node(dev);
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (WARN_ON(IS_ERR(base)))
++		return PTR_ERR(base);
+ 
+-	for_each_available_child_of_node(np, child)
+-		of_clk_del_provider(child);
++	return stm32_rcc_init(dev, stm32mp13_match_data, base);
+ }
+ 
+ static struct platform_driver stm32mp13_rcc_clocks_driver = {
+@@ -1615,7 +1554,6 @@ static struct platform_driver stm32mp13_rcc_clocks_driver = {
+ 		.of_match_table = stm32mp13_match_data,
+ 	},
+ 	.probe = stm32mp1_rcc_clocks_probe,
+-	.remove_new = stm32mp1_rcc_clocks_remove,
+ };
+ 
+ static int __init stm32mp13_clocks_init(void)
+-- 
+2.39.5
+

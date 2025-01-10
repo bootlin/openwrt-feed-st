@@ -1,0 +1,132 @@
+From 5fe62ffaec3dc91bef65d620656804ce44849581 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 31 May 2024 10:36:16 +0200
+Subject: [PATCH] arm64: dts: st: add stm32mp21 i3c1/i3c2/i3c3 pins definitions
+
+STM32 I3C requires 3 states of pinctrl: init, default and sleep.
+Init state is needed when enabling the controller, to avoid generating an
+unexpected frame (I3C-211213 erratum).
+
+I3C1, I3C2 or I3C3 are available on gpio expansion connector of
+stm32mp251f-dk board.
+I3C2 and I3C3 are exclusive: they share the same pins so they can't be used
+at the same time.
+
+Change-Id: I1a6f8377e8869e88e0df679fe159962e2aaf408e
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384272
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+index 698e1ebd7654..b22a2c07977d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+@@ -81,6 +81,102 @@ pins {
+ 		};
+ 	};
+ 
++	i3c1_pins_a: i3c1-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 13, AF10)>, /* I3C1_SCL */
++				 <STM32_PINMUX('A', 2, AF8)>; /* I3C1_SDA */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c1_init_pins_a: i3c1-init-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 13, AF10)>; /* I3C1_SCL */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <1>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('A', 2, AF8)>; /* I3C1_SDA */
++			drive-push-pull;
++			bias-pull-up;
++			slew-rate = <1>;
++		};
++	};
++
++	i3c1_sleep_pins_a: i3c1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 13, ANALOG)>, /* I3C1_SCL */
++				 <STM32_PINMUX('A', 2, ANALOG)>; /* I3C1_SDA */
++		};
++	};
++
++	i3c2_pins_a: i3c2-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 12, AF4)>, /* I3C2_SCL */
++				 <STM32_PINMUX('G', 0, AF4)>; /* I3C2_SDA */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c2_init_pins_a: i3c2-init-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('C', 12, AF4)>; /* I3C2_SCL */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('G', 0, AF4)>; /* I3C2_SDA */
++			drive-push-pull;
++			bias-pull-up;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c2_sleep_pins_a: i3c2-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 12, ANALOG)>, /* I3C2_SCL */
++				 <STM32_PINMUX('G', 0, ANALOG)>; /* I3C2_SDA */
++		};
++	};
++
++	i3c3_pins_a: i3c3-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 12, AF3)>, /* I3C3_SCL */
++				 <STM32_PINMUX('G', 0, AF3)>; /* I3C3_SDA */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c3_init_pins_a: i3c3-init-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('C', 12, AF3)>; /* I3C3_SCL */
++			drive-push-pull;
++			bias-disable;
++			slew-rate = <3>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('G', 0, AF3)>; /* I3C3_SDA */
++			drive-push-pull;
++			bias-pull-up;
++			slew-rate = <3>;
++		};
++	};
++
++	i3c3_sleep_pins_a: i3c3-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('C', 12, ANALOG)>, /* I3C3_SCL */
++				 <STM32_PINMUX('G', 0, ANALOG)>; /* I3C3_SDA */
++		};
++	};
++
+ 	ltdc_pins_a: ltdc-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('F', 12, AF13)>, /* LCD_CLK */
+-- 
+2.39.5
+

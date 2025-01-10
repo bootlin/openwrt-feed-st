@@ -1,0 +1,38 @@
+From 34ed3e3d6b888ec446a7d4316ce493137c90b2e4 Mon Sep 17 00:00:00 2001
+From: Lionel Debieve <lionel.debieve@foss.st.com>
+Date: Fri, 5 Nov 2021 17:50:55 +0100
+Subject: [PATCH] ARM: dts: stm32: add HASH on stm32mp131
+
+Add the HASH support on stm32mp131.
+
+Signed-off-by: Thomas BOURGOIN <thomas.bourgoin@st.com>
+Change-Id: I095f4d1baa90be1e39b9b983b0339d8603ade241
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 4fc92537d474..d4ad507cd1bb 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1351,6 +1351,17 @@ dts: thermal@50028000 {
+ 			status = "disabled";
+ 		};
+ 
++		hash: hash@54003000 {
++			compatible = "st,stm32mp13-hash";
++			reg = <0x54003000 0x400>;
++			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&rcc HASH1>;
++			resets = <&rcc HASH1_R>;
++			dmas = <&mdma 30 0x2 0x1000a02 0x0 0x0 0x0>;
++			dma-names = "in";
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;
+-- 
+2.39.5
+

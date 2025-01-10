@@ -1,0 +1,85 @@
+From de6ada12048b3846b786f4333f7a7914f6315eab Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 12 Jun 2019 17:29:29 +0200
+Subject: [PATCH] thermal: stm32: fix engineering calibration value
+
+TS1_T0 is only used by engineering during calibration.
+The temperature offset is actually fixed to 30 Celsius.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: Ibbc558b62cff343e605f7361c9b1103887f84827
+---
+ drivers/thermal/st/stm_thermal.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
+index 142a7e5d12f4..50ab45609f23 100644
+--- a/drivers/thermal/st/stm_thermal.c
++++ b/drivers/thermal/st/stm_thermal.c
+@@ -79,8 +79,7 @@
+ #define ONE_MHZ			1000000
+ #define POLL_TIMEOUT		5000
+ #define STARTUP_TIME		40
+-#define TS1_T0_VAL0		30000  /* 30 celsius */
+-#define TS1_T0_VAL1		130000 /* 130 celsius */
++#define T0			30000  /* 30 celsius */
+ #define NO_HW_TRIG		0
+ #define SAMPLING_TIME		15
+ 
+@@ -93,7 +92,7 @@ struct stm_thermal_sensor {
+ 	unsigned int high_temp_enabled;
+ 	int irq;
+ 	void __iomem *base;
+-	int t0, fmt0, ramp_coeff;
++	int fmt0, ramp_coeff;
+ };
+ 
+ static int stm_enable_irq(struct stm_thermal_sensor *sensor)
+@@ -240,14 +239,6 @@ static int stm_thermal_calibration(struct stm_thermal_sensor *sensor)
+ /* Fill in DTS structure with factory sensor values */
+ static int stm_thermal_read_factory_settings(struct stm_thermal_sensor *sensor)
+ {
+-	/* Retrieve engineering calibration temperature */
+-	sensor->t0 = readl_relaxed(sensor->base + DTS_T0VALR1_OFFSET) &
+-					TS1_T0_MASK;
+-	if (!sensor->t0)
+-		sensor->t0 = TS1_T0_VAL0;
+-	else
+-		sensor->t0 = TS1_T0_VAL1;
+-
+ 	/* Retrieve fmt0 and put it on Hz */
+ 	sensor->fmt0 = ADJUST * (readl_relaxed(sensor->base +
+ 				 DTS_T0VALR1_OFFSET) & TS1_FMT0_MASK);
+@@ -261,8 +252,8 @@ static int stm_thermal_read_factory_settings(struct stm_thermal_sensor *sensor)
+ 		return -EINVAL;
+ 	}
+ 
+-	dev_dbg(sensor->dev, "%s: T0 = %doC, FMT0 = %dHz, RAMP_COEFF = %dHz/oC",
+-		__func__, sensor->t0, sensor->fmt0, sensor->ramp_coeff);
++	dev_dbg(sensor->dev, "%s: FMT0 = %dHz, RAMP_COEFF = %dHz/oC",
++		__func__, sensor->fmt0, sensor->ramp_coeff);
+ 
+ 	return 0;
+ }
+@@ -273,8 +264,7 @@ static int stm_thermal_calculate_threshold(struct stm_thermal_sensor *sensor,
+ 	int freqM;
+ 
+ 	/* Figure out the CLK_PTAT frequency for a given temperature */
+-	freqM = ((temp - sensor->t0) * sensor->ramp_coeff) / 1000 +
+-		sensor->fmt0;
++	freqM = ((temp - T0) * sensor->ramp_coeff) / 1000 + sensor->fmt0;
+ 
+ 	/* Figure out the threshold sample number */
+ 	*th = clk_get_rate(sensor->clk) * SAMPLING_TIME / freqM;
+@@ -369,7 +359,7 @@ static int stm_thermal_get_temp(struct thermal_zone_device *tz, int *temp)
+ 		return -EINVAL;
+ 
+ 	/* Figure out the temperature in mili celsius */
+-	*temp = (freqM - sensor->fmt0) * 1000 / sensor->ramp_coeff + sensor->t0;
++	*temp = (freqM - sensor->fmt0) * 1000 / sensor->ramp_coeff + T0;
+ 
+ 	return 0;
+ }
+-- 
+2.39.5
+

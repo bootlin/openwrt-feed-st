@@ -1,0 +1,60 @@
+From 3895d31bd27ff7426a479b8e286c089535c8c596 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Thu, 24 Sep 2020 08:35:44 +0200
+Subject: [PATCH] net: ethernet: stmmac: add management of stm32mp13 for stm32
+
+Add Ethernet support for STM32MP13.
+STM32MP13 is STM32 SOC with 2 GMACs instances.
+GMAC IP version is SNPS 4.20.
+GMAC IP configure with 1 RX and 1 TX queue.
+DMA HW capability register supported
+RX Checksum Offload Engine supported
+TX Checksum insertion supported
+Wake-Up On Lan supported
+TSO supported
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: Ib36c87c887d7ed94563bc99d19d45ba93b56e46a
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index c090fadb978b..3af01b71c087 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -545,9 +545,31 @@ static struct stm32_ops stm32mp1_dwmac_data = {
+ 	}
+ };
+ 
++static struct stm32_ops stm32mp13_dwmac_data = {
++	.set_mode = stm32mp1_set_mode,
++	.clk_prepare = stm32mp1_clk_prepare,
++	.suspend = stm32mp1_suspend,
++	.resume = stm32mp1_resume,
++	.parse_data = stm32mp1_parse_data,
++	.clk_rx_enable_in_suspend = true,
++	.syscfg_clr_off = 0x08,
++	.pmcsetr = {
++		.eth1_clk_sel		= BIT(16),
++		.eth1_ref_clk_sel	= BIT(17),
++		.eth1_selmii		= 0,
++		.eth1_sel_rgmii		= BIT(21),
++		.eth1_sel_rmii		= BIT(23),
++		.eth2_clk_sel		= BIT(24),
++		.eth2_ref_clk_sel	= BIT(25),
++		.eth2_sel_rgmii		= BIT(29),
++		.eth2_sel_rmii		= BIT(31)
++	}
++};
++
+ static const struct of_device_id stm32_dwmac_match[] = {
+ 	{ .compatible = "st,stm32-dwmac", .data = &stm32mcu_dwmac_data},
+ 	{ .compatible = "st,stm32mp1-dwmac", .data = &stm32mp1_dwmac_data},
++	{ .compatible = "st,stm32mp13-dwmac", .data = &stm32mp13_dwmac_data},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, stm32_dwmac_match);
+-- 
+2.39.5
+

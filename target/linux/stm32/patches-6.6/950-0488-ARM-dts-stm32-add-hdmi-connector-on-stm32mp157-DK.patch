@@ -1,0 +1,54 @@
+From 32f30712c5748fa0a9c632e2a7a7a13ee95a5b0b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 15 Nov 2023 12:16:12 +0100
+Subject: [PATCH] ARM: dts: stm32: add hdmi connector on stm32mp157 DK
+
+Missing hdmi connector description.
+
+Change-Id: Icb7127fdf1600d6a0d362b849b55195486267fbc
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 67501d33b417..5fae7937c740 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -84,6 +84,19 @@ linux,cma {
+ 		};
+ 	};
+ 
++	hdmi: connector {
++		compatible = "hdmi-connector";
++		label = "hdmi";
++
++		type = "a";
++
++		port {
++			hdmi_connector_in: endpoint {
++				remote-endpoint = <&sii9022_out>;
++			};
++		};
++	};
++
+ 	led {
+ 		compatible = "gpio-leds";
+ 		led-blue {
+@@ -241,6 +254,13 @@ sii9022_in: endpoint {
+ 				};
+ 			};
+ 
++			port@1 {
++				reg = <1>;
++				sii9022_out: endpoint {
++					remote-endpoint = <&hdmi_connector_in>;
++				};
++			};
++
+ 			port@3 {
+ 				reg = <3>;
+ 				sii9022_tx_endpoint: endpoint {
+-- 
+2.39.5
+

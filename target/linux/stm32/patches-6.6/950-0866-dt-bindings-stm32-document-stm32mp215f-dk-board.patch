@@ -1,0 +1,35 @@
+From 9db486f53569123628220ecd0a40dc32f05fd152 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 7 Feb 2024 12:07:55 +0100
+Subject: [PATCH] dt-bindings: stm32: document stm32mp215f-dk board
+
+Add new entry for stm32mp215-dk board.
+
+Change-Id: I74f5323cabff87e743eaa7e0dc9b97cd232de13d
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/358027
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index 18ed503b2735..7268897d9bdf 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -184,6 +184,12 @@ properties:
+               - st,stm32mp235f-dk
+           - const: st,stm32mp235
+ 
++      - description: ST STM32MP215 based Boards
++        items:
++          - enum:
++              - st,stm32mp215f-dk
++          - const: st,stm32mp215
++
+ additionalProperties: true
+ 
+ ...
+-- 
+2.39.5
+

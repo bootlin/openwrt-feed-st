@@ -1,0 +1,99 @@
+From 1a6d18a0099c66f6189cec2b513796a263144616 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 23 Sep 2024 18:34:25 +0200
+Subject: [PATCH] media: dcmipp: bytecap: consider frame skip when capturing
+ frames
+
+When frame skip is configured via postproc subdev pad frame_intervals,
+there will be more VSYNCS than FRAMEEND events.  Capture mechanism is
+based on the operations programmed into the dcmipp on each VSYNCS.
+When frames are skipped, this means that some settings done on VSYNCS
+are useless (since nothing will be generated after that VSYNC) and
+moreover will lead to issue regarding the last frame captured before
+reaching lack of buffer.  Indeed, when stopping the pipeline due to
+a lack of buffer, the CPTREQ bit is cleared on the VSYNC in order to
+have the pipeline stop after a last capture starting on the following
+VSYNC.  Due to frame skip, this would end up in a situation of getting
+the pipeline stopped while no frame has yet be generated since it has
+been skipped.
+
+This can be seen using YAVTA application which is specific in the sense
+that, when using this application, the driver will reach the state of
+having a single buffer queued prior to capturing the last frame.
+
+In order to correct this, and moreover avoid unnecessary programming,
+the capture device now keep track of the frame skip information in order
+to only program the dcmipp targeting the VSYNC prior to the actual
+frame end generated instead of all VSYNCS.
+
+Change-Id: I836eceea73ec1f2425ad464a64768fc8e6013198
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/406293
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 22 +++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 4d50ae09c5ad..a878ea811e10 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -153,6 +153,9 @@ struct dcmipp_bytecap_device {
+ 		u32 underrun;
+ 		u32 nactive;
+ 	} count;
++
++	u32 vsync_frame_refresh_cnt;
++	u32 frame_skip_ratio;
+ };
+ 
+ static const struct v4l2_pix_format fmt_default = {
+@@ -368,6 +371,10 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+ 		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
+ 	}
+ 
++	ret = dcmipp_get_frame_skip_rate(vcap->s_subdev, &vcap->frame_skip_ratio);
++	if (ret < 0)
++		return ret;
++
+ 	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
+ 	if (ret < 0) {
+ 		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
+@@ -388,6 +395,9 @@ static void dcmipp_start_capture(struct dcmipp_bytecap_device *vcap,
+ 	reg_write(vcap, DCMIPP_P0DCLMTR, DCMIPP_P0DCLMTR_ENABLE |
+ 		  ((buf->size / 4) & DCMIPP_P0DCLMTR_LIMIT_MASK));
+ 
++	/* It takes 1 VSYNCs to actually start */
++	vcap->vsync_frame_refresh_cnt = 1;
++
+ 	/* Capture request */
+ 	reg_set(vcap, DCMIPP_P0FCTCR, DCMIPP_P0FCTCR_CPTREQ);
+ }
+@@ -795,11 +805,15 @@ static irqreturn_t dcmipp_bytecap_irq_thread(int irq, void *arg)
+ 		 * most of the cases, since a FRAMEEND has already come,
+ 		 * pointer next is NULL since active is reset during the
+ 		 * FRAMEEND handling. However, in case of framerate adjustment,
+-		 * there are more VSYNC than FRAMEEND. Thus we recycle the
+-		 * active (but not used) buffer and put it back into next.
++		 * there are more VSYNC than FRAMEEND. To tackle with those
++		 * cases, the driver needs to count vsync in order to apply
++		 * updates only when really necessary.
+ 		 */
+-		swap(vcap->active, vcap->next);
+-		dcmipp_bytecap_set_next_frame_or_stop(vcap);
++		if (--vcap->vsync_frame_refresh_cnt == 0) {
++			vcap->vsync_frame_refresh_cnt = vcap->frame_skip_ratio;
++			swap(vcap->active, vcap->next);
++			dcmipp_bytecap_set_next_frame_or_stop(vcap);
++		}
+ 	}
+ 
+ out:
+-- 
+2.39.5
+

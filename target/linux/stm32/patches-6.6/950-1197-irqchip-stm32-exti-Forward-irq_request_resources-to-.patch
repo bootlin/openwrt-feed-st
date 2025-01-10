@@ -1,0 +1,44 @@
+From 64cd357c1aedca15c659c93924dab32e5c54d83d Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Tue, 2 Nov 2021 14:46:35 +0100
+Subject: [PATCH] irqchip/stm32-exti: Forward irq_request_resources to parent
+
+Enhance stm32-exti driver to forward request_resources and
+release_resources_parent operations to parent.
+
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I929628cd93b641b8c1988b0e000a4b7552b128f1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383198
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 069a9addabe4..0a7ecd4eb684 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -464,6 +464,8 @@ static struct irq_chip stm32mp_exti_chip = {
+ 	.irq_eoi		= stm32mp_exti_eoi,
+ 	.irq_mask		= stm32mp_exti_mask,
+ 	.irq_unmask		= stm32mp_exti_unmask,
++	.irq_request_resources	= irq_chip_request_resources_parent,
++	.irq_release_resources	= irq_chip_release_resources_parent,
+ 	.irq_retrigger		= stm32mp_exti_retrigger,
+ 	.irq_set_type		= stm32mp_exti_set_type,
+ 	.irq_set_wake		= stm32mp_exti_set_wake,
+@@ -477,6 +479,8 @@ static struct irq_chip stm32mp_exti_chip_direct = {
+ 	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_mask		= stm32mp_exti_mask,
+ 	.irq_unmask		= stm32mp_exti_unmask,
++	.irq_request_resources	= irq_chip_request_resources_parent,
++	.irq_release_resources	= irq_chip_release_resources_parent,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_type		= irq_chip_set_type_parent,
+ 	.irq_set_wake		= stm32mp_exti_set_wake,
+-- 
+2.39.5
+

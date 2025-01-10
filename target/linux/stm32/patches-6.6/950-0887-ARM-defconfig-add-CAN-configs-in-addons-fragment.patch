@@ -1,0 +1,32 @@
+From 892731f5210d0dc1ab753c4802532977a330590a Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Mon, 20 Feb 2023 12:07:45 +0100
+Subject: [PATCH] ARM: defconfig: add CAN configs in addons fragment
+
+Add CAN1/CAN3 peripherals config flags in addons fragment.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: Ia87ddb64b714f8918b71f713e91b47dfd284b013
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367489
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 54c533a88dc2..0f1a88b6ef74 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -4,6 +4,8 @@ CONFIG_ARCH_FORCE_MAX_ORDER=12
+ CONFIG_ARM_SMC_MBOX=y
+ CONFIG_ARM_SMC_WATCHDOG=y
+ CONFIG_BACKLIGHT_GPIO=y
++CONFIG_CAN_M_CAN=y
++CONFIG_CAN_M_CAN_PLATFORM=y
+ CONFIG_CHR_DEV_SG=y
+ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+ CONFIG_DEBUG_PREEMPT=y
+-- 
+2.39.5
+

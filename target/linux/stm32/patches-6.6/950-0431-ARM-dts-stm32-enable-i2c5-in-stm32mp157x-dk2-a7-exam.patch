@@ -1,0 +1,47 @@
+From 22f2eb862d5f6214d4bbce6703bb6f7373167b7b Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 24 Mar 2023 18:36:02 +0100
+Subject: [PATCH] ARM: dts: stm32: enable i2c5 in stm32mp157x-dk2-a7-examples
+
+Enable the i2c5 in dk2 a7 examples.
+
+Change-Id: I70a249859a68b4ab942e1a7b527f7175f7820e49
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts | 4 ++++
+ arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
+index ffa1bbff36c7..533ed4efe093 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
+@@ -58,6 +58,10 @@ channel@6 {
+ 	};
+ };
+ 
++&i2c5 {
++	status = "okay";
++};
++
+ &timers1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
+index 7091f3103d8a..8da80c96cfe6 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
+@@ -58,6 +58,10 @@ channel@6 {
+ 	};
+ };
+ 
++&i2c5 {
++	status = "okay";
++};
++
+ &timers1 {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

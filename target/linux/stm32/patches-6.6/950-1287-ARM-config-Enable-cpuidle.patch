@@ -1,0 +1,34 @@
+From 64cebcd26e3dd857c9814648503e7ff50b89b367 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 23 Jul 2024 10:20:09 +0200
+Subject: [PATCH] ARM: config: Enable cpuidle
+
+Allow cpu idle configuration.
+This will add CPU Idle state 0 for ARM WFI considered standard
+on all ARM platforms.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I204967c7dbb34360947f525b55e69121db06dfc5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/394682
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+index 161be292536c..11aecbba58c6 100644
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -46,7 +46,6 @@
+ # CONFIG_CAN_MCP251X is not set
+ # CONFIG_CAN_RCAR is not set
+ # CONFIG_CHROME_PLATFORMS is not set
+-# CONFIG_CPU_IDLE is not set
+ # CONFIG_CXD2880_SPI_DRV is not set
+ # CONFIG_DETECT_HUNG_TASK is not set
+ # CONFIG_DRM_FBDEV_EMULATION is not set
+-- 
+2.39.5
+

@@ -1,0 +1,42 @@
+From 0ae8136c4cfc2a60926c69ea6d667a644dc91d73 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 16 Apr 2024 11:46:36 +0200
+Subject: [PATCH] ARM: dts: stm32: add Hardware debug port (HDP) on stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add the hdp devicetree node for stm32mp21 SoC family
+
+Change-Id: If0989618f0cf21dd9912c5b786efcac01b981f45
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373866
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index d5ef0b6436a4..1385f0c538e9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -292,6 +292,13 @@ sdmmc3: mmc@48240000 {
+ 			};
+ 		};
+ 
++		hdp: pinctrl@44090000 {
++			compatible = "st,stm32mp-hdp";
++			reg = <0x44090000 0x400>;
++			clocks = <&rcc CK_BUS_HDP>;
++			status = "disabled";
++		};
++
+ 		rcc: clock-controller@44200000 {
+ 			compatible = "st,stm32mp21-rcc";
+ 			reg = <0x44200000 0x10000>;
+-- 
+2.39.5
+

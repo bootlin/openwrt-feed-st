@@ -1,0 +1,170 @@
+From a3f784f445129a8dde93c7e6f4d40a6b2b15922c Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 26 Jan 2024 08:41:55 +0100
+Subject: [PATCH] drm/stm: ltdc: remove encoder helper functions
+
+The "enable/disable" &"mode fixup/valid" functions are useless,
+it is preferable to start/stop the display controller via
+the crtc functions.
+
+Change-Id: I7c12a386b4a0380479fec3df83c02fe936fdd42c
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 101 +++++++++++++++----------------------
+ 1 file changed, 41 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index e930089a3c47..dd793e079666 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -945,6 +945,13 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_VBR);
+ 
+ 	drm_crtc_vblank_on(crtc);
++
++	/* set fifo underrun threshold register */
++	if (ldev->caps.fifo_threshold)
++		regmap_write(ldev->regmap, LTDC_FUT, ldev->fifo_threshold);
++
++	/* Enable LTDC */
++	regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
+ }
+ 
+ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -969,6 +976,12 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	if (!ldev->caps.plane_reg_shadow)
+ 		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
+ 
++	/* Disable LTDC */
++	regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
++
++	/* Set to sleep state the pinctrl whatever type of encoder */
++	pinctrl_pm_select_sleep_state(ddev->dev);
++
+ 	pm_runtime_put_sync_suspend(ddev->dev);
+ 
+ 	/*  clear interrupt error counters */
+@@ -1050,11 +1063,20 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	struct drm_encoder *encoder = NULL, *en_iter;
+ 	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+ 	int orientation = DRM_MODE_PANEL_ORIENTATION_UNKNOWN;
++	int rate = mode->clock * 1000;
+ 	u32 hsync, vsync, accum_hbp, accum_vbp, accum_act_w, accum_act_h;
+ 	u32 total_width, total_height;
+ 	u32 val;
+ 	int ret;
+ 
++	DRM_DEBUG_DRIVER("\n");
++
++	/* disable to stream frame if previous session is still alive */
++	if (pm_runtime_active(ddev->dev)) {
++		regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
++		pm_runtime_put_sync_suspend(ddev->dev);
++	}
++
+ 	/* get encoder from crtc */
+ 	drm_for_each_encoder(en_iter, ddev)
+ 		if (en_iter->crtc == crtc) {
+@@ -1074,12 +1096,25 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	if (connector)
+ 		orientation = connector->display_info.panel_orientation;
+ 
+-	if (!pm_runtime_active(ddev->dev)) {
+-		ret = pm_runtime_get_sync(ddev->dev);
+-		if (ret) {
+-			DRM_ERROR("Failed to set mode, cannot get sync\n");
+-			return;
+-		}
++	if (clk_set_rate(ldev->pixel_clk, rate) < 0) {
++		DRM_ERROR("Cannot set rate (%dHz) for pixel clk\n", rate);
++		return;
++	}
++
++	/*
++	 * Set to default state the pinctrl only with DPI type.
++	 * Others types like DSI, don't need pinctrl due to
++	 * internal bridge (the signals do not come out of the chipset).
++	 */
++	if (encoder->encoder_type == DRM_MODE_ENCODER_DPI)
++		pinctrl_pm_select_default_state(ddev->dev);
++	else
++		pinctrl_pm_select_sleep_state(ddev->dev);
++
++	ret = pm_runtime_get_sync(ddev->dev);
++	if (ret) {
++		DRM_ERROR("Failed to set mode, cannot get sync\n");
++		return;
+ 	}
+ 
+ 	DRM_DEBUG_DRIVER("CRTC:%d mode:%s\n", crtc->base.id, mode->name);
+@@ -2030,58 +2065,6 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+ 	return ret;
+ }
+ 
+-static void ltdc_encoder_disable(struct drm_encoder *encoder)
+-{
+-	struct drm_device *ddev = encoder->dev;
+-	struct ltdc_device *ldev = ddev->dev_private;
+-
+-	DRM_DEBUG_DRIVER("\n");
+-
+-	/* Disable LTDC */
+-	regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
+-
+-	/* Set to sleep state the pinctrl whatever type of encoder */
+-	pinctrl_pm_select_sleep_state(ddev->dev);
+-}
+-
+-static void ltdc_encoder_enable(struct drm_encoder *encoder)
+-{
+-	struct drm_device *ddev = encoder->dev;
+-	struct ltdc_device *ldev = ddev->dev_private;
+-
+-	DRM_DEBUG_DRIVER("\n");
+-
+-	/* set fifo underrun threshold register */
+-	if (ldev->caps.fifo_threshold)
+-		regmap_write(ldev->regmap, LTDC_FUT, ldev->fifo_threshold);
+-
+-	/* Enable LTDC */
+-	regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
+-}
+-
+-static void ltdc_encoder_mode_set(struct drm_encoder *encoder,
+-				  struct drm_display_mode *mode,
+-				  struct drm_display_mode *adjusted_mode)
+-{
+-	struct drm_device *ddev = encoder->dev;
+-
+-	DRM_DEBUG_DRIVER("\n");
+-
+-	/*
+-	 * Set to default state the pinctrl only with DPI type.
+-	 * Others types like DSI, don't need pinctrl due to
+-	 * internal bridge (the signals do not come out of the chipset).
+-	 */
+-	if (encoder->encoder_type == DRM_MODE_ENCODER_DPI)
+-		pinctrl_pm_select_default_state(ddev->dev);
+-}
+-
+-static const struct drm_encoder_helper_funcs ltdc_encoder_helper_funcs = {
+-	.disable = ltdc_encoder_disable,
+-	.enable = ltdc_encoder_enable,
+-	.mode_set = ltdc_encoder_mode_set,
+-};
+-
+ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+ {
+ 	struct drm_encoder *encoder;
+@@ -2096,8 +2079,6 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+ 
+ 	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
+ 
+-	drm_encoder_helper_add(encoder, &ltdc_encoder_helper_funcs);
+-
+ 	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
+ 	if (ret) {
+ 		if (ret != -EPROBE_DEFER)
+-- 
+2.39.5
+

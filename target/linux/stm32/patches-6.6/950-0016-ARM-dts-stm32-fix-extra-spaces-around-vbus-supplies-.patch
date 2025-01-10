@@ -1,0 +1,40 @@
+From 6e25db1e38f76a2a25bcc16deb063164421e71d0 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 4 Oct 2022 16:39:49 +0200
+Subject: [PATCH] ARM: dts: stm32: fix extra spaces around vbus supplies in
+ stm32mp157c-ed1
+
+Remove extra spaces before the closing brace of vbus_otg node, before the
+vbus_sw label, and before the closing brace of vbus_sw node.
+
+Change-Id: I0fa70f13f6f85d1a0b956a9b4ea6731c64a4ef57
+Fixes: 9c559b1565e6 ("ARM: dts: stm32: add stpmic1 support on stm32mp157c ed1 board")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index b39351fc9b4a..25430e560432 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -279,13 +279,13 @@ bst_out: boost {
+ 			vbus_otg: pwr_sw1 {
+ 				regulator-name = "vbus_otg";
+ 				interrupts = <IT_OCP_OTG 0>;
+-			 };
++			};
+ 
+-			 vbus_sw: pwr_sw2 {
++			vbus_sw: pwr_sw2 {
+ 				regulator-name = "vbus_sw";
+ 				interrupts = <IT_OCP_SWOUT 0>;
+ 				regulator-active-discharge = <1>;
+-			 };
++			};
+ 		};
+ 
+ 		onkey {
+-- 
+2.39.5
+

@@ -1,0 +1,77 @@
+From 7c1ac93b589d48b058aa3eb4e94664bc35175c4b Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 12 Apr 2024 15:25:22 +0200
+Subject: [PATCH] serial: stm32: use bitfield.h macros in
+ stm32_usart_config_reg_rs485
+
+Optimize slightly the code of stm32_usart_config_reg_rs485() with
+min(), FIELD_PREP() and FIELD_MAX() macros.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ieef6cc7cde6974f4cfa4074efa483356118d3ce6
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/373290
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/tty/serial/stm32-usart.c | 15 ++++-----------
+ drivers/tty/serial/stm32-usart.h |  2 --
+ 2 files changed, 4 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 8ac74b8bd46b..fc1cc819d1ab 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -187,7 +187,6 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+ 					 u32 delay_DDE, u32 baud)
+ {
+ 	u32 rs485_deat_dedt;
+-	u32 rs485_deat_dedt_max = (USART_CR1_DEAT_MASK >> USART_CR1_DEAT_SHIFT);
+ 	bool over8;
+ 
+ 	*cr3 |= USART_CR3_DEM;
+@@ -201,11 +200,8 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+ 		rs485_deat_dedt = delay_ADE * baud * 16;
+ 
+ 	rs485_deat_dedt = DIV_ROUND_UP(rs485_deat_dedt, 1000);
+-	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
+-			  rs485_deat_dedt_max : rs485_deat_dedt;
+-	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEAT_SHIFT) &
+-			   USART_CR1_DEAT_MASK;
+-	*cr1 |= rs485_deat_dedt;
++	rs485_deat_dedt = min_t(u32, rs485_deat_dedt, FIELD_MAX(USART_CR1_DEAT_MASK));
++	*cr1 |= FIELD_PREP(USART_CR1_DEAT_MASK, rs485_deat_dedt);
+ 
+ 	if (over8)
+ 		rs485_deat_dedt = delay_DDE * baud * 8;
+@@ -213,11 +209,8 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+ 		rs485_deat_dedt = delay_DDE * baud * 16;
+ 
+ 	rs485_deat_dedt = DIV_ROUND_UP(rs485_deat_dedt, 1000);
+-	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
+-			  rs485_deat_dedt_max : rs485_deat_dedt;
+-	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEDT_SHIFT) &
+-			   USART_CR1_DEDT_MASK;
+-	*cr1 |= rs485_deat_dedt;
++	rs485_deat_dedt = min_t(u32, rs485_deat_dedt, FIELD_MAX(USART_CR1_DEDT_MASK));
++	*cr1 |= FIELD_PREP(USART_CR1_DEDT_MASK, rs485_deat_dedt);
+ }
+ 
+ static int stm32_usart_config_rs485(struct uart_port *port, struct ktermios *termios,
+diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
+index 4db0619966f1..f5582999a1ff 100644
+--- a/drivers/tty/serial/stm32-usart.h
++++ b/drivers/tty/serial/stm32-usart.h
+@@ -117,8 +117,6 @@ struct stm32_usart_info {
+ #define USART_CR1_M1		BIT(28)		/* F7 */
+ #define USART_CR1_IE_MASK	(GENMASK(8, 4) | BIT(14) | BIT(26) | BIT(27))
+ #define USART_CR1_FIFOEN	BIT(29)		/* H7 */
+-#define USART_CR1_DEAT_SHIFT 21
+-#define USART_CR1_DEDT_SHIFT 16
+ 
+ /* USART_CR2 */
+ #define USART_CR2_ADD_MASK	GENMASK(3, 0)	/* F4 */
+-- 
+2.39.5
+

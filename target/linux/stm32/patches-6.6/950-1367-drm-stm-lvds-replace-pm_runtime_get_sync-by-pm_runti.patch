@@ -1,0 +1,62 @@
+From c207e95f771add8cf4d4e88674c291bd59f413f0 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 22 Aug 2024 10:42:07 +0200
+Subject: [PATCH] drm/stm: lvds: replace pm_runtime_get_sync by
+ pm_runtime_resume_and_get
+
+The function pm_runtime_resume_and_get() offers a better error
+management than pm_runtime_get_sync().
+
+Change-Id: Id6a18c051edfd92b1f89cfb5be4068c9516ba914
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/399634
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/lvds.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
+index 573bcfdaed18..d4106c1bdd5d 100644
+--- a/drivers/gpu/drm/stm/lvds.c
++++ b/drivers/gpu/drm/stm/lvds.c
+@@ -557,9 +557,9 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+ 	struct lvds_phy_info *phy;
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(lvds->dev);
++	ret = pm_runtime_resume_and_get(lvds->dev);
+ 	if (ret < 0) {
+-		DRM_ERROR("Failed to set mode, cannot get sync\n");
++		DRM_ERROR("Failed to enable clocks, cannot resume pm\n");
+ 		return ret;
+ 	}
+ 
+@@ -991,9 +991,9 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+ 	struct drm_connector *connector;
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(lvds->dev);
++	ret = pm_runtime_resume_and_get(lvds->dev);
+ 	if (ret < 0) {
+-		DRM_ERROR("Failed to set mode, cannot get sync\n");
++		DRM_ERROR("Failed to enable lvds, cannot resume pm\n");
+ 		return;
+ 	}
+ 
+@@ -1202,7 +1202,11 @@ static int lvds_probe(struct platform_device *pdev)
+ 	 *  the clocks must remain activated
+ 	 */
+ 	if (device_property_read_bool(dev, "default-on")) {
+-		pm_runtime_get_sync(dev);
++		ret = pm_runtime_resume_and_get(dev);
++		if (ret < 0) {
++			DRM_ERROR("Failed to probe lvds, cannot resume pm\n");
++			return ret;
++		}
+ 
+ 		if (lvds->primary) {
+ 			if (lvds_is_dual_link(lvds->link_type))
+-- 
+2.39.5
+

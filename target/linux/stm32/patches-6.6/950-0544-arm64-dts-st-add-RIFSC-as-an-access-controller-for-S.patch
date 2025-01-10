@@ -1,0 +1,53 @@
+From 4ef33f9c04a7aac9a7ec0936f8d29694bdc62836 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Tue, 4 Jul 2023 10:25:27 +0200
+Subject: [PATCH] arm64: dts: st: add RIFSC as an access controller for
+ STM32MP25x boards
+
+RIFSC is a firewall controller. Add "st,stm32mp25-rifsc" compatible and
+reference RIFSC as an access-control-provider. Keep "simple-bus"
+compatible backward compatibility.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 1b346c0a429b..dc98181f0f13 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -111,11 +111,12 @@ soc@0 {
+ 		interrupt-parent = <&intc>;
+ 		ranges = <0x0 0x0 0x0 0x80000000>;
+ 
+-		rifsc: rifsc-bus@42080000 {
+-			compatible = "simple-bus";
++		rifsc: bus@42080000 {
++			compatible = "st,stm32mp25-rifsc", "simple-bus";
+ 			reg = <0x42080000 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
++			#access-controller-cells = <1>;
+ 			ranges;
+ 
+ 			usart2: serial@400e0000 {
+@@ -123,6 +124,7 @@ usart2: serial@400e0000 {
+ 				reg = <0x400e0000 0x400>;
+ 				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&ck_flexgen_08>;
++				access-controllers = <&rifsc 32>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -136,6 +138,7 @@ sdmmc1: mmc@48220000 {
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+ 				max-frequency = <120000000>;
++				access-controllers = <&rifsc 76>;
+ 				status = "disabled";
+ 			};
+ 		};
+-- 
+2.39.5
+

@@ -1,0 +1,48 @@
+From e1aa9f52301ab0de209130cbbf9bcdccdd30f715 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Thu, 21 Sep 2023 10:02:59 +0200
+Subject: [PATCH] hwrng: stm32 - support RNG configuration locking mechanism
+
+If "st,rng-lock-conf" DT binding property is set for a stm32-rng node,
+the RNG configuration will be locked until next hardware block reset
+or platform reset.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/char/hw_random/stm32-rng.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index 819f062f454d..4a602d666dad 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -62,6 +62,7 @@ struct stm32_rng_private {
+ 	struct reset_control *rst;
+ 	const struct stm32_rng_data *data;
+ 	bool ced;
++	bool lock_conf;
+ };
+ 
+ /*
+@@ -301,6 +302,9 @@ static int stm32_rng_init(struct hwrng *rng)
+ 
+ 		reg &= ~RNG_CR_CONDRST;
+ 		reg |= RNG_CR_RNGEN;
++		if (priv->lock_conf)
++			reg |= RNG_CR_CONFLOCK;
++
+ 		writel_relaxed(reg, priv->base + RNG_CR);
+ 
+ 		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
+@@ -439,6 +443,7 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	}
+ 
+ 	priv->ced = of_property_read_bool(np, "clock-error-detect");
++	priv->lock_conf = of_property_read_bool(np, "st,rng-lock-conf");
+ 
+ 	priv->data = of_device_get_match_data(dev);
+ 	if (!priv->data)
+-- 
+2.39.5
+

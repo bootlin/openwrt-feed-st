@@ -1,0 +1,46 @@
+From 7428831904f5ee8a891a5c37204952458cc8697f Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 15 May 2024 09:04:06 +0200
+Subject: [PATCH] arm64: dts: st: add spdifrx support on stm32mp211
+
+Add SPDIFRX node on the STM32MP211.
+
+Change-Id: I73e25b3818b54f54120bdd1d31854b1b33cb40a9
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379816
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 24309f073244..3edd5e2f48cc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -250,6 +250,20 @@ spi3: spi@400c0000 {
+ 				status = "disabled";
+ 			};
+ 
++			spdifrx: audio-controller@400d0000 {
++				compatible = "st,stm32h7-spdifrx";
++				#sound-dai-cells = <0>;
++				reg = <0x400d0000 0x400>;
++				clocks = <&rcc CK_KER_SPDIFRX>;
++				clock-names = "kclk";
++				interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&hpdma 48 0x43 0x212>,
++					<&hpdma 49 0x43 0x212>;
++				dma-names = "rx", "rx-ctrl";
++				access-controllers = <&rifsc 30>;
++				status = "disabled";
++			};
++
+ 			usart2: serial@400e0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400e0000 0x400>;
+-- 
+2.39.5
+

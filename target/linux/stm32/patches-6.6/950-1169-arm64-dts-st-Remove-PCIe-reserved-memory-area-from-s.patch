@@ -1,0 +1,91 @@
+From a0860b097e24032eb3dee1319e64ef9423d399fe Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 28 May 2024 10:31:48 +0200
+Subject: [PATCH] arm64: dts: st: Remove PCIe reserved memory area from
+ stm32mp257f-xxx-ca35tdcid-resmem
+
+In UEFI configuration, the PCIe area is marked as reserved and can't be
+requested as memory resource by PCIe driver:
+
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x000000000a000000-0x000000000a09ffff]
+[==> 0.000000]   node   0: [mem 0x0000000010000000-0x000000001fffffff] <==
+[    0.000000]   node   0: [mem 0x0000000042000000-0x0000000042001fff]
+[    0.000000]   node   0: [mem 0x0000000060000000-0x000000006fffffff]
+[    0.000000]   node   0: [mem 0x0000000080000000-0x0000000083ffffff]
+[    0.000000]   node   0: [mem 0x0000000084000000-0x00000000f6ffefff]
+[    0.000000]   node   0: [mem 0x00000000f6fff000-0x00000000f6ffffff]
+[    0.000000]   node   0: [mem 0x00000000f7000000-0x00000000f7002fff]
+[    0.000000]   node   0: [mem 0x00000000f7003000-0x00000000f7003fff]
+[    0.000000]   node   0: [mem 0x00000000f7004000-0x00000000f7006fff]
+[    0.000000]   node   0: [mem 0x00000000f7007000-0x00000000f7008fff]
+[    0.000000]   node   0: [mem 0x00000000f7009000-0x00000000f7009fff]
+[    0.000000]   node   0: [mem 0x00000000f700a000-0x00000000f700dfff]
+[    0.000000]   node   0: [mem 0x00000000f700e000-0x00000000fa04ffff]
+[    0.000000]   node   0: [mem 0x00000000fa050000-0x00000000fa05ffff]
+[    0.000000]   node   0: [mem 0x00000000fa060000-0x00000000fa7fffff]
+[    0.000000]   node   0: [mem 0x00000000fa800000-0x00000000ffffffff]
+[    0.000000]   node   0: [mem 0x0000000100000000-0x000000017fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x000000000a000000-0x000000017fffffff]
+
+When PCIe driver is probing, it tries to request its memory resources
+which is not accessible and triggers the following error:
+
+[    0.328680] stm32-pcie 48400000.pcie: host bridge /soc@0/rifsc@42080000/pcie@48400000 ranges:
+[    0.328752] stm32-pcie 48400000.pcie:       IO 0x0010010000..0x001001ffff -> 0x0010010000
+[    0.328783] stm32-pcie 48400000.pcie:      MEM 0x0010020000..0x0017ffffff -> 0x0010020000
+[    0.328802] stm32-pcie 48400000.pcie:      MEM 0x0018000000..0x001fffffff -> 0x0018000000
+[    0.328817] stm32-pcie 48400000.pcie: resource collision: [mem 0x10020000-0x17ffffff] conflicts with reserved [mem 0x10000000-0x1fffffff]
+[    0.328830] stm32-pcie 48400000.pcie: failed to initialize host: -12
+[    0.328959] stm32-pcie: probe of 48400000.pcie failed with error -12
+
+The PCIe memory area doesn't need to be declared in the reserved-memory
+node.
+
+Change-Id: Id0ad87fb2d15f8dd7c215a000e35c88e5660b41c
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383054
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi | 6 ------
+ .../arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi | 6 ------
+ 2 files changed, 12 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
+index a23386a1a8d0..7e2df35693f5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
+@@ -62,12 +62,6 @@ ddr_param: ddr-param@a09f000 {
+ 			no-map;
+ 		};
+ 
+-		/* PCIe reserved memory declaration */
+-		pcie_device: pcie-device@10000000 {
+-			reg = <0x0 0x10000000 0x0 0x10000000>;
+-			no-map;
+-		};
+-
+ 		/* Backup RAM reserved memory declaration */
+ 		bl31_lowpower: bl31-lowpower@42000000 {
+ 			reg = <0x0 0x42000000 0x0 0x1000>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi b/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
+index 6fb338f05e96..fba1febc6efb 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1-ca35tdcid-resmem.dtsi
+@@ -62,12 +62,6 @@ ddr_param: ddr-param@a09f000 {
+ 			no-map;
+ 		};
+ 
+-		/* PCIe reserved memory declaration */
+-		pcie_device: pcie-device@10000000 {
+-			reg = <0x0 0x10000000 0x0 0x10000000>;
+-			no-map;
+-		};
+-
+ 		/* Backup RAM reserved memory declaration */
+ 		bl31_lowpower: bl31-lowpower@42000000 {
+ 			reg = <0x0 0x42000000 0x0 0x1000>;
+-- 
+2.39.5
+

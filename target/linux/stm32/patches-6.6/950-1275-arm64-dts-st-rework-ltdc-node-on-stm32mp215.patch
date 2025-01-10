@@ -1,0 +1,51 @@
+From d1792ac2fa73c0d17e47e4f93736f926d09deba6 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 26 Jun 2024 11:55:42 +0200
+Subject: [PATCH] arm64: dts: st: rework ltdc node on stm32mp215
+
+Due to dma translation, ltdc node should be under soc1 node
+instead of rifsc node.
+
+Change-Id: I823688b72fb1d15e113d214f8df28d27b37d292c
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390726
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 2 +-
+ arch/arm64/boot/dts/st/stm32mp215.dtsi | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 64a62564d1f2..353ac85c38a1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2267,7 +2267,7 @@ a35ss_syscfg: syscon@48802000  {
+ 		};
+ 	};
+ 
+-	soc@1 {
++	soc1: soc@1 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
+index 7aa6f2f25ca7..e3a18bc867ae 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
+@@ -5,10 +5,10 @@
+  */
+ #include "stm32mp213.dtsi"
+ 
+-&rifsc {
++&soc1 {
+ 	ltdc: display-controller@48010000 {
+ 		compatible = "st,stm32mp21-ltdc";
+-		reg = <0x48010000 0x0 0x400>;
++		reg = <0x48010000 0x400>;
+ 		st,syscon = <&syscfg>;
+ 		interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.39.5
+

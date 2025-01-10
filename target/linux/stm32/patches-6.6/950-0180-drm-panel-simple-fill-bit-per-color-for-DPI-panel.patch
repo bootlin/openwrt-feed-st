@@ -1,0 +1,60 @@
+From 37d9f28a8620aee98e938eefc004e414a8c0ff09 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 24 Feb 2022 10:30:14 +0100
+Subject: [PATCH] drm/panel: simple: fill bit per color for DPI panel
+
+The bpc parameter is not well filled for dpi panel.
+Fill this parameter regarding the data mapping.
+
+Change-Id: I04d75b813ce75c48486675673fb7d78e4e021ab8
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 62c45209f357..c4219f3726c6 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -465,6 +465,7 @@ static int panel_dpi_probe(struct device *dev,
+ 	struct panel_desc *desc;
+ 	unsigned int bus_flags;
+ 	struct videomode vm;
++	const char *mapping;
+ 	int ret;
+ 
+ 	np = dev->of_node;
+@@ -489,6 +490,30 @@ static int panel_dpi_probe(struct device *dev,
+ 	of_property_read_u32(np, "width-mm", &desc->size.width);
+ 	of_property_read_u32(np, "height-mm", &desc->size.height);
+ 
++	of_property_read_string(np, "data-mapping", &mapping);
++
++	if (mapping) {
++		if (!strcmp(mapping, "rgb24")) {
++			desc->bus_format = MEDIA_BUS_FMT_RGB888_1X24;
++			desc->bpc = 8;
++		} else if (!strcmp(mapping, "rgb565")) {
++			desc->bus_format = MEDIA_BUS_FMT_RGB565_1X16;
++			desc->bpc = 6;
++		} else if (!strcmp(mapping, "bgr666")) {
++			desc->bus_format = MEDIA_BUS_FMT_RGB666_1X18;
++			desc->bpc = 6;
++		} else if (!strcmp(mapping, "lvds666")) {
++			desc->bus_format = MEDIA_BUS_FMT_RGB666_1X24_CPADHI;
++			desc->bpc = 6;
++		}
++	} else {
++		/* No data-mapping node found, set by default bus format & bpc */
++		dev_warn(dev, "%pOF: no data-mapping node found for \"panel-dpi\" binding\n",
++			np);
++		desc->bus_format = MEDIA_BUS_FMT_RGB888_1X24;
++		desc->bpc = 8;
++	}
++
+ 	/* Extract bus_flags from display_timing */
+ 	bus_flags = 0;
+ 	vm.flags = timing->flags;
+-- 
+2.39.5
+

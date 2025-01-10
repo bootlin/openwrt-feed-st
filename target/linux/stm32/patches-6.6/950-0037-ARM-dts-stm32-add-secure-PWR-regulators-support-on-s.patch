@@ -1,0 +1,30 @@
+From 4731270d12a5bdc9bd37c8137e25f1435d3352ec Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Mon, 14 Sep 2020 17:56:52 +0200
+Subject: [PATCH] ARM: dts: stm32: add secure PWR regulators support on
+ stm32mp151
+
+This patch adds support of STM32 secure PWR regulators on
+stm32mp151.
+
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+Change-Id: Iaa384c38bb9c58158c730243bbafaba347260bc6
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index aa72a52a1464..a8b456b0b9d3 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1201,6 +1201,7 @@ rcc: rcc@50000000 {
+ 		pwr_regulators: pwr@50001000 {
+ 			compatible = "st,stm32mp1,pwr-reg";
+ 			reg = <0x50001000 0x10>;
++			st,tzcr = <&rcc 0x0 0x1>;
+ 
+ 			reg11: reg11 {
+ 				regulator-name = "reg11";
+-- 
+2.39.5
+

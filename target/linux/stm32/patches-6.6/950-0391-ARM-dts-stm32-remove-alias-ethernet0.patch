@@ -1,0 +1,28 @@
+From 7cb3f783dbe14a8246fdd42f81569e3138a29049 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 23 Feb 2022 14:38:21 +0100
+Subject: [PATCH] ARM: dts: stm32: remove alias ethernet0
+
+No more needed, MAC address is retrieve with nvmem
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Ibf373547da3d2058771228089165feb2260bd56a
+---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index b46726a14fc4..a3d51f2ad577 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -19,7 +19,6 @@ / {
+ 	compatible = "st,stm32mp157f-dk2", "st,stm32mp157";
+ 
+ 	aliases {
+-		ethernet0 = &ethernet0;
+ 		serial3 = &usart2;
+ 	};
+ 
+-- 
+2.39.5
+

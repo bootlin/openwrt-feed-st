@@ -1,0 +1,47 @@
+From f657f35adae504b47f956a9679f204b4a5f08e67 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Sat, 25 Nov 2023 19:20:55 +0100
+Subject: [PATCH] media: i2c: st-mipid02: add Y8 format support
+
+Add support of MEDIA_BUS_FMT_Y8_1X8.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+(cherry picked from commit 2cc0f07718f244d128bd8f38ad4e41f5c67222c1)
+---
+ drivers/media/i2c/st-mipid02.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+index 963209c9a7fb..a369b90b7743 100644
+--- a/drivers/media/i2c/st-mipid02.c
++++ b/drivers/media/i2c/st-mipid02.c
+@@ -69,7 +69,7 @@ static const u32 mipid02_supported_fmt_codes[] = {
+ 	MEDIA_BUS_FMT_RGB565_2X8_LE, MEDIA_BUS_FMT_RGB565_2X8_BE,
+ 	MEDIA_BUS_FMT_YUYV8_2X8, MEDIA_BUS_FMT_YVYU8_2X8,
+ 	MEDIA_BUS_FMT_UYVY8_2X8, MEDIA_BUS_FMT_VYUY8_2X8,
+-	MEDIA_BUS_FMT_JPEG_1X8
++	MEDIA_BUS_FMT_Y8_1X8, MEDIA_BUS_FMT_JPEG_1X8
+ };
+ 
+ /* regulator supplies */
+@@ -124,6 +124,7 @@ static int bpp_from_code(__u32 code)
+ 	case MEDIA_BUS_FMT_SGBRG8_1X8:
+ 	case MEDIA_BUS_FMT_SGRBG8_1X8:
+ 	case MEDIA_BUS_FMT_SRGGB8_1X8:
++	case MEDIA_BUS_FMT_Y8_1X8:
+ 		return 8;
+ 	case MEDIA_BUS_FMT_SBGGR10_1X10:
+ 	case MEDIA_BUS_FMT_SGBRG10_1X10:
+@@ -161,6 +162,7 @@ static u8 data_type_from_code(__u32 code)
+ 	case MEDIA_BUS_FMT_SGBRG8_1X8:
+ 	case MEDIA_BUS_FMT_SGRBG8_1X8:
+ 	case MEDIA_BUS_FMT_SRGGB8_1X8:
++	case MEDIA_BUS_FMT_Y8_1X8:
+ 		return MIPI_CSI2_DT_RAW8;
+ 	case MEDIA_BUS_FMT_SBGGR10_1X10:
+ 	case MEDIA_BUS_FMT_SGBRG10_1X10:
+-- 
+2.39.5
+

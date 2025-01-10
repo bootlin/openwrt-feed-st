@@ -1,0 +1,879 @@
+From 82630bca45a6305c960a13a746bd3486216e9fde Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Wed, 16 Oct 2024 15:26:49 +0200
+Subject: [PATCH] clk: messon: use common clk-regmap driver
+
+Use common clk-remap driver from driver/clk directory.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: Ief61b3837635fcca0d10ee43a8ae2b9e702c10ac
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/411784
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ drivers/clk/meson/Kconfig          |  36 +++---
+ drivers/clk/meson/Makefile         |   1 -
+ drivers/clk/meson/a1-peripherals.c |   2 +-
+ drivers/clk/meson/a1-pll.c         |   2 +-
+ drivers/clk/meson/axg-aoclk.c      |   2 +-
+ drivers/clk/meson/axg-audio.c      |   2 +-
+ drivers/clk/meson/axg.c            |   2 +-
+ drivers/clk/meson/clk-cpu-dyndiv.c |   2 +-
+ drivers/clk/meson/clk-dualdiv.c    |   2 +-
+ drivers/clk/meson/clk-mpll.c       |   2 +-
+ drivers/clk/meson/clk-phase.c      |   2 +-
+ drivers/clk/meson/clk-pll.c        |   2 +-
+ drivers/clk/meson/clk-regmap.c     | 186 -----------------------------
+ drivers/clk/meson/clk-regmap.h     | 137 ---------------------
+ drivers/clk/meson/g12a-aoclk.c     |   2 +-
+ drivers/clk/meson/g12a.c           |   2 +-
+ drivers/clk/meson/gxbb-aoclk.c     |   2 +-
+ drivers/clk/meson/gxbb.c           |   2 +-
+ drivers/clk/meson/meson-aoclk.h    |   2 +-
+ drivers/clk/meson/meson-eeclk.c    |   2 +-
+ drivers/clk/meson/meson-eeclk.h    |   2 +-
+ drivers/clk/meson/meson8-ddr.c     |   2 +-
+ drivers/clk/meson/meson8b.c        |   2 +-
+ drivers/clk/meson/sclk-div.c       |   2 +-
+ drivers/clk/meson/vid-pll-div.c    |   2 +-
+ 25 files changed, 37 insertions(+), 365 deletions(-)
+ delete mode 100644 drivers/clk/meson/clk-regmap.c
+ delete mode 100644 drivers/clk/meson/clk-regmap.h
+
+diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+index 135da8f2d0b1..dfa9ed31e1de 100644
+--- a/drivers/clk/meson/Kconfig
++++ b/drivers/clk/meson/Kconfig
+@@ -2,57 +2,53 @@
+ menu "Clock support for Amlogic platforms"
+ 	depends on ARCH_MESON || COMPILE_TEST
+ 
+-config COMMON_CLK_MESON_REGMAP
+-	tristate
+-	select REGMAP
+-
+ config COMMON_CLK_MESON_DUALDIV
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_MPLL
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_PHASE
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_PLL
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_SCLK_DIV
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_VID_PLL_DIV
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON_CLKC_UTILS
+ 	tristate
+ 
+ config COMMON_CLK_MESON_AO_CLKC
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+ 	select RESET_CONTROLLER
+ 
+ config COMMON_CLK_MESON_EE_CLKC
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+ 
+ config COMMON_CLK_MESON_CPU_DYNDIV
+ 	tristate
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 
+ config COMMON_CLK_MESON8B
+ 	bool "Meson8 SoC Clock controller support"
+ 	depends on ARM
+ 	default y
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+ 	select COMMON_CLK_MESON_MPLL
+ 	select COMMON_CLK_MESON_PLL
+@@ -67,7 +63,7 @@ config COMMON_CLK_GXBB
+ 	tristate "GXBB and GXL SoC clock controllers support"
+ 	depends on ARM64
+ 	default y
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_DUALDIV
+ 	select COMMON_CLK_MESON_VID_PLL_DIV
+ 	select COMMON_CLK_MESON_MPLL
+@@ -83,7 +79,7 @@ config COMMON_CLK_AXG
+ 	tristate "AXG SoC clock controllers support"
+ 	depends on ARM64
+ 	default y
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_DUALDIV
+ 	select COMMON_CLK_MESON_MPLL
+ 	select COMMON_CLK_MESON_PLL
+@@ -97,7 +93,7 @@ config COMMON_CLK_AXG
+ config COMMON_CLK_AXG_AUDIO
+ 	tristate "Meson AXG Audio Clock Controller Driver"
+ 	depends on ARM64
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_PHASE
+ 	select COMMON_CLK_MESON_SCLK_DIV
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+@@ -109,7 +105,7 @@ config COMMON_CLK_AXG_AUDIO
+ config COMMON_CLK_A1_PLL
+ 	tristate "Amlogic A1 SoC PLL controller support"
+ 	depends on ARM64
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+ 	select COMMON_CLK_MESON_PLL
+ 	help
+@@ -121,7 +117,7 @@ config COMMON_CLK_A1_PERIPHERALS
+ 	tristate "Amlogic A1 SoC Peripherals clock controller support"
+ 	depends on ARM64
+ 	select COMMON_CLK_MESON_DUALDIV
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_CLKC_UTILS
+ 	help
+ 	  Support for the Peripherals clock controller on Amlogic A113L based
+@@ -132,7 +128,7 @@ config COMMON_CLK_G12A
+ 	tristate "G12 and SM1 SoC clock controllers support"
+ 	depends on ARM64
+ 	default y
+-	select COMMON_CLK_MESON_REGMAP
++	select COMMON_CLK_REGMAP
+ 	select COMMON_CLK_MESON_DUALDIV
+ 	select COMMON_CLK_MESON_MPLL
+ 	select COMMON_CLK_MESON_PLL
+diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+index cd961cc4f4db..48967102041b 100644
+--- a/drivers/clk/meson/Makefile
++++ b/drivers/clk/meson/Makefile
+@@ -9,7 +9,6 @@ obj-$(CONFIG_COMMON_CLK_MESON_EE_CLKC) += meson-eeclk.o
+ obj-$(CONFIG_COMMON_CLK_MESON_MPLL) += clk-mpll.o
+ obj-$(CONFIG_COMMON_CLK_MESON_PHASE) += clk-phase.o
+ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
+-obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
+ obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
+ obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
+ 
+diff --git a/drivers/clk/meson/a1-peripherals.c b/drivers/clk/meson/a1-peripherals.c
+index e2a1f12f9175..51cafc43a6d4 100644
+--- a/drivers/clk/meson/a1-peripherals.c
++++ b/drivers/clk/meson/a1-peripherals.c
+@@ -8,11 +8,11 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include "a1-peripherals.h"
+ #include "clk-dualdiv.h"
+-#include "clk-regmap.h"
+ #include "meson-clkc-utils.h"
+ 
+ #include <dt-bindings/clock/amlogic,a1-peripherals-clkc.h>
+diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+index 4325e8a6a3ef..b66610425569 100644
+--- a/drivers/clk/meson/a1-pll.c
++++ b/drivers/clk/meson/a1-pll.c
+@@ -8,10 +8,10 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include "a1-pll.h"
+-#include "clk-regmap.h"
+ #include "meson-clkc-utils.h"
+ 
+ #include <dt-bindings/clock/amlogic,a1-pll-clkc.h>
+diff --git a/drivers/clk/meson/axg-aoclk.c b/drivers/clk/meson/axg-aoclk.c
+index d80ab4728f7a..37c9200cac95 100644
+--- a/drivers/clk/meson/axg-aoclk.c
++++ b/drivers/clk/meson/axg-aoclk.c
+@@ -9,13 +9,13 @@
+  * Author: Qiufang Dai <qiufang.dai@amlogic.com>
+  */
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include "meson-aoclk.h"
+ 
+-#include "clk-regmap.h"
+ #include "clk-dualdiv.h"
+ 
+ #include <dt-bindings/clock/axg-aoclkc.h>
+diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
+index ac3482960903..10a64b96a805 100644
+--- a/drivers/clk/meson/axg-audio.c
++++ b/drivers/clk/meson/axg-audio.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -17,7 +18,6 @@
+ 
+ #include "meson-clkc-utils.h"
+ #include "axg-audio.h"
+-#include "clk-regmap.h"
+ #include "clk-phase.h"
+ #include "sclk-div.h"
+ 
+diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
+index 5f60f2bcca59..3c6684a6d545 100644
+--- a/drivers/clk/meson/axg.c
++++ b/drivers/clk/meson/axg.c
+@@ -10,12 +10,12 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/init.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-pll.h"
+ #include "clk-mpll.h"
+ #include "axg.h"
+diff --git a/drivers/clk/meson/clk-cpu-dyndiv.c b/drivers/clk/meson/clk-cpu-dyndiv.c
+index 8778c149d26a..860c2cd035eb 100644
+--- a/drivers/clk/meson/clk-cpu-dyndiv.c
++++ b/drivers/clk/meson/clk-cpu-dyndiv.c
+@@ -5,9 +5,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-cpu-dyndiv.h"
+ 
+ static inline struct meson_clk_cpu_dyndiv_data *
+diff --git a/drivers/clk/meson/clk-dualdiv.c b/drivers/clk/meson/clk-dualdiv.c
+index feae49a8f6dc..79bde3d38b84 100644
+--- a/drivers/clk/meson/clk-dualdiv.c
++++ b/drivers/clk/meson/clk-dualdiv.c
+@@ -22,9 +22,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-dualdiv.h"
+ 
+ static inline struct meson_clk_dualdiv_data *
+diff --git a/drivers/clk/meson/clk-mpll.c b/drivers/clk/meson/clk-mpll.c
+index 20255e129b37..d3ea287feba1 100644
+--- a/drivers/clk/meson/clk-mpll.c
++++ b/drivers/clk/meson/clk-mpll.c
+@@ -12,10 +12,10 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ #include <linux/spinlock.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-mpll.h"
+ 
+ #define SDM_DEN 16384
+diff --git a/drivers/clk/meson/clk-phase.c b/drivers/clk/meson/clk-phase.c
+index a6763439f7d2..959edd3a95c8 100644
+--- a/drivers/clk/meson/clk-phase.c
++++ b/drivers/clk/meson/clk-phase.c
+@@ -5,9 +5,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-phase.h"
+ 
+ #define phase_step(_width) (360 / (1 << (_width)))
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index 6fa7639a3050..49808bdeacea 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -27,13 +27,13 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/math64.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-pll.h"
+ 
+ static inline struct meson_clk_pll_data *
+diff --git a/drivers/clk/meson/clk-regmap.c b/drivers/clk/meson/clk-regmap.c
+deleted file mode 100644
+index 8ad8977cf1c2..000000000000
+--- a/drivers/clk/meson/clk-regmap.c
++++ /dev/null
+@@ -1,186 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright (c) 2018 BayLibre, SAS.
+- * Author: Jerome Brunet <jbrunet@baylibre.com>
+- */
+-
+-#include <linux/module.h>
+-#include "clk-regmap.h"
+-
+-static int clk_regmap_gate_endisable(struct clk_hw *hw, int enable)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_gate_data *gate = clk_get_regmap_gate_data(clk);
+-	int set = gate->flags & CLK_GATE_SET_TO_DISABLE ? 1 : 0;
+-
+-	set ^= enable;
+-
+-	return regmap_update_bits(clk->map, gate->offset, BIT(gate->bit_idx),
+-				  set ? BIT(gate->bit_idx) : 0);
+-}
+-
+-static int clk_regmap_gate_enable(struct clk_hw *hw)
+-{
+-	return clk_regmap_gate_endisable(hw, 1);
+-}
+-
+-static void clk_regmap_gate_disable(struct clk_hw *hw)
+-{
+-	clk_regmap_gate_endisable(hw, 0);
+-}
+-
+-static int clk_regmap_gate_is_enabled(struct clk_hw *hw)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_gate_data *gate = clk_get_regmap_gate_data(clk);
+-	unsigned int val;
+-
+-	regmap_read(clk->map, gate->offset, &val);
+-	if (gate->flags & CLK_GATE_SET_TO_DISABLE)
+-		val ^= BIT(gate->bit_idx);
+-
+-	val &= BIT(gate->bit_idx);
+-
+-	return val ? 1 : 0;
+-}
+-
+-const struct clk_ops clk_regmap_gate_ops = {
+-	.enable = clk_regmap_gate_enable,
+-	.disable = clk_regmap_gate_disable,
+-	.is_enabled = clk_regmap_gate_is_enabled,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_gate_ops);
+-
+-const struct clk_ops clk_regmap_gate_ro_ops = {
+-	.is_enabled = clk_regmap_gate_is_enabled,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_gate_ro_ops);
+-
+-static unsigned long clk_regmap_div_recalc_rate(struct clk_hw *hw,
+-						unsigned long prate)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
+-	unsigned int val;
+-	int ret;
+-
+-	ret = regmap_read(clk->map, div->offset, &val);
+-	if (ret)
+-		/* Gives a hint that something is wrong */
+-		return 0;
+-
+-	val >>= div->shift;
+-	val &= clk_div_mask(div->width);
+-	return divider_recalc_rate(hw, prate, val, div->table, div->flags,
+-				   div->width);
+-}
+-
+-static int clk_regmap_div_determine_rate(struct clk_hw *hw,
+-					 struct clk_rate_request *req)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
+-	unsigned int val;
+-	int ret;
+-
+-	/* if read only, just return current value */
+-	if (div->flags & CLK_DIVIDER_READ_ONLY) {
+-		ret = regmap_read(clk->map, div->offset, &val);
+-		if (ret)
+-			return ret;
+-
+-		val >>= div->shift;
+-		val &= clk_div_mask(div->width);
+-
+-		return divider_ro_determine_rate(hw, req, div->table,
+-						 div->width, div->flags, val);
+-	}
+-
+-	return divider_determine_rate(hw, req, div->table, div->width,
+-				      div->flags);
+-}
+-
+-static int clk_regmap_div_set_rate(struct clk_hw *hw, unsigned long rate,
+-				   unsigned long parent_rate)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_div_data *div = clk_get_regmap_div_data(clk);
+-	unsigned int val;
+-	int ret;
+-
+-	ret = divider_get_val(rate, parent_rate, div->table, div->width,
+-			      div->flags);
+-	if (ret < 0)
+-		return ret;
+-
+-	val = (unsigned int)ret << div->shift;
+-	return regmap_update_bits(clk->map, div->offset,
+-				  clk_div_mask(div->width) << div->shift, val);
+-};
+-
+-/* Would prefer clk_regmap_div_ro_ops but clashes with qcom */
+-
+-const struct clk_ops clk_regmap_divider_ops = {
+-	.recalc_rate = clk_regmap_div_recalc_rate,
+-	.determine_rate = clk_regmap_div_determine_rate,
+-	.set_rate = clk_regmap_div_set_rate,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_divider_ops);
+-
+-const struct clk_ops clk_regmap_divider_ro_ops = {
+-	.recalc_rate = clk_regmap_div_recalc_rate,
+-	.determine_rate = clk_regmap_div_determine_rate,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_divider_ro_ops);
+-
+-static u8 clk_regmap_mux_get_parent(struct clk_hw *hw)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
+-	unsigned int val;
+-	int ret;
+-
+-	ret = regmap_read(clk->map, mux->offset, &val);
+-	if (ret)
+-		return ret;
+-
+-	val >>= mux->shift;
+-	val &= mux->mask;
+-	return clk_mux_val_to_index(hw, mux->table, mux->flags, val);
+-}
+-
+-static int clk_regmap_mux_set_parent(struct clk_hw *hw, u8 index)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
+-	unsigned int val = clk_mux_index_to_val(mux->table, mux->flags, index);
+-
+-	return regmap_update_bits(clk->map, mux->offset,
+-				  mux->mask << mux->shift,
+-				  val << mux->shift);
+-}
+-
+-static int clk_regmap_mux_determine_rate(struct clk_hw *hw,
+-					 struct clk_rate_request *req)
+-{
+-	struct clk_regmap *clk = to_clk_regmap(hw);
+-	struct clk_regmap_mux_data *mux = clk_get_regmap_mux_data(clk);
+-
+-	return clk_mux_determine_rate_flags(hw, req, mux->flags);
+-}
+-
+-const struct clk_ops clk_regmap_mux_ops = {
+-	.get_parent = clk_regmap_mux_get_parent,
+-	.set_parent = clk_regmap_mux_set_parent,
+-	.determine_rate = clk_regmap_mux_determine_rate,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_mux_ops);
+-
+-const struct clk_ops clk_regmap_mux_ro_ops = {
+-	.get_parent = clk_regmap_mux_get_parent,
+-};
+-EXPORT_SYMBOL_GPL(clk_regmap_mux_ro_ops);
+-
+-MODULE_DESCRIPTION("Amlogic regmap backed clock driver");
+-MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+-MODULE_LICENSE("GPL v2");
+diff --git a/drivers/clk/meson/clk-regmap.h b/drivers/clk/meson/clk-regmap.h
+deleted file mode 100644
+index e365312da54e..000000000000
+--- a/drivers/clk/meson/clk-regmap.h
++++ /dev/null
+@@ -1,137 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Copyright (c) 2018 BayLibre, SAS.
+- * Author: Jerome Brunet <jbrunet@baylibre.com>
+- */
+-
+-#ifndef __CLK_REGMAP_H
+-#define __CLK_REGMAP_H
+-
+-#include <linux/clk-provider.h>
+-#include <linux/regmap.h>
+-
+-/**
+- * struct clk_regmap - regmap backed clock
+- *
+- * @hw:		handle between common and hardware-specific interfaces
+- * @map:	pointer to the regmap structure controlling the clock
+- * @data:	data specific to the clock type
+- *
+- * Clock which is controlled by regmap backed registers. The actual type of
+- * of the clock is controlled by the clock_ops and data.
+- */
+-struct clk_regmap {
+-	struct clk_hw	hw;
+-	struct regmap	*map;
+-	void		*data;
+-};
+-
+-static inline struct clk_regmap *to_clk_regmap(struct clk_hw *hw)
+-{
+-	return container_of(hw, struct clk_regmap, hw);
+-}
+-
+-/**
+- * struct clk_regmap_gate_data - regmap backed gate specific data
+- *
+- * @offset:	offset of the register controlling gate
+- * @bit_idx:	single bit controlling gate
+- * @flags:	hardware-specific flags
+- *
+- * Flags:
+- * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
+- */
+-struct clk_regmap_gate_data {
+-	unsigned int	offset;
+-	u8		bit_idx;
+-	u8		flags;
+-};
+-
+-static inline struct clk_regmap_gate_data *
+-clk_get_regmap_gate_data(struct clk_regmap *clk)
+-{
+-	return (struct clk_regmap_gate_data *)clk->data;
+-}
+-
+-extern const struct clk_ops clk_regmap_gate_ops;
+-extern const struct clk_ops clk_regmap_gate_ro_ops;
+-
+-/**
+- * struct clk_regmap_div_data - regmap backed adjustable divider specific data
+- *
+- * @offset:	offset of the register controlling the divider
+- * @shift:	shift to the divider bit field
+- * @width:	width of the divider bit field
+- * @table:	array of value/divider pairs, last entry should have div = 0
+- *
+- * Flags:
+- * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
+- */
+-struct clk_regmap_div_data {
+-	unsigned int	offset;
+-	u8		shift;
+-	u8		width;
+-	u8		flags;
+-	const struct clk_div_table	*table;
+-};
+-
+-static inline struct clk_regmap_div_data *
+-clk_get_regmap_div_data(struct clk_regmap *clk)
+-{
+-	return (struct clk_regmap_div_data *)clk->data;
+-}
+-
+-extern const struct clk_ops clk_regmap_divider_ops;
+-extern const struct clk_ops clk_regmap_divider_ro_ops;
+-
+-/**
+- * struct clk_regmap_mux_data - regmap backed multiplexer clock specific data
+- *
+- * @hw:		handle between common and hardware-specific interfaces
+- * @offset:	offset of theregister controlling multiplexer
+- * @table:	array of parent indexed register values
+- * @shift:	shift to multiplexer bit field
+- * @mask:	mask of mutliplexer bit field
+- * @flags:	hardware-specific flags
+- *
+- * Flags:
+- * Same as clk_divider except CLK_MUX_HIWORD_MASK which is ignored
+- */
+-struct clk_regmap_mux_data {
+-	unsigned int	offset;
+-	u32		*table;
+-	u32		mask;
+-	u8		shift;
+-	u8		flags;
+-};
+-
+-static inline struct clk_regmap_mux_data *
+-clk_get_regmap_mux_data(struct clk_regmap *clk)
+-{
+-	return (struct clk_regmap_mux_data *)clk->data;
+-}
+-
+-extern const struct clk_ops clk_regmap_mux_ops;
+-extern const struct clk_ops clk_regmap_mux_ro_ops;
+-
+-#define __MESON_PCLK(_name, _reg, _bit, _ops, _pname)			\
+-struct clk_regmap _name = {						\
+-	.data = &(struct clk_regmap_gate_data){				\
+-		.offset = (_reg),					\
+-		.bit_idx = (_bit),					\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = #_name,						\
+-		.ops = _ops,						\
+-		.parent_hws = (const struct clk_hw *[]) { _pname },	\
+-		.num_parents = 1,					\
+-		.flags = (CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED),	\
+-	},								\
+-}
+-
+-#define MESON_PCLK(_name, _reg, _bit, _pname)	\
+-	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ops, _pname)
+-
+-#define MESON_PCLK_RO(_name, _reg, _bit, _pname)	\
+-	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ro_ops, _pname)
+-#endif /* __CLK_REGMAP_H */
+diff --git a/drivers/clk/meson/g12a-aoclk.c b/drivers/clk/meson/g12a-aoclk.c
+index c6b1d55cd7c8..e7cdcd0b89c7 100644
+--- a/drivers/clk/meson/g12a-aoclk.c
++++ b/drivers/clk/meson/g12a-aoclk.c
+@@ -9,13 +9,13 @@
+  * Author: Neil Armstrong <narmstrong@baylibre.com>
+  */
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include "meson-aoclk.h"
+ 
+-#include "clk-regmap.h"
+ #include "clk-dualdiv.h"
+ 
+ #include <dt-bindings/clock/g12a-aoclkc.h>
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index f373a8d48b1d..3dfa7270f4ea 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/init.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -19,7 +20,6 @@
+ 
+ #include "clk-mpll.h"
+ #include "clk-pll.h"
+-#include "clk-regmap.h"
+ #include "clk-cpu-dyndiv.h"
+ #include "vid-pll-div.h"
+ #include "meson-eeclk.h"
+diff --git a/drivers/clk/meson/gxbb-aoclk.c b/drivers/clk/meson/gxbb-aoclk.c
+index 4aec1740ac34..d4a96fccb859 100644
+--- a/drivers/clk/meson/gxbb-aoclk.c
++++ b/drivers/clk/meson/gxbb-aoclk.c
+@@ -3,12 +3,12 @@
+  * Copyright (c) 2016 BayLibre, SAS.
+  * Author: Neil Armstrong <narmstrong@baylibre.com>
+  */
++#include <linux/clk-regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include "meson-aoclk.h"
+ 
+-#include "clk-regmap.h"
+ #include "clk-dualdiv.h"
+ 
+ #include <dt-bindings/clock/gxbb-aoclkc.h>
+diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
+index 1b1279d94781..171a4d980aca 100644
+--- a/drivers/clk/meson/gxbb.c
++++ b/drivers/clk/meson/gxbb.c
+@@ -5,13 +5,13 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/init.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ 
+ #include "gxbb.h"
+-#include "clk-regmap.h"
+ #include "clk-pll.h"
+ #include "clk-mpll.h"
+ #include "meson-eeclk.h"
+diff --git a/drivers/clk/meson/meson-aoclk.h b/drivers/clk/meson/meson-aoclk.h
+index 308be3e4814a..4ff65c2f83c6 100644
+--- a/drivers/clk/meson/meson-aoclk.h
++++ b/drivers/clk/meson/meson-aoclk.h
+@@ -12,11 +12,11 @@
+ #define __MESON_AOCLK_H__
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/reset-controller.h>
+ 
+-#include "clk-regmap.h"
+ #include "meson-clkc-utils.h"
+ 
+ struct meson_aoclk_data {
+diff --git a/drivers/clk/meson/meson-eeclk.c b/drivers/clk/meson/meson-eeclk.c
+index 845ca8bfa346..4b3fd9edcc99 100644
+--- a/drivers/clk/meson/meson-eeclk.c
++++ b/drivers/clk/meson/meson-eeclk.c
+@@ -5,13 +5,13 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "meson-eeclk.h"
+ 
+ int meson_eeclkc_probe(struct platform_device *pdev)
+diff --git a/drivers/clk/meson/meson-eeclk.h b/drivers/clk/meson/meson-eeclk.h
+index 37a48b75c660..ed1c996d5ff3 100644
+--- a/drivers/clk/meson/meson-eeclk.h
++++ b/drivers/clk/meson/meson-eeclk.h
+@@ -8,7 +8,7 @@
+ #define __MESON_CLKC_H
+ 
+ #include <linux/clk-provider.h>
+-#include "clk-regmap.h"
++#include <linux/clk-regmap.h>
+ #include "meson-clkc-utils.h"
+ 
+ struct platform_device;
+diff --git a/drivers/clk/meson/meson8-ddr.c b/drivers/clk/meson/meson8-ddr.c
+index 4b73ea244b63..c9b8ea5e1943 100644
+--- a/drivers/clk/meson/meson8-ddr.c
++++ b/drivers/clk/meson/meson8-ddr.c
+@@ -8,9 +8,9 @@
+ #include <dt-bindings/clock/meson8-ddr-clkc.h>
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/platform_device.h>
+ 
+-#include "clk-regmap.h"
+ #include "clk-pll.h"
+ 
+ #define AM_DDR_PLL_CNTL			0x00
+diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+index b7417ac262d3..203ee2d09b44 100644
+--- a/drivers/clk/meson/meson8b.c
++++ b/drivers/clk/meson/meson8b.c
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/init.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/of_address.h>
+@@ -17,7 +18,6 @@
+ #include <linux/regmap.h>
+ 
+ #include "meson8b.h"
+-#include "clk-regmap.h"
+ #include "meson-clkc-utils.h"
+ #include "clk-pll.h"
+ #include "clk-mpll.h"
+diff --git a/drivers/clk/meson/sclk-div.c b/drivers/clk/meson/sclk-div.c
+index d12c45c4c261..e8fa8b3ae251 100644
+--- a/drivers/clk/meson/sclk-div.c
++++ b/drivers/clk/meson/sclk-div.c
+@@ -17,9 +17,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "sclk-div.h"
+ 
+ static inline struct meson_sclk_div_data *
+diff --git a/drivers/clk/meson/vid-pll-div.c b/drivers/clk/meson/vid-pll-div.c
+index daff235bc763..357e1fcfbd0c 100644
+--- a/drivers/clk/meson/vid-pll-div.c
++++ b/drivers/clk/meson/vid-pll-div.c
+@@ -5,9 +5,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/clk-regmap.h>
+ #include <linux/module.h>
+ 
+-#include "clk-regmap.h"
+ #include "vid-pll-div.h"
+ 
+ static inline struct meson_vid_pll_div_data *
+-- 
+2.39.5
+

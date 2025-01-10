@@ -1,0 +1,68 @@
+From 6b9d384bc6a4c13a67e46ab77bae2e20f2926656 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 15 Feb 2023 17:40:53 +0100
+Subject: [PATCH] arm64: dts: st: add FDCAN1/3 pinctrl entries in
+ stm32mp25-pinctrl.dtsi
+
+Add pinctrl entries related to FDCAN1 and FDCAN3 in stm32mp25-pinctrl.dtsi
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Ifdfdb9a6d6c1faebc9ec44e130687ee01496712c
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 6dfa01d065ec..4f402bc8f44c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -153,6 +153,46 @@ pins {
+ 		};
+ 	};
+ 
++	m_can1_pins_a: m-can1-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 11, AF7)>; /* CAN1_TX */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('G', 12, AF7)>; /* CAN1_RX */
++			bias-disable;
++		};
++	};
++
++	m_can1_sleep_pins_a: m-can1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 11, ANALOG)>, /* CAN3_TX */
++				 <STM32_PINMUX('G', 12, ANALOG)>; /* CAN3_RX */
++		};
++	};
++
++	m_can3_pins_a: m-can3-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('J', 14, AF7)>; /* CAN3_TX */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('I', 12, AF7)>; /* CAN3_RX */
++			bias-disable;
++		};
++	};
++
++	m_can3_sleep_pins_a: m-can3-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('J', 14, ANALOG)>, /* CAN3_TX */
++				 <STM32_PINMUX('I', 12, ANALOG)>; /* CAN3_RX */
++		};
++	};
++
+ 	ospi1_clk_pins_a: ospi1-clk-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
+-- 
+2.39.5
+

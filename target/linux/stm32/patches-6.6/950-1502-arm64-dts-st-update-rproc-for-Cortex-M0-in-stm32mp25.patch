@@ -1,0 +1,38 @@
+From 53c3e02df1d2ac06ae87b514a8dfab350f5d9a30 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 30 Sep 2024 11:50:45 +0200
+Subject: [PATCH] arm64: dts: st: update rproc for Cortex-M0 in stm32mp257f-dk
+
+Update peripherals clocks used by Cortex-M0.
+
+Change-Id: I2968e6f2a341e7777a7b65a6f12c77e386b24077
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407698
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index bdc71c318c4c..c2c208021580 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -572,6 +572,10 @@ &m0_rproc {
+ 	mboxes = <&ipcc2 0>, <&ipcc2 1>, <&ipcc2 2>;
+ 	mbox-names = "rx", "tx", "shutdown";
+ 	memory-region = <&cm0_cube_fw>, <&cm0_cube_data>;
++	clocks = <&rcc CK_CPU3>,
++		 <&rcc CK_CPU3_AM>,
++		 <&scmi_clk CK_SCMI_IPCC2>,
++		 <&scmi_clk CK_SCMI_IPCC2_AM>;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

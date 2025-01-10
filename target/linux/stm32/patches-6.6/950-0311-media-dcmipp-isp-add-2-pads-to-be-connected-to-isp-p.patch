@@ -1,0 +1,90 @@
+From 4499e5492c099a7b7a931c7e1c6103e8e33b344d Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 15 Feb 2024 16:16:09 +0100
+Subject: [PATCH] media: dcmipp: isp: add 2 pads to be connected to isp-params
+ & stats
+
+Addition of pad 2 and pad 3 into the dcmipp-isp subdevice in order to
+connect the isp parameter output device and isp stats capture device.
+
+Change-Id: I24f9662a37769452d7f3a40075e361a99d625c08
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 32 +++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index b8b4ede37e9c..a3dc7663cd8e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -199,10 +199,11 @@ static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+ static int dcmipp_isp_init_cfg(struct v4l2_subdev *sd,
+ 			       struct v4l2_subdev_state *state)
+ {
++	struct v4l2_mbus_framefmt *mf;
+ 	unsigned int i;
+ 
+-	for (i = 0; i < sd->entity.num_pads; i++) {
+-		struct v4l2_mbus_framefmt *mf;
++	/* Initialize the sink & source pads of data */
++	for (i = 0; i < 2; i++) {
+ 
+ 		mf = v4l2_subdev_state_get_format(state, i);
+ 		*mf = fmt_default;
+@@ -210,6 +211,15 @@ static int dcmipp_isp_init_cfg(struct v4l2_subdev *sd,
+ 				       ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
+ 	}
+ 
++	/* Initialize isp params & isp stats pads */
++	mf = v4l2_subdev_state_get_format(state, 2);
++	memset(mf, 0, sizeof(struct v4l2_mbus_framefmt));
++	mf->code = MEDIA_BUS_FMT_METADATA_FIXED;
++
++	mf = v4l2_subdev_state_get_format(state, 3);
++	memset(mf, 0, sizeof(struct v4l2_mbus_framefmt));
++	mf->code = MEDIA_BUS_FMT_METADATA_FIXED;
++
+ 	return 0;
+ }
+ 
+@@ -623,12 +633,29 @@ void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved)
+ 	dcmipp_ent_sd_unregister(ved, &isp->sd);
+ }
+ 
++static int dcmipp_isp_link_validate(struct media_link *link)
++{
++	/*
++	 * We only need to check link coming to the sink pad #0 since
++	 * sink pad #2 is connected to the output video device
++	 */
++	if (link->sink->index != 0)
++		return 0;
++
++	return v4l2_subdev_link_validate(link);
++}
++
++static const struct media_entity_operations dcmipp_isp_mops = {
++	.link_validate		= dcmipp_isp_link_validate,
++};
++
+ struct dcmipp_ent_device *dcmipp_isp_ent_init(const char *entity_name,
+ 					      struct dcmipp_device *dcmipp)
+ {
+ 	struct dcmipp_isp_device *isp;
+ 	const unsigned long pads_flag[] = {
+ 		MEDIA_PAD_FL_SINK, MEDIA_PAD_FL_SOURCE,
++		MEDIA_PAD_FL_SINK, MEDIA_PAD_FL_SOURCE,
+ 	};
+ 	int ret;
+ 
+@@ -652,6 +679,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(const char *entity_name,
+ 		kfree(isp);
+ 		return ERR_PTR(ret);
+ 	}
++	isp->sd.entity.ops = &dcmipp_isp_mops;
+ 	isp->ved.dcmipp = dcmipp;
+ 
+ 	return &isp->ved;
+-- 
+2.39.5
+

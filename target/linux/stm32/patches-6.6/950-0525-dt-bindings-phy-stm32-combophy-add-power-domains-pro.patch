@@ -1,0 +1,39 @@
+From 2bc3152f2c68247603d74597ffb92cf33960a31d Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 19 Dec 2023 11:19:02 +0100
+Subject: [PATCH] dt-bindings: phy: stm32-combophy: add 'power-domains'
+ property
+
+STM32 COMBOPHY may be in a power domain which is the case for the STM32MP25
+based boards. Allow a single 'power-domains' entry for STM32 COMBOPHY.
+
+Fix dtbs_check warning:
+Unevaluated properties are not allowed ('power-domains' was unexpected)
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I6a925bf2bee65b78d49bdda0b35a2ef393b847f9
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347859
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+index 8b2566bb4485..4628dacaf28d 100644
+--- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
++++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
+@@ -60,6 +60,9 @@ properties:
+   reset-names:
+     const: phy-rst
+ 
++  power-domains:
++    maxItems: 1
++
+   st,ssc-on:
+     type: boolean
+     description:
+-- 
+2.39.5
+

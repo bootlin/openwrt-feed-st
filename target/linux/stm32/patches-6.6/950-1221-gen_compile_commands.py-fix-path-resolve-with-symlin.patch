@@ -1,0 +1,91 @@
+From 22dfc68efae8ba969fdd5075d58cb44424d693be Mon Sep 17 00:00:00 2001
+From: Jialu Xu <xujialu@vimux.org>
+Date: Sun, 10 Dec 2023 15:05:34 +0800
+Subject: [PATCH] gen_compile_commands.py: fix path resolve with symlinks in it
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When a path contains relative symbolic links, os.path.abspath() might
+not follow the symlinks and instead return the absolute path with just
+the relative paths resolved, resulting in an incorrect path.
+
+1. Say "drivers/hdf/" has some symlinks:
+
+    # ls -l drivers/hdf/
+    total 364
+    drwxrwxr-x 2 ...   4096 ... evdev
+    lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hdf_core/framework
+    -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
+    lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hdf_core/interfaces/inner_api
+    lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_core/adapter/khdf/linux
+    -rw-r--r-- 1 ...     74 ... Makefile
+    drwxrwxr-x 3 ...   4096 ... wifi
+
+2. One .cmd file records that:
+
+    # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
+    cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.o := ... \
+    /path/to/src/drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.c
+
+3. os.path.abspath returns "/path/to/src/framework/core/manager/src/devmgr_service.c", not correct:
+
+    # ./scripts/clang-tools/gen_compile_commands.py
+    INFO: Could not add line from ./framework/core/manager/src/.devmgr_service.o.cmd: File \
+        /path/to/src/framework/core/manager/src/devmgr_service.c not found
+
+Use os.path.realpath(), which resolves the symlinks and normalizes the paths correctly.
+
+    # cat compile_commands.json
+    ...
+    {
+      "command": ...
+      "directory": ...
+      "file": "/path/to/bla/drivers/hdf_core/framework/core/manager/src/devmgr_service.c"
+    },
+    ...
+
+Also fix it in parse_arguments().
+
+Change-Id: I9ca5352e8f4558ea479dbe23a4ea7828a19aa8c8
+Signed-off-by: Jialu Xu <xujialu@vimux.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Backport from v6.7
+Change-Id: I28cbf28dac2585398deaf5c1a9ff80142a9b56bf
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384982
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ scripts/clang-tools/gen_compile_commands.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index b60cc4745cdc..e4fb686dfaa9 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -64,7 +64,7 @@ def parse_arguments():
+     args = parser.parse_args()
+ 
+     return (args.log_level,
+-            os.path.abspath(args.directory),
++            os.path.realpath(args.directory),
+             args.output,
+             args.ar,
+             args.paths if len(args.paths) > 0 else [args.directory])
+@@ -172,8 +172,8 @@ def process_line(root_directory, command_prefix, file_path):
+     # by Make, so this code replaces the escaped version with '#'.
+     prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
+ 
+-    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
+-    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
++    # Return the canonical path, eliminating any symbolic links encountered in the path.
++    abs_path = os.path.realpath(os.path.join(root_directory, file_path))
+     if not os.path.exists(abs_path):
+         raise ValueError('File %s not found' % abs_path)
+     return {
+-- 
+2.39.5
+

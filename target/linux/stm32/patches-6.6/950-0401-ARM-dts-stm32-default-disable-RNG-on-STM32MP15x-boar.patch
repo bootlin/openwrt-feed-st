@@ -1,0 +1,96 @@
+From c338e879639683d32eeda5f3ea72927b38cc3ea1 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Thu, 5 Jan 2023 17:27:44 +0100
+Subject: [PATCH] ARM: dts: stm32: default disable RNG on STM32MP15x boards
+
+Default disables the rng1 node as this device is secured by default
+for STM32MP15x boards, therefore managed by OP-TEE.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Ia13659f3af1a93cf4add89d5f131d5858166fe47
+---
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts  | 4 ----
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts  | 4 ----
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts  | 4 ----
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts  | 4 ----
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 4 ----
+ 5 files changed, 20 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index 747b9e7f4e53..892b7708d0cd 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -350,10 +350,6 @@ &pwr_regulators {
+ 	vdd_3v3_usbfs-supply = <&vdd_usb>;
+ };
+ 
+-&rng1 {
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index bf65ed58e0af..0fbf3550d17a 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -354,10 +354,6 @@ &pwr_regulators {
+ 	vdd_3v3_usbfs-supply = <&vdd_usb>;
+ };
+ 
+-&rng1 {
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 2a032189bd37..3dbf201358bb 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -350,10 +350,6 @@ &pwr_regulators {
+ 	vdd_3v3_usbfs-supply = <&vdd_usb>;
+ };
+ 
+-&rng1 {
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index ea897a29f09a..6d92e676acd9 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -354,10 +354,6 @@ &pwr_regulators {
+ 	vdd_3v3_usbfs-supply = <&vdd_usb>;
+ };
+ 
+-&rng1 {
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 1c7bf56e0c1f..8508799264f6 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -509,10 +509,6 @@ &pwr_regulators {
+ 	vdd_3v3_usbfs-supply = <&vdd_usb>;
+ };
+ 
+-&rng1 {
+-	status = "okay";
+-};
+-
+ &rtc {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

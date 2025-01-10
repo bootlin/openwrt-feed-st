@@ -1,0 +1,50 @@
+From 01a69c33cfd1272f82b0ff687995c2613ee8fa1e Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Tue, 20 Aug 2024 16:48:00 +0200
+Subject: [PATCH] media: uapi: add WebP VP8 frame flag
+
+Add a flag indicating that VP8 bitstream is a WebP picture.
+
+Change-Id: Ia09835a1ae2698d58e00876f37990debdd0f5ab6
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/401023
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../userspace-api/media/v4l/ext-ctrls-codec-stateless.rst      | 3 +++
+ include/uapi/linux/v4l2-controls.h                             | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+index 786127b1e206..458ab6d8e62d 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+@@ -1062,6 +1062,9 @@ FWHT Flags
+     * - ``V4L2_VP8_FRAME_FLAG_SIGN_BIAS_ALT``
+       - 0x20
+       - Sign of motion vectors when the alt frame is referenced.
++    * - ``V4L2_VP8_FRAME_FLAG_WEBP``
++      - 0x40
++      - Indicates that this frame is a WebP picture.
+ 
+ .. c:type:: v4l2_vp8_entropy_coder_state
+ 
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 0351f7162188..71c8be2363fc 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -2009,6 +2009,7 @@ struct v4l2_vp8_entropy_coder_state {
+ #define V4L2_VP8_FRAME_FLAG_MB_NO_SKIP_COEFF	0x08
+ #define V4L2_VP8_FRAME_FLAG_SIGN_BIAS_GOLDEN	0x10
+ #define V4L2_VP8_FRAME_FLAG_SIGN_BIAS_ALT	0x20
++#define V4L2_VP8_FRAME_FLAG_WEBP		0x40
+ 
+ #define V4L2_VP8_FRAME_IS_KEY_FRAME(hdr) \
+ 	(!!((hdr)->flags & V4L2_VP8_FRAME_FLAG_KEY_FRAME))
+-- 
+2.39.5
+

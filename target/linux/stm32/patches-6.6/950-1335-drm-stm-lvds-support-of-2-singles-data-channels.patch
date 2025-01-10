@@ -1,0 +1,67 @@
+From 5048f50c25612e4f81fd8126b4ab6c1a418b8e1d Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 31 Jul 2024 08:51:11 +0200
+Subject: [PATCH] drm/stm: lvds: support of 2 singles data channels
+
+The LVDS block is composed of 2 physical layers (one layer was designed
+to support 4 data channels and 1 clock). These 2 layers allow you to
+connect either a panel with 8 data channels (DUAL_LINK mode) or two panels
+with 4 data channels (SINGLE_LINK mode on primary & secondary)
+
+Change-Id: Ib842397ca4f639dd93e5de311348990174c5a3c2
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396728
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/lvds.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
+index 760d0b25ac43..573bcfdaed18 100644
+--- a/drivers/gpu/drm/stm/lvds.c
++++ b/drivers/gpu/drm/stm/lvds.c
+@@ -39,7 +39,8 @@
+ #define LVDS_CDL2CR	0x0030  /* channel distrib link 2 configuration register */
+ 
+ #define CDL1CR_DEFAULT	0x04321 /* Default value for CDL1CR */
+-#define CDL2CR_DEFAULT	0x59876 /* Default value for CDL2CR */
++#define CDL2CR_4DL_DEFAULT	0x04321 /* Default value for CDL2CR with SINGLE link */
++#define CDL2CR_8DL_DEFAULT	0x59876 /* Default value for CDL2CR with DUAL link */
+ 
+ #define LVDS_DMLCR(bit)	(LVDS_DMLCR0 + 0x8 * (bit))
+ #define LVDS_DMMCR(bit)	(LVDS_DMMCR0 + 0x8 * (bit))
+@@ -840,8 +841,12 @@ static void lvds_config_mode(struct stm_lvds *lvds)
+ 		lvds_cdl1cr = CDL1CR_DEFAULT;
+ 
+ 	if (lvds->secondary) {
+-		lvds_cr |= CR_LKMOD;
+-		lvds_cdl2cr = CDL2CR_DEFAULT;
++		if (lvds->link_type == LVDS_SINGLE_LINK_SECONDARY) {
++			lvds_cdl2cr = CDL2CR_4DL_DEFAULT;
++		} else {
++			lvds_cr |= CR_LKMOD;
++			lvds_cdl2cr = CDL2CR_8DL_DEFAULT;
++		}
+ 	}
+ 
+ 	/* Set signal polarity */
+@@ -1135,7 +1140,6 @@ static int lvds_probe(struct platform_device *pdev)
+ 			if (of_graph_get_remote_endpoint(remote)) {
+ 				lvds->link_type = LVDS_SINGLE_LINK_PRIMARY;
+ 				lvds->primary = &lvds_phy_16ff_primary;
+-				lvds->secondary = NULL;
+ 			} else {
+ 				ret = -EINVAL;
+ 			}
+@@ -1147,7 +1151,6 @@ static int lvds_probe(struct platform_device *pdev)
+ 		if (remote) {
+ 			if (of_graph_get_remote_endpoint(remote)) {
+ 				lvds->link_type = LVDS_SINGLE_LINK_SECONDARY;
+-				lvds->primary = NULL;
+ 				lvds->secondary = &lvds_phy_16ff_secondary;
+ 			} else {
+ 				ret = (ret == -EINVAL) ? -EINVAL : 0;
+-- 
+2.39.5
+

@@ -1,0 +1,156 @@
+From ce0b51c797aaf16b3d45326a489083ea216dc71e Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Mon, 15 Jan 2024 14:20:04 +0100
+Subject: [PATCH] dt-bindings: display: add dt-bindings for STM32 LVDS device
+
+Add "st,stm32mp25-lvds" compatible.
+
+Change-Id: I829eb8071ee005a0b85ec7cfa32105accae5807c
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+---
+ .../bindings/display/st,stm32-lvds.yaml       | 119 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ 2 files changed, 120 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+new file mode 100644
+index 000000000000..a6383858cd2c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/st,stm32-lvds.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics STM32 LVDS Display Interface Transmitter
++
++maintainers:
++  - Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
++
++description: |
++  The STMicroelectronics STM32 LVDS Display Interface Transmitter handles the
++  LVDS protocol: it maps the pixels received from the upstream Pixel-DMA (LTDC)
++  onto the LVDS PHY.
++
++  It is composed of three sub blocks:
++    - LVDS host: handles the LVDS protocol (FPD / OpenLDI) and maps its input
++      pixels onto the data lanes of the PHY
++    - LVDS PHY: parallelize the data and drives the LVDS data lanes
++    - LVDS wrapper: handles top-level settings
++
++  The LVDS controller driver supports the following high-level features:
++    - FDP-Link-I and OpenLDI (v0.95) protocols
++    - Single-Link or Dual-Link operation
++    - Single-Display or Double-Display (with the same content duplicated on both)
++    - Flexible Bit-Mapping, including JEIDA and VESA
++    - RGB888 or RGB666 output
++    - Synchronous design, with one input pixel per clock cycle
++
++properties:
++  compatible:
++    const: st,stm32mp25-lvds
++
++  "#clock-cells":
++    const: 0
++    description:
++      Provides the internal LVDS PHY clock to the framework.
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: APB peripheral clock
++      - description: Reference clock for the internal PLL
++
++  clock-names:
++    items:
++      - const: pclk
++      - const: ref
++
++  resets:
++    maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          LVDS input port node, connected to the LTDC RGB output port.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          LVDS output port node, connected to a panel or bridge input port.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - "#clock-cells"
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/st,stm32mp25-rcc.h>
++    #include <dt-bindings/reset/st,stm32mp25-rcc.h>
++
++    lvds: lvds@48060000 {
++        compatible = "st,stm32-lvds";
++        reg = <0x48060000 0x2000>;
++        #clock-cells = <0>;
++        clocks = <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
++        clock-names = "pclk", "ref";
++        resets = <&rcc LVDS_R>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            port@0 {
++                reg = <0>;
++                lvds_in: endpoint {
++                   remote-endpoint = <&ltdc_ep1_out>;
++                };
++            };
++
++            port@1 {
++                reg = <1>;
++                lvds_out0: endpoint {
++                   remote-endpoint = <&lvds_panel_in>;
++                };
++            };
++        };
++    };
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f09415b2b3c5..f4dd38e79c5e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7069,6 +7069,7 @@ L:	dri-devel@lists.freedesktop.org
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++F:	Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
+ F:	drivers/gpu/drm/stm
+ 
+ DRM DRIVERS FOR TI KEYSTONE
+-- 
+2.39.5
+

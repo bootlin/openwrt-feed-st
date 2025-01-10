@@ -1,0 +1,36 @@
+From 5d21343fe85d35c54f5d76300c946ae7ca4700e1 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 7 Feb 2024 12:45:38 +0100
+Subject: [PATCH] arm64: dts: enabling of the dcmipp node in
+ stm32mp257f-ev1.dts
+
+Set the dcmipp node status to okay.
+
+Change-Id: Iab41139dd5e9e5d8b5f19d7905311158423a8896
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361980
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index abb5ba7218a1..e5f3f521fba9 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -202,7 +202,7 @@ csi_source: endpoint {
+ };
+ 
+ &dcmipp {
+-	status = "disabled";
++	status = "okay";
+ 	port {
+ 		dcmipp_0: endpoint {
+ 			remote-endpoint = <&csi_source>;
+-- 
+2.39.5
+

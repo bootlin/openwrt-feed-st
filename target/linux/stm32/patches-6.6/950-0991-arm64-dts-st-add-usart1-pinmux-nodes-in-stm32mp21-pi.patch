@@ -1,0 +1,75 @@
+From 2fbdf98ebc9cb707a6d45371bafa8ef252d47010 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Thu, 4 Apr 2024 16:07:12 +0200
+Subject: [PATCH] arm64: dts: st: add usart1 pinmux nodes in
+ stm32mp21-pinctrl.dtsi
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add usart1 pinmux nodes in stm32mp21-pinctrl.dtsi
+
+Change-Id: I3199f02c4543e888037e3ab993b38d81e3e8d5e8
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372679
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+index 0189efa300b4..18a7b96a96e3 100644
+--- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
+@@ -188,4 +188,45 @@ pins {
+ 				 <STM32_PINMUX('D', 12, ANALOG)>; /* SDMMC1_CMD */
+ 		};
+ 	};
++
++	usart1_pins_a: usart1-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 14, AF6)>, /* USART1_TX */
++				 <STM32_PINMUX('B', 9, AF6)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('B', 10, AF6)>, /* USART1_RX */
++				 <STM32_PINMUX('B', 11, AF6)>; /* USART1_CTS_NSS */
++			bias-disable;
++		};
++	};
++
++	usart1_idle_pins_a: usart1-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 14, ANALOG)>, /* USART1_TX */
++				 <STM32_PINMUX('B', 11, ANALOG)>; /* USART1_CTS_NSS */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('B', 9, AF6)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('B', 10, AF6)>; /* USART1_RX */
++			bias-disable;
++		};
++	};
++
++	usart1_sleep_pins_a: usart1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 14, ANALOG)>, /* USART1_TX */
++				 <STM32_PINMUX('B', 11, ANALOG)>, /* USART1_RTS */
++				 <STM32_PINMUX('B', 9, ANALOG)>, /* USART1_CTS_NSS */
++				 <STM32_PINMUX('B', 10, ANALOG)>; /* USART1_RX */
++		};
++	};
+ };
+-- 
+2.39.5
+

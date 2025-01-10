@@ -1,0 +1,36 @@
+From ad52568bfb61ec4d6baf7b08859b3b8e31d96517 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 17:51:04 +0100
+Subject: [PATCH] arm64: dts: st: add USB3DRD support for stm32mp257f-dk board
+
+Add usb3dr node for USB3-DWC3 support for stm32mp257f-dk board
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Iabdcf799214622a78a43209532a4ce1e5301ce15
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index ad8a8db7ddcc..50058002c1c6 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -213,3 +213,14 @@ &usb2_phy1 {
+ &usb2_phy2 {
+ 	status = "okay";
+ };
++
++&usb3dr {
++	status = "okay";
++
++	dwc3: usb@48300000 {
++		maximum-speed = "high-speed";
++		role-switch-default-mode = "peripheral";
++		usb-role-switch;
++		status = "disabled";
++	};
++};
+-- 
+2.39.5
+

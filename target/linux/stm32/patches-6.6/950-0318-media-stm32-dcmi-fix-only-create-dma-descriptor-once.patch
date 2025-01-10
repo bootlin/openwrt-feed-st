@@ -1,0 +1,55 @@
+From c8e1dfa9b95e4928cc485f8fd66c278f879e50ee Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 18 Jul 2023 18:42:24 +0200
+Subject: [PATCH] media: stm32: dcmi: fix only create dma descriptor once at
+ buf_prepare
+
+dma_lock mutex is no more necessary.  vchan lock protect the dma call
+atomicity.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I8b79d1beee7fee5dd311bdebf8557c07856a8fb7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/319545
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmi.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
+index e06e3b0a9d01..d3cde231bcbd 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
+@@ -165,9 +165,6 @@ struct stm32_dcmi {
+ 	int				overrun_count;
+ 	int				buffers_count;
+ 
+-	/* Ensure DMA operations atomicity */
+-	struct mutex			dma_lock;
+-
+ 	struct media_device		mdev;
+ 	struct media_pad		vid_cap_pad;
+ 	struct media_pipeline		pipeline;
+@@ -887,9 +884,7 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
+ 	spin_unlock_irq(&dcmi->irqlock);
+ 
+ 	/* Stop all pending DMA operations */
+-	mutex_lock(&dcmi->dma_lock);
+ 	dmaengine_terminate_sync(dcmi->dma_chan);
+-	mutex_unlock(&dcmi->dma_lock);
+ 
+ 	pm_runtime_put(dcmi->dev);
+ 
+@@ -2006,7 +2001,6 @@ static int dcmi_probe(struct platform_device *pdev)
+ 
+ 	spin_lock_init(&dcmi->irqlock);
+ 	mutex_init(&dcmi->lock);
+-	mutex_init(&dcmi->dma_lock);
+ 	init_completion(&dcmi->complete);
+ 	INIT_LIST_HEAD(&dcmi->buffers);
+ 
+-- 
+2.39.5
+

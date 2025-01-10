@@ -1,0 +1,38 @@
+From 384422434d800eb6b0523c41da2e1a8fe7afe5a1 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Fri, 2 Feb 2024 17:13:47 +0100
+Subject: [PATCH] arm64: dts: st: upgrade stm32mp25 Arm SMC watchdog function
+ ID
+
+Upgrade Arm SMC watchdog function ID to the ID merged at upstream
+in OP-TEE stm32mp1 platform for watchdog services. This is the function
+ID used for all STM32MP platforms.
+
+Change-Id: I4cf7fc1b74e24a4bbb40056bf688a80d03686eaf
+Link: https://github.com/OP-TEE/optee_os/commit/e1bfa2fd6db43854eb259c0b8e8e2f1977f9b141
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/356917
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 2a3c8f7bc902..7542444d987d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -78,7 +78,7 @@ arm-pmu {
+ 
+ 	arm_wdt: watchdog {
+ 		compatible = "arm,smc-wdt";
+-		arm,smc-id = <0xb200005a>;
++		arm,smc-id = <0xbc000000>;
+ 		status = "disabled";
+ 	};
+ 
+-- 
+2.39.5
+

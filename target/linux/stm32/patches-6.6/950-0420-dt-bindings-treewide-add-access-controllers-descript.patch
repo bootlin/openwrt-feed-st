@@ -1,0 +1,439 @@
+From 21245636fd77bb2c2527ecd4c34911e434236210 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Fri, 20 Jan 2023 17:54:11 +0100
+Subject: [PATCH] dt-bindings: treewide: add access-controllers description
+
+access-controllers is an optional property that allows a peripheral to
+refer to one or more domain access controller(s).
+
+Description of this property is added to all peripheral binding files of
+the peripheral under the STM32 firewall controller. It allows an accurate
+representation of the hardware, where various peripherals are connected
+to a firewall bus. The firewall can then check the peripheral accesses
+before allowing its device to probe.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I2c21dbd92ebdcbab383a518653dea7ed8ead0845
+---
+ Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml  | 4 ++++
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml  | 4 ++++
+ Documentation/devicetree/bindings/dma/st,stm32-dma.yaml      | 4 ++++
+ Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml   | 4 ++++
+ Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml      | 4 ++++
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml  | 4 ++++
+ .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 4 ++++
+ Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml  | 4 ++++
+ .../devicetree/bindings/media/cec/st,stm32-cec.yaml          | 4 ++++
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml   | 4 ++++
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml       | 4 ++++
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml  | 4 ++++
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml   | 4 ++++
+ Documentation/devicetree/bindings/mmc/arm,pl18x.yaml         | 4 ++++
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml   | 4 ++++
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml       | 5 +++++
+ Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 4 ++++
+ .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml      | 4 ++++
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml      | 4 ++++
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml  | 4 ++++
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml    | 4 ++++
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml    | 4 ++++
+ .../devicetree/bindings/sound/st,stm32-spdifrx.yaml          | 4 ++++
+ Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml     | 4 ++++
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml      | 4 ++++
+ Documentation/devicetree/bindings/usb/dwc2.yaml              | 4 ++++
+ 26 files changed, 105 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+index 0ddeb8a9a7a0..27354658d054 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+@@ -46,6 +46,10 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+index ac480765cde0..822318414095 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -51,6 +51,10 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+index 329847ef096a..ff935a0068ec 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+@@ -82,6 +82,10 @@ properties:
+     description: if defined, it indicates that the controller
+       supports memory-to-memory transfer
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+index e722fbcd8a5f..ddf82bf1e71a 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+@@ -28,6 +28,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+index 1b31b87c1800..8fd8be76875e 100644
+--- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+@@ -127,6 +127,10 @@ properties:
+ 
+   wakeup-source: true
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index 995cbf8cefc6..ec34c48d4878 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -93,6 +93,10 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ allOf:
+   - if:
+       properties:
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index 71fe0f0ea658..2722edab1d9a 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -59,6 +59,10 @@ properties:
+       If not, SPI CLKOUT frequency will not be accurate.
+     maximum: 20000000
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+index 04045b932bd2..b15de4eb209c 100644
+--- a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+@@ -45,6 +45,10 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ additionalProperties: false
+ 
+ required:
+diff --git a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
+index 2314a9a14650..1d930d9e10fd 100644
+--- a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
++++ b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
+@@ -29,6 +29,10 @@ properties:
+       - const: cec
+       - const: hdmi-cec
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 6b3e413cedb2..34147127192f 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -36,6 +36,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+index 14f1833d37c9..deef455bfd21 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+@@ -45,6 +45,10 @@ properties:
+       Reflects the memory layout with four integer values per bank. Format:
+       <bank-number> 0 <address of the bank> <size>
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ patternProperties:
+   "^.*@[0-4],[a-f0-9]+$":
+     additionalProperties: true
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+index 27329c5dc38e..d41308856408 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -44,6 +44,10 @@ properties:
+ 
+   wakeup-source: true
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index f84e09a5743b..b0e438ff4950 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -67,6 +67,10 @@ properties:
+   "#size-cells":
+     const: 0
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+index 2459a55ed540..5644927be810 100644
+--- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
++++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+@@ -79,6 +79,10 @@ properties:
+           - const: rx
+           - const: tx
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+   power-domains: true
+ 
+   resets:
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index f9ffb963d6b1..c4887522e8fe 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -118,6 +118,10 @@ properties:
+   phys:
+     maxItems: 1
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index 5438546a6f52..7ebc8688bfde 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -110,6 +110,11 @@ properties:
+       set this property when PTP (IEEE1588) clock selection is from RCC,
+       by default ETHSW ptp ref clock is used
+     type: boolean
++
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - clocks
+diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+index c34c0e90dc0c..568e886dc683 100644
+--- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+@@ -55,6 +55,10 @@ properties:
+     description: number of clock cells for ck_usbo_48m consumer
+     const: 0
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ # Required child nodes:
+ 
+ patternProperties:
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+index 05f4ad2c7d3a..6ceaffb45dc9 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+@@ -30,6 +30,10 @@ properties:
+   vdda-supply:
+     description: phandle to the vdda input analog voltage.
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 717f6b321f88..340d01d481d1 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -37,6 +37,10 @@ properties:
+     description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
+                   RNG_NSCR will be locked.
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 62f97da1b2fd..2ed526139269 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -73,6 +73,10 @@ properties:
+     enum: [1, 2, 4, 8, 12, 14, 16]
+     default: 8
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ allOf:
+   - $ref: rs485.yaml#
+   - $ref: serial.yaml#
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index 0a67bcb05305..9d86ba492bbe 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -57,6 +57,10 @@ properties:
+     $ref: audio-graph-port.yaml#
+     unevaluatedProperties: false
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+index d7a3f522fc04..bb4f5e8688f1 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+@@ -51,6 +51,10 @@ properties:
+     minItems: 1
+     maxItems: 3
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+index 2f31f5049099..56c5738ea4c5 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -54,6 +54,10 @@ properties:
+     $ref: audio-graph-port.yaml#
+     unevaluatedProperties: false
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+index 8bba965a9ae6..3f1a27efff80 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+@@ -46,6 +46,10 @@ properties:
+       - const: tx
+       - const: rx
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index b66d235805d5..c7593fed165a 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -60,6 +60,10 @@ properties:
+       - const: rx
+       - const: tx
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+ patternProperties:
+   "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-f]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index 2d9dc95a4126..e798b456b270 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -172,6 +172,10 @@ properties:
+ 
+   tpl-support: true
+ 
++  access-controllers:
++    minItems: 1
++    maxItems: 2
++
+   wakeup-source:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description: If present indicates this device has wakeup capabilities
+-- 
+2.39.5
+

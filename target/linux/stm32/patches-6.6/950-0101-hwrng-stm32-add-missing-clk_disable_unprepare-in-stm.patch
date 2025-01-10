@@ -1,0 +1,31 @@
+From 2337a0b34cffd8295ed8ed3d32d00d4435c7e5a0 Mon Sep 17 00:00:00 2001
+From: Yang Yingliang <yangyingliang@huawei.com>
+Date: Fri, 1 Dec 2023 16:20:48 +0800
+Subject: [PATCH] hwrng: stm32 - add missing clk_disable_unprepare() in
+ stm32_rng_init()
+
+Add clk_disable_unprepare() in the error path in stm32_rng_init().
+
+Fixes: 6b85a7e141cb ("hwrng: stm32 - implement STM32MP13x support")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reviewed-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ drivers/char/hw_random/stm32-rng.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
+index 41e1dbea5d2e..efd6edcd7066 100644
+--- a/drivers/char/hw_random/stm32-rng.c
++++ b/drivers/char/hw_random/stm32-rng.c
+@@ -325,6 +325,7 @@ static int stm32_rng_init(struct hwrng *rng)
+ 							(!(reg & RNG_CR_CONDRST)),
+ 							10, 50000);
+ 		if (err) {
++			clk_disable_unprepare(priv->clk);
+ 			dev_err((struct device *)priv->rng.priv,
+ 				"%s: timeout %x!\n", __func__, reg);
+ 			return -EINVAL;
+-- 
+2.39.5
+

@@ -1,0 +1,45 @@
+From 11caec667067695b3838fd99d98f9240a8a4fc17 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 20 May 2024 15:52:14 +0200
+Subject: [PATCH] arm64: dts: st: add ipcc node for stm32mp21
+
+Add IPCC node for stm32mp21x platform.
+
+Change-Id: I5369dd573d1a8181091c1e3be0f4a19c1b8ee754
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381086
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index a0f389102105..0ed2a0a07722 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -227,6 +227,18 @@ hpdma3: dma-controller@40420000 {
+ 			st,syscfg-arcr = <&syscfg 0x2050 0x4>;
+ 		};
+ 
++		ipcc1: mailbox@40490000 {
++			compatible = "st,stm32mp1-ipcc";
++			#mbox-cells = <1>;
++			reg = <0x40490000 0x400>;
++			st,proc-id = <0>;
++			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "rx", "tx";
++			clocks = <&scmi_clk CK_SCMI_IPCC1>;
++			status = "disabled";
++		};
++
+ 		rifsc: bus@42080000 {
+ 			compatible = "st,stm32mp25-rifsc", "simple-bus";
+ 			reg = <0x42080000 0x1000>;
+-- 
+2.39.5
+

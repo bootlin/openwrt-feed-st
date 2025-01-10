@@ -1,0 +1,56 @@
+From 842542fa4e5925f438b599e0aaab076f1c4ba77f Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Wed, 9 Aug 2023 11:13:07 +0200
+Subject: [PATCH] arm64: dts: st: align exti and pinctrl nodes with new
+ bindings to stm32mp251
+
+Remove the property "st,syscfg" from pinctrl and the compatible
+"syscon" from EXTI.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ia70b0afa00e82b524f18d2eb2e5637cbec98b651
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 7283f7805f60..445329a93ff0 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -230,7 +230,7 @@ rcc: clock-controller@44200000 {
+ 		};
+ 
+ 		exti1: interrupt-controller@44220000 {
+-			compatible = "st,stm32mp1-exti", "syscon";
++			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+@@ -317,7 +317,7 @@ syscfg: syscon@44230000 {
+ 		};
+ 
+ 		exti2: interrupt-controller@46230000 {
+-			compatible = "st,stm32mp1-exti", "syscon";
++			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			#address-cells = <0>;
+@@ -386,7 +386,6 @@ pinctrl: pinctrl@44240000 {
+ 			compatible = "st,stm32mp257-pinctrl";
+ 			ranges = <0 0x44240000 0xa0400>;
+ 			interrupt-parent = <&exti1>;
+-			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 			interrupts-extended =
+ 				<&exti1  0 0>, <&exti1  1 0>, <&exti1  2 0>, <&exti1  3 0>,
+@@ -526,7 +525,6 @@ pinctrl_z: pinctrl@46200000 {
+ 			compatible = "st,stm32mp257-z-pinctrl";
+ 			ranges = <0 0x46200000 0x400>;
+ 			interrupt-parent = <&exti1>;
+-			st,syscfg = <&exti1 0x60 0xff>;
+ 			pins-are-numbered;
+ 
+ 			gpioz: gpio@46200000 {
+-- 
+2.39.5
+

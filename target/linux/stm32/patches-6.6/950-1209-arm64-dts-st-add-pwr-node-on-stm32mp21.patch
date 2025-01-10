@@ -1,0 +1,37 @@
+From 2f458798f1a387007248a67898503be5bfeca83a Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Fri, 31 May 2024 17:56:42 +0200
+Subject: [PATCH] arm64: dts: st: add pwr node on stm32mp21
+
+Add PWR sys conf node on stm32mp21.
+
+Change-Id: I9f939445208cdfaa53990dbb294562598524fcdc
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384560
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index cf1ea17bd51d..2549c686f688 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1819,6 +1819,11 @@ rcc: clock-controller@44200000 {
+ 			access-controllers = <&rifsc 156>;
+ 		};
+ 
++		pwr: syscon@44210000 {
++			compatible = "st,stm32mp21-pwr", "syscon";
++			reg = <0x44210000 0x0400>;
++		};
++
+ 		exti1: interrupt-controller@44220000 {
+ 			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+-- 
+2.39.5
+

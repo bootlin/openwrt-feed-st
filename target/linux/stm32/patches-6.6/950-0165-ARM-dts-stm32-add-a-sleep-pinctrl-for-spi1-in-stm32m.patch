@@ -1,0 +1,82 @@
+From ba40288cd01e3bced06b6ef4e54ac9392192645d Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 13 Oct 2021 16:25:10 +0200
+Subject: [PATCH] ARM: dts: stm32: add a sleep pinctrl for spi1 in
+ stm32mp15x-evx
+
+Add a new spi1_sleep_pins_a in stm32mp15-pinctrl, used for
+EV boards.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ic0911e44460ea6cf5fc5dde448d15eb214d1d34a
+---
+ arch/arm/boot/dts/st/stm32mp157a-ev1.dts | 3 ++-
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 3 ++-
+ arch/arm/boot/dts/st/stm32mp157d-ev1.dts | 3 ++-
+ arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+index 45c9ef2679c0..df74bd3a7287 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+ };
+ 
+ &spi1 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
++	pinctrl-1 = <&spi1_sleep_pins_a>;
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+index fc9f5d36c26c..dffd79caa23b 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+ };
+ 
+ &spi1 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
++	pinctrl-1 = <&spi1_sleep_pins_a>;
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+index d925657d8b65..980f2eaf5f79 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+ };
+ 
+ &spi1 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
++	pinctrl-1 = <&spi1_sleep_pins_a>;
+ 	status = "disabled";
+ };
+ 
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+index 2410a53a1bc8..184b4914fa63 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+ };
+ 
+ &spi1 {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
++	pinctrl-1 = <&spi1_sleep_pins_a>;
+ 	status = "disabled";
+ };
+ 
+-- 
+2.39.5
+

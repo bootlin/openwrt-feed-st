@@ -1,0 +1,90 @@
+From 6ee00461b07de3ada30f58e6582abb3ad1a8a353 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Wed, 12 Jan 2022 13:21:55 +0100
+Subject: [PATCH] arm64: defconfig: add STMMAC Ethernet config for STM32MP25
+
+Add also net configs used to perform QBV/Qav tests
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: I1506a6f6bb1e662ab68c8793755853feba6c7adc
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/235348
+Tested-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/304912
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364957
+---
+ .../fragment-02-defconfig-addons.config       | 31 +++++++++++++------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 7e0eb148450b..455a5f6212c3 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -22,6 +22,8 @@ CONFIG_DRM_SIMPLEDRM=y
+ CONFIG_DRM_STM=y
+ CONFIG_DRM_STM_DSI=y
+ CONFIG_DRM_STM_LVDS=y
++CONFIG_DWMAC_GENERIC=y
++CONFIG_DWMAC_STM32=y
+ CONFIG_DYNAMIC_DEBUG=y
+ CONFIG_HDMI=y
+ CONFIG_I2C_RPMSG=m
+@@ -34,10 +36,17 @@ CONFIG_JFFS2_FS=y
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+-CONFIG_MTD_NAND_STM32_FMC2=y
+ CONFIG_MTD_HYPERBUS=y
++CONFIG_MTD_NAND_STM32_FMC2=y
+ CONFIG_MTD_SPI_NAND=y
+ CONFIG_MTD_UBI=y
++CONFIG_NET_ACT_POLICE=m
++CONFIG_NET_ACT_SKBEDIT=m
++CONFIG_NET_ACT_VLAN=m
++CONFIG_NET_CLS_U32=m
++CONFIG_NET_SCH_MULTIQ=m
++CONFIG_NET_SCH_PRIO=m
++CONFIG_NET_SCH_SKBPRIO=m
+ CONFIG_NVMEM_REBOOT_MODE=y
+ CONFIG_NVMEM_STM32_ROMEM=y
+ CONFIG_NVMEM_STM32_TAMP=y
+@@ -70,23 +79,25 @@ CONFIG_STM32_ADC=m
+ CONFIG_STM32_ADC_CORE=m
+ CONFIG_STM32_DMA3=y
+ CONFIG_STM32_FMC2_EBI=y
+-CONFIG_STM32_MDF_ADC=m
+-CONFIG_STM32_MDF_CORE=m
+-CONFIG_STM32_RPROC=y
+-CONFIG_STM32_LPTIMER_CNT=m
+-CONFIG_STM32_TIMER_CNT=m
+-CONFIG_TEE_REMOTEPROC=y
+-CONFIG_UBIFS_FS=y
+ CONFIG_STM32_HYPERBUS=y
+ CONFIG_STM32_I3C_MASTER=m
+ CONFIG_STM32_IPCC=y
++CONFIG_STM32_LPTIMER_CNT=m
++CONFIG_STM32_MDF_ADC=m
++CONFIG_STM32_MDF_CORE=m
+ CONFIG_STM32_OMI=y
+ CONFIG_STM32_OMM=y
++CONFIG_STM32_RPROC=y
++CONFIG_STM32_TIMER_CNT=m
++CONFIG_STMMAC_ETH=y
++CONFIG_STMMAC_PLATFORM=y
++CONFIG_TEE_REMOTEPROC=y
+ CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_TOUCHSCREEN_ILI210X=y
+-CONFIG_USB_HIDDEV=y
++CONFIG_UBIFS_FS=y
+ CONFIG_USB_DWC3_STM32=y
++CONFIG_USB_HIDDEV=y
+ CONFIG_USB_STM32_USBH=y
++CONFIG_VIDEO_IMX335=m
+ CONFIG_VIDEO_STM32_CSI=m
+ CONFIG_VIDEO_STM32_DCMIPP=m
+-CONFIG_VIDEO_IMX335=m
+-- 
+2.39.5
+

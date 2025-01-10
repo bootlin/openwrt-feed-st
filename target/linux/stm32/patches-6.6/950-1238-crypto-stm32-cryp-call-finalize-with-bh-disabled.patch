@@ -1,0 +1,52 @@
+From eb99d7c27da7801980106bdfb17f807cfbb924db Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maxime=20M=C3=A9r=C3=A9?= <maxime.mere@foss.st.com>
+Date: Mon, 10 Jun 2024 11:52:00 +0200
+Subject: [PATCH] crypto: stm32/cryp - call finalize with bh disabled
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The finalize operation in interrupt mode produce a produces a spinlock
+recursion warning. The reason is the fact that BH must be disabled
+during this process.
+
+Change-Id: I4fb24ce10abee6f26464d0207f18f05c773c4823
+Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382486
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/386345
+---
+ drivers/crypto/stm32/stm32-cryp.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
+index 2535e55be433..dcb7f77ebab4 100644
+--- a/drivers/crypto/stm32/stm32-cryp.c
++++ b/drivers/crypto/stm32/stm32-cryp.c
+@@ -11,6 +11,7 @@
+ #include <crypto/internal/des.h>
+ #include <crypto/internal/skcipher.h>
+ #include <crypto/scatterwalk.h>
++#include <linux/bottom_half.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+@@ -2201,8 +2202,11 @@ static irqreturn_t stm32_cryp_irq_thread(int irq, void *arg)
+ 		it_mask &= ~IMSCR_OUT;
+ 	stm32_cryp_write(cryp, cryp->caps->imsc, it_mask);
+ 
+-	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out)
++	if (!cryp->payload_in && !cryp->header_in && !cryp->payload_out) {
++		local_bh_disable();
+ 		stm32_cryp_finish_req(cryp, 0);
++		local_bh_enable();
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.39.5
+

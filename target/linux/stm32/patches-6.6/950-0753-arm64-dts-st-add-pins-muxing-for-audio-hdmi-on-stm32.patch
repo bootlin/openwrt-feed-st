@@ -1,0 +1,48 @@
+From e05ccf784e97b26d144302f03214c5443aa69ca4 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 28 Jul 2023 10:30:37 +0200
+Subject: [PATCH] arm64: dts: st: add pins muxing for audio hdmi on
+ stm32mp257-ev1
+
+Add test pins muxings for audio HDMI support through I2S2 on
+STM32MP257-EV1 (MB1936) board.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Iee7ff04a89584ba73217fc2080418310f9f826ce
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index ab2ce75168b3..a4b3b0286927 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -153,6 +153,25 @@ pins {
+ 		};
+ 	};
+ 
++	i2s2_pins_a: i2s2-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('K', 1, AF2)>, /* I2S2_SDO */
++				 <STM32_PINMUX('I', 14, AF2)>, /* I2S2_WS */
++				 <STM32_PINMUX('B', 0, AF2)>; /* I2S2_CK */
++			slew-rate = <1>;
++			drive-push-pull;
++			bias-disable;
++		};
++	};
++
++	i2s2_sleep_pins_a: i2s2-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('K', 1, ANALOG)>, /* I2S2_SDO */
++				 <STM32_PINMUX('I', 14, ANALOG)>, /* I2S2_WS */
++				 <STM32_PINMUX('B', 0, ANALOG)>; /* I2S2_CK */
++		};
++	};
++
+ 	m_can1_pins_a: m-can1-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('G', 11, AF7)>; /* CAN1_TX */
+-- 
+2.39.5
+

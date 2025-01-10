@@ -1,0 +1,57 @@
+From e5ba4b03a635eee5052757131759292689c2ce47 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Tue, 9 Apr 2024 14:51:23 +0200
+Subject: [PATCH] ARM: dts: sm32mp21: Add power domain states
+
+Add power domains on STM32MP25x Soc:
+- for Cortex A35 idle
+- cluster with Stop and LP-Stop modes support when
+  Cortex A35 cluster and each IP associated to D1 domain are deactivated
+- retention to support the LPLV-Stop modes
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I18c8f4bb3f1c6c33f08b254ee5c844367e50b946
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372382
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 7cee0fe182ef..831ef2e787ec 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -21,6 +21,8 @@ cpu0: cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0>;
+ 			enable-method = "psci";
++			power-domains = <&CPU_PD0>;
++			power-domain-names = "psci";
+ 		};
+ 	};
+ 
+@@ -98,6 +100,20 @@ intc: interrupt-controller@4ac00000 {
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
++
++		CPU_PD0: power-domain-cpu0 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++		};
++
++		CLUSTER_PD: power-domain-cluster {
++			#power-domain-cells = <0>;
++			power-domains = <&RET_PD>;
++		};
++
++		RET_PD: power-domain-retention {
++			#power-domain-cells = <0>;
++		};
+ 	};
+ 
+ 	timer {
+-- 
+2.39.5
+

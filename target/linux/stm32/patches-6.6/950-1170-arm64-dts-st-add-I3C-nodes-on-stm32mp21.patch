@@ -1,0 +1,75 @@
+From a00577856c28f1a47e14ed9a4e14e503a8e871b3 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 30 May 2024 15:38:25 +0200
+Subject: [PATCH] arm64: dts: st: add I3C nodes on stm32mp21
+
+STM32MP21 series embeds 3 instances of I3C controllers.
+
+Change-Id: I5d8b2d05ec680f5f07cab2b1f3181bde74743ff2
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384071
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 39 ++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index b33f0938824e..a19bcc0bbef5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -753,6 +753,32 @@ i2c2: i2c@40180000 {
+ 				status = "disabled";
+ 			};
+ 
++			i3c1: i3c@40190000 {
++				#address-cells = <3>;
++				#size-cells = <0>;
++				compatible = "st,stm32-i3c";
++				reg = <0x40190000 0x400>;
++				interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I3C1>;
++				resets = <&rcc I3C1_R>;
++				access-controllers = <&rifsc 114>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++			};
++
++			i3c2: i3c@401a0000 {
++				#address-cells = <3>;
++				#size-cells = <0>;
++				compatible = "st,stm32-i3c";
++				reg = <0x401a0000 0x400>;
++				interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I3C2>;
++				resets = <&rcc I3C2_R>;
++				access-controllers = <&rifsc 115>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++			};
++
+ 			timers10: timer@401c0000 {
+ 				compatible = "st,stm32mp21-timers";
+ 				reg = <0x401c0000 0x400>;
+@@ -1466,6 +1492,19 @@ i2c3: i2c@46040000 {
+ 				status = "disabled";
+ 			};
+ 
++			i3c3: i3c@46080000 {
++				#address-cells = <3>;
++				#size-cells = <0>;
++				compatible = "st,stm32-i3c";
++				reg = <0x46080000 0x400>;
++				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_I3C3>;
++				resets = <&rcc I3C3_R>;
++				access-controllers = <&rifsc 116>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++			};
++
+ 			csi: csi@48020000 {
+ 				compatible = "st,stm32mp25-csi";
+ 				reg = <0x48020000 0x2000>;
+-- 
+2.39.5
+

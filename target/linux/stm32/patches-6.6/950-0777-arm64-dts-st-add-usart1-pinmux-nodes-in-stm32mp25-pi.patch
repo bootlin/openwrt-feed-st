@@ -1,0 +1,70 @@
+From c28c23ca52450a9d6fe277d05f64042f17bc30e1 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 18:02:01 +0100
+Subject: [PATCH] arm64: dts: st: add usart1 pinmux nodes in
+ stm32mp25-pinctrl.dtsi
+
+add usart1 pinmux nodes in stm32mp25-pinctrl.dtsi
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I59a37494e4fdb0909f5f832e91ddc77759ffcb22
+---
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+index 253fdb43774e..5bf7facd5e3a 100644
+--- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
+@@ -550,6 +550,47 @@ pins1 {
+ 		};
+ 	};
+ 
++	usart1_pins_a: usart1-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 14, AF6)>, /* USART1_TX */
++				<STM32_PINMUX('I', 2, AF6)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('G', 15, AF6)>, /* USART1_RX */
++				<STM32_PINMUX('I', 3, AF6)>; /* USART1_CTS_NSS */
++			bias-disable;
++		};
++	};
++
++	usart1_idle_pins_a: usart1-idle-0 {
++		pins1 {
++			pinmux = <STM32_PINMUX('G', 14, ANALOG)>, /* USART1_TX */
++				<STM32_PINMUX('I', 3, ANALOG)>; /* USART1_CTS_NSS */
++		};
++		pins2 {
++			pinmux = <STM32_PINMUX('I', 2, AF6)>; /* USART1_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++		pins3 {
++			pinmux = <STM32_PINMUX('G', 15, AF6)>; /* USART1_RX */
++			bias-disable;
++		};
++	};
++
++	usart1_sleep_pins_a: usart1-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('G', 14, ANALOG)>, /* USART1_TX */
++				<STM32_PINMUX('I', 2, ANALOG)>, /* USART1_RTS */
++				<STM32_PINMUX('I', 3, ANALOG)>, /* USART1_CTS_NSS */
++				<STM32_PINMUX('G', 15, ANALOG)>; /* USART1_RX */
++		};
++	};
++
+ 	usart2_pins_a: usart2-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('A', 4, AF6)>; /* USART2_TX */
+-- 
+2.39.5
+

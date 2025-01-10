@@ -1,0 +1,32 @@
+From a9c57b8bdffb140a3990f998ca1181d829d0eeb0 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Thu, 5 Nov 2020 16:04:09 +0100
+Subject: [PATCH] ARM: dts: stm32: adapt stm32mp157a-dk1 board to stm32 DT
+ diversity
+
+To handle STM32MP15 SOCs diversity, some updates have to been done.
+This commit mainly adapts stm32mp157a-dk1 board to include the
+correct SOC version.
+
+Change-Id: I999648daba34c533f3304bb8014b938d95f7e08d
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157a-dk1.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
+index 7c732fc3c15e..e262d22d4f39 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include "stm32mp157.dtsi"
++#include "stm32mp15xa.dtsi"
+ #include "stm32mp15-pinctrl.dtsi"
+ #include "stm32mp15xxac-pinctrl.dtsi"
+ #include "stm32mp15xx-dkx.dtsi"
+-- 
+2.39.5
+

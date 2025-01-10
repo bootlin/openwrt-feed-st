@@ -1,0 +1,44 @@
+From 74d1ad6c609d4fcf5a69d7062091096465f10613 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 14 May 2024 15:15:21 +0200
+Subject: [PATCH] drm/stm: lvds: check connector state
+
+During check of connector atomic state, the crtc could be not link to
+the connector, don't return an error.
+
+Change-Id: I903d3d8a9823bc98d2c82af2cfa62574d337dd70
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379636
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/lvds.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
+index 164f36f136f2..760d0b25ac43 100644
+--- a/drivers/gpu/drm/stm/lvds.c
++++ b/drivers/gpu/drm/stm/lvds.c
+@@ -891,14 +891,16 @@ static int lvds_connector_atomic_check(struct drm_connector *connector,
+ 	if (!conn_state)
+ 		return -EINVAL;
+ 
++	if (!conn_state->crtc) {
++		drm_dbg(connector->dev, "connector: no crtc\n");
++		return 0;
++	}
++
+ 	if (list_empty(&connector->modes)) {
+ 		drm_dbg(connector->dev, "connector: empty modes list\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!conn_state->crtc)
+-		return -EINVAL;
+-
+ 	panel_mode = list_first_entry(&connector->modes,
+ 				      struct drm_display_mode, head);
+ 
+-- 
+2.39.5
+

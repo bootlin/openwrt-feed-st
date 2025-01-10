@@ -1,0 +1,42 @@
+From c3af2c167e01eb514509078c0cd9427758400a24 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Tue, 8 Oct 2024 11:14:16 +0200
+Subject: [PATCH] dt-bindings: dma: stm32-dma3: prevent linked-list refactoring
+
+stm32-dma3 driver refactors the linked-list in order to address the memory
+with the highest possible data width.
+It means that it can introduce up to 2 linked-list items. One with a
+transfer length multiple of channel maximum burst length and so with the
+highest possible data width. And an extra one with the latest bytes, with
+lower data width.
+Some devices (e.g. FMC ECC) don't support having several transfers instead
+of only one.
+So add the possibility to prevent linked-list refactoring, by setting bit
+17 of the 'DMA transfer requirements' bit mask.
+
+Change-Id: I28bd849b38b993b28d953430fa81832e20116ce3
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/409651
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+index dc5935d85bc0..fa7ad594bc5f 100644
+--- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
+@@ -138,6 +138,9 @@ properties:
+         -bit 16: Prevent packing/unpacking mode
+           0x0: pack/unpack enabled when source data width/burst != destination data width/burst
+           0x1: memory data width/burst forced to peripheral data width/burst to prevent pack/unpack
++        -bit 17: Prevent linked-list refactoring
++          0x0: don't prevent driver to refactor the linked-list for optimal performance
++          0x1: prevent driver to refactor the linked-list, despite not optimal performance
+ 
+ required:
+   - compatible
+-- 
+2.39.5
+

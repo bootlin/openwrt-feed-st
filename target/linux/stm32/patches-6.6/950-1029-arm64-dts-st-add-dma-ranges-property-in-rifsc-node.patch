@@ -1,0 +1,36 @@
+From 66366055d36bac187052860142785cce6f9126cc Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 11 Apr 2024 16:16:17 +0200
+Subject: [PATCH] arm64: dts: st: add dma-ranges property in rifsc node
+
+Propagate the HW translation offset to rifsc child nodes
+and sub child nodes.
+
+Change-Id: Icf506eb96c4906d85b94a0f609ba39ec1c1615ac
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375010
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 9803f733a4a5..2d48bf6fb94e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -216,6 +216,7 @@ rifsc: bus@42080000 {
+ 			#size-cells = <1>;
+ 			#access-controller-cells = <1>;
+ 			ranges;
++			dma-ranges;
+ 
+ 			spi2: spi@400b0000 {
+ 				#address-cells = <1>;
+-- 
+2.39.5
+

@@ -1,0 +1,47 @@
+From ef85866b77d22bf290a32dfe8e833d9f83fc3627 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Wed, 3 Jul 2024 15:18:02 +0200
+Subject: [PATCH] arm64: dts: st: add SD card support for stm32mp215f-dk board
+
+Enable SDMMC1 node for stm32mp215f-dk board.
+
+Change-Id: I94e8d6fa13313d90d74d995151e7792c5a526286
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/391181
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 375ee23d4f47..61d8eea4f9d4 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -362,6 +362,20 @@ &m33_rproc {
+ 	status = "okay";
+ };
+ 
++&sdmmc1 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc1_b4_pins_a>;
++	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
++	cd-gpios = <&gpiod 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++	disable-wp;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&scmi_vdd_flash>;
++	vqmmc-supply = <&scmi_vddio1>;
++	status = "okay";
++};
++
+ &spi1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
+-- 
+2.39.5
+

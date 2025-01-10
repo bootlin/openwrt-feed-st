@@ -1,0 +1,110 @@
+From 86c0dbbd990fce86c72602a4d9faecdfbd05474a Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 29 Nov 2022 15:30:04 +0100
+Subject: [PATCH] ARM: dts: stm32: increase ldo6 ramp delay on stm32mp15 eval
+ boards
+
+At initialization Wolfson wm8894 suspend/resume callbacks
+are executed. On resume LDO6 regulator is re-enabled.
+wm8994 Power On Reset must be in ready state to allow
+accesses on control interface. Measurements on wm8994
+show that POR is not in ready state before 170ms after
+LDO6 activation. The LDO6 ramp-up delay is set to 300ms
+to let enough time for wm8994 POR.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I66bd776b1d3d3542eaa59c6b662489d18b09529f
+---
+ arch/arm/boot/dts/st/stm32mp157a-ev1.dts | 10 ++++++++++
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 10 ++++++++++
+ arch/arm/boot/dts/st/stm32mp157d-ev1.dts | 10 ++++++++++
+ arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 10 ++++++++++
+ 4 files changed, 40 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+index 7b7b5dd9b2f1..45c9ef2679c0 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+@@ -462,6 +462,16 @@ joystick_pins: joystick-pins {
+ 	};
+ };
+ 
++&i2c4 {
++	pmic: stpmic@33 {
++		regulators {
++			v1v8: ldo6 {
++				regulator-enable-ramp-delay = <300000>;
++			};
++		};
++	};
++};
++
+ &i2c5 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c5_pins_a>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+index 61b5f759459e..fc9f5d36c26c 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+@@ -462,6 +462,16 @@ joystick_pins: joystick-pins {
+ 	};
+ };
+ 
++&i2c4 {
++	pmic: stpmic@33 {
++		regulators {
++			v1v8: ldo6 {
++				regulator-enable-ramp-delay = <300000>;
++			};
++		};
++	};
++};
++
+ &i2c5 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c5_pins_a>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+index 9efdb33a1f10..d925657d8b65 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+@@ -462,6 +462,16 @@ joystick_pins: joystick-pins {
+ 	};
+ };
+ 
++&i2c4 {
++	pmic: stpmic@33 {
++		regulators {
++			v1v8: ldo6 {
++				regulator-enable-ramp-delay = <300000>;
++			};
++		};
++	};
++};
++
+ &i2c5 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c5_pins_a>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+index 660e7f4acfa5..2410a53a1bc8 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+@@ -462,6 +462,16 @@ joystick_pins: joystick-pins {
+ 	};
+ };
+ 
++&i2c4 {
++	pmic: stpmic@33 {
++		regulators {
++			v1v8: ldo6 {
++				regulator-enable-ramp-delay = <300000>;
++			};
++		};
++	};
++};
++
+ &i2c5 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c5_pins_a>;
+-- 
+2.39.5
+

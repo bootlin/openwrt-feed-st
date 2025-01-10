@@ -1,0 +1,974 @@
+From 0fc3ada9c862d43a0cfc47aa4a22ab930a43573c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 13 Nov 2023 10:13:07 +0100
+Subject: [PATCH] ARM: dts: stm32: add M4 examples dts files for stm32mp157
+
+NOT_UPSTREAMABLE
+
+This commit adds new files to be able to run M4 examples on MP15
+EV1 and DK2 boards.
+
+Change-Id: I070aaf6ea938933d5c84dd7d8383ecc2ef030005
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/Makefile                 |  10 +-
+ .../dts/st/stm32mp157a-dk1-m4-examples.dts    | 128 +++++++++++++++
+ .../dts/st/stm32mp157a-ev1-m4-examples.dts    |  14 ++
+ .../dts/st/stm32mp157c-dk2-m4-examples.dts    | 128 +++++++++++++++
+ .../dts/st/stm32mp157c-ev1-m4-examples.dts    | 150 +++++++++++++++++
+ .../dts/st/stm32mp157d-dk1-m4-examples.dts    | 128 +++++++++++++++
+ .../dts/st/stm32mp157d-ev1-m4-examples.dts    |  14 ++
+ .../dts/st/stm32mp157f-dk2-m4-examples.dts    | 128 +++++++++++++++
+ .../dts/st/stm32mp157f-ev1-m4-examples.dts    | 151 ++++++++++++++++++
+ 9 files changed, 850 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
+
+diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
+index cbd2cea277ae..1c201b5b5533 100644
+--- a/arch/arm/boot/dts/st/Makefile
++++ b/arch/arm/boot/dts/st/Makefile
+@@ -40,9 +40,11 @@ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp157a-dhcor-avenger96.dtb \
+ 	stm32mp157a-dk1.dtb \
+ 	stm32mp157a-dk1-a7-examples.dtb \
++	stm32mp157a-dk1-m4-examples.dtb \
+ 	stm32mp157a-ed1.dtb \
+ 	stm32mp157a-ev1.dtb \
+ 	stm32mp157a-ev1-a7-examples.dtb \
++	stm32mp157a-ev1-m4-examples.dtb \
+ 	stm32mp157a-iot-box.dtb \
+ 	stm32mp157a-microgea-stm32mp1-microdev2.0.dtb \
+ 	stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dtb \
+@@ -54,10 +56,12 @@ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp157c-dhcom-picoitx.dtb \
+ 	stm32mp157c-dk2.dtb \
+ 	stm32mp157c-dk2-a7-examples.dtb \
++	stm32mp157c-dk2-m4-examples.dtb \
+ 	stm32mp157c-ed1.dtb \
+ 	stm32mp157c-emsbc-argon.dtb \
+ 	stm32mp157c-ev1.dtb \
+ 	stm32mp157c-ev1-a7-examples.dtb \
++	stm32mp157c-ev1-m4-examples.dtb \
+ 	stm32mp157c-lxa-mc1.dtb \
+ 	stm32mp157c-lxa-tac-gen1.dtb \
+ 	stm32mp157c-lxa-tac-gen2.dtb \
+@@ -65,14 +69,18 @@ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp157c-phycore-stm32mp1-3.dtb \
+ 	stm32mp157d-dk1.dtb \
+ 	stm32mp157d-dk1-a7-examples.dtb \
++	stm32mp157d-dk1-m4-examples.dtb \
+ 	stm32mp157d-ed1.dtb \
+ 	stm32mp157d-ev1.dtb \
+ 	stm32mp157d-ev1-a7-examples.dtb \
++	stm32mp157d-ev1-m4-examples.dtb \
+ 	stm32mp157f-dk2.dtb \
+ 	stm32mp157f-dk2-a7-examples.dtb \
++	stm32mp157f-dk2-m4-examples.dtb \
+ 	stm32mp157f-ed1.dtb \
+ 	stm32mp157f-ev1.dtb \
+-	stm32mp157f-ev1-a7-examples.dtb
++	stm32mp157f-ev1-a7-examples.dtb \
++	stm32mp157f-ev1-m4-examples.dtb
+ dtb-$(CONFIG_ARCH_U8500) += \
+ 	ste-snowball.dtb \
+ 	ste-hrefprev60-stuib.dtb \
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts
+new file mode 100644
+index 000000000000..4bd40eba12f6
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
++ * Author: Amelie Delaunay <amelie.delaunay@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157a-dk1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157A-DK1 configured to run M4 examples";
++	compatible = "st,stm32mp157a-dk1-m4-examples", "st,stm32mp157a-dk1", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&m4_adc {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++		button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi4_pins_a>;
++	status = "okay";
++};
++
++&m4_timers1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm1_pins_a_ch1>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	status = "okay";
++};
++
++&m4_uart7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_uart7_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('H', 7, RSVD)>;
++		};
++	};
++
++	m4_pwm1_pins_a_ch1: m4-pwm1-0-ch1 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 9, RSVD)>;
++		};
++	};
++};
++
++&timers1 {
++	status = "disabled";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts
+new file mode 100644
+index 000000000000..760ca55c279a
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157a-ev1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157A-EV1 configured to run M4 examples";
++	compatible = "st,stm32mp157a-ev1-m4-examples", "st,stm32mp157a-ev1", "st,stm32mp157a-ed1", "st,stm32mp157";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts
+new file mode 100644
+index 000000000000..1fbd2b8c44ad
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157c-dk2.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157C-DK2 configured to run M4 examples";
++	compatible = "st,stm32mp157c-dk2-m4-examples", "st,stm32mp157c-dk2", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&m4_adc {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++		button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi4_pins_a>;
++	status = "okay";
++};
++
++&m4_timers1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm1_pins_a_ch1>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	status = "okay";
++};
++
++&m4_uart7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_uart7_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('H', 7, RSVD)>;
++		};
++	};
++
++	m4_pwm1_pins_a_ch1: m4-pwm1-0-ch1 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 9, RSVD)>;
++		};
++	};
++};
++
++&timers1 {
++	status = "disabled";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts
+new file mode 100644
+index 000000000000..2266a3ce559e
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157c-ev1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157C-EV1 configured to run M4 examples";
++	compatible = "st,stm32mp157c-ev1-m4-examples", "st,stm32mp157c-ev1", "st,stm32mp157c-ed1", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dcmi {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&fmc {
++	status = "disabled";
++};
++
++&i2c5 {
++	status = "disabled";
++};
++
++&m4_adc {
++	vref-supply = <&vdda>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vdda>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_qspi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_qspi_clk_pins_a &m4_qspi_bk1_pins_a
++		     &m4_qspi_bk2_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++	/*	button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++	*/
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi1_pins_a>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm2_pins_a>;
++	status = "okay";
++};
++
++&m4_usart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_usart3_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 8, RSVD)>;
++		};
++	};
++};
++
++&qspi {
++	status = "disabled";
++};
++
++&sai2b {
++	status = "disabled";
++};
++
++&sound {
++	status = "disabled";
++};
++
++&timers2 {
++	status = "disabled";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts
+new file mode 100644
+index 000000000000..8e37e7640e86
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
++ * Author: Amelie Delaunay <amelie.delaunay@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157d-dk1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157D-DK1 configured to run M4 examples";
++	compatible = "st,stm32mp157d-dk1-m4-examples", "st,stm32mp157d-dk1", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&m4_adc {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++		button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi4_pins_a>;
++	status = "okay";
++};
++
++&m4_timers1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm1_pins_a_ch1>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	status = "okay";
++};
++
++&m4_uart7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_uart7_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('H', 7, RSVD)>;
++		};
++	};
++
++	m4_pwm1_pins_a_ch1: m4-pwm1-0-ch1 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 9, RSVD)>;
++		};
++	};
++};
++
++&timers1 {
++	status = "disabled";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts
+new file mode 100644
+index 000000000000..4a4cb1532915
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2022 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157d-ev1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157D-EV1 configured to run M4 examples";
++	compatible = "st,stm32mp157d-ev1-m4-examples", "st,stm32mp157d-ev1", "st,stm32mp157d-ed1", "st,stm32mp157";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
+new file mode 100644
+index 000000000000..ccec51342a24
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157f-dk2.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157F-DK2 configured to run M4 examples";
++	compatible = "st,stm32mp157f-dk2-m4-examples", "st,stm32mp157f-dk2", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&m4_adc {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vrefbuf>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++		button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi4_pins_a>;
++	status = "okay";
++};
++
++&m4_timers1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm1_pins_a_ch1>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	status = "okay";
++};
++
++&m4_uart7 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_uart7_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('H', 7, RSVD)>;
++		};
++	};
++
++	m4_pwm1_pins_a_ch1: m4-pwm1-0-ch1 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 9, RSVD)>;
++		};
++	};
++};
++
++&timers1 {
++	status = "disabled";
++};
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
+new file mode 100644
+index 000000000000..6964892a1cdf
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/*
++ * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
++ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
++ */
++
++/dts-v1/;
++
++#include "stm32mp157f-ev1.dts"
++
++/ {
++	model = "STMicroelectronics STM32MP157F-EV1 configured to run M4 examples";
++	compatible = "st,stm32mp157f-ev1-m4-examples", "st,stm32mp157f-ev1", "st,stm32mp157f-ed1", "st,stm32mp157";
++};
++
++&adc {
++	status = "disabled";
++};
++
++&dac {
++	status = "disabled";
++};
++
++&dcmi {
++	status = "disabled";
++};
++
++&dma2 {
++	status = "disabled";
++};
++
++&dmamux1 {
++	dma-masters = <&dma1>;
++	dma-channels = <8>;
++};
++
++&fmc {
++	status = "disabled";
++};
++
++&i2c5 {
++	status = "disabled";
++};
++
++&m4_adc {
++	vref-supply = <&vdda>;
++	status = "okay";
++};
++
++&m4_crc2 {
++	status = "okay";
++};
++
++&m4_cryp2 {
++	status = "okay";
++};
++
++&m4_dac {
++	vref-supply = <&vdda>;
++	status = "okay";
++};
++
++&m4_dma2 {
++	status = "okay";
++};
++
++&m4_hash2 {
++	status = "okay";
++};
++
++&m4_i2c5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_i2c5_pins_a>;
++	status = "okay";
++};
++
++&m4_qspi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_qspi_clk_pins_a &m4_qspi_bk1_pins_a
++		     &m4_qspi_bk2_pins_a>;
++	status = "okay";
++};
++
++&m4_rng2 {
++	status = "okay";
++};
++
++&m4_rproc {
++	m4_system_resources {
++		status = "okay";
++
++	/*
++		button {
++			compatible = "rproc-srm-dev";
++			interrupt-parent = <&gpioa>;
++			interrupts = <14 2>;
++			interrupt-names = "irq";
++			status = "okay";
++		};
++	*/
++
++		m4_led: m4-led {
++			compatible = "rproc-srm-dev";
++			pinctrl-names = "default";
++			pinctrl-0 = <&m4_leds_orange_pins>;
++			status = "okay";
++		};
++	};
++};
++
++&m4_spi1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_spi1_pins_a>;
++	status = "okay";
++};
++
++&m4_timers2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_pwm2_pins_a>;
++	status = "okay";
++};
++
++&m4_usart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&m4_usart3_pins_a>;
++	status = "okay";
++};
++
++&pinctrl {
++	m4_leds_orange_pins: m4-leds-orange-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D', 8, RSVD)>;
++		};
++	};
++};
++
++&qspi {
++	status = "disabled";
++};
++
++&sai2b {
++	status = "disabled";
++};
++
++&sound {
++	status = "disabled";
++};
++
++&timers2 {
++	status = "disabled";
++};
+-- 
+2.39.5
+

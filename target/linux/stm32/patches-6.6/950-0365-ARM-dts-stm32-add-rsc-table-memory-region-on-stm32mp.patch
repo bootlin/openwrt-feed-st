@@ -1,0 +1,45 @@
+From 9932f1a0c310af7797b935ce9c470f33bb23c55d Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Wed, 20 Jan 2021 19:20:15 +0100
+Subject: [PATCH] ARM: dts: stm32: add rsc table memory region on
+ stm32mp157xx-dkx
+
+Add the mcu_rsc_table region to support the resource table and the trace
+buffer allocation in the MCU SRAM3 for signed firmware. by default the
+MCU SRAM3 is shared between the Cortex-A and the cortex-M.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I04bcf6e8716ac145ae4d3cd8b91750c1a16e3673
+---
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 8fce8e6b07e8..2d83b679f3ba 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -50,6 +50,12 @@ vdev0buffer: vdev0buffer@10042000 {
+ 			no-map;
+ 		};
+ 
++		mcu_rsc_table: mcu_rsc_table@10048000 {
++			compatible = "shared-dma-pool";
++			reg = <0x10048000 0x8000>;
++			no-map;
++		};
++
+ 		mcuram: mcuram@30000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0x30000000 0x40000>;
+@@ -486,7 +492,7 @@ ltdc_ep0_out: endpoint {
+ 
+ &m4_rproc {
+ 	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+-			<&vdev0vring1>, <&vdev0buffer>;
++			<&vdev0vring1>, <&vdev0buffer>, <&mcu_rsc_table>;
+ 	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+-- 
+2.39.5
+

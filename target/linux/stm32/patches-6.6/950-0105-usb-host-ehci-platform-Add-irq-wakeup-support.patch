@@ -1,0 +1,53 @@
+From a5ca9a563fc804f3dbd43a687254fd969b70adab Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Thu, 19 Sep 2019 16:45:10 +0200
+Subject: [PATCH] usb: host: ehci-platform: Add irq wakeup support
+
+EHCI controller could be used as a wakeup source. This patch adds EHCI
+irq wake up support.
+
+Change-Id: I1caa34001eac021aaa32344db8e1c836752c83d9
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/158671
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ drivers/usb/host/ehci-platform.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index 98b073185e1c..72b021471cfa 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -35,6 +35,7 @@
+ #include <linux/usb/hcd.h>
+ #include <linux/usb/ehci_pdriver.h>
+ #include <linux/usb/of.h>
++#include <linux/pm_wakeirq.h>
+ 
+ #include "ehci.h"
+ 
+@@ -444,6 +445,9 @@ static int __maybe_unused ehci_platform_suspend(struct device *dev)
+ 	if (pdata->power_suspend)
+ 		pdata->power_suspend(pdev);
+ 
++	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++		enable_irq_wake(hcd->irq);
++
+ 	return ret;
+ }
+ 
+@@ -455,6 +459,9 @@ static int __maybe_unused ehci_platform_resume(struct device *dev)
+ 	struct ehci_platform_priv *priv = hcd_to_ehci_priv(hcd);
+ 	struct device *companion_dev;
+ 
++	if (device_may_wakeup(dev) || device_wakeup_path(dev))
++		disable_irq_wake(hcd->irq);
++
+ 	if (pdata->power_on) {
+ 		int err = pdata->power_on(pdev);
+ 		if (err < 0)
+-- 
+2.39.5
+

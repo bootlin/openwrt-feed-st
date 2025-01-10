@@ -1,0 +1,28 @@
+From d988b367ed268c9307c147eecc0332106c705252 Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Fri, 8 Dec 2023 11:21:16 +0100
+Subject: [PATCH] clk: stm32mp25: implement reset_control_reset() command.
+
+Add reset timing in stm32mp25_reset_data structure for MP25.
+
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Change-Id: I8c0dfd7d2267ba9c92080ba8e83ded220725c3dd
+---
+ drivers/clk/stm32/clk-stm32mp25.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
+index f769afe67d6f..9c24629f92aa 100644
+--- a/drivers/clk/stm32/clk-stm32mp25.c
++++ b/drivers/clk/stm32/clk-stm32mp25.c
+@@ -1832,6 +1832,7 @@ static struct clk_stm32_clock_data stm32mp25_clock_data = {
+ static struct clk_stm32_reset_data stm32mp25_reset_data = {
+ 	.reset_lines	= stm32mp25_reset_cfg,
+ 	.nr_lines	= ARRAY_SIZE(stm32mp25_reset_cfg),
++	.reset_us	= 2,
+ };
+ 
+ static const struct stm32_rcc_match_data stm32mp25_data = {
+-- 
+2.39.5
+

@@ -1,0 +1,63 @@
+From 561e6ab751758a3f5d41dcfe79e90963b7b3cbd0 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 21 Feb 2024 16:50:35 +0100
+Subject: [PATCH] drm/stm: lvds:  add property default-on
+
+Add support of a new property 'default-on' to avoid reset
+of LVDS at probe and keep the pm runtime active.
+
+Change-Id: I8b223ca179a37e8eb3be71dc944c375ea26e02cb
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/lvds.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
+index 46ef58971218..a34c71d22d1b 100644
+--- a/drivers/gpu/drm/stm/lvds.c
++++ b/drivers/gpu/drm/stm/lvds.c
+@@ -1086,16 +1086,19 @@ static int lvds_probe(struct platform_device *pdev)
+ 		return  PTR_ERR(lvds->vdda18_supply);
+ 	}
+ 
+-	rstc = devm_reset_control_get_exclusive(dev, NULL);
++	/* To obtain a continuous display after the probe, reset shouldn't be done */
++	if (!device_property_read_bool(dev, "default-on")) {
++		rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+-	if (IS_ERR(rstc)) {
+-		ret = PTR_ERR(rstc);
+-		return ret;
+-	}
++		if (IS_ERR(rstc)) {
++			ret = PTR_ERR(rstc);
++			return ret;
++		}
+ 
+-	reset_control_assert(rstc);
+-	usleep_range(10, 20);
+-	reset_control_deassert(rstc);
++		reset_control_assert(rstc);
++		usleep_range(10, 20);
++		reset_control_deassert(rstc);
++	}
+ 
+ 	port1 = of_graph_get_port_by_id(dev->of_node, 1);
+ 	port2 = of_graph_get_port_by_id(dev->of_node, 2);
+@@ -1186,6 +1189,13 @@ static int lvds_probe(struct platform_device *pdev)
+ 	drm_bridge_add(&lvds->lvds_bridge);
+ 	platform_set_drvdata(pdev, lvds);
+ 
++	/*
++	 * To obtain a continuous display after the probe,
++	 *  the clocks must remain activated
++	 */
++	if (device_property_read_bool(dev, "default-on"))
++		pm_runtime_get_sync(dev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.39.5
+

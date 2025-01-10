@@ -1,0 +1,35 @@
+From d41db41cc9c8844a45861f937bb548d50338f705 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 11 Apr 2024 16:12:09 +0200
+Subject: [PATCH] dt-bindings: bus: st,stm32: add dma-ranges property
+
+Allow DMA hardware translation on RIFSC bus.
+
+Change-Id: I96f68c1cb55caa390606a9083dd9b815c12dd1b7
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375009
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+---
+ Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+index 20acd1a6b173..da15218ddd26 100644
+--- a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
++++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+@@ -54,6 +54,8 @@ properties:
+ 
+   ranges: true
+ 
++  dma-ranges: true
++
+   "#access-controller-cells":
+     const: 1
+     description:
+-- 
+2.39.5
+

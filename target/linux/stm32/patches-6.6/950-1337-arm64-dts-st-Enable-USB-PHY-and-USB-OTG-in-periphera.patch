@@ -1,0 +1,42 @@
+From e89393af7442cdff0eba999f5ffd9dad3a5a127c Mon Sep 17 00:00:00 2001
+From: Ram Dayal <ram.dayal@st.com>
+Date: Wed, 14 Aug 2024 11:36:37 +0200
+Subject: [PATCH] arm64: dts: st: Enable USB PHY and USB OTG in peripheral mode
+ for stm32mp215f-dk
+
+This patch updates the DT for the stm32mp215f-dk
+board to enable USB PHY and USB OTG in peripheral mode.
+
+Change-Id: I55b537095d4a07db4ec8930aa30287c1c2d0a837
+Signed-off-by: Ram Dayal <ram.dayal@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398412
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 7c1732293292..fd76d8de1b61 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -438,3 +438,15 @@ &usart6 {
+ 	uart-has-rtscts;
+ 	status = "disabled";
+ };
++
++&usb2_phy2 {
++	vdd33-supply = <&scmi_vdd3v3_usb>;
++	status = "okay";
++};
++
++&usbotg_hs {
++	role-switch-default-mode = "peripheral";
++	dr_mode = "peripheral";
++	usb-role-switch;
++	status = "okay";
++};
+-- 
+2.39.5
+

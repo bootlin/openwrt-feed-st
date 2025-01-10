@@ -1,0 +1,32 @@
+From 25bdf5244ad61910226658aa0c07a64ac12d8d84 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 5 Aug 2024 10:46:28 +0200
+Subject: [PATCH] dt-bindings: panel: lvds: Add EDT etml0700z9ndha
+
+Add EDT etml0700z9ndha (1024x600) TFT-LCD panel
+to the list of compatibles.
+
+Change-Id: I9dc82114f4a3a2b82e7128afd39c14be3b88489a
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396727
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ Documentation/devicetree/bindings/display/panel/panel-lvds.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
+index 9f1016551e0b..a53d263419a9 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
+@@ -31,6 +31,7 @@ select:
+             - mitsubishi,aa104xd12
+             - mitsubishi,aa121td01
+             - sgd,gktw70sdae4se
++            - edt,etml0700z9ndha
+ 
+   required:
+     - compatible
+-- 
+2.39.5
+

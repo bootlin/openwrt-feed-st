@@ -1,0 +1,43 @@
+From 01c630a1ad39466e29462216521d8a6ab44002fe Mon Sep 17 00:00:00 2001
+From: Erwan Le Ray <erwan.leray@foss.st.com>
+Date: Wed, 14 Oct 2020 10:02:43 +0200
+Subject: [PATCH] serial: stm32: add support of break control routine
+
+Add support of break control routine to stm32 serial driver.
+
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Idf9e865e264b1f2b2cc7816ab703f926d9fa3744
+---
+ drivers/tty/serial/stm32-usart.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 9ef90bb30a47..5b5a4d2dd6f3 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1053,9 +1053,20 @@ static void stm32_usart_stop_rx(struct uart_port *port)
+ 		stm32_usart_clr_bits(port, ofs->cr3, stm32_port->cr3_irq);
+ }
+ 
+-/* Handle breaks - ignored by us */
+ static void stm32_usart_break_ctl(struct uart_port *port, int break_state)
+ {
++	struct stm32_port *stm32_port = to_stm32_port(port);
++	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
++	unsigned long flags;
++
++	spin_lock_irqsave(&port->lock, flags);
++
++	if (break_state)
++		stm32_usart_set_bits(port, ofs->rqr, USART_RQR_SBKRQ);
++	else
++		stm32_usart_clr_bits(port, ofs->rqr, USART_RQR_SBKRQ);
++
++	spin_unlock_irqrestore(&port->lock, flags);
+ }
+ 
+ static int stm32_usart_startup(struct uart_port *port)
+-- 
+2.39.5
+

@@ -1,0 +1,36 @@
+From ce45b3a95c19febf47f89411be4a4fb507f2c933 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Mon, 14 Sep 2020 16:57:24 +0200
+Subject: [PATCH] ARM: dts: stm32: Add hwspinlock node for stm32mp151
+
+Declare hwspinlock device for stm32mp151.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I6ccc0555677a2ef0aa0f6bbe0cef5b34b697a1a7
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index f3fde5858894..e9d1925f92d0 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1204,6 +1204,14 @@ usbotg_hs: usb-otg@49000000 {
+ 			status = "disabled";
+ 		};
+ 
++		hsem: hwspinlock@4c000000 {
++			compatible = "st,stm32-hwspinlock";
++			#hwlock-cells = <2>;
++			reg = <0x4c000000 0x400>;
++			clocks = <&rcc HSEM>;
++			clock-names = "hsem";
++		};
++
+ 		ipcc: mailbox@4c001000 {
+ 			compatible = "st,stm32mp1-ipcc";
+ 			#mbox-cells = <1>;
+-- 
+2.39.5
+

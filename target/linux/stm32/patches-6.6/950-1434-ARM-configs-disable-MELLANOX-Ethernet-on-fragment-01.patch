@@ -1,0 +1,48 @@
+From 6b01f2666a64d79d8360635838f9469e0dd7a293 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Fri, 13 Sep 2024 17:03:17 +0200
+Subject: [PATCH] ARM: configs: disable MELLANOX Ethernet on
+ fragment-01-multiv7_cleanup
+
+TEMPORARY PATCH
+
+Due to Revert "ptp: Add .getmaxphase callback to ptp_clock_info"
+Build issue occur so disable the driver.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Change-Id: If09b04135aabdf16e32a0170942406f4dbce6646
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404469
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config     | 1 +
+ arch/arm64/configs/fragment-01-defconfig-cleanup.config | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+index 11aecbba58c6..27b7ccc35200 100644
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -227,6 +227,7 @@
+ # CONFIG_MICROCHIP_PHY is not set
+ # CONFIG_MTD_NAND_PL35X is not set
+ # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
++# CONFIG_NET_VENDOR_MELLANOX is not set
+ # CONFIG_PAGE_POOL_STATS is not set
+ # CONFIG_PCI is not set
+ # CONFIG_PCI_DOMAINS_GENERIC is not set
+diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+index ee83c4555120..b9ccefe07a54 100644
+--- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
++++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+@@ -51,6 +51,7 @@
+ # CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
+ # CONFIG_MTD_PHYSMAP is not set
+ # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
++# CONFIG_NET_VENDOR_MELLANOX is not set
+ # CONFIG_PAGE_POOL_STATS is not set
+ # CONFIG_SOC_BRCMSTB is not set
+ # CONFIG_SOC_TI is not set
+-- 
+2.39.5
+

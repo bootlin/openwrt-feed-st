@@ -1,0 +1,43 @@
+From f14fcecda46adf8afc6b22f64bb7e291f7cb92b7 Mon Sep 17 00:00:00 2001
+From: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Date: Wed, 7 Aug 2024 11:51:59 +0200
+Subject: [PATCH] arm64: defconfig: active VIVID driver for dev
+
+Activate Virtual Video Test driver for dev configuration.
+
+Change-Id: Ic0849d133bb8f7ad06a7195592dc5cf02aa6ee3f
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397277
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 8a5595218b41..cc732a5301cb 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -43,6 +43,7 @@ CONFIG_IIO_RESCALE=m
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_JFFS2_FS=y
++CONFIG_MEDIA_TEST_SUPPORT=y
+ CONFIG_MFD_STM32_LPTIMER=m
+ CONFIG_MFD_STM32_TIMERS=m
+ CONFIG_MFD_WM8994=m
+@@ -113,6 +114,8 @@ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_ONBOARD_HUB=y
+ CONFIG_USB_STM32_USBH=y
++CONFIG_V4L_TEST_DRIVERS=y
+ CONFIG_VIDEO_IMX335=m
+ CONFIG_VIDEO_STM32_CSI=m
+ CONFIG_VIDEO_STM32_DCMIPP=m
++CONFIG_VIDEO_VIVID=m
+-- 
+2.39.5
+

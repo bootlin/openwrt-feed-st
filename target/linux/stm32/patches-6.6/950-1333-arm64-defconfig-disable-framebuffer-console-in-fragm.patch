@@ -1,0 +1,36 @@
+From ceedb57f96889d4e855db83a4f934227ca633a94 Mon Sep 17 00:00:00 2001
+From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Date: Tue, 17 Oct 2023 12:29:01 +0200
+Subject: [PATCH] arm64: defconfig: disable framebuffer console in
+ fragment-01-defconfig-cleanup
+
+Framebuffer console is not supported with simplefb
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Change-Id: I60188308c374e765898810ac766cfacf25f77551
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397263
+Tested-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Domain-Review: Yannick FERTRE <yannick.fertre@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-01-defconfig-cleanup.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-01-defconfig-cleanup.config b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+index 0ab6a45792f1..ee83c4555120 100644
+--- a/arch/arm64/configs/fragment-01-defconfig-cleanup.config
++++ b/arch/arm64/configs/fragment-01-defconfig-cleanup.config
+@@ -43,6 +43,7 @@
+ # CONFIG_ARCH_XGENE is not set
+ # CONFIG_ARCH_ZYNQMP is not set
+ # CONFIG_DRM_FBDEV_EMULATION is not set
++# CONFIG_FRAMEBUFFER_CONSOLE is not set
+ # CONFIG_MEDIA_ANALOG_TV_SUPPORT is not set
+ # CONFIG_MEDIA_DIGITAL_TV_SUPPORT is not set
+ # CONFIG_MEDIA_RADIO_SUPPORT is not set
+-- 
+2.39.5
+

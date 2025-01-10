@@ -1,0 +1,45 @@
+From c3b51865cf32eeeea20a3a147c605f0deeb5fbd4 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 28 Oct 2022 17:34:12 +0200
+Subject: [PATCH] counter: stm32-timer-cnt: add support for stm32mp25
+
+Add support for STM32MP25 SoC. There are new counter modes that may be
+implemented in later. Still, use newly introduced compatible to handle
+this new HW variant and avoid being blocked with existing compatible
+in SoC dtsi file. Modes supported currently still remains compatible.
+Timer 20 has encoder capability, flag it.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: I6926e166712e19e46f00d32aa6169a0f8a7694c5
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388151
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index fe34510fc60b..d80521196353 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -663,12 +663,14 @@ static void stm32_timer_cnt_detect_channels(struct device *dev,
+ 	dev_dbg(dev, "has %d cc channels\n", priv->nchannels);
+ }
+ 
+-/* encoder supported on TIM1 TIM2 TIM3 TIM4 TIM5 TIM8 */
+-#define STM32_TIM_ENCODER_SUPPORTED	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(7))
++/* encoder supported on TIM1 TIM2 TIM3 TIM4 TIM5 TIM8 TIM20 */
++#define STM32_TIM_ENCODER_SUPPORTED	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(7) | \
++					 BIT(19))
+ 
+ static const char * const stm32_timer_trigger_compat[] = {
+ 	"st,stm32-timer-trigger",
+ 	"st,stm32h7-timer-trigger",
++	"st,stm32mp25-timer-trigger",
+ };
+ 
+ static int stm32_timer_cnt_probe_encoder(struct device *dev,
+-- 
+2.39.5
+

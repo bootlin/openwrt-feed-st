@@ -1,0 +1,49 @@
+From 95cecbcdc8512a3033d5f2d341db0f84b2a098df Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 17 Jun 2024 14:18:12 +0200
+Subject: [PATCH] media: stm32: dcmipp: apply ISP params on either P1VSYNC or
+ P2VSYNC
+
+ISP block is being used with either (or both) main & aux pipes.
+Depending on which pipe is enabled, either P1VSYNC or P2VSYNC
+signals will be updated.  If both pipes are running together, both
+P1VSYNC & P2VSYNC will move synchronously.
+Ensure that isp-params are applied in both cases.
+
+Change-Id: I73da0ba4e52a0942ed2e1ba9b4a25c83d8a4f439
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/387986
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c  | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
+index 6c9ff7bbc7d3..48ef5aa6c147 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
+@@ -20,6 +20,7 @@
+ #include "dcmipp-common.h"
+ 
+ #define DCMIPP_CMSR2_P1VSYNCF	BIT(18)
++#define DCMIPP_CMSR2_P2VSYNCF	BIT(26)
+ 
+ struct dcmipp_buf {
+ 	struct vb2_v4l2_buffer	vb;
+@@ -511,7 +512,8 @@ static irqreturn_t dcmipp_isp_params_irq_thread(int irq, void *arg)
+ 	struct dcmipp_buf *cur_buf = NULL;
+ 
+ 	/* We are only interested in VSYNC interrupts */
+-	if (!(ved->cmsr2 & DCMIPP_CMSR2_P1VSYNCF))
++	if (!(ved->cmsr2 & DCMIPP_CMSR2_P1VSYNCF) &&
++	    !(ved->cmsr2 & DCMIPP_CMSR2_P2VSYNCF))
+ 		return IRQ_HANDLED;
+ 
+ 	spin_lock_irq(&vout->irqlock);
+-- 
+2.39.5
+

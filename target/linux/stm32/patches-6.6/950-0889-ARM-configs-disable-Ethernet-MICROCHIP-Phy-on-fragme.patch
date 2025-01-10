@@ -1,0 +1,47 @@
+From 4b9173ad935271f8dcec204fc09da217ed162385 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Mon, 25 Mar 2024 17:08:42 +0100
+Subject: [PATCH] ARM: configs: disable Ethernet MICROCHIP Phy on
+ fragment-01-multiv7_cleanup
+
+When driver ethernet is unbind/bind, there is an error:
+    [  688.292133] stm32-dwmac 5800a000.eth1: Failed to reset the dma
+    [  688.296678] stm32-dwmac 5800a000.eth1 eth0: stmmac_hw_setup: DMA engine initialization failed
+    [  688.309750] stm32-dwmac 5800a000.eth1 eth0: stmmac_open: Hw setup failed
+This is link to config init of LAN88xx microchip driver
+Until final fix found, disable this driver to use GENERIC Phy driver by default
+
+Change-Id: Ic5007f9a2a693f6b5d28a2704649ca1717ed02d8
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/369106
+Tested-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ arch/arm/configs/fragment-01-multiv7_cleanup.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+index 3b4be907cbdc..0dace0a1cd01 100644
+--- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
++++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
+@@ -225,6 +225,7 @@
+ # CONFIG_MEDIA_TUNER_XC2028 is not set
+ # CONFIG_MEDIA_TUNER_XC4000 is not set
+ # CONFIG_MEDIA_TUNER_XC5000 is not set
++# CONFIG_MICROCHIP_PHY is not set
+ # CONFIG_MTD_NAND_PL35X is not set
+ # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
+ # CONFIG_PAGE_POOL_STATS is not set
+@@ -257,5 +258,6 @@
+ # CONFIG_USB_CONFIGFS_RNDIS is not set
+ # CONFIG_USB_DWC3 is not set
+ # CONFIG_USB_ETH_RNDIS is not set
++# CONFIG_USB_LAN78XX is not set
+ # CONFIG_USB_MUSB_HDRC is not set
+ # CONFIG_VIRTIO_CONSOLE is not set
+-- 
+2.39.5
+

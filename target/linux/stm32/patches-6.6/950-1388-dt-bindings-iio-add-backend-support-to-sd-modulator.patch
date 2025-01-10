@@ -1,0 +1,71 @@
+From 5e365b38380bfc33a14f4620f2cd8096facbcac8 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 27 Jun 2024 18:28:43 +0200
+Subject: [PATCH] dt-bindings: iio: add backend support to sd modulator
+
+The legacy sd modulator driver registers the sigma delta modulator as
+an IIO channel provider. This implementation is not convenient when the
+SD modulator has to be cascaded with another IIO device. The scaling
+information is distributed across devices, which makes it difficult to
+report consistent scaling data on IIO devices.
+
+The solution is to expose these cascaded IIO devices as an aggregate
+device, which report global scaling information.
+Add IIO backend support to SD modulator to allow scaling information
+management.
+
+Change-Id: Ic8cce1e9660750e1803446014d5594bf9e767b71
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397587
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../iio/adc/sigma-delta-modulator.yaml         | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+index 5e0dc7619396..d1033bfc0f1b 100644
+--- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+@@ -18,6 +18,9 @@ properties:
+       - sd-modulator
+       - ads1201
+ 
++  '#io-backend-cells':
++    const: 0
++
+   '#io-channel-cells':
+     const: 0
+ 
+@@ -26,13 +29,24 @@ properties:
+ 
+ required:
+   - compatible
+-  - '#io-channel-cells'
++
++anyOf:
++  - required: ['#io-backend-cells']
++  - required: ['#io-channel-cells']
+ 
+ additionalProperties: false
+ 
+ examples:
+   - |
+-    ads1202: adc {
++    // Backend binding example. SD modulator configured as an IIO backend device
++    ads1201_0: adc {
++      compatible = "sd-modulator";
++      #io-backend-cells = <0>;
++    };
++
++  - |
++    // Legacy binding example. SD modulator configured as an IIO channel provider
++    ads1201_1: adc {
+       compatible = "sd-modulator";
+       #io-channel-cells = <0>;
+     };
+-- 
+2.39.5
+

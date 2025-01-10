@@ -1,0 +1,65 @@
+From 001ef4555bbaa9ddfd47200bedf50b0976ed771a Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@st.com>
+Date: Wed, 21 Feb 2024 10:24:45 +0100
+Subject: [PATCH] media: ov5640: reduce dvp pixel rate according to maximum
+ pixel clock
+
+Reduce parallel port rate according to maximum pixel clock frequency
+admissible by camera interface.
+This allows to support any resolutions/framerate requests by decreasing
+the framerate according to maximum camera interface capabilities.
+
+Change-Id: If3782de79542fb784ee1a672a88c3b786a62f3de
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ drivers/media/i2c/ov5640.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index 40532f7bcabe..dbb7b7ad075c 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -1578,7 +1578,11 @@ static unsigned long ov5640_calc_pclk(struct ov5640_dev *sensor,
+ 
+ static int ov5640_set_dvp_pclk(struct ov5640_dev *sensor)
+ {
++	const struct ov5640_mode_info *mode = sensor->current_mode;
++	struct i2c_client *client = sensor->i2c_client;
+ 	u8 prediv, mult, sysdiv, pll_rdiv, bit_div, pclk_div;
++	u32 pclk_freq, max_pclk_freq;
++	u8 dvp_pclk_divider;
+ 	u32 rate;
+ 	int ret;
+ 
+@@ -1586,6 +1590,27 @@ static int ov5640_set_dvp_pclk(struct ov5640_dev *sensor)
+ 	rate *= ov5640_code_to_bpp(sensor, sensor->fmt.code);
+ 	rate /= sensor->ep.bus.parallel.bus_width;
+ 
++	/*
++	 * 1280x720 and 1024x768 are reported to use 'SUBSAMPLING' only,
++	 * but they seems to go through the scaler before subsampling.
++	 */
++	if (mode->dn_mode == SCALING ||
++	   (mode->id == OV5640_MODE_720P_1280_720) ||
++	   (mode->id == OV5640_MODE_XGA_1024_768))
++		dvp_pclk_divider = 1;
++	else
++		dvp_pclk_divider = 2;
++
++	pclk_freq = rate / dvp_pclk_divider;
++	max_pclk_freq = sensor->ep.bus.parallel.pclk_max_frequency;
++
++	/* clip rate according to optional maximum pixel clock limit */
++	if (max_pclk_freq && (pclk_freq > max_pclk_freq)) {
++		rate = max_pclk_freq * dvp_pclk_divider;
++		dev_dbg(&client->dev, "DVP pixel clock too high (%d > %d Hz), reducing rate...\n",
++			pclk_freq, max_pclk_freq);
++	}
++
+ 	ov5640_calc_pclk(sensor, rate, &prediv, &mult, &sysdiv, &pll_rdiv,
+ 			 &bit_div, &pclk_div);
+ 
+-- 
+2.39.5
+

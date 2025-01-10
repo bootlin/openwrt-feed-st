@@ -1,0 +1,40 @@
+From 9cc0b97bec9e6c07bcd555b40117a3258534e51a Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 23 May 2024 18:26:03 +0200
+Subject: [PATCH] counter: stm32-timer-cnt: add support for stm32mp21
+
+Add support for STM32MP21 SoC using new compatible.
+
+Change-Id: I8b175579e1fe00b4ba25af8716381787ac061a8b
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388153
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index d80521196353..36158eda70a1 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -670,6 +670,7 @@ static void stm32_timer_cnt_detect_channels(struct device *dev,
+ static const char * const stm32_timer_trigger_compat[] = {
+ 	"st,stm32-timer-trigger",
+ 	"st,stm32h7-timer-trigger",
++	"st,stm32mp21-timer-trigger",
+ 	"st,stm32mp25-timer-trigger",
+ };
+ 
+@@ -837,6 +838,7 @@ static SIMPLE_DEV_PM_OPS(stm32_timer_cnt_pm_ops, stm32_timer_cnt_suspend,
+ 
+ static const struct of_device_id stm32_timer_cnt_of_match[] = {
+ 	{ .compatible = "st,stm32-timer-counter", },
++	{ .compatible = "st,stm32mp21-timer-counter", },
+ 	{ .compatible = "st,stm32mp25-timer-counter", },
+ 	{},
+ };
+-- 
+2.39.5
+

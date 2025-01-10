@@ -1,0 +1,35 @@
+From a6ab7920f824716c4c481e1a7e7a966b995a15a8 Mon Sep 17 00:00:00 2001
+From: Rahul Kumar <rahul.kumar05@st.com>
+Date: Thu, 15 Feb 2024 14:58:52 +0530
+Subject: [PATCH] ARM: configs: use USB onboard HUB as built-in in multi_v7
+ addons fragment
+
+Enable onboard hub driver as built-in, as this usbcore driver may
+report some errors upon attach while booting and probing as a module.
+This condition occurs when the HUB supply gets enabled by another onboard
+peripheral. Then the HUB gets enumerated before the module gets loaded.
+Symptom is an error message printed before the driver gets probed:
+[   13.419482] Failed to attach USB driver: -22
+[   13.430465] usbcore: registered new device driver onboard-usb-hub
+It seems there's no impact, still rather use it as built-in.
+
+Change-Id: Ib01118b73f12804ed9df598913428b3178df99a6
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 6744c0649e19..21d19a1ea704 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -33,4 +33,5 @@ CONFIG_SCHED_MC=y
+ CONFIG_SERIAL_NONSTANDARD=y
+ CONFIG_SRAM=y
+ CONFIG_USB_HIDDEV=y
++CONFIG_USB_ONBOARD_HUB=y
+ CONFIG_VFP=y
+-- 
+2.39.5
+

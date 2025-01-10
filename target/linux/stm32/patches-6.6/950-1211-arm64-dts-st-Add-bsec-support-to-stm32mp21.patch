@@ -1,0 +1,46 @@
+From 1f4032d68f64950cd2520a320ac7eace99eb95e3 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Tue, 4 Jun 2024 11:03:40 +0200
+Subject: [PATCH] arm64: dts: st: Add bsec support to stm32mp21
+
+Add BSEC support to STM32MP21 SoC family.
+
+Change-Id: I6d15455cf504f8b8e5b7cfb027a6caae70fdbbea
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/385027
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 58eff8a6e47d..888ea544dd57 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1740,6 +1740,22 @@ hdp: pinctrl@44090000 {
+ 			status = "disabled";
+ 		};
+ 
++		bsec: efuse@44000000 {
++			compatible = "st,stm32mp25-bsec";
++			reg = <0x44000000 0x1000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			part_number_otp@24 {
++				reg = <0x24 0x4>;
++			};
++
++			package_otp@1e8 {
++				reg = <0x1e8 0x1>;
++				bits = <0 3>;
++			};
++		};
++
+ 		rcc: clock-controller@44200000 {
+ 			compatible = "st,stm32mp21-rcc";
+ 			reg = <0x44200000 0x10000>;
+-- 
+2.39.5
+

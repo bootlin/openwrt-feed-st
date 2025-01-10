@@ -1,0 +1,60 @@
+From 11bc2074e8600db0e3c7612bd455ca4fbfce2fa1 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 28 Jul 2023 10:24:18 +0200
+Subject: [PATCH] arm64: dts: st: enable hdmi audio on stm32mp257f-ev1
+
+Add HDMI audio support through ADV7535 HDMI transceiver on
+STM32MP257F-EV1 board.
+The sound card and i2s2 nodes are disabled by default.
+If the HDMI MB1752 board is detected, these nodes are enabled
+in uboot at runtime.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ie408d8d57d5543f12c03e6557730e7fef6e94c5b
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 74ab02d32e5f..3b577ccb6a87 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -110,6 +110,13 @@ panel_lvds_backlight: panel-lvds-backlight {
+ 		default-brightness-level = <0>;
+ 		status = "okay";
+ 	};
++
++	sound: sound {
++		compatible = "audio-graph-card";
++		label = "STM32MP25-EV1";
++		dais = <&i2s2_port>;
++		status = "disabled";
++	};
+ };
+ 
+ &a35ss_syscfg {
+@@ -343,6 +350,21 @@ ili2511: ili2511@41 {
+ 	};
+ };
+ 
++&i2s2 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2s2_pins_a>;
++	pinctrl-1 = <&i2s2_sleep_pins_a>;
++	status = "disabled";
++
++	i2s2_port: port {
++		i2s2_endpoint: endpoint {
++			remote-endpoint = <&adv7535_tx_endpoint>;
++			format = "i2s";
++			mclk-fs = <256>;
++		};
++	};
++};
++
+ &ipcc1 {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

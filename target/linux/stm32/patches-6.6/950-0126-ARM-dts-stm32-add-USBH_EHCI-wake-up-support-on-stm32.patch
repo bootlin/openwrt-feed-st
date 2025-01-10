@@ -1,0 +1,34 @@
+From c41f11a815b54f696df322075e9ab6ba299f9bdd Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@st.com>
+Date: Tue, 29 Sep 2020 14:36:38 +0200
+Subject: [PATCH] ARM: dts: stm32: add USBH_EHCI wake up support on stm32mp151
+
+Add USBH_EHCI wake up support on stm32mp151.
+- use exti 43 line to wakeup from CStop
+- attach usbh_ehci device to "pd_core" power domain
+
+Change-Id: I86a92e93b424c02fe249ae754880d21ee500a133
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index e068121c7bf4..618147ae336e 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1636,8 +1636,10 @@ usbh_ehci: usb@5800d000 {
+ 			reg = <0x5800d000 0x1000>;
+ 			clocks = <&usbphyc>, <&rcc USBH>;
+ 			resets = <&rcc USBH_R>;
+-			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 43 IRQ_TYPE_LEVEL_HIGH>;
+ 			companion = <&usbh_ohci>;
++			power-domains = <&pd_core>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.39.5
+

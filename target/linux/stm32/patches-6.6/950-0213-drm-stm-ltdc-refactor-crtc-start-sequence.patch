@@ -1,0 +1,352 @@
+From 4909e4745e9cc7e76a8c80b365a3199bb6c2e39c Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 19 Dec 2023 11:10:11 +0100
+Subject: [PATCH] drm/stm: ltdc: refactor crtc start sequence
+
+In order to avoid kernel crashes. the registers linked to crtc must be set
+in the atomic_enable function instead of mode_set_nofb.
+
+Change-Id: Ie1120ef0f32ab2d8c45c1f8f129164808207aa8d
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 216 +++++++++++++++++++------------------
+ 1 file changed, 112 insertions(+), 104 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 5d67ccbf77f2..e930089a3c47 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -801,9 +801,14 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 	struct drm_connector_list_iter iter;
+ 	struct drm_connector *connector = NULL;
+ 	struct drm_encoder *encoder = NULL, *en_iter;
++	struct drm_bridge *bridge = NULL, *br_iter;
+ 	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+ 	int orientation = DRM_MODE_PANEL_ORIENTATION_UNKNOWN;
++	u32 bus_formats = MEDIA_BUS_FMT_RGB888_1X24;
++	u32 bus_flags = 0;
+ 	u32 pitch, rota0_buf, rota1_buf;
++	u32 val;
++	int ret;
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+@@ -815,6 +820,13 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		}
+ 
+ 	if (encoder) {
++		/* get bridge from encoder */
++		list_for_each_entry(br_iter, &encoder->bridge_chain, chain_node)
++			if (br_iter->encoder == encoder) {
++				bridge = br_iter;
++				break;
++			}
++
+ 		/* Get the connector from encoder */
+ 		drm_connector_list_iter_begin(ddev, &iter);
+ 		drm_for_each_connector_iter(connector, &iter)
+@@ -823,13 +835,74 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		drm_connector_list_iter_end(&iter);
+ 	}
+ 
+-	if (connector)
++	if (bridge && bridge->timings) {
++		bus_flags = bridge->timings->input_bus_flags;
++	} else if (connector) {
++		bus_flags = connector->display_info.bus_flags;
++		if (connector->display_info.num_bus_formats)
++			bus_formats = connector->display_info.bus_formats[0];
++
+ 		orientation = connector->display_info.panel_orientation;
++	}
++
++	if (!pm_runtime_active(ddev->dev)) {
++		ret = pm_runtime_get_sync(ddev->dev);
++		if (ret) {
++			DRM_ERROR("Failed to set mode, cannot get sync\n");
++			return;
++		}
++	}
++
++	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
++	val = 0;
+ 
+-	pm_runtime_get_sync(ddev->dev);
++	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
++		val |= GCR_HSPOL;
+ 
+-	/* Sets the background color value */
+-	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
++	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
++		val |= GCR_VSPOL;
++
++	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
++		val |= GCR_DEPOL;
++
++	if (bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
++		val |= GCR_PCPOL;
++
++	if (connector && connector->state->dithering == DRM_MODE_DITHERING_ON)
++		val |= GCR_DEN;
++
++	regmap_update_bits(ldev->regmap, LTDC_GCR,
++			   GCR_HSPOL | GCR_VSPOL | GCR_DEPOL | GCR_PCPOL | GCR_DEN, val);
++
++	/* Configure the output format (hw version dependent) */
++	if (ldev->caps.ycbcr_output) {
++		/* Input video dynamic_range & colorimetry */
++		int vic = drm_match_cea_mode(mode);
++		u32 val;
++
++		if (vic == 6 || vic == 7 || vic == 21 || vic == 22 ||
++		    vic == 2 || vic == 3 || vic == 17 || vic == 18)
++			/* ITU-R BT.601 */
++			val = 0;
++		else
++			/* ITU-R BT.709 */
++			val = EDCR_OCYSEL;
++
++		switch (bus_formats) {
++		case MEDIA_BUS_FMT_YUYV8_1X16:
++			/* enable ycbcr output converter */
++			regmap_write(ldev->regmap, LTDC_EDCR, EDCR_OCYEN | val);
++			break;
++		case MEDIA_BUS_FMT_YVYU8_1X16:
++			/* enable ycbcr output converter & invert chrominance order */
++			regmap_write(ldev->regmap, LTDC_EDCR, EDCR_OCYEN | EDCR_OCYCO | val);
++			break;
++		default:
++			/* disable ycbcr output converter */
++			regmap_write(ldev->regmap, LTDC_EDCR, 0);
++			break;
++		}
++	}
+ 
+ 	if (ldev->caps.crtc_rotation) {
+ 		rota0_buf = (u32)ldev->rot_mem->base;
+@@ -852,15 +925,15 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 		DRM_DEBUG_DRIVER("Rotation buffer picth %x\n", pitch);
+ 
+ 		if (orientation == DRM_MODE_PANEL_ORIENTATION_LEFT_UP ||
+-		    orientation == DRM_MODE_PANEL_ORIENTATION_RIGHT_UP) {
++		    orientation == DRM_MODE_PANEL_ORIENTATION_RIGHT_UP)
+ 			regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_ROTEN);
+-			regmap_set_bits(ldev->regmap, LTDC_IER, IER_FURIE);
+-		} else {
+-			regmap_clear_bits(ldev->regmap, LTDC_IER, IER_FURIE);
++		else
+ 			regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_ROTEN);
+-		}
+ 	}
+ 
++	/* Sets the background color value */
++	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
++
+ 	/* Enable error IRQ */
+ 	regmap_set_bits(ldev->regmap, LTDC_IER, IER_FUWIE | IER_FUEIE | IER_TERRIE);
+ 
+@@ -896,7 +969,7 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	if (!ldev->caps.plane_reg_shadow)
+ 		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
+ 
+-	pm_runtime_put_sync(ddev->dev);
++	pm_runtime_put_sync_suspend(ddev->dev);
+ 
+ 	/*  clear interrupt error counters */
+ 	mutex_lock(&ldev->err_lock);
+@@ -975,14 +1048,10 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	struct drm_connector_list_iter iter;
+ 	struct drm_connector *connector = NULL;
+ 	struct drm_encoder *encoder = NULL, *en_iter;
+-	struct drm_bridge *bridge = NULL, *br_iter;
+ 	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+ 	int orientation = DRM_MODE_PANEL_ORIENTATION_UNKNOWN;
+ 	u32 hsync, vsync, accum_hbp, accum_vbp, accum_act_w, accum_act_h;
+ 	u32 total_width, total_height;
+-	u32 bus_formats = MEDIA_BUS_FMT_RGB888_1X24;
+-	u32 bus_flags = 0;
+-	u32 pitch, rota0_buf, rota1_buf;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -994,13 +1063,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 		}
+ 
+ 	if (encoder) {
+-		/* get bridge from encoder */
+-		list_for_each_entry(br_iter, &encoder->bridge_chain, chain_node)
+-			if (br_iter->encoder == encoder) {
+-				bridge = br_iter;
+-				break;
+-			}
+-
+ 		/* Get the connector from encoder */
+ 		drm_connector_list_iter_begin(ddev, &iter);
+ 		drm_for_each_connector_iter(connector, &iter)
+@@ -1008,18 +1070,10 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 				break;
+ 		drm_connector_list_iter_end(&iter);
+ 	}
++
+ 	if (connector)
+ 		orientation = connector->display_info.panel_orientation;
+ 
+-
+-	if (bridge && bridge->timings) {
+-		bus_flags = bridge->timings->input_bus_flags;
+-	} else if (connector) {
+-		bus_flags = connector->display_info.bus_flags;
+-		if (connector->display_info.num_bus_formats)
+-			bus_formats = connector->display_info.bus_formats[0];
+-	}
+-
+ 	if (!pm_runtime_active(ddev->dev)) {
+ 		ret = pm_runtime_get_sync(ddev->dev);
+ 		if (ret) {
+@@ -1048,24 +1102,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	total_width = mode->htotal - 1;
+ 	total_height = mode->vtotal - 1;
+ 
+-	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
+-	val = 0;
+-
+-	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+-		val |= GCR_HSPOL;
+-
+-	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+-		val |= GCR_VSPOL;
+-
+-	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
+-		val |= GCR_DEPOL;
+-
+-	if (bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		val |= GCR_PCPOL;
+-
+-	regmap_update_bits(ldev->regmap, LTDC_GCR,
+-			   GCR_HSPOL | GCR_VSPOL | GCR_DEPOL | GCR_PCPOL, val);
+-
+ 	/* check that an output rotation is required */
+ 	if (ldev->caps.crtc_rotation &&
+ 	    (orientation == DRM_MODE_PANEL_ORIENTATION_LEFT_UP ||
+@@ -1106,62 +1142,6 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 
+ 		regmap_write(ldev->regmap, LTDC_LIPCR, (accum_act_h + 1));
+ 	}
+-
+-	/* Configure the output format (hw version dependent) */
+-	if (ldev->caps.ycbcr_output) {
+-		/* Input video dynamic_range & colorimetry */
+-		int vic = drm_match_cea_mode(mode);
+-		u32 val;
+-
+-		if (vic == 6 || vic == 7 || vic == 21 || vic == 22 ||
+-		    vic == 2 || vic == 3 || vic == 17 || vic == 18)
+-			/* ITU-R BT.601 */
+-			val = 0;
+-		else
+-			/* ITU-R BT.709 */
+-			val = EDCR_OCYSEL;
+-
+-		switch (bus_formats) {
+-		case MEDIA_BUS_FMT_YUYV8_1X16:
+-			/* enable ycbcr output converter */
+-			regmap_write(ldev->regmap, LTDC_EDCR, EDCR_OCYEN | val);
+-			break;
+-		case MEDIA_BUS_FMT_YVYU8_1X16:
+-			/* enable ycbcr output converter & invert chrominance order */
+-			regmap_write(ldev->regmap, LTDC_EDCR, EDCR_OCYEN | EDCR_OCYCO | val);
+-			break;
+-		default:
+-			/* disable ycbcr output converter */
+-			regmap_write(ldev->regmap, LTDC_EDCR, 0);
+-			break;
+-		}
+-	}
+-
+-	if (ldev->caps.crtc_rotation) {
+-		rota0_buf = (u32)ldev->rot_mem->base;
+-		rota1_buf = (u32)ldev->rot_mem->base + (ldev->rot_mem->size >> 1);
+-
+-		regmap_write(ldev->regmap, LTDC_RB0AR, rota0_buf);
+-		regmap_write(ldev->regmap, LTDC_RB1AR, rota1_buf);
+-
+-		/*
+-		 * LTDC_RBPR register is used define the pitch (line-to-line address increment)
+-		 * of the stored rotation buffer. The pitch is proportional to the width of the
+-		 * composed display (before rotation) and,(after rotation) proportional to the
+-		 * non-raster dimension of the display panel.
+-		 */
+-		pitch = ((mode->hdisplay + 9) / 10) * 64;
+-		regmap_write(ldev->regmap, LTDC_RBPR, pitch);
+-
+-		DRM_DEBUG_DRIVER("Rotation buffer0 address %x\n", rota0_buf);
+-		DRM_DEBUG_DRIVER("Rotation buffer1 address %x\n", rota1_buf);
+-		DRM_DEBUG_DRIVER("Rotation buffer picth %x\n", pitch);
+-
+-		if (ldev->output_rotation == 90 || ldev->output_rotation == 270)
+-			regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_ROTEN);
+-		else
+-			regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_ROTEN);
+-	}
+ }
+ 
+ static void ltdc_crtc_atomic_flush(struct drm_crtc *crtc,
+@@ -1189,6 +1169,20 @@ static void ltdc_crtc_atomic_flush(struct drm_crtc *crtc,
+ 	}
+ }
+ 
++static int ltdc_crtc_atomic_check(struct drm_crtc *crtc,
++				  struct drm_atomic_state *state)
++{
++	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
++
++	DRM_DEBUG_ATOMIC("\n");
++
++	/* force a full mode set if active state changed */
++	if (crtc_state->active_changed)
++		crtc_state->mode_changed = true;
++
++	return 0;
++}
++
+ static bool ltdc_crtc_get_scanout_position(struct drm_crtc *crtc,
+ 					   bool in_vblank_irq,
+ 					   int *vpos, int *hpos,
+@@ -1249,6 +1243,7 @@ static const struct drm_crtc_helper_funcs ltdc_crtc_helper_funcs = {
+ 	.atomic_flush = ltdc_crtc_atomic_flush,
+ 	.atomic_enable = ltdc_crtc_atomic_enable,
+ 	.atomic_disable = ltdc_crtc_atomic_disable,
++	.atomic_check = ltdc_crtc_atomic_check,
+ 	.get_scanout_position = ltdc_crtc_get_scanout_position,
+ };
+ 
+@@ -1500,6 +1495,9 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 	DRM_DEBUG_DRIVER("plane:%d fb:%d src: " DRM_RECT_FMT " -> crtc: " DRM_RECT_FMT "\n",
+ 			 plane->base.id, fb->base.id, DRM_RECT_ARG(&src), DRM_RECT_ARG(&dst));
+ 
++	if (!pm_runtime_active(ddev->dev))
++		return;
++
+ 	regmap_read(ldev->regmap, LTDC_BPCR, &bpcr);
+ 
+ 	if (ldev->caps.crtc_rotation &&
+@@ -1962,6 +1960,16 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+ 	int supported_rotations = DRM_MODE_ROTATE_0 | DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
+ 	unsigned int i;
+ 	int ret;
++	struct drm_connector *connector = NULL;
++	struct drm_connector_list_iter iter;
++
++	/* Add the dithering property to all connectors */
++	drm_connector_list_iter_begin(ddev, &iter);
++	drm_for_each_connector_iter(connector, &iter)
++		drm_connector_attach_dithering_property(connector,
++							BIT(DRM_MODE_DITHERING_OFF) |
++							BIT(DRM_MODE_DITHERING_ON));
++	drm_connector_list_iter_end(&iter);
+ 
+ 	primary = ltdc_plane_create(ddev, DRM_PLANE_TYPE_PRIMARY, 0);
+ 	if (!primary) {
+-- 
+2.39.5
+

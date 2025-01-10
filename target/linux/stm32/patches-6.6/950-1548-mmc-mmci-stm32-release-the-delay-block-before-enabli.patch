@@ -1,0 +1,48 @@
+From ecdf27b144011619a9307e857991f823c86f812f Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Tue, 8 Oct 2024 17:29:35 +0200
+Subject: [PATCH] mmc: mmci: stm32: release the delay block before enabling it
+
+We must locked the delay block on the last frequency set. To avoid being
+locked on a previous frequency used, the delay block is firstly disabled.
+
+Change-Id: I430f3afdd3b46668e879e864091284b567193148
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/415852
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/mmc/host/mmci_stm32_sdmmc.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
+index 235901c62ad7..70ca2837b909 100644
+--- a/drivers/mmc/host/mmci_stm32_sdmmc.c
++++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
+@@ -580,10 +580,20 @@ static int sdmmc_dlyb_mp15_prepare(struct mmci_host *host)
+ static int sdmmc_dlyb_mp25_enable(struct sdmmc_dlyb *dlyb)
+ {
+ 	u32 cr, sr;
++	int ret;
+ 
+ 	cr = readl_relaxed(dlyb->base + SYSCFG_DLYBSD_CR);
+-	cr |= DLYBSD_CR_EN;
+ 
++	cr &= ~DLYBSD_CR_EN;
++	writel_relaxed(cr, dlyb->base + SYSCFG_DLYBSD_CR);
++
++	ret = readl_relaxed_poll_timeout(dlyb->base + SYSCFG_DLYBSD_SR,
++					 sr, !(sr & DLYBSD_SR_LOCK), 1,
++					 DLYBSD_TIMEOUT_1S_IN_US);
++	if (ret)
++		return ret;
++
++	cr |= DLYBSD_CR_EN;
+ 	writel_relaxed(cr, dlyb->base + SYSCFG_DLYBSD_CR);
+ 
+ 	return readl_relaxed_poll_timeout(dlyb->base + SYSCFG_DLYBSD_SR,
+-- 
+2.39.5
+

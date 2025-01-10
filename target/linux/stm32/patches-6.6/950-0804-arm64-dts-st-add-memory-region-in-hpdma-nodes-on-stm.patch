@@ -1,0 +1,42 @@
+From 28c4fe863e2828660d278fe7909c5ccb1d33c022 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 10:53:31 +0100
+Subject: [PATCH] arm64: dts: st: add memory-region in hpdma nodes on
+ stm32mp257f-dk board
+
+Linked-List Items (LLI) can be allocated in internal ram defined under
+reserved-memory node.
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: I9d3c1aa8e9736c266c15b30f05537f03d94c767b
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index fc297fbaa6f1..a8b467c97700 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -215,6 +215,18 @@ phy1_eth1: ethernet-phy@1 {
+ 	};
+ };
+ 
++&hpdma {
++	memory-region = <&hpdma1_lli>;
++};
++
++&hpdma2 {
++	memory-region = <&hpdma2_lli>;
++};
++
++&hpdma3 {
++	memory-region = <&hpdma3_lli>;
++};
++
+ &i2c2 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c2_pins_b>;
+-- 
+2.39.5
+

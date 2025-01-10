@@ -1,0 +1,70 @@
+From c9ffeed5d42010673d531d130d18135818412b27 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 24 Sep 2024 13:53:57 +0200
+Subject: [PATCH] add support of continuous display on stm32mp257 DK board
+
+Set the backlight, the panel, ltdc & lvds on at probe.
+
+Change-Id: Ib2b44de5f76aa7407f4571cc2e3f5acad99729fc
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/406521
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 08f9943cc773..bdc71c318c4c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -35,6 +35,8 @@ chosen {
+ 
+ 		framebuffer {
+ 			compatible = "simple-framebuffer";
++			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
++				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+ 			status = "disabled";
+ 		};
+ 	};
+@@ -162,6 +164,7 @@ panel_lvds: panel-lvds {
+ 		compatible = "edt,etml0700z9ndha", "panel-lvds";
+ 		enable-gpios = <&gpioi 4 GPIO_ACTIVE_HIGH>;
+ 		backlight = <&panel_lvds_backlight>;
++		default-on;
+ 		status = "okay";
+ 
+ 		width-mm = <156>;
+@@ -191,7 +194,7 @@ panel_lvds_backlight: panel-lvds-backlight {
+ 		compatible = "gpio-backlight";
+ 		gpios = <&gpioi 7 GPIO_ACTIVE_HIGH>;
+ 		default-on;
+-		default-brightness-level = <0>;
++		default-brightness-level = <1>;
+ 		status = "okay";
+ 	};
+ 
+@@ -520,6 +523,7 @@ timer {
+ };
+ 
+ &ltdc {
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+@@ -539,9 +543,11 @@ ltdc_ep1_out: endpoint@1 {
+ };
+ 
+ &lvds {
+-	status = "okay";
++	default-on;
+ 	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_v1v8>;
++	status = "okay";
++
+ 	ports {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-- 
+2.39.5
+

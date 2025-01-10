@@ -1,0 +1,32 @@
+From cb3242e3aa9e904ae15a812a05019504a74092f6 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Fri, 29 Jul 2022 16:54:14 +0200
+Subject: [PATCH] ARM: dts: stm32: add exti entries for USB PHY wakeup on
+ stm32mp131
+
+The two ports of USB PHY trigger respectively EXTI #42 and #43.
+While the GIC is not used for wake-up, current code requires a
+valid map to GIC irq. Use the OHCI interrupt on GIC #75.
+
+Change-Id: I21b52a361e86d9fb147cb0758cd74ba724928cc4
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 87a97794d941..b2cb0f70c39b 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1141,6 +1141,8 @@ exti-interrupt-map {
+ 					<31 0 &intc GIC_SPI 54  IRQ_TYPE_LEVEL_HIGH>,
+ 					<32 0 &intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
+ 					<33 0 &intc GIC_SPI 84  IRQ_TYPE_LEVEL_HIGH>,
++					<42 0 &intc GIC_SPI 75  IRQ_TYPE_LEVEL_HIGH>,
++					<43 0 &intc GIC_SPI 75  IRQ_TYPE_LEVEL_HIGH>,
+ 					<44 0 &intc GIC_SPI 96  IRQ_TYPE_LEVEL_HIGH>,
+ 					<47 0 &intc GIC_SPI 92  IRQ_TYPE_LEVEL_HIGH>,
+ 					<48 0 &intc GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.39.5
+

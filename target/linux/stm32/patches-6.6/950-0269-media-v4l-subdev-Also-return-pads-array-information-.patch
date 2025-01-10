@@ -1,0 +1,151 @@
+From cc36a463fd31fea38b46c76b87cb7e3d9732c5e0 Mon Sep 17 00:00:00 2001
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+Date: Fri, 13 Oct 2023 09:31:37 +0200
+Subject: [PATCH] media: v4l: subdev: Also return pads array information on
+ stream functions
+
+There are two sets of functions that return information from sub-device
+state, one for stream-unaware users and another for stream-aware users.
+Add support for stream-aware functions to return format, crop and compose
+information from pad-based array that are functionally equivalent to the
+old, stream-unaware ones.
+
+Also check state is non-NULL, in order to guard against old drivers
+potentially calling this with NULL state for active formats or selection
+rectangles.
+
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+(cherry picked from commit 049fa16b81c276f25a09abaa4e8f743470c3cdc8)
+---
+ drivers/media/v4l2-core/v4l2-subdev.c | 63 +++++++++++++++++++++++++++
+ include/media/v4l2-subdev.h           |  9 ++--
+ 2 files changed, 69 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+index 3da08932d9b1..97dbd70bf9ad 100644
+--- a/drivers/media/v4l2-core/v4l2-subdev.c
++++ b/drivers/media/v4l2-core/v4l2-subdev.c
+@@ -1657,6 +1657,27 @@ __v4l2_subdev_state_get_format(struct v4l2_subdev_state *state,
+ 	struct v4l2_subdev_stream_configs *stream_configs;
+ 	unsigned int i;
+ 
++	if (WARN_ON_ONCE(!state))
++		return NULL;
++
++	if (state->pads) {
++		if (stream)
++			return NULL;
++
++		/*
++		 * Set the pad to 0 on error as this is aligned with the
++		 * behaviour of the pad state information access functions. The
++		 * purpose of setting pad to 0 here is to avoid accessing memory
++		 * outside the pads array, but still issuing warning of the
++		 * invalid access while making the caller's error handling
++		 * easier.
++		 */
++		if (WARN_ON_ONCE(pad >= state->sd->entity.num_pads))
++			pad = 0;
++
++		return &state->pads[pad].format;
++	}
++
+ 	lockdep_assert_held(state->lock);
+ 
+ 	stream_configs = &state->stream_configs;
+@@ -1678,6 +1699,27 @@ __v4l2_subdev_state_get_crop(struct v4l2_subdev_state *state, unsigned int pad,
+ 	struct v4l2_subdev_stream_configs *stream_configs;
+ 	unsigned int i;
+ 
++	if (WARN_ON_ONCE(!state))
++		return NULL;
++
++	if (state->pads) {
++		if (stream)
++			return NULL;
++
++		/*
++		 * Set the pad to 0 on error as this is aligned with the
++		 * behaviour of the pad state information access functions. The
++		 * purpose of setting pad to 0 here is to avoid accessing memory
++		 * outside the pads array, but still issuing warning of the
++		 * invalid access while making the caller's error handling
++		 * easier.
++		 */
++		if (WARN_ON_ONCE(pad >= state->sd->entity.num_pads))
++			pad = 0;
++
++		return &state->pads[pad].crop;
++	}
++
+ 	lockdep_assert_held(state->lock);
+ 
+ 	stream_configs = &state->stream_configs;
+@@ -1699,6 +1741,27 @@ __v4l2_subdev_state_get_compose(struct v4l2_subdev_state *state,
+ 	struct v4l2_subdev_stream_configs *stream_configs;
+ 	unsigned int i;
+ 
++	if (WARN_ON_ONCE(!state))
++		return NULL;
++
++	if (state->pads) {
++		if (stream)
++			return NULL;
++
++		/*
++		 * Set the pad to 0 on error as this is aligned with the
++		 * behaviour of the pad state information access functions. The
++		 * purpose of setting pad to 0 here is to avoid accessing memory
++		 * outside the pads array, but still issuing warning of the
++		 * invalid access while making the caller's error handling
++		 * easier.
++		 */
++		if (WARN_ON_ONCE(pad >= state->sd->entity.num_pads))
++			pad = 0;
++
++		return &state->pads[pad].compose;
++	}
++
+ 	lockdep_assert_held(state->lock);
+ 
+ 	stream_configs = &state->stream_configs;
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index 13200ac48429..78bc2e593c15 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -1558,7 +1558,8 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+  * This returns a pointer to &struct v4l2_mbus_framefmt for the given pad +
+  * stream in the subdev state.
+  *
+- * If the state does not contain the given pad + stream, NULL is returned.
++ * For stream-unaware drivers the format for the corresponding pad is returned.
++ * If the pad does not exist, NULL is returned.
+  */
+ /*
+  * Wrap v4l2_subdev_state_get_format(), allowing the function to be called with
+@@ -1587,7 +1588,8 @@ __v4l2_subdev_state_get_format(struct v4l2_subdev_state *state,
+  * This returns a pointer to crop rectangle for the given pad + stream in the
+  * subdev state.
+  *
+- * If the state does not contain the given pad + stream, NULL is returned.
++ * For stream-unaware drivers the crop rectangle for the corresponding pad is
++ * returned. If the pad does not exist, NULL is returned.
+  */
+ #define v4l2_subdev_state_get_crop(state, pad, ...)			\
+ 	__v4l2_subdev_state_gen_call(crop, ##__VA_ARGS__, , _pad)	\
+@@ -1607,7 +1609,8 @@ __v4l2_subdev_state_get_crop(struct v4l2_subdev_state *state, unsigned int pad,
+  * This returns a pointer to compose rectangle for the given pad + stream in the
+  * subdev state.
+  *
+- * If the state does not contain the given pad + stream, NULL is returned.
++ * For stream-unaware drivers the compose rectangle for the corresponding pad is
++ * returned. If the pad does not exist, NULL is returned.
+  */
+ #define v4l2_subdev_state_get_compose(state, pad, ...)			\
+ 	__v4l2_subdev_state_gen_call(compose, ##__VA_ARGS__, , _pad)	\
+-- 
+2.39.5
+

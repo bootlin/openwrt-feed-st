@@ -1,0 +1,38 @@
+From cebd1f02f28255019d68ac38ed7b1d9e42677337 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Mon, 29 Jan 2024 15:48:09 +0100
+Subject: [PATCH] ARM: dts: stm32: add support of continuous display on
+ stm32mp135f-dk
+
+Set the backlight & the panel on at probe.
+
+Change-Id: Id9627d4d2220ff1ec014cb94d15420e7a25ecf1c
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index a56edd2e55e9..9f04cd85927f 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -103,7 +103,7 @@ panel_backlight: panel-backlight {
+ 		compatible = "gpio-backlight";
+ 		gpios = <&gpioe 12 GPIO_ACTIVE_HIGH>;
+ 		default-on;
+-		default-brightness-level = <0>;
++		default-brightness-level = <1>;
+ 		status = "okay";
+ 	};
+ 
+@@ -417,6 +417,7 @@ &ltdc {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&ltdc_pins_a>;
+ 	pinctrl-1 = <&ltdc_sleep_pins_a>;
++	default-on;
+ 	status = "okay";
+ 
+ 	port {
+-- 
+2.39.5
+

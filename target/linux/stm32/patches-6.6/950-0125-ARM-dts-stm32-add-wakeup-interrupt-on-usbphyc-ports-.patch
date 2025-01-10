@@ -1,0 +1,40 @@
+From c77746b5248bc23056b081c4dfacd27d60b7da6d Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 9 Jul 2021 11:20:59 +0200
+Subject: [PATCH] ARM: dts: stm32: add wakeup interrupt on usbphyc ports of
+ stm32mp131
+
+USBPHYC manages wakeup interrupts because USBH wakeup signals are connected
+to USBPHYC ports and these signals are mapped to EXTIs for platform wakeup.
+This patch adds EXTI 42 for port0 and EXTI 43 for port1. Notice that in
+case port1 is used by usbotg_hs, it is better to remove the
+interrupt-extended property from usbphyc_port1, as usbotg_hs has its own
+wakeup management with its own EXTI interrupt.
+
+Change-Id: Id411b03e7206d1754c5ba06204442e965cdc2ec5
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 42ba7601d6bd..2d007199ab9e 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1426,11 +1426,13 @@ usbphyc: usbphyc@5a006000 {
+ 			usbphyc_port0: usb-phy@0 {
+ 				#phy-cells = <0>;
+ 				reg = <0>;
++				interrupts-extended = <&exti 42 IRQ_TYPE_LEVEL_HIGH>;
+ 			};
+ 
+ 			usbphyc_port1: usb-phy@1 {
+ 				#phy-cells = <1>;
+ 				reg = <1>;
++				interrupts-extended = <&exti 43 IRQ_TYPE_LEVEL_HIGH>;
+ 			};
+ 		};
+ 
+-- 
+2.39.5
+

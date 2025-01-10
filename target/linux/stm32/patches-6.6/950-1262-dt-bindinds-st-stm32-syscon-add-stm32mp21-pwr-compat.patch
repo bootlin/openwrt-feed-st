@@ -1,0 +1,33 @@
+From 3f918232d21d997a7cb1c4b803111cb755371a18 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 18 Jun 2024 17:39:11 +0200
+Subject: [PATCH] dt-bindinds: st,stm32-syscon: add stm32mp21 pwr compatible
+
+Add stm32mp21 pwr compatible.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ib569e7ad78e1902983445b40728b5af271be9d69
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388369
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml          | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 167ffaa96e5d..d066187ddbc5 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -24,6 +24,8 @@ properties:
+               - st,stm32mp157-syscfg
+               - st,stm32mp25-syscfg
+               - st,stm32mp25-pwr
++              - st,stm32mp21-syscfg
++              - st,stm32mp21-pwr
+ 
+               - st,stm32mp25-a35ssc-m33
+           - const: syscon
+-- 
+2.39.5
+

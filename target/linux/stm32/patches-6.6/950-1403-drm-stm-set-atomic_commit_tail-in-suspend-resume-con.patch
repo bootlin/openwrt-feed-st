@@ -1,0 +1,42 @@
+From 09bd8fc0dbb72d8efd8a29fa7245765dbb483d93 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 5 Jun 2024 16:00:35 +0200
+Subject: [PATCH] drm/stm: set atomic_commit_tail in suspend/resume context
+
+drm_atomic_helper_commit_tail_rpm used.
+
+Change-Id: I7eb46cc385c7a36e5afbcd2973083cf7a0778730
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/385852
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/gpu/drm/stm/drv.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index 0c8c14477d77..0b073c32aeac 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -38,6 +38,10 @@ static const struct drm_mode_config_funcs drv_mode_config_funcs = {
+ 	.atomic_commit = drm_atomic_helper_commit,
+ };
+ 
++static const struct drm_mode_config_helper_funcs drv_mode_config_helpers = {
++	.atomic_commit_tail = drm_atomic_helper_commit_tail_rpm,
++};
++
+ static int stm_gem_dma_dumb_create(struct drm_file *file,
+ 				   struct drm_device *dev,
+ 				   struct drm_mode_create_dumb *args)
+@@ -89,6 +93,7 @@ static int drv_load(struct drm_device *ddev)
+ 	ddev->mode_config.max_width = STM_MAX_FB_WIDTH;
+ 	ddev->mode_config.max_height = STM_MAX_FB_HEIGHT;
+ 	ddev->mode_config.funcs = &drv_mode_config_funcs;
++	ddev->mode_config.helper_private = &drv_mode_config_helpers;
+ 	ddev->mode_config.normalize_zpos = true;
+ 
+ 	ret = ltdc_load(ddev);
+-- 
+2.39.5
+

@@ -1,0 +1,35 @@
+From 1203eb2945d6708971220df77f3fbee7a85c87df Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 1 Aug 2019 14:25:33 +0200
+Subject: [PATCH] ARM: dts: stm32: declare m4 system resource manager on
+ STM32MP151
+
+Define the m4_system_resources sub-node of m4_rproc.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+reviewed on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283823
+Change-Id: I13b5526b284281debd7b95f94ea897424d0efc1f
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index e397bf914eab..21acb55b337a 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -2010,6 +2010,11 @@ m4_rproc: m4@10000000 {
+ 			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+ 			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+ 			status = "disabled";
++
++			m4_system_resources {
++				compatible = "rproc-srm-core";
++				status = "disabled";
++			};
+ 		};
+ 	};
+ };
+-- 
+2.39.5
+

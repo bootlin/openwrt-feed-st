@@ -1,0 +1,38 @@
+From 2c10bede9c7ffa55c29fae522b4c0fc58876fbdb Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Tue, 7 Mar 2023 12:05:49 +0100
+Subject: [PATCH] arm64: defconfig: add CoreSight support in addons fragment
+
+Enable the driver and the feature required to use the CoreSight
+components in fragment-02-defconfig-addons.config.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: Ibadce0aa048a8688511fd1232dcbd0cead2fce69
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396438
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 527bdf1be617..4f499830ce3e 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -2,6 +2,13 @@
+ CONFIG_BACKLIGHT_CLASS_DEVICE=y
+ CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CLKSRC_STM32_LP=y
++CONFIG_CORESIGHT=y
++CONFIG_CORESIGHT_CPU_DEBUG=y
++CONFIG_CORESIGHT_CTI=y
++CONFIG_CORESIGHT_LINK_AND_SINK_TMC=y
++CONFIG_CORESIGHT_SINK_TPIU=y
++CONFIG_CORESIGHT_SOURCE_ETM4X=y
++CONFIG_CORESIGHT_STM=y
+ CONFIG_COUNTER=m
+ CONFIG_CRYPTO_DEV_STM32_CRC=m
+ CONFIG_CRYPTO_DEV_STM32_CRYP=m
+-- 
+2.39.5
+

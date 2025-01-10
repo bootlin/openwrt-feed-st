@@ -1,0 +1,46 @@
+From e6477313b335efef9919d4b93dac41f242f8e0a7 Mon Sep 17 00:00:00 2001
+From: Michel JAOUEN <michel.jaouen@st.com>
+Date: Wed, 19 Jun 2024 18:26:09 +0200
+Subject: [PATCH] mailbox: stm32-ipcc: add the support of tx done by ack
+
+Since some protocol rely on tx done by ack, the interrupt for tx
+completion is not set for the protocol relying on tx done by ack.
+
+Change-Id: I0e11e927ec8bf5afc11feee6e3b3f1c041a127fc
+Signed-off-by: Michel JAOUEN <michel.jaouen@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402236
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/mailbox/stm32-ipcc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
+index 92f5f45bbaa8..b437da4d7627 100644
+--- a/drivers/mailbox/stm32-ipcc.c
++++ b/drivers/mailbox/stm32-ipcc.c
+@@ -16,6 +16,8 @@
+ #include <linux/pm_wakeirq.h>
+ #include <linux/workqueue.h>
+ 
++#include "mailbox.h"
++
+ #define IPCC_XCR		0x000
+ #define XCR_RXOIE		BIT(0)
+ #define XCR_TXOIE		BIT(16)
+@@ -204,8 +206,9 @@ static int stm32_ipcc_send_data(struct mbox_chan *link, void *data)
+ 			    TX_BIT_CHAN(chan));
+ 
+ 	/* unmask 'tx channel free' interrupt */
+-	stm32_ipcc_clr_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XMR,
+-			    TX_BIT_CHAN(chan));
++	if (link->txdone_method == TXDONE_BY_IRQ)
++		stm32_ipcc_clr_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XMR,
++				    TX_BIT_CHAN(chan));
+ 
+ 	return 0;
+ }
+-- 
+2.39.5
+

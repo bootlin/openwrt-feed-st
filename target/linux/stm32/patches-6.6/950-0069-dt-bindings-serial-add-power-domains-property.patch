@@ -1,0 +1,30 @@
+From 76a73d984310d929d578e5562cfbb8d77397e7cd Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Mon, 22 Mar 2021 14:38:19 +0100
+Subject: [PATCH] dt-bindings: serial: add power-domains property
+
+Add "power-domains" property in stm32 serial binding.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: Ic80db4c2184942468f4c1bddccbbffa35ccc8fad
+---
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 1df8ffe95fc6..62f97da1b2fd 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -58,6 +58,9 @@ properties:
+ 
+   wakeup-source: true
+ 
++  power-domains:
++    maxItems: 1
++
+   rx-threshold:
+     description:
+       If value is set to 1, RX FIFO threshold is disabled.
+-- 
+2.39.5
+

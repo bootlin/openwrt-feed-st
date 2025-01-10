@@ -1,0 +1,38 @@
+From 098f9447144bdc587cb8fadaf225a9ce20aa77b9 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Mon, 28 Nov 2022 17:59:31 +0100
+Subject: [PATCH] arm64: dts: st: add RNG support for STM32MP25
+
+Adds RNG node that describes hardware RNG but default disables it
+as default implementation is RNG secure.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: I5dff691839e8ac1ac6be10a82d8ba63e6cb9f3b0
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index bcfb9172b7d4..87e990e1e44e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1645,6 +1645,16 @@ channel@18 {
+ 				};
+ 			};
+ 
++			rng: rng@42020000 {
++				compatible = "st,stm32mp25-rng";
++				reg = <0x42020000 0x400>;
++				clocks = <&clk_rcbsec>, <&rcc CK_BUS_RNG>;
++				clock-names = "rng_clk", "rng_hclk";
++				resets = <&rcc RNG_R>;
++				access-controllers = <&rifsc 92>;
++				status = "disabled";
++			};
++
+ 			spi8: spi@46020000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-- 
+2.39.5
+

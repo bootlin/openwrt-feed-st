@@ -1,0 +1,40 @@
+From 7406294a182932a6be285bb50b0220be7479709f Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 9 Sep 2024 17:24:20 +0200
+Subject: [PATCH] dt-bindings: stm32: add clock binding for Cortex-CM0 on
+ stm32mp25 platform
+
+Add CPU3 clock binding entry for STM32MP25 SoC family.
+
+Change-Id: Ic15214e571e9011b18610ef66b121ed45e6ae3f0
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/403277
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ include/dt-bindings/clock/st,stm32mp25-rcc.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
+index 66b3f95329af..29e202c9c920 100644
+--- a/include/dt-bindings/clock/st,stm32mp25-rcc.h
++++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
+@@ -365,8 +365,9 @@
+ #define HSE_DIV2_CK		343
+ #define CK_KER_ETR		344
+ #define CK_KER_STM		345
++#define CK_CPU3			346
+ 
+-#define STM32MP25_LAST_CLK	346
++#define STM32MP25_LAST_CLK	347
+ 
+ #define CK_SCMI_ICN_HS_MCU	0
+ #define CK_SCMI_ICN_SDMMC	1
+-- 
+2.39.5
+

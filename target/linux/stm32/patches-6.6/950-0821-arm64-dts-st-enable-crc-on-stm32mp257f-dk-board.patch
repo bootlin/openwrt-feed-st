@@ -1,0 +1,36 @@
+From e920438ab5b9254fd55ee12ea4cff6fbd1314d4d Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Thu, 15 Feb 2024 18:30:26 +0100
+Subject: [PATCH] arm64: dts: st: enable crc on stm32mp257f-dk board
+
+Set STM32 CRC peripheral enabled.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: I402da80b46a42bf76217235228836f83e84a1a58
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/360578
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index d6e993f7b1bc..639381ab5bd3 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -138,6 +138,10 @@ &arm_wdt {
+ 	status = "okay";
+ };
+ 
++&crc {
++	status = "okay";
++};
++
+ &csi2host {
+ 	status = "disabled";
+ 	ports {
+-- 
+2.39.5
+

@@ -1,0 +1,38 @@
+From a58cabc353598f4f8809a1db2a17cf0ac61f310d Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@st.com>
+Date: Thu, 19 Dec 2019 08:56:49 +0100
+Subject: [PATCH] thermal: stm32: don't print an error on probe deferral
+
+Do not print an error trace when deferring probe for clock resource.
+
+Change-Id: Idc4f87c022fe1e947b76074894d334ccaecfcb2b
+Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/153665
+Tested-by: Alexandre TORGUE <alexandre.torgue@st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
+---
+ drivers/thermal/st/stm_thermal.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
+index 50ab45609f23..4accf323cf73 100644
+--- a/drivers/thermal/st/stm_thermal.c
++++ b/drivers/thermal/st/stm_thermal.c
+@@ -500,11 +500,9 @@ static int stm_thermal_probe(struct platform_device *pdev)
+ 	sensor->base = base;
+ 
+ 	sensor->clk = devm_clk_get(&pdev->dev, "pclk");
+-	if (IS_ERR(sensor->clk)) {
+-		dev_err(&pdev->dev, "%s: failed to fetch PCLK clock\n",
+-			__func__);
+-		return PTR_ERR(sensor->clk);
+-	}
++	if (IS_ERR(sensor->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(sensor->clk),
++				     "Failed to get PCLK clock\n");
+ 
+ 	stm_disable_irq(sensor);
+ 
+-- 
+2.39.5
+

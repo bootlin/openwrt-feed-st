@@ -1,0 +1,186 @@
+From 1be6aa46a4524de62a611694d0b5ce44bcc89014 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Tue, 14 May 2024 18:23:29 +0200
+Subject: [PATCH] arm64: dts: st: add sai support on stm32mp211
+
+Add the nodes for all the SAI instances available on the STM32MP211.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I379ad1947ed07c20dc1015abf410eb68b12efae1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/379815
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 148 +++++++++++++++++++++++++
+ 1 file changed, 148 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 38ec6b6541b5..24309f073244 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -397,6 +397,117 @@ spi5: spi@40280000 {
+ 				status = "disabled";
+ 			};
+ 
++			sai1: sai@40290000 {
++				compatible = "st,stm32mp25-sai";
++				reg = <0x40290000 0x4>, <0x4029a3f0 0x10>;
++				ranges = <0 0x40290000 0x400>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				clocks = <&rcc CK_BUS_SAI1>;
++				clock-names = "pclk";
++				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc SAI1_R>;
++				access-controllers = <&rifsc 49>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++
++				sai1a: audio-controller@40290004 {
++					compatible = "st,stm32-sai-sub-a";
++					reg = <0x4 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI1>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 50 0x43 0x21>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++
++				sai1b: audio-controller@40290024 {
++					compatible = "st,stm32-sai-sub-b";
++					reg = <0x24 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI1>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 51 0x43 0x12>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++			};
++
++			sai2: sai@402a0000 {
++				compatible = "st,stm32mp25-sai";
++				reg = <0x402a0000 0x4>, <0x402aa3f0 0x10>;
++				ranges = <0 0x402a0000 0x400>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				clocks = <&rcc CK_BUS_SAI2>;
++				clock-names = "pclk";
++				interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc SAI2_R>;
++				access-controllers = <&rifsc 50>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++
++				sai2a: audio-controller@402a0004 {
++					compatible = "st,stm32-sai-sub-a";
++					reg = <0x4 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI2>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 52 0x43 0x21>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++
++				sai2b: audio-controller@402a0024 {
++					compatible = "st,stm32-sai-sub-b";
++					reg = <0x24 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI2>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 53 0x43 0x12>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++			};
++
++			sai3: sai@402b0000 {
++				compatible = "st,stm32mp25-sai";
++				reg = <0x402b0000 0x4>, <0x402ba3f0 0x10>;
++				ranges = <0 0x402b0000 0x400>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				clocks = <&rcc CK_BUS_SAI3>;
++				clock-names = "pclk";
++				interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc SAI3_R>;
++				access-controllers = <&rifsc 51>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++
++				sai3a: audio-controller@402b0004 {
++					compatible = "st,stm32-sai-sub-a";
++					reg = <0x4 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI3>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 54 0x43 0x21>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++
++				sai3b: audio-controller@502b0024 {
++					compatible = "st,stm32-sai-sub-b";
++					reg = <0x24 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI3>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 55 0x43 0x12>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++			};
++
+ 			usart1: serial@40330000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40330000 0x400>;
+@@ -410,6 +521,43 @@ usart1: serial@40330000 {
+ 				status = "disabled";
+ 			};
+ 
++			sai4: sai@40340000 {
++				compatible = "st,stm32mp25-sai";
++				reg = <0x40340000 0x4>, <0x4034a3f0 0x10>;
++				ranges = <0 0x40340000 0x400>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				clocks = <&rcc CK_BUS_SAI4>;
++				clock-names = "pclk";
++				interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc SAI4_R>;
++				access-controllers = <&rifsc 52>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++
++				sai4a: audio-controller@40340004 {
++					compatible = "st,stm32-sai-sub-a";
++					reg = <0x4 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI4>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 56 0x63 0x21>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++
++				sai4b: audio-controller@40340024 {
++					compatible = "st,stm32-sai-sub-b";
++					reg = <0x24 0x20>;
++					#sound-dai-cells = <0>;
++					clocks = <&rcc CK_KER_SAI4>;
++					clock-names = "sai_ck";
++					dmas = <&hpdma 57 0x43 0x12>;
++					power-domains = <&CLUSTER_PD>;
++					status = "disabled";
++				};
++			};
++
+ 			uart7: serial@40370000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40370000 0x400>;
+-- 
+2.39.5
+

@@ -1,0 +1,130 @@
+From 1cfdc35d697193d7ef95cd6b67dbe702be8d1303 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 29 Nov 2023 18:30:39 +0100
+Subject: [PATCH] ARM: dts: stm32: add GPU reserved memory on stm32mp157x-ed1
+ boards
+
+Add GPU reserved memory so GPU can use contiguous-area for its buffer
+allocation needs.
+
+Change-Id: I0df7a94ba5475b947b8aff04511906cd24311269
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts | 9 +++++++++
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts | 9 +++++++++
+ 4 files changed, 36 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index f7590680f89d..7722b32828f1 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -79,6 +79,11 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 
++		gpu_reserved: gpu@e8000000 {
++			reg = <0xe8000000 0x8000000>;
++			no-map;
++		};
++
+ 		/* global autoconfigured region for contiguous allocations */
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+@@ -182,6 +187,10 @@ &dts {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++};
++
+ &hash1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index 5ee944d0db0f..849227aa47f4 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -79,6 +79,11 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 
++		gpu_reserved: gpu@e8000000 {
++			reg = <0xe8000000 0x8000000>;
++			no-map;
++		};
++
+ 		/* global autoconfigured region for contiguous allocations */
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+@@ -186,6 +191,10 @@ &dts {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++};
++
+ &hash1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 8c6cdb88154e..068e598b1329 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -79,6 +79,11 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 
++		gpu_reserved: gpu@e8000000 {
++			reg = <0xe8000000 0x8000000>;
++			no-map;
++		};
++
+ 		/* global autoconfigured region for contiguous allocations */
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+@@ -182,6 +187,10 @@ &dts {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++};
++
+ &hash1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index db6a2a43950b..fbfb25cd65be 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -79,6 +79,11 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 
++		gpu_reserved: gpu@e8000000 {
++			reg = <0xe8000000 0x8000000>;
++			no-map;
++		};
++
+ 		/* global autoconfigured region for contiguous allocations */
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+@@ -186,6 +191,10 @@ &dts {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++};
++
+ &hash1 {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

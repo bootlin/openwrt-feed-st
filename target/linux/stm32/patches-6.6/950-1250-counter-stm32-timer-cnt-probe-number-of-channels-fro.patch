@@ -1,0 +1,70 @@
+From 405fbf6887c10b95eeb148329a9b331ec047fec0 Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 7 Mar 2024 14:33:04 +0100
+Subject: [PATCH] counter: stm32-timer-cnt: probe number of channels from
+ registers
+
+Probe the number of capture compare channels, by writing CCER register bits
+and read them back. Take care to restore the register original value.
+
+This is a precursor patch to support capture channels.
+
+Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Link: https://lore.kernel.org/r/20240307133306.383045-9-fabrice.gasnier@foss.st.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+(cherry picked from commit 1f4552e70ca8ff36c59b7ffe2a7c277c23ea274a)
+Change-Id: Ie85bc709bc0e5bf6b11361210b4a83634e1220d7
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388148
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index 06bcce6996ab..075543601080 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -42,6 +42,7 @@ struct stm32_timer_cnt {
+ 	bool enabled;
+ 	struct stm32_timer_regs bak;
+ 	bool has_encoder;
++	unsigned int nchannels;
+ };
+ 
+ static const enum counter_function stm32_count_functions[] = {
+@@ -416,6 +417,20 @@ static struct counter_count stm32_counts = {
+ 	.num_ext = ARRAY_SIZE(stm32_count_ext)
+ };
+ 
++static void stm32_timer_cnt_detect_channels(struct device *dev,
++					    struct stm32_timer_cnt *priv)
++{
++	u32 ccer, ccer_backup;
++
++	regmap_read(priv->regmap, TIM_CCER, &ccer_backup);
++	regmap_set_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
++	regmap_read(priv->regmap, TIM_CCER, &ccer);
++	regmap_write(priv->regmap, TIM_CCER, ccer_backup);
++	priv->nchannels = hweight32(ccer & TIM_CCER_CCXE);
++
++	dev_dbg(dev, "has %d cc channels\n", priv->nchannels);
++}
++
+ /* encoder supported on TIM1 TIM2 TIM3 TIM4 TIM5 TIM8 */
+ #define STM32_TIM_ENCODER_SUPPORTED	(BIT(0) | BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(7))
+ 
+@@ -484,6 +499,8 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	stm32_timer_cnt_detect_channels(dev, priv);
++
+ 	counter->name = dev_name(dev);
+ 	counter->parent = dev;
+ 	counter->ops = &stm32_timer_cnt_ops;
+-- 
+2.39.5
+

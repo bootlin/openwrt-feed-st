@@ -1,0 +1,44 @@
+From 0ca8d71e096950612c908900653e84186089e7db Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 27 Nov 2023 18:08:16 +0100
+Subject: [PATCH] media: MAINTAINERS: add entry for STM32 DCMIPP driver
+
+Add the entry related to the STM32 MEDIA DCMIPP driver within the
+MAINTAINERS file.
+Add myself as maintainer of the DCMI driver as well.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+[Sakari Ailus: Arrange files alphabetically.]
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+(cherry picked from commit fa0f34188a916bf1c0e1299405d394431bf5a3b2)
+---
+ MAINTAINERS | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2f680e4e82a0..fc0b47a14290 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13289,13 +13289,16 @@ W:	https://linuxtv.org
+ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/dvb-frontends/stv6111*
+ 
+-MEDIA DRIVERS FOR STM32 - DCMI
++MEDIA DRIVERS FOR STM32 - DCMI / DCMIPP
+ M:	Hugues Fruchet <hugues.fruchet@foss.st.com>
++M:	Alain Volmat <alain.volmat@foss.st.com>
+ L:	linux-media@vger.kernel.org
+ S:	Supported
+ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++F:	Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+ F:	drivers/media/platform/st/stm32/stm32-dcmi.c
++F:	drivers/media/platform/st/stm32/stm32-dcmipp/*
+ 
+ MEDIA INPUT INFRASTRUCTURE (V4L/DVB)
+ M:	Mauro Carvalho Chehab <mchehab@kernel.org>
+-- 
+2.39.5
+

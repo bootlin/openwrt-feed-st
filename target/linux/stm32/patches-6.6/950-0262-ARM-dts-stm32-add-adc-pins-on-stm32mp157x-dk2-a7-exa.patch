@@ -1,0 +1,131 @@
+From 9d3475815cfa942a18a118345cbf282b3a92c53c Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 4 Jan 2023 10:08:49 +0100
+Subject: [PATCH] ARM: dts: stm32: add adc pins on stm32mp157x-dk2 a7-examples
+
+Add the ADC pins on Arduino connector that are not set by default
+on STM32MP157c-dk2 and STM32MP157f-dk2 boards.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I903ccc15fb7e1bbe5cc52893273b4de4f1848015
+---
+ .../dts/st/stm32mp157c-dk2-a7-examples.dts    | 45 +++++++++++++++++++
+ .../dts/st/stm32mp157f-dk2-a7-examples.dts    | 45 +++++++++++++++++++
+ 2 files changed, 90 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
+index bc70d75f3742..ffa1bbff36c7 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
+@@ -13,6 +13,51 @@ / {
+ 	compatible = "st,stm32mp157c-dk2-a7-examples", "st,stm32mp157c-dk2", "st,stm32mp157";
+ };
+ 
++&adc {
++	pinctrl-0 = <&adc12_ain_pins_a>, <&adc12_usb_cc_pins_a>;
++
++	adc1: adc@0 {
++		channel@0 {
++			reg = <0>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@1 {
++			reg = <1>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@6 {
++			reg = <6>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@13 {
++			reg = <13>;
++			st,min-sample-time-ns = <5000>;
++		};
++	};
++
++	adc2: adc@100 {
++		/* Set IRQ mode as example. DMA is the preferred mode, yet. */
++		/delete-property/dmas;
++		/delete-property/dma-names;
++		channel@0 {
++			reg = <0>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@1 {
++			reg = <1>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@2 {
++			reg = <2>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@6 {
++			reg = <6>;
++			st,min-sample-time-ns = <5000>;
++		};
++	};
++};
++
+ &timers1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
+index ae1cbefab958..7091f3103d8a 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
+@@ -13,6 +13,51 @@ / {
+ 	compatible = "st,stm32mp157f-dk2-a7-examples", "st,stm32mp157f-dk2", "st,stm32mp157";
+ };
+ 
++&adc {
++	pinctrl-0 = <&adc12_ain_pins_a>, <&adc12_usb_cc_pins_a>;
++
++	adc1: adc@0 {
++		channel@0 {
++			reg = <0>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@1 {
++			reg = <1>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@6 {
++			reg = <6>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@13 {
++			reg = <13>;
++			st,min-sample-time-ns = <5000>;
++		};
++	};
++
++	adc2: adc@100 {
++		/* Set IRQ mode as example. DMA is the preferred mode, yet. */
++		/delete-property/dmas;
++		/delete-property/dma-names;
++		channel@0 {
++			reg = <0>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@1 {
++			reg = <1>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@2 {
++			reg = <2>;
++			st,min-sample-time-ns = <5000>;
++		};
++		channel@6 {
++			reg = <6>;
++			st,min-sample-time-ns = <5000>;
++		};
++	};
++};
++
+ &timers1 {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

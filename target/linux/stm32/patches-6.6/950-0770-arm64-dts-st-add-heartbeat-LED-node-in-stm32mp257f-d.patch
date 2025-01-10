@@ -1,0 +1,50 @@
+From 930a0d07dff01b43a35ee8e2e746890146856ccc Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 17:15:13 +0100
+Subject: [PATCH] arm64: dts: st: add heartbeat LED node in stm32mp257f-dk
+ board
+
+Add the blue 'heartbeat' LED support for stm32mp257f-dk board
+
+Change-Id: Ie1e1309f09171a6796f352821dfbe0eb1db6019d
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index b590f1bbd717..61014626cbe0 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -8,6 +8,7 @@
+ 
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
+ #include "stm32mp257.dtsi"
+ #include "stm32mp25xf.dtsi"
+ #include "stm32mp25-pinctrl.dtsi"
+@@ -36,6 +37,19 @@ button-user-2 {
+ 			status = "okay";
+ 		};
+ 	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		led-blue {
++			function = LED_FUNCTION_HEARTBEAT;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&gpioh 7 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			default-state = "off";
++		};
++	};
++
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+-- 
+2.39.5
+

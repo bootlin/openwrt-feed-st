@@ -1,0 +1,36 @@
+From 22a1b972b20e7fb7dca6ebd1af7cf93363af803f Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 28 Mar 2024 13:57:40 +0100
+Subject: [PATCH] arm64: defconfig: Enable IRQ in debugfs
+
+Add and enable CONFIG_GENERIC_IRQ_DEBUGFS in defconfig
+fragment file.
+
+Change-Id: I3c69ad0a4aaae2db261d28ad1bd7a3ea403a04a0
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397125
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 4f499830ce3e..328b52b2e967 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -32,6 +32,7 @@ CONFIG_DRM_STM_LVDS=y
+ CONFIG_DWMAC_GENERIC=y
+ CONFIG_DWMAC_STM32=y
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_GENERIC_IRQ_DEBUGFS=y
+ CONFIG_HDMI=y
+ CONFIG_I2C_RPMSG=m
+ CONFIG_I2C_STM32F7=y
+-- 
+2.39.5
+

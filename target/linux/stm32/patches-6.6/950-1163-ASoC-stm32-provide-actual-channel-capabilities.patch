@@ -1,0 +1,90 @@
+From bef4f9905586fcf08573f6cf96d5c9d4305cf85a Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 29 May 2024 15:54:58 +0200
+Subject: [PATCH] ASoC: stm32: provide actual channel capabilities
+
+Use the "sub_channels_nb" info provided by the iio channel, to expose
+the actual channels number supported by the audio device.
+
+Change-Id: I7991f1f9f8fda6d07588328bf7338231bb105dc0
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383791
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ sound/soc/stm/stm32_amdf.c | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/stm/stm32_amdf.c b/sound/soc/stm/stm32_amdf.c
+index ea94014a65de..9431320b8254 100644
+--- a/sound/soc/stm/stm32_amdf.c
++++ b/sound/soc/stm/stm32_amdf.c
+@@ -10,6 +10,7 @@
+ #include <linux/iio/adc/stm32-mdf-adc.h>
+ #include <linux/iio/consumer.h>
+ #include <linux/iio/iio.h>
++#include <linux/kstrtox.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+@@ -113,7 +114,7 @@ static const struct snd_soc_dai_ops stm32_amdf_dai_ops = {
+ static const struct snd_soc_dai_driver stm32_amdf_dai = {
+ 	.capture = {
+ 		    .channels_min = 1,
+-		    .channels_max = 2,
++		    .channels_max = 1,
+ 		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 			       SNDRV_PCM_FMTBIT_S32_LE,
+ 		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
+@@ -298,6 +299,9 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_amdf_priv *priv;
+ 	struct snd_soc_component *component;
++	char chan_nb[STM32_MDF_EXT_INFO_BUZ_SZ];
++	long channels_max;
++	ssize_t size;
+ 	int ret;
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+@@ -311,13 +315,6 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, priv);
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_amdf_dai_component,
+-					      &priv->dai_drv, 1);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to register %s\n", stm32_amdf_dai_component.name);
+-		return ret;
+-	}
+-
+ 	/* Associate iio channel */
+ 	priv->iio_ch  = devm_iio_channel_get_all(&pdev->dev);
+ 	if (IS_ERR(priv->iio_ch)) {
+@@ -337,6 +334,23 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	size = iio_read_channel_ext_info(priv->iio_ch, "sub_channels_nb", chan_nb);
++	if (size >= STM32_MDF_EXT_INFO_BUZ_SZ)
++		return -EINVAL;
++	ret = kstrtol(chan_nb, 10, &channels_max);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to get channels number\n");
++		return ret;
++	}
++	priv->dai_drv.capture.channels_max = channels_max;
++
++	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_amdf_dai_component,
++					      &priv->dai_drv, 1);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to register %s\n", stm32_amdf_dai_component.name);
++		return ret;
++	}
++
+ 	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
+ 	if (!component)
+ 		return -ENOMEM;
+-- 
+2.39.5
+

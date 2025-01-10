@@ -1,0 +1,186 @@
+From 22076372e78214610b986fa308d4157da888062b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 23 Feb 2024 08:45:56 +0100
+Subject: [PATCH] drm/stm: support of new hardware version for soc MP25
+
+This hardware support a pad frequency of 150000000Hz.
+Bus clock is an optional clock which is not present on legacy chipset.
+
+Change-Id: I484e1130835ed65daf4966f95dfd58a788428ee9
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/drv.c  | 11 ++++++++++-
+ drivers/gpu/drm/stm/ltdc.c | 36 ++++++++++++++++++++++++++++++++++--
+ drivers/gpu/drm/stm/ltdc.h |  5 +++++
+ 3 files changed, 49 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index 8f357f5dd183..f64232431ad9 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -253,8 +253,17 @@ static void stm_drm_platform_shutdown(struct platform_device *pdev)
+ 	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
+ }
+ 
++static struct ltdc_plat_data stm_drm_plat_data = {
++	.pad_max_freq_hz = 90000000,
++};
++
++static struct ltdc_plat_data stm_drm_plat_data_mp25 = {
++	.pad_max_freq_hz = 150000000,
++};
++
+ static const struct of_device_id drv_dt_ids[] = {
+-	{ .compatible = "st,stm32-ltdc"},
++	{ .compatible = "st,stm32-ltdc", .data = &stm_drm_plat_data, },
++	{ .compatible = "st,stm32mp25-ltdc", .data = &stm_drm_plat_data_mp25, },
+ 	{ /* end node */ },
+ };
+ MODULE_DEVICE_TABLE(of, drv_dt_ids);
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 085554967c29..3943ef8e5921 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -14,6 +14,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/media-bus-format.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/of_graph.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+@@ -50,6 +51,7 @@
+ #define HWVER_10300 0x010300
+ #define HWVER_20101 0x020101
+ #define HWVER_40100 0x040100
++#define HWVER_40101 0x040101
+ 
+ /*
+  * The address of some registers depends on the HW version: such registers have
+@@ -1806,6 +1808,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ {
+ 	struct ltdc_device *ldev = ddev->dev_private;
+ 	u32 bus_width_log2, lcr, gc2r;
++	const struct ltdc_plat_data *pdata = of_device_get_match_data(ddev->dev);
+ 
+ 	/*
+ 	 * at least 1 layer must be managed & the number of layers
+@@ -1821,6 +1824,8 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 	ldev->caps.bus_width = 8 << bus_width_log2;
+ 	regmap_read(ldev->regmap, LTDC_IDR, &ldev->caps.hw_version);
+ 
++	ldev->caps.pad_max_freq_hz = pdata->pad_max_freq_hz;
++
+ 	switch (ldev->caps.hw_version) {
+ 	case HWVER_10200:
+ 	case HWVER_10300:
+@@ -1838,7 +1843,6 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 		 * does not work on 2nd layer.
+ 		 */
+ 		ldev->caps.non_alpha_only_l1 = true;
+-		ldev->caps.pad_max_freq_hz = 90000000;
+ 		if (ldev->caps.hw_version == HWVER_10200)
+ 			ldev->caps.pad_max_freq_hz = 65000000;
+ 		ldev->caps.nb_irq = 2;
+@@ -1869,6 +1873,7 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 		ldev->caps.fifo_threshold = false;
+ 		break;
+ 	case HWVER_40100:
++	case HWVER_40101:
+ 		ldev->caps.layer_ofs = LAY_OFS_1;
+ 		ldev->caps.layer_regs = ltdc_layer_regs_a2;
+ 		ldev->caps.pix_fmt_hw = ltdc_pix_fmt_a2;
+@@ -1876,7 +1881,6 @@ static int ltdc_get_caps(struct drm_device *ddev)
+ 		ldev->caps.pix_fmt_nb = ARRAY_SIZE(ltdc_drm_fmt_a2);
+ 		ldev->caps.pix_fmt_flex = true;
+ 		ldev->caps.non_alpha_only_l1 = false;
+-		ldev->caps.pad_max_freq_hz = 90000000;
+ 		ldev->caps.nb_irq = 2;
+ 		ldev->caps.ycbcr_input = true;
+ 		ldev->caps.ycbcr_output = true;
+@@ -1899,6 +1903,8 @@ void ltdc_suspend(struct drm_device *ddev)
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 	clk_disable_unprepare(ldev->pixel_clk);
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
+ }
+ 
+ int ltdc_resume(struct drm_device *ddev)
+@@ -1914,6 +1920,14 @@ int ltdc_resume(struct drm_device *ddev)
+ 		return ret;
+ 	}
+ 
++	if (ldev->bus_clk) {
++		ret = clk_prepare_enable(ldev->bus_clk);
++		if (ret) {
++			DRM_ERROR("failed to enable bus clock (%d)\n", ret);
++			return ret;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1950,6 +1964,18 @@ int ltdc_load(struct drm_device *ddev)
+ 		return -ENODEV;
+ 	}
+ 
++	if (of_device_is_compatible(np, "st,stm32mp25-ltdc")) {
++		ldev->bus_clk = devm_clk_get(dev, "bus");
++		if (IS_ERR(ldev->bus_clk))
++			return dev_err_probe(dev, PTR_ERR(ldev->bus_clk),
++					     "Unable to get bus clock\n");
++
++		if (clk_prepare_enable(ldev->bus_clk)) {
++			DRM_ERROR("Unable to prepare bus clock\n");
++			return -ENODEV;
++		}
++	}
++
+ 	/* Get endpoints if any */
+ 	for (i = 0; i < nb_endpoints; i++) {
+ 		ret = drm_of_find_panel_or_bridge(np, 0, i, &panel, &bridge);
+@@ -2069,6 +2095,9 @@ int ltdc_load(struct drm_device *ddev)
+ 
+ 	clk_disable_unprepare(ldev->pixel_clk);
+ 
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
++
+ 	pinctrl_pm_select_sleep_state(ddev->dev);
+ 
+ 	pm_runtime_enable(ddev->dev);
+@@ -2080,6 +2109,9 @@ int ltdc_load(struct drm_device *ddev)
+ 
+ 	clk_disable_unprepare(ldev->pixel_clk);
+ 
++	if (ldev->bus_clk)
++		clk_disable_unprepare(ldev->bus_clk);
++
+ 	return ret;
+ }
+ 
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index 9d488043ffdb..ddfa8ae61a7b 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -40,10 +40,15 @@ struct fps_info {
+ 	ktime_t last_timestamp;
+ };
+ 
++struct ltdc_plat_data {
++	int pad_max_freq_hz;	/* max frequency supported by pad */
++};
++
+ struct ltdc_device {
+ 	void __iomem *regs;
+ 	struct regmap *regmap;
+ 	struct clk *pixel_clk;	/* lcd pixel clock */
++	struct clk *bus_clk;	/* bus clock */
+ 	struct mutex err_lock;	/* protecting error_status */
+ 	struct ltdc_caps caps;
+ 	u32 irq_status;
+-- 
+2.39.5
+

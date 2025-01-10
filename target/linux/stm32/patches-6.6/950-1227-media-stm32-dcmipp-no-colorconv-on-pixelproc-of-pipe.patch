@@ -1,0 +1,41 @@
+From ee0e2a465a69b06819239aeee662452992c344cc Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 3 Jun 2024 20:01:27 +0200
+Subject: [PATCH] media: stm32: dcmipp: no colorconv on pixelproc of pipe #2
+
+The pixel pipe nb 2 doesn't have RGB to YUV color conversion
+hence src format is always the same as the sink format.
+
+Change-Id: Id0bb15448832e479e63c0e51374f7221442fcbcd
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384902
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c     | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 81ffb4ee920a..b8d5156b420b 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -675,6 +675,14 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+ 	} else {
+ 		struct v4l2_rect *compose;
+ 
++		/* AUX (pipe_nb 2) cannot perform color conv */
++		if (pixelproc->pipe_id == 2) {
++			struct v4l2_mbus_framefmt *sink_pad_fmt =
++				v4l2_subdev_state_get_format(state, 0);
++
++			fmt->format = *sink_pad_fmt;
++		}
++
+ 		compose = v4l2_subdev_state_get_compose(state, 0);
+ 
+ 		fmt->format.width = compose->width;
+-- 
+2.39.5
+

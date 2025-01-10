@@ -1,0 +1,31 @@
+From 545a2db8d7d06c2c49f0dc4b6d35aea1310d33f0 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 29 Nov 2023 18:36:22 +0100
+Subject: [PATCH] dt-bindings: gpu: vivante,gc: add optional contiguous-area
+ property
+
+GPU can use contiguous-area for its buffer allocation needs.
+
+Change-Id: I35228b2d9b8ea9276cc60144ef6e05e6ded090c7
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ Documentation/devicetree/bindings/gpu/vivante,gc.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+index b1b10ea70ad9..092643bef199 100644
+--- a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
++++ b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
+@@ -49,6 +49,9 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  contiguous-area:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+-- 
+2.39.5
+

@@ -1,0 +1,34 @@
+From 5d44e2c522f9cc0b30efbea970e04bfb34a2026b Mon Sep 17 00:00:00 2001
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Date: Thu, 27 Jan 2022 11:18:09 +0100
+Subject: [PATCH] clk: stm32mp13: removal of LSE clock on RNG clock switch in
+ RCC
+
+RNG clock switch becomes 'reserved' on cut1.1
+
+Change-Id: Ifafc3bb28e162b229ed1307ae9e6e4a7df9d4326
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/237216
+Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+---
+ drivers/clk/stm32/clk-stm32mp13.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
+index bf81d7491708..e14c16f88b57 100644
+--- a/drivers/clk/stm32/clk-stm32mp13.c
++++ b/drivers/clk/stm32/clk-stm32mp13.c
+@@ -583,7 +583,7 @@ static const char * const qspi_src[] = {
+ };
+ 
+ static const char * const rng1_src[] = {
+-	"ck_csi", "pll4_r", "ck_lse", "ck_lsi"
++	"ck_csi", "pll4_r", "reserved", "ck_lsi"
+ };
+ 
+ static const char * const saes_src[] = {
+-- 
+2.39.5
+

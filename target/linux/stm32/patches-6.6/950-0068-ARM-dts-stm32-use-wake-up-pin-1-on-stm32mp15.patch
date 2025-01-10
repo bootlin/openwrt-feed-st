@@ -1,0 +1,88 @@
+From ceb2b656aee9733fc712726096f5e64dd43c885a Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Mon, 14 Sep 2020 18:06:09 +0200
+Subject: [PATCH] ARM: dts: stm32: use wake-up pin 1 on stm32mp15
+
+Connect STPMIC1 to wake-up pin 1 on stm32mp15 so that
+the system can wake-up from suspend on a PMIC IRQ.
+The wake-up pin 1 is available through EXTI input 55.
+
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I0229fe7004cdca5f262bce0a9aed41e344327b0e
+---
+ arch/arm/boot/dts/st/stm32mp157a-ed1.dts  | 2 +-
+ arch/arm/boot/dts/st/stm32mp157c-ed1.dts  | 2 +-
+ arch/arm/boot/dts/st/stm32mp157d-ed1.dts  | 2 +-
+ arch/arm/boot/dts/st/stm32mp157f-ed1.dts  | 2 +-
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+index 579a6a4691e3..acf4cbbf131d 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
+@@ -166,7 +166,7 @@ &i2c4 {
+ 	pmic: stpmic@33 {
+ 		compatible = "st,stpmic1";
+ 		reg = <0x33>;
+-		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&exti 55 IRQ_TYPE_EDGE_FALLING>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 		status = "okay";
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+index 96852bd0e699..8f81982ce934 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
+@@ -170,7 +170,7 @@ &i2c4 {
+ 	pmic: stpmic@33 {
+ 		compatible = "st,stpmic1";
+ 		reg = <0x33>;
+-		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&exti 55 IRQ_TYPE_EDGE_FALLING>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 		status = "okay";
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+index 6169e4e78bed..37e11402dae7 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
+@@ -166,7 +166,7 @@ &i2c4 {
+ 	pmic: stpmic@33 {
+ 		compatible = "st,stpmic1";
+ 		reg = <0x33>;
+-		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&exti 55 IRQ_TYPE_EDGE_FALLING>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 		status = "okay";
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+index 4272d9f81ec3..7ed017210586 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
+@@ -170,7 +170,7 @@ &i2c4 {
+ 	pmic: stpmic@33 {
+ 		compatible = "st,stpmic1";
+ 		reg = <0x33>;
+-		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&exti 55 IRQ_TYPE_EDGE_FALLING>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 		status = "okay";
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index eb65f06ead40..1b1bd238bc90 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -286,7 +286,7 @@ con_usbotg_hs_ep: endpoint {
+ 	pmic: stpmic@33 {
+ 		compatible = "st,stpmic1";
+ 		reg = <0x33>;
+-		interrupts-extended = <&gpioa 0 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&exti 55 IRQ_TYPE_EDGE_FALLING>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 		status = "okay";
+-- 
+2.39.5
+

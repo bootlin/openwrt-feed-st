@@ -1,0 +1,69 @@
+From fd779a7db19f6f0e64d089409341f041eeeddacf Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@st.com>
+Date: Wed, 9 Oct 2019 14:19:58 +0200
+Subject: [PATCH] pinctrl: stm32: handle RSVD pin configuration
+
+DO NOT UPSTREAM
+When a pin configuration is set to RSVD (Reserved), the driver does not
+update the mux setting.
+This can be used to reserve some pins, for example to a co-processor not
+running Linux.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
+Change-Id: Ia1704a711d8ad60ef18fe548ddc500142be8b185
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 9 +++++++++
+ drivers/pinctrl/stm32/pinctrl-stm32.h | 3 ++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 346a31f31bba..d1d79884f55a 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -76,6 +76,7 @@ static const char * const stm32_gpio_functions[] = {
+ 	"af8", "af9", "af10",
+ 	"af11", "af12", "af13",
+ 	"af14", "af15", "analog",
++	"reserved",
+ };
+ 
+ struct stm32_pinctrl_group {
+@@ -548,6 +549,9 @@ static bool stm32_pctrl_is_function_valid(struct stm32_pinctrl *pctl,
+ 		if (pin->pin.number != pin_num)
+ 			continue;
+ 
++		if (fnum == STM32_PIN_RSVD)
++			return true;
++
+ 		for (k = 0; k < STM32_CONFIG_NUM; k++) {
+ 			if (func->num == fnum)
+ 				return true;
+@@ -850,6 +854,11 @@ static int stm32_pmx_set_mux(struct pinctrl_dev *pctldev,
+ 		return -EINVAL;
+ 	}
+ 
++	if (function == STM32_PIN_RSVD) {
++		dev_dbg(pctl->dev, "Reserved pins, skipping HW update.\n");
++		return 0;
++	}
++
+ 	bank = gpiochip_get_data(range->gc);
+ 	pin = stm32_gpio_pin(g->pin);
+ 
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.h b/drivers/pinctrl/stm32/pinctrl-stm32.h
+index 5e5de92ddd58..8a1c9570b078 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.h
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.h
+@@ -17,7 +17,8 @@
+ #define STM32_PIN_GPIO		0
+ #define STM32_PIN_AF(x)		((x) + 1)
+ #define STM32_PIN_ANALOG	(STM32_PIN_AF(15) + 1)
+-#define STM32_CONFIG_NUM	(STM32_PIN_ANALOG + 1)
++#define STM32_PIN_RSVD		(STM32_PIN_ANALOG + 1)
++#define STM32_CONFIG_NUM	(STM32_PIN_RSVD + 1)
+ 
+ /*  package information */
+ #define STM32MP_PKG_AA		BIT(0)
+-- 
+2.39.5
+

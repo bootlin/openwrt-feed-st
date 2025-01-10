@@ -1,0 +1,48 @@
+From ced6ca985068e4a8ecc0139482051855346ca320 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Mon, 12 Feb 2024 18:11:27 +0100
+Subject: [PATCH] iio: adc: stm32: fix compilation warnings
+
+Declare stm32_adc_min_x arrays as static to fix compilation warnings.
+
+Fixes: 6a19ee0987a6 ("iio: adc: stm32: manage min sampling time on all internal channels")
+Change-Id: I39ffc5bdb2a6a81f8787b41f62804195964af857
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ drivers/iio/adc/stm32-adc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index d39fbaab2e43..7181d3234cc2 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -3032,7 +3032,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
+ 	.irq_clear = stm32f4_adc_irq_clear,
+ };
+ 
+-static const unsigned int stm32_adc_min_ts_h7[] = { 0, 0, 0, 4300, 9000 };
++static const unsigned int stm32_adc_min_ts_h7[] = { 0, 0, 0, 4300, 9000, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_h7) == STM32_ADC_INT_CH_NB);
+ 
+ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -3054,7 +3054,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+ 	.set_ovs = stm32h7_adc_set_ovs,
+ };
+ 
+-static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800 };
++static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp1) == STM32_ADC_INT_CH_NB);
+ 
+ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -3077,7 +3077,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+ 	.set_ovs = stm32h7_adc_set_ovs,
+ };
+ 
+-static const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800 };
++static const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800, 0 };
+ static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp13) == STM32_ADC_INT_CH_NB);
+ 
+ static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
+-- 
+2.39.5
+

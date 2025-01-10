@@ -1,0 +1,28 @@
+From 4f3ffabdc9bc45ab0fb6d0069dc7cac64929e187 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Tue, 10 Jan 2023 10:04:05 +0100
+Subject: [PATCH] PCI: dwc: export dw_pcie_ep_exit symbol
+
+Export symbols to support the Designware EP driver built as a module.
+
+Change-Id: I1da2c0828c8e711994990c3d3e967f0352c78945
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+---
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index f2e5feba5526..b40e8731092e 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -631,6 +631,7 @@ void dw_pcie_ep_exit(struct dw_pcie_ep *ep)
+ 
+ 	pci_epc_mem_exit(epc);
+ }
++EXPORT_SYMBOL_GPL(dw_pcie_ep_exit);
+ 
+ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+ {
+-- 
+2.39.5
+

@@ -1,0 +1,72 @@
+From c5540f6a4d9a05ee954c969012271fb112534796 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Fri, 17 Nov 2023 15:33:35 +0100
+Subject: [PATCH] nvmem: stm32: add support for STM32MP25 BSEC to control OTP
+ data
+
+On STM32MP25, OTP area may be read/written by using BSEC (boot, security
+and OTP control). The BSEC internal peripheral is only managed by the
+secure world.
+
+The 12 Kbits of OTP (effective) are organized into the following regions:
+- lower OTP (OTP0 to OTP127) = 4096 lower OTP bits,
+  bitwise (1-bit) programmable
+- mid OTP (OTP128 to OTP255) = 4096 middle OTP bits,
+  bulk (32-bit) programmable
+- upper OTP (OTP256 to OTP383) = 4096 upper OTP bits,
+  bulk (32-bit) programmable,
+  only accessible when BSEC is in closed state.
+
+As HWKEY and ECIES key are only accessible by ROM code;
+only 368 OTP words are managed in this driver (OTP0 to OTP267).
+
+This patch adds the STM32MP25 configuration for reading and writing
+the OTP data using the OP-TEE BSEC TA services.
+
+[Backport of commit 2015e5f4d01f ("nvmem: stm32: add support for STM32MP25 BSEC
+ to control OTP data")]
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Change-Id: I86736b89a45e4a35988dc3f71c831d15a0d27d10
+---
+ drivers/nvmem/stm32-romem.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/nvmem/stm32-romem.c b/drivers/nvmem/stm32-romem.c
+index 1541c20709d2..c3f19852e150 100644
+--- a/drivers/nvmem/stm32-romem.c
++++ b/drivers/nvmem/stm32-romem.c
+@@ -268,6 +268,19 @@ static const struct stm32_romem_cfg stm32mp13_bsec_cfg = {
+ 	.ta = true,
+ };
+ 
++/*
++ * STM32MP25 BSEC OTP: 3 regions of 32-bits data words
++ *   lower OTP (OTP0 to OTP127), bitwise (1-bit) programmable
++ *   mid OTP (OTP128 to OTP255), bulk (32-bit) programmable
++ *   upper OTP (OTP256 to OTP383), bulk (32-bit) programmable
++ *              but no access to HWKEY and ECIES key: limited at OTP367
++ */
++static const struct stm32_romem_cfg stm32mp25_bsec_cfg = {
++	.size = 368 * 4,
++	.lower = 127,
++	.ta = true,
++};
++
+ static const struct of_device_id stm32_romem_of_match[] __maybe_unused = {
+ 	{ .compatible = "st,stm32f4-otp", }, {
+ 		.compatible = "st,stm32mp15-bsec",
+@@ -275,6 +288,9 @@ static const struct of_device_id stm32_romem_of_match[] __maybe_unused = {
+ 	}, {
+ 		.compatible = "st,stm32mp13-bsec",
+ 		.data = (void *)&stm32mp13_bsec_cfg,
++	}, {
++		.compatible = "st,stm32mp25-bsec",
++		.data = (void *)&stm32mp25_bsec_cfg,
+ 	},
+ 	{ /* sentinel */ },
+ };
+-- 
+2.39.5
+

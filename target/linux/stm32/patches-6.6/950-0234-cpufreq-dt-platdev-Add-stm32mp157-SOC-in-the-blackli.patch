@@ -1,0 +1,68 @@
+From da6e90400f6a162152f1bd52f741713a73c0d699 Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@st.com>
+Date: Thu, 26 Sep 2019 12:00:34 +0200
+Subject: [PATCH] cpufreq: dt-platdev: Add stm32mp157 SOC in the blacklist
+
+A dedicated STM32 cpufreq driver is needed to read OTP data and select
+available OPPs for STM32 MPU SOCs. Those OPPs are then registered to OPP
+framework. At the end this driver register a cpufreq-dt device.
+This commit allows it.
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
+Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@st.com>
+Change-Id: I043e4148ee68126154cb75d515aecdbdae9a83c4
+---
+ drivers/cpufreq/cpufreq-dt-platdev.c |  1 +
+ drivers/cpufreq/stm32-cpufreq.c      | 10 +++++-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index fb2875ce1fdd..3c99e4959c0b 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -169,6 +169,7 @@ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "st,stih407", },
+ 	{ .compatible = "st,stih410", },
+ 	{ .compatible = "st,stih418", },
++	{ .compatible = "st,stm32mp157", },
+ 
+ 	{ .compatible = "ti,am33xx", },
+ 	{ .compatible = "ti,am43", },
+diff --git a/drivers/cpufreq/stm32-cpufreq.c b/drivers/cpufreq/stm32-cpufreq.c
+index 35fb3520d48d..cb520c730f68 100644
+--- a/drivers/cpufreq/stm32-cpufreq.c
++++ b/drivers/cpufreq/stm32-cpufreq.c
+@@ -14,7 +14,7 @@
+ #include <linux/pm_opp.h>
+ 
+ struct stm32_cpufreq_priv {
+-	struct opp_table *opps;
++	int token;
+ 	struct platform_device *cpufreq_dt_pdev;
+ };
+ 
+@@ -51,9 +51,9 @@ static int stm32_cpufreq_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->opps = dev_pm_opp_set_supported_hw(cpu_dev, &supported_hw, 1);
+-	if (IS_ERR(priv->opps)) {
+-		ret = PTR_ERR(priv->opps);
++	priv->token = dev_pm_opp_set_supported_hw(cpu_dev, &supported_hw, 1);
++	if (priv->token < 0) {
++		ret = priv->token;
+ 		if (ret != -EPROBE_DEFER)
+ 			dev_err(&pdev->dev, "Failed to set supported opp: %d\n",
+ 				ret);
+@@ -74,7 +74,7 @@ static int stm32_cpufreq_remove(struct platform_device *pdev)
+ 	struct stm32_cpufreq_priv *priv	= platform_get_drvdata(pdev);
+ 
+ 	platform_device_unregister(priv->cpufreq_dt_pdev);
+-	dev_pm_opp_put_supported_hw(priv->opps);
++	dev_pm_opp_put_supported_hw(priv->token);
+ 
+ 	return 0;
+ }
+-- 
+2.39.5
+

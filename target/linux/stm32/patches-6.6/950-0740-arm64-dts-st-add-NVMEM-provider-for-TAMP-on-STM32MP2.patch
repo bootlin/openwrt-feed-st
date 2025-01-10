@@ -1,0 +1,48 @@
+From 2c94fcbb803be1c815516c54effb23ebfd5d99ec Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 25 Aug 2023 09:23:48 +0200
+Subject: [PATCH] arm64: dts: st: add NVMEM provider for TAMP on STM32MP25
+
+TAMP backup registers allow information sharing between different
+software components/execution levels.
+They are described individually as nvmem cells.
+
+Change-Id: I9e1dc6334daecda685244fc3bb231bd9a7d46474
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index f3932d834d6b..c380f63406fa 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2420,6 +2420,25 @@ syscfg: syscon@44230000 {
+ 			#clock-cells = <1>;
+ 		};
+ 
++		tamp: tamp@46010000 {
++			compatible = "st,stm32mp25-tamp", "syscon", "simple-mfd";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x46010000 0x400>;
++			ranges;
++
++			nvram: nvram@46010100 {
++				compatible = "st,stm32mp25-tamp-nvram";
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = <0x46010100 0x200>;
++
++				boot_mode: tamp-bkp@180 {
++					reg = <0x180 0x4>;
++				};
++			};
++		};
++
+ 		exti2: interrupt-controller@46230000 {
+ 			compatible = "st,stm32mp1-exti";
+ 			interrupt-controller;
+-- 
+2.39.5
+

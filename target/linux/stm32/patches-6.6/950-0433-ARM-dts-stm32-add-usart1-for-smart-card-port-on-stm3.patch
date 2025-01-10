@@ -1,0 +1,136 @@
+From 11199ca350b642b6630a53a0cdcf3f99f78d59ac Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 17 Aug 2021 09:51:09 +0200
+Subject: [PATCH] ARM: dts: stm32: add usart1 for smart card port on
+ stm32mp15xx-evx
+
+Add usart1 node and pins for smart card purpose on stm32mp15xx-evx boards.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I20041ce11a286cb7ed87a5e5df450b9a93521bf9
+---
+ arch/arm/boot/dts/st/stm32mp157a-ev1.dts | 11 +++++++++++
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 11 +++++++++++
+ arch/arm/boot/dts/st/stm32mp157d-ev1.dts | 11 +++++++++++
+ arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 11 +++++++++++
+ 4 files changed, 44 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+index e9ca1744a14b..c346878ee903 100644
+--- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
+@@ -17,6 +17,7 @@ / {
+ 
+ 	aliases {
+ 		serial1 = &usart3;
++		serial4 = &usart1;
+ 		ethernet0 = &ethernet0;
+ 	};
+ 
+@@ -699,6 +700,16 @@ timer@11 {
+ 	};
+ };
+ 
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "disabled";
++};
++
+ &usart3 {
+ 	pinctrl-names = "default", "sleep", "idle";
+ 	pinctrl-0 = <&usart3_pins_b>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+index 08a8191439c5..89da79ea80bb 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
+@@ -17,6 +17,7 @@ / {
+ 
+ 	aliases {
+ 		serial1 = &usart3;
++		serial4 = &usart1;
+ 		ethernet0 = &ethernet0;
+ 	};
+ 
+@@ -699,6 +700,16 @@ timer@11 {
+ 	};
+ };
+ 
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "disabled";
++};
++
+ &usart3 {
+ 	pinctrl-names = "default", "sleep", "idle";
+ 	pinctrl-0 = <&usart3_pins_b>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+index 206ef27840bd..18a02850d6ef 100644
+--- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
+@@ -17,6 +17,7 @@ / {
+ 
+ 	aliases {
+ 		serial1 = &usart3;
++		serial4 = &usart1;
+ 		ethernet0 = &ethernet0;
+ 	};
+ 
+@@ -699,6 +700,16 @@ timer@11 {
+ 	};
+ };
+ 
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "disabled";
++};
++
+ &usart3 {
+ 	pinctrl-names = "default", "sleep", "idle";
+ 	pinctrl-0 = <&usart3_pins_b>;
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+index 0290daebb2a1..c3ca40aa31bb 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
+@@ -17,6 +17,7 @@ / {
+ 
+ 	aliases {
+ 		serial1 = &usart3;
++		serial4 = &usart1;
+ 		ethernet0 = &ethernet0;
+ 	};
+ 
+@@ -699,6 +700,16 @@ timer@11 {
+ 	};
+ };
+ 
++&usart1 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&usart1_pins_a>;
++	pinctrl-1 = <&usart1_sleep_pins_a>;
++	pinctrl-2 = <&usart1_idle_pins_a>;
++	/delete-property/dmas;
++	/delete-property/dma-names;
++	status = "disabled";
++};
++
+ &usart3 {
+ 	pinctrl-names = "default", "sleep", "idle";
+ 	pinctrl-0 = <&usart3_pins_b>;
+-- 
+2.39.5
+

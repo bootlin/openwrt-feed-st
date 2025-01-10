@@ -1,0 +1,79 @@
+From 39eaa774c0d0bf40ebf0681a64e14ba54b02c132 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 23 Jun 2023 17:04:24 +0200
+Subject: [PATCH] arm64: dts: st: add serial interface compatible to stm32mp251
+
+Add serial interface compatible "st,stm32mp25-sitf-mdf".
+Also add reset and hpf support.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: I1815b93b728666f9859c244043222b68ed8c3861
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index b5db5ba5e5ff..5771bc937999 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -1671,39 +1671,57 @@ mdf1: mdf@404d0000 {
+ 				clocks = <&rcc CK_KER_MDF1>;
+ 				clock-names = "ker_ck";
+ 				clock-ranges;
++				resets = <&rcc MDF1_R>;
++				reset-names = "mdf";
+ 				access-controllers = <&rifsc 54>;
+ 				status = "disabled";
+ 
+ 				sitf0: sitf@80 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x80 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf1: sitf@100 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x100 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf2: sitf@180 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x180 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf3: sitf@200 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x200 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf4: sitf@280 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x280 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf5: sitf@300 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x300 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf6: sitf@380 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x380 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				sitf7: sitf@400 {
++					compatible = "st,stm32mp25-sitf-mdf";
+ 					reg = <0x400 0x4>;
++					status = "disabled";
+ 				};
+ 
+ 				filter0: filter@84 {
+-- 
+2.39.5
+

@@ -1,0 +1,34 @@
+From c4f122b27f3f24442eebd0cdc026f3ca2a92cc85 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Fri, 13 Sep 2024 14:29:37 +0200
+Subject: [PATCH] arm64: defconfig: enable SD ADC MODULATOR config
+
+Enable SD_ADC_MODULATOR to provide ADC sigma delta IIO backends
+for MDF analog use cases.
+
+Change-Id: I9c047d4ae299997bea28a4679519047a85f4db28
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404375
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index e92dbad98e9e..feb5bfd9d855 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -80,6 +80,7 @@ CONFIG_RPMSG_VIRTIO=m
+ CONFIG_RTC_DRV_STM32=y
+ CONFIG_SAMPLES=y
+ CONFIG_SAMPLE_RPMSG_CLIENT=m
++CONFIG_SD_ADC_MODULATOR=m
+ CONFIG_SENSORS_MR75203=y
+ CONFIG_SMSC_PHY=y
+ CONFIG_SND_SOC_STM32_I2S=m
+-- 
+2.39.5
+

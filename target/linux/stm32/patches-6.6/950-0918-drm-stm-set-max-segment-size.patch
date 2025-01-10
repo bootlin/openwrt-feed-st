@@ -1,0 +1,44 @@
+From 7529e764631748584fa19ba621cef00fc86f707a Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 29 Feb 2024 11:09:09 +0100
+Subject: [PATCH] drm/stm: set max segment size
+
+Configure the DMA segment size to make sure we get
+contiguous & coherent memory for framebuffer allocation.
+
+Change-Id: Ife1afe10d4d1586d7acd6a114df75979f3cd2ae4
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372032
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/gpu/drm/stm/drv.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index a380ee291f0e..df56c81e0065 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -226,7 +226,18 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_suspend;
+ 
+-	dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
++	/* Configure the DMA segment size to make sure we get contiguous & coherent memory */
++	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_err(dev, "Failed to set DMA segment mask\n");
++		goto err_suspend;
++	}
++
++	ret = dma_set_max_seg_size(dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_err(dev, "Failed to set DMA segment size\n");
++		goto err_suspend;
++	}
+ 
+ 	ddev = drm_dev_alloc(&drv_driver, dev);
+ 	if (IS_ERR(ddev)) {
+-- 
+2.39.5
+

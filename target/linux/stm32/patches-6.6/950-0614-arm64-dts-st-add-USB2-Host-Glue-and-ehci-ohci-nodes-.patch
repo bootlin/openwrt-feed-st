@@ -1,0 +1,60 @@
+From 938c3b8bbe793e975041f880bd1b59e13fc18821 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Mon, 6 Dec 2021 23:12:46 +0530
+Subject: [PATCH] arm64: dts: st: add USB2 Host Glue and ehci/ohci nodes for
+ stm32mp25
+
+USB2 Host controller Glue logic, along with the standard registers used for
+full- and low-speed (OHCI controller) and high-speed (EHCI controller).
+
+Change-Id: I4c573fcd036c6415b7db753539bad0053449501c
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 31 ++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index a02b0312c7ac..e92ba3f0e939 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -408,6 +408,37 @@ sdmmc1: mmc@48220000 {
+ 				access-controllers = <&rifsc 76>;
+ 				status = "disabled";
+ 			};
++
++			usbh: usb@482e0000 {
++				compatible = "st,stm32mp25-usbh";
++				st,syscfg = <&syscfg 0x2420>;
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x482e0000 0x482e0000 0x20000>;
++				access-controllers = <&rifsc 63>;
++				status = "disabled";
++
++				usbh_ohci: usb@482e0000 {
++					compatible = "generic-ohci";
++					reg = <0x482e0000 0x1000>;
++					clocks = <&rcc CK_BUS_USB2OHCI>;
++					resets = <&rcc USB2_R>;
++					interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
++					phys = <&usb2_phy1>;
++					phy-names = "usb";
++				};
++
++				usbh_ehci: usb@482f0000 {
++					compatible = "generic-ehci";
++					reg = <0x482f0000 0x1000>;
++					clocks = <&rcc CK_BUS_USB2EHCI>;
++					resets = <&rcc USB2_R>;
++					interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
++					companion = <&usbh_ohci>;
++					phys = <&usb2_phy1>;
++					phy-names = "usb";
++				};
++			};
+ 		};
+ 
+ 		rcc: clock-controller@44200000 {
+-- 
+2.39.5
+

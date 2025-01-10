@@ -1,0 +1,38 @@
+From 033752cefb1f7e11600c7ea26e254a96040a8ca7 Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Mon, 30 Sep 2024 14:49:27 +0200
+Subject: [PATCH] dt-bindings: soc: st: add st,mem-map to RIFSC documentation
+
+Add st,mem-map to RIFSC to describe address ranges covered by the RISAL
+instances.
+
+Change-Id: I2f1abb05034abb93da2a96bb8db897e49ae2fbe5
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/407782
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ .../devicetree/bindings/bus/st,stm32mp25-rifsc.yaml          | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+index da15218ddd26..b179fd5f580c 100644
+--- a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
++++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+@@ -61,6 +61,11 @@ properties:
+     description:
+       Contains the firewall ID associated to the peripheral.
+ 
++  st,mem-map:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description:
++      Defines the memory address ranges covered by the RISAL instances.
++
+ patternProperties:
+   "^.*@[0-9a-f]+$":
+     description: Peripherals
+-- 
+2.39.5
+

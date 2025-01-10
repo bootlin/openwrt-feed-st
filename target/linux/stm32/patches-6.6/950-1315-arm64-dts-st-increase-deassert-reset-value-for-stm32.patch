@@ -1,0 +1,42 @@
+From 7d8d100f92d0140f0171be3809b9cfc4e7e459aa Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Wed, 17 Jan 2024 09:41:27 +0100
+Subject: [PATCH] arm64: dts: st: increase deassert reset value for
+ stm32mp257f-dk board
+
+The RTL8211F phy has a PHYRSTB pin to reset the chip.
+For a complete PHY reset, this pin must be asserted low for
+at least 10ms for the internal regulator. Wait for at least
+72ms (for internal circuits settling time) before accessing
+the PHY register.
+All registers will return to default values after a hardware reset
+
+Change-Id: I64fd96e7f4852c812b20f487fdb23e8aff201cd3
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/354889
+Domain-Review: Christophe ROULLIER <christophe.roullier@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/386399
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 8bd387ad73a6..5d5423381882 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -363,7 +363,7 @@ phy1_eth1: ethernet-phy@1 {
+ 			compatible = "ethernet-phy-id001c.c916";
+ 			reset-gpios =  <&gpioa 2 GPIO_ACTIVE_LOW>;
+ 			reset-assert-us = <10000>;
+-			reset-deassert-us = <300>;
++			reset-deassert-us = <80000>;
+ 			realtek,eee-disable;
+ 			reg = <1>;
+ 		};
+-- 
+2.39.5
+

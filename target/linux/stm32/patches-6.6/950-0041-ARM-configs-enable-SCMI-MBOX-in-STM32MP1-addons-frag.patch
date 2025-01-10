@@ -1,0 +1,28 @@
+From 90e2c8818f55f13a46ebdb78ec7f73d3738a9f78 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Wed, 17 Jan 2024 16:10:12 +0100
+Subject: [PATCH] ARM: configs: enable SCMI MBOX in STM32MP1 addons fragment
+
+Enable SCMI MBOX in local Linux config fragment.
+
+Change-Id: Ieb373ac709d6524a86d94e25a47bf045bfb419b4
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+index 624b6d226c3f..27a6fa5c8140 100644
+--- a/arch/arm/configs/fragment-02-multiv7_addons.config
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -1,6 +1,7 @@
+ #  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-multiv7_addons.config -o fragment-02-multiv7_addons.config
+ CONFIG_AEABI=y
+ CONFIG_ARCH_FORCE_MAX_ORDER=12
++CONFIG_ARM_SMC_MBOX=y
+ CONFIG_ARM_SMC_WATCHDOG=y
+ CONFIG_CHR_DEV_SG=y
+ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+-- 
+2.39.5
+

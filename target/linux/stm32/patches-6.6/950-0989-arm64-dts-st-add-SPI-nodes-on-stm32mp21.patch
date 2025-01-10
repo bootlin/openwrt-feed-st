@@ -1,0 +1,139 @@
+From 1fc2fbd8c7e0ab2799d4fdf9d0eac55b58d6ff3d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 2 Apr 2024 13:57:25 +0200
+Subject: [PATCH] arm64: dts: st: add SPI nodes on stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add all SPI[1-6] nodes of the stm32mp21x platform.
+
+Change-Id: Id4c226f33d79d8af8bcbfe56c36b08a01a0c9fdb
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372677
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 90 ++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 17575a23052c..ad52d3e085ce 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -217,6 +217,36 @@ rifsc: bus@42080000 {
+ 			#access-controller-cells = <1>;
+ 			ranges;
+ 
++			spi2: spi@400b0000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x400b0000 0x400>;
++				interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI2>;
++				resets = <&rcc SPI2_R>;
++				dmas = <&hpdma 34 0x40 0x3012>,
++				       <&hpdma 35 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 23>;
++				status = "disabled";
++			};
++
++			spi3: spi@400c0000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x400c0000 0x400>;
++				interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI3>;
++				resets = <&rcc SPI3_R>;
++				dmas = <&hpdma 36 0x40 0x3012>,
++				       <&hpdma 37 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 24>;
++				status = "disabled";
++			};
++
+ 			usart2: serial@400e0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400e0000 0x400>;
+@@ -277,6 +307,51 @@ usart6: serial@40220000 {
+ 				status = "disabled";
+ 			};
+ 
++			spi1: spi@40230000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x40230000 0x400>;
++				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI1>;
++				resets = <&rcc SPI1_R>;
++				dmas = <&hpdma 32 0x40 0x3012>,
++				       <&hpdma 33 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 22>;
++				status = "disabled";
++			};
++
++			spi4: spi@40240000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x40240000 0x400>;
++				interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI4>;
++				resets = <&rcc SPI4_R>;
++				dmas = <&hpdma 38 0x40 0x3012>,
++				       <&hpdma 39 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 25>;
++				status = "disabled";
++			};
++
++			spi5: spi@40280000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x40280000 0x400>;
++				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI5>;
++				resets = <&rcc SPI5_R>;
++				dmas = <&hpdma 40 0x40 0x3012>,
++				       <&hpdma 41 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 26>;
++				status = "disabled";
++			};
++
+ 			usart1: serial@40330000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40330000 0x400>;
+@@ -309,6 +384,21 @@ crc: crc@404c0000 {
+ 				status = "disabled";
+ 			};
+ 
++			spi6: spi@46020000 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stm32mp25-spi";
++				reg = <0x46020000 0x400>;
++				interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_SPI6>;
++				resets = <&rcc SPI6_R>;
++				dmas = <&hpdma 42 0x40 0x3012>,
++				       <&hpdma 43 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 27>;
++				status = "disabled";
++			};
++
+ 			sdmmc1: mmc@48220000 {
+ 				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
+ 				arm,primecell-periphid = <0x00353180>;
+-- 
+2.39.5
+

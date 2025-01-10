@@ -1,0 +1,41 @@
+From f2ef722166319cdb40ba4ae81d985a4c3c9d758a Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 13 Apr 2023 10:28:55 +0200
+Subject: [PATCH] arm64: dts: st: add spi3 and spi8 on stm32mp257f-ev1 board
+
+Add nodes for SPI3 and SPI8 on stm32mp257f-ev1 board.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I195b2d9ffee28ef994017efc9fc0b4c726ca2d4f
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index c3b4901b41e1..7ceffcbc9a29 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -211,6 +211,20 @@ &sdmmc1 {
+ 	status = "okay";
+ };
+ 
++&spi3 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi3_pins_a>;
++	pinctrl-1 = <&spi3_sleep_pins_a>;
++	status = "disabled";
++};
++
++&spi8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi8_pins_a>;
++	pinctrl-1 = <&spi8_sleep_pins_a>;
++	status = "disabled";
++};
++
+ &switch0 {
+ 	status = "disabled";
+ 	pinctrl-0 = <&eth1_rgmii_pins_a>, <&eth3_rgmii_pins_a>;
+-- 
+2.39.5
+

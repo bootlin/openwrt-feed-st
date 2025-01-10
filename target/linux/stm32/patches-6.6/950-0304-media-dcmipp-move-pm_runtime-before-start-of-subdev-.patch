@@ -1,0 +1,42 @@
+From ae819f40b5cf4c2b100a2a705c173c329bcb0195 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 14 Feb 2024 14:09:49 +0100
+Subject: [PATCH] media: dcmipp: move pm_runtime before start of subdev in core
+
+pm_runtime_enable call must be done prior to initializing the subdevs
+since otherwise this will lead to s_ctrl handler trying to set registers
+of the IP while the IP isn't yet clocked.
+
+Change-Id: I9171ae542ddd83d91ee0ed665b52028517bb7035
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+index 8f054d433aec..65919b99738a 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+@@ -575,16 +575,17 @@ static int dcmipp_probe(struct platform_device *pdev)
+ 	dcmipp->mdev.dev = &pdev->dev;
+ 	media_device_init(&dcmipp->mdev);
+ 
++	pm_runtime_enable(dcmipp->dev);
++
+ 	/* Initialize subdevs */
+ 	ret = dcmipp_create_subdevs(dcmipp);
+ 	if (ret) {
++		pm_runtime_disable(dcmipp->dev);
+ 		media_device_cleanup(&dcmipp->mdev);
+ 		v4l2_device_unregister(&dcmipp->v4l2_dev);
+ 		return ret;
+ 	}
+ 
+-	pm_runtime_enable(dcmipp->dev);
+-
+ 	dev_info(&pdev->dev, "Probe done");
+ 
+ 	return 0;
+-- 
+2.39.5
+

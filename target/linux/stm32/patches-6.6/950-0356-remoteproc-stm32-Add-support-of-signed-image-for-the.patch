@@ -1,0 +1,47 @@
+From 89b41c9b9747d449c61b6817a90e37a5e6126da9 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Fri, 15 Dec 2023 16:23:10 +0100
+Subject: [PATCH] remoteproc: stm32: Add support of signed image for the
+ stm32mp2 platform
+
+This update adds the ability to load remote processor firmware
+using signed images through OP-TEE.
+The mode can be enabled by defining the 'st,stm32mp2-m33-tee' compatible
+in the device tree node of the remote processor.
+
+Change-Id: Ia3a4f62c9415666951afd5b38087e5e989bd31af
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347957
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 4e9a948b1e2d..a623cda98473 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -980,6 +980,7 @@ static const struct of_device_id stm32_rproc_match[] = {
+ 	{.compatible = "st,stm32mp1-m4", .data = &stm32_rproc_stm32pm15},
+ 	{.compatible = "st,stm32mp1-m4-tee", .data = &stm32_rproc_stm32pm15},
+ 	{.compatible = "st,stm32mp2-m33", .data = &stm32_rproc_stm32pm25},
++	{.compatible = "st,stm32mp2-m33-tee", .data = &stm32_rproc_stm32pm25},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, stm32_rproc_match);
+@@ -1138,7 +1139,8 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
++	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee") ||
++	    of_device_is_compatible(np, "st,stm32mp2-m33-tee")) {
+ 		trproc = tee_rproc_register(dev, desc->proc_id);
+ 		if (IS_ERR(trproc)) {
+ 			dev_err_probe(dev, PTR_ERR(trproc),
+-- 
+2.39.5
+

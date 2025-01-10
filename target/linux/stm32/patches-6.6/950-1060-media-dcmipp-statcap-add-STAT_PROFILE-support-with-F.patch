@@ -1,0 +1,205 @@
+From 4266b894f7738d73f90d13c60bb03741f039abe1 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 09:07:04 +0100
+Subject: [PATCH] media: dcmipp: statcap: add STAT_PROFILE support with FULL
+ and AVERAGE
+
+Add possibility to control the way statistics are captured, either in FULL
+mode (default) with all statistics captured (but which takes several frames
+in order to achieve) or single frame capture of average statistics only
+either pre or post demosaising.
+
+Change-Id: I3cef8c6b62d46fa3be60e8fcbccfeb46b54808b1
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374632
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 107 +++++++++++++-----
+ 1 file changed, 79 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index e8e9d86495fc..48b02d516ac4 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -64,11 +64,14 @@ struct dcmipp_buf {
+ /* This structure describe the state right after the VSYNC comes */
+ enum stat_capture_state {
+ 	COLD_START,		/* Shadow: AVERAGE (RGB), Physical: stopped */
++	/* Full capture profile */
+ 	PHY_AV_RGB_SHA_BIN_0,	/* Shadow: BIN_0, Physical: AVERAGE (RGB) */
+ 	PHY_BIN_0_SHA_BIN_1,	/* Shadow: BIN_1, Physical: BIN_0 */
+ 	PHY_BIN_1_SHA_BIN_2,	/* Shadow: BIN_2, Physical: BIN_1 */
+ 	PHY_BIN_2_SHA_BIN_3,	/* Shadow: BIN_3, Physical: BIN_2 */
+ 	PHY_BIN_3_SHA_AV_RGB,	/* Shadow: AVERAGE (RGB), Physical: BIN_3 */
++	/* Average pre-post profile */
++	PHY_AV_RGB_SHA_AV_RGB,	/* Shadow: AVERAGE (RGB), Physical: AVERAGE (RGB) */
+ };
+ 
+ enum component {
+@@ -96,6 +99,7 @@ struct dcmipp_statcap_device {
+ 	struct v4l2_rect stat_region;
+ 	enum v4l2_isp_stat_avg_filter avg_filter;
+ 	enum v4l2_isp_stat_bin_comp bin_comp;
++	enum v4l2_isp_stat_profile stat_profile;
+ 
+ 	/*
+ 	 * indicate the current state of the capture stat machine,
+@@ -476,6 +480,9 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	case V4L2_CID_ISP_STAT_BIN_COMP:
+ 		vcap->bin_comp = ctrl->val;
+ 		break;
++	case V4L2_CID_ISP_STAT_PROFILE:
++		vcap->stat_profile = ctrl->val;
++		break;
+ 	}
+ 
+ 	return 0;
+@@ -511,6 +518,16 @@ static const struct v4l2_ctrl_config dcmipp_statcap_ctrls[] = {
+ 		.step	= 1,
+ 		.def	= 0,
+ 		.flags	= 0,
++	}, {
++		.ops	= &dcmipp_statcap_ctrl_ops,
++		.id	= V4L2_CID_ISP_STAT_PROFILE,
++		.type	= V4L2_CTRL_TYPE_INTEGER,
++		.name	= "ISP stat profile control",
++		.min	= 0,
++		.max	= V4L2_STAT_PROFILE_AVERAGE_POST,
++		.step	= 1,
++		.def	= 0,
++		.flags	= 0,
+ 	}
+ };
+ 
+@@ -564,6 +581,35 @@ static u32 dcmipp_statcap_get_src(u32 location,
+ 	return (location << DCMIPP_P1STXCR_SRC_LOC_SHIFT) | (comp << DCMIPP_P1STXCR_SRC_COMP_SHIFT);
+ }
+ 
++static void dcmipp_statcap_read_avg_stats(struct dcmipp_statcap_device *vcap,
++					  u32 location)
++{
++	struct stm32_dcmipp_stat_avr_bins *avr_bins =
++		location == DCMIPP_P1STXCR_SRC_LOC_PRE ? &vcap->local_buf.pre :
++							 &vcap->local_buf.post;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(vcap->local_buf.pre.average_RGB); i++) {
++		avr_bins->average_RGB[i] = reg_read(vcap, DCMIPP_P1STXSR(i));
++		/* Normalize values */
++		avr_bins->average_RGB[i] <<= 8;
++
++		/* Depending on the position & component, need to adjust in case of Bayer */
++		if (location == DCMIPP_P1STXCR_SRC_LOC_PRE &&
++		    vcap->frame_format >= MEDIA_BUS_FMT_SBGGR8_1X8 &&
++		    vcap->frame_format <= MEDIA_BUS_FMT_SRGGB16_1X16) {
++			/* raw bayer: RGB component not present for all pixels */
++			if (i == COMP_RED || i == COMP_BLUE)
++				avr_bins->average_RGB[i] *= 4;
++			else if (i == COMP_GREEN)
++				avr_bins->average_RGB[i] *= 2;
++		}
++
++		/* Divide by number of pixels */
++		avr_bins->average_RGB[i] /= (vcap->stat_region.width * vcap->stat_region.height);
++	}
++}
++
+ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ {
+ 	struct dcmipp_statcap_device *vcap =
+@@ -602,7 +648,14 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	switch (vcap->capture_state) {
+ 	case COLD_START:
+ 		stat_ready = false;
+-		location = DCMIPP_P1STXCR_SRC_LOC_PRE;
++		/*
++		 * All stats profile starts from the PRE statistics, except the
++		 * AVERAGE POST
++		 */
++		if (vcap->stat_profile == V4L2_STAT_PROFILE_AVERAGE_POST)
++			location = DCMIPP_P1STXCR_SRC_LOC_POST;
++		else
++			location = DCMIPP_P1STXCR_SRC_LOC_PRE;
+ 		/*
+ 		 * We've just started, set control registers to capture
+ 		 * AVERAGES (RGB) and leave
+@@ -641,26 +694,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 				  DCMIPP_P1STXCR_ENABLE);
+ 
+ 		/* Accumulators contains the AVERAGES (RGB) */
+-		for (i = 0; i < ARRAY_SIZE(vcap->local_buf.pre.average_RGB); i++) {
+-			avr_bins->average_RGB[i] = reg_read(vcap, DCMIPP_P1STXSR(i));
+-			/* Normalize values */
+-			avr_bins->average_RGB[i] <<= 8;
+-
+-			/* Depending on the position & component, need to adjust in case of Bayer */
+-			if (location == DCMIPP_P1STXCR_SRC_LOC_PRE &&
+-			    vcap->frame_format >= MEDIA_BUS_FMT_SBGGR8_1X8 &&
+-			    vcap->frame_format <= MEDIA_BUS_FMT_SRGGB16_1X16) {
+-				/* raw bayer: RGB component not present for all pixels */
+-				if (i == COMP_RED || i == COMP_BLUE)
+-					avr_bins->average_RGB[i] *= 4;
+-				else if (i == COMP_GREEN)
+-					avr_bins->average_RGB[i] *= 2;
+-			}
+-
+-			/* Divide by number of pixels */
+-			avr_bins->average_RGB[i] /=
+-				(vcap->stat_region.width * vcap->stat_region.height);
+-		}
++		dcmipp_statcap_read_avg_stats(vcap, location);
+ 		break;
+ 
+ 	case PHY_BIN_1_SHA_BIN_2:
+@@ -705,6 +739,11 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 		for (i = 0; i < 3; i++)
+ 			avr_bins->bins[i + 6] = reg_read(vcap, DCMIPP_P1STXSR(i));
+ 		break;
++
++	case PHY_AV_RGB_SHA_AV_RGB:
++		/* State used for the AVERAGE PRE capture mode */
++		dcmipp_statcap_read_avg_stats(vcap, location);
++		break;
+ 	}
+ 
+ 	/* If a full capture cycle has been done, output data to a buffer */
+@@ -714,14 +753,26 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+ 	spin_unlock_irq(&vcap->irqlock);
+ 
+ 	/* Update the capture_state & prev_capture_state */
+-	vcap->prev_capture_state = vcap->capture_state;
+-	if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
+-		vcap->capture_state++;
+-	} else {
+-		if (location == DCMIPP_P1STXCR_SRC_LOC_POST)
++	switch (vcap->stat_profile) {
++	case V4L2_STAT_PROFILE_FULL:
++		vcap->prev_capture_state = vcap->capture_state;
++		if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
++			vcap->capture_state++;
++		} else {
++			if (location == DCMIPP_P1STXCR_SRC_LOC_POST)
++				stat_ready = true;
++			location = !location;
++			vcap->capture_state = PHY_AV_RGB_SHA_BIN_0;
++		}
++		break;
++
++	case V4L2_STAT_PROFILE_AVERAGE_PRE:
++	case V4L2_STAT_PROFILE_AVERAGE_POST:
++		if (vcap->capture_state == COLD_START) {
++			vcap->capture_state = PHY_AV_RGB_SHA_AV_RGB;
+ 			stat_ready = true;
+-		location = !location;
+-		vcap->capture_state = PHY_AV_RGB_SHA_BIN_0;
++		}
++		break;
+ 	}
+ 
+ 	return IRQ_HANDLED;
+-- 
+2.39.5
+

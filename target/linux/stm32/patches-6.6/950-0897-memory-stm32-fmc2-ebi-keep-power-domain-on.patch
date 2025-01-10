@@ -1,0 +1,141 @@
+From be4dacdfa97d43ebf2fc0c3f2d11d433570619a3 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Mon, 26 Feb 2024 11:14:28 +0100
+Subject: [PATCH] memory: stm32-fmc2-ebi: keep power domain on
+
+MP25 FMC2 domain has to be kept on. To handle it throw PSCI OS-initiated,
+basic PM for keeping domain on is introduced.
+
+Change-Id: I7d3acd5c2e69cb90523bef7e485e2638a91f5a8e
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Link: https://lore.kernel.org/r/20240226101428.37791-6-christophe.kerello@foss.st.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366509
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/memory/stm32-fmc2-ebi.c | 41 +++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
+index 68847b453318..495feaef7b25 100644
+--- a/drivers/memory/stm32-fmc2-ebi.c
++++ b/drivers/memory/stm32-fmc2-ebi.c
+@@ -11,6 +11,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+ 
+@@ -1649,6 +1650,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ebi->dev = dev;
++	platform_set_drvdata(pdev, ebi);
+ 
+ 	ebi->data = of_device_get_match_data(dev);
+ 	if (!ebi->data)
+@@ -1666,10 +1668,14 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+ 	if (PTR_ERR(rstc) == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
+ 
+-	ret = clk_prepare_enable(ebi->clk);
++	ret = devm_pm_runtime_enable(dev);
+ 	if (ret)
+ 		return ret;
+ 
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret < 0)
++		return ret;
++
+ 	if (!IS_ERR(rstc)) {
+ 		reset_control_assert(rstc);
+ 		reset_control_deassert(rstc);
+@@ -1705,8 +1711,6 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_release;
+ 
+-	platform_set_drvdata(pdev, ebi);
+-
+ 	return 0;
+ 
+ err_release:
+@@ -1714,7 +1718,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+ 	stm32_fmc2_ebi_disable(ebi);
+ 	if (ebi->data->put_sems)
+ 		ebi->data->put_sems(ebi);
+-	clk_disable_unprepare(ebi->clk);
++	pm_runtime_put_sync_suspend(dev);
+ 
+ 	return ret;
+ }
+@@ -1728,11 +1732,27 @@ static int stm32_fmc2_ebi_remove(struct platform_device *pdev)
+ 	stm32_fmc2_ebi_disable(ebi);
+ 	if (ebi->data->put_sems)
+ 		ebi->data->put_sems(ebi);
++	pm_runtime_put_sync_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static int __maybe_unused stm32_fmc2_ebi_runtime_suspend(struct device *dev)
++{
++	struct stm32_fmc2_ebi *ebi = dev_get_drvdata(dev);
++
+ 	clk_disable_unprepare(ebi->clk);
+ 
+ 	return 0;
+ }
+ 
++static int __maybe_unused stm32_fmc2_ebi_runtime_resume(struct device *dev)
++{
++	struct stm32_fmc2_ebi *ebi = dev_get_drvdata(dev);
++
++	return clk_prepare_enable(ebi->clk);
++}
++
+ static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
+ {
+ 	struct stm32_fmc2_ebi *ebi = dev_get_drvdata(dev);
+@@ -1740,7 +1760,7 @@ static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
+ 	stm32_fmc2_ebi_disable(ebi);
+ 	if (ebi->data->put_sems)
+ 		ebi->data->put_sems(ebi);
+-	clk_disable_unprepare(ebi->clk);
++	pm_runtime_put_sync_suspend(dev);
+ 	pinctrl_pm_select_sleep_state(dev);
+ 
+ 	return 0;
+@@ -1753,8 +1773,8 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
+-	ret = clk_prepare_enable(ebi->clk);
+-	if (ret)
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret < 0)
+ 		return ret;
+ 
+ 	if (ebi->data->get_sems)
+@@ -1765,8 +1785,11 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(stm32_fmc2_ebi_pm_ops, stm32_fmc2_ebi_suspend,
+-			 stm32_fmc2_ebi_resume);
++static const struct dev_pm_ops stm32_fmc2_ebi_pm_ops = {
++	SET_RUNTIME_PM_OPS(stm32_fmc2_ebi_runtime_suspend,
++			   stm32_fmc2_ebi_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_fmc2_ebi_suspend, stm32_fmc2_ebi_resume)
++};
+ 
+ static const struct stm32_fmc2_ebi_data stm32_fmc2_ebi_mp1_data = {
+ 	.child_props = stm32_fmc2_child_props,
+-- 
+2.39.5
+

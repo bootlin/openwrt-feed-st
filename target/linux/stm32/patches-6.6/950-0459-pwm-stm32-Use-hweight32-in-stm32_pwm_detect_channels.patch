@@ -1,0 +1,55 @@
+From 4cd0b82f5a18744adacc2a80ba4f8288c8e23f89 Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Thu, 19 Oct 2023 22:07:02 +0200
+Subject: [PATCH] pwm: stm32: Use hweight32 in stm32_pwm_detect_channels
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+[ Upstream commit 41fa8f57c0d269243fe3bde2bce71e82c884b9ad ]
+
+Use hweight32() to count the CCxE bits in stm32_pwm_detect_channels().
+Since the return value is assigned to chip.npwm, change it to unsigned
+int as well.
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Stable-dep-of: 19f1016ea960 ("pwm: stm32: Fix enable count for clk in .probe()")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/pwm/pwm-stm32.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+index b91a14c895be..4bfedc2989e7 100644
+--- a/drivers/pwm/pwm-stm32.c
++++ b/drivers/pwm/pwm-stm32.c
+@@ -583,10 +583,9 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
+ 	priv->have_complementary_output = (ccer != 0);
+ }
+ 
+-static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv,
+-					      unsigned int *num_enabled)
++static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv)
+ {
+-	u32 ccer, ccer_backup;
++	u32 ccer;
+ 
+ 	/*
+ 	 * If channels enable bits don't exist writing 1 will have no
+@@ -595,9 +594,7 @@ static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv,
+ 	regmap_read(priv->regmap, TIM_CCER, &ccer_backup);
+ 	regmap_set_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
+ 	regmap_read(priv->regmap, TIM_CCER, &ccer);
+-	regmap_write(priv->regmap, TIM_CCER, ccer_backup);
+-
+-	*num_enabled = hweight32(ccer_backup & TIM_CCER_CCXE);
++	regmap_clear_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
+ 
+ 	return hweight32(ccer & TIM_CCER_CCXE);
+ }
+-- 
+2.39.5
+

@@ -1,0 +1,51 @@
+From 2639c65c5f5aaa375760786755f5a9b84d19a592 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Wed, 7 Nov 2018 17:07:43 +0100
+Subject: [PATCH] remoteproc: probe the system resource manager
+
+When a remote processor registers, populate the device tree to probe
+the SRM core driver
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I0768405daa33c3658961ccf06252e207042f044a
+---
+ drivers/remoteproc/remoteproc_core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 695cce218e8c..2f02c9089918 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -36,6 +36,7 @@
+ #include <linux/of_reserved_mem.h>
+ #include <linux/virtio_ids.h>
+ #include <linux/virtio_ring.h>
++#include <linux/of_platform.h>
+ #include <asm/byteorder.h>
+ #include <linux/platform_device.h>
+ 
+@@ -2291,6 +2292,11 @@ int rproc_add(struct rproc *rproc)
+ 	/* create debugfs entries */
+ 	rproc_create_debug_dir(rproc);
+ 
++	/* add resource manager device */
++	ret = devm_of_platform_populate(dev->parent);
++	if (ret < 0)
++		return ret;
++
+ 	/* if rproc is marked always-on, request it to boot */
+ 	if (rproc->auto_boot) {
+ 		ret = rproc_trigger_auto_boot(rproc);
+@@ -2572,6 +2578,8 @@ int rproc_del(struct rproc *rproc)
+ 	list_del_rcu(&rproc->node);
+ 	mutex_unlock(&rproc_list_mutex);
+ 
++	of_platform_depopulate(rproc->dev.parent);
++
+ 	/* Ensure that no readers of rproc_list are still active */
+ 	synchronize_rcu();
+ 
+-- 
+2.39.5
+

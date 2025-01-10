@@ -1,0 +1,113 @@
+From be7529911a979240d777adca5bcba59091b2ed1e Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@st.com>
+Date: Mon, 5 Oct 2020 08:52:18 +0200
+Subject: [PATCH] ARM: dts: stm32: add wifi over sdio on stm32mp157x-dk2
+
+This patch adds wifi over sdio (sdmmc2) on stm32mp157x-dk2.
+
+Signed-off-by: Christophe Roullier <christophe.roullier@st.com>
+Change-Id: Icf24894d6d187d7e8f006421920646cee1465c83
+---
+ arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 30 ++++++++++++++++++++++++
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 30 ++++++++++++++++++++++++
+ 2 files changed, 60 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+index b5212d54438d..525dc0a79522 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
+@@ -35,6 +35,11 @@ framebuffer {
+ 			status = "disabled";
+ 		};
+ 	};
++
++	wifi_pwrseq: wifi-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
++	};
+ };
+ 
+ &cryp1 {
+@@ -104,6 +109,31 @@ &rtc {
+ 	pinctrl-names = "default";
+ };
+ 
++/* Wifi */
++&sdmmc2 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc2_b4_pins_a>;
++	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
++	non-removable;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&v3v3>;
++	mmc-pwrseq = <&wifi_pwrseq>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "disabled";
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpiod>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
++		interrupt-names = "host-wake";
++		status = "disabled";
++	};
++};
++
+ /* Bluetooth */
+ &usart2 {
+ 	pinctrl-names = "default", "sleep", "idle";
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index d547ca0c661c..b6315528e115 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -34,6 +34,11 @@ framebuffer {
+ 			status = "disabled";
+ 		};
+ 	};
++
++	wifi_pwrseq: wifi-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
++	};
+ };
+ 
+ &cryp1 {
+@@ -104,6 +109,31 @@ &rtc {
+ 	pinctrl-names = "default";
+ };
+ 
++/* Wifi */
++&sdmmc2 {
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc2_b4_pins_a>;
++	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
++	non-removable;
++	st,neg-edge;
++	bus-width = <4>;
++	vmmc-supply = <&v3v3>;
++	mmc-pwrseq = <&wifi_pwrseq>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "disabled";
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpiod>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
++		interrupt-names = "host-wake";
++		status = "disabled";
++	};
++};
++
+ /* Bluetooth */
+ &usart2 {
+ 	pinctrl-names = "default", "sleep", "idle";
+-- 
+2.39.5
+

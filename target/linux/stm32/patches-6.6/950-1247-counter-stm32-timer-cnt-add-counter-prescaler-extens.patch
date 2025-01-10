@@ -1,0 +1,71 @@
+From 6222e11508278438c8128601bf88b11a9a8e5a4a Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Thu, 7 Mar 2024 14:33:01 +0100
+Subject: [PATCH] counter: stm32-timer-cnt: add counter prescaler extension
+
+There's a prescaler in between the selected input signal used for
+counting (CK_PSC), and the counter input (CK_CNT).
+So add the "prescaler" extension to the counter.
+
+Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Link: https://lore.kernel.org/r/20240307133306.383045-6-fabrice.gasnier@foss.st.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+(cherry picked from commit 18766e036b33ea2cd017cf49cb0be6504a8821f6)
+Change-Id: Id5cebf64c44ee8fac2fe3f847039e6b29f4138e3
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388145
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index fef5d0148263..7617dbbb161a 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -220,11 +220,40 @@ static int stm32_count_enable_write(struct counter_device *counter,
+ 	return 0;
+ }
+ 
++static int stm32_count_prescaler_read(struct counter_device *counter,
++				      struct counter_count *count, u64 *prescaler)
++{
++	struct stm32_timer_cnt *const priv = counter_priv(counter);
++	u32 psc;
++
++	regmap_read(priv->regmap, TIM_PSC, &psc);
++
++	*prescaler = psc + 1;
++
++	return 0;
++}
++
++static int stm32_count_prescaler_write(struct counter_device *counter,
++				       struct counter_count *count, u64 prescaler)
++{
++	struct stm32_timer_cnt *const priv = counter_priv(counter);
++	u32 psc;
++
++	if (!prescaler || prescaler > MAX_TIM_PSC + 1)
++		return -ERANGE;
++
++	psc = prescaler - 1;
++
++	return regmap_write(priv->regmap, TIM_PSC, psc);
++}
++
+ static struct counter_comp stm32_count_ext[] = {
+ 	COUNTER_COMP_DIRECTION(stm32_count_direction_read),
+ 	COUNTER_COMP_ENABLE(stm32_count_enable_read, stm32_count_enable_write),
+ 	COUNTER_COMP_CEILING(stm32_count_ceiling_read,
+ 			     stm32_count_ceiling_write),
++	COUNTER_COMP_COUNT_U64("prescaler", stm32_count_prescaler_read,
++			       stm32_count_prescaler_write),
+ };
+ 
+ static const enum counter_synapse_action stm32_clock_synapse_actions[] = {
+-- 
+2.39.5
+

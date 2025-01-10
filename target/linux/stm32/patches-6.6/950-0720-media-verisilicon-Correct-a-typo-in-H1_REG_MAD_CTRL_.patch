@@ -1,0 +1,37 @@
+From 759b78ead7530393a424962e2cbd84be8dbbe74c Mon Sep 17 00:00:00 2001
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Date: Thu, 24 Aug 2023 17:50:59 +0200
+Subject: [PATCH] media: verisilicon: Correct a typo in
+ H1_REG_MAD_CTRL_MAD_THRESHOLD
+
+Correct a typo in H1_REG_MAD_CTRL_MAD_THRESHOLD.
+
+Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Change-Id: I9fb1f1d83a4f603b4625fc19bbbf7238b3d89411
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/344685
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/verisilicon/hantro_h1_regs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+index 72458de5e55b..5be8ccd6b7fb 100644
+--- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
++++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
+@@ -92,7 +92,7 @@
+ #define H1_REG_STR_BUF_LIMIT				0x060
+ #define H1_REG_MAD_CTRL					0x064
+ #define    H1_REG_MAD_CTRL_QP_ADJUST(x)			((x) << 28)
+-#define    H1_REG_MAD_CTRL_MAD_THREDHOLD(x)		((x) << 22)
++#define    H1_REG_MAD_CTRL_MAD_THRESHOLD(x)		((x) << 22)
+ #define    H1_REG_MAD_CTRL_QP_SUM_DIV2(x)		((x))
+ #define H1_REG_ADDR_VP8_PROB_CNT			0x068
+ #define H1_REG_QP_VAL					0x06c
+-- 
+2.39.5
+

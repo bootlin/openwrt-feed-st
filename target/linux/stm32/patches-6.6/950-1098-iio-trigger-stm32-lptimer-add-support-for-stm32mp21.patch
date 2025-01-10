@@ -1,0 +1,33 @@
+From eaa346625f1890d2bd313f0c37fea167ce9cf757 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Fri, 24 May 2024 18:21:01 +0200
+Subject: [PATCH] iio: trigger: stm32-lptimer: add support for stm32mp21
+
+Add support for STM32MP21 SoC using new compatible. The output trigger
+list for stm32mp21 is the same as on stm32mp25.
+
+Change-Id: Icd4fd2ff41a57aba0ee2addb3bfaf9e3c01a87e5
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382340
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/trigger/stm32-lptimer-trigger.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
+index 77c74a0311c7..1549436c7c35 100644
+--- a/drivers/iio/trigger/stm32-lptimer-trigger.c
++++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
+@@ -162,6 +162,7 @@ static int stm32_lptim_trigger_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id stm32_lptim_trig_of_match[] = {
+ 	{ .compatible = "st,stm32-lptimer-trigger", .data = (void *)&stm32mp15_lptim_cfg },
++	{ .compatible = "st,stm32mp21-lptimer-trigger", .data = (void *)&stm32mp25_lptim_cfg},
+ 	{ .compatible = "st,stm32mp25-lptimer-trigger", .data = (void *)&stm32mp25_lptim_cfg},
+ 	{},
+ };
+-- 
+2.39.5
+

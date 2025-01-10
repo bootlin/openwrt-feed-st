@@ -1,0 +1,37 @@
+From 14cca4c373316e8bd183d37e7d265027f7139961 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Tue, 21 May 2024 10:47:20 +0200
+Subject: [PATCH] arm64: dts: st: add a35ss support for stm32mp215f-dk board
+
+Add A35 Sub System node for stm32mp215f-dk board.
+
+Change-Id: Iaeebc51a680dc40ad76aa131e20eeabe314d92f4
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384056
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 7b8679358e4e..a234ef52f37d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -138,6 +138,10 @@ sound {
+ 	};
+ };
+ 
++&a35ss_syscfg {
++	status = "okay";
++};
++
+ &crc {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

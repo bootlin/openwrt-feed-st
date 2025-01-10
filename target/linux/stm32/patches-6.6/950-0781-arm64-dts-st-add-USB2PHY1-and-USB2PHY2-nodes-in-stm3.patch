@@ -1,0 +1,36 @@
+From 03400f95f19fd4fa08040b196d9a346dd7e4f814 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Fri, 17 Nov 2023 11:20:16 +0100
+Subject: [PATCH] arm64: dts: st: add USB2PHY1 and USB2PHY2 nodes in
+ stm32mp257f-dk board
+
+Add the required node(s) for USB2PHY1 and USB2PHY2 support
+These are 2 instances of same IP USB2-FEMTO-PHY used by
+USB2H and USB3DRD ctrl respectively
+
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Change-Id: Ic8edb94b24522e411b42d281488f365dd72142ad
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 17d49b681d4b..ad8a8db7ddcc 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -205,3 +205,11 @@ &usart6 {
+ 	uart-has-rtscts;
+ 	status = "disabled";
+ };
++
++&usb2_phy1 {
++	status = "okay";
++};
++
++&usb2_phy2 {
++	status = "okay";
++};
+-- 
+2.39.5
+

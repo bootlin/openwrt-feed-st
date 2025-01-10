@@ -1,0 +1,43 @@
+From 5586f9f5351aeeff021785f98913baeceff6b05d Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Thu, 11 Apr 2024 15:50:38 +0200
+Subject: [PATCH] memory: stm32: inherit DMA parent configuration
+
+OMI children are not proper OF platform devices, so in order for them
+to be treated as valid DMA masters we need a bit of a hack to force
+them to inherit the OSPI node DMA configuration.
+
+Change-Id: I4495487e6693d7aa2b6cd161b6f0d346e7c9c906
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/375008
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/memory/stm32-omi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
+index 4a430c7eb7f6..44bdb0664f9a 100644
+--- a/drivers/memory/stm32-omi.c
++++ b/drivers/memory/stm32-omi.c
+@@ -591,6 +591,13 @@ static int stm32_omi_probe(struct platform_device *pdev)
+ 	omi->vdev = vdev;
+ 	platform_set_drvdata(pdev, omi);
+ 
++	/*
++	 * OMI children are not proper OF platform devices, so in order for them
++	 * to be treated as valid DMA masters we need a bit of a hack to force
++	 * them to inherit the OSPI node DMA configuration.
++	 */
++	of_dma_configure(&vdev->dev, dev->of_node, true);
++
+ 	ret = platform_device_add(vdev);
+ 	if (ret) {
+ 		platform_device_put(vdev);
+-- 
+2.39.5
+

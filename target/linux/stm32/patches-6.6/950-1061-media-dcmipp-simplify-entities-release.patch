@@ -1,0 +1,162 @@
+From e201a5585df4b6299853e08ed46a514be39244f0 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 26 Mar 2024 12:00:49 +0100
+Subject: [PATCH] media: dcmipp: simplify entities release
+
+Simplify the release handling since there is no need to rely on
+subdev release mechanism.
+
+Change-Id: I46eb010b3bb57279a93336f7b4b299b24e1f2c14
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374634
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c        | 14 ++------------
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-common.c |  1 +
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-isp.c    | 14 ++------------
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c       | 14 ++------------
+ .../st/stm32/stm32-dcmipp/dcmipp-statcap.c         |  1 +
+ 5 files changed, 8 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index ef2d1458e5b7..33e457f7ec30 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -632,23 +632,13 @@ static const struct v4l2_subdev_ops dcmipp_byteproc_ops = {
+ 	.video = &dcmipp_byteproc_video_ops,
+ };
+ 
+-static void dcmipp_byteproc_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
+-
+-	kfree(byteproc);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_byteproc_int_ops = {
+-	.release = dcmipp_byteproc_release,
+-};
+-
+ void dcmipp_byteproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_byteproc_device *byteproc =
+ 			container_of(ved, struct dcmipp_byteproc_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &byteproc->sd);
++	kfree(byteproc);
+ }
+ 
+ struct dcmipp_ent_device *
+@@ -673,7 +663,7 @@ dcmipp_byteproc_ent_init(const char *entity_name,
+ 				     &dcmipp->v4l2_dev, entity_name,
+ 				     MEDIA_ENT_F_PROC_VIDEO_SCALER,
+ 				     ARRAY_SIZE(pads_flag), pads_flag,
+-				     &dcmipp_byteproc_int_ops,
++				     NULL,
+ 				     &dcmipp_byteproc_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+index 562933e08d62..13b6c63bdb26 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+@@ -108,4 +108,5 @@ dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved, struct v4l2_subdev *sd)
+ {
+ 	media_entity_cleanup(ved->ent);
+ 	v4l2_device_unregister_subdev(sd);
++	dcmipp_pads_cleanup(ved->pads);
+ }
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+index a3dc7663cd8e..c5b64e2fd4c6 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
+@@ -614,23 +614,13 @@ static const struct v4l2_subdev_ops dcmipp_isp_ops = {
+ 	.video = &dcmipp_isp_video_ops,
+ };
+ 
+-static void dcmipp_isp_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_isp_device *isp = v4l2_get_subdevdata(sd);
+-
+-	kfree(isp);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_isp_int_ops = {
+-	.release = dcmipp_isp_release,
+-};
+-
+ void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_isp_device *isp =
+ 			container_of(ved, struct dcmipp_isp_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &isp->sd);
++	kfree(isp);
+ }
+ 
+ static int dcmipp_isp_link_validate(struct media_link *link)
+@@ -673,7 +663,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(const char *entity_name,
+ 				     &dcmipp->v4l2_dev, entity_name,
+ 				     MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER,
+ 				     ARRAY_SIZE(pads_flag), pads_flag,
+-				     &dcmipp_isp_int_ops, &dcmipp_isp_ops,
++				     NULL, &dcmipp_isp_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
+ 		kfree(isp);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+index 56f24c04bef1..21fa26d76f37 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
+@@ -1141,23 +1141,13 @@ static const struct v4l2_subdev_ops dcmipp_pixelproc_ops = {
+ 	.video = &dcmipp_pixelproc_video_ops,
+ };
+ 
+-static void dcmipp_pixelproc_release(struct v4l2_subdev *sd)
+-{
+-	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
+-
+-	kfree(pixelproc);
+-}
+-
+-static const struct v4l2_subdev_internal_ops dcmipp_pixelproc_int_ops = {
+-	.release = dcmipp_pixelproc_release,
+-};
+-
+ void dcmipp_pixelproc_ent_release(struct dcmipp_ent_device *ved)
+ {
+ 	struct dcmipp_pixelproc_device *pixelproc =
+ 			container_of(ved, struct dcmipp_pixelproc_device, ved);
+ 
+ 	dcmipp_ent_sd_unregister(ved, &pixelproc->sd);
++	kfree(pixelproc);
+ }
+ 
+ static int dcmipp_name_to_pipe_id(const char *name)
+@@ -1226,7 +1216,7 @@ dcmipp_pixelproc_ent_init(const char *entity_name,
+ 				     MEDIA_PAD_FL_SINK,
+ 				     MEDIA_PAD_FL_SOURCE,
+ 				     },
+-				     &dcmipp_pixelproc_int_ops, &dcmipp_pixelproc_ops,
++				     NULL, &dcmipp_pixelproc_ops,
+ 				     NULL, NULL);
+ 	if (ret) {
+ 		kfree(pixelproc);
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+index 48b02d516ac4..43e8e6010f3d 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
+@@ -547,6 +547,7 @@ void dcmipp_statcap_ent_release(struct dcmipp_ent_device *ved)
+ 	struct dcmipp_statcap_device *vcap =
+ 		container_of(ved, struct dcmipp_statcap_device, ved);
+ 
++	mutex_destroy(&vcap->lock);
+ 	media_entity_cleanup(ved->ent);
+ 	vb2_video_unregister_device(&vcap->vdev);
+ }
+-- 
+2.39.5
+

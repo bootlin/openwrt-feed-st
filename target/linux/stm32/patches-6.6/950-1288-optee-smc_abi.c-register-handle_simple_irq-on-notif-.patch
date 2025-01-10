@@ -1,0 +1,45 @@
+From 59f8fad219ade2a6d543822f28c2506e32cbbcf6 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 17 Jul 2024 09:42:51 +0200
+Subject: [PATCH] optee: smc_abi.c: register handle_simple_irq on notif irq
+
+Register the handle_irq = handle_simple_irq for theV IRQ in the domain
+optee notif id. This handle was missing and cause trace for unhandle IRQ
+when this IRQ is postponned by the IRQ framework, for example when IRQ
+is marked "wakeup-source" and the interruption is masked during
+early resume phase (NO IRQ) and resend_irqs() is called
+for resume_irqs() after optee_it_irq_unmask() call which cause a trace:
+
+irq 73, desc: 00000000eb028fa6, depth: 0, count: 0, unhandled: 0
+->handle_irq():  000000009f62e3a0, handle_bad_irq+0x0/0x220
+->irq_data.chip(): 0000000052895e7c, optee_it_irq_chip+0x0/0x108
+->action(): 00000000b166eb5b
+->action->handler(): 0000000047c44b54, gpio_keys_irq_isr+0x0/0x120
+   IRQ_NOPROBE set
+   IRQS_REPLAY set
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ibec9f7796180d357fe90dc157ab7041b70fbc133
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393828
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/tee/optee/smc_abi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index 8034c17d955d..9ae7e0d69dee 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -1130,7 +1130,8 @@ static int optee_it_alloc(struct irq_domain *d, unsigned int virq,
+ 
+ 	hwirq = fwspec->param[0];
+ 
+-	irq_domain_set_hwirq_and_chip(d, virq, hwirq, &optee_it_irq_chip, d->host_data);
++	irq_domain_set_info(d, virq, hwirq, &optee_it_irq_chip, d->host_data,
++			    handle_simple_irq, NULL, NULL);
+ 
+ 	return 0;
+ }
+-- 
+2.39.5
+

@@ -1,0 +1,62 @@
+From 9ae23b9a6668b6b534b68573a2a1840e9a5a647f Mon Sep 17 00:00:00 2001
+From: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Date: Wed, 2 Oct 2024 12:07:30 +0200
+Subject: [PATCH] arm64: dts: Add GPU Thermal trip points
+
+Add GPU Thermal trip point for stm32mp23
+
+Change-Id: Ic5564b0469f24f9965698fa6f053b8137ab6063e
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408369
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp235.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp235.dtsi b/arch/arm64/boot/dts/st/stm32mp235.dtsi
+index e65774b7f260..477089da0731 100644
+--- a/arch/arm64/boot/dts/st/stm32mp235.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp235.dtsi
+@@ -6,6 +6,27 @@
+ #include <dt-bindings/power/st,stm32mp25-power.h>
+ #include "stm32mp233.dtsi"
+ 
++/ {
++	thermal-zones {
++		cpu-thermal {
++			trips {
++				gpu_alert: gpu-alert {
++					temperature = <110000>;
++					hysteresis = <10000>;
++					type = "passive";
++				};
++			};
++
++			cooling-maps {
++				map1 {
++					trip = <&gpu_alert>;
++					cooling-device = <&gpu 1 6>;
++				};
++			};
++		};
++	};
++};
++
+ &ltdc {
+ 	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>, <&lvds 0>;
+ 	clock-names = "bus", "ref", "lcd", "lvds";
+@@ -58,5 +79,8 @@ gpu: gpu@48280000 {
+ 		power-domains = <&scmi_devpd PD_SCMI_GPU>, <&CLUSTER_PD>;
+ 		access-controllers = <&rifsc 79>;
+ 		status = "disabled";
++
++		throttle,max_state = <6>;
++		#cooling-cells = <2>;
+ 	};
+ };
+-- 
+2.39.5
+

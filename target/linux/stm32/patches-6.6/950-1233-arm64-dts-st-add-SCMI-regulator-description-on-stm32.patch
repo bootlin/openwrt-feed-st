@@ -1,0 +1,68 @@
+From 047a4bee3afcfc83cd578e06005cef10f195a6e6 Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Thu, 27 Jun 2024 10:11:26 +0200
+Subject: [PATCH] arm64: dts: st: add SCMI regulator description on
+ stm32mp215f-dk
+
+Add regulator description on stm32mp215f-dk.
+
+Change-Id: Ib516038abd34e514399f89b61781f0a4433b88f3
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390014
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 24 +++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 12c5cab094a5..375ee23d4f47 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -141,7 +141,7 @@ &cryp1 {
+ 
+ &csi {
+ 	vdd-supply =  <&scmi_vddcore>;
+-	vdda18-supply = <&scmi_v1v8>;
++	vdda18-supply = <&scmi_vdda_1v8>;
+ 	status = "disabled";
+ 	ports {
+ 		#address-cells = <1>;
+@@ -330,13 +330,25 @@ mdf_endpoint1: endpoint {
+ };
+ 
+ &scmi_regu {
+-	scmi_vddcore: regulator@11  {
+-		reg = <VOLTD_SCMI_STPMIC_BUCK2>;
++	scmi_vddcore: regulator@5  {
++		reg = <VOLTD_SCMI_STPMIC_BUCK1>;
+ 		regulator-name = "vddcore";
+ 	};
+-	scmi_v1v8: regulator@14  {
+-		reg = <VOLTD_SCMI_STPMIC_BUCK5>;
+-		regulator-name = "v1v8";
++	scmi_vdd3v3_usb: regulator@15  {
++		reg = <VOLTD_SCMI_STPMIC_LDO4>;
++		regulator-name = "vdd3v3_usb";
++	};
++	scmi_vdd_flash: regulator@16  {
++		reg = <VOLTD_SCMI_STPMIC_LDO5>;
++		regulator-name = "vdd_flash";
++	};
++	scmi_vdda_1v8: regulator@17  {
++		reg = <VOLTD_SCMI_STPMIC_LDO6>;
++		regulator-name = "vdda_1v8";
++	};
++	scmi_v3v3: regulator@21  {
++		reg = <VOLTD_SCMI_STPMIC_GPO1>;
++		regulator-name = "v3v3";
+ 	};
+ };
+ 
+-- 
+2.39.5
+

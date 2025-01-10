@@ -1,0 +1,41 @@
+From 72c410dbeceb16d292dc96e929965d7d5d6cd60c Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 31 Jan 2024 15:16:59 +0100
+Subject: [PATCH] arm64: dts: st: add dsi support on stm32mp255
+
+This patch adds DSI support on stm32mp255.
+
+Change-Id: Icd182bb0a38553b1e034e2f8179c3a43d223a961
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp255.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+index a96fcb6cfbfc..05dbc97cf941 100644
+--- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
+@@ -11,6 +11,20 @@ &ltdc {
+ };
+ 
+ &rifsc {
++	dsi: dsi@48000000 {
++		compatible = "st,stm32mp25-dsi";
++		reg = <0x48000000 0x800>;
++		#clock-cells = <0>;
++		clocks = <&rcc CK_BUS_DSI>, <&rcc CK_KER_DSIPHY>,
++			 <&rcc CK_KER_LTDC>;
++		clock-names = "pclk", "ref", "px_clk";
++		resets = <&rcc DSI_R>;
++		reset-names = "apb";
++		access-controllers = <&rifsc 81>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++	};
++
+ 	lvds: lvds@48060000 {
+ 		#clock-cells = <0>;
+ 		compatible = "st,stm32mp25-lvds";
+-- 
+2.39.5
+

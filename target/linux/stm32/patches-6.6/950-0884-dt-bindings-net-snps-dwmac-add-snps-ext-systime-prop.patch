@@ -1,0 +1,40 @@
+From 8f1e8dfb2378375ebf39306237168ebf30271124 Mon Sep 17 00:00:00 2001
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+Date: Tue, 12 Mar 2024 09:32:07 +0100
+Subject: [PATCH] dt-bindings: net: snps,dwmac: add snps,ext-systime property
+
+Used to allow ptp external system time
+
+Change-Id: I5eb8d850c6cab01faa893ee98e5cb3ef80f9e1dd
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@st.com>
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/294638
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365954
+---
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index 5c2769dc689a..0865de5183d1 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -492,6 +492,11 @@ properties:
+     description:
+       Frequency division factor for MDC clock.
+ 
++  snps,ext-systime:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Enable PTP External System Time bus.
++
+   mdio:
+     $ref: mdio.yaml#
+     unevaluatedProperties: false
+-- 
+2.39.5
+

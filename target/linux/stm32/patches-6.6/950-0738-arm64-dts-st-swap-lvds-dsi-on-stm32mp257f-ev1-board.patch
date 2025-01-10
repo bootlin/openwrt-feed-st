@@ -1,0 +1,54 @@
+From 57a3ecf1ed767d7b19aca3dcc18686f8d7ae1516 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Wed, 21 Jun 2023 19:02:19 +0200
+Subject: [PATCH] arm64: dts: st: swap lvds & dsi on stm32mp257f-ev1 board
+
+To get the HDMI bridge on first display node, dsi & lvds endpoints
+are permuted.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I0bb510c07317a58e03b9c5b362cf4bfaa9ca1e7e
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 7bb0aa62b808..d053c78bf6fb 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -178,7 +178,7 @@ ports {
+ 		port@0 {
+ 			reg = <0>;
+ 			dsi_in: endpoint {
+-				remote-endpoint = <&ltdc_ep1_out>;
++				remote-endpoint = <&ltdc_ep0_out>;
+ 			};
+ 		};
+ 
+@@ -357,12 +357,12 @@ port {
+ 
+ 		ltdc_ep0_out: endpoint@0 {
+ 			reg = <0>;
+-			remote-endpoint = <&lvds_in>;
++			remote-endpoint = <&dsi_in>;
+ 		};
+ 
+ 		ltdc_ep1_out: endpoint@1 {
+ 			reg = <1>;
+-			remote-endpoint = <&dsi_in>;
++			remote-endpoint = <&lvds_in>;
+ 		};
+ 	};
+ };
+@@ -377,7 +377,7 @@ ports {
+ 		port@0 {
+ 			reg = <0>;
+ 			lvds_in: endpoint {
+-				remote-endpoint = <&ltdc_ep0_out>;
++				remote-endpoint = <&ltdc_ep1_out>;
+ 			};
+ 		};
+ 
+-- 
+2.39.5
+

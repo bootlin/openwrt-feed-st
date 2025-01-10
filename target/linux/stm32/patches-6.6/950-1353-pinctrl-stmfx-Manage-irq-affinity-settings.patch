@@ -1,0 +1,70 @@
+From 63ba68986b32b571806b0e38e3772b193603a9ad Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Fri, 29 Mar 2024 16:31:45 +0100
+Subject: [PATCH] pinctrl: stmfx: Manage irq affinity settings
+
+Trying to set the affinity of the interrupt associated to stmfx
+pinctrl results in a write error because stmfx pinctrl was not
+managing the set of the irq smp affinity. It is resolved by
+adding the .irq_set_affinity to the stmfx pinctrl irq_chip struct and
+fill it with a function to manage affinity. The function return an
+error explaining to set the affinity of the gpio interrupt
+provider to change stmfx pinctrl smp_affinity.
+
+Change-Id: I584c14351bbc1541091f3c8006d6cb0d7f87ddfc
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/401706
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/pinctrl/pinctrl-stmfx.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/drivers/pinctrl/pinctrl-stmfx.c b/drivers/pinctrl/pinctrl-stmfx.c
+index 0974bbf57b54..2f4e21eb7966 100644
+--- a/drivers/pinctrl/pinctrl-stmfx.c
++++ b/drivers/pinctrl/pinctrl-stmfx.c
+@@ -6,6 +6,7 @@
+  * Author(s): Amelie Delaunay <amelie.delaunay@st.com>.
+  */
+ #include <linux/gpio/driver.h>
++#include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/mfd/stmfx.h>
+ #include <linux/module.h>
+@@ -601,6 +602,23 @@ static void stmfx_pinctrl_irq_print_chip(struct irq_data *d, struct seq_file *p)
+ 	seq_printf(p, dev_name(pctl->dev));
+ }
+ 
++static int stmfx_pinctrl_irq_set_affinity(struct irq_data *d, const struct cpumask *dest,
++					  bool force)
++{
++	struct gpio_chip *gpio_chip = irq_data_get_irq_chip_data(d);
++	struct stmfx_pinctrl *pctl = gpiochip_get_data(gpio_chip);
++	struct i2c_client *client = to_i2c_client(pctl->stmfx->dev);
++	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL * 10, 1);
++
++	if (__ratelimit(&rs))
++		dev_notice(pctl->dev, "Can't set the affinity, set it for irq %d instead\n",
++			   client->irq);
++	if (force)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static const struct irq_chip stmfx_pinctrl_irq_chip = {
+ 	.irq_mask = stmfx_pinctrl_irq_mask,
+ 	.irq_unmask = stmfx_pinctrl_irq_unmask,
+@@ -611,6 +629,7 @@ static const struct irq_chip stmfx_pinctrl_irq_chip = {
+ 	.irq_release_resources = stmfx_gpio_irq_release_resources,
+ 	.irq_print_chip = stmfx_pinctrl_irq_print_chip,
+ 	.flags = IRQCHIP_IMMUTABLE,
++	.irq_set_affinity = IS_ENABLED(CONFIG_SMP) ? stmfx_pinctrl_irq_set_affinity : NULL,
+ };
+ 
+ static int stmfx_pinctrl_gpio_function_enable(struct stmfx_pinctrl *pctl)
+-- 
+2.39.5
+

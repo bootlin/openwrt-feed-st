@@ -1,0 +1,76 @@
+From fa90311a1f7973f60af40373dd34a97d15ef6148 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Tue, 25 Jun 2024 14:11:09 +0200
+Subject: [PATCH] arm64: dts: st: add thermal zone description on stm32mp21
+
+Add thermal zone description on STM32MP21.
+
+Rules established by STMicroelectronics:
+-Tcritical = Tj - (sensor tolerance). With Tj the junction temperature.
+-Tlimitation = 90% of Tcritical.
+
+On STM32MP21, Tj=125C even if the overdrive is used. So we have:
+- STM32MP2xxA/C/D/F, Tcritical = 125-3 = 122C
+- STM32MP2xxA/C/D/F, Tlimitation = 110C
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: If3053d48f71a33886678250434501342126f3fb2
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/389479
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 30 ++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 9ae7919df695..64a62564d1f2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -23,6 +23,7 @@ cpu0: cpu@0 {
+ 			enable-method = "psci";
+ 			power-domains = <&CPU_PD0>;
+ 			power-domain-names = "psci";
++			#cooling-cells = <2>;
+ 		};
+ 	};
+ 
+@@ -116,6 +117,35 @@ RET_PD: power-domain-retention {
+ 		};
+ 	};
+ 
++	thermal-zones {
++		cpu-thermal {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
++			thermal-sensors = <&dts 0>;
++
++			trips {
++				cpu_alert: cpu-alert {
++					temperature = <110000>;
++					hysteresis = <10000>;
++					type = "passive";
++				};
++
++				cpu-crit {
++					temperature = <122000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				map0 {
++					trip = <&cpu_alert>;
++					cooling-device = <&cpu0 1 1>;
++				};
++			};
++		};
++	};
++
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupt-parent = <&intc>;
+-- 
+2.39.5
+

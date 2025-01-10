@@ -1,0 +1,50 @@
+From a597c4deeee3833f80e7f01bf3e4b88474f9807b Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 5 Apr 2023 16:19:02 +0200
+Subject: [PATCH] media: stm32: dcmi: stop the dma transfer on overrun
+
+Ensure to stop the dma transfer whenever receiving a overrun
+to avoid having a buffer partially filled with a frame and
+partially with the next frame.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I93d954c1771f8263b52dd7eb06eb30217d07ef98
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/299246
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/media/platform/st/stm32/stm32-dcmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
+index d19d58a8ad51..74afdeaecf3e 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
+@@ -406,9 +406,21 @@ static irqreturn_t dcmi_irq_thread(int irq, void *arg)
+ 	spin_lock_irq(&dcmi->irqlock);
+ 
+ 	if (dcmi->misr & IT_OVR) {
++		/* Disable capture */
++		reg_clear(dcmi->regs, DCMI_CR, CR_CAPTURE);
++
+ 		dcmi->overrun_count++;
++
+ 		if (dcmi->overrun_count > OVERRUN_ERROR_THRESHOLD)
+ 			dcmi->errors_count++;
++
++		spin_unlock_irq(&dcmi->irqlock);
++		dmaengine_terminate_sync(dcmi->dma_chan);
++
++		if (dcmi_restart_capture(dcmi))
++			dev_err(dcmi->dev, "%s: Cannot restart capture\n", __func__);
++
++		return IRQ_HANDLED;
+ 	}
+ 	if (dcmi->misr & IT_ERR)
+ 		dcmi->errors_count++;
+-- 
+2.39.5
+

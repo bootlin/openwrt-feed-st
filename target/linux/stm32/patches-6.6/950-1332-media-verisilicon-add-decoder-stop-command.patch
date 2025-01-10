@@ -1,0 +1,82 @@
+From 7aa3c131d1a6110cb9104f4c51f4d6f811b085e9 Mon Sep 17 00:00:00 2001
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Date: Mon, 24 Jun 2024 16:54:08 +0200
+Subject: [PATCH] media: verisilicon: add decoder stop command
+
+Implement decoder stop command to well manage end-of-stream
+with stateful decoder such as JPEG decoder.
+
+Change-Id: I6c7d55959a904638e29f2ea5dc07dede9e629597
+Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393589
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../media/platform/verisilicon/hantro_v4l2.c  | 42 ++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
+index 12f22b2057cc..fa1910ce5230 100644
+--- a/drivers/media/platform/verisilicon/hantro_v4l2.c
++++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
+@@ -756,6 +756,44 @@ static int vidioc_encoder_cmd(struct file *file, void *priv,
+ 	return 0;
+ }
+ 
++static int vidioc_try_decoder_cmd(struct file *file, void *priv,
++				  struct v4l2_decoder_cmd *dc)
++{
++	struct hantro_ctx *ctx = fh_to_ctx(priv);
++
++	if (ctx->vpu_src_fmt->codec_mode != HANTRO_MODE_JPEG_DEC)
++		return v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv, dc);
++
++	return v4l2_m2m_ioctl_try_decoder_cmd(file, priv, dc);
++}
++
++static int vidioc_decoder_cmd(struct file *file, void *priv,
++			      struct v4l2_decoder_cmd *dc)
++{
++	struct hantro_ctx *ctx = fh_to_ctx(priv);
++	int ret;
++
++	if (ctx->vpu_src_fmt->codec_mode != HANTRO_MODE_JPEG_DEC)
++		return v4l2_m2m_ioctl_stateless_decoder_cmd(file, priv, dc);
++
++	ret = v4l2_m2m_ioctl_try_decoder_cmd(file, priv, dc);
++	if (ret < 0)
++		return ret;
++
++	if (!vb2_is_streaming(v4l2_m2m_get_src_vq(ctx->fh.m2m_ctx)))
++		return 0;
++
++	ret = v4l2_m2m_ioctl_decoder_cmd(file, priv, dc);
++	if (ret < 0)
++		return ret;
++
++	if (dc->cmd == V4L2_DEC_CMD_STOP &&
++	    v4l2_m2m_has_stopped(ctx->fh.m2m_ctx))
++		v4l2_event_queue_fh(&ctx->fh, &hantro_eos_event);
++
++	return 0;
++}
++
+ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
+ 	.vidioc_querycap = vidioc_querycap,
+ 	.vidioc_enum_framesizes = vidioc_enum_framesizes,
+@@ -786,8 +824,8 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
+ 	.vidioc_g_selection = vidioc_g_selection,
+ 	.vidioc_s_selection = vidioc_s_selection,
+ 
+-	.vidioc_decoder_cmd = v4l2_m2m_ioctl_stateless_decoder_cmd,
+-	.vidioc_try_decoder_cmd = v4l2_m2m_ioctl_stateless_try_decoder_cmd,
++	.vidioc_try_decoder_cmd = vidioc_try_decoder_cmd,
++	.vidioc_decoder_cmd = vidioc_decoder_cmd,
+ 
+ 	.vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
+ 	.vidioc_encoder_cmd = vidioc_encoder_cmd,
+-- 
+2.39.5
+

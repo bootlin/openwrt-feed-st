@@ -1,0 +1,87 @@
+From 89985ab305929048b3c1743b15e6fe9fc1e63825 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Mon, 27 May 2024 13:47:08 +0200
+Subject: [PATCH] media: stm32: dcmipp: avoid duplicated format on enum in
+ bytecap
+
+Avoid duplication of enumerated pixelformat on the bytecap
+video capture device.  Indeed, since the bytecap format list
+contains both CSI & parallel 16bits formats, ensure that same
+pixelformat are not reported twice when performing enumeration
+of supported formats.
+
+Change-Id: Iadb53adf15dca330b8b54b47f1014b8ffd3cde24
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382695
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 42 +++++++++----------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+index 1fa3ab39a64b..99ffc3843d93 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+@@ -260,34 +260,34 @@ static int dcmipp_bytecap_enum_fmt_vid_cap(struct file *file, void *priv,
+ {
+ 	const struct dcmipp_bytecap_pix_map *vpix;
+ 	unsigned int index = f->index;
+-	unsigned int i;
++	unsigned int i, prev_pixelformat = 0;
+ 
+-	if (f->mbus_code) {
+-		/*
+-		 * If a media bus code is specified, only enumerate formats
+-		 * compatible with it.
+-		 */
+-		for (i = 0; i < ARRAY_SIZE(dcmipp_bytecap_pix_map_list); i++) {
+-			vpix = &dcmipp_bytecap_pix_map_list[i];
+-			if (vpix->code != f->mbus_code)
+-				continue;
++	/*
++	 * List up all formats (or only ones matching f->mbus_code), taking
++	 * care of removing duplicated entries (due to support of both
++	 * parallel & csi 16 bits formats
++	 */
++	for (i = 0; i < ARRAY_SIZE(dcmipp_bytecap_pix_map_list); i++) {
++		vpix = &dcmipp_bytecap_pix_map_list[i];
++		/* Skip formats not matching requested mbus code */
++		if (f->mbus_code && vpix->code != f->mbus_code)
++			continue;
+ 
+-			if (index == 0)
+-				break;
++		/* Skip duplicated pixelformat */
++		if (vpix->pixelformat == prev_pixelformat)
++			continue;
+ 
+-			index--;
+-		}
++		prev_pixelformat = vpix->pixelformat;
+ 
+-		if (i == ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
+-			return -EINVAL;
+-	} else {
+-		/* Otherwise, enumerate all formats. */
+-		if (f->index >= ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
+-			return -EINVAL;
++		if (index == 0)
++			break;
+ 
+-		vpix = &dcmipp_bytecap_pix_map_list[f->index];
++		index--;
+ 	}
+ 
++	if (i == ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
++		return -EINVAL;
++
+ 	f->pixelformat = vpix->pixelformat;
+ 
+ 	return 0;
+-- 
+2.39.5
+

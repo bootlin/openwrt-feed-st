@@ -1,0 +1,42 @@
+From 719599424d5915404e26b04bfd2a4d29327f8584 Mon Sep 17 00:00:00 2001
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Date: Wed, 13 Mar 2024 10:51:34 +0100
+Subject: [PATCH] arm64: dts: st: add RISAF4 node to stm32mp251.dtsi
+
+Add RISAF 4 node to this device tree SoC file.
+
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Change-Id: Iaacc998bb3158390ba494413009179f5eb4c11cd
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/366284
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381294
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 427d34a48996..bf77cb8dc0e2 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2384,6 +2384,13 @@ pcie_rc: pcie@48400000 {
+ 			};
+ 		};
+ 
++		risaf4: risaf@420d0000 {
++			compatible = "st,stm32mp25-risaf-enc";
++			reg = <0x420d0000 0x1000>;
++			clocks = <&rcc CK_BUS_RISAF4>;
++			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
++		};
++
+ 		bsec: efuse@44000000 {
+ 			compatible = "st,stm32mp25-bsec";
+ 			reg = <0x44000000 0x1000>;
+-- 
+2.39.5
+

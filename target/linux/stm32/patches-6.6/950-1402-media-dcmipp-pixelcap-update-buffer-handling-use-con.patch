@@ -1,0 +1,255 @@
+From 522a625a96b1a87673f141fae7ff9d1635355144 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Fri, 6 Sep 2024 17:06:25 +0200
+Subject: [PATCH] media: dcmipp: pixelcap: update buffer handling & use
+ continuous mode
+
+Update buffer handling to be done same as for bytecap.
+
+Change-Id: I1f74dda3f4f8e840b588222840a6bd80f022ceed
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402875
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 117 ++++++++++--------
+ 1 file changed, 62 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+index 7609ef26bf5a..f51ae8a592ab 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
+@@ -172,7 +172,13 @@ struct dcmipp_pixelcap_device {
+ 
+ 	enum dcmipp_state state;
+ 
+-	struct dcmipp_buf *active;
++	/*
++	 * DCMIPP driver is handling 2 buffers
++	 * active: buffer into which DCMIPP is currently writing into
++	 * next: buffer given to the DCMIPP and which will become
++	 *       automatically active on next VSYNC
++	 */
++	struct dcmipp_buf *active, *next;
+ 
+ 	void __iomem *regs;
+ 
+@@ -187,6 +193,8 @@ struct dcmipp_pixelcap_device {
+ 		u32 buffers;
+ 		u32 vsync;
+ 		u32 frame;
++		u32 underrun;
++		u32 nactive;
+ 	} count;
+ };
+ 
+@@ -567,9 +575,6 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ 	reg_set(vcap, DCMIPP_CMIER, vcap->cmier);
+ 	spin_unlock(&vcap->vdev.v4l2_dev->lock);
+ 
+-	/* Snapshot mode */
+-	reg_set(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTMODE);
+-
+ 	/* Enable pipe at the end of programming */
+ 	reg_set(vcap, DCMIPP_PxFSCR(vcap->pipe_id), DCMIPP_PxFSCR_PIPEN);
+ 
+@@ -580,12 +585,12 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+ 	buf = list_first_entry_or_null(&vcap->buffers, typeof(*buf), list);
+ 	if (!buf) {
+ 		dev_dbg(vcap->dev, "Start streaming is deferred to next buffer queueing\n");
+-		vcap->active = NULL;
++		vcap->next = NULL;
+ 		vcap->state = DCMIPP_WAIT_FOR_BUFFER;
+ 		return 0;
+ 	}
+-	vcap->active = buf;
+-	dev_dbg(vcap->dev, "Start active [%d] %p phy=%pad\n",
++	vcap->next = buf;
++	dev_dbg(vcap->dev, "Start with next [%d] %p phy=%pad\n",
+ 		buf->vb.vb2_buf.index, buf, &buf->paddr);
+ 
+ 	vcap->state = DCMIPP_RUNNING;
+@@ -669,9 +674,9 @@ static void dcmipp_pixelcap_stop_streaming(struct vb2_queue *vq)
+ 	pm_runtime_put(vcap->dev);
+ 
+ 	if (vcap->count.errors)
+-		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d), buffers=%d\n",
+-			 vcap->count.errors, vcap->count.overrun,
+-			 vcap->count.buffers);
++		dev_warn(vcap->dev, "Some errors found while streaming: errors=%d (overrun=%d, nactive=%d), underrun=%d, buffers=%d\n",
++			 vcap->count.errors, vcap->count.overrun, vcap->count.nactive,
++			 vcap->count.underrun, vcap->count.buffers);
+ }
+ 
+ static int dcmipp_pixelcap_buf_prepare(struct vb2_buffer *vb)
+@@ -740,17 +745,15 @@ static void dcmipp_pixelcap_buf_queue(struct vb2_buffer *vb2_buf)
+ 	list_add_tail(&buf->list, &vcap->buffers);
+ 
+ 	if (vcap->state == DCMIPP_WAIT_FOR_BUFFER) {
+-		vcap->active = buf;
+-		dev_dbg(vcap->dev, "Restart active [%d] %p phy=%pad\n",
++		vcap->next = buf;
++		dev_dbg(vcap->dev, "Restart with next [%d] %p phy=%pad\n",
+ 			buf->vb.vb2_buf.index, buf, &buf->paddr);
+ 
++		dcmipp_start_capture(vcap, buf);
++
+ 		vcap->state = DCMIPP_RUNNING;
+ 
+ 		spin_unlock_irq(&vcap->irqlock);
+-		if (dcmipp_start_capture(vcap, buf))
+-			dev_err(vcap->dev,
+-				"%s: Cannot restart capture on new buffer\n",
+-				__func__);
+ 		return;
+ 	}
+ 
+@@ -833,9 +836,6 @@ static void dcmipp_buffer_done(struct dcmipp_pixelcap_device *vcap,
+ {
+ 	struct vb2_v4l2_buffer *vbuf;
+ 
+-	if (!buf)
+-		return;
+-
+ 	list_del_init(&buf->list);
+ 
+ 	vbuf = &buf->vb;
+@@ -849,43 +849,43 @@ static void dcmipp_buffer_done(struct dcmipp_pixelcap_device *vcap,
+ 	dev_dbg(vcap->dev, "Done  [%d] %p phy=%pad\n", buf->vb.vb2_buf.index,
+ 		buf, &buf->paddr);
+ 	vcap->count.buffers++;
+-	vcap->active = NULL;
+ }
+ 
+ /* irqlock must be held */
+ static void
+-dcmipp_pixelcap_prepare_next_frame(struct dcmipp_pixelcap_device *vcap)
++dcmipp_pixelcap_set_next_frame_or_stop(struct dcmipp_pixelcap_device *vcap)
+ {
+-	struct dcmipp_buf *buf;
++	if (!vcap->next && list_is_singular(&vcap->buffers)) {
++		/*
++		 * If there is no available buffer (none or a single one in the list while two
++		 * are expected), stop the capture (effective for next frame). On-going frame
++		 * capture will continue till FRAME END but no further capture will be done.
++		 */
++		reg_clear(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTREQ);
+ 
+-	/* Configure address register with next buffer */
+-	buf = list_first_entry_or_null(&vcap->buffers, typeof(*buf), list);
+-	if (!buf) {
+ 		dev_dbg(vcap->dev,
+ 			"Capture restart deferred to next buffer queueing\n");
+-		vcap->active = NULL;
++		vcap->next = NULL;
+ 		vcap->state = DCMIPP_WAIT_FOR_BUFFER;
+ 		return;
+ 	}
+-	vcap->active = buf;
++
++	/* If we don't have buffer yet, pick the one after active */
++	if (!vcap->next)
++		vcap->next = list_next_entry(vcap->active, list);
+ 
+ 	/*
+ 	 * Set frame addresses
+ 	 * Those registers are shadowed and will be taken into
+ 	 * account on next VSYNC (start of next frame)
+ 	 */
+-	if (buf->paddrs[0])
+-		reg_write(vcap, DCMIPP_PxPPM0AR1(vcap->pipe_id),
+-			  buf->paddrs[0]);
+-
+-	if (buf->paddrs[1])
+-		reg_write(vcap, DCMIPP_P1PPM1AR1, buf->paddrs[1]);
+-
+-	if (buf->paddrs[2])
+-		reg_write(vcap, DCMIPP_P1PPM2AR1, buf->paddrs[2]);
+-
+-	/* Capture request */
+-	reg_set(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTREQ);
++	reg_write(vcap, DCMIPP_PxPPM0AR1(vcap->pipe_id), vcap->next->paddrs[0]);
++	if (vcap->next->paddrs[1])
++		reg_write(vcap, DCMIPP_P1PPM1AR1, vcap->next->paddrs[1]);
++	if (vcap->next->paddrs[2])
++		reg_write(vcap, DCMIPP_P1PPM2AR1, vcap->next->paddrs[2]);
++	dev_dbg(vcap->dev, "Write [%d] %p phy=%pad\n",
++		vcap->next->vb.vb2_buf.index, vcap->next, &vcap->next->paddr);
+ }
+ 
+ /* irqlock must be held */
+@@ -895,13 +895,13 @@ static void dcmipp_pixelcap_process_frame(struct dcmipp_pixelcap_device *vcap)
+ 	struct dcmipp_buf *buf = vcap->active;
+ 
+ 	if (!buf) {
+-		dev_dbg(vcap->dev, "skip NULL active frame\n");
++		vcap->count.nactive++;
++		vcap->count.errors++;
+ 		return;
+ 	}
+ 
+ 	dcmipp_buffer_done(vcap, buf, vcap->format.sizeimage, err);
+-
+-	dcmipp_pixelcap_prepare_next_frame(vcap);
++	vcap->active = NULL;
+ }
+ 
+ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+@@ -919,19 +919,8 @@ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+ 	cmsr2_pxframef = DCMIPP_CMSR2_PxFRAMEF(vcap->pipe_id);
+ 
+ 	if (vcap->cmsr2 & cmsr2_pxovrf) {
+-		vcap->count.overrun++;
+-		spin_unlock_irq(&vcap->irqlock);
+-		return IRQ_HANDLED;
+-	}
+-
+-	if (vcap->cmsr2 & cmsr2_pxframef &&
+-	    vcap->cmsr2 & cmsr2_pxvsyncf) {
+-		/* If both IT FRAME and VSYNC are received together
+-		 * buffers will be corrupted, skip this frame
+-		 */
+ 		vcap->count.errors++;
+-		spin_unlock_irq(&vcap->irqlock);
+-		return IRQ_HANDLED;
++		vcap->count.overrun++;
+ 	}
+ 
+ 	if (vcap->cmsr2 & cmsr2_pxframef) {
+@@ -940,8 +929,26 @@ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+ 		dcmipp_pixelcap_process_frame(vcap);
+ 	}
+ 
+-	if (vcap->cmsr2 & cmsr2_pxvsyncf)
++	if (vcap->cmsr2 & cmsr2_pxvsyncf) {
+ 		vcap->count.vsync++;
++		if (vcap->state == DCMIPP_WAIT_FOR_BUFFER) {
++			vcap->count.underrun++;
++			goto out;
++		}
++
++		/*
++		 * On VSYNC, the previously set next buffer is going to become active thanks to
++		 * the shadowing mechanism of the DCMIPP. In most of the cases, since a FRAMEEND
++		 * has already come, pointer next is NULL since active is reset during the
++		 * FRAMEEND handling. However, in case of framerate adjustment, there are more
++		 * VSYNC than FRAMEEND. Thus we recycle the active (but not used) buffer and put it
++		 * back into next.
++		 */
++		swap(vcap->active, vcap->next);
++		dcmipp_pixelcap_set_next_frame_or_stop(vcap);
++	}
++
++out:
+ 
+ 	spin_unlock_irq(&vcap->irqlock);
+ 	return IRQ_HANDLED;
+-- 
+2.39.5
+

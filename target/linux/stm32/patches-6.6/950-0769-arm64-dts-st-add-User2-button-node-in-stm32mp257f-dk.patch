@@ -1,0 +1,46 @@
+From 745237e6fe04d20de9d9b4c08094e6e72a801365 Mon Sep 17 00:00:00 2001
+From: Patrice Chotard <patrice.chotard@foss.st.com>
+Date: Thu, 16 Nov 2023 17:14:12 +0100
+Subject: [PATCH] arm64: dts: st: add User2 button node in stm32mp257f-dk
+
+Add the gpio-keys node for the 'User2' button on the stm32mp257f-dk board.
+
+Change-Id: I7cd8ca2ea5bbc774ffdbd59b6494db8c2d70a3d0
+Signed-off-by: Olivier BIDEAU <olivier.bideau@st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 1da9438826b3..b590f1bbd717 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
+ #include "stm32mp257.dtsi"
+ #include "stm32mp25xf.dtsi"
+ #include "stm32mp25-pinctrl.dtsi"
+@@ -25,6 +26,16 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		button-user-2 {
++			label = "User-2";
++			linux,code = <BTN_2>;
++			gpios = <&gpioc 11 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++	};
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+-- 
+2.39.5
+

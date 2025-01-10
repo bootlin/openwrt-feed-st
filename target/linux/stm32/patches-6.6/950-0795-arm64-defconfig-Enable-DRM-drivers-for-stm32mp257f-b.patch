@@ -1,0 +1,67 @@
+From 72ff95362051c89c78b86648c003bc737e81f984 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 23 Feb 2024 08:54:07 +0100
+Subject: [PATCH] arm64: defconfig: Enable DRM drivers for stm32mp257f boards
+
+This sets DRM drivers. Default configuration uses them as builtin drivers
+so that splash screen can be displayed earlier in the boot process.
+In the package of enabled drivers there is :
+
+	* DRM framework
+	* DRM STM drivers
+	* DRM DSI and STM DSI
+	* STM LVDS
+	* DSI and LVDS panels used from default config
+	* Simple BACKLIGHT drivers
+	* TOUCHSCREEN drivers for DSI and LVDS
+
+Change-Id: I11604dfda0a17c4c9b341097b58324663f890727
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ .../fragment-02-defconfig-addons.config       | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 2b15080d25c1..bc55d43ac332 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -1,7 +1,26 @@
+ #  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-defconfig-addons.config -o fragment-02-defconfig-addons.config
++CONFIG_BACKLIGHT_CLASS_DEVICE=y
++CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CLKSRC_STM32_LP=y
+ CONFIG_COUNTER=m
++CONFIG_DRM=y
++CONFIG_DRM_BRIDGE=y
++CONFIG_DRM_DISPLAY_CONNECTOR=y
++CONFIG_DRM_DW_MIPI_DSI=y
++CONFIG_DRM_I2C_ADV7511=y
++CONFIG_DRM_KMS_HELPER=y
++CONFIG_DRM_MIPI_DSI=y
++CONFIG_DRM_PANEL=y
++CONFIG_DRM_PANEL_BRIDGE=y
++CONFIG_DRM_PANEL_LVDS=y
++CONFIG_DRM_PANEL_RAYDIUM_RM68200=y
++CONFIG_DRM_PANEL_SIMPLE=y
++CONFIG_DRM_SIMPLEDRM=y
++CONFIG_DRM_STM=y
++CONFIG_DRM_STM_DSI=y
++CONFIG_DRM_STM_LVDS=y
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_HDMI=y
+ CONFIG_I2C_RPMSG=m
+ CONFIG_I2C_STM32F7=y
+ CONFIG_I3C=y
+@@ -55,6 +74,8 @@ CONFIG_STM32_I3C_MASTER=m
+ CONFIG_STM32_IPCC=y
+ CONFIG_STM32_OMI=y
+ CONFIG_STM32_OMM=y
++CONFIG_TOUCHSCREEN_GOODIX=y
++CONFIG_TOUCHSCREEN_ILI210X=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
+-- 
+2.39.5
+

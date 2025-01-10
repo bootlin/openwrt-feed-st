@@ -1,0 +1,38 @@
+From b9ed386edd94581e3bbfcf38faa912064aa80a9b Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Tue, 28 May 2024 15:38:52 +0200
+Subject: [PATCH] arm64: dts: st: add a35ss node on stm32mp21
+
+Add a35ss_syscfg node for stm32mp21x platform.
+
+Change-Id: Ie55b1bf8a67654fb81ca93bba30cdedc45c9afde
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384055
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 0ed2a0a07722..b33f0938824e 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -2076,6 +2076,12 @@ nand-controller@4,0 {
+ 				status = "disabled";
+ 			};
+ 		};
++
++		a35ss_syscfg: syscon@48802000  {
++			compatible = "st,stm32mp25-a35ss-syscfg", "syscon";
++			reg = <0x48802000 0xac>;
++			status = "disabled";
++		};
+ 	};
+ 
+ 	soc@1 {
+-- 
+2.39.5
+

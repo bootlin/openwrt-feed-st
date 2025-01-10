@@ -1,0 +1,52 @@
+From c621f090aebcb3b939101d00f53d265bbb373a33 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Thu, 14 Dec 2023 09:54:07 +0100
+Subject: [PATCH] Revert "tty: Fix lookahead_buf crash with serdev"
+
+This reverts commit 56c14fb4086b2de6921dd70251b19b364b909ea1.
+
+This series seems to introduce some regressions on tty buffer.
+Revert it temporary.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: If77bc695c185e2af0c8329e207c762fe98fe1566
+---
+ drivers/tty/tty_buffer.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 5f6d0cf67571..3b99774d16de 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -400,6 +400,7 @@ static void lookahead_bufs(struct tty_port *port, struct tty_buffer *head)
+ 
+ 	while (head) {
+ 		struct tty_buffer *next;
++		u8 *p, *f = NULL;
+ 		unsigned int count;
+ 
+ 		/*
+@@ -418,16 +419,11 @@ static void lookahead_bufs(struct tty_port *port, struct tty_buffer *head)
+ 			continue;
+ 		}
+ 
+-		if (port->client_ops->lookahead_buf) {
+-			u8 *p, *f = NULL;
+-
+-			p = char_buf_ptr(head, head->lookahead);
+-			if (head->flags)
+-				f = flag_buf_ptr(head, head->lookahead);
+-
+-			port->client_ops->lookahead_buf(port, p, f, count);
+-		}
++		p = char_buf_ptr(head, head->lookahead);
++		if (head->flags)
++			f = flag_buf_ptr(head, head->lookahead);
+ 
++		port->client_ops->lookahead_buf(port, p, f, count);
+ 		head->lookahead += count;
+ 	}
+ }
+-- 
+2.39.5
+

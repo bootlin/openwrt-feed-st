@@ -1,0 +1,52 @@
+From 28427497782df89b9dc6adfffa1d4abf825846a4 Mon Sep 17 00:00:00 2001
+From: Yang Li <yang.lee@linux.alibaba.com>
+Date: Wed, 20 Dec 2023 08:51:43 +0800
+Subject: [PATCH] tools/counter: Remove unneeded semicolon
+
+./tools/counter/counter_watch_events.c:233:3-4: Unneeded semicolon
+./tools/counter/counter_watch_events.c:234:2-3: Unneeded semicolon
+./tools/counter/counter_watch_events.c:333:2-3: Unneeded semicolon
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7782
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20231220005143.84987-1-yang.lee@linux.alibaba.com
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Change-Id: Ie05f19402a8abb126c9cce604b416b481a5cdc69
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388577
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ tools/counter/counter_watch_events.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
+index 37d1b4b3e63d..107631e0f2e3 100644
+--- a/tools/counter/counter_watch_events.c
++++ b/tools/counter/counter_watch_events.c
+@@ -230,8 +230,8 @@ int main(int argc, char **argv)
+ 			break;
+ 		default:
+ 			return EXIT_FAILURE;
+-		};
+-	};
++		}
++	}
+ 
+ 	if (nwatch) {
+ 		watches = calloc(nwatch, sizeof(*watches));
+@@ -330,7 +330,7 @@ int main(int argc, char **argv)
+ 			i++;
+ 			break;
+ 		}
+-	};
++	}
+ 
+ 	if (debug)
+ 		print_watch(watches, nwatch);
+-- 
+2.39.5
+

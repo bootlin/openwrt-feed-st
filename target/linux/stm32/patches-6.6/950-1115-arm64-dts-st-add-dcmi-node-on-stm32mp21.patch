@@ -1,0 +1,46 @@
+From baf5adf65075e9fefd8401d9b5b36961d4065336 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 19:47:58 +0200
+Subject: [PATCH] arm64: dts: st: add dcmi node on stm32mp21
+
+Add the node for the DCMI controller in stm32mp211.dtsi
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: Ia02e317f7496e6e05d3e929eb8914ac1ece1a734
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381855
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 9f9ee4660a5e..fad7f3c0a0b1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1290,6 +1290,19 @@ ospi1: spi@40430000 {
+ 				status = "disabled";
+ 			};
+ 
++			dcmi: dcmi@404a0000 {
++				compatible = "st,stm32-dcmi";
++				reg = <0x404a0000 0x400>;
++				interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc DCMIPSSI_R>;
++				clocks = <&rcc CK_BUS_DCMIPSSI>;
++				clock-names = "mclk";
++				dmas = <&hpdma 105 0x60 0x3012>;
++				dma-names = "tx";
++				access-controllers = <&rifsc 88>;
++				status = "disabled";
++			};
++
+ 			crc: crc@404c0000 {
+ 				compatible = "st,stm32f7-crc";
+ 				reg = <0x404c0000 0x400>;
+-- 
+2.39.5
+

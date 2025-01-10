@@ -1,0 +1,90 @@
+From f4bb58da345a9155ac3f9adea9467cc875f37be8 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 29 Mar 2024 14:53:08 +0100
+Subject: [PATCH] arm64: dts: st: update hdmi node in stm32mp257f-ev1
+
+The version of hdmi bridge supported by the eval board
+is no longer adv7535 but adv7533.
+
+Change-Id: I493f7ca4cdd61824e2eed232ca1d552ebc8abb39
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372050
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index dbbe2768456c..46c748cd921c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -83,7 +83,7 @@ hdmi: connector {
+ 
+ 		port {
+ 			hdmi_connector_in: endpoint {
+-				remote-endpoint = <&adv7535_out>;
++				remote-endpoint = <&adv753x_out>;
+ 			};
+ 		};
+ 	};
+@@ -237,7 +237,7 @@ dsi_in: endpoint {
+ 		port@1 {
+ 			reg = <1>;
+ 			dsi_out1: endpoint {
+-				remote-endpoint = <&adv7535_in>;
++				remote-endpoint = <&adv753x_in>;
+ 			};
+ 		};
+ 	};
+@@ -344,8 +344,12 @@ imx335_ep: endpoint {
+ 		};
+ 	};
+ 
+-	adv7535: hdmi@3d {
+-		compatible = "adi,adv7535";
++	adv753x: hdmi@3d {
++		/*
++		 * With MB1232 board, use "adi,adv7533" (1080p30)
++		 * With MB1752 board, use "adi,adv7535" (1080p60)
++		 */
++		compatible = "adi,adv7533";
+ 		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
+ 		reg-names = "main", "cec", "edid", "packet";
+ 		status = "disabled";
+@@ -364,21 +368,21 @@ ports {
+ 
+ 			port@0 {
+ 				reg = <0>;
+-				adv7535_in: endpoint {
++				adv753x_in: endpoint {
+ 					remote-endpoint = <&dsi_out1>;
+ 				};
+ 			};
+ 
+ 			port@1 {
+ 				reg = <1>;
+-				adv7535_out: endpoint {
++				adv753x_out: endpoint {
+ 					remote-endpoint = <&hdmi_connector_in>;
+ 				};
+ 			};
+ 
+ 			port@2 {
+ 				reg = <2>;
+-				adv7535_tx_endpoint: endpoint {
++				adv753x_tx_endpoint: endpoint {
+ 					remote-endpoint = <&i2s2_endpoint>;
+ 				};
+ 			};
+@@ -416,7 +420,7 @@ &i2s2 {
+ 
+ 	i2s2_port: port {
+ 		i2s2_endpoint: endpoint {
+-			remote-endpoint = <&adv7535_tx_endpoint>;
++			remote-endpoint = <&adv753x_tx_endpoint>;
+ 			format = "i2s";
+ 			mclk-fs = <256>;
+ 		};
+-- 
+2.39.5
+

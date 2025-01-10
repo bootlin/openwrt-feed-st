@@ -1,0 +1,45 @@
+From 6c05aa565eeba346d27a5178f8adac23f939d950 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 16 May 2024 09:47:07 +0200
+Subject: [PATCH] arm64: dts: st: add ltdc on stm32mp215
+
+The LCD-TFT Display Controller (LTDC) handles display composition
+and scaling. It provides a parallel digital RGB flow to be used by
+display interfaces.
+
+Change-Id: I14d1b981c9ef2367a33060918af4e9f7ae6269c8
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/380689
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215.dtsi | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
+index d2c63e92b3cc..cddb67891c47 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
+@@ -5,5 +5,18 @@
+  */
+ #include "stm32mp213.dtsi"
+ 
+-/ {
++&rifsc {
++	ltdc: display-controller@48010000 {
++		compatible = "st,stm32mp21-ltdc";
++		reg = <0x48010000 0x400>;
++		st,syscon = <&syscfg>;
++		interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
++		clock-names = "bus", "lcd";
++		resets = <&rcc LTDC_R>;
++		access-controllers = <&rifsc 80>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++	};
+ };
+-- 
+2.39.5
+

@@ -1,0 +1,36 @@
+From 1f36eeb034462fe0b1a2e5090be763d31b79937b Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Fri, 15 Mar 2024 16:08:43 +0100
+Subject: [PATCH] drm/stm: ltdc: disable all layers
+
+Immediately commit disable of layers before switching off LTDC
+(also support by shadow registers).
+
+Change-Id: I962746d1d3783d986f8e5c92ca8caad24c3cfbe1
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/367213
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372037
+---
+ drivers/gpu/drm/stm/ltdc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 53fb23709bf3..bab24dcecf42 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -971,6 +971,10 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	/* immediately commit disable of layers before switching off LTDC */
+ 	if (!ldev->caps.plane_reg_shadow)
+ 		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
++	else
++		for (layer_index = 0; layer_index < ldev->caps.nb_layers; layer_index++)
++			regmap_write_bits(ldev->regmap, LTDC_L1RCR + layer_index * LAY_OFS,
++					  LXRCR_IMR | LXRCR_VBR | LXRCR_GRMSK, LXRCR_IMR);
+ 
+ 	/* Disable LTDC */
+ 	regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
+-- 
+2.39.5
+

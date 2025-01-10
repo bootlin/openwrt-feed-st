@@ -1,0 +1,70 @@
+From dc37d6970e6b75e45aaba0d18fcb5dc4fcdde96d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Fri, 22 Dec 2023 23:50:43 +0100
+Subject: [PATCH] irqchip/stm32-exti: Convert to platform_driver::remove_new()
+ callback
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
+
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
+
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Link: https://lore.kernel.org/r/ac551b89025bafadce05102b94596f8cd3564a32.1703284359.git.u.kleine-koenig@pengutronix.de
+Change-Id: I629bde29f51b2289c7d4dffead49821bafe041f1
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/383177
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/irqchip/irq-stm32-exti.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 971240e2e31b..26a5193d0ae4 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -898,10 +898,9 @@ static void stm32_exti_remove_irq(void *data)
+ 	irq_domain_remove(domain);
+ }
+ 
+-static int stm32_exti_remove(struct platform_device *pdev)
++static void stm32_exti_remove(struct platform_device *pdev)
+ {
+ 	stm32_exti_h_syscore_deinit();
+-	return 0;
+ }
+ 
+ static int stm32_exti_probe(struct platform_device *pdev)
+@@ -991,10 +990,10 @@ MODULE_DEVICE_TABLE(of, stm32_exti_ids);
+ 
+ static struct platform_driver stm32_exti_driver = {
+ 	.probe		= stm32_exti_probe,
+-	.remove		= stm32_exti_remove,
++	.remove_new	= stm32_exti_remove,
+ 	.driver		= {
+-		.name	= "stm32_exti",
+-		.of_match_table = stm32_exti_ids,
++		.name		= "stm32_exti",
++		.of_match_table	= stm32_exti_ids,
+ 	},
+ };
+ 
+-- 
+2.39.5
+

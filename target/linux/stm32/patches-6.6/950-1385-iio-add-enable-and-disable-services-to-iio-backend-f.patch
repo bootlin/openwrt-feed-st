@@ -1,0 +1,80 @@
+From 6829fa54b28c2b4f3bc133ca8ffdbab7f79a4216 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 5 Jun 2024 11:04:06 +0200
+Subject: [PATCH] iio: add enable and disable services to iio backend framework
+
+Add iio_backend_disable() and iio_backend_enable() APIs to allow
+IIO backend consumer to request backend disabling and enabling.
+
+Change-Id: Idc6ce725aa4c2f9eedb9018748a0141b1ed1cdaf
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397585
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+---
+ drivers/iio/industrialio-backend.c | 25 ++++++++++++++++++++++++-
+ include/linux/iio/backend.h        |  2 ++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index 87ce5cb3a6f7..62d3323dd156 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -150,6 +150,29 @@ static void __iio_backend_disable(void *back)
+ 	iio_backend_void_op_call(back, disable);
+ }
+ 
++/**
++ * iio_backend_disable - Backend disable
++ * @back: Backend device
++ */
++void iio_backend_disable(struct iio_backend *back)
++{
++	__iio_backend_disable(back);
++}
++EXPORT_SYMBOL_NS_GPL(iio_backend_disable, IIO_BACKEND);
++
++/**
++ * iio_backend_enable - Backend enable
++ * @back: Backend device
++ *
++ * RETURNS:
++ * 0 on success, negative error number on failure.
++ */
++int iio_backend_enable(struct iio_backend *back)
++{
++	return iio_backend_op_call(back, enable);
++}
++EXPORT_SYMBOL_NS_GPL(iio_backend_enable, IIO_BACKEND);
++
+ /**
+  * devm_iio_backend_enable - Device managed backend enable
+  * @dev: Consumer device for the backend
+@@ -162,7 +185,7 @@ int devm_iio_backend_enable(struct device *dev, struct iio_backend *back)
+ {
+ 	int ret;
+ 
+-	ret = iio_backend_op_call(back, enable);
++	ret = iio_backend_enable(back);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
+index 3b9bab881de0..c1eff3dbe5eb 100644
+--- a/include/linux/iio/backend.h
++++ b/include/linux/iio/backend.h
+@@ -133,6 +133,8 @@ struct iio_backend_info {
+ int iio_backend_chan_enable(struct iio_backend *back, unsigned int chan);
+ int iio_backend_chan_disable(struct iio_backend *back, unsigned int chan);
+ int devm_iio_backend_enable(struct device *dev, struct iio_backend *back);
++int iio_backend_enable(struct iio_backend *back);
++void iio_backend_disable(struct iio_backend *back);
+ int iio_backend_data_format_set(struct iio_backend *back, unsigned int chan,
+ 				const struct iio_backend_data_fmt *data);
+ int iio_backend_data_source_set(struct iio_backend *back, unsigned int chan,
+-- 
+2.39.5
+

@@ -1,0 +1,118 @@
+From 990ca6fe864ea6df79eb07d30919798e809b03b9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Fri, 29 Mar 2024 16:02:34 +0100
+Subject: [PATCH] arm64: dts: st: add USART nodes on stm32mp21
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Update device-tree stm32mp211.dtsi to add USART features.
+
+Add usart 1, 3, 5, 6, 7 nodes, with compatible, interrupt, clock,
+DMA configuration and access controller.
+On usart 2 and 4, add DMA configuration.
+
+Change-Id: I5c2be8a9b201d6e1d932683cb4f8e903f34606eb
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372676
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 66 ++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 1385f0c538e9..17575a23052c 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -222,19 +222,85 @@ usart2: serial@400e0000 {
+ 				reg = <0x400e0000 0x400>;
+ 				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_USART2>;
++				dmas = <&hpdma 11 0x40 0x12>,
++				       <&hpdma 12 0x40 0x3021>;
++				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 32>;
+ 				status = "disabled";
+ 			};
+ 
++			usart3: serial@400f0000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x400f0000 0x400>;
++				interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_USART3>;
++				dmas = <&hpdma 13 0x40 0x12>,
++				       <&hpdma 14 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 33>;
++				status = "disabled";
++			};
++
+ 			uart4: serial@40100000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x40100000 0x400>;
+ 				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&rcc CK_KER_UART4>;
++				dmas = <&hpdma 15 0x40 0x12>,
++				       <&hpdma 16 0x40 0x3021>;
++				dma-names = "rx", "tx";
+ 				access-controllers = <&rifsc 34>;
+ 				status = "disabled";
+ 			};
+ 
++			uart5: serial@40110000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x40110000 0x400>;
++				interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_UART5>;
++				dmas = <&hpdma 17 0x40 0x12>,
++				       <&hpdma 18 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 35>;
++				status = "disabled";
++			};
++
++			usart6: serial@40220000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x40220000 0x400>;
++				interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_USART6>;
++				dmas = <&hpdma 19 0x40 0x12>,
++				       <&hpdma 20 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 36>;
++				status = "disabled";
++			};
++
++			usart1: serial@40330000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x40330000 0x400>;
++				interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_USART1>;
++				dmas = <&hpdma 9 0x40 0x12>,
++				       <&hpdma 10 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 31>;
++				status = "disabled";
++			};
++
++			uart7: serial@40370000 {
++				compatible = "st,stm32h7-uart";
++				reg = <0x40370000 0x400>;
++				interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&rcc CK_KER_UART7>;
++				dmas = <&hpdma 21 0x40 0x12>,
++				       <&hpdma 22 0x40 0x3021>;
++				dma-names = "rx", "tx";
++				access-controllers = <&rifsc 37>;
++				status = "disabled";
++			};
++
+ 			crc: crc@404c0000 {
+ 				compatible = "st,stm32f7-crc";
+ 				reg = <0x404c0000 0x400>;
+-- 
+2.39.5
+

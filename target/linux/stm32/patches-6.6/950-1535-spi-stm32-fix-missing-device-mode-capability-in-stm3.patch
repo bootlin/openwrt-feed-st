@@ -1,0 +1,40 @@
+From 9efd436dc43fb7767bb3510d69f1f30624c77168 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 9 Oct 2024 14:07:07 +0200
+Subject: [PATCH] spi: stm32: fix missing device mode capability in stm32mp25
+
+The STM32MP25 SOC has capability to behave in device mode however
+missing .has_device_mode within its stm32mp25_spi_cfg structure leads
+to not being able to enable the device mode.
+
+Fixes: a4e7908abf0c ("spi: stm32: add st,stm32mp25-spi compatible supporting STM32MP25 soc")
+Cc: stable@vger.kernel.org
+
+Change-Id: I37ad689cb100fba1f7ef8c39c7e910e12dabedb7
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/410158
+Tested-by: Alain VOLMAT <alain.volmat@st.com>
+Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ drivers/spi/spi-stm32.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 331c036c44bc..d9e57a3cd9b7 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1984,6 +1984,7 @@ static const struct stm32_spi_cfg stm32mp25_spi_cfg = {
+ 	.baud_rate_div_max = STM32H7_SPI_MBR_DIV_MAX,
+ 	.has_fifo = true,
+ 	.prevent_dma_burst = true,
++	.has_device_mode = true,
+ };
+ 
+ static const struct of_device_id stm32_spi_of_match[] = {
+-- 
+2.39.5
+

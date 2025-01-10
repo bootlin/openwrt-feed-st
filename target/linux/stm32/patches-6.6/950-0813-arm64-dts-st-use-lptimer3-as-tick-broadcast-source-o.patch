@@ -1,0 +1,38 @@
+From 86533805f0fe82e55f9231641868c78a7d2c8142 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Fri, 10 Nov 2023 15:54:37 +0100
+Subject: [PATCH] arm64: dts: st: use lptimer3 as tick broadcast source on
+ stm32mp257f-ev1
+
+During the low power modes the generic ARM timer is deactivated, so the
+the tick broadcast is used, based on LPTIMER3 which is clocked by LSE on
+STMicroelectronics boards.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: I8b3c02df1ebc9ad7aedef74b52c5f4503920c46a
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index 541a156ab87a..22747eab9973 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -386,6 +386,14 @@ &ipcc1 {
+ 	status = "okay";
+ };
+ 
++/* use LPTIMER with tick broadcast for suspend mode */
++&lptimer3 {
++	status = "okay";
++	timer {
++		status = "okay";
++	};
++};
++
+ &ltdc {
+ 	rotation-memory = <&ltdc_sec_rotation>;
+ 	status = "okay";
+-- 
+2.39.5
+

@@ -1,0 +1,56 @@
+From 0c8f49b85fafded9f631031bc70e3f9f1b67e9c8 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 7 Feb 2024 15:58:06 +0100
+Subject: [PATCH] media: dcmipp: byteproc: add 1X16 and more bayer formats
+ support
+
+Add 1X16 format support since when using CSI input formats are
+1X16 instead of 2X8.
+Add as well for bayer formats.
+
+Change-Id: I681750db92c705022e670aee4174b5682364f3a1
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c     | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+index 7cfef1f4498c..b9799f8c1607 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+@@ -48,15 +48,32 @@ struct dcmipp_byteproc_pix_map {
+ 	}
+ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+ 	PIXMAP_MBUS_BPP(RGB565_2X8_LE, 2),
++	PIXMAP_MBUS_BPP(RGB565_1X16, 2),
+ 	PIXMAP_MBUS_BPP(YUYV8_2X8, 2),
++	PIXMAP_MBUS_BPP(YUYV8_1X16, 2),
+ 	PIXMAP_MBUS_BPP(YVYU8_2X8, 2),
++	PIXMAP_MBUS_BPP(YVYU8_1X16, 2),
+ 	PIXMAP_MBUS_BPP(UYVY8_2X8, 2),
++	PIXMAP_MBUS_BPP(UYVY8_1X16, 2),
+ 	PIXMAP_MBUS_BPP(VYUY8_2X8, 2),
++	PIXMAP_MBUS_BPP(VYUY8_1X16, 2),
+ 	PIXMAP_MBUS_BPP(Y8_1X8, 1),
+ 	PIXMAP_MBUS_BPP(SBGGR8_1X8, 1),
+ 	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1),
+ 	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1),
+ 	PIXMAP_MBUS_BPP(SRGGB8_1X8, 1),
++	PIXMAP_MBUS_BPP(SBGGR10_1X10, 2),
++	PIXMAP_MBUS_BPP(SGBRG10_1X10, 2),
++	PIXMAP_MBUS_BPP(SGRBG10_1X10, 2),
++	PIXMAP_MBUS_BPP(SRGGB10_1X10, 2),
++	PIXMAP_MBUS_BPP(SBGGR12_1X12, 2),
++	PIXMAP_MBUS_BPP(SGBRG12_1X12, 2),
++	PIXMAP_MBUS_BPP(SGRBG12_1X12, 2),
++	PIXMAP_MBUS_BPP(SRGGB12_1X12, 2),
++	PIXMAP_MBUS_BPP(SBGGR14_1X14, 2),
++	PIXMAP_MBUS_BPP(SGBRG14_1X14, 2),
++	PIXMAP_MBUS_BPP(SGRBG14_1X14, 2),
++	PIXMAP_MBUS_BPP(SRGGB14_1X14, 2),
+ 	PIXMAP_MBUS_BPP(JPEG_1X8, 1),
+ };
+ 
+-- 
+2.39.5
+

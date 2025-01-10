@@ -1,0 +1,49 @@
+From 32eca07c3ccd122ebd1356ae3feab7452007b00f Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@st.com>
+Date: Tue, 1 Jun 2021 14:11:12 +0200
+Subject: [PATCH] ARM: dts: stm32: Add power domains support on stm32mp131
+
+Add power domains supports on stm32mp131.
+pd_core power domain is used to maintain VddCore at nominal voltage.
+pd_core_ret domain is used to maintain VddCore at retention voltage.
+
+Change-Id: I052ab1b42512bf40b8e3b385949052decee120d9
+Signed-off-by: Pascal Paillet <p.paillet@st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index b2cb0f70c39b..56d7380ddc4c 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -96,6 +96,26 @@ psci {
+ 		method = "smc";
+ 	};
+ 
++	pm_domain {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "st,stm32mp157c-pd";
++
++		pd_core_ret: core-ret-power-domain@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++			#power-domain-cells = <0>;
++			label = "CORE-RETENTION";
++
++			pd_core: core-power-domain@2 {
++				reg = <2>;
++				#power-domain-cells = <0>;
++				label = "CORE";
++			};
++		};
++	};
++
+ 	timer {
+ 		compatible = "arm,armv7-timer";
+ 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
+-- 
+2.39.5
+

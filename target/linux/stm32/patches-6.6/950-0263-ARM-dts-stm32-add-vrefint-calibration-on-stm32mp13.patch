@@ -1,0 +1,31 @@
+From 2f8b130f137ad723499665515a71a5106e7fe87b Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 24 Feb 2022 18:14:15 +0100
+Subject: [PATCH] ARM: dts: stm32: add vrefint calibration on stm32mp13
+
+Describe vrefint calibration cell to be retrieved through bsec,
+on STM32MP13x SoCs family.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Change-Id: Ic448c6e25274e7b607659f74619d7e23df8c026c
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index cd56d389cf7f..d2645f5a1869 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1517,6 +1517,9 @@ part_number_otp: part_number_otp@4 {
+ 				reg = <0x4 0x2>;
+ 				bits = <0 12>;
+ 			};
++			vrefint: vrefin-cal@52 {
++				reg = <0x52 0x2>;
++			};
+ 			ts_cal1: calib@5c {
+ 				reg = <0x5c 0x2>;
+ 			};
+-- 
+2.39.5
+

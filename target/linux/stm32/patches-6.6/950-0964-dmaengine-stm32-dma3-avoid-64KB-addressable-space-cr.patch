@@ -1,0 +1,106 @@
+From 3df174bada8b942f34e73bfea45816b5e80c3d63 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Thu, 1 Feb 2024 15:19:38 +0100
+Subject: [PATCH] dmaengine: stm32-dma3: avoid 64KB addressable space cross on
+ LLI alloc
+
+The documentation says "The user must program (...)_CxLLR for each LLIn to
+not exceed the 64kB addressable space pointed by (...)_CxLBAR.
+
+It means the <end> address of the LLI should not cross the 64KB addressable
+space pointed by CxLBAR.
+
+Use the boundary parameter for dma_pool, with SZ_64K.
+
+For gen_pool, there is no boundary parameter, neither on pool creation nor
+on allocation from pool. So the idea is to truncate the reserved-memory and
+use the bigger part (the one before the 64KB, or the one after the 64KB).
+In case of truncation a warning is displayed (reserved-memory is defined in
+device tree and it may be updated after seeing this warning, to better
+define the reserved-memory node).
+Then change LLI gen_pool log, from dbg to info, to display the real base
+address and size of the LLI gen_pool used.
+
+Change-Id: I2f8469b4899e0067cc9e1c3b91a5250abcbe1822
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370777
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/dma/stm32/stm32-dma3.c | 35 +++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
+index d383728371c4..9806e587cc40 100644
+--- a/drivers/dma/stm32/stm32-dma3.c
++++ b/drivers/dma/stm32/stm32-dma3.c
+@@ -397,6 +397,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 	struct device_node *rmem_np;
+ 	struct reserved_mem *rmem;
+ 	void *rmem_va;
++	phys_addr_t base;
++	size_t size;
+ 	int ret;
+ 
+ 	/* Check if a specific pool is specified in device tree for Linked-List Items */
+@@ -408,13 +410,36 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 	if (!rmem)
+ 		goto no_specific_pool;
+ 
++	base = rmem->base;
++	size = rmem->size;
++	if  (((base + size - 1) & CLBAR_LBA) != (base & CLBAR_LBA)) {
++		phys_addr_t new_base;
++		size_t boundary, size_before, size_after;
++
++		/* Check if the size is bigger before the first 64KiB boundary or after */
++		boundary = min_t(size_t, size, SZ_64K);
++		new_base = (base + boundary - 1) & CLBAR_LBA;
++		size_before = new_base - base;
++		size_after = size - size_before;
++		if (size_after > size_before) {
++			size = min_t(size_t, size_after, SZ_64K);
++			base = new_base;
++		} else {
++			size = size_before;
++			/* Keep original base */
++		}
++
++		dev_notice(&pdev->dev, "LLI gen_pool truncated (%ldKiB instead of %lldKiB)\n",
++			   size / SZ_1K, rmem->size / SZ_1K);
++	}
++
+ 	ddata->gen_pool = devm_gen_pool_create(&pdev->dev, ilog2(sizeof(struct stm32_dma3_hwdesc)),
+ 					       dev_to_node(&pdev->dev),	dev_name(&pdev->dev));
+ 	if (!ddata->gen_pool)
+ 		goto no_specific_pool;
+ 
+-	rmem_va = devm_memremap(&pdev->dev, rmem->base, rmem->size, MEMREMAP_WC);
+-	ret = gen_pool_add_virt(ddata->gen_pool, (unsigned long)rmem_va, rmem->base, rmem->size,
++	rmem_va = devm_memremap(&pdev->dev, base, size, MEMREMAP_WC);
++	ret = gen_pool_add_virt(ddata->gen_pool, (unsigned long)rmem_va, base, size,
+ 				dev_to_node(&pdev->dev));
+ 	if (ret) {
+ 		gen_pool_destroy(ddata->gen_pool);
+@@ -422,8 +447,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 		goto no_specific_pool;
+ 	}
+ 
+-	dev_dbg(&pdev->dev, "LLI gen_pool %s (%ldKiB)\n",
+-		rmem->name, gen_pool_size(ddata->gen_pool) / SZ_1K);
++	dev_info(&pdev->dev, "created LLI gen_pool at %pap, size %ldKiB\n",
++		 &base, gen_pool_size(ddata->gen_pool) / SZ_1K);
+ 
+ no_specific_pool:
+ 	of_node_put(rmem_np);
+@@ -431,7 +456,7 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 	/* Fallback pool */
+ 	ddata->dma_pool = dmam_pool_create(dev_name(&pdev->dev), &pdev->dev,
+ 					   sizeof(struct stm32_dma3_hwdesc),
+-					   __alignof__(struct stm32_dma3_hwdesc), 0);
++					   __alignof__(struct stm32_dma3_hwdesc), SZ_64K);
+ 	if (!ddata->gen_pool && !ddata->dma_pool)
+ 		return -ENOMEM;
+ 
+-- 
+2.39.5
+

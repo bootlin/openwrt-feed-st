@@ -1,0 +1,29 @@
+From e312c85acf1b6ec9ce84b8b55d9027bf1b009446 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Tue, 8 Mar 2022 13:29:40 +0100
+Subject: [PATCH] arm64: defconfig: enable STM32 I2C support in addons fragment
+
+Add compilation as built-in of the I2C_STM32F7 in
+fragment-02-defconfig-addons.config for arm64.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: Ic3970e2e9350a92ee5f6dd09b4b49c63a5d896d5
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 39845f35393a..64ed31a3036d 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -2,6 +2,7 @@
+ CONFIG_CLKSRC_STM32_LP=y
+ CONFIG_COUNTER=m
+ CONFIG_DYNAMIC_DEBUG=y
++CONFIG_I2C_STM32F7=y
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_MFD_STM32_LPTIMER=m
+-- 
+2.39.5
+

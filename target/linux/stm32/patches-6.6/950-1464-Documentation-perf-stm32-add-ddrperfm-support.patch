@@ -1,0 +1,129 @@
+From f7984fd83764d56b038c92da4209869bf245783b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Wed, 24 Jul 2024 18:01:25 +0200
+Subject: [PATCH] Documentation: perf: stm32: add ddrperfm support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The DDRPERFM is the DDR Performance Monitor embedded in STM32MPU SOC.
+
+This documentation introduces the DDRPERFM, the stm32-ddr-pmu driver
+supporting it and how to use it with the perf tool.
+
+Change-Id: I0eac5fce167c46ca49f4ee202c84d033ad4a2671
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395144
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ Documentation/admin-guide/perf/index.rst      |  1 +
+ .../admin-guide/perf/stm32-ddr-pmu.rst        | 86 +++++++++++++++++++
+ 2 files changed, 87 insertions(+)
+ create mode 100644 Documentation/admin-guide/perf/stm32-ddr-pmu.rst
+
+diff --git a/Documentation/admin-guide/perf/index.rst b/Documentation/admin-guide/perf/index.rst
+index f60be04e4e33..59d8bf23067d 100644
+--- a/Documentation/admin-guide/perf/index.rst
++++ b/Documentation/admin-guide/perf/index.rst
+@@ -22,3 +22,4 @@ Performance monitor support
+    nvidia-pmu
+    meson-ddr-pmu
+    cxl
++   stm32-ddr-pmu
+diff --git a/Documentation/admin-guide/perf/stm32-ddr-pmu.rst b/Documentation/admin-guide/perf/stm32-ddr-pmu.rst
+new file mode 100644
+index 000000000000..423219acbd1d
+--- /dev/null
++++ b/Documentation/admin-guide/perf/stm32-ddr-pmu.rst
+@@ -0,0 +1,86 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++========================================
++STM32 DDR Performance Monitor (DDRPERFM)
++========================================
++
++The DDRPERFM is the DDR Performance Monitor embedded in STM32MPU SOC.
++The DDR controller provides events to DDRPERFM, once selected they are counted in the DDRPERFM
++peripheral.
++
++In MP1 family, the DDRPERFM is able to count 4 different events at the same time.
++However, the 4 events must belong to the same set.
++One hardware counter is dedicated to the time counter, `time_cnt`.
++
++On MP2 family, the DDRPERFM is able to select between 44 different DDR events.
++As for MP1, there is a dedicated hardware counter for the time.
++It is incremented every 4 DDR clock cycles.
++All the other counters can be freely allocated to count any other DDR event.
++
++The stm32-ddr-pmu driver relies on the perf PMU framework to expose the counters via sysfs:
++
++On MP1:
++
++    .. code-block:: bash
++
++        $ ls /sys/bus/event_source/devices/stm32_ddr_pmu/events/
++        cactive_ddrc                 perf_lpr_req_with_no_credit  perf_op_is_wr
++        ctl_idle                     perf_lpr_xact_when_critical  perf_selfresh_mode
++        dfi_lp_req                   perf_op_is_activate          perf_wr_xact_when_critical
++        dfi_lp_req_cpy               perf_op_is_enter_powerdown   time_cnt
++        perf_hpr_req_with_no_credit  perf_op_is_rd
++        perf_hpr_xact_when_critical  perf_op_is_refresh
++
++On MP2:
++
++    .. code-block:: bash
++
++        $ ls /sys/bus/event_source/devices/stm32_ddr_pmu/events/
++        dfi_is_act       perf_hpr_req_with_nocredit   perf_op_is_spec_ref
++        dfi_is_mpc       perf_hpr_xact_when_critical  perf_op_is_wr
++        dfi_is_mrr       perf_lpr_req_with_nocredit   perf_op_is_zqcal
++        dfi_is_mrw       perf_lpr_xact_when_critical  perf_rank
++        dfi_is_mwr       perf_op_is_act               perf_raw_hazard
++        dfi_is_mwra      perf_op_is_crit_ref          perf_rdwr_transitions
++        dfi_is_preab     perf_op_is_enter_powdn       perf_read_bypass
++        dfi_is_prepb     perf_op_is_enter_selfref     perf_war_hazard
++        dfi_is_rd        perf_op_is_mwr               perf_waw_hazard
++        dfi_is_rda       perf_op_is_pre               perf_window_limit_reached_rd
++        dfi_is_refab     perf_op_is_pre_for_others    perf_window_limit_reached_wr
++        dfi_is_refpb     perf_op_is_pre_for_rdwr      perf_wr_xact_when_critical
++        dfi_is_wr        perf_op_is_rd                time_cnt
++        dfi_is_wra       perf_op_is_rd_activate
++        perf_act_bypass  perf_op_is_ref
++
++
++The perf PMU framework is usually invoked via the 'perf stat' tool.
++
++
++Example:
++
++    .. code-block:: bash
++
++        $ perf stat --timeout 60000 -e stm32_ddr_pmu/dfi_is_act/,\
++        > stm32_ddr_pmu/dfi_is_rd/,\
++        > stm32_ddr_pmu/dfi_is_wr/,\
++        > stm32_ddr_pmu/dfi_is_refab/,\
++        > stm32_ddr_pmu/dfi_is_mrw/,\
++        > stm32_ddr_pmu/dfi_is_rda/,\
++        > stm32_ddr_pmu/dfi_is_wra/,\
++        > stm32_ddr_pmu/dfi_is_mrr/,\
++        > stm32_ddr_pmu/time_cnt/ \
++        > -a sleep 5
++
++         Performance counter stats for 'system wide':
++
++                    481025      stm32_ddr_pmu/dfi_is_act/
++                    732166      stm32_ddr_pmu/dfi_is_rd/
++                    144926      stm32_ddr_pmu/dfi_is_wr/
++                    644154      stm32_ddr_pmu/dfi_is_refab/
++                         0      stm32_ddr_pmu/dfi_is_mrw/
++                         0      stm32_ddr_pmu/dfi_is_rda/
++                         0      stm32_ddr_pmu/dfi_is_wra/
++                         0      stm32_ddr_pmu/dfi_is_mrr/
++                 752347686      stm32_ddr_pmu/time_cnt/
++
++               5.014910750 seconds time elapsed
+-- 
+2.39.5
+

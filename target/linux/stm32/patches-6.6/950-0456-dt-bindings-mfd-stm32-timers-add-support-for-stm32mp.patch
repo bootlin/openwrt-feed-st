@@ -1,0 +1,80 @@
+From 95acee35595a78ef876f4a751a56367867ddcd9d Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Fri, 28 Oct 2022 11:50:29 +0200
+Subject: [PATCH] dt-bindings: mfd: stm32-timers: add support for stm32mp25
+
+Add a new stm32mp25 compatible to stm32-timer dt-bindings in order to
+support the STM32MP25 SoC. Some features has been added or updated in
+the stm32-timer timer such as:
+- hardware configuration and identification registers to read the timer
+  version and capabilities (counter width, number of channels...)
+- dithering mode (can be used to extend PWM resolution)
+- input triggers list
+- new counter modes
+- various bit-field updates
+- power-domains property
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Ia26f32d26e859ac5aac15b4b754a162fd7b97b12
+---
+ .../devicetree/bindings/mfd/st,stm32-timers.yaml | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index b0e438ff4950..6be0e3061aa3 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -21,7 +21,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: st,stm32-timers
++    enum:
++      - st,stm32-timers
++      - st,stm32mp25-timers
+ 
+   reg:
+     maxItems: 1
+@@ -36,6 +38,9 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  power-domains:
++    maxItems: 1
++
+   dmas:
+     minItems: 1
+     maxItems: 7
+@@ -77,7 +82,9 @@ properties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-pwm
++        enum:
++          - st,stm32-pwm
++          - st,stm32mp25-pwm
+ 
+       "#pwm-cells":
+         const: 3
+@@ -113,7 +120,9 @@ properties:
+ 
+     properties:
+       compatible:
+-        const: st,stm32-timer-counter
++        enum:
++          - st,stm32-timer-counter
++          - st,stm32mp25-timer-counter
+ 
+     required:
+       - compatible
+@@ -128,6 +137,7 @@ patternProperties:
+         enum:
+           - st,stm32-timer-trigger
+           - st,stm32h7-timer-trigger
++          - st,stm32mp25-timer-trigger
+ 
+       reg:
+         description: Identify trigger hardware block.
+-- 
+2.39.5
+

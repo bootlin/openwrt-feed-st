@@ -1,0 +1,128 @@
+From 28adc8709425b635f2dbe67ff2bce55b969bae13 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 20:02:00 +0200
+Subject: [PATCH] arm64: dts: st: add nodes for imx335/csi/dcmipp in
+ stm32mp215f-dk
+
+Add nodes in order to allow a pipeline imx335/csi/dcmipp on the
+stm32mp215f-dk board.
+
+Nodes are kept disabled for the time being.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I6de2874a433328b7a75629801de9ff893e3b6446
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381857
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 72 +++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 8df8b496f3e0..aa316b066d69 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -6,6 +6,7 @@
+ 
+ /dts-v1/;
+ 
++#include <dt-bindings/gpio/gpio.h>
+ #include "stm32mp215.dtsi"
+ #include "stm32mp21xf.dtsi"
+ #include "stm32mp21-pinctrl.dtsi"
+@@ -26,6 +27,14 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	clocks {
++		clk_ext_camera: clk-ext-camera {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
++		};
++	};
++
+ 	memory@80000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000 0x1 0x0>;
+@@ -52,11 +61,74 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
++&csi {
++	vdd-supply =  <&scmi_vddcore>;
++	vdda18-supply = <&scmi_v1v8>;
++	status = "disabled";
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			csi_sink: endpoint {
++				remote-endpoint = <&imx335_ep>;
++				data-lanes = <0 1>;
++				bus-type = <4>;
++			};
++		};
++		port@1 {
++			reg = <1>;
++			csi_source: endpoint {
++				remote-endpoint = <&dcmipp_0>;
++			};
++		};
++	};
++};
++
++&dcmipp {
++	status = "disabled";
++	port {
++		dcmipp_0: endpoint {
++			remote-endpoint = <&csi_source>;
++			bus-type = <4>;
++		};
++	};
++};
++
+ &i2c2 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c2_pins_a>;
+ 	pinctrl-1 = <&i2c2_sleep_pins_a>;
+ 	status = "disabled";
++
++	imx335: imx335@1a {
++		compatible = "sony,imx335";
++		reg = <0x1a>;
++		clocks = <&clk_ext_camera>;
++		reset-gpios = <&gpiod 5 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		powerdown-gpios = <&gpiod 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
++		status = "disabled";
++
++		port {
++			imx335_ep: endpoint {
++				remote-endpoint = <&csi_sink>;
++				clock-lanes = <0>;
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <594000000>;
++			};
++		};
++	};
++};
++
++&scmi_regu {
++	scmi_vddcore: regulator@11  {
++		reg = <VOLTD_SCMI_STPMIC_BUCK2>;
++		regulator-name = "vddcore";
++	};
++	scmi_v1v8: regulator@14  {
++		reg = <VOLTD_SCMI_STPMIC_BUCK5>;
++		regulator-name = "v1v8";
++	};
+ };
+ 
+ &spi1 {
+-- 
+2.39.5
+

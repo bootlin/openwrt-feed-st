@@ -1,0 +1,57 @@
+From 98429b6db7967d990e8924150d6b81f466e4c033 Mon Sep 17 00:00:00 2001
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+Date: Wed, 28 Aug 2024 15:57:27 +0200
+Subject: [PATCH] memory: stm32-omi: avoid false timeout expiration
+
+In case of stress test, timeout could occurred. To avoid false timeout,
+check that the transfer is completed or not.
+
+Change-Id: I51b8df5d1e6fc84e799ae30e06bda59587fe944d
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/400849
+Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Christophe KERELLO <christophe.kerello@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
+---
+ drivers/memory/stm32-omi.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
+index 44bdb0664f9a..814f26871351 100644
+--- a/drivers/memory/stm32-omi.c
++++ b/drivers/memory/stm32-omi.c
+@@ -92,13 +92,15 @@ int stm32_omi_wait_cmd(struct stm32_omi *omi)
+ 	writel_relaxed(cr | CR_TCIE | CR_TEIE, regs_base + OSPI_CR);
+ 
+ 	if (!wait_for_completion_timeout(&omi->data_completion,
+-				msecs_to_jiffies(STM32_COMP_TIMEOUT_MS))) {
++				msecs_to_jiffies(STM32_COMP_TIMEOUT_MS)))
+ 		err = -ETIMEDOUT;
+-	} else {
+-		sr = readl_relaxed(regs_base + OSPI_SR);
+-		if (sr & SR_TEF)
+-			err = -EIO;
+-	}
++
++	sr = readl_relaxed(regs_base + OSPI_SR);
++	if (sr & SR_TCF)
++		/* avoid false timeout */
++		err = 0;
++	if (sr & SR_TEF)
++		err = -EIO;
+ 
+ out:
+ 	/* clear flags */
+@@ -139,7 +141,6 @@ static irqreturn_t stm32_omi_irq(int irq, void *dev_id)
+ 
+ 	if (sr & (SR_TEF | SR_TCF)) {
+ 		/* disable irq */
+-		cr = readl_relaxed(regs_base + OSPI_CR);
+ 		cr &= ~CR_TCIE & ~CR_TEIE;
+ 		writel_relaxed(cr, regs_base + OSPI_CR);
+ 		complete(&omi->data_completion);
+-- 
+2.39.5
+

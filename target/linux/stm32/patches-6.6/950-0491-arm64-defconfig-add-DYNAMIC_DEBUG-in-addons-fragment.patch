@@ -1,0 +1,24 @@
+From d7eb4f342fdfe96e4c3aff95ba07440db1ee12a5 Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Mon, 19 Apr 2021 12:15:18 +0200
+Subject: [PATCH] arm64: defconfig: add DYNAMIC_DEBUG in addons fragment
+
+As in multi_v7 addons fragment, add DYNAMIC_DEBUG also in arm64 defconfig
+addons fragment.
+
+Change-Id: Ia0dd6d480d535826bff65ae050cfbd5686efeb4d
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index c696cbe2eb45..03b4ae05afcf 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -1 +1,2 @@
+ #  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-defconfig-addons.config -o fragment-02-defconfig-addons.config
++CONFIG_DYNAMIC_DEBUG=y
+-- 
+2.39.5
+

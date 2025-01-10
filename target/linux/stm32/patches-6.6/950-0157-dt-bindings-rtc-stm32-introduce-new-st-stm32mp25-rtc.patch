@@ -1,0 +1,48 @@
+From 96f661f9c2afe1729fc83e76801ffbd52615bce7 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Fri, 9 Jun 2023 18:25:56 +0200
+Subject: [PATCH] dt-bindings: rtc: stm32: introduce new st,stm32mp25-rtc
+ compatible
+
+Introduce new st,stm32mp25-rtc compatible. It is based on st,stm32mp1-rtc.
+
+Difference is that stm32mp25 soc implements a triple protection on RTC
+registers:
+- secure bit based protection
+- privileged context based protection
+- CID filtering based protection
+This driver will now check theses configurations before probing to avoid
+exceptions and fake reads on register.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I53874abe1a917eef5dfabbfabde108d40d08fa65
+---
+ Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+index e1a8268726ce..9e86c4cd4548 100644
+--- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+@@ -15,6 +15,7 @@ properties:
+       - st,stm32-rtc
+       - st,stm32h7-rtc
+       - st,stm32mp1-rtc
++      - st,stm32mp25-rtc
+ 
+   reg:
+     maxItems: 1
+@@ -116,7 +117,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: st,stm32mp1-rtc
++            anyOf:
++              - const: st,stm32mp1-rtc
++              - const: st,stm32mp25-rtc
+ 
+     then:
+       properties:
+-- 
+2.39.5
+

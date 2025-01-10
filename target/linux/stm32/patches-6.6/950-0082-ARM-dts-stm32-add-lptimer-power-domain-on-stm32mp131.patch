@@ -1,0 +1,62 @@
+From 64d590b0a797d727c181393e9af1f655d3efe5ea Mon Sep 17 00:00:00 2001
+From: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Date: Thu, 9 Nov 2023 15:30:18 +0100
+Subject: [PATCH] ARM: dts: stm32: add lptimer power domain on stm32mp131
+
+LPtimer can be used to wakeup from LPLV_Stop mode on stm32mp131.
+Add pd_core_ret PM domain properties on LPtimer instances.
+
+Change-Id: Idf9ab3b5b97f3ede790b1eedce6d858d26b8d348
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 56d7380ddc4c..5e4f839cc785 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -322,6 +322,7 @@ lptimer1: timer@40009000 {
+ 			interrupts-extended = <&exti 47 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM1_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core_ret>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1188,6 +1189,7 @@ lptimer2: timer@50021000 {
+ 			interrupts-extended = <&exti 48 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM2_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core_ret>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1222,6 +1224,7 @@ lptimer3: timer@50022000 {
+ 			interrupts-extended = <&exti 50 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM3_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core_ret>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1249,6 +1252,7 @@ lptimer4: timer@50023000 {
+ 			interrupts-extended = <&exti 52 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM4_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core_ret>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+@@ -1270,6 +1274,7 @@ lptimer5: timer@50024000 {
+ 			interrupts-extended = <&exti 53 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc LPTIM5_K>;
+ 			clock-names = "mux";
++			power-domains = <&pd_core_ret>;
+ 			wakeup-source;
+ 			status = "disabled";
+ 
+-- 
+2.39.5
+

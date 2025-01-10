@@ -1,0 +1,38 @@
+From 3cd44327225b8ad576058693425970ca7bcb268c Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Mon, 26 Aug 2024 11:14:59 +0200
+Subject: [PATCH] arm64: dts: st: suppress SCMI VDDGPU  on stm32mp251
+
+Suppress SCMI VDDGPU as this is now handled by a power domain.
+
+Change-Id: Iadef79f86531a023352dccef40d4223b4dbb5164
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/400222
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 4b390d16fcdc..f2fa4a06e36a 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -192,10 +192,6 @@ scmi_vdda18adc: regulator@7 {
+ 						reg = <VOLTD_SCMI_ADC>;
+ 						regulator-name = "vdda18adc";
+ 					};
+-					scmi_vddgpu: regulator@8 {
+-						reg = <VOLTD_SCMI_GPU>;
+-						regulator-name = "vddgpu";
+-					};
+ 				};
+ 			};
+ 		};
+-- 
+2.39.5
+

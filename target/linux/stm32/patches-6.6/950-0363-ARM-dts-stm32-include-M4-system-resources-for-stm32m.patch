@@ -1,0 +1,33 @@
+From 9c7a080227e51d7744aa524b72c31086419be156 Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Date: Tue, 27 Oct 2020 12:18:29 +0100
+Subject: [PATCH] ARM: dts: stm32: include M4 system resources for stm32mp15
+ dkx board
+
+NOT UPSTREAMABLE
+
+Let stm32mp15xx-dkx include the M4 system resources dtsi file.
+
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I2ba9436552cb40fba07fb2539783f847a3f7f709
+---
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 72fb77bd9d6c..8fce8e6b07e8 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -6,6 +6,8 @@
+ 
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/mfd/st,stpmic1.h>
++#include "stm32mp15-m4-srm.dtsi"
++#include "stm32mp15-m4-srm-pinctrl.dtsi"
+ 
+ / {
+ 	aliases {
+-- 
+2.39.5
+

@@ -1,0 +1,32 @@
+From 249553be759c2d3abe45697cfdbffb1359163598 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Sat, 9 Apr 2022 23:56:41 +0200
+Subject: [PATCH] ARM: dts: stm32: add exti entry 69 for HDMI-CEC on stm32mp151
+
+Add exti entry 69 used for HDMI-CEC wake up.
+This event is mapped to GIC 94.
+
+It is used by node m4_cec: cec@40016000 in
+arch/arm/boot/dts/stm32mp15-m4-srm.dtsi
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I47a71799d779b6f57ca227aed6009abbc08ef11d
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 83b69cdc85b8..7eb2981ddde6 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -1275,6 +1275,7 @@ exti-interrupt-map {
+ 					<61 0 &intc GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+ 					<65 0 &intc GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
+ 					<68 0 &intc GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
++					<69 0 &intc GIC_SPI 94  IRQ_TYPE_LEVEL_HIGH>,
+ 					<70 0 &intc GIC_SPI 62  IRQ_TYPE_LEVEL_HIGH>,
+ 					<73 0 &intc GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
+ 			};
+-- 
+2.39.5
+

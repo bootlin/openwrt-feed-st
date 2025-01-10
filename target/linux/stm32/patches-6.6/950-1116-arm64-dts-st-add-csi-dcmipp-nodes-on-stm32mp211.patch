@@ -1,0 +1,56 @@
+From eb78a4fa56f8d460d2667e648a283567e5f4ec43 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 19:56:59 +0200
+Subject: [PATCH] arm64: dts: st: add csi/dcmipp nodes on stm32mp211
+
+Add both csi & dcmipp nodes in stm32mp211.dtsi
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Change-Id: I98a718d89112b043eca424cadc30a6175823abae
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381856
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
+Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index fad7f3c0a0b1..8dd098a4cd10 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1364,6 +1364,29 @@ i2c3: i2c@46040000 {
+ 				status = "disabled";
+ 			};
+ 
++			csi: csi@48020000 {
++				compatible = "st,stm32mp25-csi";
++				reg = <0x48020000 0x2000>;
++				interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc CSI_R>;
++				clocks = <&rcc CK_KER_CSI>, <&rcc CK_KER_CSITXESC>,
++					 <&rcc CK_KER_CSIPHY>;
++				clock-names = "pclk", "txesc", "csi2phy";
++				access-controllers = <&rifsc 86>;
++				status = "disabled";
++			};
++
++			dcmipp: dcmipp@48030000 {
++				compatible = "st,stm32mp25-dcmipp";
++				reg = <0x48030000 0x1000>;
++				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
++				resets = <&rcc DCMIPP_R>;
++				clocks = <&rcc CK_BUS_DCMIPP>, <&rcc CK_KER_CSI>;
++				clock-names = "kclk", "mclk";
++				access-controllers = <&rifsc 87>;
++				status = "disabled";
++			};
++
+ 			lptimer3: timer@46050000 {
+ 				compatible = "st,stm32mp21-lptimer";
+ 				reg = <0x46050000 0x400>;
+-- 
+2.39.5
+

@@ -1,0 +1,30 @@
+From bd70924ce52b7c4ea4407e6f9202bef449e63493 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Wed, 8 Feb 2023 10:47:52 +0100
+Subject: [PATCH] serial: stm32: extend max number of U(S)ART to 9
+
+STM32MP25x got 9 instances of U(S)ART. So extend STM32_MAX_PORTS to 9, in
+order to handle all instances.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I71af7c19717f27ff457639c62382d5faaba49c6d
+---
+ drivers/tty/serial/stm32-usart.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
+index b87af3ed61af..9cf7e1641fcd 100644
+--- a/drivers/tty/serial/stm32-usart.h
++++ b/drivers/tty/serial/stm32-usart.h
+@@ -184,7 +184,7 @@ struct stm32_usart_info {
+ static const unsigned int STM32_USART_PRESC_VAL[] = {1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256};
+ 
+ #define STM32_SERIAL_NAME "ttySTM"
+-#define STM32_MAX_PORTS 8
++#define STM32_MAX_PORTS 9
+ 
+ #define RX_BUF_L 4096		 /* dma rx buffer length     */
+ #define RX_BUF_P (RX_BUF_L / 2)	 /* dma rx buffer period     */
+-- 
+2.39.5
+

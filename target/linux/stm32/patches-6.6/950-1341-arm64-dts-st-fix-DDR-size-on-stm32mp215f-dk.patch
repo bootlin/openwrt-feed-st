@@ -1,0 +1,36 @@
+From 9afa5709cbdd5a46b9bc184115b58d760b292bac Mon Sep 17 00:00:00 2001
+From: Pascal Paillet <p.paillet@foss.st.com>
+Date: Mon, 5 Aug 2024 16:27:22 +0200
+Subject: [PATCH] arm64: dts: st: fix DDR size on stm32mp215f-dk
+
+DDR size is 2GB on stm32mp215f-dk.
+
+Change-Id: I7589da55a257a40e177e1209bab711d5ae2d1c19
+Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397431
+Reviewed-by: Pascal PAILLET <p.paillet@st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Pascal PAILLET <p.paillet@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 4dbf9eb49b83..a843c84ca8ce 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -74,7 +74,7 @@ dmic1_endpoint: endpoint {
+ 
+ 	memory@80000000 {
+ 		device_type = "memory";
+-		reg = <0x0 0x80000000 0x1 0x0>;
++		reg = <0x0 0x80000000 0x0 0x80000000>;
+ 	};
+ 
+ 	panel_backlight: panel-backlight {
+-- 
+2.39.5
+

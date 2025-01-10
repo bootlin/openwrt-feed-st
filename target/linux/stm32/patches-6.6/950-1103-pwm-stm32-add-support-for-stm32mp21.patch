@@ -1,0 +1,33 @@
+From cf9921982fe57c5fede7d17e87d67ab924ceb6dc Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Thu, 23 May 2024 18:23:05 +0200
+Subject: [PATCH] pwm: stm32: add support for stm32mp21
+
+Add support for STM32MP21 SoC using new compatible.
+
+Change-Id: I131ee3c73b72d3b0bed3223ca86a81be506b621b
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382222
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ drivers/pwm/pwm-stm32.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+index 362e71e9a71f..5d8ee179a381 100644
+--- a/drivers/pwm/pwm-stm32.c
++++ b/drivers/pwm/pwm-stm32.c
+@@ -709,6 +709,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_pm_ops, stm32_pwm_suspend, stm32_pwm_resume);
+ 
+ static const struct of_device_id stm32_pwm_of_match[] = {
+ 	{ .compatible = "st,stm32-pwm",	},
++	{ .compatible = "st,stm32mp21-pwm", },
+ 	{ .compatible = "st,stm32mp25-pwm", },
+ 	{ /* end node */ },
+ };
+-- 
+2.39.5
+

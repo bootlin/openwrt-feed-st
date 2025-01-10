@@ -1,0 +1,62 @@
+From 8265abda7cdea0b08070e025493be12d669fd38f Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@st.com>
+Date: Fri, 10 Jan 2020 17:06:57 +0100
+Subject: [PATCH] usb: dwc2: fix NULL pointer dereference in
+ dwc2_queue_transaction
+
+Using a specific USB stick (aigo usb flash disk 23a9:ef18) on stm32mp15
+boards with OTG Full-Speed, writing to the USB stick causes a NULL pointer
+dereference in dwc2_queue_transaction.
+It is due to the fact that aigo usb flash disk disconnects when writing to
+it in Full-Speed.
+
+With the patch 7b8137676457
+"usb: dwc2: Fix NULL qh in dwc2_queue_transaction" on v5.6-rc1, the NULL
+pointer is moved later in dwc2_hc_write_packet [1].
+
+The comment added just above "channel->qh = NULL;" in
+dwc2_hcd_cleanup_channels says that qh is set to NULL to prevent channel
+double cleanup in case of Descriptor DMA.
+This patch adds the condition before setting channel->qh to NULL, to have
+Host DMA enabled and Descriptor DMA enabled.
+
+With this patch, I don't reproduce the NULL pointer dereference in
+dwc2_queue_transaction neither in dwc2_hc_write_packet. And the behavior
+with the specific stick is the same than on another USB Full-Speed port.
+
+[1]
+[   45.618825] [<c0689410>] (dwc2_hc_write_packet) from [<c068e2fc>] (dwc2_hc_continue_transfer+0x160/0x168)
+[   45.628388] [<c068e2fc>] (dwc2_hc_continue_transfer) from [<c068e54c>] (dwc2_hcd_queue_transactions+0xdc/0x390)
+[   45.638481] [<c068e54c>] (dwc2_hcd_queue_transactions) from [<c069279c>] (dwc2_hc_xacterr_intr+0xa8/0x1d4)
+[   45.648139] [<c069279c>] (dwc2_hc_xacterr_intr) from [<c0692ad0>] (dwc2_hc_n_intr+0x208/0x8d0)
+[   45.656757] [<c0692ad0>] (dwc2_hc_n_intr) from [<c06933d0>] (dwc2_handle_hcd_intr+0x238/0x644)
+[   45.665375] [<c06933d0>] (dwc2_handle_hcd_intr) from [<c066fcdc>] (usb_hcd_irq+0x24/0x38)
+[   45.673560] [<c066fcdc>] (usb_hcd_irq) from [<c016da00>] (__handle_irq_event_percpu+0x7c/0x2c4)
+
+Change-Id: Ib349b4278099cbce321cd23fc6832d643df58fb5
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/157590
+Reviewed-by: CITOOLS <smet-aci-reviews@lists.codex.cro.st.com>
+Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
+---
+ drivers/usb/dwc2/hcd.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index dd5b1c5691e1..5622083c1aca 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -1701,7 +1701,8 @@ static void dwc2_hcd_cleanup_channels(struct dwc2_hsotg *hsotg)
+ 		 * release_channel_ddma(), which is called from ep_disable when
+ 		 * device disconnects
+ 		 */
+-		channel->qh = NULL;
++		if (hsotg->params.host_dma && hsotg->params.dma_desc_enable)
++			channel->qh = NULL;
+ 	}
+ 	/* All channels have been freed, mark them available */
+ 	if (hsotg->params.uframe_sched) {
+-- 
+2.39.5
+

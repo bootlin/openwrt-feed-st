@@ -1,0 +1,220 @@
+From 579f3cb9685145b44b2357798ce24998c69f8ad1 Mon Sep 17 00:00:00 2001
+From: Etienne Carriere <etienne.carriere@foss.st.com>
+Date: Mon, 15 Jul 2024 18:19:36 +0200
+Subject: [PATCH] firmware: arm_scmi: round rate with standard SCMI
+
+Implement query of supported rounded rate using SCMI protocol to bisect
+into the supported rate to get the target one when an SCMI clock exposes
+a discrete possible rate list.
+
+This change preserves the implementation of SCI clock round rate
+supported on OSTLv5.x releases for backward compatibility for when
+SCMI server reports SCMI clock protocol lower than 3.0 which is the
+protocol version from which SCMI clock message ID 0xC relates to an
+official command.
+
+Change-Id: I714b2519d52728af5b6662324eb189629da825bc
+Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/390949
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Tested-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
+---
+ drivers/clk/clk-scmi.c            | 40 ++++++++++---
+ drivers/firmware/arm_scmi/clock.c | 94 +++++++++++++++++++++++++++++--
+ include/linux/scmi_protocol.h     |  6 ++
+ 3 files changed, 127 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+index cfbf9accaee9..0dd443340ccb 100644
+--- a/drivers/clk/clk-scmi.c
++++ b/drivers/clk/clk-scmi.c
+@@ -75,14 +75,17 @@ static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	u64 fmin, fmax, ftmp;
+ 	struct scmi_clk *clk = to_scmi_clk(hw);
+ 
+-	/*
+-	 * We can't figure out what rate it will be, so just return the
+-	 * rate back to the caller. scmi_clk_recalc_rate() will be called
+-	 * after the rate is set and we'll know what rate the clock is
+-	 * running at then.
+-	 */
+-	if (clk->info->rate_discrete)
+-		return rate;
++	if (clk->info->rate_discrete) {
++		fmin = clk->info->list.min_rate;
++		fmax = clk->info->list.max_rate;
++		if (rate <= fmin)
++			return fmin;
++		else if (rate >= fmax)
++			return fmax;
++
++		/* Use SCMI Clock protocol to find the roundest rate */
++		return scmi_clk_round_rate_get(hw, rate, parent_rate);
++	}
+ 
+ 	fmin = clk->info->range.min_rate;
+ 	fmax = clk->info->range.max_rate;
+@@ -91,8 +94,27 @@ static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	else if (rate >= fmax)
+ 		return fmax;
+ 
+-	if (clk->info->range.step_size == 0)
++	if (clk->info->range.step_size == 0) {
++		if (!IS_ENABLED(CONFIG_SCMI_STM32MP_OSTL_V5)) {
++			/*
++			 * Unexpected step value. This is a protoocol error
++			 * but we must report a rate so preserve the legacy
++			 * implementation and return rate back to the caller.
++			 * scmi_clk_recalc_rate() will be called after the
++			 * rate is set and we'll know what rate the clock is
++			 * running at then.
++			 */
++			return rate;
++		}
++
++		/*
++		 * Support OSTLv4/v5 SCMI server where incremental rate
++		 * description with step of 0 denoted an SCMI server
++		 * that supports OSTL custom SCMI Clock message ID
++		 * CLOCK_ROUND_RATE_GET.
++		 */
+ 		return scmi_clk_round_rate_get(hw, rate, parent_rate);
++	}
+ 
+ 	ftmp = rate - fmin;
+ 	ftmp += clk->info->range.step_size - 1; /* to round up */
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 26a8f3356e3f..ba562fd32750 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -466,11 +466,10 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+ 	return ret;
+ }
+ 
+-static int
+-scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+-			  u32 clk_id, u64 *value)
+-{
+ #ifdef CONFIG_SCMI_STM32MP_OSTL_V5
++static int scmi_clock_round_rate_get_ostl(const struct scmi_protocol_handle *ph,
++					  u32 clk_id, u64 *value)
++{
+ 	int ret;
+ 	struct scmi_xfer *t;
+ 	struct scmi_clock_set_rate *cfg;
+@@ -506,6 +505,93 @@ scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+ 	ph->xops->xfer_put(ph, t);
+ 
+ 	return ret;
++}
++#endif
++
++static int scmi_clock_round_rate(const struct scmi_protocol_handle *ph,
++				 u32 clk_id, u64 rate, u64 *out_rate)
++{
++	u64 rate_low, rate_high, rate_tmp;
++	size_t index_low, index_high, index_tmp;
++	struct clock_info *ci = ph->get_priv(ph);
++	struct scmi_clock_info *clk;
++	int ret;
++
++	if (clk_id >= ci->num_clocks)
++		return -EINVAL;
++
++	clk = ci->clk + clk_id;
++
++	/* This function is expected to be called on discrete rates list */
++	if (!clk->rate_discrete)
++		return -EINVAL;
++
++	index_low = 0;
++	rate_low = clk->list.min_rate;
++	index_high = clk->list.num_rates - 1;
++	rate_high = clk->list.max_rate;
++
++	if (rate <= rate_low) {
++		*out_rate = rate_low;
++
++		return 0;
++	}
++	if (rate >= rate_high) {
++		*out_rate = rate_high;
++
++		return 0;
++	}
++
++	while (true) {
++		if (index_low == index_high) {
++			*out_rate = rate_low;
++
++			return 0;
++		}
++
++		if (index_high == index_low + 1) {
++			if (rate - rate_low > rate_high - rate)
++				*out_rate = rate_high;
++			else
++				*out_rate = rate_low;
++
++			return 0;
++		}
++
++		index_tmp = (index_low + index_high) / 2;
++
++		ret = get_rate_by_index(ph, clk_id, index_tmp, &rate_tmp, NULL);
++		if (ret)
++			return ret;
++
++		if (rate_tmp == rate) {
++			*out_rate = rate;
++
++			return 0;
++		}
++
++		if (rate_tmp < rate) {
++			index_low = index_tmp;
++			rate_low = rate_tmp;
++		} else {
++			index_high = index_tmp;
++			rate_high = rate_tmp;
++		}
++	}
++
++	return -EPROTO;
++}
++
++static int scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
++				     u32 clk_id, u64 *value)
++{
++	struct clock_info *ci = ph->get_priv(ph);
++
++	if (PROTOCOL_REV_MAJOR(ci->version) >= 0x3)
++		return scmi_clock_round_rate(ph, clk_id, *value, value);
++
++#ifdef CONFIG_SCMI_STM32MP_OSTL_V5
++	return scmi_clock_round_rate_get_ostl(ph, clk_id, value);
+ #else
+ 	return -EOPNOTSUPP;
+ #endif
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 8d3672b02030..94d76d30b6a1 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -81,6 +81,12 @@ struct scmi_protocol_handle;
+  * @rate_set: set the clock rate of a clock
+  * @enable: enables the specified clock
+  * @disable: disables the specified clock
++ * @enable_atomic: Atomic clock enable request
++ * @disable_atomic: Atomic clock disable request
++ * @get_duty_cycle: Get clock dury cycle as numerator/denominator
++ * @round_rate_get: Get the nearst rate clock can support. This handler
++ * is needed only for discrete rates clocks, pincremental clock already
++ * provide min/max/step value to compute the supported rounded rate.
+  */
+ struct scmi_clk_proto_ops {
+ 	int (*count_get)(const struct scmi_protocol_handle *ph);
+-- 
+2.39.5
+

@@ -1,0 +1,99 @@
+From d296d9d7fd1d2ca684a74549ae998a095bd6eb0c Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Fri, 2 Feb 2024 13:47:28 +0100
+Subject: [PATCH] dt-bindings: dma: New directory for STM32 DMA controllers
+ bindings
+
+Gather the STM32 DMA controllers bindings under ./dma/stm32/
+
+Change-Id: I08f7c1b60f5494eb70ddb4e04b747bf68a765ecd
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370762
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml     | 4 ++--
+ .../devicetree/bindings/dma/{ => stm32}/st,stm32-dmamux.yaml  | 4 ++--
+ .../devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml    | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml (97%)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dmamux.yaml (90%)
+ rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml (96%)
+
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+similarity index 97%
+rename from Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+index ff935a0068ec..11a289f1d505 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-dma.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-dma.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: STMicroelectronics STM32 DMA Controller
+@@ -53,7 +53,7 @@ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: dma-controller.yaml#
++  - $ref: /schemas/dma/dma-controller.yaml#
+ 
+ properties:
+   "#dma-cells":
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+similarity index 90%
+rename from Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+index ddf82bf1e71a..f26c914a3a9a 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dmamux.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-dmamux.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-dmamux.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: STMicroelectronics STM32 DMA MUX (DMA request router)
+@@ -10,7 +10,7 @@ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: dma-router.yaml#
++  - $ref: /schemas/dma/dma-router.yaml#
+ 
+ properties:
+   "#dma-cells":
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+similarity index 96%
+rename from Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
+rename to Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+index 3874544dfa74..45fe91db11db 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
++++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-mdma.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/dma/st,stm32-mdma.yaml#
++$id: http://devicetree.org/schemas/dma/stm32/st,stm32-mdma.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: STMicroelectronics STM32 MDMA Controller
+@@ -53,7 +53,7 @@ maintainers:
+   - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+-  - $ref: dma-controller.yaml#
++  - $ref: /schemas/dma/dma-controller.yaml#
+ 
+ properties:
+   "#dma-cells":
+-- 
+2.39.5
+

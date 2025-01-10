@@ -1,0 +1,59 @@
+From 0903e726f5d4dc03903aa0e65dddf6c8eee99d4e Mon Sep 17 00:00:00 2001
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Date: Mon, 22 Oct 2018 15:31:06 +0200
+Subject: [PATCH] ARM: configs: add multi_v7_defconfig addons fragment for
+ stm32mp1
+
+Add addons fragment to add configs used by stm32mp1.
+
+Change-Id: I617e1b0d2381a62e015e642a4a96f76a3dd73875
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ .../configs/fragment-02-multiv7_addons.config | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 arch/arm/configs/fragment-02-multiv7_addons.config
+
+diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
+new file mode 100644
+index 000000000000..624b6d226c3f
+--- /dev/null
++++ b/arch/arm/configs/fragment-02-multiv7_addons.config
+@@ -0,0 +1,34 @@
++#  ALPHABETICALLY SORTED: $LC_ALL=C sort fragment-02-multiv7_addons.config -o fragment-02-multiv7_addons.config
++CONFIG_AEABI=y
++CONFIG_ARCH_FORCE_MAX_ORDER=12
++CONFIG_ARM_SMC_WATCHDOG=y
++CONFIG_CHR_DEV_SG=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_DEBUG_PREEMPT=y
++CONFIG_DEBUG_SECTION_MISMATCH=y
++CONFIG_DYNAMIC_DEBUG=y
++CONFIG_FW_LOADER_USER_HELPER=y
++CONFIG_GDB_SCRIPTS=y
++CONFIG_HIGHMEM=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_JFFS2_FS=y
++CONFIG_LEGACY_PTY_COUNT=8
++CONFIG_LOG_BUF_SHIFT=16
++CONFIG_MEMCG=y
++CONFIG_MTD_MCHP23K256=m
++CONFIG_MTD_SPI_NAND=y
++CONFIG_NAMESPACES=y
++CONFIG_NR_CPUS=2
++CONFIG_OF_OVERLAY=y
++CONFIG_OVERLAY_FS=y
++CONFIG_PINCTRL_MCP23S08=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_PREEMPT=y
++CONFIG_PREEMPT_COUNT=y
++CONFIG_PROFILING=y
++CONFIG_SCHED_MC=y
++CONFIG_SERIAL_NONSTANDARD=y
++CONFIG_SRAM=y
++CONFIG_USB_HIDDEV=y
++CONFIG_VFP=y
+-- 
+2.39.5
+

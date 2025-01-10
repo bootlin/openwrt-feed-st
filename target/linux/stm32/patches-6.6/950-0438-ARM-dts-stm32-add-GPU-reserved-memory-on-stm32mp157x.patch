@@ -1,0 +1,45 @@
+From 55da22c68e4930fd6f2580ee1252784e1ae78acd Mon Sep 17 00:00:00 2001
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Date: Wed, 29 Nov 2023 18:31:19 +0100
+Subject: [PATCH] ARM: dts: stm32: add GPU reserved memory on stm32mp157x-dkx
+
+Add GPU reserved memory so GPU can use contiguous-area for its buffer
+allocation needs.
+
+Change-Id: I88f77b1b5d2f46f6adbea74034e7c11361c297d0
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index b338cea6a8a4..04bde162370d 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -69,6 +69,11 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 
++		gpu_reserved: gpu@d4000000 {
++			reg = <0xd4000000 0x4000000>;
++			no-map;
++		};
++
+ 		/* global autoconfigured region for contiguous allocations */
+ 		linux,cma {
+ 			compatible = "shared-dma-pool";
+@@ -196,6 +201,10 @@ phy0: ethernet-phy@0 {
+ 	};
+ };
+ 
++&gpu {
++	contiguous-area = <&gpu_reserved>;
++};
++
+ &hash1 {
+ 	status = "okay";
+ };
+-- 
+2.39.5
+

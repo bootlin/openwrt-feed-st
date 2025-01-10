@@ -1,0 +1,42 @@
+From 1dc18924e335d8f9b911a0b13fee3e8977c1a464 Mon Sep 17 00:00:00 2001
+From: Theo GOUREAU <theo.goureau-ext@st.com>
+Date: Fri, 4 Oct 2024 16:23:42 +0200
+Subject: [PATCH] bus: rifsc: correct number of RIFSC entries
+
+Replace bitwise & with FIELD_GET to fix value shifts for number of
+risup/rimu/risal in RIFSC driver.
+
+Fixes: a18208457253 ("bus: rifsc: introduce RIFSC firewall controller driver")
+Change-Id: I0884e41043329ba7f32317c1fd0685ed1f917513
+Signed-off-by: Theo GOUREAU <theo.goureau-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/409196
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+---
+ drivers/bus/stm32_rifsc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
+index 44758a1d3773..175f0b5c996b 100644
+--- a/drivers/bus/stm32_rifsc.c
++++ b/drivers/bus/stm32_rifsc.c
+@@ -505,9 +505,12 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+ 	rifsc_controller->release_access = stm32_rifsc_release_access;
+ 
+ 	/* Get number of RIFSC entries*/
+-	nb_risup = readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2) & HWCFGR2_CONF1_MASK;
+-	nb_rimu = readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2) & HWCFGR2_CONF2_MASK;
+-	nb_risal = readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2) & HWCFGR2_CONF3_MASK;
++	nb_risup = FIELD_GET(HWCFGR2_CONF1_MASK,
++			     readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2));
++	nb_rimu = FIELD_GET(HWCFGR2_CONF2_MASK,
++			    readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2));
++	nb_risal = FIELD_GET(HWCFGR2_CONF3_MASK,
++			     readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2));
+ 	rifsc_controller->max_entries = nb_risup + nb_rimu + nb_risal;
+ 
+ 	platform_set_drvdata(pdev, rifsc_controller);
+-- 
+2.39.5
+

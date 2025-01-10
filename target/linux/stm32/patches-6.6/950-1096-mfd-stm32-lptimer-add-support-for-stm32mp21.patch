@@ -1,0 +1,32 @@
+From 48392c769de251a292f5d53db653f0556a535427 Mon Sep 17 00:00:00 2001
+From: Cheick TRAORE <cheick.traore-ext@st.com>
+Date: Fri, 24 May 2024 10:46:04 +0200
+Subject: [PATCH] mfd: stm32-lptimer: add support for stm32mp21
+
+Add support for STM32MP21 SoC using new compatible.
+
+Change-Id: I6fb67b60bd1e8ed1eecdd03f3df23dc287e9fc10
+Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/382338
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/mfd/stm32-lptimer.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mfd/stm32-lptimer.c b/drivers/mfd/stm32-lptimer.c
+index 141a36138862..744e39f22c11 100644
+--- a/drivers/mfd/stm32-lptimer.c
++++ b/drivers/mfd/stm32-lptimer.c
+@@ -119,6 +119,7 @@ static int stm32_lptimer_probe(struct platform_device *pdev)
+ 
+ static const struct of_device_id stm32_lptimer_of_match[] = {
+ 	{ .compatible = "st,stm32-lptimer", },
++	{ .compatible = "st,stm32mp21-lptimer", },
+ 	{ .compatible = "st,stm32mp25-lptimer", },
+ 	{},
+ };
+-- 
+2.39.5
+

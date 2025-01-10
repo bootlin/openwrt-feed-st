@@ -1,0 +1,41 @@
+From fd7557af5940e7443ce608b401f9cb21ad9c9a61 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 21 Nov 2023 15:22:05 +0100
+Subject: [PATCH] ARM: dts: stm32: add Hardware debug port (HDP) on stm32mp25
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add the hdp devicetree node for stm32mp25 SoC family
+
+Change-Id: I4c60349041d4985b01f4ce79338b4f712b668195
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372881
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index bf0ff87a2955..ae6f4b0d2805 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2371,6 +2371,13 @@ dts: thermal-sensor@44070000 {
+ 			#thermal-sensor-cells = <1>;
+ 		};
+ 
++		hdp: pinctrl@44090000 {
++			compatible = "st,stm32mp-hdp";
++			reg = <0x44090000 0x400>;
++			clocks = <&rcc CK_BUS_HDP>;
++			status = "disabled";
++		};
++
+ 		rcc: clock-controller@44200000 {
+ 			compatible = "st,stm32mp25-rcc";
+ 			reg = <0x44200000 0x10000>;
+-- 
+2.39.5
+

@@ -1,0 +1,37 @@
+From 4d74ca80bbc731711ff2d043585a9c6b7b798740 Mon Sep 17 00:00:00 2001
+From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Date: Wed, 17 Jul 2024 10:02:30 +0200
+Subject: [PATCH] irqchip: stm32mp-exti1: simplify loop in stm32mp_exti_resume
+
+The call of stm32mp_exti_resume_gpio_mux() is be removed in the bank loop
+to simplify the stm32mp_exti_resume function.
+
+Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Change-Id: Ic05e8b5e7cec1a6e34a52a655fea3feaf9ce2e71
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393890
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+---
+ drivers/irqchip/irq-stm32mp-exti.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
+index 96337e5c43c8..5d420a22bca7 100644
+--- a/drivers/irqchip/irq-stm32mp-exti.c
++++ b/drivers/irqchip/irq-stm32mp-exti.c
+@@ -479,10 +479,9 @@ static int stm32mp_exti_resume(struct device *dev)
+ 	struct stm32mp_exti_chip_data *chip_data;
+ 	int i;
+ 
++	stm32mp_exti_resume_gpio_mux(host_data);
+ 	for (i = 0; i < host_data->drv_data->bank_nr; i++) {
+ 		chip_data = &host_data->chips_data[i];
+-		if (i == 0)
+-			stm32mp_exti_resume_gpio_mux(host_data);
+ 		stm32mp_chip_resume(chip_data, chip_data->mask_cache);
+ 	}
+ 
+-- 
+2.39.5
+

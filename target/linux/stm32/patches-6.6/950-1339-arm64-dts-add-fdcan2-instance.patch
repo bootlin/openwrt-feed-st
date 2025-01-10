@@ -1,0 +1,68 @@
+From c5982cb4dfbe5043528ea6d259651f3be084c0a6 Mon Sep 17 00:00:00 2001
+From: Stephane Danieau <stephane.danieau@st.com>
+Date: Mon, 12 Aug 2024 09:43:34 +0200
+Subject: [PATCH] arm64: dts: add fdcan2 instance
+
+add missing m_can2 node in the mp253 soc devicetree
+
+Change-Id: I46c2a64eee696ef45e27ad1a8506dbc8fc5e4ceb
+Signed-off-by: Stephane Danieau <stephane.danieau@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397876
+Tested-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+Tested-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
+Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp253.dtsi | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+index 83b530ac1ccd..e943ad4e8eee 100644
+--- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
+@@ -102,7 +102,7 @@ &optee {
+ &rifsc {
+ 	m_can1: can@402d0000 {
+ 		compatible = "bosch,m_can";
+-		reg = <0x402d0000 0x400>, <0x40310000 0x1400>;
++		reg = <0x402d0000 0x400>, <0x40310000 0xd50>;
+ 		reg-names = "m_can", "message_ram";
+ 		interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>,
+ 			     <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+@@ -115,6 +115,21 @@ m_can1: can@402d0000 {
+ 		status = "disabled";
+ 	};
+ 
++	m_can2: can@402e0000 {
++		compatible = "bosch,m_can";
++		reg = <0x402e0000 0x400>, <0x40310000 0x1aa0>;
++		reg-names = "m_can", "message_ram";
++		interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "int0", "int1";
++		clocks = <&rcc CK_BUS_FDCAN>, <&rcc CK_KER_FDCAN>;
++		clock-names = "hclk", "cclk";
++		bosch,mram-cfg = <0xd50 0 0 32 0 0 2 2>;
++		access-controllers = <&rifsc 56>;
++		power-domains = <&CLUSTER_PD>;
++		status = "disabled";
++	};
++
+ 	m_can3: can@402f0000 {
+ 		compatible = "bosch,m_can";
+ 		reg = <0x402f0000 0x400>, <0x40310000 0x2800>;
+@@ -124,7 +139,7 @@ m_can3: can@402f0000 {
+ 		interrupt-names = "int0", "int1";
+ 		clocks = <&rcc CK_BUS_FDCAN>, <&rcc CK_KER_FDCAN>;
+ 		clock-names = "hclk", "cclk";
+-		bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
++		bosch,mram-cfg = <0x1aa0 0 0 32 0 0 2 2>;
+ 		access-controllers = <&rifsc 56>;
+ 		power-domains = <&CLUSTER_PD>;
+ 		status = "disabled";
+-- 
+2.39.5
+

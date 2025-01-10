@@ -1,0 +1,165 @@
+From 59a32448250a020c6faa240b2893e9ceee760052 Mon Sep 17 00:00:00 2001
+From: Simeon Marijon <simeon.marijon@foss.st.com>
+Date: Fri, 9 Aug 2024 10:19:45 +0200
+Subject: [PATCH] ARM: dts: stm32: MP15X move to nvmem layout description
+
+Legacy description is not any more supported by st,stm32mp15-tamp-nvram
+driver
+
+Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
+Change-Id: Ide7cedc4ad2c1639cc482eb4bc7664af4f890414
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397668
+Tested-by: Simeon MARIJON <simeon.marijon@st.com>
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp151.dtsi | 115 ++++++++++++++-------------
+ 1 file changed, 59 insertions(+), 56 deletions(-)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
+index 518043b9efdf..fb628b91036f 100644
+--- a/arch/arm/boot/dts/st/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
+@@ -2182,77 +2182,80 @@ tamp: tamp@5c00a000 {
+ 
+ 			nvram: nvram@5c00a100 {
+ 				compatible = "st,stm32mp15-tamp-nvram";
+-				#address-cells = <1>;
+-				#size-cells = <1>;
+ 				reg = <0x5c00a100 0x80>;
+ 
+-				wakeup_sec: tamp-bkp@0 {
+-					reg = <0x0 0x4>;
+-				};
++				nvmem-layout {
++					compatible = "fixed-layout";
++					#address-cells = <1>;
++					#size-cells = <1>;
++					wakeup_sec: tamp-bkp@0 {
++						reg = <0x0 0x4>;
++					};
+ 
+-				m4_security_perimeter_exti1: tamp-bkp@4 {
+-					/* see cortex-m4 wake up feature */
+-					reg = <0x4 0x4>;
+-				};
++					m4_security_perimeter_exti1: tamp-bkp@4 {
++						/* see cortex-m4 wake up feature */
++						reg = <0x4 0x4>;
++					};
+ 
+-				m4_security_perimeter_exti2: tamp-bkp@8 {
+-					/* see cortex-m4 wake up feature */
+-					reg = <0x8 0x4>;
+-				};
++					m4_security_perimeter_exti2: tamp-bkp@8 {
++						/* see cortex-m4 wake up feature */
++						reg = <0x8 0x4>;
++					};
+ 
+-				m4_security_perimeter_exti3: tamp-bkp@c {
+-					/* see cortex-m4 wtake up feature */
+-					reg = <0xc 0x4>;
+-				};
++					m4_security_perimeter_exti3: tamp-bkp@c {
++						/* see cortex-m4 wtake up feature */
++						reg = <0xc 0x4>;
++					};
+ 
+-				magic_number: tamp-bkp@10 {
+-					/* see ddr and cpu wake up management feature */
+-					reg = <0x10 0x4>;
+-				};
++					magic_number: tamp-bkp@10 {
++						/* see ddr and cpu wake up management feature */
++						reg = <0x10 0x4>;
++					};
+ 
+-				branch_address: tamp-bkp@14 {
+-					/* see ddr and cpu wake up management feature */
+-					reg = <0x14 0x4>;
+-				};
++					branch_address: tamp-bkp@14 {
++						/* see ddr and cpu wake up management feature */
++						reg = <0x14 0x4>;
++					};
+ 
+-				fwu_info: tamp-bkp@28 {
+-					/* see firmware update info feature */
+-					reg = <0x28 0x4>;
+-				};
++					fwu_info: tamp-bkp@28 {
++						/* see firmware update info feature */
++						reg = <0x28 0x4>;
++					};
+ 
+-				copro_rsc_tbl_address: tamp-bkp@44 {
+-					/* see cortex-m4 management feature */
+-					reg = <0x44 0x4>;
+-				};
++					copro_rsc_tbl_address: tamp-bkp@44 {
++						/* see cortex-m4 management feature */
++						reg = <0x44 0x4>;
++					};
+ 
+-				cortex_m_state: tamp-bkp@48 {
+-					/* see cortex-m4 management feature */
+-					reg = <0x48 0x4>;
+-				};
++					cortex_m_state: tamp-bkp@48 {
++						/* see cortex-m4 management feature */
++						reg = <0x48 0x4>;
++					};
+ 
+-				boot_mode: tamp-bkp@50 {
+-					/* see boot mode selection feature */
+-					reg = <0x50 0x4>;
+-				};
++					boot_mode: tamp-bkp@50 {
++						/* see boot mode selection feature */
++						reg = <0x50 0x4>;
++					};
+ 
+-				boot_counter: tamp-bkp@54 {
+-					/* see boot counter feature */
+-					reg = <0x54 0x4>;
+-				};
++					boot_counter: tamp-bkp@54 {
++						/* see boot counter feature */
++						reg = <0x54 0x4>;
++					};
+ 
+-				m4_wakeup_area_start: tamp-bkp@58 {
+-					/* see cortex-m4 wake up feature */
+-					reg = <0x58 0x4>;
+-				};
++					m4_wakeup_area_start: tamp-bkp@58 {
++						/* see cortex-m4 wake up feature */
++						reg = <0x58 0x4>;
++					};
+ 
+-				m4_wakeup_area_length: tamp-bkp@5c {
+-					/* see cortex-m4 wake up feature */
+-					reg = <0x5c 0x4>;
+-				};
++					m4_wakeup_area_length: tamp-bkp@5c {
++						/* see cortex-m4 wake up feature */
++						reg = <0x5c 0x4>;
++					};
+ 
+-				m4_wakeup_area_hash: tamp-bkp@60 {
+-					/* SHA-0x100 value see Cortex-M4 wake up feature */
+-					reg = <0x60 0x20>;
++					m4_wakeup_area_hash: tamp-bkp@60 {
++						/* SHA-0x100 value see Cortex-M4 wake up feature */
++						reg = <0x60 0x20>;
++					};
+ 				};
+ 			};
+ 
+-- 
+2.39.5
+

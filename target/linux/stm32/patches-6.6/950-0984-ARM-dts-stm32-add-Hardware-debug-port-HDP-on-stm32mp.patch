@@ -1,0 +1,46 @@
+From 2a8ddb35912b55f5377f9e4a13ea0b587e17d7aa Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 21 Nov 2023 15:27:39 +0100
+Subject: [PATCH] ARM: dts: stm32: add Hardware debug port (HDP) on
+ stm32mp157f-dk2 board
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On the stm32mp157f-dk2 board, we can observe the hdp GPOVAL function on
+SoC pin E13 accessible on the pin 5 on the Arduino connector CN13.
+Add the relevant configuration but keep it disabled as it's used for
+debug only.
+
+Change-Id: I77bb8e7087985b643b7ae0505c74ab3abe4d568f
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372883
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+index 9eb7ffec3822..0ea199baa5dc 100644
+--- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
+@@ -74,6 +74,13 @@ &dsi_out {
+ 	remote-endpoint = <&panel_in>;
+ };
+ 
++&hdp {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&hdp2_gpo &hdp2_pins_a>;
++	pinctrl-1 = <&hdp2_sleep_pins_a>;
++	status = "disabled";
++};
++
+ &i2c1 {
+ 	touchscreen@38 {
+ 		compatible = "focaltech,ft6236";
+-- 
+2.39.5
+

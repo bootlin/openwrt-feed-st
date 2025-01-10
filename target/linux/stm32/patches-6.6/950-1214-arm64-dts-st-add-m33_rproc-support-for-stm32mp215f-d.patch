@@ -1,0 +1,45 @@
+From 8c60025123c7cb18bb41b20922fd419e4f4d6e41 Mon Sep 17 00:00:00 2001
+From: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Date: Mon, 20 May 2024 11:15:20 +0200
+Subject: [PATCH] arm64: dts: st: add m33_rproc support for stm32mp215f-dk
+ board
+
+Add M33_RPROC node for stm32mp215f-dk board.
+
+Change-Id: I0edfbf1c8943bb0cc15d4d7344e8d4846564fcbb
+Signed-off-by: Gwenael Treuveur <gwenael.treuveur@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/384058
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Tested-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index af24944c62a0..12c5cab094a5 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -340,6 +340,16 @@ scmi_v1v8: regulator@14  {
+ 	};
+ };
+ 
++&m33_rproc {
++	mboxes = <&ipcc1 0x0>, <&ipcc1 0x1>, <&ipcc1 2>;
++	mbox-names = "vq0", "vq1", "shutdown";
++	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
++			<&ipc_shmem_1>, <&vdev0vring0>,
++			<&vdev0vring1>, <&vdev0buffer>;
++	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
++	status = "okay";
++};
++
+ &spi1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&spi1_pins_a>;
+-- 
+2.39.5
+

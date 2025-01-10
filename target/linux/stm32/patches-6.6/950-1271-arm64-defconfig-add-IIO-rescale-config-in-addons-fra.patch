@@ -1,0 +1,34 @@
+From 0b7bcf1f72975f3cf688656108f6bcae12c7e51c Mon Sep 17 00:00:00 2001
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Date: Mon, 24 Jun 2024 16:41:23 +0200
+Subject: [PATCH] arm64: defconfig: add IIO rescale config in addons fragment
+
+IIO rescale driver can be used on stm32mp257f-ev1 board, on ADC ANA0
+that has a resistor divider on mikroBUS connector.
+
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Change-Id: Id519d8ea6896156b5f0c74a1dd7fa61f45ae93fb
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/389296
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 8376e8453d30..527bdf1be617 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -30,6 +30,7 @@ CONFIG_I2C_RPMSG=m
+ CONFIG_I2C_STM32F7=y
+ CONFIG_I3C=y
+ CONFIG_IGC=m
++CONFIG_IIO_RESCALE=m
+ CONFIG_IIO_STM32_LPTIMER_TRIGGER=m
+ CONFIG_IIO_STM32_TIMER_TRIGGER=m
+ CONFIG_JFFS2_FS=y
+-- 
+2.39.5
+

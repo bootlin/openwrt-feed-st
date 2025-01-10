@@ -1,0 +1,171 @@
+From 331c33565707b858056be550a5028558749dfe0f Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 23 Jan 2024 16:10:58 +0100
+Subject: [PATCH] drm/stm: ltdc: set interrupt for CRC
+
+Enable line interrupt for CRC to return for each frame.
+Add mutex to protect flag for crc & vblank features.
+
+Change-Id: Ie5f68fdc2fdb4609ab114be62985ac71708a7714
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 65 ++++++++++++++++++++++----------------
+ drivers/gpu/drm/stm/ltdc.h |  3 ++
+ 2 files changed, 41 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 139c0d394625..fd07a16db3c2 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -724,26 +724,6 @@ static inline void ltdc_set_ycbcr_coeffs(struct drm_plane *plane)
+ 		     ltdc_ycbcr2rgb_coeffs[enc][ran][1]);
+ }
+ 
+-static inline void ltdc_irq_crc_handle(struct ltdc_device *ldev,
+-				       struct drm_crtc *crtc)
+-{
+-	u32 crc;
+-	int ret;
+-
+-	if (ldev->crc_skip_count < CRC_SKIP_FRAMES) {
+-		ldev->crc_skip_count++;
+-		return;
+-	}
+-
+-	/* Get the CRC of the frame */
+-	ret = regmap_read(ldev->regmap, LTDC_CCRCR, &crc);
+-	if (ret)
+-		return;
+-
+-	/* Report to DRM the CRC (hw dependent feature) */
+-	drm_crtc_add_crc_entry(crtc, true, drm_crtc_accurate_vblank_count(crtc), &crc);
+-}
+-
+ static irqreturn_t ltdc_irq_thread(int irq, void *arg)
+ {
+ 	struct drm_device *ddev = arg;
+@@ -752,11 +732,18 @@ static irqreturn_t ltdc_irq_thread(int irq, void *arg)
+ 
+ 	/* Line IRQ : trigger the vblank event */
+ 	if (ldev->irq_status & ISR_LIF) {
+-		drm_crtc_handle_vblank(crtc);
++		if (ldev->vblank_active)
++			drm_crtc_handle_vblank(crtc);
+ 
+-		/* Early return if CRC is not active */
+-		if (ldev->crc_active)
+-			ltdc_irq_crc_handle(ldev, crtc);
++		if (ldev->crc_active) {
++			if (ldev->crc_skip_count < CRC_SKIP_FRAMES)
++				ldev->crc_skip_count++;
++			else
++				/* Report to DRM the CRC (hw dependent feature) */
++				drm_crtc_add_crc_entry(crtc, true,
++						       drm_crtc_accurate_vblank_count(crtc),
++						       &ldev->crc);
++		}
+ 	}
+ 
+ 	mutex_lock(&ldev->err_lock);
+@@ -785,6 +772,8 @@ static irqreturn_t ltdc_irq(int irq, void *arg)
+ 	 */
+ 	ldev->irq_status = readl_relaxed(ldev->regs + LTDC_ISR);
+ 	writel_relaxed(ldev->irq_status, ldev->regs + LTDC_ICR);
++	if (ldev->crc_active)
++		ldev->crc = readl_relaxed(ldev->regs + LTDC_CCRCR);
+ 
+ 	return IRQ_WAKE_THREAD;
+ }
+@@ -1317,10 +1306,14 @@ static int ltdc_crtc_enable_vblank(struct drm_crtc *crtc)
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+-	if (state->enable)
++	if (state->enable) {
++		mutex_lock(&ldev->act_lock);
++		ldev->vblank_active = true;
++		mutex_unlock(&ldev->act_lock);
+ 		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
+-	else
++	} else {
+ 		return -EPERM;
++	}
+ 
+ 	return 0;
+ }
+@@ -1330,7 +1323,13 @@ static void ltdc_crtc_disable_vblank(struct drm_crtc *crtc)
+ 	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
+ 
+ 	DRM_DEBUG_DRIVER("\n");
+-	regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
++
++	mutex_lock(&ldev->act_lock);
++	ldev->vblank_active = false;
++	mutex_unlock(&ldev->act_lock);
++
++	if (!ldev->vblank_active && !ldev->crc_active)
++		regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ }
+ 
+ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
+@@ -1346,10 +1345,17 @@ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
+ 	ldev = crtc_to_ltdc(crtc);
+ 
+ 	if (source && strcmp(source, "auto") == 0) {
++		mutex_lock(&ldev->act_lock);
+ 		ldev->crc_active = true;
++		mutex_unlock(&ldev->act_lock);
++		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ 		ret = regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
+ 	} else if (!source) {
++		mutex_lock(&ldev->act_lock);
+ 		ldev->crc_active = false;
++		mutex_unlock(&ldev->act_lock);
++		if (!ldev->vblank_active && !ldev->crc_active)
++			regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
+ 		ret = regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
+ 	} else {
+ 		ret = -EINVAL;
+@@ -2329,6 +2335,7 @@ int ltdc_load(struct drm_device *ddev)
+ 	rstc = devm_reset_control_get_exclusive(dev, NULL);
+ 
+ 	mutex_init(&ldev->err_lock);
++	mutex_init(&ldev->act_lock);
+ 
+ 	if (!IS_ERR(rstc)) {
+ 		reset_control_assert(rstc);
+@@ -2370,6 +2377,10 @@ int ltdc_load(struct drm_device *ddev)
+ 	ldev->fifo_rot = 0;
+ 	ldev->fifo_threshold = FUT_DFT;
+ 
++	/* initialize default value for vblank & crc active flags */
++	ldev->crc_active = false;
++	ldev->vblank_active = false;
++
+ 	for (i = 0; i < ldev->caps.nb_irq; i++) {
+ 		irq = platform_get_irq(pdev, i);
+ 		if (irq < 0) {
+diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
+index f6880ffdbe79..5913eb2e2fb3 100644
+--- a/drivers/gpu/drm/stm/ltdc.h
++++ b/drivers/gpu/drm/stm/ltdc.h
+@@ -54,6 +54,7 @@ struct ltdc_device {
+ 	struct clk *ltdc_clk;	/* kernel clock */
+ 	struct clk *lvds_clk;	/* lvds clock */
+ 	struct mutex err_lock;	/* protecting error_status */
++	struct mutex act_lock;	/* protecting active status */
+ 	struct ltdc_caps caps;
+ 	u32 irq_status;
+ 	u32 fifo_err;		/* fifo underrun error counter */
+@@ -65,6 +66,8 @@ struct ltdc_device {
+ 	struct drm_atomic_state *suspend_state;
+ 	int crc_skip_count;
+ 	bool crc_active;
++	bool vblank_active;
++	u32 crc;
+ 	u32 max_burst_length;
+ 	struct reserved_mem *rot_mem;
+ };
+-- 
+2.39.5
+

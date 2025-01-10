@@ -1,0 +1,42 @@
+From 8bb1ee8eddbc5e1b5bd556fcccc2591ff3dc8658 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Le=20Goffic?= <clement.legoffic@foss.st.com>
+Date: Tue, 19 Jul 2022 09:35:52 +0200
+Subject: [PATCH] arm64: dts: st: add ddrperfm on stm32mp25
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The ddrperfm is the DDR Performance Monitor.
+
+Change-Id: Ic9130fb88f87b6f23288814ba1b4a6ec7a6b82d4
+Signed-off-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/395145
+Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 39892ad70a82..2bfd0ca98307 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2991,6 +2991,13 @@ ipcc2: mailbox@46250000 {
+ 			status = "disabled";
+ 		};
+ 
++		ddrperfm: perf@48041000 {
++			compatible = "st,stm32mp25-ddr-pmu";
++			reg = <0x48041000 0x400>;
++			access-controllers = <&rcc 104>;
++			status = "disabled";
++		};
++
+ 		fmc: memory-controller@48200000 {
+ 			compatible = "st,stm32mp25-fmc2-ebi";
+ 			reg = <0x48200000 0x400>;
+-- 
+2.39.5
+

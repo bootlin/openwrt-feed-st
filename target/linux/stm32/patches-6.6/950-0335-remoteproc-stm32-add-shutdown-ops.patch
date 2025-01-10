@@ -1,0 +1,52 @@
+From 95e0eb1fac6049ef7be4e2d34a52d6d626e3fdbe Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 23 Jan 2020 11:28:19 +0100
+Subject: [PATCH] remoteproc: stm32: add shutdown ops
+
+User has to decide if the remote firmware should be stop or not on
+shutdown. By default the firmware is not stopped, only a warning is
+displayed for debug.
+
+Change-Id: Ia8fa6f534c0ec642749b218ae634ec35d601a9a5
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/347941
+Reviewed-by: Michel JAOUEN <michel.jaouen@st.com>
+Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index c786badf08fa..47ee6a4c17c2 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -921,6 +921,15 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+ 	rproc_free(rproc);
+ }
+ 
++static void stm32_rproc_shutdown(struct platform_device *pdev)
++{
++	struct rproc *rproc = platform_get_drvdata(pdev);
++
++	if (atomic_read(&rproc->power) > 0)
++		dev_warn(&pdev->dev,
++			 "Warning: remote fw is still running with possible side effect!!!\n");
++}
++
+ static int stm32_rproc_suspend(struct device *dev)
+ {
+ 	struct rproc *rproc = dev_get_drvdata(dev);
+@@ -949,6 +958,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_rproc_pm_ops,
+ static struct platform_driver stm32_rproc_driver = {
+ 	.probe = stm32_rproc_probe,
+ 	.remove_new = stm32_rproc_remove,
++	.shutdown = stm32_rproc_shutdown,
+ 	.driver = {
+ 		.name = "stm32-rproc",
+ 		.pm = pm_ptr(&stm32_rproc_pm_ops),
+-- 
+2.39.5
+

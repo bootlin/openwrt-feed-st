@@ -1,0 +1,270 @@
+From 54e69de54ee62dc23f63e038af83159ed9f5e8b7 Mon Sep 17 00:00:00 2001
+From: Nuno Sa <nuno.sa@analog.com>
+Date: Fri, 26 Apr 2024 17:42:10 +0200
+Subject: [PATCH] iio: backend: change docs padding
+
+Using tabs and maintaining the start of the docs aligned is a pain and
+may lead to lot's of unrelated changes when adding new members. Hence,
+let#s change things now and just have a simple space after the member
+name.
+
+Change-Id: Ibc288b8ff956b0015fe7b6fee1797c0bf2845690
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20240426-ad9467-new-features-v2-1-6361fc3ba1cc@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397580
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+---
+ drivers/iio/industrialio-backend.c | 76 +++++++++++++++---------------
+ include/linux/iio/backend.h        | 38 +++++++--------
+ 2 files changed, 57 insertions(+), 57 deletions(-)
+
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index f08ed6d70ae5..c27243e88462 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -115,8 +115,8 @@ static DEFINE_MUTEX(iio_back_lock);
+ 
+ /**
+  * iio_backend_chan_enable - Enable a backend channel
+- * @back:	Backend device
+- * @chan:	Channel number
++ * @back: Backend device
++ * @chan: Channel number
+  *
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+@@ -129,8 +129,8 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_chan_enable, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_chan_disable - Disable a backend channel
+- * @back:	Backend device
+- * @chan:	Channel number
++ * @back: Backend device
++ * @chan: Channel number
+  *
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+@@ -148,8 +148,8 @@ static void __iio_backend_disable(void *back)
+ 
+ /**
+  * devm_iio_backend_enable - Device managed backend enable
+- * @dev:	Consumer device for the backend
+- * @back:	Backend device
++ * @dev: Consumer device for the backend
++ * @back: Backend device
+  *
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+@@ -168,9 +168,9 @@ EXPORT_SYMBOL_NS_GPL(devm_iio_backend_enable, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_data_format_set - Configure the channel data format
+- * @back:	Backend device
+- * @chan:	Channel number
+- * @data:	Data format
++ * @back: Backend device
++ * @chan: Channel number
++ * @data: Data format
+  *
+  * Properly configure a channel with respect to the expected data format. A
+  * @struct iio_backend_data_fmt must be passed with the settings.
+@@ -190,9 +190,9 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_data_format_set, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_data_source_set - Select data source
+- * @back:	Backend device
+- * @chan:	Channel number
+- * @data:	Data source
++ * @back: Backend device
++ * @chan: Channel number
++ * @data: Data source
+  *
+  * A given backend may have different sources to stream/sync data. This allows
+  * to choose that source.
+@@ -212,9 +212,9 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_data_source_set, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_set_sampling_freq - Set channel sampling rate
+- * @back:		Backend device
+- * @chan:		Channel number
+- * @sample_rate_hz:	Sample rate
++ * @back: Backend device
++ * @chan: Channel number
++ * @sample_rate_hz: Sample rate
+  *
+  * RETURNS:
+  * 0 on success, negative error number on failure.
+@@ -235,9 +235,9 @@ static void iio_backend_free_buffer(void *arg)
+ 
+ /**
+  * devm_iio_backend_request_buffer - Device managed buffer request
+- * @dev:	Consumer device for the backend
+- * @back:	Backend device
+- * @indio_dev:	IIO device
++ * @dev: Consumer device for the backend
++ * @back: Backend device
++ * @indio_dev: IIO device
+  *
+  * Request an IIO buffer from the backend. The type of the buffer (typically
+  * INDIO_BUFFER_HARDWARE) is up to the backend to decide. This is because,
+@@ -300,10 +300,10 @@ static struct iio_backend *iio_backend_from_indio_dev_parent(const struct device
+ 
+ /**
+  * iio_backend_ext_info_get - IIO ext_info read callback
+- * @indio_dev:	IIO device
+- * @private:	Data private to the driver
+- * @chan:	IIO channel
+- * @buf:	Buffer where to place the attribute data
++ * @indio_dev: IIO device
++ * @private: Data private to the driver
++ * @chan: IIO channel
++ * @buf: Buffer where to place the attribute data
+  *
+  * This helper is intended to be used by backends that extend an IIO channel
+  * (through iio_backend_extend_chan_spec()) with extended info. In that case,
+@@ -335,11 +335,11 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_get, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_ext_info_set - IIO ext_info write callback
+- * @indio_dev:	IIO device
+- * @private:	Data private to the driver
+- * @chan:	IIO channel
+- * @buf:	Buffer holding the sysfs attribute
+- * @len:	Buffer length
++ * @indio_dev: IIO device
++ * @private: Data private to the driver
++ * @chan: IIO channel
++ * @buf: Buffer holding the sysfs attribute
++ * @len: Buffer length
+  *
+  * This helper is intended to be used by backends that extend an IIO channel
+  * (trough iio_backend_extend_chan_spec()) with extended info. In that case,
+@@ -365,9 +365,9 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_set, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_extend_chan_spec - Extend an IIO channel
+- * @indio_dev:	IIO device
+- * @back:	Backend device
+- * @chan:	IIO channel
++ * @indio_dev: IIO device
++ * @back: Backend device
++ * @chan: IIO channel
+  *
+  * Some backends may have their own functionalities and hence capable of
+  * extending a frontend's channel.
+@@ -449,8 +449,8 @@ static int __devm_iio_backend_get(struct device *dev, struct iio_backend *back)
+ 
+ /**
+  * devm_iio_backend_get - Device managed backend device get
+- * @dev:	Consumer device for the backend
+- * @name:	Backend name
++ * @dev: Consumer device for the backend
++ * @name: Backend name
+  *
+  * Get's the backend associated with @dev.
+  *
+@@ -501,8 +501,8 @@ EXPORT_SYMBOL_NS_GPL(devm_iio_backend_get, IIO_BACKEND);
+ 
+ /**
+  * __devm_iio_backend_get_from_fwnode_lookup - Device managed fwnode backend device get
+- * @dev:	Consumer device for the backend
+- * @fwnode:	Firmware node of the backend device
++ * @dev: Consumer device for the backend
++ * @fwnode: Firmware node of the backend device
+  *
+  * Search the backend list for a device matching @fwnode.
+  * This API should not be used and it's only present for preventing the first
+@@ -536,7 +536,7 @@ EXPORT_SYMBOL_NS_GPL(__devm_iio_backend_get_from_fwnode_lookup, IIO_BACKEND);
+ 
+ /**
+  * iio_backend_get_priv - Get driver private data
+- * @back:	Backend device
++ * @back: Backend device
+  */
+ void *iio_backend_get_priv(const struct iio_backend *back)
+ {
+@@ -554,9 +554,9 @@ static void iio_backend_unregister(void *arg)
+ 
+ /**
+  * devm_iio_backend_register - Device managed backend device register
+- * @dev:	Backend device being registered
+- * @ops:	Backend ops
+- * @priv:	Device private data
++ * @dev: Backend device being registered
++ * @ops: Backend ops
++ * @priv: Device private data
+  *
+  * @ops is mandatory. Not providing it results in -EINVAL.
+  *
+diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
+index 9d144631134d..e3e62f65db14 100644
+--- a/include/linux/iio/backend.h
++++ b/include/linux/iio/backend.h
+@@ -24,9 +24,9 @@ enum iio_backend_data_source {
+ 
+ /**
+  * IIO_BACKEND_EX_INFO - Helper for an IIO extended channel attribute
+- * @_name:	Attribute name
+- * @_shared:	Whether the attribute is shared between all channels
+- * @_what:	Data private to the driver
++ * @_name: Attribute name
++ * @_shared: Whether the attribute is shared between all channels
++ * @_what: Data private to the driver
+  */
+ #define IIO_BACKEND_EX_INFO(_name, _shared, _what) {	\
+ 	.name = (_name),				\
+@@ -38,10 +38,10 @@ enum iio_backend_data_source {
+ 
+ /**
+  * struct iio_backend_data_fmt - Backend data format
+- * @type:		Data type.
+- * @sign_extend:	Bool to tell if the data is sign extended.
+- * @enable:		Enable/Disable the data format module. If disabled,
+- *			not formatting will happen.
++ * @type: Data type.
++ * @sign_extend: Bool to tell if the data is sign extended.
++ * @enable: Enable/Disable the data format module. If disabled,
++ *	    not formatting will happen.
+  */
+ struct iio_backend_data_fmt {
+ 	enum iio_backend_data_type type;
+@@ -51,18 +51,18 @@ struct iio_backend_data_fmt {
+ 
+ /**
+  * struct iio_backend_ops - operations structure for an iio_backend
+- * @enable:		Enable backend.
+- * @disable:		Disable backend.
+- * @chan_enable:	Enable one channel.
+- * @chan_disable:	Disable one channel.
+- * @data_format_set:	Configure the data format for a specific channel.
+- * @data_source_set:	Configure the data source for a specific channel.
+- * @set_sample_rate:	Configure the sampling rate for a specific channel.
+- * @request_buffer:	Request an IIO buffer.
+- * @free_buffer:	Free an IIO buffer.
+- * @extend_chan_spec:	Extend an IIO channel.
+- * @ext_info_set:	Extended info setter.
+- * @ext_info_get:	Extended info getter.
++ * @enable: Enable backend.
++ * @disable: Disable backend.
++ * @chan_enable: Enable one channel.
++ * @chan_disable: Disable one channel.
++ * @data_format_set: Configure the data format for a specific channel.
++ * @data_source_set: Configure the data source for a specific channel.
++ * @set_sample_rate: Configure the sampling rate for a specific channel.
++ * @request_buffer: Request an IIO buffer.
++ * @free_buffer: Free an IIO buffer.
++ * @extend_chan_spec: Extend an IIO channel.
++ * @ext_info_set: Extended info setter.
++ * @ext_info_get: Extended info getter.
+  **/
+ struct iio_backend_ops {
+ 	int (*enable)(struct iio_backend *back);
+-- 
+2.39.5
+

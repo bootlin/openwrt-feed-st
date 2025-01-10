@@ -1,0 +1,46 @@
+From cef93e80d408aeae12346470a40e0d4af55b3cb6 Mon Sep 17 00:00:00 2001
+From: Christian Bruel <christian.bruel@foss.st.com>
+Date: Thu, 8 Dec 2022 17:48:47 +0100
+Subject: [PATCH] arm64: dts: st: Add PCIe Endpoint mode on stm32mp251
+
+Add pcie_ep node to support STM32 MP25 PCIe driver based on the
+DesignWare PCIe core configured as Endpoint mode
+
+Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
+Change-Id: I73d3123620e9d5809f57e802af0d89ec12c97de5
+---
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 5771bc937999..30d0a2b85f1f 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -2243,6 +2243,24 @@ dwc3: usb@48300000 {
+ 				};
+ 			};
+ 
++			pcie_ep: pcie-ep@48400000 {
++				compatible = "st,stm32mp25-pcie-ep", "snps,dw-pcie-ep";
++				num-lanes = <1>;
++				reg = <0x48400000 0x400000>,
++				      <0x10000000 0x8000000>;
++				reg-names = "dbi", "addr_space";
++				st,syscfg = <&syscfg>;
++				clocks = <&rcc CK_BUS_PCIE>;
++				clock-names = "core";
++				resets = <&rcc PCIE_R>;
++				reset-names = "pcie";
++				phys = <&combophy PHY_TYPE_PCIE>;
++				phy-names = "pcie-phy";
++				access-controllers = <&rifsc 68>;
++				power-domains = <&CLUSTER_PD>;
++				status = "disabled";
++			};
++
+ 			pcie_rc: pcie@48400000 {
+ 				compatible = "st,stm32mp25-pcie-rc", "snps,dw-pcie";
+ 				device_type = "pci";
+-- 
+2.39.5
+

@@ -1,0 +1,34 @@
+From 4008f2ba829d1f4f4c8e802c1a09d6857dc0dcb6 Mon Sep 17 00:00:00 2001
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Date: Thu, 8 Jun 2023 11:37:35 +0200
+Subject: [PATCH] arm64: defconfig: enable CRYP support
+
+Enable STM32 CRYP support on 64 bits platform.
+
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+Change-Id: Ic0a76eb97bb0203d997fdecb8801b0b6b089881d
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/311579
+Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/360630
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index f6a2c8a68781..454c8e4dd188 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -4,6 +4,7 @@ CONFIG_BACKLIGHT_GPIO=y
+ CONFIG_CLKSRC_STM32_LP=y
+ CONFIG_COUNTER=m
+ CONFIG_CRYPTO_DEV_STM32_CRC=m
++CONFIG_CRYPTO_DEV_STM32_CRYP=m
+ CONFIG_DRM=y
+ CONFIG_DRM_BRIDGE=y
+ CONFIG_DRM_DISPLAY_CONNECTOR=y
+-- 
+2.39.5
+

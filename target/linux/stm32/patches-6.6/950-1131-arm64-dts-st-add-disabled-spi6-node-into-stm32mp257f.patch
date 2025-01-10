@@ -1,0 +1,39 @@
+From 39ff20e12ae9c6f581606ea310b7f11e8d444545 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Wed, 22 May 2024 21:47:06 +0200
+Subject: [PATCH] arm64: dts: st: add disabled spi6 node into stm32mp257f-dk
+
+Add a disabled spi6 node for the spi6 instance available via
+the GPIO expansion connector on the stm32mp257f-dk board.
+
+Change-Id: I85d61bc7c0d33f647ccefd7ac5a3f319a4fdd953
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381863
+Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+index 4beed8d41ee3..a92908a1a819 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -714,6 +714,13 @@ brcmf: bcrmf@1 {
+ 	};
+ };
+ 
++&spi6 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&spi6_pins_a>;
++	pinctrl-1 = <&spi6_sleep_pins_a>;
++	status = "disabled";
++};
++
+ /* Bluetooth */
+ &usart1 {
+ 	pinctrl-names = "default", "sleep", "idle";
+-- 
+2.39.5
+

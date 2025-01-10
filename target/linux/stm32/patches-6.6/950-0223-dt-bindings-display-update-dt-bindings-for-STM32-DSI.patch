@@ -1,0 +1,65 @@
+From a314a3145a5e91560d9560380c836e94301c0d7f Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Thu, 22 Feb 2024 14:10:35 +0100
+Subject: [PATCH] dt-bindings: display: update dt-bindings for STM32 DSI device
+
+Add "st,stm32mp25-dsi" compatible new power supplies.
+
+Change-Id: I69953f69396eeacb3b3896046e6b107fa2209798
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ .../bindings/display/st,stm32-dsi.yaml        | 31 +++++++++++++++++--
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+index 53560052aaf0..402c7db195da 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+@@ -19,6 +19,7 @@ allOf:
+ properties:
+   compatible:
+     const: st,stm32-dsi
++    const: st,stm32mp25-dsi
+ 
+   reg:
+     maxItems: 1
+@@ -44,9 +45,33 @@ properties:
+     items:
+       - const: apb
+ 
+-  phy-dsi-supply:
+-    description:
+-      Phandle of the regulator that provides the supply voltage.
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - st,stm32-dsi
++    then:
++      properties:
++        phy-dsi-supply:
++          description:
++            Phandle of the regulator that provides the supply voltage.
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - st,stm32mp25-dsi
++    then:
++      properties:
++        vdd-supply:
++          description:
++            Phandle of the regulator that provides the supply voltage vdd.
++
++        vdda18-supply:
++          description:
++            Phandle of the regulator that provides the supply voltage vdda18.
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+-- 
+2.39.5
+

@@ -1,0 +1,159 @@
+From 6fd1e2111e334bbc36a1cb88b3c749b2b80d76a0 Mon Sep 17 00:00:00 2001
+From: Yannick Fertre <yannick.fertre@foss.st.com>
+Date: Tue, 9 Nov 2021 11:04:52 +0100
+Subject: [PATCH] ARM: dts: stm32: add display support for STM32MP135F-DK board
+
+Link the panel rk043fn48h to the display controller.
+Use ltdc_pins_a for pin configuration.
+
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Change-Id: I9507f8d1da78914d89cbe71587c4065a0088a4a6
+---
+ arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 57 +++++++++++++++++++++
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts     | 55 ++++++++++++++++++++
+ 2 files changed, 112 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+index 9d02a40fed9f..a15c0d5cdd69 100644
+--- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
+@@ -86,6 +86,63 @@ pins {
+ 		};
+ 	};
+ 
++	ltdc_pins_a: ltdc-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D',  9, AF13)>, /* LCD_CLK */
++				 <STM32_PINMUX('C',  6, AF14)>, /* LCD_HSYNC */
++				 <STM32_PINMUX('G',  4, AF11)>, /* LCD_VSYNC */
++				 <STM32_PINMUX('H',  9, AF11)>, /* LCD_DE */
++				 <STM32_PINMUX('G',  7, AF14)>, /* LCD_R2 */
++				 <STM32_PINMUX('B', 12, AF13)>, /* LCD_R3 */
++				 <STM32_PINMUX('D', 14, AF14)>, /* LCD_R4 */
++				 <STM32_PINMUX('E',  7, AF14)>, /* LCD_R5 */
++				 <STM32_PINMUX('E', 13, AF14)>, /* LCD_R6 */
++				 <STM32_PINMUX('E',  9, AF14)>, /* LCD_R7 */
++				 <STM32_PINMUX('H', 13, AF14)>, /* LCD_G2 */
++				 <STM32_PINMUX('F',  3, AF14)>, /* LCD_G3 */
++				 <STM32_PINMUX('D',  5, AF14)>, /* LCD_G4 */
++				 <STM32_PINMUX('G',  0, AF14)>, /* LCD_G5 */
++				 <STM32_PINMUX('C',  7, AF14)>, /* LCD_G6 */
++				 <STM32_PINMUX('A', 15, AF11)>, /* LCD_G7 */
++				 <STM32_PINMUX('D', 10, AF14)>, /* LCD_B2 */
++				 <STM32_PINMUX('F',  2, AF14)>, /* LCD_B3 */
++				 <STM32_PINMUX('H', 14, AF11)>, /* LCD_B4 */
++				 <STM32_PINMUX('E',  0, AF14)>, /* LCD_B5 */
++				 <STM32_PINMUX('B',  6, AF7)>,  /* LCD_B6 */
++				 <STM32_PINMUX('F',  1, AF13)>; /* LCD_B7 */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <0>;
++		};
++	};
++
++	ltdc_sleep_pins_a: ltdc-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('D',  9, ANALOG)>, /* LCD_CLK */
++				 <STM32_PINMUX('C',  6, ANALOG)>, /* LCD_HSYNC */
++				 <STM32_PINMUX('G',  4, ANALOG)>, /* LCD_VSYNC */
++				 <STM32_PINMUX('H',  9, ANALOG)>, /* LCD_DE */
++				 <STM32_PINMUX('G',  7, ANALOG)>, /* LCD_R2 */
++				 <STM32_PINMUX('B', 12, ANALOG)>, /* LCD_R3 */
++				 <STM32_PINMUX('D', 14, ANALOG)>, /* LCD_R4 */
++				 <STM32_PINMUX('E',  7, ANALOG)>, /* LCD_R5 */
++				 <STM32_PINMUX('E', 13, ANALOG)>, /* LCD_R6 */
++				 <STM32_PINMUX('E',  9, ANALOG)>, /* LCD_R7 */
++				 <STM32_PINMUX('H', 13, ANALOG)>, /* LCD_G2 */
++				 <STM32_PINMUX('F',  3, ANALOG)>, /* LCD_G3 */
++				 <STM32_PINMUX('D',  5, ANALOG)>, /* LCD_G4 */
++				 <STM32_PINMUX('G',  0, ANALOG)>, /* LCD_G5 */
++				 <STM32_PINMUX('C',  7, ANALOG)>, /* LCD_G6 */
++				 <STM32_PINMUX('A', 15, ANALOG)>, /* LCD_G7 */
++				 <STM32_PINMUX('D', 10, ANALOG)>, /* LCD_B2 */
++				 <STM32_PINMUX('F',  2, ANALOG)>, /* LCD_B3 */
++				 <STM32_PINMUX('H', 14, ANALOG)>, /* LCD_B4 */
++				 <STM32_PINMUX('E',  0, ANALOG)>, /* LCD_B5 */
++				 <STM32_PINMUX('B',  6, ANALOG)>, /* LCD_B6 */
++				 <STM32_PINMUX('F',  1, ANALOG)>; /* LCD_B7 */
++		};
++	};
++
+ 	mcp23017_pins_a: mcp23017-0 {
+ 		pins {
+ 			pinmux = <STM32_PINMUX('G', 12, GPIO)>;
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index db4261a6b114..1a53a251a20b 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -67,6 +67,48 @@ led-blue {
+ 			default-state = "off";
+ 		};
+ 	};
++
++	panel_backlight: panel-backlight {
++		compatible = "gpio-backlight";
++		gpios = <&gpioe 12 GPIO_ACTIVE_HIGH>;
++		default-on;
++		default-brightness-level = <0>;
++		status = "okay";
++	};
++
++	panel_rgb: panel-rgb {
++		compatible = "panel-dpi";
++		enable-gpios = <&gpioi 7 GPIO_ACTIVE_HIGH>;
++		backlight = <&panel_backlight>;
++		power-supply = <&scmi_v3v3_sw>;
++		data-mapping = "bgr666";
++		status = "okay";
++
++		width-mm = <105>;
++		height-mm = <67>;
++
++		port {
++			panel_in_rgb: endpoint {
++				remote-endpoint = <&ltdc_out_rgb>;
++			};
++		};
++
++		panel-timing {
++			clock-frequency = <10000000>;
++			hactive = <480>;
++			vactive = <272>;
++			hsync-len = <52>;
++			hfront-porch = <10>;
++			hback-porch = <10>;
++			vsync-len = <10>;
++			vfront-porch = <10>;
++			vback-porch = <10>;
++			hsync-active = <0>;
++			vsync-active = <0>;
++			de-active = <1>;
++			pixelclk-active = <1>;
++		};
++	};
+ };
+ 
+ &adc_1 {
+@@ -161,6 +203,19 @@ &i2c5 {
+ 	/delete-property/dma-names;
+ };
+ 
++&ltdc {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&ltdc_pins_a>;
++	pinctrl-1 = <&ltdc_sleep_pins_a>;
++	status = "okay";
++
++	port {
++		ltdc_out_rgb: endpoint {
++			remote-endpoint = <&panel_in_rgb>;
++		};
++	};
++};
++
+ &rtc {
+ 	st,lsco = <RTC_OUT2_RMP>;
+ 	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
+-- 
+2.39.5
+

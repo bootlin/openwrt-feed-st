@@ -1,0 +1,35 @@
+From c6564d6baffa0a045d523f1a867444997d27cbe5 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 12 Sep 2024 16:03:29 +0200
+Subject: [PATCH] arm64: defconfig: add SND_USB_AUDIO in
+ fragment-02-defconfig-addons
+
+This config enables the support of the USB audio devices such
+as USB sound cards, USB microphones, and USB speakers.
+
+Change-Id: Ic765aedd5f5f9f33d67de09722454be2a928f0f7
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404164
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index feb5bfd9d855..e193c2801043 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -88,6 +88,7 @@ CONFIG_SND_SOC_STM32_MDF=m
+ CONFIG_SND_SOC_STM32_SAI=m
+ CONFIG_SND_SOC_STM32_SPDIFRX=m
+ CONFIG_SND_SOC_WM8994=m
++CONFIG_SND_USB_AUDIO=m
+ CONFIG_SPI_STM32=m
+ CONFIG_SPI_STM32_OSPI=y
+ CONFIG_STM32_ADC=m
+-- 
+2.39.5
+

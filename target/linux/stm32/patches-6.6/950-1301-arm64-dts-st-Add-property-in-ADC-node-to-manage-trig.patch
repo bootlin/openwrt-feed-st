@@ -1,0 +1,43 @@
+From e439d2a05e8e40caf583b996db4d4ff0d95d43e5 Mon Sep 17 00:00:00 2001
+From: Cheick Traore <cheick.traore-ext@st.com>
+Date: Tue, 16 Jul 2024 11:31:42 +0200
+Subject: [PATCH] arm64: dts: st: Add property in ADC node to manage trigger
+ diversity on stm32mp21
+
+Add a property in ADC nodes to permit to make difference between ADC
+devices and choose the correct trigger configuration to apply.
+
+Change-Id: I2d6dc09fc12e0d30326895015342fcef2db522c0
+Signed-off-by: Cheick Traore <cheick.traore-ext@st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/393470
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp211.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+index 219f12ba1535..265e90d92415 100644
+--- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
+@@ -1420,6 +1420,7 @@ adc1: adc@0 {
+ 					interrupts = <0>;
+ 					dmas = <&hpdma 58 0x40 0x12>;
+ 					dma-names = "rx";
++					st,adc-trigger-sel = <0>;
+ 					status = "disabled";
+ 
+ 					channel@14 {
+@@ -1452,6 +1453,7 @@ adc2: adc@0 {
+ 					interrupts = <0>;
+ 					dmas = <&hpdma 59 0x40 0x12>;
+ 					dma-names = "rx";
++					st,adc-trigger-sel = <1>;
+ 					status = "disabled";
+ 
+ 					channel@14 {
+-- 
+2.39.5
+

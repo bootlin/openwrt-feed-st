@@ -1,0 +1,35 @@
+From 3f5e309ddaf05cf5360fb604ab3d2bd320448346 Mon Sep 17 00:00:00 2001
+From: Pankaj Dev <pankaj.dev@st.com>
+Date: Wed, 16 Nov 2022 13:05:08 +0530
+Subject: [PATCH] arm64: dts: st: add USB2PHY1 and USB2PHY2 nodes in
+ stm32mp257f-ev1
+
+Add the required node(s) for USB2PHY1 and USB2PHY2 support
+These are 2 instances of same IP USB2-FEMTO-PHY used by
+USB2H and USB3DRD ctrl respectively
+
+Change-Id: I4f1bae7c1a2390849f83e9547afc9d71d172e4b5
+Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index fe4a94a44e59..b07bd4ed8c6a 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -106,3 +106,11 @@ &usart2 {
+ 	pinctrl-2 = <&usart2_sleep_pins_a>;
+ 	status = "okay";
+ };
++
++&usb2_phy1 {
++	status = "okay";
++};
++
++&usb2_phy2 {
++	status = "okay";
++};
+-- 
+2.39.5
+

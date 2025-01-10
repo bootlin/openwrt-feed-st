@@ -1,0 +1,29 @@
+From 2133348acf0fca2577a6c028477fe100184d49a3 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Date: Thu, 15 Dec 2022 15:58:30 +0100
+Subject: [PATCH] ARM: dts: stm32: declare rproc as wakeup-source on
+ stm32mp15xx-dkx
+
+Allow rproc to wakeup the system when getting the WDG irq.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Change-Id: I96bc8c0f57434df68dbab31d1cecb31bec3d737f
+---
+ arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+index 4a3cd2e777a7..72fb77bd9d6c 100644
+--- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
+@@ -489,6 +489,7 @@ &m4_rproc {
+ 	mbox-names = "vq0", "vq1", "shutdown", "detach";
+ 	interrupt-parent = <&exti>;
+ 	interrupts = <68 1>;
++	wakeup-source;
+ 	status = "okay";
+ };
+ 
+-- 
+2.39.5
+

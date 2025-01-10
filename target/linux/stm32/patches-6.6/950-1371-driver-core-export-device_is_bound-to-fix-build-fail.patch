@@ -1,0 +1,36 @@
+From d2b34e59d43e5d51e782b0d1bde143934408366e Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Sat, 7 Nov 2020 22:47:27 +0000
+Subject: [PATCH] driver core: export device_is_bound() to fix build failure
+
+When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
+is unable to find device_is_bound(). The error being:
+ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
+	undefined!
+
+Export the symbol so that the module finds it.
+
+Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells binding support")
+Change-Id: Iee9932a6f444e8ee1d1d0bfa55f055dbe2932cd3
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398972
+---
+ drivers/base/dd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 0c3725c3eefa..628a89dc552b 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -393,6 +393,7 @@ bool device_is_bound(struct device *dev)
+ {
+ 	return dev->p && klist_node_attached(&dev->p->knode_driver);
+ }
++EXPORT_SYMBOL(device_is_bound);
+ 
+ static void driver_bound(struct device *dev)
+ {
+-- 
+2.39.5
+

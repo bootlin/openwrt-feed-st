@@ -1,0 +1,44 @@
+From 7ec03c7d6c7c3d0cad6d9f3a7e3aa700131b5df4 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Wed, 4 Sep 2024 11:21:53 +0200
+Subject: [PATCH] mfd: stm32-timers: add pm runtime support
+
+Add pm runtime support to timers MFD driver.
+
+Change-Id: I29363a2ba5d5527487fe1cf97fb3cb909f757869
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/402581
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+---
+ drivers/mfd/stm32-timers.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
+index 481c4b6f4231..35a01ee40826 100644
+--- a/drivers/mfd/stm32-timers.c
++++ b/drivers/mfd/stm32-timers.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ 
+ #define STM32_TIMERS_MAX_REGISTERS	0x3fc
+@@ -319,6 +320,10 @@ static int stm32_timers_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return ret;
++
+ 	ret = stm32_timers_dma_probe(dev, ddata);
+ 	if (ret) {
+ 		stm32_timers_dma_remove(dev, ddata);
+-- 
+2.39.5
+

@@ -1,0 +1,84 @@
+From 18e92198f03dc51d8e04f79f93d476f55efde715 Mon Sep 17 00:00:00 2001
+From: Valentin Caron <valentin.caron@foss.st.com>
+Date: Wed, 26 Oct 2022 19:06:47 +0200
+Subject: [PATCH] ARM: dts: stm32: add power-domains in stm32mp13x uart nodes
+
+On stm32mp13 soc, add UART devices to "pd_core_ret" power domain.
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+Change-Id: I3fbfa07cc8f7679db6bdac7a172b26e8787200e4
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 5e4f839cc785..1e1942fc5a6c 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -419,6 +419,7 @@ usart3: serial@4000f000 {
+ 			clocks = <&rcc USART3_K>;
+ 			resets = <&rcc USART3_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 45 0x400 0x5>,
+ 			       <&dmamux1 46 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -432,6 +433,7 @@ uart4: serial@40010000 {
+ 			clocks = <&rcc UART4_K>;
+ 			resets = <&rcc UART4_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 63 0x400 0x5>,
+ 			       <&dmamux1 64 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -445,6 +447,7 @@ uart5: serial@40011000 {
+ 			clocks = <&rcc UART5_K>;
+ 			resets = <&rcc UART5_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 65 0x400 0x5>,
+ 			       <&dmamux1 66 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -494,6 +497,7 @@ uart7: serial@40018000 {
+ 			clocks = <&rcc UART7_K>;
+ 			resets = <&rcc UART7_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 79 0x400 0x5>,
+ 			       <&dmamux1 80 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -507,6 +511,7 @@ uart8: serial@40019000 {
+ 			clocks = <&rcc UART8_K>;
+ 			resets = <&rcc UART8_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 81 0x400 0x5>,
+ 			       <&dmamux1 82 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -602,6 +607,7 @@ usart6: serial@44003000 {
+ 			clocks = <&rcc USART6_K>;
+ 			resets = <&rcc USART6_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 71 0x400 0x5>,
+ 			       <&dmamux1 72 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -839,6 +845,7 @@ usart1: serial@4c000000 {
+ 			clocks = <&rcc USART1_K>;
+ 			resets = <&rcc USART1_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 41 0x400 0x5>,
+ 			       <&dmamux1 42 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+@@ -852,6 +859,7 @@ usart2: serial@4c001000 {
+ 			clocks = <&rcc USART2_K>;
+ 			resets = <&rcc USART2_R>;
+ 			wakeup-source;
++			power-domains = <&pd_core_ret>;
+ 			dmas = <&dmamux1 43 0x400 0x5>,
+ 			       <&dmamux1 44 0x400 0x1>;
+ 			dma-names = "rx", "tx";
+-- 
+2.39.5
+

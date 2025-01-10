@@ -1,0 +1,50 @@
+From 4de3ebac0f3275090bc3eb36798a0695f05ec299 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+Date: Thu, 8 Aug 2024 15:21:51 +0200
+Subject: [PATCH] dt-bindings: iio: adc: add settling time management
+
+On each restart of the filter, the first sample are affected by the
+impulse response of the filter. Add the "settling-time-us" property
+inherited from adc.yaml generic binding to allow discarding the first
+not relevant samples.
+
+Change-Id: I8a4dd289264e4449ffb73d723fe9b82cd629b637
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/397593
+Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ .../devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml     | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+index f51c2831aaf6..0e4161c41683 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-mdf-adc.yaml
+@@ -249,6 +249,13 @@ patternProperties:
+                     minimum: 0
+                     maximum: 8
+ 
++                settling-time-us:
++                  description:
++                    Time between enabling the channel and the first sample. This time is converted
++                    by the driver into a minimum number of output sample to discard before releasing
++                    the data. It allows to drop the samples affected by the impulse response of the
++                    filter and wait for stable data.
++
+                 io-backends:
+                   description:
+                     Used to pipe external sigma delta modulator or internal ADC backend to MDF
+@@ -355,6 +362,7 @@ examples:
+ 
+         channel@1 {
+           reg = <1>;
++          settling-time-us = <1000>;
+           io-backends = <&sd_adc1>;
+         };
+       };
+-- 
+2.39.5
+

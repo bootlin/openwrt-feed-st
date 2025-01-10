@@ -1,0 +1,75 @@
+From 6071cb84f17f2620e1a435a3b23c1e81e4f99fe6 Mon Sep 17 00:00:00 2001
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+Date: Thu, 2 Mar 2023 15:28:38 +0100
+Subject: [PATCH] arm64: dts: st: enable CoreSight on stm32mp215f-dk board
+
+Enable CoreSight on stm32mp215f-dk board.
+
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Change-Id: I536e4ec9a87d54675a4db9ae870e7413b079ecce
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/396536
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/408660
+ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
+---
+ arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 44 +++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+index 0df30b51949e..98e548a035c1 100644
+--- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
+@@ -183,6 +183,50 @@ &cryp1 {
+ 	status = "okay";
+ };
+ 
++&cs_cpu_debug0 {
++	status = "okay";
++};
++
++&cs_cti0 {
++	status = "okay";
++};
++
++&cs_cti1 {
++	status = "okay";
++};
++
++&cs_cti_cpu0 {
++	status = "okay";
++};
++
++&cs_etf {
++	status = "okay";
++};
++
++&cs_etm0 {
++	status = "okay";
++};
++
++&cs_etr {
++	status = "okay";
++};
++
++&cs_funnel {
++	status = "okay";
++};
++
++&cs_replicator {
++	status = "okay";
++};
++
++&cs_stm {
++	status = "okay";
++};
++
++&cs_tpiu {
++	status = "okay";
++};
++
+ &csi {
+ 	vdd-supply =  <&scmi_vddcore>;
+ 	vdda18-supply = <&scmi_vdda_1v8>;
+-- 
+2.39.5
+

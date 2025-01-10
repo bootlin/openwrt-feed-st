@@ -1,0 +1,33 @@
+From 4b0299ea6acce7d2ea2036c42053eb99a4fe5d54 Mon Sep 17 00:00:00 2001
+From: Alain Volmat <alain.volmat@foss.st.com>
+Date: Thu, 22 Feb 2024 10:52:46 +0100
+Subject: [PATCH] arm64: defconfig: addition of CSI/DCMIPP/IMX335 in
+ fragment-02
+
+Addition of the IMX335 sensor, CSI bridge and DCMIPP driver within the
+fragment-02-defconfig-addons.config
+
+Change-Id: I5ad8170e89634031e9e2b08700d3440fe153ae81
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361982
+Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
+Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
+---
+ arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
+index 56cc44a9060f..c05f7a2e0c7d 100644
+--- a/arch/arm64/configs/fragment-02-defconfig-addons.config
++++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
+@@ -82,3 +82,6 @@ CONFIG_TOUCHSCREEN_ILI210X=y
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB_DWC3_STM32=y
+ CONFIG_USB_STM32_USBH=y
++CONFIG_VIDEO_STM32_CSI=m
++CONFIG_VIDEO_STM32_DCMIPP=m
++CONFIG_VIDEO_IMX335=m
+-- 
+2.39.5
+
