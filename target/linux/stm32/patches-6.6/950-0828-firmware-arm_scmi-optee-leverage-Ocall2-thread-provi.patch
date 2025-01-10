@@ -1,6 +1,6 @@
-From 1e5eedcdaf1c39bead7328a95c28035a4645caec Mon Sep 17 00:00:00 2001
-From: Etienne Carriere <etienne.carriere@foss.st.com>
-Date: Thu, 16 Sep 2021 19:05:54 +0200
+From e4cf6b24e7722287d429fdcc8eb56c225432e3f5 Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Fri, 10 Jan 2025 16:00:24 +0100
 Subject: [PATCH] firmware: arm_scmi: optee leverage Ocall2 thread provisioning
 
 Implements use of OP-TEE Ocall2 in SCMI OP-TEE transport to provision a
@@ -26,12 +26,13 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/357080
 Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
 Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
 ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
  drivers/firmware/arm_scmi/optee.c | 420 ++++++++++++++++++++++++++++--
  1 file changed, 403 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
-index e123de6e8c67..92ccb5604b07 100644
+index aa02392265d3..58747aaa5309 100644
 --- a/drivers/firmware/arm_scmi/optee.c
 +++ b/drivers/firmware/arm_scmi/optee.c
 @@ -80,8 +80,39 @@ enum scmi_optee_pta_cmd {
@@ -529,11 +530,17 @@ index e123de6e8c67..92ccb5604b07 100644
  err_free_shm:
  	if (channel->tee_shm)
  		tee_shm_free(channel->tee_shm);
-@@ -466,12 +835,17 @@ static int scmi_optee_chan_free(int id, void *p, void *data)
+@@ -466,6 +835,7 @@ static int scmi_optee_chan_free(int id, void *p, void *data)
  {
  	struct scmi_chan_info *cinfo = p;
  	struct scmi_optee_channel *channel = cinfo->transport_info;
 +	int ret;
+ 
+ 	/*
+ 	 * Different protocols might share the same chan info, so a previous
+@@ -474,11 +844,15 @@ static int scmi_optee_chan_free(int id, void *p, void *data)
+ 	if (!channel)
+ 		return 0;
  
 -	mutex_lock(&scmi_optee_private->mu);
 +	ret = close_ocall_thread(channel);
@@ -550,7 +557,7 @@ index e123de6e8c67..92ccb5604b07 100644
  
  	if (channel->tee_shm) {
  		tee_shm_free(channel->tee_shm);
-@@ -481,6 +855,8 @@ static int scmi_optee_chan_free(int id, void *p, void *data)
+@@ -488,6 +862,8 @@ static int scmi_optee_chan_free(int id, void *p, void *data)
  	cinfo->transport_info = NULL;
  	channel->cinfo = NULL;
  
@@ -559,7 +566,7 @@ index e123de6e8c67..92ccb5604b07 100644
  	return 0;
  }
  
-@@ -494,10 +870,20 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
+@@ -501,10 +877,20 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
  
  	if (channel->tee_shm) {
  		msg_tx_prepare(channel->req.msg, xfer);

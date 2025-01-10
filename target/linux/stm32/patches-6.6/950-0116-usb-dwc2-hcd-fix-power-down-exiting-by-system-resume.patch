@@ -1,6 +1,6 @@
-From 950158c37fbf965048da59b09f6750a06470950c Mon Sep 17 00:00:00 2001
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Date: Thu, 18 Nov 2021 18:15:58 +0100
+From f4d51ce963a0d25dc92963f6425c10b569eb7ea0 Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Fri, 10 Jan 2025 15:32:42 +0100
 Subject: [PATCH] usb: dwc2: hcd: fix power down exiting by system resume
 
 Move a fix that claims to be for Partial Power Down mode but applies to
@@ -13,15 +13,16 @@ Change-Id: I9c63c10d7ff554826558442acbbb93b39ce3cec1
 Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/229468
 Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
 Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
- drivers/usb/dwc2/hcd.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/usb/dwc2/hcd.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 6e09d70bd3a1..70aefd421008 100644
+index 6a368cb3640d..e5d9a292b677 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4427,20 +4427,20 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+@@ -4422,21 +4422,21 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
  	if (hsotg->lx_state != DWC2_L2)
  		goto unlock;
  
@@ -33,6 +34,7 @@ index 6e09d70bd3a1..70aefd421008 100644
 -	 * Power Down mode.
 -	 */
 -	if (hprt0 & HPRT0_CONNSTS) {
+-		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 -		hsotg->lx_state = DWC2_L0;
 -		goto unlock;
 -	}
@@ -47,6 +49,7 @@ index 6e09d70bd3a1..70aefd421008 100644
 +		 * Power Down mode.
 +		 */
 +		if (hprt0 & HPRT0_CONNSTS) {
++			set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 +			hsotg->lx_state = DWC2_L0;
 +			goto unlock;
 +		}

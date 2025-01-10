@@ -1,6 +1,6 @@
-From 19458fd268c45e984ab239318cdbad9327e68960 Mon Sep 17 00:00:00 2001
-From: Alain Volmat <alain.volmat@foss.st.com>
-Date: Fri, 5 Aug 2022 17:02:17 +0200
+From 72cefd6f812ab1bc5ba998e0393ad109f441048d Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Fri, 10 Jan 2025 15:51:11 +0100
 Subject: [PATCH] media: i2c: imx335: add control of an optional powerdown gpio
 
 On some module, the sensor is controlled by both reset & powerdown
@@ -14,12 +14,13 @@ Reviewed-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
 Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
 Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
 Tested-by: Raphael GALLAIS-POU <raphael.gallais-pou@foss.st.com>
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
  drivers/media/i2c/imx335.c | 16 +++++++++++++++-
  1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index dba4ca4986c6..c30ac9410471 100644
+index a80ebfa211e7..892064b17074 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
 @@ -122,6 +122,7 @@ struct imx335_mode {
@@ -64,19 +65,19 @@ index dba4ca4986c6..c30ac9410471 100644
 +
  	usleep_range(500, 550); /* Tlow */
  
- 	/* Set XCLR */
-@@ -1025,6 +1037,7 @@ static int imx335_power_on(struct device *dev)
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
+@@ -1024,6 +1036,7 @@ static int imx335_power_on(struct device *dev)
  
  error_reset:
- 	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 1);
 +	gpiod_set_value_cansleep(imx335->powerdown_gpio, 0);
  	regulator_bulk_disable(ARRAY_SIZE(imx335_supply_name), imx335->supplies);
  
  	return ret;
-@@ -1042,6 +1055,7 @@ static int imx335_power_off(struct device *dev)
+@@ -1041,6 +1054,7 @@ static int imx335_power_off(struct device *dev)
  	struct imx335 *imx335 = to_imx335(sd);
  
- 	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 1);
 +	gpiod_set_value_cansleep(imx335->powerdown_gpio, 0);
  	clk_disable_unprepare(imx335->inclk);
  	regulator_bulk_disable(ARRAY_SIZE(imx335_supply_name), imx335->supplies);
