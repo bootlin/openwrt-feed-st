@@ -19,8 +19,6 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  .../bindings/clock/st,stm32mp25-rcc.yaml      | 171 ++++++++++++++++--
  1 file changed, 155 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-index 7732e79a42b9..1b6469ecc1a8 100644
 --- a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 @@ -38,22 +38,87 @@ properties:
@@ -213,6 +211,3 @@ index 7732e79a42b9..1b6469ecc1a8 100644
 +                  <&clk_dsi_txbyte>;
      };
  ...
--- 
-2.39.5
-

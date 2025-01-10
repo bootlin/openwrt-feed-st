@@ -36,11 +36,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/linux/tee_drv.h           |  72 +++++++++++++++++++++
  8 files changed, 309 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index df5fb5410b72..91df4a17a8a5 100644
 --- a/drivers/tee/optee/call.c
 +++ b/drivers/tee/optee/call.c
-@@ -328,7 +328,7 @@ int optee_open_session(struct tee_context *ctx,
+@@ -328,7 +328,7 @@ int optee_open_session(struct tee_contex
  		goto out;
  	}
  
@@ -49,7 +47,7 @@ index df5fb5410b72..91df4a17a8a5 100644
  		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
  		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
  	}
-@@ -374,7 +374,7 @@ int optee_close_session_helper(struct tee_context *ctx, u32 session)
+@@ -374,7 +374,7 @@ int optee_close_session_helper(struct te
  
  	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
  	msg_arg->session = session;
@@ -58,7 +56,7 @@ index df5fb5410b72..91df4a17a8a5 100644
  
  	optee_free_msg_arg(ctx, entry, offs);
  
-@@ -389,11 +389,14 @@ int optee_close_session(struct tee_context *ctx, u32 session)
+@@ -389,11 +389,14 @@ int optee_close_session(struct tee_conte
  	/* Check that the session is valid and remove it from the list */
  	mutex_lock(&ctxdata->mutex);
  	sess = find_session(ctxdata, session);
@@ -74,11 +72,10 @@ index df5fb5410b72..91df4a17a8a5 100644
  	kfree(sess);
  
  	return optee_close_session_helper(ctx, session);
-@@ -401,23 +404,61 @@ int optee_close_session(struct tee_context *ctx, u32 session)
- 
+@@ -402,22 +405,60 @@ int optee_close_session(struct tee_conte
  int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
  		      struct tee_param *param)
-+{
+ {
 +	return optee_invoke_func_helper(ctx, arg, param, NULL);
 +}
 +
@@ -86,7 +83,7 @@ index df5fb5410b72..91df4a17a8a5 100644
 +			     struct tee_ioctl_invoke_arg *arg,
 +			     struct tee_param *param,
 +			     struct tee_ocall2_arg *ocall_arg)
- {
++{
  	struct optee *optee = tee_get_drvdata(ctx->teedev);
  	struct optee_context_data *ctxdata = ctx->data;
 +	struct optee_call_extra call_extra;
@@ -137,7 +134,7 @@ index df5fb5410b72..91df4a17a8a5 100644
  	msg_arg = optee_get_msg_arg(ctx, arg->num_params,
  				    &entry, &shm, &offs);
  	if (IS_ERR(msg_arg))
-@@ -432,7 +473,54 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+@@ -432,7 +473,54 @@ int optee_invoke_func(struct tee_context
  	if (rc)
  		goto out;
  
@@ -193,7 +190,7 @@ index df5fb5410b72..91df4a17a8a5 100644
  		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
  		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
  	}
-@@ -466,6 +554,8 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+@@ -466,6 +554,8 @@ int optee_cancel_req(struct tee_context
  	mutex_unlock(&ctxdata->mutex);
  	if (!sess)
  		return -EINVAL;
@@ -202,7 +199,7 @@ index df5fb5410b72..91df4a17a8a5 100644
  
  	msg_arg = optee_get_msg_arg(ctx, 0, &entry, &shm, &offs);
  	if (IS_ERR(msg_arg))
-@@ -474,7 +564,7 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+@@ -474,7 +564,7 @@ int optee_cancel_req(struct tee_context
  	msg_arg->cmd = OPTEE_MSG_CMD_CANCEL;
  	msg_arg->session = session;
  	msg_arg->cancel_id = cancel_id;
@@ -211,11 +208,9 @@ index df5fb5410b72..91df4a17a8a5 100644
  
  	optee_free_msg_arg(ctx, entry, offs);
  	return 0;
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index 2a258bd3b6b5..4f1abccd9022 100644
 --- a/drivers/tee/optee/core.c
 +++ b/drivers/tee/optee/core.c
-@@ -141,7 +141,8 @@ static void optee_release_helper(struct tee_context *ctx,
+@@ -141,7 +141,8 @@ static void optee_release_helper(struct
  	list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
  				 list_node) {
  		list_del(&sess->list_node);
@@ -225,11 +220,9 @@ index 2a258bd3b6b5..4f1abccd9022 100644
  		kfree(sess);
  	}
  	kfree(ctxdata);
-diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-index b8ba360e863e..cb4bedf8d29d 100644
 --- a/drivers/tee/optee/ffa_abi.c
 +++ b/drivers/tee/optee/ffa_abi.c
-@@ -612,7 +612,8 @@ static int optee_ffa_yielding_call(struct tee_context *ctx,
+@@ -612,7 +612,8 @@ done:
   */
  
  static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
@@ -239,15 +232,12 @@ index b8ba360e863e..cb4bedf8d29d 100644
  {
  	struct ffa_send_direct_data data = {
  		.data0 = OPTEE_FFA_YIELDING_CALL_WITH_ARG,
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 6bb5cae09688..3ef3d7792380 100644
 --- a/drivers/tee/optee/optee_private.h
 +++ b/drivers/tee/optee/optee_private.h
-@@ -142,6 +142,18 @@ struct optee_ffa {
- 
+@@ -143,6 +143,18 @@ struct optee_ffa {
  struct optee;
  
-+/**
+ /**
 + * struct optee_call_extra - Extra data used by calling TEE
 + * @ocall_arg: OCall arguments related to the call or NULL
 + * @tee_thread_id: TEE thread ID to use to return from an OCall, or 0
@@ -259,9 +249,10 @@ index 6bb5cae09688..3ef3d7792380 100644
 +	struct optee_call_waiter *ocall_call_waiter;
 +};
 +
- /**
++/**
   * struct optee_ops - OP-TEE driver internal operations
   * @do_call_with_arg:	enters OP-TEE in secure world
+  * @to_msg_param:	converts from struct tee_param to OPTEE_MSG parameters
 @@ -154,7 +166,8 @@ struct optee;
   */
  struct optee_ops {
@@ -307,7 +298,7 @@ index 6bb5cae09688..3ef3d7792380 100644
  };
  
  struct optee_context_data {
-@@ -256,6 +294,11 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+@@ -256,6 +294,11 @@ int optee_invoke_func(struct tee_context
  		      struct tee_param *param);
  int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session);
  
@@ -319,11 +310,9 @@ index 6bb5cae09688..3ef3d7792380 100644
  #define PTA_CMD_GET_DEVICES		0x0
  #define PTA_CMD_GET_DEVICES_SUPP	0x1
  int optee_enumerate_devices(u32 func);
-diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
-index 7d9fa426505b..d97141a4bd0c 100644
 --- a/drivers/tee/optee/optee_smc.h
 +++ b/drivers/tee/optee/optee_smc.h
-@@ -579,6 +579,29 @@ struct optee_smc_disable_shm_cache_result {
+@@ -579,6 +579,29 @@ struct optee_smc_disable_shm_cache_resul
  #define OPTEE_SMC_RETURN_RPC_CMD \
  	OPTEE_SMC_RPC_VAL(OPTEE_SMC_RPC_FUNC_CMD)
  
@@ -353,11 +342,9 @@ index 7d9fa426505b..d97141a4bd0c 100644
  /* Returned in a0 */
  #define OPTEE_SMC_RETURN_UNKNOWN_FUNCTION 0xFFFFFFFF
  
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index d5b28fd35d66..7d413d0ed14e 100644
 --- a/drivers/tee/optee/smc_abi.c
 +++ b/drivers/tee/optee/smc_abi.c
-@@ -507,7 +507,7 @@ static int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+@@ -507,7 +507,7 @@ static int optee_shm_register(struct tee
  	msg_arg->params->u.tmem.buf_ptr = virt_to_phys(pages_list) |
  	  (tee_shm_get_page_offset(shm) & (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
  
@@ -366,7 +353,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  	    msg_arg->ret != TEEC_SUCCESS)
  		rc = -EINVAL;
  
-@@ -550,7 +550,7 @@ static int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+@@ -550,7 +550,7 @@ static int optee_shm_unregister(struct t
  	msg_arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
  	msg_arg->params[0].u.rmem.shm_ref = (unsigned long)shm;
  
@@ -375,7 +362,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  	    msg_arg->ret != TEEC_SUCCESS)
  		rc = -EINVAL;
  out:
-@@ -885,15 +885,31 @@ static void optee_handle_rpc(struct tee_context *ctx,
+@@ -885,15 +885,31 @@ static void optee_handle_rpc(struct tee_
   * Returns return code from secure world, 0 is OK
   */
  static int optee_smc_do_call_with_arg(struct tee_context *ctx,
@@ -409,7 +396,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  	if (optee->rpc_param_count) {
  		struct optee_msg_arg *arg;
  		unsigned int rpc_arg_offs;
-@@ -926,7 +942,9 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+@@ -926,7 +942,9 @@ static int optee_smc_do_call_with_arg(st
  		reg_pair_from_64(&param.a1, &param.a2, parg);
  	}
  	/* Initialize waiter */
@@ -420,7 +407,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  	while (true) {
  		struct arm_smccc_res res;
  
-@@ -941,7 +959,24 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+@@ -941,7 +959,24 @@ static int optee_smc_do_call_with_arg(st
  			 * Out of threads in secure world, wait for a thread
  			 * become available.
  			 */
@@ -446,7 +433,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  		} else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
  			cond_resched();
  			param.a0 = res.a0;
-@@ -955,12 +990,18 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+@@ -955,12 +990,18 @@ static int optee_smc_do_call_with_arg(st
  		}
  	}
  
@@ -466,7 +453,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  
  	return rc;
  }
-@@ -977,7 +1018,7 @@ static int simple_call_with_arg(struct tee_context *ctx, u32 cmd)
+@@ -977,7 +1018,7 @@ static int simple_call_with_arg(struct t
  		return PTR_ERR(msg_arg);
  
  	msg_arg->cmd = cmd;
@@ -475,7 +462,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  
  	optee_free_msg_arg(ctx, entry, offs);
  	return 0;
-@@ -1204,6 +1245,14 @@ static int optee_smc_open(struct tee_context *ctx)
+@@ -1204,6 +1245,14 @@ static int optee_smc_open(struct tee_con
  	return optee_open(ctx, sec_caps & OPTEE_SMC_SEC_CAP_MEMREF_NULL);
  }
  
@@ -490,7 +477,7 @@ index d5b28fd35d66..7d413d0ed14e 100644
  static const struct tee_driver_ops optee_clnt_ops = {
  	.get_version = optee_get_version,
  	.open = optee_smc_open,
-@@ -1211,6 +1260,7 @@ static const struct tee_driver_ops optee_clnt_ops = {
+@@ -1211,6 +1260,7 @@ static const struct tee_driver_ops optee
  	.open_session = optee_open_session,
  	.close_session = optee_close_session,
  	.invoke_func = optee_invoke_func,
@@ -498,11 +485,9 @@ index d5b28fd35d66..7d413d0ed14e 100644
  	.cancel_req = optee_cancel_req,
  	.shm_register = optee_shm_register,
  	.shm_unregister = optee_shm_unregister,
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 0eb342de0b00..0491f254fe4b 100644
 --- a/drivers/tee/tee_core.c
 +++ b/drivers/tee/tee_core.c
-@@ -1180,6 +1180,18 @@ int tee_client_invoke_func(struct tee_context *ctx,
+@@ -1180,6 +1180,18 @@ int tee_client_invoke_func(struct tee_co
  }
  EXPORT_SYMBOL_GPL(tee_client_invoke_func);
  
@@ -521,8 +506,6 @@ index 0eb342de0b00..0491f254fe4b 100644
  int tee_client_cancel_req(struct tee_context *ctx,
  			  struct tee_ioctl_cancel_arg *arg)
  {
-diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-index 17eb1c5205d3..e786a2a766ee 100644
 --- a/include/linux/tee_drv.h
 +++ b/include/linux/tee_drv.h
 @@ -77,6 +77,36 @@ struct tee_param {
@@ -573,7 +556,7 @@ index 17eb1c5205d3..e786a2a766ee 100644
  	int (*cancel_req)(struct tee_context *ctx, u32 cancel_id, u32 session);
  	int (*supp_recv)(struct tee_context *ctx, u32 *func, u32 *num_params,
  			 struct tee_param *param);
-@@ -507,4 +541,42 @@ struct tee_context *teedev_open(struct tee_device *teedev);
+@@ -507,4 +541,42 @@ struct tee_context *teedev_open(struct t
   */
  void teedev_close_context(struct tee_context *ctx);
  
@@ -616,6 +599,3 @@ index 17eb1c5205d3..e786a2a766ee 100644
 +				  struct tee_param *param,
 +				  struct tee_ocall2_arg *ocall_arg);
  #endif /*__TEE_DRV_H*/
--- 
-2.39.5
-

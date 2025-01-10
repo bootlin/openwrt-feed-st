@@ -24,11 +24,9 @@ Change-Id: Ia21455532f8c3e4d26ad8769e2bb2180755c4a8e
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 312 +++++++++++++++++++++++
  4 files changed, 1248 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index 6d5494bcac05..7b7b5dd9b2f1 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -32,6 +32,58 @@ clk_ext_camera: clk-ext-camera {
+@@ -32,6 +32,58 @@
  		};
  	};
  
@@ -87,7 +85,7 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  	joystick {
  		compatible = "gpio-keys";
  		pinctrl-0 = <&joystick_pins>;
-@@ -74,6 +126,44 @@ panel_backlight: panel-backlight {
+@@ -74,6 +126,44 @@
  		default-on;
  		status = "okay";
  	};
@@ -132,7 +130,7 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  };
  
  &cec {
-@@ -100,6 +190,113 @@ dcmi_0: endpoint {
+@@ -100,6 +190,113 @@
  	};
  };
  
@@ -246,7 +244,7 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -174,6 +371,49 @@ &i2c2 {
+@@ -174,6 +371,49 @@
  	i2c-scl-falling-time-ns = <20>;
  	status = "okay";
  
@@ -296,7 +294,7 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  	ov5640: camera@3c {
  		compatible = "ovti,ov5640";
  		reg = <0x3c>;
-@@ -284,6 +524,65 @@ flash1: flash@1 {
+@@ -284,6 +524,65 @@
  	};
  };
  
@@ -362,7 +360,7 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  &sdmmc3 {
  	pinctrl-names = "default", "opendrain", "sleep";
  	pinctrl-0 = <&sdmmc3_b4_pins_a>;
-@@ -296,6 +595,19 @@ &sdmmc3 {
+@@ -296,6 +595,19 @@
  	status = "disabled";
  };
  
@@ -382,11 +380,9 @@ index 6d5494bcac05..7b7b5dd9b2f1 100644
  &spi1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&spi1_pins_a>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index f8eb0f3d3494..61b5f759459e 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -32,6 +32,58 @@ clk_ext_camera: clk-ext-camera {
+@@ -32,6 +32,58 @@
  		};
  	};
  
@@ -445,7 +441,7 @@ index f8eb0f3d3494..61b5f759459e 100644
  	joystick {
  		compatible = "gpio-keys";
  		pinctrl-0 = <&joystick_pins>;
-@@ -74,6 +126,44 @@ panel_backlight: panel-backlight {
+@@ -74,6 +126,44 @@
  		default-on;
  		status = "okay";
  	};
@@ -490,7 +486,7 @@ index f8eb0f3d3494..61b5f759459e 100644
  };
  
  &cec {
-@@ -100,6 +190,113 @@ dcmi_0: endpoint {
+@@ -100,6 +190,113 @@
  	};
  };
  
@@ -604,7 +600,7 @@ index f8eb0f3d3494..61b5f759459e 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -174,6 +371,49 @@ &i2c2 {
+@@ -174,6 +371,49 @@
  	i2c-scl-falling-time-ns = <20>;
  	status = "okay";
  
@@ -654,7 +650,7 @@ index f8eb0f3d3494..61b5f759459e 100644
  	ov5640: camera@3c {
  		compatible = "ovti,ov5640";
  		reg = <0x3c>;
-@@ -284,6 +524,65 @@ flash1: flash@1 {
+@@ -284,6 +524,65 @@
  	};
  };
  
@@ -720,7 +716,7 @@ index f8eb0f3d3494..61b5f759459e 100644
  &sdmmc3 {
  	pinctrl-names = "default", "opendrain", "sleep";
  	pinctrl-0 = <&sdmmc3_b4_pins_a>;
-@@ -296,6 +595,19 @@ &sdmmc3 {
+@@ -296,6 +595,19 @@
  	status = "disabled";
  };
  
@@ -740,11 +736,9 @@ index f8eb0f3d3494..61b5f759459e 100644
  &spi1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&spi1_pins_a>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-index f844653183e3..9efdb33a1f10 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-@@ -32,6 +32,58 @@ clk_ext_camera: clk-ext-camera {
+@@ -32,6 +32,58 @@
  		};
  	};
  
@@ -803,7 +797,7 @@ index f844653183e3..9efdb33a1f10 100644
  	joystick {
  		compatible = "gpio-keys";
  		pinctrl-0 = <&joystick_pins>;
-@@ -74,6 +126,44 @@ panel_backlight: panel-backlight {
+@@ -74,6 +126,44 @@
  		default-on;
  		status = "okay";
  	};
@@ -848,7 +842,7 @@ index f844653183e3..9efdb33a1f10 100644
  };
  
  &cec {
-@@ -100,6 +190,113 @@ dcmi_0: endpoint {
+@@ -100,6 +190,113 @@
  	};
  };
  
@@ -962,7 +956,7 @@ index f844653183e3..9efdb33a1f10 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -174,6 +371,49 @@ &i2c2 {
+@@ -174,6 +371,49 @@
  	i2c-scl-falling-time-ns = <20>;
  	status = "okay";
  
@@ -1012,7 +1006,7 @@ index f844653183e3..9efdb33a1f10 100644
  	ov5640: camera@3c {
  		compatible = "ovti,ov5640";
  		reg = <0x3c>;
-@@ -284,6 +524,65 @@ flash1: flash@1 {
+@@ -284,6 +524,65 @@
  	};
  };
  
@@ -1078,7 +1072,7 @@ index f844653183e3..9efdb33a1f10 100644
  &sdmmc3 {
  	pinctrl-names = "default", "opendrain", "sleep";
  	pinctrl-0 = <&sdmmc3_b4_pins_a>;
-@@ -296,6 +595,19 @@ &sdmmc3 {
+@@ -296,6 +595,19 @@
  	status = "disabled";
  };
  
@@ -1098,11 +1092,9 @@ index f844653183e3..9efdb33a1f10 100644
  &spi1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&spi1_pins_a>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index 099de12cf873..660e7f4acfa5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -32,6 +32,58 @@ clk_ext_camera: clk-ext-camera {
+@@ -32,6 +32,58 @@
  		};
  	};
  
@@ -1161,7 +1153,7 @@ index 099de12cf873..660e7f4acfa5 100644
  	joystick {
  		compatible = "gpio-keys";
  		pinctrl-0 = <&joystick_pins>;
-@@ -74,6 +126,44 @@ panel_backlight: panel-backlight {
+@@ -74,6 +126,44 @@
  		default-on;
  		status = "okay";
  	};
@@ -1206,7 +1198,7 @@ index 099de12cf873..660e7f4acfa5 100644
  };
  
  &cec {
-@@ -100,6 +190,113 @@ dcmi_0: endpoint {
+@@ -100,6 +190,113 @@
  	};
  };
  
@@ -1320,7 +1312,7 @@ index 099de12cf873..660e7f4acfa5 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -174,6 +371,49 @@ &i2c2 {
+@@ -174,6 +371,49 @@
  	i2c-scl-falling-time-ns = <20>;
  	status = "okay";
  
@@ -1370,7 +1362,7 @@ index 099de12cf873..660e7f4acfa5 100644
  	ov5640: camera@3c {
  		compatible = "ovti,ov5640";
  		reg = <0x3c>;
-@@ -284,6 +524,65 @@ flash1: flash@1 {
+@@ -284,6 +524,65 @@
  	};
  };
  
@@ -1436,7 +1428,7 @@ index 099de12cf873..660e7f4acfa5 100644
  &sdmmc3 {
  	pinctrl-names = "default", "opendrain", "sleep";
  	pinctrl-0 = <&sdmmc3_b4_pins_a>;
-@@ -296,6 +595,19 @@ &sdmmc3 {
+@@ -296,6 +595,19 @@
  	status = "disabled";
  };
  
@@ -1456,6 +1448,3 @@ index 099de12cf873..660e7f4acfa5 100644
  &spi1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&spi1_pins_a>;
--- 
-2.39.5
-

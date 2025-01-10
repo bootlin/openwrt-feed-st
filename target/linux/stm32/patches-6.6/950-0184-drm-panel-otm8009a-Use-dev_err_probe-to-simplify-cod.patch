@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 16 ++++++----------
  1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index d4b4306671dd..2159e34629c9 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -448,18 +448,14 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -448,18 +448,14 @@ static int otm8009a_probe(struct mipi_ds
  		return -ENOMEM;
  
  	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
@@ -41,6 +39,3 @@ index d4b4306671dd..2159e34629c9 100644
  
  	mipi_dsi_set_drvdata(dsi, ctx);
  
--- 
-2.39.5
-

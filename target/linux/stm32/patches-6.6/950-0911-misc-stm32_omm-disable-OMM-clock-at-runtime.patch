@@ -19,11 +19,9 @@ Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
  drivers/misc/stm32_omm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-index 9e8c613c9bc3..b56fa01682e4 100644
 --- a/drivers/misc/stm32_omm.c
 +++ b/drivers/misc/stm32_omm.c
-@@ -384,7 +384,7 @@ static int stm32_omm_probe(struct platform_device *pdev)
+@@ -384,7 +384,7 @@ static int stm32_omm_probe(struct platfo
  		if (!child_access[i] || !of_device_is_available(omm->child_node[i]))
  			continue;
  
@@ -32,6 +30,3 @@ index 9e8c613c9bc3..b56fa01682e4 100644
  		if (!vdev) {
  			dev_err(dev, "Failed to create Octo Memory Manager child\n");
  			for (j = i; j > 0; --j) {
--- 
-2.39.5
-

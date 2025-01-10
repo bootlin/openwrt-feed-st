@@ -15,11 +15,9 @@ Change-Id: Ic8edb94b24522e411b42d281488f365dd72142ad
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 17d49b681d4b..ad8a8db7ddcc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -205,3 +205,11 @@ &usart6 {
+@@ -205,3 +205,11 @@
  	uart-has-rtscts;
  	status = "disabled";
  };
@@ -31,6 +29,3 @@ index 17d49b681d4b..ad8a8db7ddcc 100644
 +&usb2_phy2 {
 +	status = "okay";
 +};
--- 
-2.39.5
-

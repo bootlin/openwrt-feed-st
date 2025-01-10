@@ -22,11 +22,9 @@ Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
  drivers/mtd/spi-nor/macronix.c | 18 ++++++++++++++++++
  3 files changed, 53 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1b0c6770c14e..8ae0cd3ab01a 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -408,7 +408,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
+@@ -408,7 +408,7 @@ int spi_nor_write_disable(struct spi_nor
  }
  
  /**
@@ -35,7 +33,7 @@ index 1b0c6770c14e..8ae0cd3ab01a 100644
   * @nor:	pointer to 'struct spi_nor'.
   * @naddr:	number of address bytes to send. Can be zero if the operation
   *		does not need to send an address.
-@@ -420,8 +420,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
+@@ -420,8 +420,8 @@ int spi_nor_write_disable(struct spi_nor
   *
   * Return: 0 on success, -errno otherwise.
   */
@@ -46,7 +44,7 @@ index 1b0c6770c14e..8ae0cd3ab01a 100644
  {
  	int ret;
  
-@@ -438,6 +438,32 @@ int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
+@@ -438,6 +438,32 @@ int spi_nor_read_id(struct spi_nor *nor,
  	return ret;
  }
  
@@ -79,8 +77,6 @@ index 1b0c6770c14e..8ae0cd3ab01a 100644
  /**
   * spi_nor_read_sr() - Read the Status Register.
   * @nor:	pointer to 'struct spi_nor'.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 9217379b9cfe..92cbc2d3f7fe 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
 @@ -424,6 +424,8 @@ struct spi_nor_flash_parameter {
@@ -101,7 +97,7 @@ index 9217379b9cfe..92cbc2d3f7fe 100644
  };
  
  /**
-@@ -667,6 +671,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
+@@ -668,6 +672,8 @@ void spi_nor_unlock_and_unprep(struct sp
  int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
  int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
  int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
@@ -110,11 +106,9 @@ index 9217379b9cfe..92cbc2d3f7fe 100644
  int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
  		    enum spi_nor_protocol reg_proto);
  int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index eb149e517c1f..309182664870 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -118,9 +118,27 @@ static int macronix_nor_late_init(struct spi_nor *nor)
+@@ -121,9 +121,27 @@ static int macronix_nor_late_init(struct
  	return 0;
  }
  
@@ -142,6 +136,3 @@ index eb149e517c1f..309182664870 100644
  };
  
  const struct spi_nor_manufacturer spi_nor_macronix = {
--- 
-2.39.5
-

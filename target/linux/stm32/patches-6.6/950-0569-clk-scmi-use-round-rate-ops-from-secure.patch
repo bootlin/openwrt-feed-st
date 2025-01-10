@@ -15,8 +15,6 @@ Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/clk/clk-scmi.c | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index d54678c329f3..757de52e299a 100644
 --- a/drivers/clk/clk-scmi.c
 +++ b/drivers/clk/clk-scmi.c
 @@ -9,6 +9,7 @@
@@ -27,7 +25,7 @@ index d54678c329f3..757de52e299a 100644
  #include <linux/module.h>
  #include <linux/scmi_protocol.h>
  #include <asm/div64.h>
-@@ -37,6 +38,21 @@ static unsigned long scmi_clk_recalc_rate(struct clk_hw *hw,
+@@ -37,6 +38,21 @@ static unsigned long scmi_clk_recalc_rat
  	return rate;
  }
  
@@ -49,7 +47,7 @@ index d54678c329f3..757de52e299a 100644
  static int scmi_clk_get_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
  {
  	struct scmi_clk *clk = to_scmi_clk(hw);
-@@ -75,6 +91,9 @@ static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+@@ -75,6 +91,9 @@ static long scmi_clk_round_rate(struct c
  	else if (rate >= fmax)
  		return fmax;
  
@@ -59,6 +57,3 @@ index d54678c329f3..757de52e299a 100644
  	ftmp = rate - fmin;
  	ftmp += clk->info->range.step_size - 1; /* to round up */
  	do_div(ftmp, clk->info->range.step_size);
--- 
-2.39.5
-

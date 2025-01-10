@@ -16,11 +16,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 96337e5c43c8..5d420a22bca7 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -479,10 +479,9 @@ static int stm32mp_exti_resume(struct device *dev)
+@@ -479,10 +479,9 @@ static int stm32mp_exti_resume(struct de
  	struct stm32mp_exti_chip_data *chip_data;
  	int i;
  
@@ -32,6 +30,3 @@ index 96337e5c43c8..5d420a22bca7 100644
  		stm32mp_chip_resume(chip_data, chip_data->mask_cache);
  	}
  
--- 
-2.39.5
-

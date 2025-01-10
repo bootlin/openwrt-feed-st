@@ -14,8 +14,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 105 ++++++++++++++++++
  1 file changed, 105 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index b9799f8c1607..ef2d1458e5b7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -96,6 +96,10 @@ struct dcmipp_byteproc_device {
@@ -29,7 +27,7 @@ index b9799f8c1607..ef2d1458e5b7 100644
  };
  
  static const struct v4l2_mbus_framefmt fmt_default = {
-@@ -399,10 +403,41 @@ static int dcmipp_byteproc_set_selection(struct v4l2_subdev *sd,
+@@ -399,10 +403,41 @@ static int dcmipp_byteproc_set_selection
  	return 0;
  }
  
@@ -71,7 +69,7 @@ index b9799f8c1607..ef2d1458e5b7 100644
  	.get_fmt		= v4l2_subdev_get_fmt,
  	.set_fmt		= dcmipp_byteproc_set_fmt,
  	.get_selection		= dcmipp_byteproc_get_selection,
-@@ -478,6 +513,72 @@ static int dcmipp_byteproc_configure_scale_crop
+@@ -478,6 +513,72 @@ static int dcmipp_byteproc_configure_sca
  	return 0;
  }
  
@@ -144,7 +142,7 @@ index b9799f8c1607..ef2d1458e5b7 100644
  static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
  {
  	struct dcmipp_byteproc_device *byteproc = v4l2_get_subdevdata(sd);
-@@ -492,6 +593,8 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -492,6 +593,8 @@ static int dcmipp_byteproc_s_stream(stru
  	s_subdev = media_entity_to_v4l2_subdev(pad->entity);
  
  	if (enable) {
@@ -153,7 +151,7 @@ index b9799f8c1607..ef2d1458e5b7 100644
  		ret = dcmipp_byteproc_configure_scale_crop(byteproc);
  		if (ret)
  			return ret;
-@@ -519,6 +622,8 @@ static int dcmipp_byteproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -519,6 +622,8 @@ static int dcmipp_byteproc_s_stream(stru
  }
  
  static const struct v4l2_subdev_video_ops dcmipp_byteproc_video_ops = {
@@ -162,6 +160,3 @@ index b9799f8c1607..ef2d1458e5b7 100644
  	.s_stream = dcmipp_byteproc_s_stream,
  };
  
--- 
-2.39.5
-

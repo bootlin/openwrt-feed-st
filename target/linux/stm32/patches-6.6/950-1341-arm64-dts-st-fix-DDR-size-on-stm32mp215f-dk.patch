@@ -18,11 +18,9 @@ Tested-by: Pascal PAILLET <p.paillet@st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 4dbf9eb49b83..a843c84ca8ce 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -74,7 +74,7 @@ dmic1_endpoint: endpoint {
+@@ -74,7 +74,7 @@
  
  	memory@80000000 {
  		device_type = "memory";
@@ -31,6 +29,3 @@ index 4dbf9eb49b83..a843c84ca8ce 100644
  	};
  
  	panel_backlight: panel-backlight {
--- 
-2.39.5
-

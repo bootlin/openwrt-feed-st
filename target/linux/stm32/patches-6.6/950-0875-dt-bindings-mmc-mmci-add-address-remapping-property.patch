@@ -19,8 +19,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  Documentation/devicetree/bindings/mmc/arm,pl18x.yaml | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-index 5644927be810..87dd6e1c0b0d 100644
 --- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
 +++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
 @@ -167,6 +167,16 @@ properties:
@@ -40,6 +38,3 @@ index 5644927be810..87dd6e1c0b0d 100644
  dependencies:
    st,cmd-gpios: [ "st,use-ckin" ]
    st,ck-gpios: [ "st,use-ckin" ]
--- 
-2.39.5
-

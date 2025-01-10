@@ -13,11 +13,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 28 ++++++++++++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 693a1d5f22da..94b5b92ba7de 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1630,6 +1630,34 @@ usbphyc_port1: usb-phy@1 {
+@@ -1630,6 +1630,34 @@
  			};
  		};
  
@@ -52,6 +50,3 @@ index 693a1d5f22da..94b5b92ba7de 100644
  		/*
  		 * Break node order to solve dependency probe issue between
  		 * pinctrl and exti.
--- 
-2.39.5
-

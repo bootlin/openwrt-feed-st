@@ -22,8 +22,6 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 29 +++++++++++++++++++++-----
  1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 88811139aaf5..a7db7b675514 100644
 --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 @@ -264,6 +264,8 @@ struct stm32_fmc2_nfc {
@@ -35,7 +33,7 @@ index 88811139aaf5..a7db7b675514 100644
  
  	struct completion complete;
  	struct completion dma_data_complete;
-@@ -347,20 +349,26 @@ static int stm32_fmc2_nfc_select_chip(struct nand_chip *chip, int chipnr)
+@@ -347,20 +349,26 @@ static int stm32_fmc2_nfc_select_chip(st
  	stm32_fmc2_nfc_setup(chip);
  	stm32_fmc2_nfc_timings_init(chip);
  
@@ -67,7 +65,7 @@ index 88811139aaf5..a7db7b675514 100644
  
  		ret = dmaengine_slave_config(nfc->dma_rx_ch, &dma_cfg);
  		if (ret) {
-@@ -1545,6 +1553,7 @@ static int stm32_fmc2_nfc_setup_interface(struct nand_chip *chip, int chipnr,
+@@ -1545,6 +1553,7 @@ static int stm32_fmc2_nfc_setup_interfac
  
  static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
  {
@@ -75,7 +73,7 @@ index 88811139aaf5..a7db7b675514 100644
  	int ret = 0;
  
  	nfc->dma_tx_ch = dma_request_chan(nfc->dev, "tx");
-@@ -1557,6 +1566,11 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+@@ -1557,6 +1566,11 @@ static int stm32_fmc2_nfc_dma_setup(stru
  		goto err_dma;
  	}
  
@@ -87,7 +85,7 @@ index 88811139aaf5..a7db7b675514 100644
  	nfc->dma_rx_ch = dma_request_chan(nfc->dev, "rx");
  	if (IS_ERR(nfc->dma_rx_ch)) {
  		ret = PTR_ERR(nfc->dma_rx_ch);
-@@ -1567,6 +1581,11 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+@@ -1567,6 +1581,11 @@ static int stm32_fmc2_nfc_dma_setup(stru
  		goto err_dma;
  	}
  
@@ -99,6 +97,3 @@ index 88811139aaf5..a7db7b675514 100644
  	nfc->dma_ecc_ch = dma_request_chan(nfc->dev, "ecc");
  	if (IS_ERR(nfc->dma_ecc_ch)) {
  		ret = PTR_ERR(nfc->dma_ecc_ch);
--- 
-2.39.5
-

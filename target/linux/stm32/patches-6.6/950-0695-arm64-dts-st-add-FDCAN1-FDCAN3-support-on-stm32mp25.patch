@@ -18,11 +18,9 @@ Change-Id: I715eae50a00f0cf3c80c5dfa9658b131575905c5
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 28 ++++++++++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index c47bb9a89d9b..d1436509699c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -29,6 +29,34 @@ &optee {
+@@ -29,6 +29,34 @@
  };
  
  &rifsc {
@@ -57,6 +55,3 @@ index c47bb9a89d9b..d1436509699c 100644
  	eth2: eth2@482d0000 {
  		compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  		reg = <0x482d0000 0x4000>;
--- 
-2.39.5
-

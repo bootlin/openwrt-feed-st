@@ -13,8 +13,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-index 18ed503b2735..7268897d9bdf 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 @@ -184,6 +184,12 @@ properties:
@@ -30,6 +28,3 @@ index 18ed503b2735..7268897d9bdf 100644
  additionalProperties: true
  
  ...
--- 
-2.39.5
-

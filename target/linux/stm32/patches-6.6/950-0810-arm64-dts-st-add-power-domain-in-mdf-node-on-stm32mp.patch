@@ -11,11 +11,9 @@ Change-Id: I4a350181a236e4b32bd9583dbc43ea1bd82b6d71
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 0c5ec9ca3c81..56612880d8ed 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1710,6 +1710,7 @@ mdf1: mdf@404d0000 {
+@@ -1710,6 +1710,7 @@
  				resets = <&rcc MDF1_R>;
  				reset-names = "mdf";
  				access-controllers = <&rifsc 54>;
@@ -23,6 +21,3 @@ index 0c5ec9ca3c81..56612880d8ed 100644
  				status = "disabled";
  
  				sitf0: sitf@80 {
--- 
-2.39.5
-

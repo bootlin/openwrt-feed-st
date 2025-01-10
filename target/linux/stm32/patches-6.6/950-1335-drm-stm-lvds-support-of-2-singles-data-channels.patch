@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 13 ++++++++-----
  1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 760d0b25ac43..573bcfdaed18 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -39,7 +39,8 @@
@@ -31,7 +29,7 @@ index 760d0b25ac43..573bcfdaed18 100644
  
  #define LVDS_DMLCR(bit)	(LVDS_DMLCR0 + 0x8 * (bit))
  #define LVDS_DMMCR(bit)	(LVDS_DMMCR0 + 0x8 * (bit))
-@@ -840,8 +841,12 @@ static void lvds_config_mode(struct stm_lvds *lvds)
+@@ -840,8 +841,12 @@ static void lvds_config_mode(struct stm_
  		lvds_cdl1cr = CDL1CR_DEFAULT;
  
  	if (lvds->secondary) {
@@ -46,7 +44,7 @@ index 760d0b25ac43..573bcfdaed18 100644
  	}
  
  	/* Set signal polarity */
-@@ -1135,7 +1140,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1135,7 +1140,6 @@ static int lvds_probe(struct platform_de
  			if (of_graph_get_remote_endpoint(remote)) {
  				lvds->link_type = LVDS_SINGLE_LINK_PRIMARY;
  				lvds->primary = &lvds_phy_16ff_primary;
@@ -54,7 +52,7 @@ index 760d0b25ac43..573bcfdaed18 100644
  			} else {
  				ret = -EINVAL;
  			}
-@@ -1147,7 +1151,6 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1147,7 +1151,6 @@ static int lvds_probe(struct platform_de
  		if (remote) {
  			if (of_graph_get_remote_endpoint(remote)) {
  				lvds->link_type = LVDS_SINGLE_LINK_SECONDARY;
@@ -62,6 +60,3 @@ index 760d0b25ac43..573bcfdaed18 100644
  				lvds->secondary = &lvds_phy_16ff_secondary;
  			} else {
  				ret = (ret == -EINVAL) ? -EINVAL : 0;
--- 
-2.39.5
-

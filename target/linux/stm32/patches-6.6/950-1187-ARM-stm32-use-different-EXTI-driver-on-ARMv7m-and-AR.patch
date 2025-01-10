@@ -14,8 +14,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/mach-stm32/Kconfig | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index ae21a9f78f9c..a401a991fe08 100644
 --- a/arch/arm/mach-stm32/Kconfig
 +++ b/arch/arm/mach-stm32/Kconfig
 @@ -11,7 +11,8 @@ menuconfig ARCH_STM32
@@ -28,6 +26,3 @@ index ae21a9f78f9c..a401a991fe08 100644
  	select STM32_FIREWALL
  	help
  	  Support for STMicroelectronics STM32 processors.
--- 
-2.39.5
-

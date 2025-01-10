@@ -11,11 +11,9 @@ Change-Id: I698da7f16a095936051c6672c33853d85ba1b944
  arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 34 +++++++++++++++++++++
  1 file changed, 34 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-index 098153ee99a3..d0d8ba45d904 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-@@ -199,6 +199,40 @@ pins {
+@@ -199,6 +199,40 @@
  		};
  	};
  
@@ -56,6 +54,3 @@ index 098153ee99a3..d0d8ba45d904 100644
  	ethernet0_rgmii_pins_a: rgmii-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
--- 
-2.39.5
-

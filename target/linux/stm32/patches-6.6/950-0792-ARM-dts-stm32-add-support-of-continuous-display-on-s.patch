@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index a56edd2e55e9..9f04cd85927f 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -103,7 +103,7 @@ panel_backlight: panel-backlight {
+@@ -103,7 +103,7 @@
  		compatible = "gpio-backlight";
  		gpios = <&gpioe 12 GPIO_ACTIVE_HIGH>;
  		default-on;
@@ -25,7 +23,7 @@ index a56edd2e55e9..9f04cd85927f 100644
  		status = "okay";
  	};
  
-@@ -417,6 +417,7 @@ &ltdc {
+@@ -417,6 +417,7 @@
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&ltdc_pins_a>;
  	pinctrl-1 = <&ltdc_sleep_pins_a>;
@@ -33,6 +31,3 @@ index a56edd2e55e9..9f04cd85927f 100644
  	status = "okay";
  
  	port {
--- 
-2.39.5
-

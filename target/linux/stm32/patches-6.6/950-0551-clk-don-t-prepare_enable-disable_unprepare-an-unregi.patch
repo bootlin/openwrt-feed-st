@@ -31,11 +31,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/clk.c | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f8776065ad1f..077bcb7758e9 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -2094,6 +2094,7 @@ static void clk_reparent(struct clk_core *core, struct clk_core *new_parent)
+@@ -2094,6 +2094,7 @@ static void clk_reparent(struct clk_core
  	core->parent = new_parent;
  }
  
@@ -43,7 +41,7 @@ index f8776065ad1f..077bcb7758e9 100644
  static struct clk_core *__clk_set_parent_before(struct clk_core *core,
  					   struct clk_core *parent)
  {
-@@ -2122,7 +2123,8 @@ static struct clk_core *__clk_set_parent_before(struct clk_core *core,
+@@ -2122,7 +2123,8 @@ static struct clk_core *__clk_set_parent
  
  	/* enable old_parent & parent if CLK_OPS_PARENT_ENABLE is set */
  	if (core->flags & CLK_OPS_PARENT_ENABLE) {
@@ -53,7 +51,7 @@ index f8776065ad1f..077bcb7758e9 100644
  		clk_core_prepare_enable(parent);
  	}
  
-@@ -2156,7 +2158,8 @@ static void __clk_set_parent_after(struct clk_core *core,
+@@ -2156,7 +2158,8 @@ static void __clk_set_parent_after(struc
  	/* re-balance ref counting if CLK_OPS_PARENT_ENABLE is set */
  	if (core->flags & CLK_OPS_PARENT_ENABLE) {
  		clk_core_disable_unprepare(parent);
@@ -63,6 +61,3 @@ index f8776065ad1f..077bcb7758e9 100644
  	}
  }
  
--- 
-2.39.5
-

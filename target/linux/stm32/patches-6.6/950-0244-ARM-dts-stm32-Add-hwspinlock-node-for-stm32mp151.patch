@@ -12,11 +12,9 @@ Change-Id: I6ccc0555677a2ef0aa0f6bbe0cef5b34b697a1a7
  arch/arm/boot/dts/st/stm32mp151.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index f3fde5858894..e9d1925f92d0 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1204,6 +1204,14 @@ usbotg_hs: usb-otg@49000000 {
+@@ -1204,6 +1204,14 @@
  			status = "disabled";
  		};
  
@@ -31,6 +29,3 @@ index f3fde5858894..e9d1925f92d0 100644
  		ipcc: mailbox@4c001000 {
  			compatible = "st,stm32mp1-ipcc";
  			#mbox-cells = <1>;
--- 
-2.39.5
-

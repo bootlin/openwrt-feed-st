@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 29 +++++++++++++++-------------
  1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 2d86424c5aae..ea975ae06e2f 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1813,21 +1813,24 @@ tamp: tamp@5c00a000 {
+@@ -1813,21 +1813,24 @@
  
  			nvram: nvram@5c00a100 {
  				compatible = "st,stm32mp15-tamp-nvram";
@@ -61,6 +59,3 @@ index 2d86424c5aae..ea975ae06e2f 100644
  				};
  			};
  
--- 
-2.39.5
-

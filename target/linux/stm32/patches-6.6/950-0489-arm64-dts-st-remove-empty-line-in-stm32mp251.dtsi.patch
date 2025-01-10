@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5268a4321841..2b9c08190809 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -273,7 +273,6 @@ gpioz: gpio@46200000 {
+@@ -273,7 +273,6 @@
  				st,bank-ioport = <11>;
  				status = "disabled";
  			};
@@ -27,6 +25,3 @@ index 5268a4321841..2b9c08190809 100644
  		};
  	};
  };
--- 
-2.39.5
-

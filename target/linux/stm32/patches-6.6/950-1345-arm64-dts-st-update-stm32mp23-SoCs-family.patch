@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 34 ++++++++++++++++++++------
  1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 1c58ceee9cd3..9a48681980eb 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -882,52 +882,56 @@ spdifrx: audio-controller@400d0000 {
+@@ -882,52 +882,56 @@
  			usart2: serial@400e0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x400e0000 0x400>;
@@ -84,7 +82,7 @@ index 1c58ceee9cd3..9a48681980eb 100644
  				status = "disabled";
  			};
  
-@@ -1141,13 +1145,14 @@ counter {
+@@ -1141,13 +1145,14 @@
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40220000 0x400>;
@@ -100,7 +98,7 @@ index 1c58ceee9cd3..9a48681980eb 100644
  				status = "disabled";
  			};
  
-@@ -1419,13 +1424,14 @@ sai3b: audio-controller@502b0024 {
+@@ -1419,13 +1424,14 @@
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40330000 0x400>;
@@ -116,7 +114,7 @@ index 1c58ceee9cd3..9a48681980eb 100644
  				status = "disabled";
  			};
  
-@@ -1468,13 +1474,14 @@ sai4b: audio-controller@40340024 {
+@@ -1468,13 +1474,14 @@
  			uart7: serial@40370000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40370000 0x400>;
@@ -132,7 +130,7 @@ index 1c58ceee9cd3..9a48681980eb 100644
  				status = "disabled";
  			};
  
-@@ -1753,6 +1760,19 @@ spi8: spi@46020000 {
+@@ -1753,6 +1760,19 @@
  				status = "disabled";
  			};
  
@@ -152,6 +150,3 @@ index 1c58ceee9cd3..9a48681980eb 100644
  			i2c8: i2c@46040000 {
  				compatible = "st,stm32mp25-i2c";
  				reg = <0x46040000 0x400>;
--- 
-2.39.5
-

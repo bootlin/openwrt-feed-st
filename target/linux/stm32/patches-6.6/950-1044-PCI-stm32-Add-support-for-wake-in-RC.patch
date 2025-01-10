@@ -20,8 +20,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 76 +++++++++++++++++++++++--
  1 file changed, 71 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index faf21b761063..315860f0dd72 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -29,6 +29,8 @@ struct stm32_pcie {
@@ -33,7 +31,7 @@ index faf21b761063..315860f0dd72 100644
  	int aer_irq;
  	int pme_irq;
  	u32 max_payload;
-@@ -108,13 +110,35 @@ static void stm32_pcie_stop_link(struct dw_pcie *pci)
+@@ -108,13 +110,35 @@ static void stm32_pcie_stop_link(struct
  		gpiod_set_value(stm32_pcie->reset_gpio, 1);
  }
  
@@ -70,7 +68,7 @@ index faf21b761063..315860f0dd72 100644
  
  	return pinctrl_pm_select_sleep_state(dev);
  }
-@@ -137,10 +161,12 @@ static int stm32_pcie_resume_noirq(struct device *dev)
+@@ -137,10 +161,12 @@ static int stm32_pcie_resume_noirq(struc
  		return ret;
  	}
  
@@ -87,7 +85,7 @@ index faf21b761063..315860f0dd72 100644
  	}
  
  	ret = clk_prepare_enable(stm32_pcie->clk);
-@@ -180,6 +206,7 @@ static int stm32_pcie_resume_noirq(struct device *dev)
+@@ -180,6 +206,7 @@ clk_err:
  static const struct dev_pm_ops stm32_pcie_pm_ops = {
  	NOIRQ_SYSTEM_SLEEP_PM_OPS(stm32_pcie_suspend_noirq,
  				  stm32_pcie_resume_noirq)
@@ -95,7 +93,7 @@ index faf21b761063..315860f0dd72 100644
  };
  
  static const struct dw_pcie_host_ops stm32_pcie_host_ops = {
-@@ -215,6 +242,20 @@ static irqreturn_t stm32_pcie_aer_msi_irq_handler(int irq, void *priv)
+@@ -215,6 +242,20 @@ static irqreturn_t stm32_pcie_aer_msi_ir
  	return IRQ_HANDLED;
  }
  
@@ -116,7 +114,7 @@ index faf21b761063..315860f0dd72 100644
  static int stm32_pcie_port_irqs(struct pci_dev *pci_dev, u32 *pme, u32 *aer, u32 *dpc)
  {
  	struct dw_pcie_rp *pp = pci_dev->bus->sysdata;
-@@ -384,6 +425,25 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -384,6 +425,25 @@ static int stm32_pcie_probe(struct platf
  
  	platform_set_drvdata(pdev, stm32_pcie);
  
@@ -142,7 +140,7 @@ index faf21b761063..315860f0dd72 100644
  	ret = devm_pm_runtime_enable(dev);
  	if (ret < 0) {
  		dev_err(dev, "Failed to enable pm runtime %d\n", ret);
-@@ -400,6 +460,9 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -400,6 +460,9 @@ static int stm32_pcie_probe(struct platf
  	if (ret)
  		goto sync_disable;
  
@@ -152,7 +150,7 @@ index faf21b761063..315860f0dd72 100644
  	return 0;
  
  sync_disable:
-@@ -416,6 +479,9 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -416,6 +479,9 @@ static int stm32_pcie_remove(struct plat
  	struct stm32_pcie *stm32_pcie = platform_get_drvdata(pdev);
  	struct dw_pcie_rp *pp = &stm32_pcie->pci->pp;
  
@@ -162,6 +160,3 @@ index faf21b761063..315860f0dd72 100644
  	dw_pcie_host_deinit(pp);
  	clk_disable_unprepare(stm32_pcie->clk);
  	pcie_port_irqs_hook = NULL;
--- 
-2.39.5
-

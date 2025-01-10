@@ -16,8 +16,6 @@ Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index fc8c96b08d7d..f892f465b08a 100644
 --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 @@ -82,12 +82,21 @@ properties:
@@ -42,6 +40,3 @@ index fc8c96b08d7d..f892f465b08a 100644
      description:
        set this property in RMII mode when you have PHY without crystal 50MHz and want to
        select RCC clock instead of ETH_REF_CLK.
--- 
-2.39.5
-

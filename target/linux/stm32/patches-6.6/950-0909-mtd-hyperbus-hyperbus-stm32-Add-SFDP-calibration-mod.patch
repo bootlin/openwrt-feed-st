@@ -16,8 +16,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/hyperbus/hyperbus-stm32.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-stm32.c b/drivers/mtd/hyperbus/hyperbus-stm32.c
-index aa5b6999d74b..c5af338d2a8c 100644
 --- a/drivers/mtd/hyperbus/hyperbus-stm32.c
 +++ b/drivers/mtd/hyperbus/hyperbus-stm32.c
 @@ -5,6 +5,7 @@
@@ -28,7 +26,7 @@ index aa5b6999d74b..c5af338d2a8c 100644
  #include <memory/stm32-omi.h>
  
  #define STM32_AUTOSUSPEND_DELAY -1
-@@ -120,8 +121,13 @@ static int stm32_hyperbus_check_transfert(struct stm32_omi *omi)
+@@ -120,8 +121,13 @@ static int stm32_hyperbus_check_transfer
  	cfi.interleave = 1;
  	cfi.device_type = CFI_DEVICETYPE_X16;
  
@@ -44,6 +42,3 @@ index aa5b6999d74b..c5af338d2a8c 100644
  
  	return !ret;
  }
--- 
-2.39.5
-

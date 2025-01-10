@@ -13,11 +13,9 @@ Change-Id: Ie757042c64e62408dfdcd598d44b5bf710deb12b
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index ac51fbb309c3..c4d9985550a6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -794,6 +794,15 @@ bsec: efuse@44000000 {
+@@ -794,6 +794,15 @@
  			reg = <0x44000000 0x1000>;
  			#address-cells = <1>;
  			#size-cells = <1>;
@@ -33,6 +31,3 @@ index ac51fbb309c3..c4d9985550a6 100644
  		};
  
  		rcc: clock-controller@44200000 {
--- 
-2.39.5
-

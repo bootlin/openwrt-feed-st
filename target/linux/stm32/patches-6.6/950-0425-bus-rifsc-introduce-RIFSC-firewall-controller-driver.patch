@@ -15,11 +15,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  3 files changed, 254 insertions(+), 1 deletion(-)
  create mode 100644 drivers/bus/stm32_rifsc.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ee2ef502711..f32e77fdce1c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20328,6 +20328,7 @@ ST STM32 FIREWALL
+@@ -20330,6 +20330,7 @@ ST STM32 FIREWALL
  M:	Gatien Chevallier <gatien.chevallier@foss.st.com>
  S:	Maintained
  F:	drivers/bus/stm32_firewall.c
@@ -27,11 +25,9 @@ index 9ee2ef502711..f32e77fdce1c 100644
  
  ST STM32 I2C/SMBUS DRIVER
  M:	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-index fc0511450ec2..e50d18e1d141 100644
 --- a/drivers/bus/Makefile
 +++ b/drivers/bus/Makefile
-@@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_l3_smx.o omap_l3_noc.o
+@@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_
  obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
  obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
  obj-$(CONFIG_QCOM_SSC_BLOCK_BUS)	+= qcom-ssc-block-bus.o
@@ -40,9 +36,6 @@ index fc0511450ec2..e50d18e1d141 100644
  obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
  obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
  obj-$(CONFIG_OF)		+= simple-pm-bus.o
-diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
-new file mode 100644
-index 000000000000..4cf1b60014b7
 --- /dev/null
 +++ b/drivers/bus/stm32_rifsc.c
 @@ -0,0 +1,252 @@
@@ -298,6 +291,3 @@ index 000000000000..4cf1b60014b7
 +MODULE_AUTHOR("Gatien Chevallier <gatien.chevallier@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics RIFSC driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

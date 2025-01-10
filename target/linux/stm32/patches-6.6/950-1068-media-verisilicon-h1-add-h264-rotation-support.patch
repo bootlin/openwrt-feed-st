@@ -19,11 +19,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374020
  .../platform/verisilicon/hantro_h1_h264_enc.c | 24 +------------------
  1 file changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
-index b659534e6467..51fddf03862a 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
-@@ -221,28 +221,6 @@ static void hantro_h1_h264_enc_set_params(struct hantro_dev *vpu, struct hantro_
+@@ -221,28 +221,6 @@ static void hantro_h1_h264_enc_set_param
  	}
  }
  
@@ -52,7 +50,7 @@ index b659534e6467..51fddf03862a 100644
  static void hantro_h1_h264_enc_set_buffers(struct hantro_dev *vpu, struct hantro_ctx *ctx,
  					   struct v4l2_ctrl_h264_encode_params *params)
  {
-@@ -395,7 +373,7 @@ int hantro_h1_h264_enc_run(struct hantro_ctx *ctx)
+@@ -395,7 +373,7 @@ int hantro_h1_h264_enc_run(struct hantro
  	vepu_write_relaxed(vpu, H1_REG_ENC_CTRL_ENC_MODE_H264, H1_REG_ENC_CTRL);
  
  	hantro_h1_h264_enc_set_params(vpu, ctx, params, rc->qp);
@@ -61,6 +59,3 @@ index b659534e6467..51fddf03862a 100644
  	hantro_h1_h264_enc_set_buffers(vpu, ctx, params);
  
  	hantro_h1_set_color_conv(vpu, ctx);
--- 
-2.39.5
-

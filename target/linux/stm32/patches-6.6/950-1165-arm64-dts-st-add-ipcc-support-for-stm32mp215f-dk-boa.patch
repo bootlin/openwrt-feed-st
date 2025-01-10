@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 733c20b0bb43..7b8679358e4e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -242,6 +242,10 @@ imx335_ep: endpoint {
+@@ -242,6 +242,10 @@
  	};
  };
  
@@ -32,6 +30,3 @@ index 733c20b0bb43..7b8679358e4e 100644
  &ltdc {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&ltdc_pins_a>;
--- 
-2.39.5
-

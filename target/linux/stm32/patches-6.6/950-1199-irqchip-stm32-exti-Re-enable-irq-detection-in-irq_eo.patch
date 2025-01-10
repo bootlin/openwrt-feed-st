@@ -44,11 +44,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 22f4bb0f76a0..3e431c39103d 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -335,6 +335,8 @@ static void stm32mp_exti_eoi(struct irq_data *d)
+@@ -335,6 +335,8 @@ static void stm32mp_exti_eoi(struct irq_
  	stm32mp_exti_write_bit(d, bank->rpr_ofst);
  	stm32mp_exti_write_bit(d, bank->fpr_ofst);
  
@@ -57,6 +55,3 @@ index 22f4bb0f76a0..3e431c39103d 100644
  	raw_spin_unlock(&chip_data->rlock);
  
  	irq_chip_eoi_parent(d);
--- 
-2.39.5
-

@@ -27,8 +27,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/watchdog/stm32_iwdg.c | 45 +++++++++++++++++++++++------------
  1 file changed, 30 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index f8ecb33490e5..d7dfab2d3c9f 100644
 --- a/drivers/watchdog/stm32_iwdg.c
 +++ b/drivers/watchdog/stm32_iwdg.c
 @@ -49,6 +49,7 @@
@@ -49,7 +47,7 @@ index f8ecb33490e5..d7dfab2d3c9f 100644
  /* set timeout to 100000 us */
  #define TIMEOUT_US	100000
  #define SLEEP_US	1000
-@@ -250,6 +254,31 @@ static int stm32_iwdg_clk_init(struct platform_device *pdev,
+@@ -250,6 +254,31 @@ static int stm32_iwdg_clk_init(struct pl
  	return 0;
  }
  
@@ -81,7 +79,7 @@ index f8ecb33490e5..d7dfab2d3c9f 100644
  static const struct watchdog_info stm32_iwdg_info = {
  	.options	= WDIOF_SETTIMEOUT |
  			  WDIOF_MAGICCLOSE |
-@@ -359,23 +388,9 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+@@ -359,23 +388,9 @@ static int stm32_iwdg_probe(struct platf
  	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
  	watchdog_init_timeout(wdd, 0, dev);
  
@@ -106,6 +104,3 @@ index f8ecb33490e5..d7dfab2d3c9f 100644
  
  	ret = devm_watchdog_register_device(dev, wdd);
  	if (ret)
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
  drivers/pinctrl/pinctrl-stmfx.c | 11 ++++++++++-
  1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-stmfx.c b/drivers/pinctrl/pinctrl-stmfx.c
-index 2f4e21eb7966..31a599cb6cc5 100644
 --- a/drivers/pinctrl/pinctrl-stmfx.c
 +++ b/drivers/pinctrl/pinctrl-stmfx.c
-@@ -661,7 +661,8 @@ static int stmfx_pinctrl_probe(struct platform_device *pdev)
+@@ -661,7 +661,8 @@ static int stmfx_pinctrl_probe(struct pl
  	struct device_node *np = pdev->dev.of_node;
  	struct stmfx_pinctrl *pctl;
  	struct gpio_irq_chip *girq;
@@ -32,7 +30,7 @@ index 2f4e21eb7966..31a599cb6cc5 100644
  
  	pctl = devm_kzalloc(stmfx->dev, sizeof(*pctl), GFP_KERNEL);
  	if (!pctl)
-@@ -718,6 +719,14 @@ static int stmfx_pinctrl_probe(struct platform_device *pdev)
+@@ -718,6 +719,14 @@ static int stmfx_pinctrl_probe(struct pl
  	pctl->gpio_chip.ngpio = pctl->pctl_desc.npins;
  	pctl->gpio_chip.can_sleep = true;
  
@@ -47,6 +45,3 @@ index 2f4e21eb7966..31a599cb6cc5 100644
  	girq = &pctl->gpio_chip.irq;
  	gpio_irq_chip_set_chip(girq, &stmfx_pinctrl_irq_chip);
  	/* This will let us handle the parent IRQ in the driver */
--- 
-2.39.5
-

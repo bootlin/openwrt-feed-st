@@ -23,11 +23,9 @@ Signed-off-by: Eric Fourmont <eric.fourmont-ext@st.com>
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi   |   6 +-
  4 files changed, 95 insertions(+), 96 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-index ce08af4e3925..8bf43e33f478 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-@@ -233,7 +233,7 @@ pins {
+@@ -233,7 +233,7 @@
  		};
  	};
  
@@ -36,7 +34,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
-@@ -264,7 +264,7 @@ pins3 {
+@@ -264,7 +264,7 @@
  		};
  	};
  
@@ -45,7 +43,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
-@@ -284,7 +284,7 @@ pins1 {
+@@ -284,7 +284,7 @@
  		};
  	};
  
@@ -54,7 +52,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
-@@ -315,7 +315,7 @@ pins3 {
+@@ -315,7 +315,7 @@
  		};
  	};
  
@@ -63,7 +61,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
-@@ -335,7 +335,7 @@ pins1 {
+@@ -335,7 +335,7 @@
  		 };
  	};
  
@@ -72,7 +70,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
-@@ -366,7 +366,7 @@ pins3 {
+@@ -366,7 +366,7 @@
  		};
  	};
  
@@ -81,7 +79,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
-@@ -386,7 +386,7 @@ pins1 {
+@@ -386,7 +386,7 @@
  		};
  	};
  
@@ -90,7 +88,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, AF11)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 13, AF11)>,	/* ETH_RGMII_TXD0 */
-@@ -416,7 +416,7 @@ pins3 {
+@@ -416,7 +416,7 @@
  		};
  	};
  
@@ -99,7 +97,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 5, ANALOG)>, /* ETH_RGMII_CLK125 */
  				 <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
-@@ -436,7 +436,7 @@ pins1 {
+@@ -436,7 +436,7 @@
  		};
  	};
  
@@ -108,7 +106,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 4, AF11)>, /* ETH_RGMII_GTX_CLK */
  				 <STM32_PINMUX('G', 13, AF11)>, /* ETH_RGMII_TXD0 */
-@@ -459,7 +459,7 @@ pins2 {
+@@ -459,7 +459,7 @@
  		};
  	};
  
@@ -117,7 +115,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 4, ANALOG)>, /* ETH_RGMII_GTX_CLK */
  				 <STM32_PINMUX('G', 13, ANALOG)>, /* ETH_RGMII_TXD0 */
-@@ -476,7 +476,7 @@ pins1 {
+@@ -476,7 +476,7 @@
  		};
  	};
  
@@ -126,7 +124,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 13, AF11)>, /* ETH1_RMII_TXD0 */
  				 <STM32_PINMUX('G', 14, AF11)>, /* ETH1_RMII_TXD1 */
-@@ -496,7 +496,7 @@ pins2 {
+@@ -496,7 +496,7 @@
  		};
  	};
  
@@ -135,7 +133,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 13, ANALOG)>, /* ETH1_RMII_TXD0 */
  				 <STM32_PINMUX('G', 14, ANALOG)>, /* ETH1_RMII_TXD1 */
-@@ -510,7 +510,7 @@ pins1 {
+@@ -510,7 +510,7 @@
  		};
  	};
  
@@ -144,7 +142,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('B', 5, AF0)>, /* ETH1_CLK */
  				<STM32_PINMUX('C', 1, AF11)>, /* ETH1_MDC */
-@@ -537,7 +537,7 @@ pins4 {
+@@ -537,7 +537,7 @@
  		};
  	};
  
@@ -153,7 +151,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('A', 2, ANALOG)>, /* ETH1_MDIO */
  				<STM32_PINMUX('A', 7, ANALOG)>, /* ETH1_CRS_DV */
-@@ -551,7 +551,7 @@ pins1 {
+@@ -551,7 +551,7 @@
  		};
  	};
  
@@ -162,7 +160,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 13, AF11)>, /* ETH1_RMII_TXD0 */
  				 <STM32_PINMUX('G', 14, AF11)>, /* ETH1_RMII_TXD1 */
-@@ -571,7 +571,7 @@ pins2 {
+@@ -571,7 +571,7 @@
  		};
  	};
  
@@ -171,7 +169,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins1 {
  			pinmux = <STM32_PINMUX('G', 13, ANALOG)>, /* ETH1_RMII_TXD0 */
  				 <STM32_PINMUX('G', 14, ANALOG)>, /* ETH1_RMII_TXD1 */
-@@ -1095,36 +1095,6 @@ pins {
+@@ -1095,36 +1095,6 @@
  		};
  	};
  
@@ -208,7 +206,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	m_can1_pins_a: m-can1-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('H', 13, AF9)>; /* CAN1_TX */
-@@ -1138,7 +1108,7 @@ pins2 {
+@@ -1138,7 +1108,7 @@
  		};
  	};
  
@@ -217,7 +215,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins {
  			pinmux = <STM32_PINMUX('H', 13, ANALOG)>, /* CAN1_TX */
  				 <STM32_PINMUX('I', 9, ANALOG)>; /* CAN1_RX */
-@@ -1158,7 +1128,7 @@ pins2 {
+@@ -1158,7 +1128,7 @@
  		};
  	};
  
@@ -226,7 +224,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins {
  			pinmux = <STM32_PINMUX('A', 12, ANALOG)>, /* CAN1_TX */
  				 <STM32_PINMUX('A', 11, ANALOG)>; /* CAN1_RX */
-@@ -1178,7 +1148,7 @@ pins2 {
+@@ -1178,7 +1148,7 @@
  		};
  	};
  
@@ -235,7 +233,7 @@ index ce08af4e3925..8bf43e33f478 100644
  		pins {
  			pinmux = <STM32_PINMUX('H', 13, ANALOG)>, /* CAN1_TX */
  				 <STM32_PINMUX('H', 14, ANALOG)>; /* CAN1_RX */
-@@ -1198,13 +1168,43 @@ pins2 {
+@@ -1198,13 +1168,43 @@
  		};
  	};
  
@@ -280,7 +278,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	pwm1_pins_a: pwm1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('E', 9, AF1)>, /* TIM1_CH1 */
-@@ -1414,21 +1414,6 @@ pins {
+@@ -1414,21 +1414,6 @@
  		};
  	};
  
@@ -302,7 +300,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	qspi_bk1_pins_a: qspi-bk1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('F', 8, AF10)>, /* QSPI_BK1_IO0 */
-@@ -1471,6 +1456,21 @@ pins {
+@@ -1471,6 +1456,21 @@
  		};
  	};
  
@@ -324,7 +322,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	qspi_cs1_pins_a: qspi-cs1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('B', 6, AF10)>; /* QSPI_BK1_NCS */
-@@ -1674,6 +1674,18 @@ pins2 {
+@@ -1674,6 +1674,18 @@
  		};
  	};
  
@@ -343,7 +341,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
-@@ -1698,18 +1710,6 @@ pins3 {
+@@ -1698,18 +1710,6 @@
  		};
  	};
  
@@ -362,7 +360,7 @@ index ce08af4e3925..8bf43e33f478 100644
  	sdmmc1_b4_sleep_pins_a: sdmmc1-b4-sleep-0 {
  		pins {
  			pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1_D0 */
-@@ -2778,16 +2778,16 @@ pins2 {
+@@ -2778,16 +2778,16 @@
  		};
  	};
  
@@ -384,11 +382,9 @@ index ce08af4e3925..8bf43e33f478 100644
  		};
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-index 42c52f91c441..caa8c15a3eb0 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-@@ -30,7 +30,6 @@ scmi_reset: protocol@16 {
+@@ -30,7 +30,6 @@
  	};
  };
  
@@ -396,11 +392,9 @@ index 42c52f91c441..caa8c15a3eb0 100644
  /delete-node/ &clk_hse;
  /delete-node/ &clk_hsi;
  /delete-node/ &clk_lse;
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 02b6cb41f62d..8b32d7d274d1 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -70,6 +70,12 @@ timer {
+@@ -70,6 +70,12 @@
  	};
  
  	clocks {
@@ -413,7 +407,7 @@ index 02b6cb41f62d..8b32d7d274d1 100644
  		clk_hse: clk-hse {
  			#clock-cells = <0>;
  			compatible = "fixed-clock";
-@@ -93,12 +99,6 @@ clk_lsi: clk-lsi {
+@@ -93,12 +99,6 @@
  			compatible = "fixed-clock";
  			clock-frequency = <32000>;
  		};
@@ -426,7 +420,7 @@ index 02b6cb41f62d..8b32d7d274d1 100644
  	};
  
  	pm_domain {
-@@ -1270,7 +1270,7 @@ usb33: usb33 {
+@@ -1270,7 +1270,7 @@
  			};
  		};
  
@@ -435,7 +429,7 @@ index 02b6cb41f62d..8b32d7d274d1 100644
  			compatible = "st,stm32mp151-pwr-mcu", "syscon";
  			reg = <0x50001014 0x4>;
  		};
-@@ -2011,10 +2011,10 @@ m4_rproc: m4@10000000 {
+@@ -2011,10 +2011,10 @@
  			      <0x38000000 0x10000>;
  			resets = <&rcc MCU_R>;
  			reset-names = "mcu_rst";
@@ -449,11 +443,9 @@ index 02b6cb41f62d..8b32d7d274d1 100644
  			status = "disabled";
  
  			m4_system_resources {
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 8508799264f6..a96c4bd8286c 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -409,7 +409,7 @@ v1v2_hdmi: ldo6 {
+@@ -409,7 +409,7 @@
  				interrupts = <IT_CURLIM_LDO6 0>;
  			};
  
@@ -462,7 +454,7 @@ index 8508799264f6..a96c4bd8286c 100644
  				regulator-name = "vref_ddr";
  				regulator-always-on;
  			};
-@@ -419,12 +419,12 @@ bst_out: boost {
+@@ -419,12 +419,12 @@
  				interrupts = <IT_OCP_BOOST 0>;
  			};
  
@@ -477,6 +469,3 @@ index 8508799264f6..a96c4bd8286c 100644
  				regulator-name = "vbus_sw";
  				interrupts = <IT_OCP_SWOUT 0>;
  				regulator-active-discharge = <1>;
--- 
-2.39.5
-

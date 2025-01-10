@@ -12,8 +12,6 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-index bc48151b9adb..2f31f5049099 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
 @@ -50,6 +50,10 @@ properties:
@@ -27,6 +25,3 @@ index bc48151b9adb..2f31f5049099 100644
  required:
    - compatible
    - "#sound-dai-cells"
--- 
-2.39.5
-

@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 951115ff8480..4ae834ca6c50 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -68,6 +68,8 @@ CONFIG_TOUCHSCREEN_EDT_FT5X06=y
@@ -32,6 +30,3 @@ index 951115ff8480..4ae834ca6c50 100644
  CONFIG_VFP=y
  CONFIG_VIDEO_GC2145=m
  CONFIG_VIDEO_OV5640=m
--- 
-2.39.5
-

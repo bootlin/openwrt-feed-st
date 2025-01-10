@@ -21,8 +21,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  create mode 100644 drivers/memory/stm32-omi.c
  create mode 100644 include/memory/stm32-omi.h
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index c82d8d8a16ea..462fc3d4e8ae 100644
 --- a/drivers/memory/Kconfig
 +++ b/drivers/memory/Kconfig
 @@ -225,6 +225,14 @@ config STM32_FMC2_EBI
@@ -40,11 +38,9 @@ index c82d8d8a16ea..462fc3d4e8ae 100644
  source "drivers/memory/samsung/Kconfig"
  source "drivers/memory/tegra/Kconfig"
  
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index d2e6ca9abbe0..23939f848fe5 100644
 --- a/drivers/memory/Makefile
 +++ b/drivers/memory/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_DA8XX_DDRCTL)	+= da8xx-ddrctl.o
+@@ -24,6 +24,7 @@ obj-$(CONFIG_DA8XX_DDRCTL)	+= da8xx-ddrc
  obj-$(CONFIG_PL353_SMC)		+= pl353-smc.o
  obj-$(CONFIG_RENESAS_RPCIF)	+= renesas-rpc-if.o
  obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
@@ -52,9 +48,6 @@ index d2e6ca9abbe0..23939f848fe5 100644
  
  obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
  obj-$(CONFIG_TEGRA_MC)		+= tegra/
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-new file mode 100644
-index 000000000000..212e457edc4f
 --- /dev/null
 +++ b/drivers/memory/stm32-omi.c
 @@ -0,0 +1,390 @@
@@ -448,9 +441,6 @@ index 000000000000..212e457edc4f
 +
 +MODULE_DESCRIPTION("STMicroelectronics STM32 OSPI Memory Interface driver");
 +MODULE_LICENSE("GPL");
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-new file mode 100644
-index 000000000000..e9f0b6a5a2b4
 --- /dev/null
 +++ b/include/memory/stm32-omi.h
 @@ -0,0 +1,167 @@
@@ -621,6 +611,3 @@ index 000000000000..e9f0b6a5a2b4
 +int stm32_omi_wait_nobusy(struct stm32_omi *omi);
 +
 +#endif /* __STM32_OMI_H */
--- 
-2.39.5
-

@@ -21,8 +21,6 @@ Tested-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 117 ++++++++++--------
  1 file changed, 62 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 7609ef26bf5a..f51ae8a592ab 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -172,7 +172,13 @@ struct dcmipp_pixelcap_device {
@@ -49,7 +47,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  	} count;
  };
  
-@@ -567,9 +575,6 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -567,9 +575,6 @@ static int dcmipp_pixelcap_start_streami
  	reg_set(vcap, DCMIPP_CMIER, vcap->cmier);
  	spin_unlock(&vcap->vdev.v4l2_dev->lock);
  
@@ -59,7 +57,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  	/* Enable pipe at the end of programming */
  	reg_set(vcap, DCMIPP_PxFSCR(vcap->pipe_id), DCMIPP_PxFSCR_PIPEN);
  
-@@ -580,12 +585,12 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -580,12 +585,12 @@ static int dcmipp_pixelcap_start_streami
  	buf = list_first_entry_or_null(&vcap->buffers, typeof(*buf), list);
  	if (!buf) {
  		dev_dbg(vcap->dev, "Start streaming is deferred to next buffer queueing\n");
@@ -75,7 +73,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  		buf->vb.vb2_buf.index, buf, &buf->paddr);
  
  	vcap->state = DCMIPP_RUNNING;
-@@ -669,9 +674,9 @@ static void dcmipp_pixelcap_stop_streaming(struct vb2_queue *vq)
+@@ -669,9 +674,9 @@ static void dcmipp_pixelcap_stop_streami
  	pm_runtime_put(vcap->dev);
  
  	if (vcap->count.errors)
@@ -88,7 +86,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  }
  
  static int dcmipp_pixelcap_buf_prepare(struct vb2_buffer *vb)
-@@ -740,17 +745,15 @@ static void dcmipp_pixelcap_buf_queue(struct vb2_buffer *vb2_buf)
+@@ -740,17 +745,15 @@ static void dcmipp_pixelcap_buf_queue(st
  	list_add_tail(&buf->list, &vcap->buffers);
  
  	if (vcap->state == DCMIPP_WAIT_FOR_BUFFER) {
@@ -110,7 +108,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  		return;
  	}
  
-@@ -833,9 +836,6 @@ static void dcmipp_buffer_done(struct dcmipp_pixelcap_device *vcap,
+@@ -833,9 +836,6 @@ static void dcmipp_buffer_done(struct dc
  {
  	struct vb2_v4l2_buffer *vbuf;
  
@@ -120,7 +118,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  	list_del_init(&buf->list);
  
  	vbuf = &buf->vb;
-@@ -849,43 +849,43 @@ static void dcmipp_buffer_done(struct dcmipp_pixelcap_device *vcap,
+@@ -849,43 +849,43 @@ static void dcmipp_buffer_done(struct dc
  	dev_dbg(vcap->dev, "Done  [%d] %p phy=%pad\n", buf->vb.vb2_buf.index,
  		buf, &buf->paddr);
  	vcap->count.buffers++;
@@ -184,7 +182,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  }
  
  /* irqlock must be held */
-@@ -895,13 +895,13 @@ static void dcmipp_pixelcap_process_frame(struct dcmipp_pixelcap_device *vcap)
+@@ -895,13 +895,13 @@ static void dcmipp_pixelcap_process_fram
  	struct dcmipp_buf *buf = vcap->active;
  
  	if (!buf) {
@@ -201,7 +199,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  }
  
  static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
-@@ -919,19 +919,8 @@ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+@@ -919,19 +919,8 @@ static irqreturn_t dcmipp_pixelcap_irq_t
  	cmsr2_pxframef = DCMIPP_CMSR2_PxFRAMEF(vcap->pipe_id);
  
  	if (vcap->cmsr2 & cmsr2_pxovrf) {
@@ -222,7 +220,7 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  	}
  
  	if (vcap->cmsr2 & cmsr2_pxframef) {
-@@ -940,8 +929,26 @@ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+@@ -940,8 +929,26 @@ static irqreturn_t dcmipp_pixelcap_irq_t
  		dcmipp_pixelcap_process_frame(vcap);
  	}
  
@@ -250,6 +248,3 @@ index 7609ef26bf5a..f51ae8a592ab 100644
  
  	spin_unlock_irq(&vcap->irqlock);
  	return IRQ_HANDLED;
--- 
-2.39.5
-

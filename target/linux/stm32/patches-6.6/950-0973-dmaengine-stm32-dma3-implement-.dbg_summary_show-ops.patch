@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 28 ++++++++++++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 8ced23432fce..88bdaf3121ca 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -345,6 +345,31 @@ static struct device *chan2dev(struct stm32_dma3_chan *chan)
+@@ -345,6 +345,31 @@ static struct device *chan2dev(struct st
  	return &chan->vchan.chan.dev->device;
  }
  
@@ -55,7 +53,7 @@ index 8ced23432fce..88bdaf3121ca 100644
  static dma_addr_t stm32_dma3_translate_addr(struct stm32_dma3_ddata *ddata, u32 port,
  					    struct device *client, dma_addr_t dma_addr)
  {
-@@ -2098,6 +2123,9 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2098,6 +2123,9 @@ static int stm32_dma3_probe(struct platf
  	dma_dev->device_synchronize = stm32_dma3_synchronize;
  	dma_dev->device_tx_status = stm32_dma3_tx_status;
  	dma_dev->device_issue_pending = stm32_dma3_issue_pending;
@@ -65,6 +63,3 @@ index 8ced23432fce..88bdaf3121ca 100644
  
  	/* if dma_channels is not modified, get it from hwcfgr1 */
  	if (of_property_read_u32(np, "dma-channels", &ddata->dma_channels)) {
--- 
-2.39.5
-

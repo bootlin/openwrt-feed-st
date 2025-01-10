@@ -11,8 +11,6 @@ Change-Id: I61e74e11af2c7a1ddd817edbbc5a8e3c7b23b0b6
  arch/arm/boot/dts/st/stm32mp135.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-index b01b56681349..61052a87d57b 100644
 --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
 @@ -8,6 +8,16 @@
@@ -32,6 +30,3 @@ index b01b56681349..61052a87d57b 100644
  		ltdc: display-controller@5a001000 {
  			compatible = "st,stm32-ltdc";
  			reg = <0x5a001000 0x400>;
--- 
-2.39.5
-

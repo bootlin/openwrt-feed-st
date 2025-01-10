@@ -37,11 +37,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 122 ++++++++++++++++++++++++++++---
  1 file changed, 111 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index d62671977675..6a77d642dbd5 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -302,6 +302,7 @@ static const struct clk_div_table ck_trace_div_table[] = {
+@@ -302,6 +302,7 @@ static const struct clk_div_table ck_tra
  struct stm32_mmux {
  	u8 nbr_clk;
  	struct clk_hw *hws[MAX_MUX_CLK];
@@ -49,7 +47,7 @@ index d62671977675..6a77d642dbd5 100644
  };
  
  struct stm32_clk_mmux {
-@@ -742,6 +743,101 @@ static const struct clk_ops clk_mmux_ops = {
+@@ -742,6 +743,101 @@ static const struct clk_ops clk_mmux_ops
  	.determine_rate	= __clk_mux_determine_rate,
  };
  
@@ -151,7 +149,7 @@ index d62671977675..6a77d642dbd5 100644
  /* STM32 PLL */
  struct clk_pll_fractional_divider {
  	struct clk_hw hw;
-@@ -1547,6 +1643,10 @@ static struct stm32_mgate mp1_mgate[G_LAST];
+@@ -1547,6 +1643,10 @@ static struct stm32_mgate mp1_mgate[G_LA
  	_K_GATE(_id, _gate_offset, _gate_bit_idx, _gate_flags,\
  	       &mp1_mgate[_id], &mp1_mgate_clk_ops)
  
@@ -162,7 +160,7 @@ index d62671977675..6a77d642dbd5 100644
  /* Peripheral gates */
  static struct stm32_gate_cfg per_gate_cfg[G_LAST] = {
  	/* Multi gates */
-@@ -1658,10 +1758,10 @@ static struct stm32_gate_cfg per_gate_cfg[G_LAST] = {
+@@ -1658,10 +1758,10 @@ static struct stm32_gate_cfg per_gate_cf
  
  	K_GATE(G_USBH,		RCC_AHB6ENSETR, 24, 0),
  	K_GATE(G_CRC1,		RCC_AHB6ENSETR, 20, 0),
@@ -177,7 +175,7 @@ index d62671977675..6a77d642dbd5 100644
  	K_GATE(G_ETHMAC,	RCC_AHB6ENSETR, 10, 0),
  	K_GATE(G_ETHRX,		RCC_AHB6ENSETR, 9, 0),
  	K_GATE(G_ETHTX,		RCC_AHB6ENSETR, 8, 0),
-@@ -1733,9 +1833,13 @@ static struct stm32_mmux ker_mux[M_LAST];
+@@ -1733,9 +1833,13 @@ static struct stm32_mmux ker_mux[M_LAST]
  	_K_MUX(_id, _offset, _shift, _width, _mux_flags,\
  			&ker_mux[_id], &clk_mmux_ops)
  
@@ -192,7 +190,7 @@ index d62671977675..6a77d642dbd5 100644
  	K_MMUX(M_SPI23, RCC_SPI2S23CKSELR, 0, 3, 0),
  	K_MMUX(M_SPI45, RCC_SPI2S45CKSELR, 0, 3, 0),
  	K_MMUX(M_I2C12, RCC_I2C12CKSELR, 0, 3, 0),
-@@ -1752,8 +1856,8 @@ static const struct stm32_mux_cfg ker_mux_cfg[M_LAST] = {
+@@ -1752,8 +1856,8 @@ static const struct stm32_mux_cfg ker_mu
  	/*  Kernel simple mux */
  	K_MUX(M_RNG2, RCC_RNG2CKSELR, 0, 2, 0),
  	K_MUX(M_SDMMC3, RCC_SDMMC3CKSELR, 0, 3, 0),
@@ -203,7 +201,7 @@ index d62671977675..6a77d642dbd5 100644
  	K_MUX(M_USBPHY, RCC_USBCKSELR, 0, 2, 0),
  	K_MUX(M_USBO, RCC_USBCKSELR, 4, 1, 0),
  	K_MUX(M_SPDIF, RCC_SPDIFCKSELR, 0, 2, 0),
-@@ -2002,10 +2106,6 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -2002,10 +2106,6 @@ static const struct clock_config stm32mp
  	PCLK(ETHTX, "ethtx", "ck_axi", 0, G_ETHTX),
  	PCLK_PDATA(ETHRX, "ethrx", ethrx_src, 0, G_ETHRX),
  	PCLK(ETHMAC, "ethmac", "ck_axi", 0, G_ETHMAC),
@@ -214,6 +212,3 @@ index d62671977675..6a77d642dbd5 100644
  	PCLK(CRC1, "crc1", "ck_axi", 0, G_CRC1),
  	PCLK(USBH, "usbh", "ck_axi", 0, G_USBH),
  	PCLK(ETHSTP, "ethstp", "ck_axi", 0, G_ETHSTP),
--- 
-2.39.5
-

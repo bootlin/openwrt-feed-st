@@ -20,11 +20,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 8cb4fdcae137..71635c83e504 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -2106,7 +2106,7 @@ static void dcmi_remove(struct platform_device *pdev)
+@@ -2106,7 +2106,7 @@ static void dcmi_remove(struct platform_
  	dma_release_channel(dcmi->dma_chan);
  }
  
@@ -33,7 +31,7 @@ index 8cb4fdcae137..71635c83e504 100644
  {
  	struct stm32_dcmi *dcmi = dev_get_drvdata(dev);
  
-@@ -2115,7 +2115,7 @@ static __maybe_unused int dcmi_runtime_suspend(struct device *dev)
+@@ -2115,7 +2115,7 @@ static __maybe_unused int dcmi_runtime_s
  	return 0;
  }
  
@@ -42,7 +40,7 @@ index 8cb4fdcae137..71635c83e504 100644
  {
  	struct stm32_dcmi *dcmi = dev_get_drvdata(dev);
  	int ret;
-@@ -2127,7 +2127,7 @@ static __maybe_unused int dcmi_runtime_resume(struct device *dev)
+@@ -2127,7 +2127,7 @@ static __maybe_unused int dcmi_runtime_r
  	return ret;
  }
  
@@ -51,7 +49,7 @@ index 8cb4fdcae137..71635c83e504 100644
  {
  	/* disable clock */
  	pm_runtime_force_suspend(dev);
-@@ -2138,7 +2138,7 @@ static __maybe_unused int dcmi_suspend(struct device *dev)
+@@ -2138,7 +2138,7 @@ static __maybe_unused int dcmi_suspend(s
  	return 0;
  }
  
@@ -60,7 +58,7 @@ index 8cb4fdcae137..71635c83e504 100644
  {
  	/* restore pinctl default state */
  	pinctrl_pm_select_default_state(dev);
-@@ -2161,7 +2161,7 @@ static struct platform_driver stm32_dcmi_driver = {
+@@ -2161,7 +2161,7 @@ static struct platform_driver stm32_dcmi
  	.driver		= {
  		.name = DRV_NAME,
  		.of_match_table = of_match_ptr(stm32_dcmi_of_match),
@@ -69,6 +67,3 @@ index 8cb4fdcae137..71635c83e504 100644
  	},
  };
  
--- 
-2.39.5
-

@@ -24,11 +24,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/386399
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 8bd387ad73a6..5d5423381882 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -363,7 +363,7 @@ phy1_eth1: ethernet-phy@1 {
+@@ -363,7 +363,7 @@
  			compatible = "ethernet-phy-id001c.c916";
  			reset-gpios =  <&gpioa 2 GPIO_ACTIVE_LOW>;
  			reset-assert-us = <10000>;
@@ -37,6 +35,3 @@ index 8bd387ad73a6..5d5423381882 100644
  			realtek,eee-disable;
  			reg = <1>;
  		};
--- 
-2.39.5
-

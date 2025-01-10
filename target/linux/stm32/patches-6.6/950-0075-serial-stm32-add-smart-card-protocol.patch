@@ -29,8 +29,6 @@ Change-Id: If4050be1ef1aadf462e04a0153921b9824b00e0e
  drivers/tty/serial/stm32-usart.h |  12 ++
  2 files changed, 196 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 79541809c8fa..cb45df116d8d 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
 @@ -9,6 +9,7 @@
@@ -41,7 +39,7 @@ index 79541809c8fa..cb45df116d8d 100644
  #include <linux/clk.h>
  #include <linux/console.h>
  #include <linux/delay.h>
-@@ -290,6 +291,160 @@ static int stm32_usart_init_rs485(struct uart_port *port,
+@@ -290,6 +291,160 @@ static int stm32_usart_init_rs485(struct
  	return uart_get_rs485_mode(port);
  }
  
@@ -202,7 +200,7 @@ index 79541809c8fa..cb45df116d8d 100644
  static bool stm32_usart_rx_dma_started(struct stm32_port *stm32_port)
  {
  	return stm32_port->rx_ch ? stm32_port->rx_dma_busy : false;
-@@ -697,6 +852,9 @@ static void stm32_usart_transmit_chars_pio(struct uart_port *port)
+@@ -697,6 +852,9 @@ static void stm32_usart_transmit_chars_p
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  	struct circ_buf *xmit = &port->state->xmit;
  
@@ -212,7 +210,7 @@ index 79541809c8fa..cb45df116d8d 100644
  	while (!uart_circ_empty(xmit)) {
  		/* Check that TDR is empty before filling FIFO */
  		if (!(readl_relaxed(port->membase + ofs->isr) & USART_SR_TXE))
-@@ -858,11 +1016,12 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+@@ -858,11 +1016,12 @@ static irqreturn_t stm32_usart_interrupt
  	struct tty_port *tport = &port->state->port;
  	struct stm32_port *stm32_port = to_stm32_port(port);
  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
@@ -226,7 +224,7 @@ index 79541809c8fa..cb45df116d8d 100644
  
  	if (!stm32_port->hw_flow_control &&
  	    port->rs485.flags & SER_RS485_ENABLED &&
-@@ -888,19 +1047,29 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+@@ -888,19 +1047,29 @@ static irqreturn_t stm32_usart_interrupt
  		ret = IRQ_HANDLED;
  	}
  
@@ -269,7 +267,7 @@ index 79541809c8fa..cb45df116d8d 100644
  		}
  	}
  
-@@ -1590,6 +1759,7 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+@@ -1590,6 +1759,7 @@ static int stm32_usart_init_port(struct
  	port->irq = irq;
  	port->rs485_config = stm32_usart_config_rs485;
  	port->rs485_supported = stm32_rs485_supported;
@@ -277,8 +275,6 @@ index 79541809c8fa..cb45df116d8d 100644
  
  	ret = stm32_usart_init_rs485(port, pdev);
  	if (ret)
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index 417fb3b59a4b..48817d7a9aa4 100644
 --- a/drivers/tty/serial/stm32-usart.h
 +++ b/drivers/tty/serial/stm32-usart.h
 @@ -24,6 +24,14 @@ struct stm32_usart_offsets {
@@ -328,6 +324,3 @@ index 417fb3b59a4b..48817d7a9aa4 100644
  };
  
  static struct stm32_port stm32_ports[STM32_MAX_PORTS];
--- 
-2.39.5
-

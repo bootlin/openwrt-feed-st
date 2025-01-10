@@ -34,11 +34,9 @@ Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
  drivers/mtd/spi-nor/core.h | 1 +
  2 files changed, 9 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8ae0cd3ab01a..b60f5dcc5cf7 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -70,6 +70,13 @@ static u8 spi_nor_get_cmd_ext(const struct spi_nor *nor,
+@@ -70,6 +70,13 @@ static u8 spi_nor_get_cmd_ext(const stru
  	}
  }
  
@@ -52,7 +50,7 @@ index 8ae0cd3ab01a..b60f5dcc5cf7 100644
  /**
   * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem op.
   * @nor:		pointer to a 'struct spi_nor'
-@@ -105,6 +112,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+@@ -105,6 +112,7 @@ void spi_nor_spimem_setup_op(const struc
  		op->addr.dtr = true;
  		op->dummy.dtr = true;
  		op->data.dtr = true;
@@ -60,8 +58,6 @@ index 8ae0cd3ab01a..b60f5dcc5cf7 100644
  
  		/* 2 bytes per clock cycle in DTR mode. */
  		op->dummy.nbytes *= 2;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 92cbc2d3f7fe..5f9de49321d0 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
 @@ -133,6 +133,7 @@ enum spi_nor_option_flags {
@@ -72,6 +68,3 @@ index 92cbc2d3f7fe..5f9de49321d0 100644
  };
  
  struct spi_nor_read_command {
--- 
-2.39.5
-

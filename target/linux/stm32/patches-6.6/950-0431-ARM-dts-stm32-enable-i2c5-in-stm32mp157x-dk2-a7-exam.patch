@@ -12,11 +12,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts | 4 ++++
  2 files changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
-index ffa1bbff36c7..533ed4efe093 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
-@@ -58,6 +58,10 @@ channel@6 {
+@@ -58,6 +58,10 @@
  	};
  };
  
@@ -27,11 +25,9 @@ index ffa1bbff36c7..533ed4efe093 100644
  &timers1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
-index 7091f3103d8a..8da80c96cfe6 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
-@@ -58,6 +58,10 @@ channel@6 {
+@@ -58,6 +58,10 @@
  	};
  };
  
@@ -42,6 +38,3 @@ index 7091f3103d8a..8da80c96cfe6 100644
  &timers1 {
  	status = "okay";
  };
--- 
-2.39.5
-

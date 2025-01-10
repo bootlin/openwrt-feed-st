@@ -18,11 +18,9 @@ Change-Id: I0bac87f365aafa51e10a2144dbfa033dc1a74fe3
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 2 +-
  5 files changed, 29 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 3f0ce0f75705..747b9e7f4e53 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -61,6 +61,12 @@
  			no-map;
  		};
  
@@ -35,7 +33,7 @@ index 3f0ce0f75705..747b9e7f4e53 100644
  		mcuram: mcuram@30000000 {
  			compatible = "shared-dma-pool";
  			reg = <0x30000000 0x40000>;
-@@ -330,7 +336,7 @@ &ipcc {
+@@ -330,7 +336,7 @@
  
  &m4_rproc {
  	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
@@ -44,11 +42,9 @@ index 3f0ce0f75705..747b9e7f4e53 100644
  	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index d129b47f80f7..bf65ed58e0af 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -61,6 +61,12 @@
  			no-map;
  		};
  
@@ -61,7 +57,7 @@ index d129b47f80f7..bf65ed58e0af 100644
  		mcuram: mcuram@30000000 {
  			compatible = "shared-dma-pool";
  			reg = <0x30000000 0x40000>;
-@@ -334,7 +340,7 @@ &ipcc {
+@@ -334,7 +340,7 @@
  
  &m4_rproc {
  	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
@@ -70,11 +66,9 @@ index d129b47f80f7..bf65ed58e0af 100644
  	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 52f1499a2cc5..2a032189bd37 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -61,6 +61,12 @@
  			no-map;
  		};
  
@@ -87,7 +81,7 @@ index 52f1499a2cc5..2a032189bd37 100644
  		mcuram: mcuram@30000000 {
  			compatible = "shared-dma-pool";
  			reg = <0x30000000 0x40000>;
-@@ -330,7 +336,7 @@ &ipcc {
+@@ -330,7 +336,7 @@
  
  &m4_rproc {
  	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
@@ -96,11 +90,9 @@ index 52f1499a2cc5..2a032189bd37 100644
  	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 4b1c7006cbdc..ea897a29f09a 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -61,6 +61,12 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -61,6 +61,12 @@
  			no-map;
  		};
  
@@ -113,7 +105,7 @@ index 4b1c7006cbdc..ea897a29f09a 100644
  		mcuram: mcuram@30000000 {
  			compatible = "shared-dma-pool";
  			reg = <0x30000000 0x40000>;
-@@ -334,7 +340,7 @@ &ipcc {
+@@ -334,7 +340,7 @@
  
  &m4_rproc {
  	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
@@ -122,11 +114,9 @@ index 4b1c7006cbdc..ea897a29f09a 100644
  	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 2d83b679f3ba..6c098e94d123 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -50,7 +50,7 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -50,7 +50,7 @@
  			no-map;
  		};
  
@@ -135,6 +125,3 @@ index 2d83b679f3ba..6c098e94d123 100644
  			compatible = "shared-dma-pool";
  			reg = <0x10048000 0x8000>;
  			no-map;
--- 
-2.39.5
-

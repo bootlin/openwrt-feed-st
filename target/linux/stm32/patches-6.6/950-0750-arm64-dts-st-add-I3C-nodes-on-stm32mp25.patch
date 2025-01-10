@@ -11,11 +11,9 @@ Change-Id: I342faa66952c95a6beb466aa45c05a8c722bf41d
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 52 ++++++++++++++++++++++++++
  1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index d60590a364a1..b5db5ba5e5ff 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -976,6 +976,45 @@ i2c7: i2c@40180000 {
+@@ -976,6 +976,45 @@
  				status = "disabled";
  			};
  
@@ -61,7 +59,7 @@ index d60590a364a1..b5db5ba5e5ff 100644
  			timers10: timer@401c0000 {
  				compatible = "st,stm32mp25-timers";
  				reg = <0x401c0000 0x400>;
-@@ -1954,6 +1993,19 @@ trigger@4 {
+@@ -1954,6 +1993,19 @@
  				};
  			};
  
@@ -81,6 +79,3 @@ index d60590a364a1..b5db5ba5e5ff 100644
  			dsi: dsi@48000000 {
  				compatible = "st,stm32-dsi";
  				reg = <0x48000000 0x800>;
--- 
-2.39.5
-

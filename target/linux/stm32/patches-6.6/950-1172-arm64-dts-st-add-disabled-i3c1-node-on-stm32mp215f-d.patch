@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index a234ef52f37d..2726f3787ccc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -246,6 +246,14 @@ imx335_ep: endpoint {
+@@ -246,6 +246,14 @@
  	};
  };
  
@@ -34,6 +32,3 @@ index a234ef52f37d..2726f3787ccc 100644
  &ipcc1 {
  	status = "okay";
  };
--- 
-2.39.5
-

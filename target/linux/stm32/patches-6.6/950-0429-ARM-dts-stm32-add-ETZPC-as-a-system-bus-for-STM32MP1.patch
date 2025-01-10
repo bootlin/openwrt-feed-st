@@ -18,11 +18,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp13xf.dtsi |   24 +-
  5 files changed, 660 insertions(+), 656 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 94e476801c79..23f94b8cc6af 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -817,346 +817,6 @@ dmamux1: dma-router@48002000 {
+@@ -817,346 +817,6 @@
  			dma-channels = <16>;
  		};
  
@@ -369,7 +367,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		rcc: rcc@50000000 {
  			compatible = "st,stm32mp13-rcc", "syscon";
  			reg = <0x50000000 0x1000>;
-@@ -1232,71 +892,6 @@ syscfg: syscon@50020000 {
+@@ -1232,71 +892,6 @@
  			clocks = <&rcc SYSCFG>;
  		};
  
@@ -441,7 +439,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		lptimer4: timer@50023000 {
  			compatible = "st,stm32-lptimer";
  			reg = <0x50023000 0x400>;
-@@ -1351,25 +946,6 @@ dts: thermal@50028000 {
+@@ -1351,25 +946,6 @@
  			status = "disabled";
  		};
  
@@ -467,7 +465,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		mdma: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
-@@ -1380,82 +956,6 @@ mdma: dma-controller@58000000 {
+@@ -1380,82 +956,6 @@
  			dma-requests = <48>;
  		};
  
@@ -550,7 +548,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		crc1: crc@58009000 {
  			compatible = "st,stm32f7-crc";
  			reg = <0x58009000 0x400>;
-@@ -1463,37 +963,6 @@ crc1: crc@58009000 {
+@@ -1463,37 +963,6 @@
  			status = "disabled";
  		};
  
@@ -588,7 +586,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		usbh_ohci: usb@5800c000 {
  			compatible = "generic-ohci";
  			reg = <0x5800c000 0x1000>;
-@@ -1525,31 +994,6 @@ iwdg2: watchdog@5a002000 {
+@@ -1525,31 +994,6 @@
  			status = "disabled";
  		};
  
@@ -620,7 +618,7 @@ index 94e476801c79..23f94b8cc6af 100644
  		ddrperfm: perf@5a007000 {
  			compatible = "st,stm32-ddr-pmu";
  			reg = <0x5a007000 0x400>;
-@@ -1595,6 +1039,570 @@ ethernet_mac2_address: mac2@ea {
+@@ -1595,6 +1039,570 @@
  			};
  		};
  
@@ -1191,11 +1189,9 @@ index 94e476801c79..23f94b8cc6af 100644
  		/*
  		 * Break node order to solve dependency probe issue between
  		 * pinctrl and exti.
-diff --git a/arch/arm/boot/dts/st/stm32mp133.dtsi b/arch/arm/boot/dts/st/stm32mp133.dtsi
-index b20be19bbfd7..402bd64e3491 100644
 --- a/arch/arm/boot/dts/st/stm32mp133.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp133.dtsi
-@@ -33,68 +33,70 @@ m_can2: can@4400f000 {
+@@ -33,68 +33,70 @@
  			bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
  			status = "disabled";
  		};
@@ -1319,8 +1315,6 @@ index b20be19bbfd7..402bd64e3491 100644
  		};
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-index 61052a87d57b..c8d77f7a89b6 100644
 --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
 @@ -6,27 +6,25 @@
@@ -1370,8 +1364,6 @@ index 61052a87d57b..c8d77f7a89b6 100644
 +		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp13xc.dtsi b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
-index fc4ba53fecaa..969386d52b20 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xc.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
 @@ -4,18 +4,16 @@
@@ -1404,8 +1396,6 @@ index fc4ba53fecaa..969386d52b20 100644
 +		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp13xf.dtsi b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-index fc4ba53fecaa..969386d52b20 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 @@ -4,18 +4,16 @@
@@ -1438,6 +1428,3 @@ index fc4ba53fecaa..969386d52b20 100644
 +		status = "disabled";
  	};
  };
--- 
-2.39.5
-

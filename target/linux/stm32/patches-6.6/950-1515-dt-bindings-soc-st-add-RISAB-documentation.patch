@@ -16,9 +16,6 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  1 file changed, 67 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/soc/st/st,stm32mp25-risab.yaml
 
-diff --git a/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risab.yaml b/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risab.yaml
-new file mode 100644
-index 000000000000..5febe1463580
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risab.yaml
 @@ -0,0 +1,67 @@
@@ -89,6 +86,3 @@ index 000000000000..5febe1463580
 +          st,mem-map = <0xa000000 0x20000>;
 +          st,srwiad;
 +        };
--- 
-2.39.5
-

@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/iio/adc/stm32-mdf-core.c | 19 +++++++++++++------
  1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 87e1a7858ec7..7cb8873f5b21 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
 @@ -102,6 +102,7 @@ struct stm32_mdf_priv {
@@ -31,7 +29,7 @@ index 87e1a7858ec7..7cb8873f5b21 100644
  
  static inline struct stm32_mdf_priv *to_stm32_mdf_priv(struct stm32_mdf *mdf)
  {
-@@ -571,12 +572,24 @@ static int stm32_mdf_core_parse_of(struct platform_device *pdev, struct stm32_md
+@@ -571,12 +572,24 @@ static int stm32_mdf_core_parse_of(struc
  	return ret;
  }
  
@@ -56,7 +54,7 @@ index 87e1a7858ec7..7cb8873f5b21 100644
  	ret = regmap_read(priv->regmap, MDF_IPIDR_REG, &val);
  	if (ret)
  		return ret;
-@@ -738,12 +751,6 @@ static const struct dev_pm_ops stm32_mdf_core_pm_ops = {
+@@ -738,12 +751,6 @@ static const struct dev_pm_ops stm32_mdf
  	SET_RUNTIME_PM_OPS(stm32_mdf_core_runtime_suspend, stm32_mdf_core_runtime_resume, NULL)
  };
  
@@ -69,6 +67,3 @@ index 87e1a7858ec7..7cb8873f5b21 100644
  static struct platform_driver stm32_mdf_driver = {
  	.probe = stm32_mdf_core_probe,
  	.remove = stm32_mdf_core_remove,
--- 
-2.39.5
-

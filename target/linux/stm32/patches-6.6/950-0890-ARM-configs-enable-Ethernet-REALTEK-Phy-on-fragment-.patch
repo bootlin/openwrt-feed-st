@@ -20,8 +20,6 @@ Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
  arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
-index 0dace0a1cd01..161be292536c 100644
 --- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
 +++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
 @@ -238,7 +238,6 @@
@@ -32,6 +30,3 @@ index 0dace0a1cd01..161be292536c 100644
  # CONFIG_REGULATOR_WM8994 is not set
  # CONFIG_SCHED_DEBUG is not set
  # CONFIG_SERIAL_8250 is not set
--- 
-2.39.5
-

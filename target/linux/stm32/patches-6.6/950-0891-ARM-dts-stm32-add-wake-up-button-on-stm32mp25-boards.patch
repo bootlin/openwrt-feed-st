@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 7 +++++++
  2 files changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 471189b62cfa..eb3dd0ced539 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -80,6 +80,13 @@ button-user-2 {
+@@ -80,6 +80,13 @@
  			gpios = <&gpioc 11 GPIO_ACTIVE_HIGH>;
  			status = "okay";
  		};
@@ -34,11 +32,9 @@ index 471189b62cfa..eb3dd0ced539 100644
  	};
  
  	gpio-leds {
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 41206a1509f4..c345cb8ef339 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -54,6 +54,13 @@ button-user-1 {
+@@ -54,6 +54,13 @@
  			gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
  			status = "okay";
  		};
@@ -52,6 +48,3 @@ index 41206a1509f4..c345cb8ef339 100644
  	};
  
  	gpio-leds {
--- 
-2.39.5
-

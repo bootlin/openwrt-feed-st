@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index bf1d8dfd6b62..a74d67fe529e 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -341,6 +341,13 @@ dts: thermal@50028000 {
+@@ -341,6 +341,13 @@
  			status = "disabled";
  		};
  
@@ -37,6 +35,3 @@ index bf1d8dfd6b62..a74d67fe529e 100644
  		mdma1: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
--- 
-2.39.5
-

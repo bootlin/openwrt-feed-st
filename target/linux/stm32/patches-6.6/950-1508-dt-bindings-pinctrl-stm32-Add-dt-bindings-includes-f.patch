@@ -20,9 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  1 file changed, 121 insertions(+)
  create mode 100644 include/dt-bindings/pinctrl/stm32mp21-hdp.h
 
-diff --git a/include/dt-bindings/pinctrl/stm32mp21-hdp.h b/include/dt-bindings/pinctrl/stm32mp21-hdp.h
-new file mode 100644
-index 000000000000..48fdb7f27e90
 --- /dev/null
 +++ b/include/dt-bindings/pinctrl/stm32mp21-hdp.h
 @@ -0,0 +1,121 @@
@@ -147,6 +144,3 @@ index 000000000000..48fdb7f27e90
 +#define HDP7_GPOVAL_7				     "15"
 +
 +#endif /* _DT_BINDINGS_STM32MP21_HDP_H */
--- 
-2.39.5
-

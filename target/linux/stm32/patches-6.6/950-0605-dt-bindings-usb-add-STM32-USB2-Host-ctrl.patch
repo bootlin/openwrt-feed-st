@@ -13,9 +13,6 @@ Change-Id: I667bde6100a9f00044efc2e910b473e07d6916a7
  1 file changed, 108 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/usb/stm32,usbh.yaml
 
-diff --git a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
-new file mode 100644
-index 000000000000..22896673c078
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
 @@ -0,0 +1,108 @@
@@ -127,6 +124,3 @@ index 000000000000..22896673c078
 +            phy-names = "usb";
 +        };
 +    };
--- 
-2.39.5
-

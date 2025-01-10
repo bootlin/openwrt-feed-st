@@ -15,11 +15,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/clk-composite.c | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
-index 1c703e1a49c2..f455dea48ba4 100644
 --- a/drivers/clk/clk-composite.c
 +++ b/drivers/clk/clk-composite.c
-@@ -42,6 +42,18 @@ static unsigned long clk_composite_recalc_rate(struct clk_hw *hw,
+@@ -42,6 +42,18 @@ static unsigned long clk_composite_recal
  	return rate_ops->recalc_rate(rate_hw, parent_rate);
  }
  
@@ -38,7 +36,7 @@ index 1c703e1a49c2..f455dea48ba4 100644
  static int clk_composite_determine_rate_for_parent(struct clk_hw *rate_hw,
  						   struct clk_rate_request *req,
  						   struct clk_hw *parent_hw,
-@@ -285,6 +297,9 @@ static struct clk_hw *__clk_hw_register_composite(struct device *dev,
+@@ -285,6 +297,9 @@ static struct clk_hw *__clk_hw_register_
  		}
  		clk_composite_ops->recalc_rate = clk_composite_recalc_rate;
  
@@ -48,6 +46,3 @@ index 1c703e1a49c2..f455dea48ba4 100644
  		if (rate_ops->determine_rate)
  			clk_composite_ops->determine_rate =
  				clk_composite_determine_rate;
--- 
-2.39.5
-

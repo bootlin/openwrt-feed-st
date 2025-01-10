@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-raydium-rm68200.c | 17 ++++++-----------
  1 file changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raydium-rm68200.c b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-index 5f9b340588fb..690831d5a772 100644
 --- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
 +++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-@@ -370,19 +370,14 @@ static int rm68200_probe(struct mipi_dsi_device *dsi)
+@@ -370,19 +370,14 @@ static int rm68200_probe(struct mipi_dsi
  		return -ENOMEM;
  
  	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
@@ -42,6 +40,3 @@ index 5f9b340588fb..690831d5a772 100644
  
  	mipi_dsi_set_drvdata(dsi, ctx);
  
--- 
-2.39.5
-

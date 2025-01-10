@@ -20,11 +20,9 @@ Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 7187aaaf1c55..74ea2ccc4e77 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -403,7 +403,7 @@ pins {
+@@ -403,7 +403,7 @@
  			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
  			bias-disable;
  			drive-push-pull;
@@ -33,7 +31,7 @@ index 7187aaaf1c55..74ea2ccc4e77 100644
  		};
  	};
  
-@@ -436,7 +436,7 @@ pins {
+@@ -436,7 +436,7 @@
  				 <STM32_PINMUX('D', 7, AF10)>; /* OSPI_IO3 */
  			bias-disable;
  			drive-push-pull;
@@ -42,6 +40,3 @@ index 7187aaaf1c55..74ea2ccc4e77 100644
  		};
  	};
  
--- 
-2.39.5
-

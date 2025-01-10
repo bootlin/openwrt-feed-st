@@ -29,11 +29,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/iio/backend.h        | 12 +++++++++++-
  3 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/iio/adc/adi-axi-adc.c b/drivers/iio/adc/adi-axi-adc.c
-index e3b215882941..41d22220dc08 100644
 --- a/drivers/iio/adc/adi-axi-adc.c
 +++ b/drivers/iio/adc/adi-axi-adc.c
-@@ -159,7 +159,7 @@ static const struct regmap_config axi_adc_regmap_config = {
+@@ -159,7 +159,7 @@ static const struct regmap_config axi_ad
  	.max_register = 0x0800,
  };
  
@@ -42,7 +40,7 @@ index e3b215882941..41d22220dc08 100644
  	.enable = axi_adc_enable,
  	.disable = axi_adc_disable,
  	.data_format_set = axi_adc_data_format_set,
-@@ -169,6 +169,11 @@ static const struct iio_backend_ops adi_axi_adc_generic = {
+@@ -169,6 +169,11 @@ static const struct iio_backend_ops adi_
  	.free_buffer = axi_adc_free_buffer,
  };
  
@@ -54,11 +52,9 @@ index e3b215882941..41d22220dc08 100644
  static int adi_axi_adc_probe(struct platform_device *pdev)
  {
  	const unsigned int *expected_ver;
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index 3afdce7da1b5..042ae8e50dc1 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
-@@ -643,20 +643,20 @@ static void iio_backend_unregister(void *arg)
+@@ -643,20 +643,20 @@ static void iio_backend_unregister(void
  /**
   * devm_iio_backend_register - Device managed backend device register
   * @dev: Backend device being registered
@@ -83,7 +79,7 @@ index 3afdce7da1b5..042ae8e50dc1 100644
  		return dev_err_probe(dev, -EINVAL, "No backend ops given\n");
  
  	/*
-@@ -669,7 +669,7 @@ int devm_iio_backend_register(struct device *dev,
+@@ -669,7 +669,7 @@ int devm_iio_backend_register(struct dev
  	if (!back)
  		return -ENOMEM;
  
@@ -92,8 +88,6 @@ index 3afdce7da1b5..042ae8e50dc1 100644
  	back->owner = dev->driver->owner;
  	back->dev = dev;
  	back->priv = priv;
-diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
-index 4e81931703ab..13020d661642 100644
 --- a/include/linux/iio/backend.h
 +++ b/include/linux/iio/backend.h
 @@ -115,6 +115,16 @@ struct iio_backend_ops {
@@ -113,7 +107,7 @@ index 4e81931703ab..13020d661642 100644
  int iio_backend_chan_enable(struct iio_backend *back, unsigned int chan);
  int iio_backend_chan_disable(struct iio_backend *back, unsigned int chan);
  int devm_iio_backend_enable(struct device *dev, struct iio_backend *back);
-@@ -151,6 +161,6 @@ __devm_iio_backend_get_from_fwnode_lookup(struct device *dev,
+@@ -151,6 +161,6 @@ __devm_iio_backend_get_from_fwnode_looku
  					  struct fwnode_handle *fwnode);
  
  int devm_iio_backend_register(struct device *dev,
@@ -121,6 +115,3 @@ index 4e81931703ab..13020d661642 100644
 +			      const struct iio_backend_info *info, void *priv);
  
  #endif
--- 
-2.39.5
-

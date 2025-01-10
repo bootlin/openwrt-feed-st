@@ -16,8 +16,6 @@ Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/linux/scmi_protocol.h     |  2 ++
  2 files changed, 45 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 473e8d31ccf7..726ce33915fe 100644
 --- a/drivers/firmware/arm_scmi/clock.c
 +++ b/drivers/firmware/arm_scmi/clock.c
 @@ -22,6 +22,7 @@ enum scmi_clock_protocol_cmd {
@@ -28,11 +26,10 @@ index 473e8d31ccf7..726ce33915fe 100644
  };
  
  struct scmi_msg_resp_clock_protocol_attributes {
-@@ -427,6 +428,47 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
- 	return ret;
+@@ -428,6 +429,47 @@ static int scmi_clock_rate_set(const str
  }
  
-+static int
+ static int
 +scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
 +			  u32 clk_id, u64 *value)
 +{
@@ -73,10 +70,11 @@ index 473e8d31ccf7..726ce33915fe 100644
 +	return ret;
 +}
 +
- static int
++static int
  scmi_clock_config_set(const struct scmi_protocol_handle *ph, u32 clk_id,
  		      u32 config, bool atomic)
-@@ -507,6 +549,7 @@ static const struct scmi_clk_proto_ops clk_proto_ops = {
+ {
+@@ -507,6 +549,7 @@ static const struct scmi_clk_proto_ops c
  	.enable_atomic = scmi_clock_enable_atomic,
  	.disable_atomic = scmi_clock_disable_atomic,
  	.get_duty_cycle = scmi_clock_get_duty_cycle,
@@ -84,8 +82,6 @@ index 473e8d31ccf7..726ce33915fe 100644
  };
  
  static int scmi_clk_rate_notify(const struct scmi_protocol_handle *ph,
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index b5c0bf5754ad..22af4e1211cd 100644
 --- a/include/linux/scmi_protocol.h
 +++ b/include/linux/scmi_protocol.h
 @@ -97,6 +97,8 @@ struct scmi_clk_proto_ops {
@@ -97,6 +93,3 @@ index b5c0bf5754ad..22af4e1211cd 100644
  };
  
  struct scmi_perf_domain_info {
--- 
-2.39.5
-

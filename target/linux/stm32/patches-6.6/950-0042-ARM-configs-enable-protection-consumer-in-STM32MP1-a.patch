@@ -12,8 +12,6 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 27a6fa5c8140..6744c0649e19 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -28,6 +28,7 @@ CONFIG_POSIX_MQUEUE=y
@@ -24,6 +22,3 @@ index 27a6fa5c8140..6744c0649e19 100644
  CONFIG_SCHED_MC=y
  CONFIG_SERIAL_NONSTANDARD=y
  CONFIG_SRAM=y
--- 
-2.39.5
-

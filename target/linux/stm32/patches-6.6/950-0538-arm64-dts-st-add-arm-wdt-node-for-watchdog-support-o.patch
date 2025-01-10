@@ -13,11 +13,9 @@ Change-Id: I08b49d5e2f9d666ceffa1f4d21b9eb36ac1028fd
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 2b9c08190809..21b537143661 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -28,6 +28,12 @@ arm-pmu {
+@@ -28,6 +28,12 @@
  		interrupt-parent = <&intc>;
  	};
  
@@ -30,6 +28,3 @@ index 2b9c08190809..21b537143661 100644
  	clocks {
  		ck_flexgen_08: ck-flexgen-08 {
  			#clock-cells = <0>;
--- 
-2.39.5
-

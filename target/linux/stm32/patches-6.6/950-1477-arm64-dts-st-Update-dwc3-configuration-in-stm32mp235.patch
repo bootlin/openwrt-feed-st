@@ -20,11 +20,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index ad55a3d58338..71eb71e3028d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-@@ -737,8 +737,7 @@ &usb3dr {
+@@ -737,8 +737,7 @@
  	status = "okay";
  
  	dwc3: usb@48300000 {
@@ -34,6 +32,3 @@ index ad55a3d58338..71eb71e3028d 100644
  		usb-role-switch;
  		port {
  			dwc3_ep: endpoint {
--- 
-2.39.5
-

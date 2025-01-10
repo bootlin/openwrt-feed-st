@@ -25,8 +25,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 177 +++++++++++++++++++++++++++++----
  1 file changed, 159 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index d2f0bc1fbe40..a23d0c80092d 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -15,11 +15,13 @@
@@ -51,7 +49,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	u32 lap;
  	struct gen_pool *gen_pool;
  	struct dma_pool *dma_pool;
-@@ -333,11 +336,28 @@ static struct device *chan2dev(struct stm32_dma3_chan *chan)
+@@ -333,11 +336,28 @@ static struct device *chan2dev(struct st
  	return &chan->vchan.chan.dev->device;
  }
  
@@ -81,7 +79,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  
  	offset = STM32_DMA3_SECCFGR;
  	dev_dbg(dev, "SECCFGR(0x%03x): %08x\n", offset, readl_relaxed(ddata->base + offset));
-@@ -347,43 +367,67 @@ static void stm32_dma3_chan_dump_reg(struct stm32_dma3_chan *chan)
+@@ -347,43 +367,67 @@ static void stm32_dma3_chan_dump_reg(str
  	dev_dbg(dev, "C%dCIDCFGR(0x%03x): %08x\n", id, offset, readl_relaxed(ddata->base + offset));
  	offset = STM32_DMA3_CSEMCR(id);
  	dev_dbg(dev, "C%dSEMCR(0x%03x): %08x\n", id, offset, readl_relaxed(ddata->base + offset));
@@ -159,7 +157,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	}
  
  	if (swdesc->cyclic) {
-@@ -392,6 +436,10 @@ static void stm32_dma3_chan_dump_hwdesc(struct stm32_dma3_chan *chan,
+@@ -392,6 +436,10 @@ static void stm32_dma3_chan_dump_hwdesc(
  	} else {
  		dev_dbg(chan2dev(chan), "X\n");
  	}
@@ -170,7 +168,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  }
  
  static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32_dma3_ddata *ddata)
-@@ -533,6 +581,7 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -533,6 +581,7 @@ static struct stm32_dma3_swdesc *stm32_d
  {
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
  	struct stm32_dma3_swdesc *swdesc;
@@ -178,7 +176,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	int ret;
  
  	/*
-@@ -558,13 +607,37 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -558,13 +607,37 @@ static struct stm32_dma3_swdesc *stm32_d
  	}
  	swdesc->lli_size = count;
  
@@ -219,7 +217,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	return swdesc;
  }
  
-@@ -624,6 +697,8 @@ static void stm32_dma3_chan_prep_hwdesc(struct stm32_dma3_chan *chan,
+@@ -624,6 +697,8 @@ static void stm32_dma3_chan_prep_hwdesc(
  					u32 curr, dma_addr_t src, dma_addr_t dst, u32 len,
  					u32 ctr1, u32 ctr2, bool is_last, bool is_cyclic)
  {
@@ -228,7 +226,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	struct stm32_dma3_hwdesc *hwdesc;
  	dma_addr_t next_lli;
  	u32 next = curr + 1;
-@@ -632,16 +707,18 @@ static void stm32_dma3_chan_prep_hwdesc(struct stm32_dma3_chan *chan,
+@@ -632,16 +707,18 @@ static void stm32_dma3_chan_prep_hwdesc(
  	hwdesc->ctr1 = ctr1;
  	hwdesc->ctr2 = ctr2;
  	hwdesc->cbr1 = FIELD_PREP(CBR1_BNDT, len);
@@ -251,7 +249,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	}
  
  	hwdesc->cllr = 0;
-@@ -731,6 +808,24 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -731,6 +808,24 @@ static int stm32_dma3_chan_prep_hw(struc
  		return -EINVAL;
  	}
  
@@ -276,7 +274,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	if (FIELD_GET(STM32_DMA3_DT_SINC, tr_conf))
  		_ctr1 |= CTR1_SINC;
  	if (sap)
-@@ -1320,6 +1415,7 @@ static void stm32_dma3_init_chan_config_for_memcpy(struct stm32_dma3_chan *chan,
+@@ -1320,6 +1415,7 @@ static void stm32_dma3_init_chan_config_
  						   dma_addr_t dst, dma_addr_t src)
  {
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
@@ -284,7 +282,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	u32 dw = get_chan_max_dw(ddata->ports_max_dw[0], chan->max_burst); /* port 0 by default */
  	u32 burst = chan->max_burst / dw;
  
-@@ -1328,6 +1424,15 @@ static void stm32_dma3_init_chan_config_for_memcpy(struct stm32_dma3_chan *chan,
+@@ -1328,6 +1424,15 @@ static void stm32_dma3_init_chan_config_
  		chan->dt_config.ch_conf = FIELD_PREP(STM32_DMA3_DT_PRIO, CCR_PRIO_VERY_HIGH);
  		chan->dt_config.ch_conf |= FIELD_PREP(STM32_DMA3_DT_FIFO, chan->fifo_size);
  		chan->dt_config.tr_conf = STM32_DMA3_DT_SINC | STM32_DMA3_DT_DINC;
@@ -300,7 +298,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  		chan->dt_config.tr_conf |= FIELD_PREP(STM32_DMA3_DT_TCEM, CTR2_TCEM_CHANNEL);
  	}
  
-@@ -1779,6 +1884,35 @@ static struct dma_chan *stm32_dma3_of_xlate(struct of_phandle_args *dma_spec, st
+@@ -1779,6 +1884,35 @@ static struct dma_chan *stm32_dma3_of_xl
  	return c;
  }
  
@@ -336,7 +334,7 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  static u32 stm32_dma3_check_rif(struct stm32_dma3_ddata *ddata)
  {
  	u32 chan_reserved, mask = 0, i, ccidcfgr, invalid_cid = 0;
-@@ -1942,6 +2076,13 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1942,6 +2076,13 @@ static int stm32_dma3_probe(struct platf
  						 STM32_DMA3_MAX_BURST_LEN);
  	dev_dbg(&pdev->dev, "Burst is limited to %u beats\n", ddata->axi_max_burst_len);
  
@@ -350,6 +348,3 @@ index d2f0bc1fbe40..a23d0c80092d 100644
  	ret = stm32_dma3_lli_pool_create(pdev, ddata);
  	if (ret)
  		goto err_clk_disable;
--- 
-2.39.5
-

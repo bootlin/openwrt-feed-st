@@ -24,8 +24,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 519 ++++++++++++++++++--------
  1 file changed, 353 insertions(+), 166 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 5274cb726d50..9b79c9e29fce 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -8,7 +8,9 @@
@@ -50,7 +48,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  	struct dw_mipi_dsi *dsi;
  	u32 hw_version;
  	int lane_min_kbps;
-@@ -252,40 +257,6 @@ static int dsi_pll_get_params(struct dw_mipi_dsi_stm *dsi,
+@@ -252,40 +257,6 @@ static int dsi_pll_get_params(struct dw_
  	return 0;
  }
  
@@ -91,7 +89,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  struct dphy_pll_parameter_map {
  	u32 data_rate;	/* upper margin of frequency range */
  	u8 hs_freq;	/* hsfreqrange */
-@@ -360,12 +331,60 @@ static const struct dphy_pll_parameter_map dppa_map[] = {
+@@ -360,12 +331,60 @@ static const struct dphy_pll_parameter_m
  	{2500, 0x49, 0x00, 0x01, 0x0C}
  };
  
@@ -155,7 +153,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -392,78 +411,16 @@ static int dw_mipi_dsi_phy_141_init(void *priv_data)
+@@ -392,78 +411,16 @@ static int dw_mipi_dsi_phy_141_init(void
  	dsi_clear(dsi, DSI_PTCR0, PTCR0_TRSEN);
  	mdelay(1);
  
@@ -214,14 +212,14 @@ index 5274cb726d50..9b79c9e29fce 100644
 -
 -	dsi_set(dsi, DSI_WRPCR2, WRPCR2_UPD);
 -	mdelay(1);
--
++	/* dummy set rate ... */
++	clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000);
+ 
 -	dsi_clear(dsi, DSI_WRPCR2, WRPCR2_UPD);
 -	mdelay(1);
 -
 -	dsi_set(dsi, DSI_PCTLR, PCTLR_PWEN | PCTLR_DEN);
-+	/* dummy set rate ... */
-+	clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000);
- 
+-
 -	ret = readl_poll_timeout(dsi->base + DSI_PSR, val, val & PSR_PSSC,
 -				 SLEEP_US, TIMEOUT_US);
 +	ret = clk_set_rate(dsi->txbyte_clk.clk, dsi->lane_mbps * 1000000 / 2);
@@ -240,7 +238,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  }
  
  static int
-@@ -475,7 +432,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -475,7 +432,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  	struct dw_mipi_dsi_stm *dsi = priv_data;
  	unsigned int pll_out_khz, pll_in_khz;
  	u32 ndiv, odf, idf;
@@ -249,7 +247,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	/* Compute requested pll out */
  	dsi->format = format;
-@@ -497,31 +454,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -497,31 +454,7 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  
  	pll_in_khz = (unsigned int)(clk_get_rate(dsi->pllref_clk) / 1000);
  
@@ -282,7 +280,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	/* Get the adjusted lane data rate value, lane data rate = 2 * pll output */
  	*lane_mbps = 2 * dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf) / 1000;
-@@ -532,29 +465,287 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *priv_data,
+@@ -532,29 +465,287 @@ dw_mipi_dsi_phy_141_get_lane_mbps(void *
  	return 0;
  }
  
@@ -322,17 +320,17 @@ index 5274cb726d50..9b79c9e29fce 100644
 -	if (ret)
 -		DRM_DEBUG_DRIVER("!TIMEOUT! waiting REGU, let's continue\n");
 +	DRM_DEBUG_DRIVER("\n");
-+
-+	if (dsi->hw_version == HWVER_141) {
-+		ret = readl_poll_timeout_atomic(dsi->base + DSI_PSR, val, val & PSR_PSSC,
-+						SLEEP_US, TIMEOUT_US);
-+		if (ret)
-+			DRM_ERROR("!TIMEOUT! waiting PLL, let's continue\n");
  
 -	/* Enable the DSI PLL & wait for its lock */
 -	dsi_set(dsi, DSI_WRPCR, WRPCR_PLLEN);
 -	ret = readl_poll_timeout(dsi->base + DSI_WISR, val, val & WISR_PLLLS,
 -				 SLEEP_US, TIMEOUT_US);
++	if (dsi->hw_version == HWVER_141) {
++		ret = readl_poll_timeout_atomic(dsi->base + DSI_PSR, val, val & PSR_PSSC,
++						SLEEP_US, TIMEOUT_US);
++		if (ret)
++			DRM_ERROR("!TIMEOUT! waiting PLL, let's continue\n");
++
 +		dsi_set(dsi, DSI_WRPCR2, WRPCR2_PLLEN);
 +	} else {
 +		/* Enable the regulator */
@@ -583,7 +581,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  static void dw_mipi_dsi_phy_power_on(void *priv_data)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
-@@ -571,6 +762,8 @@ static void dw_mipi_dsi_phy_power_off(void *priv_data)
+@@ -571,6 +762,8 @@ static void dw_mipi_dsi_phy_power_off(vo
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -592,7 +590,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  	/* Disable the DSI wrapper */
  	dsi_clear(dsi, DSI_WCR, WCR_DSIEN);
  }
-@@ -581,9 +774,8 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+@@ -581,9 +774,8 @@ dw_mipi_dsi_get_lane_mbps(void *priv_dat
  			  unsigned int *lane_mbps)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
@@ -603,7 +601,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	pll_in_khz = (unsigned int)(clk_get_rate(dsi->pllref_clk) / 1000);
  
-@@ -604,25 +796,10 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+@@ -604,25 +796,10 @@ dw_mipi_dsi_get_lane_mbps(void *priv_dat
  		DRM_WARN("Warning min phy mbps is used\n");
  	}
  
@@ -632,7 +630,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	/* Select video mode by resetting DSIM bit */
  	dsi_clear(dsi, DSI_WCFGR, WCFGR_DSIM);
-@@ -1016,10 +1193,19 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -1016,10 +1193,19 @@ static int dw_mipi_dsi_stm_probe(struct
  		goto err_dsi_probe;
  	}
  
@@ -654,7 +652,7 @@ index 5274cb726d50..9b79c9e29fce 100644
  
  	return 0;
  
-@@ -1039,6 +1225,7 @@ static void dw_mipi_dsi_stm_remove(struct platform_device *pdev)
+@@ -1039,6 +1225,7 @@ static void dw_mipi_dsi_stm_remove(struc
  	struct dw_mipi_dsi_stm *dsi = platform_get_drvdata(pdev);
  
  	dw_mipi_dsi_remove(dsi->dsi);
@@ -662,6 +660,3 @@ index 5274cb726d50..9b79c9e29fce 100644
  }
  
  static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
--- 
-2.39.5
-

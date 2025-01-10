@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0960e7e39099..08f9943cc773 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -562,6 +562,13 @@ lvds_out0: endpoint {
+@@ -562,6 +562,13 @@
  	};
  };
  
@@ -36,6 +34,3 @@ index 0960e7e39099..08f9943cc773 100644
  &m33_rproc {
  	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
  	mbox-names = "vq0", "vq1", "shutdown";
--- 
-2.39.5
-

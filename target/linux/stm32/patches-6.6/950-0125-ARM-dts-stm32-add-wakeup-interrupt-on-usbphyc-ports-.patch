@@ -17,11 +17,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 42ba7601d6bd..2d007199ab9e 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1426,11 +1426,13 @@ usbphyc: usbphyc@5a006000 {
+@@ -1426,11 +1426,13 @@
  			usbphyc_port0: usb-phy@0 {
  				#phy-cells = <0>;
  				reg = <0>;
@@ -35,6 +33,3 @@ index 42ba7601d6bd..2d007199ab9e 100644
  			};
  		};
  
--- 
-2.39.5
-

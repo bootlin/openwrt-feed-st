@@ -18,8 +18,6 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
  create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
 
-diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
-index 3c8493a94a11..dca409d52652 100644
 --- a/drivers/clk/stm32/Kconfig
 +++ b/drivers/clk/stm32/Kconfig
 @@ -25,5 +25,12 @@ config COMMON_CLK_STM32MP157
@@ -35,17 +33,12 @@ index 3c8493a94a11..dca409d52652 100644
 +
  endif
  
-diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
-index 5ced7fe3ddec..0a627164fcce 100644
 --- a/drivers/clk/stm32/Makefile
 +++ b/drivers/clk/stm32/Makefile
 @@ -1,2 +1,3 @@
  obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
  obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o reset-stm32.o
 +obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25.o clk-stm32-core.o reset-stm32.o
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-new file mode 100644
-index 000000000000..e77af87b4e99
 --- /dev/null
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -0,0 +1,1876 @@
@@ -1925,8 +1918,6 @@ index 000000000000..e77af87b4e99
 +}
 +
 +core_initcall(stm32mp25_clocks_init);
-diff --git a/drivers/clk/stm32/reset-stm32.c b/drivers/clk/stm32/reset-stm32.c
-index 14c2ee1eebee..5a8f525842ce 100644
 --- a/drivers/clk/stm32/reset-stm32.c
 +++ b/drivers/clk/stm32/reset-stm32.c
 @@ -19,6 +19,7 @@ struct stm32_reset_data {
@@ -1937,7 +1928,7 @@ index 14c2ee1eebee..5a8f525842ce 100644
  };
  
  static inline struct stm32_reset_data *
-@@ -27,22 +28,46 @@ to_stm32_reset_data(struct reset_controller_dev *rcdev)
+@@ -27,22 +28,46 @@ to_stm32_reset_data(struct reset_control
  	return container_of(rcdev, struct stm32_reset_data, rcdev);
  }
  
@@ -1990,7 +1981,7 @@ index 14c2ee1eebee..5a8f525842ce 100644
  
  	} else {
  		unsigned long flags;
-@@ -50,14 +75,14 @@ static int stm32_reset_update(struct reset_controller_dev *rcdev,
+@@ -50,14 +75,14 @@ static int stm32_reset_update(struct res
  
  		spin_lock_irqsave(&data->lock, flags);
  
@@ -2009,7 +2000,7 @@ index 14c2ee1eebee..5a8f525842ce 100644
  
  		spin_unlock_irqrestore(&data->lock, flags);
  	}
-@@ -81,14 +106,17 @@ static int stm32_reset_status(struct reset_controller_dev *rcdev,
+@@ -81,14 +106,17 @@ static int stm32_reset_status(struct res
  			      unsigned long id)
  {
  	struct stm32_reset_data *data = to_stm32_reset_data(rcdev);
@@ -2032,7 +2023,7 @@ index 14c2ee1eebee..5a8f525842ce 100644
  }
  
  static const struct reset_control_ops stm32_reset_ops = {
-@@ -113,6 +141,7 @@ int stm32_rcc_reset_init(struct device *dev, struct clk_stm32_reset_data *data,
+@@ -113,6 +141,7 @@ int stm32_rcc_reset_init(struct device *
  	reset_data->rcdev.ops = &stm32_reset_ops;
  	reset_data->rcdev.of_node = dev_of_node(dev);
  	reset_data->rcdev.nr_resets = data->nr_lines;
@@ -2040,8 +2031,6 @@ index 14c2ee1eebee..5a8f525842ce 100644
  	reset_data->clear_offset = data->clear_offset;
  
  	return reset_controller_register(&reset_data->rcdev);
-diff --git a/drivers/clk/stm32/reset-stm32.h b/drivers/clk/stm32/reset-stm32.h
-index 8cf1cc9be480..f79cad21dfd6 100644
 --- a/drivers/clk/stm32/reset-stm32.h
 +++ b/drivers/clk/stm32/reset-stm32.h
 @@ -4,8 +4,15 @@
@@ -2060,9 +2049,6 @@ index 8cf1cc9be480..f79cad21dfd6 100644
  	unsigned int nr_lines;
  	u32 clear_offset;
  };
-diff --git a/drivers/clk/stm32/stm32mp25_rcc.h b/drivers/clk/stm32/stm32mp25_rcc.h
-new file mode 100644
-index 000000000000..6ba13cc2ae16
 --- /dev/null
 +++ b/drivers/clk/stm32/stm32mp25_rcc.h
 @@ -0,0 +1,712 @@
@@ -2778,6 +2764,3 @@ index 000000000000..6ba13cc2ae16
 +#define RCC_SIDR				0xFFFC
 +
 +#endif /* STM32MP25_RCC_H */
--- 
-2.39.5
-

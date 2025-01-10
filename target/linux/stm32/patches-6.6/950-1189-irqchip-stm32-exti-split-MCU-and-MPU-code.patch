@@ -19,8 +19,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  4 files changed, 751 insertions(+), 667 deletions(-)
  create mode 100644 drivers/irqchip/irq-stm32mp-exti.c
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index fc65568da8c1..221e83250bd6 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
 @@ -394,7 +394,8 @@ config PARTITION_PERCPU
@@ -33,11 +31,9 @@ index fc65568da8c1..221e83250bd6 100644
  
  config STM32_EXTI
  	bool
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 30a277b3b70d..73f27884354e 100644
 --- a/drivers/irqchip/Makefile
 +++ b/drivers/irqchip/Makefile
-@@ -84,6 +84,7 @@ obj-$(CONFIG_MVEBU_SEI)			+= irq-mvebu-sei.o
+@@ -84,6 +84,7 @@ obj-$(CONFIG_MVEBU_SEI)			+= irq-mvebu-s
  obj-$(CONFIG_LS_EXTIRQ)			+= irq-ls-extirq.o
  obj-$(CONFIG_LS_SCFG_MSI)		+= irq-ls-scfg-msi.o
  obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o irq-aspeed-scu-ic.o
@@ -45,8 +41,6 @@ index 30a277b3b70d..73f27884354e 100644
  obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
  obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
  obj-$(CONFIG_IRQ_UNIPHIER_AIDET)	+= irq-uniphier-aidet.o
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 2cc9f3b7d669..7c6a0080c330 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
 @@ -1,45 +1,22 @@
@@ -127,7 +121,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  };
  
  static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
-@@ -87,9 +56,6 @@ static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
+@@ -87,9 +56,6 @@ static const struct stm32_exti_bank stm3
  	.ftsr_ofst	= 0x0C,
  	.swier_ofst	= 0x10,
  	.rpr_ofst	= 0x14,
@@ -137,7 +131,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  };
  
  static const struct stm32_exti_bank *stm32f4xx_exti_banks[] = {
-@@ -108,9 +74,6 @@ static const struct stm32_exti_bank stm32h7xx_exti_b1 = {
+@@ -108,9 +74,6 @@ static const struct stm32_exti_bank stm3
  	.ftsr_ofst	= 0x04,
  	.swier_ofst	= 0x08,
  	.rpr_ofst	= 0x88,
@@ -147,7 +141,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
-@@ -120,9 +83,6 @@ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
+@@ -120,9 +83,6 @@ static const struct stm32_exti_bank stm3
  	.ftsr_ofst	= 0x24,
  	.swier_ofst	= 0x28,
  	.rpr_ofst	= 0x98,
@@ -157,7 +151,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
-@@ -132,9 +92,6 @@ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
+@@ -132,9 +92,6 @@ static const struct stm32_exti_bank stm3
  	.ftsr_ofst	= 0x44,
  	.swier_ofst	= 0x48,
  	.rpr_ofst	= 0xA8,
@@ -167,7 +161,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  };
  
  static const struct stm32_exti_bank *stm32h7xx_exti_banks[] = {
-@@ -148,183 +105,12 @@ static const struct stm32_exti_drv_data stm32h7xx_drv_data = {
+@@ -148,183 +105,12 @@ static const struct stm32_exti_drv_data
  	.bank_nr = ARRAY_SIZE(stm32h7xx_exti_banks),
  };
  
@@ -342,17 +336,17 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  	struct stm32_exti_chip_data *chip_data = gc->private;
  	const struct stm32_exti_bank *stm32_bank = chip_data->reg_bank;
 -	unsigned long pending;
- 
+-
 -	pending = irq_reg_readl(gc, stm32_bank->rpr_ofst);
 -	if (stm32_bank->fpr_ofst != UNDEF_REG)
 -		pending |= irq_reg_readl(gc, stm32_bank->fpr_ofst);
--
+ 
 -	return pending;
 +	return irq_reg_readl(gc, stm32_bank->rpr_ofst);
  }
  
  static void stm32_irq_handler(struct irq_desc *desc)
-@@ -380,33 +166,21 @@ static int stm32_irq_set_type(struct irq_data *d, unsigned int type)
+@@ -380,33 +166,21 @@ static int stm32_irq_set_type(struct irq
  	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
  	struct stm32_exti_chip_data *chip_data = gc->private;
  	const struct stm32_exti_bank *stm32_bank = chip_data->reg_bank;
@@ -387,7 +381,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  unlock:
  	irq_gc_unlock(gc);
  
-@@ -494,287 +268,10 @@ static void stm32_irq_ack(struct irq_data *d)
+@@ -494,287 +268,10 @@ static void stm32_irq_ack(struct irq_dat
  	irq_gc_lock(gc);
  
  	irq_reg_writel(gc, d->mask, stm32_bank->rpr_ofst);
@@ -675,7 +669,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  static struct
  stm32_exti_host_data *stm32_exti_host_init(const struct stm32_exti_drv_data *dd,
  					   struct device_node *node)
-@@ -822,19 +319,12 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
+@@ -822,19 +319,12 @@ stm32_exti_chip_data *stm32_exti_chip_in
  	chip_data->host_data = h_data;
  	chip_data->reg_bank = stm32_bank;
  
@@ -696,7 +690,7 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  
  	pr_info("%pOF: bank%d\n", node, bank_idx);
  
-@@ -914,158 +404,6 @@ static int __init stm32_exti_init(const struct stm32_exti_drv_data *drv_data,
+@@ -914,158 +404,6 @@ out_unmap:
  	return ret;
  }
  
@@ -855,9 +849,6 @@ index 2cc9f3b7d669..7c6a0080c330 100644
  static int __init stm32f4_exti_of_init(struct device_node *np,
  				       struct device_node *parent)
  {
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-new file mode 100644
-index 000000000000..8a45ece2e198
 --- /dev/null
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -0,0 +1,744 @@
@@ -1605,6 +1596,3 @@ index 000000000000..8a45ece2e198
 +
 +arch_initcall(stm32_exti_arch_init);
 +module_exit(stm32_exti_arch_exit);
--- 
-2.39.5
-

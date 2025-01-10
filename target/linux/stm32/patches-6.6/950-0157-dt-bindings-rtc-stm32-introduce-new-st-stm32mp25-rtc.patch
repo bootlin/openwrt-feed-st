@@ -20,8 +20,6 @@ Change-Id: I53874abe1a917eef5dfabbfabde108d40d08fa65
  Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
-index e1a8268726ce..9e86c4cd4548 100644
 --- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 +++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 @@ -15,6 +15,7 @@ properties:
@@ -43,6 +41,3 @@ index e1a8268726ce..9e86c4cd4548 100644
  
      then:
        properties:
--- 
-2.39.5
-

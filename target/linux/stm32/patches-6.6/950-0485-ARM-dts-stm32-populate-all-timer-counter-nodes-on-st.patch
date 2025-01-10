@@ -14,11 +14,9 @@ Change-Id: Ia461010a7a980292ad4e0f74a27f4c78a5282be4
  arch/arm/boot/dts/st/stm32mp131.dtsi | 40 ++++++++++++++++++++++++++++
  1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 479b748072fa..438b41702f85 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -326,6 +326,11 @@ timers6: timer@40004000 {
+@@ -326,6 +326,11 @@
  			dma-names = "up";
  			status = "disabled";
  
@@ -30,7 +28,7 @@ index 479b748072fa..438b41702f85 100644
  			timer@5 {
  				compatible = "st,stm32h7-timer-trigger";
  				reg = <5>;
-@@ -346,6 +351,11 @@ timers7: timer@40005000 {
+@@ -346,6 +351,11 @@
  			dma-names = "up";
  			status = "disabled";
  
@@ -42,7 +40,7 @@ index 479b748072fa..438b41702f85 100644
  			timer@6 {
  				compatible = "st,stm32h7-timer-trigger";
  				reg = <6>;
-@@ -1254,6 +1264,11 @@ timers12: timer@4c007000 {
+@@ -1254,6 +1264,11 @@
  				access-controllers = <&etzpc 23>;
  				status = "disabled";
  
@@ -54,7 +52,7 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1279,6 +1294,11 @@ timers13: timer@4c008000 {
+@@ -1279,6 +1294,11 @@
  				access-controllers = <&etzpc 24>;
  				status = "disabled";
  
@@ -66,7 +64,7 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1304,6 +1324,11 @@ timers14: timer@4c009000 {
+@@ -1304,6 +1324,11 @@
  				access-controllers = <&etzpc 25>;
  				status = "disabled";
  
@@ -78,7 +76,7 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1334,6 +1359,11 @@ timers15: timer@4c00a000 {
+@@ -1334,6 +1359,11 @@
  				access-controllers = <&etzpc 26>;
  				status = "disabled";
  
@@ -90,7 +88,7 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1362,6 +1392,11 @@ timers16: timer@4c00b000 {
+@@ -1362,6 +1392,11 @@
  				access-controllers = <&etzpc 27>;
  				status = "disabled";
  
@@ -102,7 +100,7 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
-@@ -1390,6 +1425,11 @@ timers17: timer@4c00c000 {
+@@ -1390,6 +1425,11 @@
  				access-controllers = <&etzpc 28>;
  				status = "disabled";
  
@@ -114,6 +112,3 @@ index 479b748072fa..438b41702f85 100644
  				pwm {
  					compatible = "st,stm32-pwm";
  					#pwm-cells = <3>;
--- 
-2.39.5
-

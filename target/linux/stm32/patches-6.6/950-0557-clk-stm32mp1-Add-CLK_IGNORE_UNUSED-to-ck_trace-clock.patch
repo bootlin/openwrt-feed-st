@@ -18,11 +18,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 6a77d642dbd5..a68d7a37f628 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -2199,7 +2199,8 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -2199,7 +2199,8 @@ static const struct clock_config stm32mp
  	GATE(CK_DBG, "ck_sys_dbg", "ck_axi", CLK_IGNORE_UNUSED,
  	     RCC_DBGCFGR, 8, 0),
  
@@ -32,6 +30,3 @@ index 6a77d642dbd5..a68d7a37f628 100644
  		  _GATE(RCC_DBGCFGR, 9, 0),
  		  _NO_MUX,
  		  _DIV(RCC_DBGCFGR, 0, 3, 0, ck_trace_div_table)),
--- 
-2.39.5
-

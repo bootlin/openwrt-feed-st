@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 23 +++++++++++++++++++++++
  1 file changed, 23 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index fad7f3c0a0b1..8dd098a4cd10 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1364,6 +1364,29 @@ i2c3: i2c@46040000 {
+@@ -1364,6 +1364,29 @@
  				status = "disabled";
  			};
  
@@ -51,6 +49,3 @@ index fad7f3c0a0b1..8dd098a4cd10 100644
  			lptimer3: timer@46050000 {
  				compatible = "st,stm32mp21-lptimer";
  				reg = <0x46050000 0x400>;
--- 
-2.39.5
-

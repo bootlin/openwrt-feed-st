@@ -13,11 +13,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 1b346c0a429b..dc98181f0f13 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -111,11 +111,12 @@ soc@0 {
+@@ -111,11 +111,12 @@
  		interrupt-parent = <&intc>;
  		ranges = <0x0 0x0 0x0 0x80000000>;
  
@@ -32,7 +30,7 @@ index 1b346c0a429b..dc98181f0f13 100644
  			ranges;
  
  			usart2: serial@400e0000 {
-@@ -123,6 +124,7 @@ usart2: serial@400e0000 {
+@@ -123,6 +124,7 @@
  				reg = <0x400e0000 0x400>;
  				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&ck_flexgen_08>;
@@ -40,7 +38,7 @@ index 1b346c0a429b..dc98181f0f13 100644
  				status = "disabled";
  			};
  
-@@ -136,6 +138,7 @@ sdmmc1: mmc@48220000 {
+@@ -136,6 +138,7 @@
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <120000000>;
@@ -48,6 +46,3 @@ index 1b346c0a429b..dc98181f0f13 100644
  				status = "disabled";
  			};
  		};
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/mailbox/stm32-ipcc.c | 29 +++++++++++++++++++----------
  1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index 3f28be8637b2..92f5f45bbaa8 100644
 --- a/drivers/mailbox/stm32-ipcc.c
 +++ b/drivers/mailbox/stm32-ipcc.c
-@@ -216,9 +216,10 @@ static int stm32_ipcc_startup(struct mbox_chan *link)
+@@ -216,9 +216,10 @@ static int stm32_ipcc_startup(struct mbo
  	unsigned long chan = chnl->chan;
  	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
  					       controller);
@@ -34,7 +32,7 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  	if (ret) {
  		dev_err(ipcc->controller.dev, "can not enable the clock\n");
  		return ret;
-@@ -245,7 +246,8 @@ static void stm32_ipcc_shutdown(struct mbox_chan *link)
+@@ -245,7 +246,8 @@ static void stm32_ipcc_shutdown(struct m
  	if (!chnl->irq_ctx)
  		flush_work(&chnl->rx_work);
  
@@ -44,7 +42,7 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  }
  
  static int stm32_ipcc_check_rif(struct stm32_ipcc *ipcc, unsigned long chan)
-@@ -314,7 +316,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -314,7 +316,7 @@ static int stm32_ipcc_probe(struct platf
  	struct stm32_ipcc *ipcc;
  	u32 ip_ver, hwcfg, cidcfgr, cid, cid_mask, cfen;
  	unsigned long i;
@@ -53,7 +51,7 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  
  	if (!np) {
  		dev_err(dev, "No DT found\n");
-@@ -345,12 +347,17 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -345,12 +347,17 @@ static int stm32_ipcc_probe(struct platf
  
  	ipcc->reg_proc = ipcc->reg_base + ipcc->proc_id * IPCC_PROC_OFFST;
  
@@ -75,7 +73,7 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  	if (ret) {
  		dev_err(dev, "can not enable the clock\n");
  		return ret;
-@@ -453,7 +460,8 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -453,7 +460,8 @@ static int stm32_ipcc_probe(struct platf
  		 FIELD_GET(VER_MINREV_MASK, ip_ver),
  		 ipcc->controller.num_chans, ipcc->proc_id);
  
@@ -85,7 +83,7 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  	return 0;
  
  err_irq_wkp:
-@@ -462,7 +470,8 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -462,7 +470,8 @@ err_irq_wkp:
  err_init_wkp:
  	device_set_wakeup_capable(dev, false);
  err_clk:
@@ -95,6 +93,3 @@ index 3f28be8637b2..92f5f45bbaa8 100644
  	return ret;
  }
  
--- 
-2.39.5
-

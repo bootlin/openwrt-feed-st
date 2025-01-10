@@ -26,8 +26,6 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  3 files changed, 311 insertions(+)
  create mode 100644 drivers/mailbox/mailbox-client_cdev.c
 
-diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index c588baa2e552..39621976e542 100644
 --- a/drivers/mailbox/Kconfig
 +++ b/drivers/mailbox/Kconfig
 @@ -295,4 +295,13 @@ config QCOM_IPCC
@@ -44,18 +42,13 @@ index c588baa2e552..39621976e542 100644
 +
 +	  It's safe to say N if you don't want to use this interface.
  endif
-diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index fc9376117111..d109002f6ad9 100644
 --- a/drivers/mailbox/Makefile
 +++ b/drivers/mailbox/Makefile
-@@ -62,3 +62,4 @@ obj-$(CONFIG_SPRD_MBOX)		+= sprd-mailbox.o
+@@ -62,3 +62,4 @@ obj-$(CONFIG_SPRD_MBOX)		+= sprd-mailbox
  obj-$(CONFIG_QCOM_IPCC)		+= qcom-ipcc.o
  
  obj-$(CONFIG_APPLE_MAILBOX)	+= apple-mailbox.o
 +obj-$(CONFIG_MAILBOX_CDEV)	+= mailbox-client_cdev.o
-diff --git a/drivers/mailbox/mailbox-client_cdev.c b/drivers/mailbox/mailbox-client_cdev.c
-new file mode 100644
-index 000000000000..091401fd400c
 --- /dev/null
 +++ b/drivers/mailbox/mailbox-client_cdev.c
 @@ -0,0 +1,301 @@
@@ -360,6 +353,3 @@ index 000000000000..091401fd400c
 +
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("A simple char driver for communication using a mailbox and a shared memory");
--- 
-2.39.5
-

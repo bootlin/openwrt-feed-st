@@ -20,8 +20,6 @@ Signed-off-by: Rahul Kumar <rahul.kumar05@st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 6744c0649e19..21d19a1ea704 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -33,4 +33,5 @@ CONFIG_SCHED_MC=y
@@ -30,6 +28,3 @@ index 6744c0649e19..21d19a1ea704 100644
  CONFIG_USB_HIDDEV=y
 +CONFIG_USB_ONBOARD_HUB=y
  CONFIG_VFP=y
--- 
-2.39.5
-

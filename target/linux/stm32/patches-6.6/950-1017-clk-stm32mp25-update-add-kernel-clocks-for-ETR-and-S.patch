@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/clk/stm32/stm32mp25_rcc.h |  8 ++++----
  2 files changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index a5e653b14556..2298970e7bc7 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -434,7 +434,7 @@ enum enum_gate_cfg {
@@ -31,7 +29,7 @@ index a5e653b14556..2298970e7bc7 100644
  	GATE_SYSCPU1,
  	GATE_SYSRAM,
  	GATE_TRACE,
-@@ -637,7 +637,7 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -637,7 +637,7 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_SRAM1,		RCC_SRAM1CFGR,		1,	0),
  	GATE_CFG(GATE_SRAM2,		RCC_SRAM2CFGR,		1,	0),
  	GATE_CFG(GATE_STGEN,		RCC_STGENCFGR,		1,	0),
@@ -40,7 +38,7 @@ index a5e653b14556..2298970e7bc7 100644
  	GATE_CFG(GATE_SYSCPU1,		RCC_SYSCPU1CFGR,	1,	0),
  	GATE_CFG(GATE_SYSRAM,		RCC_SYSRAMCFGR,		1,	0),
  	GATE_CFG(GATE_TRACE,		RCC_DBGCFGR,		9,	0),
-@@ -2497,6 +2497,18 @@ static unsigned long cs_stm32_timer_recalc_rate(struct clk_stm32_clock_data *dat
+@@ -2497,6 +2497,18 @@ static unsigned long cs_stm32_timer_reca
  		.clks		= _parents,					\
  	}
  
@@ -59,7 +57,7 @@ index a5e653b14556..2298970e7bc7 100644
  #define CS_PLL(_name, _parents, _gate, _mux, _offset)				\
  	static struct clk_summary cs_##_name = {				\
  		.name		= #_name,					\
-@@ -2659,7 +2671,7 @@ CS_DIV(ck_icn_apb1, ck_icn_ls_mcu, DIV_APB1);
+@@ -2659,7 +2671,7 @@ CS_DIV(ck_icn_apb1, ck_icn_ls_mcu, DIV_A
  CS_DIV(ck_icn_apb2, ck_icn_ls_mcu, DIV_APB2);
  CS_DIV(ck_icn_apb3, ck_icn_ls_mcu, DIV_APB3);
  CS_DIV(ck_icn_apb4, ck_icn_ls_mcu, DIV_APB4);
@@ -68,7 +66,7 @@ index a5e653b14556..2298970e7bc7 100644
  
  CS_STM32_TIMER(ck_timg1, ck_icn_apb1, RCC_APB1DIVR, RCC_TIMG1PRER);
  CS_STM32_TIMER(ck_timg2, ck_icn_apb2, RCC_APB2DIVR, RCC_TIMG2PRER);
-@@ -2711,7 +2723,7 @@ CS_GATE(ck_icn_p_hsem, ck_icn_ls_mcu, GATE_HSEM);
+@@ -2711,7 +2723,7 @@ CS_GATE(ck_icn_p_hsem, ck_icn_ls_mcu, GA
  CS_GATE(ck_icn_p_rtc, ck_icn_ls_mcu, GATE_RTC);
  CS_GATE(ck_icn_p_iwdg5, ck_icn_ls_mcu, GATE_IWDG5);
  CS_GATE(ck_icn_p_wwdg2, ck_icn_ls_mcu, GATE_WWDG2);
@@ -77,7 +75,7 @@ index a5e653b14556..2298970e7bc7 100644
  CS_GATE(ck_icn_p_fmc, ck_icn_ls_mcu, GATE_FMC);
  CS_GATE(ck_icn_p_eth1, ck_icn_ls_mcu, GATE_ETH1);
  CS_GATE(ck_icn_p_ethsw, ck_icn_ls_mcu, GATE_ETHSWMAC);
-@@ -2811,6 +2823,8 @@ CS_GATE(ck_icn_p_stgen, ck_icn_apb4, GATE_STGEN);
+@@ -2811,6 +2823,8 @@ CS_GATE(ck_icn_p_stgen, ck_icn_apb4, GAT
  CS_GATE(ck_icn_p_vdec, ck_icn_apb4, GATE_VDEC);
  CS_GATE(ck_icn_p_venc, ck_icn_apb4, GATE_VENC);
  CS_GATE(ck_sys_dbg, ck_icn_apbdbg, GATE_DBG);
@@ -86,7 +84,7 @@ index a5e653b14556..2298970e7bc7 100644
  CS_GATE(ck_ker_tim2, ck_timg1, GATE_TIM2);
  CS_GATE(ck_ker_tim3, ck_timg1, GATE_TIM3);
  CS_GATE(ck_ker_tim4, ck_timg1, GATE_TIM4);
-@@ -3098,7 +3112,7 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3098,7 +3112,7 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_icn_p_rtc),
  	CS_CLOCK(ck_icn_p_iwdg5),
  	CS_CLOCK(ck_icn_p_wwdg2),
@@ -95,7 +93,7 @@ index a5e653b14556..2298970e7bc7 100644
  	CS_CLOCK(ck_icn_p_fmc),
  	CS_CLOCK(ck_icn_p_eth1),
  	CS_CLOCK(ck_icn_p_ethsw),
-@@ -3198,6 +3212,8 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3198,6 +3212,8 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_icn_p_vdec),
  	CS_CLOCK(ck_icn_p_venc),
  	CS_CLOCK(ck_sys_dbg),
@@ -104,8 +102,6 @@ index a5e653b14556..2298970e7bc7 100644
  	CS_CLOCK(ck_ker_tim2),
  	CS_CLOCK(ck_ker_tim3),
  	CS_CLOCK(ck_ker_tim4),
-diff --git a/drivers/clk/stm32/stm32mp25_rcc.h b/drivers/clk/stm32/stm32mp25_rcc.h
-index b1aca78a0b22..0e223ee55886 100644
 --- a/drivers/clk/stm32/stm32mp25_rcc.h
 +++ b/drivers/clk/stm32/stm32mp25_rcc.h
 @@ -319,7 +319,7 @@
@@ -130,6 +126,3 @@ index b1aca78a0b22..0e223ee55886 100644
  
  /* RCC_ETRCFGR register fields */
  #define RCC_ETRCFGR_ETREN			BIT(1)
--- 
-2.39.5
-

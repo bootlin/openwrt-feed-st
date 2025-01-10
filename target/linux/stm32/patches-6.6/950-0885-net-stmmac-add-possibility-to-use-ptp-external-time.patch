@@ -23,11 +23,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365955
  include/linux/stmmac.h                                | 1 +
  4 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index d6167a7b19f2..41d3770b739c 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -883,12 +883,16 @@ EXPORT_SYMBOL_GPL(stmmac_init_tstamp_counter);
+@@ -883,12 +883,16 @@ EXPORT_SYMBOL_GPL(stmmac_init_tstamp_cou
  static int stmmac_init_ptp(struct stmmac_priv *priv)
  {
  	bool xmac = priv->plat->has_gmac4 || priv->plat->has_xgmac;
@@ -45,11 +43,9 @@ index d6167a7b19f2..41d3770b739c 100644
  	if (ret)
  		return ret;
  
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 30d5e635190e..e9d67edae22b 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -436,6 +436,10 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+@@ -436,6 +436,10 @@ stmmac_probe_config_dt(struct platform_d
  	of_property_read_u32(np, "max-speed", &plat->max_speed);
  
  	plat->bus_id = of_alias_get_id(np, "ethernet");
@@ -60,8 +56,6 @@ index 30d5e635190e..e9d67edae22b 100644
  	if (plat->bus_id < 0)
  		plat->bus_id = 0;
  
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-index d1fe4b46f162..29fc41eeae25 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
 @@ -58,6 +58,8 @@
@@ -73,11 +67,9 @@ index d1fe4b46f162..29fc41eeae25 100644
  /* Select PTP packets for Taking Snapshots
   * On gmac4 specifically:
   * Enable SYNC, Pdelay_Req, Pdelay_Resp when TSEVNTENA is enabled.
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 5acb77968902..d32c22f70594 100644
 --- a/include/linux/stmmac.h
 +++ b/include/linux/stmmac.h
-@@ -264,6 +264,7 @@ struct plat_stmmacenet_data {
+@@ -263,6 +263,7 @@ struct plat_stmmacenet_data {
  	int unicast_filter_entries;
  	int tx_fifo_size;
  	int rx_fifo_size;
@@ -85,6 +77,3 @@ index 5acb77968902..d32c22f70594 100644
  	u32 host_dma_width;
  	u32 rx_queues_to_use;
  	u32 tx_queues_to_use;
--- 
-2.39.5
-

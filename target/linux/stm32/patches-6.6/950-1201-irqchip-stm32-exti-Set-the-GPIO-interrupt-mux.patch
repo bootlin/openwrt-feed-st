@@ -27,8 +27,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 159 +++++++++++++++++++++++++++--
  1 file changed, 152 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index b75d8620570a..f7cdda0d600c 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -5,6 +5,7 @@
@@ -67,7 +65,7 @@ index b75d8620570a..f7cdda0d600c 100644
  };
  
  static const struct stm32mp_exti_bank stm32mp_exti_b1 = {
-@@ -439,6 +452,26 @@ static int stm32mp_exti_suspend(struct device *dev)
+@@ -439,6 +452,26 @@ static int stm32mp_exti_suspend(struct d
  	return 0;
  }
  
@@ -94,7 +92,7 @@ index b75d8620570a..f7cdda0d600c 100644
  static int stm32mp_exti_resume(struct device *dev)
  {
  	struct stm32mp_exti_host_data *host_data = dev_get_drvdata(dev);
-@@ -447,6 +480,8 @@ static int stm32mp_exti_resume(struct device *dev)
+@@ -447,6 +480,8 @@ static int stm32mp_exti_resume(struct de
  
  	for (i = 0; i < host_data->drv_data->bank_nr; i++) {
  		chip_data = &host_data->chips_data[i];
@@ -103,7 +101,7 @@ index b75d8620570a..f7cdda0d600c 100644
  		stm32mp_chip_resume(chip_data, chip_data->mask_cache);
  	}
  
-@@ -495,6 +530,20 @@ static struct irq_chip stm32mp_exti_chip_direct = {
+@@ -495,6 +530,20 @@ static struct irq_chip stm32mp_exti_chip
  	.irq_set_affinity	= IS_ENABLED(CONFIG_SMP) ? irq_chip_set_affinity_parent : NULL,
  };
  
@@ -124,7 +122,7 @@ index b75d8620570a..f7cdda0d600c 100644
  static int stm32mp_exti_domain_match(struct irq_domain *dm,
  				     struct device_node *node,
  				     enum irq_domain_bus_token bus_token)
-@@ -523,6 +572,7 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -523,6 +572,7 @@ static int stm32mp_exti_domain_select(st
  	struct stm32mp_exti_host_data *host_data = dm->host_data;
  	irq_hw_number_t hwirq = fwspec->param[0];
  	struct of_phandle_args out_irq;
@@ -132,7 +130,7 @@ index b75d8620570a..f7cdda0d600c 100644
  	int ret;
  
  	if (!fwnode ||
-@@ -535,6 +585,13 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -535,6 +585,13 @@ static int stm32mp_exti_domain_select(st
  	if (fwnode != of_node_to_fwnode(host_data->dev->of_node))
  		return 0;
  
@@ -146,7 +144,7 @@ index b75d8620570a..f7cdda0d600c 100644
  	ret = of_irq_parse_one(host_data->dev->of_node, hwirq, &out_irq);
  	if (ret)
  		return 0;
-@@ -542,6 +599,66 @@ static int stm32mp_exti_domain_select(struct irq_domain *dm,
+@@ -542,6 +599,66 @@ static int stm32mp_exti_domain_select(st
  	return (dm->parent->fwnode == of_node_to_fwnode(out_irq.np));
  }
  
@@ -213,7 +211,7 @@ index b75d8620570a..f7cdda0d600c 100644
  static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
  				     unsigned int virq,
  				     unsigned int nr_irqs, void *data)
-@@ -552,7 +669,7 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -552,7 +669,7 @@ static int stm32mp_exti_domain_alloc(str
  	struct irq_fwspec *fwspec = data;
  	struct irq_fwspec p_fwspec;
  	irq_hw_number_t hwirq;
@@ -222,7 +220,7 @@ index b75d8620570a..f7cdda0d600c 100644
  	u32 event_trg;
  	struct irq_chip *chip;
  
-@@ -569,6 +686,10 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -569,6 +686,10 @@ static int stm32mp_exti_domain_alloc(str
  		return -EPERM;
  	}
  
@@ -233,7 +231,7 @@ index b75d8620570a..f7cdda0d600c 100644
  	event_trg = readl_relaxed(host_data->base + chip_data->reg_bank->trg_ofst);
  	chip = (event_trg & BIT(hwirq % IRQS_PER_BANK)) ?
  	       &stm32mp_exti_chip : &stm32mp_exti_chip_direct;
-@@ -577,20 +698,27 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -577,20 +698,27 @@ static int stm32mp_exti_domain_alloc(str
  
  	if (host_data->dt_has_irqs_desc) {
  		struct of_phandle_args out_irq;
@@ -265,7 +263,7 @@ index b75d8620570a..f7cdda0d600c 100644
  
  	desc_irq = host_data->drv_data->desc_irqs[hwirq];
  	if (desc_irq != EXTI_INVALID_IRQ) {
-@@ -600,12 +728,26 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -600,12 +728,26 @@ static int stm32mp_exti_domain_alloc(str
  		p_fwspec.param[1] = desc_irq;
  		p_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
  
@@ -293,7 +291,7 @@ index b75d8620570a..f7cdda0d600c 100644
  static struct
  stm32mp_exti_chip_data *stm32mp_exti_chip_init(struct stm32mp_exti_host_data *h_data,
  					       u32 bank_idx,
-@@ -640,7 +782,7 @@ static const struct irq_domain_ops stm32mp_exti_domain_ops = {
+@@ -640,7 +782,7 @@ static const struct irq_domain_ops stm32
  	.match	= stm32mp_exti_domain_match,
  	.select = stm32mp_exti_domain_select,
  	.alloc	= stm32mp_exti_domain_alloc,
@@ -302,7 +300,7 @@ index b75d8620570a..f7cdda0d600c 100644
  	.xlate = irq_domain_xlate_twocell,
  };
  
-@@ -694,6 +836,9 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -694,6 +836,9 @@ static int stm32mp_exti_probe(struct pla
  	dev_set_drvdata(dev, host_data);
  	host_data->dev = dev;
  
@@ -312,6 +310,3 @@ index b75d8620570a..f7cdda0d600c 100644
  	/* check for optional hwspinlock which may be not available yet */
  	ret = of_hwspin_lock_get_id(np, 0);
  	if (ret == -EPROBE_DEFER)
--- 
-2.39.5
-

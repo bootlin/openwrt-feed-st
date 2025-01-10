@@ -11,11 +11,9 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  drivers/clk/stm32/clk-stm32mp13.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
-index 73f203767218..93d647cb35ff 100644
 --- a/drivers/clk/stm32/clk-stm32mp13.c
 +++ b/drivers/clk/stm32/clk-stm32mp13.c
-@@ -1546,6 +1546,7 @@ static struct clk_stm32_clock_data stm32mp13_clock_data = {
+@@ -1546,6 +1546,7 @@ static struct clk_stm32_clock_data stm32
  static struct clk_stm32_reset_data stm32mp13_reset_data = {
  	.nr_lines	= STM32MP1_RESET_ID_MASK,
  	.clear_offset	= RCC_CLR_OFFSET,
@@ -23,6 +21,3 @@ index 73f203767218..93d647cb35ff 100644
  };
  
  static const struct stm32_rcc_match_data stm32mp13_data = {
--- 
-2.39.5
-

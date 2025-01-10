@@ -16,11 +16,9 @@ Change-Id: Icc8eee08a9b3861c1541b411e18eef35041f8b6b
  arch/arm/boot/dts/st/stm32mp133.dtsi | 30 ++++++++++++++++++++++
  2 files changed, 67 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index f1fa3e3710eb..4fc92537d474 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1437,6 +1437,37 @@ sdmmc2: mmc@58007000 {
+@@ -1437,6 +1437,37 @@
  			status = "disabled";
  		};
  
@@ -58,7 +56,7 @@ index f1fa3e3710eb..4fc92537d474 100644
  		usbh_ohci: usb@5800c000 {
  			compatible = "generic-ohci";
  			reg = <0x5800c000 0x1000>;
-@@ -1530,6 +1561,12 @@ ts_cal1: calib@5c {
+@@ -1530,6 +1561,12 @@
  			ts_cal2: calib@5e {
  				reg = <0x5e 0x2>;
  			};
@@ -71,11 +69,9 @@ index f1fa3e3710eb..4fc92537d474 100644
  		};
  
  		/*
-diff --git a/arch/arm/boot/dts/st/stm32mp133.dtsi b/arch/arm/boot/dts/st/stm32mp133.dtsi
-index 4a2a95a9a503..b20be19bbfd7 100644
 --- a/arch/arm/boot/dts/st/stm32mp133.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp133.dtsi
-@@ -66,5 +66,35 @@ channel@18 {
+@@ -66,5 +66,35 @@
  				};
  			};
  		};
@@ -111,6 +107,3 @@ index 4a2a95a9a503..b20be19bbfd7 100644
 +		};
  	};
  };
--- 
-2.39.5
-

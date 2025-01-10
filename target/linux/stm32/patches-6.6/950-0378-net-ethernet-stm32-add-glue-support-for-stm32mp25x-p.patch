@@ -16,8 +16,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 92 ++++++++++++++++++-
  1 file changed, 87 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index 3d80168daa6e..25826e8d718f 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -22,9 +22,6 @@
@@ -66,7 +64,7 @@ index 3d80168daa6e..25826e8d718f 100644
  	struct stm32_syscfg_pmcsetr pmcsetr;
  	bool clk_rx_enable_in_suspend;
  };
-@@ -234,7 +247,66 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -234,7 +247,66 @@ static int stm32mp1_set_mode(struct plat
  
  	/* Update PMCSETR (set register) */
  	return regmap_update_bits(dwmac->regmap, reg,
@@ -134,7 +132,7 @@ index 3d80168daa6e..25826e8d718f 100644
  }
  
  static int stm32mcu_set_mode(struct plat_stmmacenet_data *plat_dat)
-@@ -615,10 +687,20 @@ static struct stm32_ops stm32mp13_dwmac_data = {
+@@ -615,10 +687,20 @@ static struct stm32_ops stm32mp13_dwmac_
  	}
  };
  
@@ -155,6 +153,3 @@ index 3d80168daa6e..25826e8d718f 100644
  	{ }
  };
  MODULE_DEVICE_TABLE(of, stm32_dwmac_match);
--- 
-2.39.5
-

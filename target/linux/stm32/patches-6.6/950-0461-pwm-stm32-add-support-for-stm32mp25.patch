@@ -15,8 +15,6 @@ Change-Id: I7c5e5d39689dfed82a2aec7b62ede3eda41a19ce
  drivers/pwm/pwm-stm32.c | 36 +++++++++++++++++++++++++++++-------
  1 file changed, 29 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-index b91a14c895be..f3fb7e240455 100644
 --- a/drivers/pwm/pwm-stm32.c
 +++ b/drivers/pwm/pwm-stm32.c
 @@ -19,6 +19,7 @@
@@ -27,7 +25,7 @@ index b91a14c895be..f3fb7e240455 100644
  
  struct stm32_breakinput {
  	u32 index;
-@@ -568,9 +569,16 @@ static int stm32_pwm_probe_breakinputs(struct stm32_pwm *priv,
+@@ -568,9 +569,16 @@ static int stm32_pwm_probe_breakinputs(s
  	return stm32_pwm_apply_breakinputs(priv);
  }
  
@@ -46,7 +44,7 @@ index b91a14c895be..f3fb7e240455 100644
  
  	/*
  	 * If complementary bit doesn't exist writing 1 will have no
-@@ -583,10 +591,23 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
+@@ -583,10 +591,23 @@ static void stm32_pwm_detect_complementa
  	priv->have_complementary_output = (ccer != 0);
  }
  
@@ -73,7 +71,7 @@ index b91a14c895be..f3fb7e240455 100644
  
  	/*
  	 * If channels enable bits don't exist writing 1 will have no
-@@ -628,11 +649,11 @@ static int stm32_pwm_probe(struct platform_device *pdev)
+@@ -628,11 +649,11 @@ static int stm32_pwm_probe(struct platfo
  	if (ret)
  		return ret;
  
@@ -87,7 +85,7 @@ index b91a14c895be..f3fb7e240455 100644
  
  	/* Initialize clock refcount to number of enabled PWM channels. */
  	for (i = 0; i < num_enabled; i++)
-@@ -685,6 +706,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_pm_ops, stm32_pwm_suspend, stm32_pwm_resume);
+@@ -685,6 +706,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_pm_op
  
  static const struct of_device_id stm32_pwm_of_match[] = {
  	{ .compatible = "st,stm32-pwm",	},
@@ -95,6 +93,3 @@ index b91a14c895be..f3fb7e240455 100644
  	{ /* end node */ },
  };
  MODULE_DEVICE_TABLE(of, stm32_pwm_of_match);
--- 
-2.39.5
-

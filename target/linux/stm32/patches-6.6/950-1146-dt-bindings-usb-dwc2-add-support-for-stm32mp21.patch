@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/usb/dwc2.yaml | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-index e798b456b270..bfd1d6cba5a8 100644
 --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
 +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
 @@ -66,6 +66,9 @@ properties:
@@ -47,6 +45,3 @@ index e798b456b270..bfd1d6cba5a8 100644
    port:
      description:
        Any connector to the data bus of this controller should be modelled
--- 
-2.39.5
-

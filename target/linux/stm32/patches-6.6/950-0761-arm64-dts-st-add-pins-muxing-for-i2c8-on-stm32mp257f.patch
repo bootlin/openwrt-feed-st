@@ -12,11 +12,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index a4b3b0286927..37bdddfec82a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -555,6 +555,23 @@ pins {
+@@ -555,6 +555,23 @@
  };
  
  &pinctrl_z {
@@ -40,6 +38,3 @@ index a4b3b0286927..37bdddfec82a 100644
  	i3c4_pins_a: i3c4-0 {
  		pins {
  			pinmux = <STM32_PINMUX('Z', 4, AF11)>, /* I3C4_SCL */
--- 
-2.39.5
-

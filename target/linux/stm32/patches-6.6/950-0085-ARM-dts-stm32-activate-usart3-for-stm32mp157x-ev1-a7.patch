@@ -16,11 +16,9 @@ Change-Id: Ibc2261357ca985e51b7c359737d6ae311da552f4
  arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts | 4 ++++
  4 files changed, 16 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1-a7-examples.dts
-index 7dac74528baa..95b87f40a757 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-a7-examples.dts
-@@ -13,3 +13,7 @@ / {
+@@ -13,3 +13,7 @@
  	model = "STMicroelectronics STM32MP157A-EV1 configured to run Linux A7 examples";
  	compatible = "st,stm32mp157a-ev1-a7-examples", "st,stm32mp157a-ev1", "st,stm32mp157a-ed1", "st,stm32mp157";
  };
@@ -28,11 +26,9 @@ index 7dac74528baa..95b87f40a757 100644
 +&usart3 {
 +	status = "okay";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
-index 8dc244c1f654..5afc15d2d688 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
-@@ -13,3 +13,7 @@ / {
+@@ -13,3 +13,7 @@
  	model = "STMicroelectronics STM32MP157C-EV1 configured to run Linux A7 examples";
  	compatible = "st,stm32mp157c-ev1-a7-examples", "st,stm32mp157c-ev1", "st,stm32mp157c-ed1", "st,stm32mp157";
  };
@@ -40,11 +36,9 @@ index 8dc244c1f654..5afc15d2d688 100644
 +&usart3 {
 +	status = "okay";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1-a7-examples.dts
-index c4fa6c243fc9..fcc4518c65cf 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1-a7-examples.dts
-@@ -13,3 +13,7 @@ / {
+@@ -13,3 +13,7 @@
  	model = "STMicroelectronics STM32MP157C-EV1 configured to run Linux A7 examples";
  	compatible = "st,stm32mp157d-ev1-a7-examples", "st,stm32mp157d-ev1", "st,stm32mp157d-ed1", "st,stm32mp157";
  };
@@ -52,11 +46,9 @@ index c4fa6c243fc9..fcc4518c65cf 100644
 +&usart3 {
 +	status = "okay";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
-index 700228625c01..e89f6938f52b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
-@@ -13,3 +13,7 @@ / {
+@@ -13,3 +13,7 @@
  	model = "STMicroelectronics STM32MP157F-EV1 configured to run Linux A7 examples";
  	compatible = "st,stm32mp157f-ev1-a7-examples", "st,stm32mp157f-ev1", "st,stm32mp157f-ed1", "st,stm32mp157";
  };
@@ -64,6 +56,3 @@ index 700228625c01..e89f6938f52b 100644
 +&usart3 {
 +	status = "okay";
 +};
--- 
-2.39.5
-

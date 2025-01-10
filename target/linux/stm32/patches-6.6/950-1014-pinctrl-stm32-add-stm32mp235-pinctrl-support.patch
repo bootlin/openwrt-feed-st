@@ -21,8 +21,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  3 files changed, 1913 insertions(+)
  create mode 100644 drivers/pinctrl/stm32/pinctrl-stm32mp235.c
 
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index 03cec153b3e1..253d80f2e4ed 100644
 --- a/drivers/pinctrl/stm32/Kconfig
 +++ b/drivers/pinctrl/stm32/Kconfig
 @@ -58,6 +58,12 @@ config PINCTRL_STM32MP215
@@ -38,20 +36,15 @@ index 03cec153b3e1..253d80f2e4ed 100644
  config PINCTRL_STM32MP257
  	tristate "STMicroelectronics STM32MP257 pin control"
  	depends on OF && HAS_IOMEM
-diff --git a/drivers/pinctrl/stm32/Makefile b/drivers/pinctrl/stm32/Makefile
-index 3bf78bb849bb..6d724251e5c8 100644
 --- a/drivers/pinctrl/stm32/Makefile
 +++ b/drivers/pinctrl/stm32/Makefile
-@@ -11,5 +11,6 @@ obj-$(CONFIG_PINCTRL_STM32H743)	+= pinctrl-stm32h743.o
+@@ -11,5 +11,6 @@ obj-$(CONFIG_PINCTRL_STM32H743)	+= pinct
  obj-$(CONFIG_PINCTRL_STM32MP135) += pinctrl-stm32mp135.o
  obj-$(CONFIG_PINCTRL_STM32MP157) += pinctrl-stm32mp157.o
  obj-$(CONFIG_PINCTRL_STM32MP215) += pinctrl-stm32mp215.o
 +obj-$(CONFIG_PINCTRL_STM32MP235) += pinctrl-stm32mp235.o
  obj-$(CONFIG_PINCTRL_STM32MP257) += pinctrl-stm32mp257.o
  obj-$(CONFIG_PINCTRL_STM32_HDP) += pinctrl-stm32-hdp.o
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp235.c b/drivers/pinctrl/stm32/pinctrl-stm32mp235.c
-new file mode 100644
-index 000000000000..b1b2421417be
 --- /dev/null
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp235.c
 @@ -0,0 +1,1906 @@
@@ -1962,6 +1955,3 @@ index 000000000000..b1b2421417be
 +MODULE_DESCRIPTION("STM32MP235 pinctrl driver");
 +MODULE_LICENSE("GPL");
 \ No newline at end of file
--- 
-2.39.5
-

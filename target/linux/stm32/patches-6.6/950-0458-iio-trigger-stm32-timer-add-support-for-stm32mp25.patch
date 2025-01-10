@@ -22,11 +22,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/linux/iio/timer/stm32-timer-trigger.h |  6 +++++
  2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
-index 3643c4afae67..a5253b4f3e8b 100644
 --- a/drivers/iio/trigger/stm32-timer-trigger.c
 +++ b/drivers/iio/trigger/stm32-timer-trigger.c
-@@ -38,6 +38,9 @@ static const void *triggers_table[][MAX_TRIGGERS] = {
+@@ -38,6 +38,9 @@ static const void *triggers_table[][MAX_
  	{ TIM15_TRGO,},
  	{ TIM16_OC1,},
  	{ TIM17_OC1,},
@@ -36,7 +34,7 @@ index 3643c4afae67..a5253b4f3e8b 100644
  };
  
  /* List the triggers accepted by each timer */
-@@ -783,7 +786,7 @@ static int stm32_timer_trigger_probe(struct platform_device *pdev)
+@@ -783,7 +786,7 @@ static int stm32_timer_trigger_probe(str
  		return -EINVAL;
  
  	/* Create an IIO device only if we have triggers to be validated */
@@ -45,7 +43,7 @@ index 3643c4afae67..a5253b4f3e8b 100644
  		priv = stm32_setup_counter_device(dev);
  	else
  		priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -796,7 +799,8 @@ static int stm32_timer_trigger_probe(struct platform_device *pdev)
+@@ -796,7 +799,8 @@ static int stm32_timer_trigger_probe(str
  	priv->clk = ddata->clk;
  	priv->max_arr = ddata->max_arr;
  	priv->triggers = triggers_table[index];
@@ -55,7 +53,7 @@ index 3643c4afae67..a5253b4f3e8b 100644
  	stm32_timer_detect_trgo2(priv);
  	mutex_init(&priv->lock);
  
-@@ -890,6 +894,17 @@ static const struct stm32_timer_trigger_cfg stm32h7_timer_trg_cfg = {
+@@ -890,6 +894,17 @@ static const struct stm32_timer_trigger_
  	.num_valids_table = ARRAY_SIZE(stm32h7_valids_table),
  };
  
@@ -73,7 +71,7 @@ index 3643c4afae67..a5253b4f3e8b 100644
  static const struct of_device_id stm32_trig_of_match[] = {
  	{
  		.compatible = "st,stm32-timer-trigger",
-@@ -897,6 +912,9 @@ static const struct of_device_id stm32_trig_of_match[] = {
+@@ -897,6 +912,9 @@ static const struct of_device_id stm32_t
  	}, {
  		.compatible = "st,stm32h7-timer-trigger",
  		.data = (void *)&stm32h7_timer_trg_cfg,
@@ -83,8 +81,6 @@ index 3643c4afae67..a5253b4f3e8b 100644
  	},
  	{ /* end node */ },
  };
-diff --git a/include/linux/iio/timer/stm32-timer-trigger.h b/include/linux/iio/timer/stm32-timer-trigger.h
-index 37572e4dc73a..1ee237b56183 100644
 --- a/include/linux/iio/timer/stm32-timer-trigger.h
 +++ b/include/linux/iio/timer/stm32-timer-trigger.h
 @@ -72,6 +72,12 @@
@@ -100,6 +96,3 @@ index 37572e4dc73a..1ee237b56183 100644
  #if IS_REACHABLE(CONFIG_IIO_STM32_TIMER_TRIGGER)
  bool is_stm32_timer_trigger(struct iio_trigger *trig);
  #else
--- 
-2.39.5
-

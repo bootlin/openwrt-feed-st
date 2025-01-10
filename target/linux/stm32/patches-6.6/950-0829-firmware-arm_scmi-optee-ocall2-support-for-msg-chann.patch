@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/firmware/arm_scmi/optee.c | 48 ++++++++++++++++++++++---------
  1 file changed, 35 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
-index 92ccb5604b07..489e86748432 100644
 --- a/drivers/firmware/arm_scmi/optee.c
 +++ b/drivers/firmware/arm_scmi/optee.c
 @@ -207,6 +207,11 @@ enum scmi_optee_ocall_reply {
@@ -35,7 +33,7 @@ index 92ccb5604b07..489e86748432 100644
  };
  
  /*
-@@ -589,26 +594,43 @@ static int close_ocall_thread(struct scmi_optee_channel *channel)
+@@ -589,26 +594,43 @@ static int close_ocall_thread(struct scm
  	return ret;
  }
  
@@ -89,7 +87,7 @@ index 92ccb5604b07..489e86748432 100644
  }
  
  static int invoke_process_smt_channel(struct scmi_optee_channel *channel)
-@@ -872,8 +894,8 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
+@@ -879,8 +901,8 @@ static int scmi_optee_send_message(struc
  		msg_tx_prepare(channel->req.msg, xfer);
  
  		if (channel->ocall_ctx)
@@ -100,7 +98,7 @@ index 92ccb5604b07..489e86748432 100644
  		else
  			ret = invoke_process_msg_channel(channel,
  							 msg_command_size(xfer));
-@@ -881,7 +903,7 @@ static int scmi_optee_send_message(struct scmi_chan_info *cinfo,
+@@ -888,7 +910,7 @@ static int scmi_optee_send_message(struc
  		shmem_tx_prepare(channel->req.shmem, xfer, cinfo);
  
  		if (channel->ocall_ctx)
@@ -109,6 +107,3 @@ index 92ccb5604b07..489e86748432 100644
  		else
  			ret = invoke_process_smt_channel(channel);
  	}
--- 
-2.39.5
-

@@ -20,11 +20,9 @@ Reviewed-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
  drivers/net/phy/realtek.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-index 902a1cc9a9e7..271cc3174bfe 100644
 --- a/drivers/net/phy/realtek.c
 +++ b/drivers/net/phy/realtek.c
-@@ -349,6 +349,11 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+@@ -381,6 +381,11 @@ static int rtl8211f_config_init(struct p
  	u16 val_txdly, val_rxdly;
  	int ret;
  
@@ -36,6 +34,3 @@ index 902a1cc9a9e7..271cc3174bfe 100644
  	ret = phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1,
  				       RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_XTAL_OFF,
  				       priv->phycr1);
--- 
-2.39.5
-

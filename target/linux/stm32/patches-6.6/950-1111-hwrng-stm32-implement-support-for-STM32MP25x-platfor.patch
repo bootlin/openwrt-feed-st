@@ -24,8 +24,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/377068
  drivers/char/hw_random/stm32-rng.c | 67 ++++++++++++++++++++++++++++--
  1 file changed, 63 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index efd6edcd7066..1c30e359c184 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -49,6 +49,7 @@
@@ -44,7 +42,7 @@ index efd6edcd7066..1c30e359c184 100644
  	struct reset_control *rst;
  	struct stm32_rng_config pm_conf;
  	const struct stm32_rng_data *data;
-@@ -289,6 +291,12 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -289,6 +291,12 @@ static int stm32_rng_init(struct hwrng *
  	if (err)
  		return err;
  
@@ -57,7 +55,7 @@ index efd6edcd7066..1c30e359c184 100644
  	/* clear error indicators */
  	writel_relaxed(0, priv->base + RNG_SR);
  
-@@ -354,7 +362,10 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -354,7 +362,10 @@ static int stm32_rng_init(struct hwrng *
  						reg & RNG_SR_DRDY,
  						10, 100000);
  	if (err | (reg & ~RNG_SR_DRDY)) {
@@ -68,7 +66,7 @@ index efd6edcd7066..1c30e359c184 100644
  		dev_err((struct device *)priv->rng.priv,
  			"%s: timeout:%x SR: %x!\n", __func__, err, reg);
  		return -EINVAL;
-@@ -378,6 +389,9 @@ static int __maybe_unused stm32_rng_runtime_suspend(struct device *dev)
+@@ -378,6 +389,9 @@ static int __maybe_unused stm32_rng_runt
  	reg = readl_relaxed(priv->base + RNG_CR);
  	reg &= ~RNG_CR_RNGEN;
  	writel_relaxed(reg, priv->base + RNG_CR);
@@ -78,7 +76,7 @@ index efd6edcd7066..1c30e359c184 100644
  	clk_disable_unprepare(priv->clk);
  
  	return 0;
-@@ -397,6 +411,8 @@ static int __maybe_unused stm32_rng_suspend(struct device *dev)
+@@ -397,6 +411,8 @@ static int __maybe_unused stm32_rng_susp
  
  	writel_relaxed(priv->pm_conf.cr, priv->base + RNG_CR);
  
@@ -87,7 +85,7 @@ index efd6edcd7066..1c30e359c184 100644
  	clk_disable_unprepare(priv->clk);
  
  	return 0;
-@@ -412,6 +428,14 @@ static int __maybe_unused stm32_rng_runtime_resume(struct device *dev)
+@@ -412,6 +428,14 @@ static int __maybe_unused stm32_rng_runt
  	if (err)
  		return err;
  
@@ -102,7 +100,7 @@ index efd6edcd7066..1c30e359c184 100644
  	/* Clean error indications */
  	writel_relaxed(0, priv->base + RNG_SR);
  
-@@ -432,6 +456,14 @@ static int __maybe_unused stm32_rng_resume(struct device *dev)
+@@ -432,6 +456,14 @@ static int __maybe_unused stm32_rng_resu
  	if (err)
  		return err;
  
@@ -117,7 +115,7 @@ index efd6edcd7066..1c30e359c184 100644
  	/* Clean error indications */
  	writel_relaxed(0, priv->base + RNG_SR);
  
-@@ -456,6 +488,8 @@ static int __maybe_unused stm32_rng_resume(struct device *dev)
+@@ -456,6 +488,8 @@ static int __maybe_unused stm32_rng_resu
  							reg & ~RNG_CR_CONDRST, 10, 100000);
  
  		if (err) {
@@ -126,7 +124,7 @@ index efd6edcd7066..1c30e359c184 100644
  			clk_disable_unprepare(priv->clk);
  			dev_err((struct device *)priv->rng.priv,
  				"%s: timeout:%x CR: %x!\n", __func__, err, reg);
-@@ -477,9 +511,19 @@ static const struct dev_pm_ops __maybe_unused stm32_rng_pm_ops = {
+@@ -477,9 +511,19 @@ static const struct dev_pm_ops __maybe_u
  				stm32_rng_resume)
  };
  
@@ -146,7 +144,7 @@ index efd6edcd7066..1c30e359c184 100644
  	.cr = 0x00F00D00,
  	.nscr = 0x2B5BB,
  	.htcr = 0x969D,
-@@ -488,9 +532,14 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+@@ -488,10 +532,15 @@ static const struct stm32_rng_data stm32
  static const struct stm32_rng_data stm32_rng_data = {
  	.has_cond_reset = false,
  	.max_clock_rate = 3000000,
@@ -154,14 +152,15 @@ index efd6edcd7066..1c30e359c184 100644
  };
  
  static const struct of_device_id stm32_rng_match[] = {
-+	{
+ 	{
 +		.compatible = "st,stm32mp25-rng",
 +		.data = &stm32mp25_rng_data,
 +	},
- 	{
++	{
  		.compatible = "st,stm32mp13-rng",
  		.data = &stm32mp13_rng_data,
-@@ -518,10 +567,6 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+ 	},
+@@ -518,10 +567,6 @@ static int stm32_rng_probe(struct platfo
  	if (IS_ERR(priv->base))
  		return PTR_ERR(priv->base);
  
@@ -172,7 +171,7 @@ index efd6edcd7066..1c30e359c184 100644
  	priv->rst = devm_reset_control_get(&ofdev->dev, NULL);
  	if (!IS_ERR(priv->rst)) {
  		reset_control_assert(priv->rst);
-@@ -544,6 +589,20 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -544,6 +589,20 @@ static int stm32_rng_probe(struct platfo
  	priv->rng.priv = (unsigned long) dev;
  	priv->rng.quality = 900;
  
@@ -193,6 +192,3 @@ index efd6edcd7066..1c30e359c184 100644
  	pm_runtime_set_autosuspend_delay(dev, 100);
  	pm_runtime_use_autosuspend(dev);
  	pm_runtime_enable(dev);
--- 
-2.39.5
-

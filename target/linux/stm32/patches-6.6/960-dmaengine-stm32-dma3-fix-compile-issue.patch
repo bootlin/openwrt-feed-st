@@ -10,11 +10,9 @@ Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
  drivers/dma/stm32/stm32-dma3.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index f783fd9839c1..c1358d602339 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -513,8 +513,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -513,8 +513,8 @@ static int stm32_dma3_lli_pool_create(st
  			/* Keep original base */
  		}
  
@@ -25,7 +23,7 @@ index f783fd9839c1..c1358d602339 100644
  	}
  
  	ddata->gen_pool = devm_gen_pool_create(&pdev->dev, ilog2(sizeof(struct stm32_dma3_hwdesc)),
-@@ -531,7 +531,7 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+@@ -531,7 +531,7 @@ static int stm32_dma3_lli_pool_create(st
  		goto no_specific_pool;
  	}
  
@@ -34,6 +32,3 @@ index f783fd9839c1..c1358d602339 100644
  		 &base, gen_pool_size(ddata->gen_pool) / SZ_1K);
  
  no_specific_pool:
--- 
-2.39.5
-

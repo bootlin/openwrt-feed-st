@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index a92908a1a819..b05d55890dcd 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -290,7 +290,7 @@ dsi_out1: endpoint {
+@@ -290,7 +290,7 @@
  };
  
  &eth1 {
@@ -27,6 +25,3 @@ index a92908a1a819..b05d55890dcd 100644
  	pinctrl-0 = <&eth1_rgmii_pins_b>;
  	pinctrl-1 = <&eth1_rgmii_sleep_pins_b>;
  	pinctrl-names = "default", "sleep";
--- 
-2.39.5
-

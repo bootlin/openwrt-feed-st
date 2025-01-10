@@ -26,8 +26,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 20 +++++++++++++++-----
  1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 54a3dc683fc9..68216f209a8f 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -222,6 +222,7 @@ enum stm32_dma3_port_data_width {
@@ -38,7 +36,7 @@ index 54a3dc683fc9..68216f209a8f 100644
  
  /* struct stm32_dma3_chan .config_set bitfield */
  #define STM32_DMA3_CFG_SET_DT		BIT(0)
-@@ -1126,10 +1127,13 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1126,10 +1127,13 @@ static void stm32_dma3_free_chan_resourc
  	chan->config_set = 0;
  }
  
@@ -53,7 +51,7 @@ index 54a3dc683fc9..68216f209a8f 100644
  	count = len / STM32_DMA3_MAX_BLOCK_SIZE;
  	len -= (len / STM32_DMA3_MAX_BLOCK_SIZE) * STM32_DMA3_MAX_BLOCK_SIZE;
  
-@@ -1179,8 +1183,10 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+@@ -1179,8 +1183,10 @@ static struct dma_async_tx_descriptor *s
  	struct stm32_dma3_swdesc *swdesc;
  	size_t next_size, offset;
  	u32 count, i, ctr1, ctr2;
@@ -65,7 +63,7 @@ index 54a3dc683fc9..68216f209a8f 100644
  
  	swdesc = stm32_dma3_chan_desc_alloc(chan, count);
  	if (!swdesc)
-@@ -1196,7 +1202,8 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_dma_memcpy(struct dma_cha
+@@ -1196,7 +1202,8 @@ static struct dma_async_tx_descriptor *s
  		remaining = len - offset;
  		next_size = min_t(size_t, remaining, STM32_DMA3_MAX_BLOCK_SIZE);
  
@@ -75,7 +73,7 @@ index 54a3dc683fc9..68216f209a8f 100644
  			next_size = chan->max_burst * (remaining / chan->max_burst);
  
  		ret = stm32_dma3_chan_prep_hw(chan, DMA_MEM_TO_MEM, &swdesc->ccr, &ctr1, &ctr2,
-@@ -1235,11 +1242,13 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+@@ -1235,11 +1242,13 @@ static struct dma_async_tx_descriptor *s
  	size_t len;
  	dma_addr_t sg_addr, dev_addr, src, dst;
  	u32 i, j, count, ctr1, ctr2;
@@ -90,7 +88,7 @@ index 54a3dc683fc9..68216f209a8f 100644
  
  	swdesc = stm32_dma3_chan_desc_alloc(chan, count);
  	if (!swdesc)
-@@ -1256,7 +1265,8 @@ static struct dma_async_tx_descriptor *stm32_dma3_prep_slave_sg(struct dma_chan
+@@ -1256,7 +1265,8 @@ static struct dma_async_tx_descriptor *s
  		do {
  			size_t chunk = min_t(size_t, len, STM32_DMA3_MAX_BLOCK_SIZE);
  
@@ -100,6 +98,3 @@ index 54a3dc683fc9..68216f209a8f 100644
  				chunk = chan->max_burst * (len / chan->max_burst);
  
  			if (dir == DMA_MEM_TO_DEV) {
--- 
-2.39.5
-

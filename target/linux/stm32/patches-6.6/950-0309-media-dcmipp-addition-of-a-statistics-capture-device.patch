@@ -15,8 +15,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  4 files changed, 846 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 
-diff --git a/drivers/media/platform/st/stm32/Kconfig b/drivers/media/platform/st/stm32/Kconfig
-index 477ed25ce2b1..1b60ec7d4e2f 100644
 --- a/drivers/media/platform/st/stm32/Kconfig
 +++ b/drivers/media/platform/st/stm32/Kconfig
 @@ -36,6 +36,7 @@ config VIDEO_STM32_DCMIPP
@@ -27,8 +25,6 @@ index 477ed25ce2b1..1b60ec7d4e2f 100644
  	select VIDEO_V4L2_SUBDEV_API
  	select V4L2_FWNODE
  	help
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index d621ff76e539..672d784d081c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -1,5 +1,5 @@
@@ -38,8 +34,6 @@ index d621ff76e539..672d784d081c 100644
 +stm32-dcmipp-y += dcmipp-isp.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o
  
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 067f77adb2c7..f9e37436c723 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -255,5 +255,9 @@ struct dcmipp_ent_device *
@@ -52,9 +46,6 @@ index 067f77adb2c7..f9e37436c723 100644
 +void dcmipp_statcap_ent_release(struct dcmipp_ent_device *ved);
  
  #endif
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-new file mode 100644
-index 000000000000..3d9211158a65
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -0,0 +1,840 @@
@@ -898,6 +889,3 @@ index 000000000000..3d9211158a65
 +
 +	return ERR_PTR(ret);
 +}
--- 
-2.39.5
-

@@ -11,8 +11,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-index a8cc79fbe96b..722507ae1aa2 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 @@ -174,6 +174,7 @@ properties:
@@ -23,6 +21,3 @@ index a8cc79fbe96b..722507ae1aa2 100644
                - st,stm32mp257f-ev1
            - const: st,stm32mp257
  
--- 
-2.39.5
-

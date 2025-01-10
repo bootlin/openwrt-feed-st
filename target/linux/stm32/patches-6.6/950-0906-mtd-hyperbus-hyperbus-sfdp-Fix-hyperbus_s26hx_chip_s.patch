@@ -20,11 +20,9 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/hyperbus/hyperbus-sfdp.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-index 5ba010aeeb3c..7efcc3c2cc0f 100644
 --- a/drivers/mtd/hyperbus/hyperbus-sfdp.c
 +++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-@@ -102,7 +102,8 @@ static int __xipram hyperbus_s26hx_chip_setup(struct map_info *map,
+@@ -102,7 +102,8 @@ static int __xipram hyperbus_s26hx_chip_
  					      struct cfi_private *cfi)
  {
  	u16 mfr_id, dev_id1, dev_id2, cfr1v, cfr2v;
@@ -34,6 +32,3 @@ index 5ba010aeeb3c..7efcc3c2cc0f 100644
  	u32 *erase;
  
  	/* Read manufacturer and Device ID */
--- 
-2.39.5
-

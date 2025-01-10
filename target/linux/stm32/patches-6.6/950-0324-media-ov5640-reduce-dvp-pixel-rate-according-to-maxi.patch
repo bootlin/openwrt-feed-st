@@ -16,11 +16,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  drivers/media/i2c/ov5640.c | 25 +++++++++++++++++++++++++
  1 file changed, 25 insertions(+)
 
-diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-index 40532f7bcabe..dbb7b7ad075c 100644
 --- a/drivers/media/i2c/ov5640.c
 +++ b/drivers/media/i2c/ov5640.c
-@@ -1578,7 +1578,11 @@ static unsigned long ov5640_calc_pclk(struct ov5640_dev *sensor,
+@@ -1578,7 +1578,11 @@ static unsigned long ov5640_calc_pclk(st
  
  static int ov5640_set_dvp_pclk(struct ov5640_dev *sensor)
  {
@@ -32,7 +30,7 @@ index 40532f7bcabe..dbb7b7ad075c 100644
  	u32 rate;
  	int ret;
  
-@@ -1586,6 +1590,27 @@ static int ov5640_set_dvp_pclk(struct ov5640_dev *sensor)
+@@ -1586,6 +1590,27 @@ static int ov5640_set_dvp_pclk(struct ov
  	rate *= ov5640_code_to_bpp(sensor, sensor->fmt.code);
  	rate /= sensor->ep.bus.parallel.bus_width;
  
@@ -60,6 +58,3 @@ index 40532f7bcabe..dbb7b7ad075c 100644
  	ov5640_calc_pclk(sensor, rate, &prediv, &mult, &sysdiv, &pll_rdiv,
  			 &bit_div, &pclk_div);
  
--- 
-2.39.5
-

@@ -16,8 +16,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 95 +++++++++++++++----
  2 files changed, 78 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index d46c866c4ac3..aa770cb3f0fe 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -65,6 +65,7 @@ struct dcmipp_device {
@@ -28,11 +26,9 @@ index d46c866c4ac3..aa770cb3f0fe 100644
  	struct clk			*kclk;
  
  	/* The pipeline configuration */
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 30ed970a3610..6f3f7e9103bb 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -105,6 +105,38 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -105,6 +105,38 @@ static const struct dcmipp_pipeline_conf
  	.num_links	= ARRAY_SIZE(stm32mp13_ent_links)
  };
  
@@ -71,7 +67,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  #define LINK_FLAG_TO_STR(f) ((f) == 0 ? "" :\
  			     (f) == MEDIA_LNK_FL_ENABLED ? "ENABLED" :\
  			     (f) == MEDIA_LNK_FL_IMMUTABLE ? "IMMUTABLE" :\
-@@ -183,6 +215,7 @@ static int dcmipp_create_subdevs(struct dcmipp_device *dcmipp)
+@@ -183,6 +215,7 @@ err_init_entity:
  
  static const struct of_device_id dcmipp_of_match[] = {
  	{ .compatible = "st,stm32mp13-dcmipp", .data = &stm32mp13_pipe_cfg },
@@ -79,7 +75,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	{ /* end node */ },
  };
  MODULE_DEVICE_TABLE(of, dcmipp_of_match);
-@@ -232,13 +265,22 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -232,13 +265,22 @@ static int dcmipp_graph_notify_bound(str
  {
  	struct dcmipp_device *dcmipp = notifier_to_dcmipp(notifier);
  	unsigned int ret;
@@ -104,7 +100,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	/*
  	 * Link this sub-device to DCMIPP, it could be
  	 * a parallel camera sensor or a CSI-2 to parallel bridge
-@@ -255,21 +297,23 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -255,21 +297,23 @@ static int dcmipp_graph_notify_bound(str
  		return -ENODEV;
  	}
  
@@ -138,7 +134,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  		dev_err(dcmipp->dev, "Invalid parallel interface bus-width\n");
  		return -ENODEV;
  	}
-@@ -282,11 +326,13 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -282,11 +326,13 @@ static int dcmipp_graph_notify_bound(str
  		return -ENODEV;
  	}
  
@@ -156,7 +152,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	sink->bus_type = vep.bus_type;
  	ret = media_create_pad_link(&subdev->entity, src_pad, sink->ent, 0,
  				    MEDIA_LNK_FL_IMMUTABLE |
-@@ -385,7 +431,7 @@ static int dcmipp_graph_init(struct dcmipp_device *dcmipp)
+@@ -385,7 +431,7 @@ static int dcmipp_graph_init(struct dcmi
  static int dcmipp_probe(struct platform_device *pdev)
  {
  	struct dcmipp_device *dcmipp;
@@ -165,7 +161,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	const struct dcmipp_pipeline_config *pipe_cfg;
  	struct reset_control *rstc;
  	int irq;
-@@ -448,12 +494,20 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -448,12 +494,20 @@ static int dcmipp_probe(struct platform_
  		return ret;
  	}
  
@@ -187,7 +183,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	dcmipp->entity = devm_kcalloc(&pdev->dev, dcmipp->pipe_cfg->num_ents,
  				      sizeof(*dcmipp->entity), GFP_KERNEL);
  	if (!dcmipp->entity)
-@@ -517,6 +571,7 @@ static int dcmipp_runtime_suspend(struct device *dev)
+@@ -517,6 +571,7 @@ static int dcmipp_runtime_suspend(struct
  	struct dcmipp_device *dcmipp = dev_get_drvdata(dev);
  
  	clk_disable_unprepare(dcmipp->kclk);
@@ -195,7 +191,7 @@ index 30ed970a3610..6f3f7e9103bb 100644
  
  	return 0;
  }
-@@ -526,6 +581,10 @@ static int dcmipp_runtime_resume(struct device *dev)
+@@ -526,6 +581,10 @@ static int dcmipp_runtime_resume(struct
  	struct dcmipp_device *dcmipp = dev_get_drvdata(dev);
  	int ret;
  
@@ -206,6 +202,3 @@ index 30ed970a3610..6f3f7e9103bb 100644
  	ret = clk_prepare_enable(dcmipp->kclk);
  	if (ret)
  		dev_err(dev, "%s: Failed to prepare_enable kclk\n", __func__);
--- 
-2.39.5
-

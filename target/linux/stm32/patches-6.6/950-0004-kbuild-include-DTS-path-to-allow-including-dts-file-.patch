@@ -16,11 +16,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  scripts/Makefile.lib | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index e702552fb131..b51112decaa0 100644
 --- a/scripts/Makefile.lib
 +++ b/scripts/Makefile.lib
-@@ -245,7 +245,7 @@ ld_flags       = $(KBUILD_LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F))
+@@ -245,7 +245,7 @@ ld_flags       = $(KBUILD_LDFLAGS) $(ldf
  DTC_INCLUDE    := $(srctree)/scripts/dtc/include-prefixes
  
  dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
@@ -29,6 +27,3 @@ index e702552fb131..b51112decaa0 100644
  		 -undef -D__DTS__
  
  ifdef CONFIG_OBJTOOL
--- 
-2.39.5
-

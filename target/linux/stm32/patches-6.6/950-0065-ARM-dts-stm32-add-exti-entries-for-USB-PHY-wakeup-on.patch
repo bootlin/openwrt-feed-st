@@ -14,11 +14,9 @@ Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 87a97794d941..b2cb0f70c39b 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1141,6 +1141,8 @@ exti-interrupt-map {
+@@ -1141,6 +1141,8 @@
  					<31 0 &intc GIC_SPI 54  IRQ_TYPE_LEVEL_HIGH>,
  					<32 0 &intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
  					<33 0 &intc GIC_SPI 84  IRQ_TYPE_LEVEL_HIGH>,
@@ -27,6 +25,3 @@ index 87a97794d941..b2cb0f70c39b 100644
  					<44 0 &intc GIC_SPI 96  IRQ_TYPE_LEVEL_HIGH>,
  					<47 0 &intc GIC_SPI 92  IRQ_TYPE_LEVEL_HIGH>,
  					<48 0 &intc GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.39.5
-

@@ -42,11 +42,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/usb/dwc2/drd.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
-index a8605b02115b..425befd0843b 100644
 --- a/drivers/usb/dwc2/drd.c
 +++ b/drivers/usb/dwc2/drd.c
-@@ -44,8 +44,8 @@ static int dwc2_ovr_avalid(struct dwc2_hsotg *hsotg, bool valid)
+@@ -44,8 +44,8 @@ static int dwc2_ovr_avalid(struct dwc2_h
  	u32 gotgctl = dwc2_readl(hsotg, GOTGCTL);
  
  	/* Check if A-Session is already in the right state */
@@ -57,7 +55,7 @@ index a8605b02115b..425befd0843b 100644
  		return -EALREADY;
  
  	/* Always enable overrides to handle the resume case */
-@@ -66,8 +66,8 @@ static int dwc2_ovr_bvalid(struct dwc2_hsotg *hsotg, bool valid)
+@@ -66,8 +66,8 @@ static int dwc2_ovr_bvalid(struct dwc2_h
  	u32 gotgctl = dwc2_readl(hsotg, GOTGCTL);
  
  	/* Check if B-Session is already in the right state */
@@ -68,6 +66,3 @@ index a8605b02115b..425befd0843b 100644
  		return -EALREADY;
  
  	/* Always enable overrides to handle the resume case */
--- 
-2.39.5
-

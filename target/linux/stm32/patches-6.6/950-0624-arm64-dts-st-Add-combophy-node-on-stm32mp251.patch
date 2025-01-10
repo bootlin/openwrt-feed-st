@@ -15,8 +15,6 @@ Change-Id: Ib965606a5dc847c28b51b15b90db21c2f7f8e957
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 84dc1b1efd36..0a67b8438312 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
 @@ -5,6 +5,7 @@
@@ -27,7 +25,7 @@ index 84dc1b1efd36..0a67b8438312 100644
  #include <dt-bindings/regulator/st,stm32mp25-regulator.h>
  #include <dt-bindings/reset/st,stm32mp25-rcc.h>
  
-@@ -394,6 +395,19 @@ i2c8: i2c@46040000 {
+@@ -394,6 +395,19 @@
  				status = "disabled";
  			};
  
@@ -47,6 +45,3 @@ index 84dc1b1efd36..0a67b8438312 100644
  			sdmmc1: mmc@48220000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
--- 
-2.39.5
-

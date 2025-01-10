@@ -16,11 +16,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index cf1ea17bd51d..2549c686f688 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1819,6 +1819,11 @@ rcc: clock-controller@44200000 {
+@@ -1819,6 +1819,11 @@
  			access-controllers = <&rifsc 156>;
  		};
  
@@ -32,6 +30,3 @@ index cf1ea17bd51d..2549c686f688 100644
  		exti1: interrupt-controller@44220000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
--- 
-2.39.5
-

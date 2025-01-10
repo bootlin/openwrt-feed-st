@@ -20,11 +20,9 @@ Reviewed-by: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 09f81d5dcc4c..d8135f371a54 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -404,7 +404,7 @@ ipcc1: mailbox@40490000 {
+@@ -404,7 +404,7 @@
  			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
  			interrupt-names = "rx", "tx";
@@ -33,6 +31,3 @@ index 09f81d5dcc4c..d8135f371a54 100644
  			status = "disabled";
  		};
  
--- 
-2.39.5
-

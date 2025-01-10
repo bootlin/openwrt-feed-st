@@ -22,8 +22,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 610a85b022bc..6016ea30fb00 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -22,6 +22,7 @@
@@ -34,7 +32,7 @@ index 610a85b022bc..6016ea30fb00 100644
  
  #define DCMIPP_P1BPRSR			0x828
  #define DCMIPP_P1BPRSR_BADCNT_MASK	GENMASK(11, 0)
-@@ -635,7 +636,8 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -635,7 +636,8 @@ static irqreturn_t dcmipp_statcap_irq_th
  		return IRQ_HANDLED;
  
  	/* We are only interested in VSYNC interrupts */
@@ -44,6 +42,3 @@ index 610a85b022bc..6016ea30fb00 100644
  		return IRQ_HANDLED;
  
  	spin_lock_irq(&vcap->irqlock);
--- 
-2.39.5
-

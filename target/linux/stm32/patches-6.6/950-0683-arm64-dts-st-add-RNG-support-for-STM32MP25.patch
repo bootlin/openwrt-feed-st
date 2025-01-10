@@ -12,11 +12,9 @@ Change-Id: I5dff691839e8ac1ac6be10a82d8ba63e6cb9f3b0
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index bcfb9172b7d4..87e990e1e44e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1645,6 +1645,16 @@ channel@18 {
+@@ -1645,6 +1645,16 @@
  				};
  			};
  
@@ -33,6 +31,3 @@ index bcfb9172b7d4..87e990e1e44e 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

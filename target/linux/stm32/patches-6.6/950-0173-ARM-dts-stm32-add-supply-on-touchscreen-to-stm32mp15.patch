@@ -11,11 +11,9 @@ Change-Id: Ie46bebff1b63acf3038cd66252561fd879ea7181
  arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index 254b9239e5de..ab025098fa34 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-@@ -68,6 +68,8 @@ touchscreen@38 {
+@@ -68,6 +68,8 @@
  		interrupt-parent = <&gpiof>;
  		touchscreen-size-x = <480>;
  		touchscreen-size-y = <800>;
@@ -24,6 +22,3 @@ index 254b9239e5de..ab025098fa34 100644
  		status = "okay";
  	};
  };
--- 
-2.39.5
-

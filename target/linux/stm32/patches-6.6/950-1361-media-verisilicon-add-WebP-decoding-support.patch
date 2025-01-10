@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-index b113b8503a31..66dfdbc8f843 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
 +++ b/drivers/media/platform/verisilicon/hantro_g1_vp8_dec.c
-@@ -427,6 +427,11 @@ static void cfg_buffers(struct hantro_ctx *ctx,
+@@ -427,6 +427,11 @@ static void cfg_buffers(struct hantro_ct
  
  	dst_dma = hantro_get_dec_buf_addr(ctx, &vb2_dst->vb2_buf);
  	vdpu_write_relaxed(vpu, dst_dma, G1_REG_ADDR_DST);
@@ -34,7 +32,7 @@ index b113b8503a31..66dfdbc8f843 100644
  }
  
  int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
-@@ -472,6 +477,8 @@ int hantro_g1_vp8_dec_run(struct hantro_ctx *ctx)
+@@ -472,6 +477,8 @@ int hantro_g1_vp8_dec_run(struct hantro_
  		reg |= G1_REG_DEC_CTRL0_SKIP_MODE;
  	if (hdr->lf.level == 0)
  		reg |= G1_REG_DEC_CTRL0_FILTERING_DIS;
@@ -43,6 +41,3 @@ index b113b8503a31..66dfdbc8f843 100644
  	vdpu_write_relaxed(vpu, reg, G1_REG_DEC_CTRL0);
  
  	/* Frame dimensions */
--- 
-2.39.5
-

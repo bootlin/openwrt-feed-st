@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 20 ++++++++++++--------
  1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index dbbe2768456c..46c748cd921c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -83,7 +83,7 @@ hdmi: connector {
+@@ -83,7 +83,7 @@
  
  		port {
  			hdmi_connector_in: endpoint {
@@ -27,7 +25,7 @@ index dbbe2768456c..46c748cd921c 100644
  			};
  		};
  	};
-@@ -237,7 +237,7 @@ dsi_in: endpoint {
+@@ -237,7 +237,7 @@
  		port@1 {
  			reg = <1>;
  			dsi_out1: endpoint {
@@ -36,7 +34,7 @@ index dbbe2768456c..46c748cd921c 100644
  			};
  		};
  	};
-@@ -344,8 +344,12 @@ imx335_ep: endpoint {
+@@ -344,8 +344,12 @@
  		};
  	};
  
@@ -51,7 +49,7 @@ index dbbe2768456c..46c748cd921c 100644
  		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
  		reg-names = "main", "cec", "edid", "packet";
  		status = "disabled";
-@@ -364,21 +368,21 @@ ports {
+@@ -364,21 +368,21 @@
  
  			port@0 {
  				reg = <0>;
@@ -76,7 +74,7 @@ index dbbe2768456c..46c748cd921c 100644
  					remote-endpoint = <&i2s2_endpoint>;
  				};
  			};
-@@ -416,7 +420,7 @@ &i2s2 {
+@@ -416,7 +420,7 @@
  
  	i2s2_port: port {
  		i2s2_endpoint: endpoint {
@@ -85,6 +83,3 @@ index dbbe2768456c..46c748cd921c 100644
  			format = "i2s";
  			mclk-fs = <256>;
  		};
--- 
-2.39.5
-

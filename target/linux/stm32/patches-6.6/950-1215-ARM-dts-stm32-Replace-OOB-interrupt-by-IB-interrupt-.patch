@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index e0cd6e1363f6..5ce9f62c172d 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -489,6 +489,7 @@ &sdmmc2 {
+@@ -489,6 +489,7 @@
  	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_clk_pins_a>;
  	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
  	non-removable;
@@ -29,7 +27,7 @@ index e0cd6e1363f6..5ce9f62c172d 100644
  	st,neg-edge;
  	bus-width = <4>;
  	vmmc-supply = <&v3v3_ao>;
-@@ -500,9 +501,6 @@ &sdmmc2 {
+@@ -500,9 +501,6 @@
  	brcmf: bcrmf@1 {
  		reg = <1>;
  		compatible = "brcm,bcm4329-fmac";
@@ -39,6 +37,3 @@ index e0cd6e1363f6..5ce9f62c172d 100644
  	};
  };
  
--- 
-2.39.5
-

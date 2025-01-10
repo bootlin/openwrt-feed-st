@@ -14,11 +14,9 @@ Change-Id: Iad02769f7f2fca7f20c5a1c544ad59c3698ca03d
  drivers/tty/n_tty.c | 13 +++++++++----
  1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index e05341b85c59..f6a32e19337d 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
-@@ -1456,10 +1456,15 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c,
+@@ -1456,10 +1456,15 @@ static void n_tty_receive_char_closing(s
  		c = tolower(c);
  
  	if (I_IXON(tty)) {
@@ -38,6 +36,3 @@ index e05341b85c59..f6a32e19337d 100644
  			start_tty(tty);
  			process_echoes(tty);
  		}
--- 
-2.39.5
-

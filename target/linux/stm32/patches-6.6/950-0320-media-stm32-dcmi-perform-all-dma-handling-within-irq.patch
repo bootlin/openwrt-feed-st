@@ -26,11 +26,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 97 ++++----------------
  1 file changed, 18 insertions(+), 79 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index feb9b35bbcef..f80bb5504896 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -228,8 +228,9 @@ static int dcmi_restart_capture(struct stm32_dcmi *dcmi)
+@@ -228,8 +228,9 @@ static int dcmi_restart_capture(struct s
  {
  	struct dcmi_buf *buf;
  
@@ -41,7 +39,7 @@ index feb9b35bbcef..f80bb5504896 100644
  
  	/* Restart a new DMA transfer with next buffer */
  	if (list_empty(&dcmi->buffers)) {
-@@ -243,52 +244,6 @@ static int dcmi_restart_capture(struct stm32_dcmi *dcmi)
+@@ -243,52 +244,6 @@ static int dcmi_restart_capture(struct s
  	return dcmi_start_capture(dcmi, buf);
  }
  
@@ -94,7 +92,7 @@ index feb9b35bbcef..f80bb5504896 100644
  static int dcmi_start_dma(struct stm32_dcmi *dcmi,
  			  struct dcmi_buf *buf)
  {
-@@ -345,7 +300,7 @@ static void dcmi_set_crop(struct stm32_dcmi *dcmi)
+@@ -345,7 +300,7 @@ static void dcmi_set_crop(struct stm32_d
  	reg_set(dcmi->regs, DCMI_CR, CR_CROP);
  }
  
@@ -103,7 +101,7 @@ index feb9b35bbcef..f80bb5504896 100644
  {
  	struct dma_tx_state state;
  	enum dma_status status;
-@@ -355,13 +310,11 @@ static void dcmi_process_jpeg(struct stm32_dcmi *dcmi)
+@@ -355,13 +310,11 @@ static void dcmi_process_jpeg(struct stm
  		return;
  
  	/*
@@ -122,7 +120,7 @@ index feb9b35bbcef..f80bb5504896 100644
  	 */
  
  	spin_unlock_irq(&dcmi->irqlock);
-@@ -369,16 +322,16 @@ static void dcmi_process_jpeg(struct stm32_dcmi *dcmi)
+@@ -369,16 +322,16 @@ static void dcmi_process_jpeg(struct stm
  	dmaengine_synchronize(dcmi->dma_chan);
  	spin_lock_irq(&dcmi->irqlock);
  
@@ -144,7 +142,7 @@ index feb9b35bbcef..f80bb5504896 100644
  		dcmi_buffer_done(dcmi, buf, 0, -EIO);
  	}
  
-@@ -386,11 +339,6 @@ static void dcmi_process_jpeg(struct stm32_dcmi *dcmi)
+@@ -386,11 +339,6 @@ static void dcmi_process_jpeg(struct stm
  	/* Abort DMA operation */
  	dmaengine_terminate_sync(dcmi->dma_chan);
  	spin_lock_irq(&dcmi->irqlock);
@@ -156,7 +154,7 @@ index feb9b35bbcef..f80bb5504896 100644
  }
  
  static irqreturn_t dcmi_irq_thread(int irq, void *arg)
-@@ -421,12 +369,10 @@ static irqreturn_t dcmi_irq_thread(int irq, void *arg)
+@@ -421,12 +369,10 @@ static irqreturn_t dcmi_irq_thread(int i
  	if (dcmi->misr & IT_ERR)
  		dcmi->errors_count++;
  
@@ -173,7 +171,7 @@ index feb9b35bbcef..f80bb5504896 100644
  	}
  
  	spin_unlock_irq(&dcmi->irqlock);
-@@ -541,10 +487,6 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -541,10 +487,6 @@ static int dcmi_buf_prepare(struct vb2_b
  			return -EIO;
  		}
  
@@ -184,7 +182,7 @@ index feb9b35bbcef..f80bb5504896 100644
  		/* Mark the descriptor as reusable to avoid having to prepare it */
  		ret = dmaengine_desc_set_reuse(buf->dma_desc);
  		if (ret) {
-@@ -817,10 +759,7 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
+@@ -817,10 +759,7 @@ static int dcmi_start_streaming(struct v
  	}
  
  	/* Enable interruptions */
@@ -196,6 +194,3 @@ index feb9b35bbcef..f80bb5504896 100644
  
  	spin_unlock_irq(&dcmi->irqlock);
  
--- 
-2.39.5
-

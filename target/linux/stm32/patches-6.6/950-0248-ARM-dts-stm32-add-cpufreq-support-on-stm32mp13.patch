@@ -17,8 +17,6 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts |  4 ++
  2 files changed, 59 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index b54c8349ae05..cd56d389cf7f 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
 @@ -6,6 +6,7 @@
@@ -29,7 +27,7 @@ index b54c8349ae05..cd56d389cf7f 100644
  
  / {
  	#address-cells = <1>;
-@@ -19,6 +20,9 @@ cpu0: cpu@0 {
+@@ -19,6 +20,9 @@
  			compatible = "arm,cortex-a7";
  			device_type = "cpu";
  			reg = <0>;
@@ -39,7 +37,7 @@ index b54c8349ae05..cd56d389cf7f 100644
  		};
  	};
  
-@@ -49,6 +53,11 @@ scmi: scmi {
+@@ -49,6 +53,11 @@
  			#size-cells = <0>;
  			linaro,optee-channel-id = <0>;
  
@@ -51,7 +49,7 @@ index b54c8349ae05..cd56d389cf7f 100644
  			scmi_clk: protocol@14 {
  				reg = <0x14>;
  				#clock-cells = <1>;
-@@ -96,6 +105,16 @@ psci {
+@@ -96,6 +105,16 @@
  		method = "smc";
  	};
  
@@ -68,7 +66,7 @@ index b54c8349ae05..cd56d389cf7f 100644
  	pm_domain {
  		#address-cells = <1>;
  		#size-cells = <0>;
-@@ -116,14 +135,32 @@ pd_core: core-power-domain@2 {
+@@ -116,14 +135,32 @@
  		};
  	};
  
@@ -109,7 +107,7 @@ index b54c8349ae05..cd56d389cf7f 100644
  	};
  
  	soc {
-@@ -1300,6 +1337,16 @@ timer {
+@@ -1300,6 +1337,16 @@
  			};
  		};
  
@@ -126,11 +124,9 @@ index b54c8349ae05..cd56d389cf7f 100644
  		mdma: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index e3e6a2b8d1e4..8b2f5d786b7d 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -150,6 +150,10 @@ &arm_wdt {
+@@ -150,6 +150,10 @@
  	status = "okay";
  };
  
@@ -141,6 +137,3 @@ index e3e6a2b8d1e4..8b2f5d786b7d 100644
  &i2c1 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c1_pins_a>;
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 73 +++++++++++++++++++++++
  1 file changed, 73 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index 96325ca8d5ec..2c01587259c9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-@@ -24,6 +24,14 @@ chosen {
+@@ -24,6 +24,14 @@
  		stdout-path = "serial0:115200n8";
  	};
  
@@ -36,7 +34,7 @@ index 96325ca8d5ec..2c01587259c9 100644
  	memory@80000000 {
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
-@@ -55,6 +63,40 @@ &arm_wdt {
+@@ -55,6 +63,40 @@
  	status = "okay";
  };
  
@@ -77,7 +75,7 @@ index 96325ca8d5ec..2c01587259c9 100644
  &i2c2 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c2_pins_b>;
-@@ -66,6 +108,37 @@ &i2c2 {
+@@ -66,6 +108,37 @@
  	/* spare dmas for other usage */
  	/delete-property/dmas;
  	/delete-property/dma-names;
@@ -115,6 +113,3 @@ index 96325ca8d5ec..2c01587259c9 100644
  };
  
  &sdmmc1 {
--- 
-2.39.5
-

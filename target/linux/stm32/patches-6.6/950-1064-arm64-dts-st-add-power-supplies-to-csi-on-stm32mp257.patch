@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 0ce3a7e9f573..6b952b419199 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -207,6 +207,8 @@ &cryp1 {
+@@ -207,6 +207,8 @@
  };
  
  &csi {
@@ -30,6 +28,3 @@ index 0ce3a7e9f573..6b952b419199 100644
  	status = "disabled";
  	ports {
  		#address-cells = <1>;
--- 
-2.39.5
-

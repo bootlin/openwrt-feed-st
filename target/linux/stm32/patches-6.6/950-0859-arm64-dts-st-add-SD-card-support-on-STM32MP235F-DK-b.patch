@@ -19,8 +19,6 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index 258a21d09fe0..1927a6450c83 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 @@ -6,6 +6,7 @@
@@ -31,7 +29,7 @@ index 258a21d09fe0..1927a6450c83 100644
  #include "stm32mp235.dtsi"
  #include "stm32mp23xf.dtsi"
  #include "stm32mp25-pinctrl.dtsi"
-@@ -39,6 +40,27 @@ fw@80000000 {
+@@ -39,6 +40,27 @@
  			no-map;
  		};
  	};
@@ -59,6 +57,3 @@ index 258a21d09fe0..1927a6450c83 100644
  };
  
  &usart2 {
--- 
-2.39.5
-

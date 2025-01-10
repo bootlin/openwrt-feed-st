@@ -24,8 +24,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 66 ++++++++++++++++++++++++++++++
  1 file changed, 66 insertions(+)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index c060f922491a..18d0814938d5 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -19,6 +19,7 @@
@@ -36,7 +34,7 @@ index c060f922491a..18d0814938d5 100644
  #include <linux/pm_runtime.h>
  
  #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -289,6 +290,10 @@ static void stm32mp_chip_suspend(struct stm32mp_exti_chip_data *chip_data,
+@@ -289,6 +290,10 @@ static void stm32mp_chip_suspend(struct
  	chip_data->ftsr_cache = readl_relaxed(base + bank->ftsr_ofst);
  
  	writel_relaxed(wake_active, base + bank->imr_ofst);
@@ -47,7 +45,7 @@ index c060f922491a..18d0814938d5 100644
  }
  
  static void stm32mp_chip_resume(struct stm32mp_exti_chip_data *chip_data,
-@@ -825,6 +830,63 @@ static void stm32mp_exti_check_rif(struct stm32mp_exti_host_data *host_data)
+@@ -825,6 +830,63 @@ static void stm32mp_exti_check_rif(struc
  	}
  }
  
@@ -111,7 +109,7 @@ index c060f922491a..18d0814938d5 100644
  static void stm32mp_exti_remove_irq(void *data)
  {
  	struct irq_domain *domain = data;
-@@ -960,6 +1022,10 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -960,6 +1022,10 @@ static int stm32mp_exti_probe(struct pla
  			return ret;
  	}
  
@@ -122,6 +120,3 @@ index c060f922491a..18d0814938d5 100644
  	devm_pm_runtime_enable(dev);
  
  	return 0;
--- 
-2.39.5
-

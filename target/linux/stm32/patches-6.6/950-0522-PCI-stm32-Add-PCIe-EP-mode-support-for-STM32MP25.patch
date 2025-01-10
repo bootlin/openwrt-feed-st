@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  3 files changed, 425 insertions(+)
  create mode 100644 drivers/pci/controller/dwc/pcie-stm32-ep.c
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 96e82e949480..9214593d9743 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
 @@ -426,4 +426,16 @@ config PCIE_STM32
@@ -40,11 +38,9 @@ index 96e82e949480..9214593d9743 100644
 +	  This driver can also be built as a module. If so, the module
 +	  will be called pcie-stm32-ep.
  endmenu
-diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index c1010d82f1ae..dea0593737f8 100644
 --- a/drivers/pci/controller/dwc/Makefile
 +++ b/drivers/pci/controller/dwc/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
+@@ -27,6 +27,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-unip
  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
  obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
  obj-$(CONFIG_PCIE_STM32) += pcie-stm32.o
@@ -52,9 +48,6 @@ index c1010d82f1ae..dea0593737f8 100644
  
  # The following drivers are for devices that use the generic ACPI
  # pci_root.c driver but don't support standard ECAM config access.
-diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-new file mode 100644
-index 000000000000..a8cc52cec7b1
 --- /dev/null
 +++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
 @@ -0,0 +1,412 @@
@@ -470,6 +463,3 @@ index 000000000000..a8cc52cec7b1
 +MODULE_DESCRIPTION("STM32MP25 PCIe Endpoint Controller driver");
 +MODULE_LICENSE("GPL");
 +MODULE_DEVICE_TABLE(of, stm32_pcie_ep_of_match);
--- 
-2.39.5
-

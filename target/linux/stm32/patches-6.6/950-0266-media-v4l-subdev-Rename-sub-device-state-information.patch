@@ -23,11 +23,9 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
  include/media/v4l2-subdev.h                   | 19 +++++++------
  6 files changed, 34 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/media/i2c/ds90ub913.c b/drivers/media/i2c/ds90ub913.c
-index 4bfa3b3cf619..ba768858f9cf 100644
 --- a/drivers/media/i2c/ds90ub913.c
 +++ b/drivers/media/i2c/ds90ub913.c
-@@ -426,8 +426,7 @@ static int ub913_set_fmt(struct v4l2_subdev *sd,
+@@ -426,8 +426,7 @@ static int ub913_set_fmt(struct v4l2_sub
  	}
  
  	/* Set sink format */
@@ -37,11 +35,9 @@ index 4bfa3b3cf619..ba768858f9cf 100644
  	if (!fmt)
  		return -EINVAL;
  
-diff --git a/drivers/media/i2c/ds90ub953.c b/drivers/media/i2c/ds90ub953.c
-index dc394e22a42c..c362d82ce46e 100644
 --- a/drivers/media/i2c/ds90ub953.c
 +++ b/drivers/media/i2c/ds90ub953.c
-@@ -560,8 +560,7 @@ static int ub953_set_fmt(struct v4l2_subdev *sd,
+@@ -560,8 +560,7 @@ static int ub953_set_fmt(struct v4l2_sub
  		return v4l2_subdev_get_fmt(sd, state, format);
  
  	/* Set sink format */
@@ -51,11 +47,9 @@ index dc394e22a42c..c362d82ce46e 100644
  	if (!fmt)
  		return -EINVAL;
  
-diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-index 8ba5750f5a23..37aa2e98c15b 100644
 --- a/drivers/media/i2c/ds90ub960.c
 +++ b/drivers/media/i2c/ds90ub960.c
-@@ -2451,9 +2451,8 @@ static int ub960_configure_ports_for_streaming(struct ub960_data *priv,
+@@ -2451,9 +2451,8 @@ static int ub960_configure_ports_for_str
  		if (rx_data[nport].num_streams > 2)
  			return -EPIPE;
  
@@ -67,7 +61,7 @@ index 8ba5750f5a23..37aa2e98c15b 100644
  		if (!fmt)
  			return -EPIPE;
  
-@@ -2844,8 +2843,8 @@ static int ub960_get_frame_desc(struct v4l2_subdev *sd, unsigned int pad,
+@@ -2844,8 +2843,8 @@ static int ub960_get_frame_desc(struct v
  			const struct ub960_format_info *ub960_fmt;
  			struct v4l2_mbus_framefmt *fmt;
  
@@ -78,7 +72,7 @@ index 8ba5750f5a23..37aa2e98c15b 100644
  
  			if (!fmt) {
  				ret = -EINVAL;
-@@ -2893,8 +2892,7 @@ static int ub960_set_fmt(struct v4l2_subdev *sd,
+@@ -2893,8 +2892,7 @@ static int ub960_set_fmt(struct v4l2_sub
  	if (!ub960_find_format(format->format.code))
  		format->format.code = ub960_formats[0].code;
  
@@ -88,11 +82,9 @@ index 8ba5750f5a23..37aa2e98c15b 100644
  	if (!fmt)
  		return -EINVAL;
  
-diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
-index c9a4d091b570..26caca55f9d6 100644
 --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
 +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
-@@ -58,7 +58,7 @@ static int mxc_isi_crossbar_gasket_enable(struct mxc_isi_crossbar *xbar,
+@@ -58,7 +58,7 @@ static int mxc_isi_crossbar_gasket_enabl
  		return -EINVAL;
  	}
  
@@ -101,7 +93,7 @@ index c9a4d091b570..26caca55f9d6 100644
  	if (!fmt)
  		return -EINVAL;
  
-@@ -280,8 +280,7 @@ static int mxc_isi_crossbar_set_fmt(struct v4l2_subdev *sd,
+@@ -280,8 +280,7 @@ static int mxc_isi_crossbar_set_fmt(stru
  	 * Set the format on the sink stream and propagate it to the source
  	 * streams.
  	 */
@@ -111,7 +103,7 @@ index c9a4d091b570..26caca55f9d6 100644
  	if (!sink_fmt)
  		return -EINVAL;
  
-@@ -295,8 +294,9 @@ static int mxc_isi_crossbar_set_fmt(struct v4l2_subdev *sd,
+@@ -295,8 +294,9 @@ static int mxc_isi_crossbar_set_fmt(stru
  		    route->sink_stream != fmt->stream)
  			continue;
  
@@ -123,11 +115,9 @@ index c9a4d091b570..26caca55f9d6 100644
  		if (!source_fmt)
  			return -EINVAL;
  
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index a32ef739eb44..1707cd32fc13 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -176,7 +176,7 @@ static int check_state(struct v4l2_subdev *sd, struct v4l2_subdev_state *state,
+@@ -176,7 +176,7 @@ static int check_state(struct v4l2_subde
  {
  	if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
  #if defined(CONFIG_VIDEO_V4L2_SUBDEV_API)
@@ -136,7 +126,7 @@ index a32ef739eb44..1707cd32fc13 100644
  			return -EINVAL;
  		return 0;
  #else
-@@ -1552,8 +1552,8 @@ int v4l2_subdev_get_fmt(struct v4l2_subdev *sd, struct v4l2_subdev_state *state,
+@@ -1552,8 +1552,8 @@ int v4l2_subdev_get_fmt(struct v4l2_subd
  	struct v4l2_mbus_framefmt *fmt;
  
  	if (sd->flags & V4L2_SUBDEV_FL_STREAMS)
@@ -147,7 +137,7 @@ index a32ef739eb44..1707cd32fc13 100644
  	else if (format->pad < sd->entity.num_pads && format->stream == 0)
  		fmt = v4l2_subdev_get_pad_format(sd, state, format->pad);
  	else
-@@ -1649,8 +1649,8 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1649,8 +1649,8 @@ int v4l2_subdev_set_routing_with_fmt(str
  EXPORT_SYMBOL_GPL(v4l2_subdev_set_routing_with_fmt);
  
  struct v4l2_mbus_framefmt *
@@ -158,7 +148,7 @@ index a32ef739eb44..1707cd32fc13 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1667,11 +1667,11 @@ v4l2_subdev_state_get_stream_format(struct v4l2_subdev_state *state,
+@@ -1667,11 +1667,11 @@ v4l2_subdev_state_get_stream_format(stru
  
  	return NULL;
  }
@@ -173,7 +163,7 @@ index a32ef739eb44..1707cd32fc13 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1688,11 +1688,11 @@ v4l2_subdev_state_get_stream_crop(struct v4l2_subdev_state *state,
+@@ -1688,11 +1688,11 @@ v4l2_subdev_state_get_stream_crop(struct
  
  	return NULL;
  }
@@ -188,7 +178,7 @@ index a32ef739eb44..1707cd32fc13 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1709,7 +1709,7 @@ v4l2_subdev_state_get_stream_compose(struct v4l2_subdev_state *state,
+@@ -1709,7 +1709,7 @@ v4l2_subdev_state_get_stream_compose(str
  
  	return NULL;
  }
@@ -197,7 +187,7 @@ index a32ef739eb44..1707cd32fc13 100644
  
  int v4l2_subdev_routing_find_opposite_end(const struct v4l2_subdev_krouting *routing,
  					  u32 pad, u32 stream, u32 *other_pad,
-@@ -1755,8 +1755,7 @@ v4l2_subdev_state_get_opposite_stream_format(struct v4l2_subdev_state *state,
+@@ -1755,8 +1755,7 @@ v4l2_subdev_state_get_opposite_stream_fo
  	if (ret)
  		return NULL;
  
@@ -207,11 +197,9 @@ index a32ef739eb44..1707cd32fc13 100644
  }
  EXPORT_SYMBOL_GPL(v4l2_subdev_state_get_opposite_stream_format);
  
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index ab2a7ef61d42..445bfe460963 100644
 --- a/include/media/v4l2-subdev.h
 +++ b/include/media/v4l2-subdev.h
-@@ -1541,7 +1541,7 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1541,7 +1541,7 @@ int v4l2_subdev_set_routing_with_fmt(str
  				     const struct v4l2_mbus_framefmt *fmt);
  
  /**
@@ -220,7 +208,7 @@ index ab2a7ef61d42..445bfe460963 100644
   * @state: subdevice state
   * @pad: pad id
   * @stream: stream id
-@@ -1552,11 +1552,11 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1552,11 +1552,11 @@ int v4l2_subdev_set_routing_with_fmt(str
   * If the state does not contain the given pad + stream, NULL is returned.
   */
  struct v4l2_mbus_framefmt *
@@ -235,7 +223,7 @@ index ab2a7ef61d42..445bfe460963 100644
   * @state: subdevice state
   * @pad: pad id
   * @stream: stream id
-@@ -1567,12 +1567,11 @@ v4l2_subdev_state_get_stream_format(struct v4l2_subdev_state *state,
+@@ -1567,12 +1567,11 @@ v4l2_subdev_state_get_stream_format(stru
   * If the state does not contain the given pad + stream, NULL is returned.
   */
  struct v4l2_rect *
@@ -251,7 +239,7 @@ index ab2a7ef61d42..445bfe460963 100644
   * @state: subdevice state
   * @pad: pad id
   * @stream: stream id
-@@ -1583,8 +1582,8 @@ v4l2_subdev_state_get_stream_crop(struct v4l2_subdev_state *state,
+@@ -1583,8 +1582,8 @@ v4l2_subdev_state_get_stream_crop(struct
   * If the state does not contain the given pad + stream, NULL is returned.
   */
  struct v4l2_rect *
@@ -262,6 +250,3 @@ index ab2a7ef61d42..445bfe460963 100644
  
  /**
   * v4l2_subdev_routing_find_opposite_end() - Find the opposite stream
--- 
-2.39.5
-

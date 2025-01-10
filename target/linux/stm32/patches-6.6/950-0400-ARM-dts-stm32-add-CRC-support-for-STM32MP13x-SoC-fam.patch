@@ -11,11 +11,9 @@ Change-Id: I4296506f3951baad5ea08eaf4d2a9bf286e41708
  arch/arm/boot/dts/st/stm32mp131.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index d4ad507cd1bb..ac3e902edf34 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1448,6 +1448,13 @@ sdmmc2: mmc@58007000 {
+@@ -1448,6 +1448,13 @@
  			status = "disabled";
  		};
  
@@ -29,6 +27,3 @@ index d4ad507cd1bb..ac3e902edf34 100644
  		eth1: eth1@5800a000 {
  			compatible = "snps,dwmac-4.20a", "st,stm32mp13-dwmac";
  			reg = <0x5800a000 0x2000>;
--- 
-2.39.5
-

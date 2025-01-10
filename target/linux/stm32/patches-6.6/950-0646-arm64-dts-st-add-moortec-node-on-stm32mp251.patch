@@ -11,11 +11,9 @@ Change-Id: I162541c15447f360fba7badb22f13fea07848733
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c4d9985550a6..8584ec66bd98 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -805,6 +805,18 @@ package_otp@1e8 {
+@@ -805,6 +805,18 @@
  			};
  		};
  
@@ -34,6 +32,3 @@ index c4d9985550a6..8584ec66bd98 100644
  		rcc: clock-controller@44200000 {
  			compatible = "st,stm32mp25-rcc";
  			reg = <0x44200000 0x10000>;
--- 
-2.39.5
-

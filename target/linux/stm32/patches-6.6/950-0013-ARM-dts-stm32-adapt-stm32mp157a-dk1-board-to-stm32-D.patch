@@ -15,8 +15,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157a-dk1.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
-index 7c732fc3c15e..e262d22d4f39 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
 @@ -7,6 +7,7 @@
@@ -27,6 +25,3 @@ index 7c732fc3c15e..e262d22d4f39 100644
  #include "stm32mp15-pinctrl.dtsi"
  #include "stm32mp15xxac-pinctrl.dtsi"
  #include "stm32mp15xx-dkx.dtsi"
--- 
-2.39.5
-

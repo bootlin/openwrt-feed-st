@@ -14,11 +14,9 @@ Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
  include/uapi/linux/videodev2.h            |  2 +
  5 files changed, 113 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index 865ae1b52147..2687f0facc29 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -813,6 +813,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+@@ -813,6 +813,7 @@ static int std_validate_compound(const s
  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
  	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
  	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
@@ -26,7 +24,7 @@ index 865ae1b52147..2687f0facc29 100644
  	struct v4l2_area *area;
  	void *p = ptr.p + idx * ctrl->elem_size;
  	unsigned int i;
-@@ -1049,6 +1050,15 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+@@ -1049,6 +1050,15 @@ static int std_validate_compound(const s
  		zero_padding(p_vp8_frame->coder_state);
  		break;
  
@@ -42,7 +40,7 @@ index 865ae1b52147..2687f0facc29 100644
  	case V4L2_CTRL_TYPE_HEVC_SPS:
  		p_hevc_sps = p;
  
-@@ -1874,6 +1884,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+@@ -1874,6 +1884,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(s
  	case V4L2_CTRL_TYPE_AREA:
  		elem_size = sizeof(struct v4l2_area);
  		break;
@@ -52,8 +50,6 @@ index 865ae1b52147..2687f0facc29 100644
  	default:
  		if (type < V4L2_CTRL_COMPOUND_TYPES)
  			elem_size = sizeof(s32);
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index e1d8ebdd6e87..4b3d5422cfa7 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 @@ -1241,6 +1241,9 @@ const char *v4l2_ctrl_get_name(u32 id)
@@ -66,7 +62,7 @@ index e1d8ebdd6e87..4b3d5422cfa7 100644
  	/* Colorimetry controls */
  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
-@@ -1583,6 +1586,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+@@ -1583,6 +1586,9 @@ void v4l2_ctrl_fill(u32 id, const char *
  	case V4L2_CID_STATELESS_VP9_FRAME:
  		*type = V4L2_CTRL_TYPE_VP9_FRAME;
  		break;
@@ -76,8 +72,6 @@ index e1d8ebdd6e87..4b3d5422cfa7 100644
  	case V4L2_CID_STATELESS_AV1_SEQUENCE:
  		*type = V4L2_CTRL_TYPE_AV1_SEQUENCE;
  		break;
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 59679a42b3e7..2f68c47624e9 100644
 --- a/include/media/v4l2-ctrls.h
 +++ b/include/media/v4l2-ctrls.h
 @@ -89,6 +89,7 @@ union v4l2_ctrl_ptr {
@@ -88,8 +82,6 @@ index 59679a42b3e7..2f68c47624e9 100644
  	void *p;
  	const void *p_const;
  };
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 496691b588b1..ff7f21a72c47 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -1987,6 +1987,97 @@ struct v4l2_ctrl_vp8_frame {
@@ -190,8 +182,6 @@ index 496691b588b1..ff7f21a72c47 100644
  /* Stateless MPEG-2 controls */
  
  #define V4L2_MPEG2_SEQ_FLAG_PROGRESSIVE	0x01
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index bf96b8f492ce..23343be92751 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
 @@ -1840,6 +1840,7 @@ struct v4l2_ext_control {
@@ -210,6 +200,3 @@ index bf96b8f492ce..23343be92751 100644
  
  	V4L2_CTRL_TYPE_MPEG2_QUANTISATION   = 0x0250,
  	V4L2_CTRL_TYPE_MPEG2_SEQUENCE       = 0x0251,
--- 
-2.39.5
-

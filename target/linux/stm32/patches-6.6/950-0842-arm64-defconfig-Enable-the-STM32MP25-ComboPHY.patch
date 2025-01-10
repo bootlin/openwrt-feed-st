@@ -15,8 +15,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index c05f7a2e0c7d..45475b1ecd06 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -41,6 +41,7 @@ CONFIG_NVMEM_REBOOT_MODE=y
@@ -27,6 +25,3 @@ index c05f7a2e0c7d..45475b1ecd06 100644
  CONFIG_PHY_STM32_USB2PHY=y
  CONFIG_PWM_STM32=m
  CONFIG_PWM_STM32_LP=m
--- 
-2.39.5
-

@@ -24,11 +24,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/linux/scmi_protocol.h     |   3 +-
  3 files changed, 94 insertions(+), 122 deletions(-)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index 757de52e299a..cfbf9accaee9 100644
 --- a/drivers/clk/clk-scmi.c
 +++ b/drivers/clk/clk-scmi.c
-@@ -192,8 +192,8 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
+@@ -192,8 +192,8 @@ static int scmi_clk_ops_init(struct devi
  		if (num_rates <= 0)
  			return -EINVAL;
  
@@ -39,11 +37,9 @@ index 757de52e299a..cfbf9accaee9 100644
  	} else {
  		min_rate = sclk->info->range.min_rate;
  		max_rate = sclk->info->range.max_rate;
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 8732e5f2345d..26a8f3356e3f 100644
 --- a/drivers/firmware/arm_scmi/clock.c
 +++ b/drivers/firmware/arm_scmi/clock.c
-@@ -227,144 +227,115 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+@@ -227,144 +227,115 @@ static int scmi_clock_attributes_get(con
  	return ret;
  }
  
@@ -75,25 +71,24 @@ index 8732e5f2345d..26a8f3356e3f 100644
 -	u32 clk_id;
 -	struct scmi_clock_info *clk;
 -};
-+	msg = t->tx.buf;
-+	msg->id = cpu_to_le32(clk_id);
-+	msg->rate_index = cpu_to_le32(index);
- 
+-
 -static void iter_clk_describe_prepare_message(void *message,
 -					      const unsigned int desc_index,
 -					      const void *priv)
 -{
 -	struct scmi_msg_clock_describe_rates *msg = message;
 -	const struct scmi_clk_ipriv *p = priv;
-+	ret = ph->xops->do_xfer(ph, t);
-+	if (ret)
-+		goto out;
++	msg = t->tx.buf;
++	msg->id = cpu_to_le32(clk_id);
++	msg->rate_index = cpu_to_le32(index);
  
 -	msg->id = cpu_to_le32(p->clk_id);
 -	/* Set the number of rates to be skipped/already read */
 -	msg->rate_index = cpu_to_le32(desc_index);
 -}
-+	resp = t->rx.buf;
++	ret = ph->xops->do_xfer(ph, t);
++	if (ret)
++		goto out;
  
 -static int
 -iter_clk_describe_update_state(struct scmi_iterator_state *st,
@@ -129,6 +124,8 @@ index 8732e5f2345d..26a8f3356e3f 100644
 -				"Cannot fix out-of-spec reply !\n");
 -			return -EPROTO;
 -		}
++	resp = t->rx.buf;
++
 +	if (!RATE_DISCRETE(resp->num_rates_flags)) {
 +		ret = -EPROTO;
 +		goto out;
@@ -206,10 +203,9 @@ index 8732e5f2345d..26a8f3356e3f 100644
 -					    &cpriv);
 -	if (IS_ERR(iter))
 -		return PTR_ERR(iter);
--
--	ret = ph->hops->iter_response_run(iter);
 +	unsigned int num_returned, num_remaining;
-+
+ 
+-	ret = ph->hops->iter_response_run(iter);
 +	/* First message gets either the range triplet or the min rate */
 +	ret = ph->xops->xfer_get_init(ph, CLOCK_DESCRIBE_RATES, sizeof(*msg), 0,
 +				      &t);
@@ -278,8 +274,6 @@ index 8732e5f2345d..26a8f3356e3f 100644
  	}
  
  	return ret;
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 22af4e1211cd..8d3672b02030 100644
 --- a/include/linux/scmi_protocol.h
 +++ b/include/linux/scmi_protocol.h
 @@ -50,7 +50,8 @@ struct scmi_clock_info {
@@ -292,6 +286,3 @@ index 22af4e1211cd..8d3672b02030 100644
  		} list;
  		struct {
  			u64 min_rate;
--- 
-2.39.5
-

@@ -12,8 +12,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/388964
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 558 +++++++++++++++++++++-
  1 file changed, 544 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index 4b2b16c4cc15..8d5a2d547731 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 @@ -7,6 +7,9 @@
@@ -26,7 +24,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  #include "stm32mp235.dtsi"
  #include "stm32mp23xf.dtsi"
  #include "stm32mp25-pinctrl.dtsi"
-@@ -19,10 +22,21 @@ / {
+@@ -19,10 +22,21 @@
  
  	aliases {
  		serial0 = &usart2;
@@ -48,7 +46,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  	};
  
  	clocks {
-@@ -31,20 +45,145 @@ clk_ext_camera: clk-ext-camera {
+@@ -31,20 +45,145 @@
  			compatible = "fixed-clock";
  			clock-frequency = <24000000>;
  		};
@@ -86,9 +84,8 @@ index 4b2b16c4cc15..8d5a2d547731 100644
 +			interrupts-extended = <&optee 0>;
 +			status = "okay";
 +		};
- 	};
- 
--	vdd_sdcard: vdd-sdcard {
++	};
++
 +	gpio-leds {
 +		compatible = "gpio-leds";
 +
@@ -99,8 +96,9 @@ index 4b2b16c4cc15..8d5a2d547731 100644
 +			linux,default-trigger = "heartbeat";
 +			default-state = "off";
 +		};
-+	};
-+
+ 	};
+ 
+-	vdd_sdcard: vdd-sdcard {
 +	hdmi: connector {
 +		compatible = "hdmi-connector";
 +		label = "hdmi";
@@ -130,16 +128,16 @@ index 4b2b16c4cc15..8d5a2d547731 100644
 +		regulator-name = "imx335-ovdd";
 +		regulator-min-microvolt = <1800000>;
 +		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
+ 		regulator-always-on;
+ 	};
 +
 +	imx335_1v2: imx335-1v2 {
 +		compatible = "regulator-fixed";
 +		regulator-name = "imx335-dvdd";
 +		regulator-min-microvolt = <1200000>;
 +		regulator-max-microvolt = <1200000>;
- 		regulator-always-on;
- 	};
++		regulator-always-on;
++	};
 +
 +	memory@80000000 {
 +		device_type = "memory";
@@ -201,7 +199,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  };
  
  &arm_wdt {
-@@ -52,10 +191,18 @@ &arm_wdt {
+@@ -52,10 +191,18 @@
  	status = "okay";
  };
  
@@ -221,7 +219,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  	ports {
  		#address-cells = <1>;
  		#size-cells = <0>;
-@@ -77,7 +224,7 @@ csi_source: endpoint {
+@@ -77,7 +224,7 @@
  };
  
  &dcmipp {
@@ -230,7 +228,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  	port {
  		dcmipp_0: endpoint {
  			remote-endpoint = <&csi_source>;
-@@ -86,13 +233,80 @@ dcmipp_0: endpoint {
+@@ -86,13 +233,80 @@
  	};
  };
  
@@ -314,7 +312,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  	status = "okay";
  	/* spare dmas for other usage */
  	/delete-property/dmas;
-@@ -102,9 +316,12 @@ imx335: imx335@1a {
+@@ -102,9 +316,12 @@
  		compatible = "sony,imx335";
  		reg = <0x1a>;
  		clocks = <&clk_ext_camera>;
@@ -328,7 +326,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  
  		port {
  			imx335_ep: endpoint {
-@@ -115,6 +332,60 @@ imx335_ep: endpoint {
+@@ -115,6 +332,60 @@
  			};
  		};
  	};
@@ -389,7 +387,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  };
  
  &i2c8 {
-@@ -130,7 +401,134 @@ &i2c8 {
+@@ -130,7 +401,134 @@
  	/delete-property/dma-names;
  };
  
@@ -524,7 +522,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  	scmi_vddcore: regulator@11  {
  		reg = <VOLTD_SCMI_STPMIC2_BUCK2>;
  		regulator-name = "vddcore";
-@@ -139,6 +537,30 @@ scmi_v1v8: regulator@14  {
+@@ -139,6 +537,30 @@
  		reg = <VOLTD_SCMI_STPMIC2_BUCK5>;
  		regulator-name = "v1v8";
  	};
@@ -555,7 +553,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  };
  
  &sdmmc1 {
-@@ -150,8 +572,72 @@ &sdmmc1 {
+@@ -150,8 +572,72 @@
  	disable-wp;
  	st,neg-edge;
  	bus-width = <4>;
@@ -629,7 +627,7 @@ index 4b2b16c4cc15..8d5a2d547731 100644
  };
  
  &usart2 {
-@@ -159,5 +645,49 @@ &usart2 {
+@@ -159,5 +645,49 @@
  	pinctrl-0 = <&usart2_pins_a>;
  	pinctrl-1 = <&usart2_idle_pins_a>;
  	pinctrl-2 = <&usart2_sleep_pins_a>;
@@ -654,11 +652,11 @@ index 4b2b16c4cc15..8d5a2d547731 100644
 +
 +&usb2_phy2 {
 +	vdd33-supply = <&scmi_vdd3v3_usb>;
-+	status = "okay";
-+};
+ 	status = "okay";
+ };
 +
 +&usbh {
- 	status = "okay";
++	status = "okay";
 +
 +	usbh_ohci: usb@482e0000 {
 +		status = "disabled";
@@ -678,7 +676,4 @@ index 4b2b16c4cc15..8d5a2d547731 100644
 +			};
 +		};
 +	};
- };
--- 
-2.39.5
-
++};

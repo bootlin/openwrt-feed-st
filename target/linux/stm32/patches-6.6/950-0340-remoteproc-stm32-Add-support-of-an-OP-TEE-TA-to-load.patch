@@ -16,8 +16,6 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
  drivers/remoteproc/stm32_rproc.c | 149 +++++++++++++++++++++++++++++--
  1 file changed, 144 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index a5818c4062c4..206e2f69380e 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -20,6 +20,7 @@
@@ -47,7 +45,7 @@ index a5818c4062c4..206e2f69380e 100644
  	void __iomem *rsc_va;
  };
  
-@@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rproc *rproc)
+@@ -257,6 +263,91 @@ static int stm32_rproc_release(struct rp
  	return err;
  }
  
@@ -139,7 +137,7 @@ index a5818c4062c4..206e2f69380e 100644
  static int stm32_rproc_prepare(struct rproc *rproc)
  {
  	struct device *dev = rproc->dev.parent;
-@@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rproc *rproc)
+@@ -319,7 +410,14 @@ static int stm32_rproc_prepare(struct rp
  
  static int stm32_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
  {
@@ -155,7 +153,7 @@ index a5818c4062c4..206e2f69380e 100644
  		dev_warn(&rproc->dev, "no resource table found for this firmware\n");
  
  	return 0;
-@@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_ops = {
+@@ -693,8 +791,22 @@ static const struct rproc_ops st_rproc_o
  	.get_boot_addr	= rproc_elf_get_boot_addr,
  };
  
@@ -179,7 +177,7 @@ index a5818c4062c4..206e2f69380e 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-@@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -853,6 +965,7 @@ static int stm32_rproc_probe(struct plat
  	struct device *dev = &pdev->dev;
  	struct stm32_rproc *ddata;
  	struct device_node *np = dev->of_node;
@@ -187,7 +185,7 @@ index a5818c4062c4..206e2f69380e 100644
  	struct rproc *rproc;
  	unsigned int state;
  	int ret;
-@@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -861,11 +974,31 @@ static int stm32_rproc_probe(struct plat
  	if (ret)
  		return ret;
  
@@ -222,7 +220,7 @@ index a5818c4062c4..206e2f69380e 100644
  
  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
  
-@@ -916,6 +1049,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -916,6 +1049,10 @@ free_rproc:
  		device_init_wakeup(dev, false);
  	}
  	rproc_free(rproc);
@@ -233,7 +231,7 @@ index a5818c4062c4..206e2f69380e 100644
  	return ret;
  }
  
-@@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+@@ -937,6 +1074,8 @@ static void stm32_rproc_remove(struct pl
  		device_init_wakeup(dev, false);
  	}
  	rproc_free(rproc);
@@ -242,6 +240,3 @@ index a5818c4062c4..206e2f69380e 100644
  }
  
  static void stm32_rproc_shutdown(struct platform_device *pdev)
--- 
-2.39.5
-

@@ -22,8 +22,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/381222
  3 files changed, 267 insertions(+)
  create mode 100644 drivers/soc/st/stm32_risaf.c
 
-diff --git a/drivers/soc/st/Kconfig b/drivers/soc/st/Kconfig
-index 82ee423e3464..5500c81ec613 100644
 --- a/drivers/soc/st/Kconfig
 +++ b/drivers/soc/st/Kconfig
 @@ -6,4 +6,14 @@ config STM32_PM_DOMAINS
@@ -41,16 +39,11 @@ index 82ee423e3464..5500c81ec613 100644
 +	  capable software component.
 +
  endif # ARCH_STM32
-diff --git a/drivers/soc/st/Makefile b/drivers/soc/st/Makefile
-index 8d7f2919fe18..ac8d969a6a40 100644
 --- a/drivers/soc/st/Makefile
 +++ b/drivers/soc/st/Makefile
 @@ -1 +1,2 @@
  obj-$(CONFIG_STM32_PM_DOMAINS) += stm32_pm_domain.o
 +obj-$(CONFIG_STM32_RISAF) += stm32_risaf.o
-diff --git a/drivers/soc/st/stm32_risaf.c b/drivers/soc/st/stm32_risaf.c
-new file mode 100644
-index 000000000000..0434b58d80a2
 --- /dev/null
 +++ b/drivers/soc/st/stm32_risaf.c
 @@ -0,0 +1,256 @@
@@ -310,6 +303,3 @@ index 000000000000..0434b58d80a2
 +module_platform_driver(stm32_risaf_driver);
 +MODULE_AUTHOR("Gatien Chevallier <gatien.chevallier@foss.st.com>");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

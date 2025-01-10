@@ -16,11 +16,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 288 ++++++++++++++-----------
  1 file changed, 158 insertions(+), 130 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index b6052e9dd9b4..6291b7774927 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2534,82 +2534,93 @@ exti1: interrupt-controller@44220000 {
+@@ -2534,82 +2534,93 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -189,7 +187,7 @@ index b6052e9dd9b4..6291b7774927 100644
  		};
  
  		syscfg: syscon@44230000 {
-@@ -2829,62 +2840,79 @@ exti2: interrupt-controller@46230000 {
+@@ -2829,62 +2840,79 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -324,6 +322,3 @@ index b6052e9dd9b4..6291b7774927 100644
  		};
  
  		fmc: memory-controller@48200000 {
--- 
-2.39.5
-

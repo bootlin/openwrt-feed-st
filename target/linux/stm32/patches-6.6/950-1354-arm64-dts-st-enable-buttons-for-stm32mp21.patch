@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 26 +++++++++++++++++++++++
  2 files changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 95ffbd289d40..134417d9ff86 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -76,7 +76,7 @@ replicator_out_port1: endpoint {
+@@ -76,7 +76,7 @@
  	};
  
  	firmware {
@@ -29,7 +27,7 @@ index 95ffbd289d40..134417d9ff86 100644
  			compatible = "linaro,optee-tz";
  			method = "smc";
  			interrupt-parent = <&intc>;
-@@ -137,6 +137,7 @@ intc: interrupt-controller@4ac00000 {
+@@ -137,6 +137,7 @@
  		      <0x0 0x4ac20000 0x0 0x2000>,
  		      <0x0 0x4ac40000 0x0 0x2000>,
  		      <0x0 0x4ac60000 0x0 0x2000>;
@@ -37,8 +35,6 @@ index 95ffbd289d40..134417d9ff86 100644
  	};
  
  	psci {
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index ed758c07833c..092451a88d7c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 @@ -8,6 +8,7 @@
@@ -49,7 +45,7 @@ index ed758c07833c..092451a88d7c 100644
  #include "stm32mp215.dtsi"
  #include "stm32mp21xf.dtsi"
  #include "stm32mp21-pinctrl.dtsi"
-@@ -73,6 +74,31 @@ dmic1_endpoint: endpoint {
+@@ -73,6 +74,31 @@
  		};
  	};
  
@@ -81,6 +77,3 @@ index ed758c07833c..092451a88d7c 100644
  	gpio-leds {
  		compatible = "gpio-leds";
  
--- 
-2.39.5
-

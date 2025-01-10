@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 8 +++++---
  1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index f7cdda0d600c..96337e5c43c8 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
 @@ -84,6 +84,7 @@ struct stm32mp_exti_host_data {
@@ -33,7 +31,7 @@ index f7cdda0d600c..96337e5c43c8 100644
  	DECLARE_BITMAP(gpio_mux_used, STM32MP_GPIO_IRQ_LINES);
  	u8 gpio_mux_pos[STM32MP_GPIO_IRQ_LINES];
  };
-@@ -621,13 +622,13 @@ static int stm32mp_exti_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+@@ -621,13 +622,13 @@ static int stm32mp_exti_gpio_bank_alloc(
  		return -EBUSY;
  	}
  
@@ -49,7 +47,7 @@ index f7cdda0d600c..96337e5c43c8 100644
  			return ret;
  		}
  	}
-@@ -640,7 +641,7 @@ static int stm32mp_exti_gpio_bank_alloc(struct irq_domain *dm, struct irq_fwspec
+@@ -640,7 +641,7 @@ static int stm32mp_exti_gpio_bank_alloc(
  	if (hwlock)
  		hwspin_unlock_in_atomic(hwlock);
  
@@ -58,7 +56,7 @@ index f7cdda0d600c..96337e5c43c8 100644
  
  	set_bit(hwirq, host_data->gpio_mux_used);
  	host_data->gpio_mux_pos[hwirq] = gpio_bank;
-@@ -835,6 +836,7 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -835,6 +836,7 @@ static int stm32mp_exti_probe(struct pla
  
  	dev_set_drvdata(dev, host_data);
  	host_data->dev = dev;
@@ -66,6 +64,3 @@ index f7cdda0d600c..96337e5c43c8 100644
  
  	if (of_device_is_compatible(np, "syscon"))
  		host_data->has_syscon = true;
--- 
-2.39.5
-

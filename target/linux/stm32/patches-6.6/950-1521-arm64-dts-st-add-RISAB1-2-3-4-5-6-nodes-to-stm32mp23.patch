@@ -16,11 +16,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 49 ++++++++++++++++++++++++++
  1 file changed, 49 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index f3567c550991..7d320d762171 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2142,6 +2142,55 @@ risaf4: risaf@420d0000 {
+@@ -2142,6 +2142,55 @@
  			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
  		};
  
@@ -76,6 +74,3 @@ index f3567c550991..7d320d762171 100644
  		bsec: efuse@44000000 {
  			compatible = "st,stm32mp25-bsec";
  			reg = <0x44000000 0x1000>;
--- 
-2.39.5
-

@@ -18,8 +18,6 @@ Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-index 24a3dbde223b..c34c0e90dc0c 100644
 --- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
 +++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
 @@ -74,6 +74,10 @@ patternProperties:
@@ -33,6 +31,3 @@ index 24a3dbde223b..c34c0e90dc0c 100644
        connector:
          type: object
          $ref: /schemas/connector/usb-connector.yaml
--- 
-2.39.5
-

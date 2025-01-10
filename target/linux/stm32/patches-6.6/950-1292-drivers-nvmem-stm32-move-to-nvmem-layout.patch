@@ -21,11 +21,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/nvmem/stm32-tamp-nvram.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/nvmem/stm32-tamp-nvram.c b/drivers/nvmem/stm32-tamp-nvram.c
-index 99c8feb6efde..fcada8d1c21c 100644
 --- a/drivers/nvmem/stm32-tamp-nvram.c
 +++ b/drivers/nvmem/stm32-tamp-nvram.c
-@@ -539,7 +539,6 @@ static int stm32_tamp_nvram_probe(struct platform_device *pdev)
+@@ -539,7 +539,6 @@ static int stm32_tamp_nvram_probe(struct
  	priv->cfg.priv = priv;
  	priv->cfg.owner = THIS_MODULE;
  	priv->cfg.type = NVMEM_TYPE_BATTERY_BACKED;
@@ -33,6 +31,3 @@ index 99c8feb6efde..fcada8d1c21c 100644
  	priv->cfg.size = resource_size(res);
  	priv->cfg.reg_read = stm32_tamp_nvram_read;
  	priv->cfg.reg_write = stm32_tamp_nvram_write;
--- 
-2.39.5
-

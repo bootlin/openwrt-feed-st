@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/drv.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index 0c8c14477d77..0b073c32aeac 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -38,6 +38,10 @@ static const struct drm_mode_config_funcs drv_mode_config_funcs = {
+@@ -39,6 +39,10 @@ static const struct drm_mode_config_func
  	.atomic_commit = drm_atomic_helper_commit,
  };
  
@@ -29,7 +27,7 @@ index 0c8c14477d77..0b073c32aeac 100644
  static int stm_gem_dma_dumb_create(struct drm_file *file,
  				   struct drm_device *dev,
  				   struct drm_mode_create_dumb *args)
-@@ -89,6 +93,7 @@ static int drv_load(struct drm_device *ddev)
+@@ -97,6 +101,7 @@ static int drv_load(struct drm_device *d
  	ddev->mode_config.max_width = STM_MAX_FB_WIDTH;
  	ddev->mode_config.max_height = STM_MAX_FB_HEIGHT;
  	ddev->mode_config.funcs = &drv_mode_config_funcs;
@@ -37,6 +35,3 @@ index 0c8c14477d77..0b073c32aeac 100644
  	ddev->mode_config.normalize_zpos = true;
  
  	ret = ltdc_load(ddev);
--- 
-2.39.5
-

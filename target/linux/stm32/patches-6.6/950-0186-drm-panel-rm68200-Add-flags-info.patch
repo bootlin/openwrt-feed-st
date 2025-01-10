@@ -11,11 +11,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-raydium-rm68200.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raydium-rm68200.c b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-index 690831d5a772..b9602eff04b4 100644
 --- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
 +++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-@@ -91,7 +91,7 @@ static const struct drm_display_mode default_mode = {
+@@ -91,7 +91,7 @@ static const struct drm_display_mode def
  	.vsync_start = 1280 + 12,
  	.vsync_end = 1280 + 12 + 5,
  	.vtotal = 1280 + 12 + 5 + 12,
@@ -24,7 +22,7 @@ index 690831d5a772..b9602eff04b4 100644
  	.width_mm = 68,
  	.height_mm = 122,
  };
-@@ -347,6 +347,8 @@ static int rm68200_get_modes(struct drm_panel *panel,
+@@ -347,6 +347,8 @@ static int rm68200_get_modes(struct drm_
  
  	connector->display_info.width_mm = mode->width_mm;
  	connector->display_info.height_mm = mode->height_mm;
@@ -33,6 +31,3 @@ index 690831d5a772..b9602eff04b4 100644
  
  	return 1;
  }
--- 
-2.39.5
-

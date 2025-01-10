@@ -40,8 +40,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  create mode 100644 drivers/mtd/hyperbus/hyperbus-sfdp.c
  create mode 100644 include/linux/mtd/sfdp.h
 
-diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
-index 53195bf31f2d..6f0daf06423a 100644
 --- a/drivers/mtd/hyperbus/Makefile
 +++ b/drivers/mtd/hyperbus/Makefile
 @@ -1,6 +1,8 @@
@@ -54,8 +52,6 @@ index 53195bf31f2d..6f0daf06423a 100644
  obj-$(CONFIG_STM32_HYPERBUS)	+= hyperbus-stm32.o
 +
 +hyperbus-objs	:= hyperbus-core.o hyperbus-sfdp.o
-diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-index 4d8047d43e48..473c8f544f9f 100644
 --- a/drivers/mtd/hyperbus/hyperbus-core.c
 +++ b/drivers/mtd/hyperbus/hyperbus-core.c
 @@ -9,9 +9,21 @@
@@ -80,7 +76,7 @@ index 4d8047d43e48..473c8f544f9f 100644
  static struct hyperbus_device *map_to_hbdev(struct map_info *map)
  {
  	return container_of(map, struct hyperbus_device, map);
-@@ -106,7 +118,7 @@ int hyperbus_register_device(struct hyperbus_device *hbdev)
+@@ -106,7 +118,7 @@ int hyperbus_register_device(struct hype
  		}
  	}
  
@@ -89,9 +85,6 @@ index 4d8047d43e48..473c8f544f9f 100644
  	if (!hbdev->mtd) {
  		dev_err(dev, "probing of hyperbus device failed\n");
  		return -ENODEV;
-diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-new file mode 100644
-index 000000000000..5ba010aeeb3c
 --- /dev/null
 +++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
 @@ -0,0 +1,311 @@
@@ -406,9 +399,6 @@ index 000000000000..5ba010aeeb3c
 +{
 +	return mtd_do_chip_probe(map, &hyperbus_sfdp_chip_probe);
 +}
-diff --git a/include/linux/mtd/sfdp.h b/include/linux/mtd/sfdp.h
-new file mode 100644
-index 000000000000..2bdb8cdc8170
 --- /dev/null
 +++ b/include/linux/mtd/sfdp.h
 @@ -0,0 +1,9 @@
@@ -421,6 +411,3 @@ index 000000000000..2bdb8cdc8170
 +struct mtd_info *hyperbus_sfdp_probe(struct map_info *map);
 +
 +#endif /* __MTD_SFDP_H__ */
--- 
-2.39.5
-

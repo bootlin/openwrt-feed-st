@@ -12,11 +12,9 @@ Change-Id: I87c3e1c17f07e69631f92956f6a477b83ebeb825
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 69a9c5f0b868..5d5d7c652455 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -69,6 +69,10 @@ memory@80000000 {
+@@ -69,6 +69,10 @@
  	};
  };
  
@@ -27,7 +25,7 @@ index 69a9c5f0b868..5d5d7c652455 100644
  &arm_wdt {
  	timeout-sec = <32>;
  	status = "okay";
-@@ -167,6 +171,20 @@ &i2c2 {
+@@ -167,6 +171,20 @@
  	/delete-property/dma-names;
  };
  
@@ -48,6 +46,3 @@ index 69a9c5f0b868..5d5d7c652455 100644
  &ommanager {
  	memory-region = <&mm_ospi1>;
  	memory-region-names = "mm_ospi1";
--- 
-2.39.5
-

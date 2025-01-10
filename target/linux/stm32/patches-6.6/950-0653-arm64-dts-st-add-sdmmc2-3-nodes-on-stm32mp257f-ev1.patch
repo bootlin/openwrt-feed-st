@@ -14,11 +14,9 @@ Change-Id: I0c87bd5d812ea90dd72664ac4ceca9831dc26a19
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 30 ++++++++++++++++++++++
  1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 79fa26ac8a12..da0b06136223 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -212,6 +212,36 @@ &sdmmc1 {
+@@ -212,6 +212,36 @@
  	status = "okay";
  };
  
@@ -55,6 +53,3 @@ index 79fa26ac8a12..da0b06136223 100644
  &spi3 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&spi3_pins_a>;
--- 
-2.39.5
-

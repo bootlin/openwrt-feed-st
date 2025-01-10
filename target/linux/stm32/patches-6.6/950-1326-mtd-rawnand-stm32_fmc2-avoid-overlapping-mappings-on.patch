@@ -52,8 +52,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 28 +++++++++-----------------
  1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 264556939a00..37d3eab69e2c 100644
 --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 @@ -272,6 +272,7 @@ struct stm32_fmc2_nfc {
@@ -64,7 +62,7 @@ index 264556939a00..37d3eab69e2c 100644
  	int dma_ecc_len;
  	u32 tx_dma_max_burst;
  	u32 rx_dma_max_burst;
-@@ -902,17 +903,10 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+@@ -902,17 +903,10 @@ static int stm32_fmc2_nfc_xfer(struct na
  
  	if (!write_data && !raw) {
  		/* Configure DMA ECC status */
@@ -85,7 +83,7 @@ index 264556939a00..37d3eab69e2c 100644
  		}
  
  		desc_ecc = dmaengine_prep_slave_sg(nfc->dma_ecc_ch,
-@@ -921,7 +915,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+@@ -921,7 +915,7 @@ static int stm32_fmc2_nfc_xfer(struct na
  						   DMA_PREP_INTERRUPT);
  		if (!desc_ecc) {
  			ret = -ENOMEM;
@@ -94,7 +92,7 @@ index 264556939a00..37d3eab69e2c 100644
  		}
  
  		reinit_completion(&nfc->dma_ecc_complete);
-@@ -929,7 +923,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+@@ -929,7 +923,7 @@ static int stm32_fmc2_nfc_xfer(struct na
  		desc_ecc->callback_param = &nfc->dma_ecc_complete;
  		ret = dma_submit_error(dmaengine_submit(desc_ecc));
  		if (ret)
@@ -103,7 +101,7 @@ index 264556939a00..37d3eab69e2c 100644
  
  		dma_async_issue_pending(nfc->dma_ecc_ch);
  	}
-@@ -949,7 +943,7 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+@@ -949,7 +943,7 @@ static int stm32_fmc2_nfc_xfer(struct na
  		if (!write_data && !raw)
  			dmaengine_terminate_all(nfc->dma_ecc_ch);
  		ret = -ETIMEDOUT;
@@ -112,7 +110,7 @@ index 264556939a00..37d3eab69e2c 100644
  	}
  
  	/* Wait DMA data transfer completion */
-@@ -969,11 +963,6 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+@@ -969,11 +963,6 @@ static int stm32_fmc2_nfc_xfer(struct na
  		}
  	}
  
@@ -124,7 +122,7 @@ index 264556939a00..37d3eab69e2c 100644
  err_unmap_data:
  	dma_unmap_sg(nfc->dev, nfc->dma_data_sg.sgl, eccsteps, dma_data_dir);
  
-@@ -1610,7 +1599,8 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
+@@ -1610,7 +1599,8 @@ static int stm32_fmc2_nfc_dma_setup(stru
  		return ret;
  
  	/* Allocate a buffer to store ECC status registers */
@@ -134,6 +132,3 @@ index 264556939a00..37d3eab69e2c 100644
  	if (!nfc->ecc_buf)
  		return -ENOMEM;
  
--- 
-2.39.5
-

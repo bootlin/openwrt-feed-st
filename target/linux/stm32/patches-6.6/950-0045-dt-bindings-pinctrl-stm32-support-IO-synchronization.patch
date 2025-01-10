@@ -17,8 +17,6 @@ Change-Id: I7de0e54152072116a752653bc0ed04ce70d4042a
  .../bindings/pinctrl/st,stm32-pinctrl.yaml    | 48 +++++++++++++++++++
  1 file changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index 2120ef71a78d..f7eaafb2929a 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 @@ -198,6 +198,54 @@ patternProperties:
@@ -76,6 +74,3 @@ index 2120ef71a78d..f7eaafb2929a 100644
  
          required:
            - pinmux
--- 
-2.39.5
-

@@ -39,8 +39,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 22 +++++++++++++++----
  1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 4d50ae09c5ad..a878ea811e10 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 @@ -153,6 +153,9 @@ struct dcmipp_bytecap_device {
@@ -53,7 +51,7 @@ index 4d50ae09c5ad..a878ea811e10 100644
  };
  
  static const struct v4l2_pix_format fmt_default = {
-@@ -368,6 +371,10 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_bytecap_device *vcap,
+@@ -368,6 +371,10 @@ static int dcmipp_pipeline_s_stream(stru
  		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
  	}
  
@@ -64,7 +62,7 @@ index 4d50ae09c5ad..a878ea811e10 100644
  	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
  	if (ret < 0) {
  		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
-@@ -388,6 +395,9 @@ static void dcmipp_start_capture(struct dcmipp_bytecap_device *vcap,
+@@ -388,6 +395,9 @@ static void dcmipp_start_capture(struct
  	reg_write(vcap, DCMIPP_P0DCLMTR, DCMIPP_P0DCLMTR_ENABLE |
  		  ((buf->size / 4) & DCMIPP_P0DCLMTR_LIMIT_MASK));
  
@@ -74,7 +72,7 @@ index 4d50ae09c5ad..a878ea811e10 100644
  	/* Capture request */
  	reg_set(vcap, DCMIPP_P0FCTCR, DCMIPP_P0FCTCR_CPTREQ);
  }
-@@ -795,11 +805,15 @@ static irqreturn_t dcmipp_bytecap_irq_thread(int irq, void *arg)
+@@ -795,11 +805,15 @@ static irqreturn_t dcmipp_bytecap_irq_th
  		 * most of the cases, since a FRAMEEND has already come,
  		 * pointer next is NULL since active is reset during the
  		 * FRAMEEND handling. However, in case of framerate adjustment,
@@ -94,6 +92,3 @@ index 4d50ae09c5ad..a878ea811e10 100644
  	}
  
  out:
--- 
-2.39.5
-

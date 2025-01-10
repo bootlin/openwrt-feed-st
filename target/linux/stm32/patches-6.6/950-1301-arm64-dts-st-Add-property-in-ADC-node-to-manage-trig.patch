@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 219f12ba1535..265e90d92415 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1420,6 +1420,7 @@ adc1: adc@0 {
+@@ -1420,6 +1420,7 @@
  					interrupts = <0>;
  					dmas = <&hpdma 58 0x40 0x12>;
  					dma-names = "rx";
@@ -30,7 +28,7 @@ index 219f12ba1535..265e90d92415 100644
  					status = "disabled";
  
  					channel@14 {
-@@ -1452,6 +1453,7 @@ adc2: adc@0 {
+@@ -1452,6 +1453,7 @@
  					interrupts = <0>;
  					dmas = <&hpdma 59 0x40 0x12>;
  					dma-names = "rx";
@@ -38,6 +36,3 @@ index 219f12ba1535..265e90d92415 100644
  					status = "disabled";
  
  					channel@14 {
--- 
-2.39.5
-

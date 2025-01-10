@@ -22,11 +22,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/adc/stm32-adc.c      | 9 +++++++--
  3 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-index b924b39b65ed..aa60ed819b36 100644
 --- a/drivers/iio/adc/stm32-adc-core.c
 +++ b/drivers/iio/adc/stm32-adc-core.c
-@@ -827,10 +827,6 @@ static int stm32_adc_probe_identification(struct platform_device *pdev,
+@@ -827,10 +827,6 @@ static int stm32_adc_probe_identificatio
  		 */
  		if (priv->nb_irqs > priv->nb_adc_max)
  			priv->nb_irqs = priv->nb_adc_max;
@@ -37,8 +35,6 @@ index b924b39b65ed..aa60ed819b36 100644
  	}
  
  	val = readl_relaxed(priv->common.base + STM32MP1_ADC_VERR);
-diff --git a/drivers/iio/adc/stm32-adc-core.h b/drivers/iio/adc/stm32-adc-core.h
-index dbcf8528f64f..1f7a039fd8e8 100644
 --- a/drivers/iio/adc/stm32-adc-core.h
 +++ b/drivers/iio/adc/stm32-adc-core.h
 @@ -289,7 +289,6 @@ enum stm32h7_adc_dmngt {
@@ -57,11 +53,9 @@ index dbcf8528f64f..1f7a039fd8e8 100644
  };
  
  #endif
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 54843f364bd5..c364e03d0182 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -2959,6 +2959,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+@@ -2959,6 +2959,7 @@ static int stm32_adc_probe(struct platfo
  	irqreturn_t (*handler)(int irq, void *p) = NULL;
  	struct stm32_adc *adc;
  	bool timestamping = false;
@@ -69,7 +63,7 @@ index 54843f364bd5..c364e03d0182 100644
  	int ret;
  
  	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*adc));
-@@ -3011,9 +3012,13 @@ static int stm32_adc_probe(struct platform_device *pdev)
+@@ -3011,9 +3012,13 @@ static int stm32_adc_probe(struct platfo
  	if (ret < 0)
  		return ret;
  
@@ -85,6 +79,3 @@ index 54843f364bd5..c364e03d0182 100644
  	if (!adc->trigs) {
  		dev_err(&pdev->dev, "Can't get trigger list\n");
  		return -EINVAL;
--- 
-2.39.5
-

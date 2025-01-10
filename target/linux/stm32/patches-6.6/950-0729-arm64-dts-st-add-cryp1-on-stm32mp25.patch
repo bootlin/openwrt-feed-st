@@ -12,8 +12,6 @@ Change-Id: Ic66fcf22f24764ea81c44d4fca04d70658a55c1e
  arch/arm64/boot/dts/st/stm32mp25xf.dtsi | 14 +++++++++++++-
  2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-index 5e83a6926485..70165d32667e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 @@ -4,5 +4,17 @@
@@ -35,8 +33,6 @@ index 5e83a6926485..70165d32667e 100644
 +		status = "disabled";
 +	};
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-index 5e83a6926485..70165d32667e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 @@ -4,5 +4,17 @@
@@ -58,6 +54,3 @@ index 5e83a6926485..70165d32667e 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.5
-

@@ -15,11 +15,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 48 ++++++++++++++++++++++++++++++--
  1 file changed, 46 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 3868c3f3223d..d62671977675 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -1076,6 +1076,45 @@ static const struct clk_ops rtc_div_clk_ops = {
+@@ -1076,6 +1076,45 @@ static const struct clk_ops rtc_div_clk_
  	.determine_rate = clk_divider_rtc_determine_rate
  };
  
@@ -65,7 +63,7 @@ index 3868c3f3223d..d62671977675 100644
  struct stm32_pll_cfg {
  	u32 offset;
  	u32 muxoff;
-@@ -1310,6 +1349,11 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1310,6 +1349,11 @@ _clk_stm32_register_composite(struct dev
  	_STM32_DIV(_div_offset, _div_shift, _div_width,\
  		   _div_flags, _div_table, NULL)\
  
@@ -77,7 +75,7 @@ index 3868c3f3223d..d62671977675 100644
  #define _DIV_RTC(_div_offset, _div_shift, _div_width, _div_flags, _div_table)\
  	_STM32_DIV(_div_offset, _div_shift, _div_width,\
  		   _div_flags, _div_table, &rtc_div_clk_ops)
-@@ -1781,7 +1825,7 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1781,7 +1825,7 @@ static const struct clock_config stm32mp
  	COMPOSITE(PLL3_Q, "pll3_q", PARENT("pll3"), 0,
  		  _GATE(RCC_PLL3CR, 5, 0),
  		  _NO_MUX,
@@ -86,7 +84,7 @@ index 3868c3f3223d..d62671977675 100644
  
  	COMPOSITE(PLL3_R, "pll3_r", PARENT("pll3"), 0,
  		  _GATE(RCC_PLL3CR, 6, 0),
-@@ -1801,7 +1845,7 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1801,7 +1845,7 @@ static const struct clock_config stm32mp
  	COMPOSITE(PLL4_R, "pll4_r", PARENT("pll4"), 0,
  		  _GATE(RCC_PLL4CR, 6, 0),
  		  _NO_MUX,
@@ -95,6 +93,3 @@ index 3868c3f3223d..d62671977675 100644
  
  	/* MUX system clocks */
  	MUX(CK_PER, "ck_per", per_src, CLK_OPS_PARENT_ENABLE,
--- 
-2.39.5
-

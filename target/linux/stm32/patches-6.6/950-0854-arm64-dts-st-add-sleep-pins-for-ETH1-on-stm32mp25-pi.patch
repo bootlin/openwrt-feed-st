@@ -17,11 +17,9 @@ Tested-by: Christophe ROULLIER <christophe.roullier@st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 20 +++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 1d74df2c9553..60f07008b3ee 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -120,6 +120,26 @@ pins4 {
+@@ -120,6 +120,26 @@
  		};
  	};
  
@@ -48,6 +46,3 @@ index 1d74df2c9553..60f07008b3ee 100644
  	eth2_rgmii_pins_a: eth2-rgmii-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('C', 7, AF10)>, /* ETH_RGMII_TXD0 */
--- 
-2.39.5
-

@@ -17,8 +17,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 25 +++++++++++++++++++++++--
  1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 147860f82d0d..ffb673c81ab2 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -15,6 +15,7 @@
@@ -29,7 +27,7 @@ index 147860f82d0d..ffb673c81ab2 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include <dt-bindings/phy/phy.h>
-@@ -377,6 +378,7 @@ static void stm32_combophy_disable_clocks(struct stm32_combophy *combophy)
+@@ -377,6 +378,7 @@ static void stm32_combophy_disable_clock
  static int stm32_combophy_exit(struct phy *phy)
  {
  	struct stm32_combophy *combophy = phy_get_drvdata(phy);
@@ -37,7 +35,7 @@ index 147860f82d0d..ffb673c81ab2 100644
  
  	if (combophy->type == PHY_TYPE_PCIE && !combophy->pad_clk)
  		regmap_update_bits(combophy->regmap, SYSCFG_PCIEPRGCR,
-@@ -391,30 +393,44 @@ static int stm32_combophy_exit(struct phy *phy)
+@@ -391,30 +393,44 @@ static int stm32_combophy_exit(struct ph
  
  	stm32_combophy_disable_clocks(combophy);
  
@@ -84,7 +82,7 @@ index 147860f82d0d..ffb673c81ab2 100644
  
  	return ret;
  }
-@@ -431,6 +447,7 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -431,6 +447,7 @@ static int stm32_combophy_probe(struct p
  	struct device *dev = &pdev->dev;
  	struct device_node *np = dev->of_node;
  	struct phy_provider *phy_provider;
@@ -92,7 +90,7 @@ index 147860f82d0d..ffb673c81ab2 100644
  
  	combophy = devm_kzalloc(dev, sizeof(*combophy), GFP_KERNEL);
  	if (!combophy)
-@@ -474,6 +491,10 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -474,6 +491,10 @@ static int stm32_combophy_probe(struct p
  		return dev_err_probe(dev, PTR_ERR(combophy->phy),
  				     "failed to create PCIe/USB3 ComboPHY\n");
  
@@ -103,6 +101,3 @@ index 147860f82d0d..ffb673c81ab2 100644
  	phy_set_drvdata(combophy->phy, combophy);
  
  	phy_provider = devm_of_phy_provider_register(dev, stm32_combophy_xlate);
--- 
-2.39.5
-

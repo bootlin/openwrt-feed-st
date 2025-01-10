@@ -13,11 +13,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index b2cb0f70c39b..56d7380ddc4c 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -96,6 +96,26 @@ psci {
+@@ -96,6 +96,26 @@
  		method = "smc";
  	};
  
@@ -44,6 +42,3 @@ index b2cb0f70c39b..56d7380ddc4c 100644
  	timer {
  		compatible = "arm,armv7-timer";
  		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
--- 
-2.39.5
-

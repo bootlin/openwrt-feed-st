@@ -20,11 +20,9 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/mfd/stpmic1.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/stpmic1.c b/drivers/mfd/stpmic1.c
-index 167b15f89018..eeb761134297 100644
 --- a/drivers/mfd/stpmic1.c
 +++ b/drivers/mfd/stpmic1.c
-@@ -172,7 +172,7 @@ static int stpmic1_probe(struct i2c_client *i2c)
+@@ -172,7 +172,7 @@ static int stpmic1_probe(struct i2c_clie
  
  	ret = devm_register_sys_off_handler(ddata->dev,
  					    SYS_OFF_MODE_POWER_OFF,
@@ -33,6 +31,3 @@ index 167b15f89018..eeb761134297 100644
  					    stpmic1_power_off,
  					    ddata);
  	if (ret) {
--- 
-2.39.5
-

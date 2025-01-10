@@ -12,11 +12,9 @@ Change-Id: I8548e3aaeb9df471977ea3b561899c84d5fbeb33
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 04bde162370d..67501d33b417 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -618,6 +618,9 @@ &timers1 {
+@@ -618,6 +618,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -26,7 +24,7 @@ index 04bde162370d..67501d33b417 100644
  	pwm {
  		pinctrl-0 = <&pwm1_pins_a>;
  		pinctrl-1 = <&pwm1_sleep_pins_a>;
-@@ -633,6 +636,9 @@ &timers3 {
+@@ -633,6 +636,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -36,7 +34,7 @@ index 04bde162370d..67501d33b417 100644
  	pwm {
  		pinctrl-0 = <&pwm3_pins_a>;
  		pinctrl-1 = <&pwm3_sleep_pins_a>;
-@@ -648,6 +654,9 @@ &timers4 {
+@@ -648,6 +654,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -46,7 +44,7 @@ index 04bde162370d..67501d33b417 100644
  	pwm {
  		pinctrl-0 = <&pwm4_pins_a &pwm4_pins_b>;
  		pinctrl-1 = <&pwm4_sleep_pins_a &pwm4_sleep_pins_b>;
-@@ -663,6 +672,9 @@ &timers5 {
+@@ -663,6 +672,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -56,7 +54,7 @@ index 04bde162370d..67501d33b417 100644
  	pwm {
  		pinctrl-0 = <&pwm5_pins_a>;
  		pinctrl-1 = <&pwm5_sleep_pins_a>;
-@@ -678,6 +690,9 @@ &timers6 {
+@@ -678,6 +690,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -66,7 +64,7 @@ index 04bde162370d..67501d33b417 100644
  	timer@5 {
  		status = "okay";
  	};
-@@ -687,6 +702,9 @@ &timers12 {
+@@ -687,6 +702,9 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  	status = "disabled";
@@ -76,6 +74,3 @@ index 04bde162370d..67501d33b417 100644
  	pwm {
  		pinctrl-0 = <&pwm12_pins_a>;
  		pinctrl-1 = <&pwm12_sleep_pins_a>;
--- 
-2.39.5
-

@@ -16,11 +16,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 40 ++++++++++++++++++++++------
  1 file changed, 32 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 8b32d7d274d1..ffec8ce25bff 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -560,12 +560,16 @@ i2c1: i2c@40012000 {
+@@ -560,12 +560,16 @@
  			compatible = "st,stm32mp15-i2c";
  			reg = <0x40012000 0x400>;
  			interrupt-names = "event", "error";
@@ -39,7 +37,7 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x1>;
  			wakeup-source;
  			i2c-analog-filter;
-@@ -576,12 +580,16 @@ i2c2: i2c@40013000 {
+@@ -576,12 +580,16 @@
  			compatible = "st,stm32mp15-i2c";
  			reg = <0x40013000 0x400>;
  			interrupt-names = "event", "error";
@@ -58,7 +56,7 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x2>;
  			wakeup-source;
  			i2c-analog-filter;
-@@ -592,12 +600,16 @@ i2c3: i2c@40014000 {
+@@ -592,12 +600,16 @@
  			compatible = "st,stm32mp15-i2c";
  			reg = <0x40014000 0x400>;
  			interrupt-names = "event", "error";
@@ -77,7 +75,7 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x4>;
  			wakeup-source;
  			i2c-analog-filter;
-@@ -608,12 +620,16 @@ i2c5: i2c@40015000 {
+@@ -608,12 +620,16 @@
  			compatible = "st,stm32mp15-i2c";
  			reg = <0x40015000 0x400>;
  			interrupt-names = "event", "error";
@@ -96,7 +94,7 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x10>;
  			wakeup-source;
  			i2c-analog-filter;
-@@ -1779,6 +1795,10 @@ i2c4: i2c@5c002000 {
+@@ -1779,6 +1795,10 @@
  			resets = <&rcc I2C4_R>;
  			#address-cells = <1>;
  			#size-cells = <0>;
@@ -107,7 +105,7 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x8>;
  			wakeup-source;
  			i2c-analog-filter;
-@@ -1826,6 +1846,10 @@ i2c6: i2c@5c009000 {
+@@ -1826,6 +1846,10 @@
  			resets = <&rcc I2C6_R>;
  			#address-cells = <1>;
  			#size-cells = <0>;
@@ -118,6 +116,3 @@ index 8b32d7d274d1..ffec8ce25bff 100644
  			st,syscfg-fmp = <&syscfg 0x4 0x20>;
  			wakeup-source;
  			i2c-analog-filter;
--- 
-2.39.5
-

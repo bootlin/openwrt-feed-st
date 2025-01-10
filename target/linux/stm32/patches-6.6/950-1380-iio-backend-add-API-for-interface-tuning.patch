@@ -42,11 +42,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/iio/backend.h        | 36 +++++++++++++
  2 files changed, 122 insertions(+)
 
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index c27243e88462..929aff4040ed 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
-@@ -226,6 +226,92 @@ int iio_backend_set_sampling_freq(struct iio_backend *back, unsigned int chan,
+@@ -226,6 +226,92 @@ int iio_backend_set_sampling_freq(struct
  }
  EXPORT_SYMBOL_NS_GPL(iio_backend_set_sampling_freq, IIO_BACKEND);
  
@@ -139,8 +137,6 @@ index c27243e88462..929aff4040ed 100644
  static void iio_backend_free_buffer(void *arg)
  {
  	struct iio_backend_buffer_pair *pair = arg;
-diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
-index e3e62f65db14..8099759d7242 100644
 --- a/include/linux/iio/backend.h
 +++ b/include/linux/iio/backend.h
 @@ -49,6 +49,20 @@ struct iio_backend_data_fmt {
@@ -191,7 +187,7 @@ index e3e62f65db14..8099759d7242 100644
  	struct iio_buffer *(*request_buffer)(struct iio_backend *back,
  					     struct iio_dev *indio_dev);
  	void (*free_buffer)(struct iio_backend *back,
-@@ -97,6 +124,15 @@ int iio_backend_data_source_set(struct iio_backend *back, unsigned int chan,
+@@ -97,6 +124,15 @@ int iio_backend_data_source_set(struct i
  				enum iio_backend_data_source data);
  int iio_backend_set_sampling_freq(struct iio_backend *back, unsigned int chan,
  				  u64 sample_rate_hz);
@@ -207,6 +203,3 @@ index e3e62f65db14..8099759d7242 100644
  int devm_iio_backend_request_buffer(struct device *dev,
  				    struct iio_backend *back,
  				    struct iio_dev *indio_dev);
--- 
-2.39.5
-

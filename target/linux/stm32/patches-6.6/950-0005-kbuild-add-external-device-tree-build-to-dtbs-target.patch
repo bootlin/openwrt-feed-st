@@ -41,11 +41,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  Makefile | 32 +++++++++++++++++++++++++++++---
  1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index cef1e15ad760..4562dacf5c8c 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1385,17 +1385,43 @@ ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+@@ -1385,17 +1385,43 @@ ifneq ($(wildcard $(srctree)/arch/$(SRCA
  dtstree := arch/$(SRCARCH)/boot/dts
  endif
  
@@ -92,6 +90,3 @@ index cef1e15ad760..4562dacf5c8c 100644
  
  # include/config/kernel.release is actually needed when installing DTBs because
  # INSTALL_DTBS_PATH contains $(KERNELRELEASE). However, we do not want to make
--- 
-2.39.5
-

@@ -21,11 +21,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index bdb85f9cc573..53f653a9f3c8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -116,6 +116,7 @@ soc@0 {
+@@ -116,6 +116,7 @@
  		#size-cells = <1>;
  		interrupt-parent = <&intc>;
  		ranges = <0x0 0x0 0x0 0x80000000>;
@@ -33,7 +31,7 @@ index bdb85f9cc573..53f653a9f3c8 100644
  
  		rifsc: bus@42080000 {
  			compatible = "st,stm32mp25-rifsc", "simple-bus";
-@@ -155,6 +156,7 @@ sdmmc1: mmc@48220000 {
+@@ -155,6 +156,7 @@
  				cap-mmc-highspeed;
  				max-frequency = <120000000>;
  				access-controllers = <&rifsc 76>;
@@ -41,6 +39,3 @@ index bdb85f9cc573..53f653a9f3c8 100644
  				status = "disabled";
  			};
  		};
--- 
-2.39.5
-

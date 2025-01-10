@@ -21,8 +21,6 @@ Change-Id: I051ac986c5300c58e0a93421ecb81cedb366bccd
  drivers/media/i2c/imx335.c | 78 ++++++++++++++++++++++++++++++++++----
  1 file changed, 71 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 9aad22a1b2e7..dba4ca4986c6 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
 @@ -135,6 +135,7 @@ struct imx335_mode {
@@ -41,7 +39,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  };
  
  static const s64 link_freq[] = {
-@@ -252,6 +254,25 @@ static const struct imx335_reg mode_2592x1940_regs[] = {
+@@ -252,6 +254,25 @@ static const struct imx335_reg mode_2592
  	{0x3a00, 0x01},
  };
  
@@ -67,7 +65,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  /* Supported sensor mode configurations */
  static const struct imx335_mode supported_mode = {
  	.width = 2592,
-@@ -262,7 +283,6 @@ static const struct imx335_mode supported_mode = {
+@@ -262,7 +283,6 @@ static const struct imx335_mode supporte
  	.vblank_max = 133060,
  	.pclk = 396000000,
  	.link_freq_idx = 0,
@@ -75,7 +73,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  	.reg_list = {
  		.num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
  		.regs = mode_2592x1940_regs,
-@@ -502,6 +522,18 @@ static const struct v4l2_ctrl_ops imx335_ctrl_ops = {
+@@ -502,6 +522,18 @@ static const struct v4l2_ctrl_ops imx335
  	.s_ctrl = imx335_set_ctrl,
  };
  
@@ -94,7 +92,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  /**
   * imx335_enum_mbus_code() - Enumerate V4L2 sub-device mbus codes
   * @sd: pointer to imx335 V4L2 sub-device structure
-@@ -514,10 +546,10 @@ static int imx335_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -514,10 +546,10 @@ static int imx335_enum_mbus_code(struct
  				 struct v4l2_subdev_state *sd_state,
  				 struct v4l2_subdev_mbus_code_enum *code)
  {
@@ -107,7 +105,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  
  	return 0;
  }
-@@ -534,10 +566,14 @@ static int imx335_enum_frame_size(struct v4l2_subdev *sd,
+@@ -534,10 +566,14 @@ static int imx335_enum_frame_size(struct
  				  struct v4l2_subdev_state *sd_state,
  				  struct v4l2_subdev_frame_size_enum *fsize)
  {
@@ -124,7 +122,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  		return -EINVAL;
  
  	fsize->min_width = supported_mode.width;
-@@ -561,7 +597,7 @@ static void imx335_fill_pad_format(struct imx335 *imx335,
+@@ -561,7 +597,7 @@ static void imx335_fill_pad_format(struc
  {
  	fmt->format.width = mode->width;
  	fmt->format.height = mode->height;
@@ -133,7 +131,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  	fmt->format.field = V4L2_FIELD_NONE;
  	fmt->format.colorspace = V4L2_COLORSPACE_RAW;
  	fmt->format.ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
-@@ -613,11 +649,16 @@ static int imx335_set_pad_format(struct v4l2_subdev *sd,
+@@ -613,11 +649,16 @@ static int imx335_set_pad_format(struct
  {
  	struct imx335 *imx335 = to_imx335(sd);
  	const struct imx335_mode *mode;
@@ -151,7 +149,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  	imx335_fill_pad_format(imx335, mode, fmt);
  
  	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-@@ -690,6 +731,21 @@ static int imx335_get_selection(struct v4l2_subdev *sd,
+@@ -690,6 +731,21 @@ static int imx335_get_selection(struct v
  	return -EINVAL;
  }
  
@@ -173,7 +171,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  /**
   * imx335_start_streaming() - Start sensor stream
   * @imx335: pointer to imx335 device
-@@ -710,6 +766,13 @@ static int imx335_start_streaming(struct imx335 *imx335)
+@@ -710,6 +766,13 @@ static int imx335_start_streaming(struct
  		return ret;
  	}
  
@@ -187,7 +185,7 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  	/* Setup handler will write actual exposure and gain */
  	ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
  	if (ret) {
-@@ -1113,6 +1176,7 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1112,6 +1175,7 @@ static int imx335_probe(struct i2c_clien
  
  	/* Set default mode to max resolution */
  	imx335->cur_mode = &supported_mode;
@@ -195,6 +193,3 @@ index 9aad22a1b2e7..dba4ca4986c6 100644
  	imx335->vblank = imx335->cur_mode->vblank;
  
  	ret = imx335_init_controls(imx335);
--- 
-2.39.5
-

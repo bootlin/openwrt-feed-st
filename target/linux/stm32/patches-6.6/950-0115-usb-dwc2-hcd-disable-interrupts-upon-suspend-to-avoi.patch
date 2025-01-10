@@ -22,11 +22,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/usb/dwc2/hcd.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index de8073538cc6..6e09d70bd3a1 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4382,6 +4382,7 @@ static int _dwc2_hcd_suspend(struct usb_hcd *hcd)
+@@ -4377,6 +4377,7 @@ static int _dwc2_hcd_suspend(struct usb_
  		 * clock gating is used to save power.
  		 */
  		if (!hsotg->params.no_clock_gating) {
@@ -34,7 +32,7 @@ index de8073538cc6..6e09d70bd3a1 100644
  			dwc2_host_enter_clock_gating(hsotg);
  
  			/* After entering suspend, hardware is not accessible */
-@@ -4474,7 +4475,6 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+@@ -4470,7 +4471,6 @@ static int _dwc2_hcd_resume(struct usb_h
  		 * the global interrupts are disabled.
  		 */
  		dwc2_core_init(hsotg, false);
@@ -42,7 +40,7 @@ index de8073538cc6..6e09d70bd3a1 100644
  		dwc2_hcd_reinit(hsotg);
  		spin_lock_irqsave(&hsotg->lock, flags);
  
-@@ -4483,6 +4483,8 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+@@ -4479,6 +4479,8 @@ static int _dwc2_hcd_resume(struct usb_h
  		 * since an interrupt may rise.
  		 */
  		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
@@ -51,6 +49,3 @@ index de8073538cc6..6e09d70bd3a1 100644
  		break;
  	default:
  		hsotg->lx_state = DWC2_L0;
--- 
-2.39.5
-

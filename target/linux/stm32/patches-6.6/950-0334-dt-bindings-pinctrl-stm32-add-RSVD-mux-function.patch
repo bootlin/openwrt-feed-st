@@ -13,8 +13,6 @@ Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
  include/dt-bindings/pinctrl/stm32-pinfunc.h               | 1 +
  2 files changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index f7eaafb2929a..a893ca500d00 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 @@ -159,9 +159,13 @@ patternProperties:
@@ -42,8 +40,6 @@ index f7eaafb2929a..a893ca500d00 100644
  
            bias-disable:
              type: boolean
-diff --git a/include/dt-bindings/pinctrl/stm32-pinfunc.h b/include/dt-bindings/pinctrl/stm32-pinfunc.h
-index 28ad0235086a..af3fd388329a 100644
 --- a/include/dt-bindings/pinctrl/stm32-pinfunc.h
 +++ b/include/dt-bindings/pinctrl/stm32-pinfunc.h
 @@ -26,6 +26,7 @@
@@ -54,6 +50,3 @@ index 28ad0235086a..af3fd388329a 100644
  
  /* define Pins number*/
  #define PIN_NO(port, line)	(((port) - 'A') * 0x10 + (line))
--- 
-2.39.5
-

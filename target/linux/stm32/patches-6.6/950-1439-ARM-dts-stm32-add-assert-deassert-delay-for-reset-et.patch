@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 5ce9f62c172d..9cb6c21462ad 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -233,6 +233,8 @@ mdio {
+@@ -233,6 +233,8 @@
  		phy0_eth1: ethernet-phy@0 {
  			compatible = "ethernet-phy-id0007.c131";
  			reset-gpios =  <&mcp23017 9 GPIO_ACTIVE_LOW>;
@@ -28,7 +26,7 @@ index 5ce9f62c172d..9cb6c21462ad 100644
  			reg = <0>;
  			wakeup-source;
  		};
-@@ -259,6 +261,8 @@ mdio {
+@@ -259,6 +261,8 @@
  		phy0_eth2: ethernet-phy@0 {
  			compatible = "ethernet-phy-id0007.c131";
  			reset-gpios = <&mcp23017 10 GPIO_ACTIVE_LOW>;
@@ -37,6 +35,3 @@ index 5ce9f62c172d..9cb6c21462ad 100644
  			reg = <0>;
  		};
  	};
--- 
-2.39.5
-

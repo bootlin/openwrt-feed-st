@@ -17,8 +17,6 @@ Domain-Review: Patrice CHOTARD <patrice.chotard@foss.st.com>
  Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
-index 20acd1a6b173..da15218ddd26 100644
 --- a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 +++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 @@ -54,6 +54,8 @@ properties:
@@ -30,6 +28,3 @@ index 20acd1a6b173..da15218ddd26 100644
    "#access-controller-cells":
      const: 1
      description:
--- 
-2.39.5
-

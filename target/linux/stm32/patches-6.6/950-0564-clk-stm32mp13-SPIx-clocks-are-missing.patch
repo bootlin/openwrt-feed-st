@@ -16,8 +16,6 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/clk/stm32/clk-stm32mp13.c | 30 ++++++++++++++++++++++++++++++
  1 file changed, 30 insertions(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
-index e14c16f88b57..73f203767218 100644
 --- a/drivers/clk/stm32/clk-stm32mp13.c
 +++ b/drivers/clk/stm32/clk-stm32mp13.c
 @@ -714,6 +714,16 @@ static struct clk_stm32_gate tim17_k = {
@@ -66,7 +64,7 @@ index e14c16f88b57..73f203767218 100644
  static struct clk_stm32_gate dma1 = {
  	.gate_id = GATE_DMA1,
  	.hw.init = CLK_HW_INIT("dma1", "ck_mlahb", &clk_stm32_gate_ops, 0),
-@@ -1353,6 +1378,11 @@ static const struct clock_config stm32mp13_clock_cfg[] = {
+@@ -1353,6 +1378,11 @@ static const struct clock_config stm32mp
  	STM32_GATE_CFG(TIM17_K, tim17_k, SECF_TIM17),
  
  	/* Peripheral clocks */
@@ -78,6 +76,3 @@ index e14c16f88b57..73f203767218 100644
  	STM32_GATE_CFG(SAI1, sai1, SECF_NONE),
  	STM32_GATE_CFG(SAI2, sai2, SECF_NONE),
  	STM32_GATE_CFG(SYSCFG, syscfg, SECF_NONE),
--- 
-2.39.5
-

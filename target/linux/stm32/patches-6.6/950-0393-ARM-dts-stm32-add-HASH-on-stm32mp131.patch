@@ -11,11 +11,9 @@ Change-Id: I095f4d1baa90be1e39b9b983b0339d8603ade241
  arch/arm/boot/dts/st/stm32mp131.dtsi | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 4fc92537d474..d4ad507cd1bb 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1351,6 +1351,17 @@ dts: thermal@50028000 {
+@@ -1351,6 +1351,17 @@
  			status = "disabled";
  		};
  
@@ -33,6 +31,3 @@ index 4fc92537d474..d4ad507cd1bb 100644
  		mdma: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
--- 
-2.39.5
-

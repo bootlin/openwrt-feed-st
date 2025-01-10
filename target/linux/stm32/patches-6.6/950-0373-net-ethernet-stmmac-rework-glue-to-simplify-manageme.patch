@@ -15,8 +15,6 @@ Change-Id: Ia3d57fe8a583cc44061aca4bcac2a17ac189077d
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 72 +++++++++++++------
  1 file changed, 49 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index a0e276783e65..c090fadb978b 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -23,10 +23,6 @@
@@ -76,7 +74,7 @@ index a0e276783e65..c090fadb978b 100644
  	bool clk_rx_enable_in_suspend;
  };
  
-@@ -177,7 +184,7 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -177,7 +184,7 @@ static int stm32mp1_set_mode(struct plat
  	case PHY_INTERFACE_MODE_MII:
  		if (clk_rate == ETH_CK_F_25M && dwmac->ext_phyclk)
  			dwmac->enable_eth_ck = true;
@@ -85,7 +83,7 @@ index a0e276783e65..c090fadb978b 100644
  		pr_debug("SYSCFG init : PHY_INTERFACE_MODE_MII\n");
  		break;
  	case PHY_INTERFACE_MODE_GMII:
-@@ -185,16 +192,17 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -185,16 +192,17 @@ static int stm32mp1_set_mode(struct plat
  		if (clk_rate == ETH_CK_F_25M &&
  		    (dwmac->eth_clk_sel_reg || dwmac->ext_phyclk)) {
  			dwmac->enable_eth_ck = true;
@@ -106,7 +104,7 @@ index a0e276783e65..c090fadb978b 100644
  		}
  		pr_debug("SYSCFG init : PHY_INTERFACE_MODE_RMII\n");
  		break;
-@@ -202,11 +210,12 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -202,11 +210,12 @@ static int stm32mp1_set_mode(struct plat
  	case PHY_INTERFACE_MODE_RGMII_ID:
  	case PHY_INTERFACE_MODE_RGMII_RXID:
  	case PHY_INTERFACE_MODE_RGMII_TXID:
@@ -121,7 +119,7 @@ index a0e276783e65..c090fadb978b 100644
  		}
  		pr_debug("SYSCFG init : PHY_INTERFACE_MODE_RGMII\n");
  		break;
-@@ -218,12 +227,12 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -218,12 +227,12 @@ static int stm32mp1_set_mode(struct plat
  	}
  
  	/* Need to update PMCCLRR (clear register) */
@@ -137,7 +135,7 @@ index a0e276783e65..c090fadb978b 100644
  }
  
  static int stm32mcu_set_mode(struct plat_stmmacenet_data *plat_dat)
-@@ -249,7 +258,7 @@ static int stm32mcu_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -249,7 +258,7 @@ static int stm32mcu_set_mode(struct plat
  	}
  
  	return regmap_update_bits(dwmac->regmap, reg,
@@ -146,7 +144,7 @@ index a0e276783e65..c090fadb978b 100644
  }
  
  static void stm32_dwmac_clk_disable(struct stm32_dwmac *dwmac)
-@@ -292,10 +301,17 @@ static int stm32_dwmac_parse_data(struct stm32_dwmac *dwmac,
+@@ -292,10 +301,17 @@ static int stm32_dwmac_parse_data(struct
  		return PTR_ERR(dwmac->regmap);
  
  	err = of_property_read_u32_index(np, "st,syscon", 1, &dwmac->mode_reg);
@@ -166,7 +164,7 @@ index a0e276783e65..c090fadb978b 100644
  }
  
  static int stm32mp1_parse_data(struct stm32_dwmac *dwmac,
-@@ -506,7 +522,6 @@ static SIMPLE_DEV_PM_OPS(stm32_dwmac_pm_ops,
+@@ -506,7 +522,6 @@ static SIMPLE_DEV_PM_OPS(stm32_dwmac_pm_
  static struct stm32_ops stm32mcu_dwmac_data = {
  	.set_mode = stm32mcu_set_mode,
  	.suspend = stm32mcu_suspend,
@@ -174,7 +172,7 @@ index a0e276783e65..c090fadb978b 100644
  };
  
  static struct stm32_ops stm32mp1_dwmac_data = {
-@@ -515,8 +530,19 @@ static struct stm32_ops stm32mp1_dwmac_data = {
+@@ -515,8 +530,19 @@ static struct stm32_ops stm32mp1_dwmac_d
  	.suspend = stm32mp1_suspend,
  	.resume = stm32mp1_resume,
  	.parse_data = stm32mp1_parse_data,
@@ -196,6 +194,3 @@ index a0e276783e65..c090fadb978b 100644
  };
  
  static const struct of_device_id stm32_dwmac_match[] = {
--- 
-2.39.5
-

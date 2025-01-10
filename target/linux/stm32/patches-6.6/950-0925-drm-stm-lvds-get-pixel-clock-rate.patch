@@ -15,11 +15,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372044
  drivers/gpu/drm/stm/lvds.c | 26 +++++++++++++++++++++++++-
  1 file changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index a34c71d22d1b..164f36f136f2 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -1042,7 +1042,10 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1042,7 +1042,10 @@ static int lvds_probe(struct platform_de
  	struct device_node *port1, *port2, *remote;
  	struct device *dev = &pdev->dev;
  	struct reset_control *rstc;
@@ -30,7 +28,7 @@ index a34c71d22d1b..164f36f136f2 100644
  	int ret, dual_link;
  
  	dev_dbg(dev, "Probing LVDS driver...\n");
-@@ -1193,9 +1196,30 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1193,9 +1196,30 @@ static int lvds_probe(struct platform_de
  	 * To obtain a continuous display after the probe,
  	 *  the clocks must remain activated
  	 */
@@ -62,6 +60,3 @@ index a34c71d22d1b..164f36f136f2 100644
  	return 0;
  }
  
--- 
-2.39.5
-

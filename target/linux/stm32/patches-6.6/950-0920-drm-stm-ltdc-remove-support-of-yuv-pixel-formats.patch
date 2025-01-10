@@ -16,11 +16,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372036
  drivers/gpu/drm/stm/ltdc.c | 25 ++++++++++++++++---------
  1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 647709dfb7ac..53fb23709bf3 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1984,15 +1984,22 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+@@ -1626,15 +1626,22 @@ static struct drm_plane *ltdc_plane_crea
  			       ARRAY_SIZE(ltdc_drm_fmt_ycbcr_cp) * sizeof(*formats));
  			nb_fmt += ARRAY_SIZE(ltdc_drm_fmt_ycbcr_cp);
  		}
@@ -52,6 +50,3 @@ index 647709dfb7ac..53fb23709bf3 100644
  		}
  	}
  
--- 
-2.39.5
-

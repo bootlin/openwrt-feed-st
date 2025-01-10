@@ -12,8 +12,6 @@ Change-Id: I1012888bf4f56e782a785b19ad1cef4b75bdf57d
  .../devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml       | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
-index 829d1fdf4c67..09449d3cbd08 100644
 --- a/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
 +++ b/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
 @@ -11,7 +11,7 @@ maintainers:
@@ -34,6 +32,3 @@ index 829d1fdf4c67..09449d3cbd08 100644
          reg = <0x4c000000 0x400>;
          clocks = <&rcc HSEM>;
          clock-names = "hsem";
--- 
-2.39.5
-

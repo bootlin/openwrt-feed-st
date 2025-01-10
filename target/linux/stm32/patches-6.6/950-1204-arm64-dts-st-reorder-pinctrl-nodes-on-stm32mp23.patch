@@ -18,11 +18,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 224 ++++++++++++-------------
  1 file changed, 111 insertions(+), 113 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 10e0dc9fa5d8..bd7f5de52a94 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2217,119 +2217,6 @@ syscfg: syscon@44230000 {
+@@ -2217,119 +2217,6 @@
  			#clock-cells = <1>;
  		};
  
@@ -142,7 +140,7 @@ index 10e0dc9fa5d8..bd7f5de52a94 100644
  		pinctrl: pinctrl@44240000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
-@@ -2468,6 +2355,117 @@ gpiok: gpio@442e0000 {
+@@ -2468,6 +2355,117 @@
  			};
  		};
  
@@ -260,6 +258,3 @@ index 10e0dc9fa5d8..bd7f5de52a94 100644
  		pinctrl_z: pinctrl@46200000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.5
-

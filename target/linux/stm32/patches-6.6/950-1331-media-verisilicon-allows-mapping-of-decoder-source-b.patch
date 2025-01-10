@@ -17,11 +17,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  drivers/media/platform/verisilicon/hantro_drv.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index 7dba2c0dde98..d49e6f0e037e 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -220,6 +220,13 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+@@ -220,6 +220,13 @@ queue_init(void *priv, struct vb2_queue
  	 */
  	src_vq->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES |
  			    DMA_ATTR_NO_KERNEL_MAPPING;
@@ -35,6 +33,3 @@ index 7dba2c0dde98..d49e6f0e037e 100644
  	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
  	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
  	src_vq->lock = &ctx->dev->vpu_mutex;
--- 
-2.39.5
-

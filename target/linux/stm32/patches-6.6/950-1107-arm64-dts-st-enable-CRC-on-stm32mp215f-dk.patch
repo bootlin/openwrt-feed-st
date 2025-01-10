@@ -19,11 +19,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 421e4686bb29..b535b9735e76 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -44,6 +44,10 @@ fw@80000000 {
+@@ -44,6 +44,10 @@
  	};
  };
  
@@ -34,6 +32,3 @@ index 421e4686bb29..b535b9735e76 100644
  &i2c2 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c2_pins_a>;
--- 
-2.39.5
-

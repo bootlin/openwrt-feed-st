@@ -18,8 +18,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/usb/stm32,usbh.yaml | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
-index 22896673c078..572c8fe52712 100644
 --- a/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
 +++ b/Documentation/devicetree/bindings/usb/stm32,usbh.yaml
 @@ -11,7 +11,9 @@ maintainers:
@@ -33,6 +31,3 @@ index 22896673c078..572c8fe52712 100644
  
    "#address-cells":
      const: 1
--- 
-2.39.5
-

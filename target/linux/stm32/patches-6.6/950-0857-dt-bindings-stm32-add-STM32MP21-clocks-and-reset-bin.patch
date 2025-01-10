@@ -21,9 +21,6 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  create mode 100644 include/dt-bindings/clock/st,stm32mp21-rcc.h
  create mode 100644 include/dt-bindings/reset/st,stm32mp21-rcc.h
 
-diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp21-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp21-rcc.yaml
-new file mode 100644
-index 000000000000..b1156049e48e
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/clock/st,stm32mp21-rcc.yaml
 @@ -0,0 +1,194 @@
@@ -221,9 +218,6 @@ index 000000000000..b1156049e48e
 +                  <&scmi_clk CK_SCMI_TIMG2>;
 +    };
 +...
-diff --git a/include/dt-bindings/clock/st,stm32mp21-rcc.h b/include/dt-bindings/clock/st,stm32mp21-rcc.h
-new file mode 100644
-index 000000000000..1b6d533e1ec8
 --- /dev/null
 +++ b/include/dt-bindings/clock/st,stm32mp21-rcc.h
 @@ -0,0 +1,430 @@
@@ -657,9 +651,6 @@ index 000000000000..1b6d533e1ec8
 +#define CK_SCMI_KER_ETR		112
 +
 +#endif /* _DT_BINDINGS_STM32MP21_CLKS_H_ */
-diff --git a/include/dt-bindings/reset/st,stm32mp21-rcc.h b/include/dt-bindings/reset/st,stm32mp21-rcc.h
-new file mode 100644
-index 000000000000..bb9d3cef019c
 --- /dev/null
 +++ b/include/dt-bindings/reset/st,stm32mp21-rcc.h
 @@ -0,0 +1,141 @@
@@ -804,6 +795,3 @@ index 000000000000..bb9d3cef019c
 +#define RST_SCMI_OSPI1DLL	6
 +
 +#endif /* _DT_BINDINGS_STM32MP2_RESET_H_ */
--- 
-2.39.5
-

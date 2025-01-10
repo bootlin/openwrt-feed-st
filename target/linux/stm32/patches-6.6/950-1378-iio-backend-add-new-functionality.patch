@@ -34,8 +34,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  include/linux/iio/backend.h        |  49 ++++++++
  2 files changed, 228 insertions(+)
 
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index 2fea2bbbe47f..f08ed6d70ae5 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
 @@ -43,10 +43,12 @@
@@ -51,7 +49,7 @@ index 2fea2bbbe47f..f08ed6d70ae5 100644
  	struct device *dev;
  	struct module *owner;
  	void *priv;
-@@ -186,6 +188,44 @@ int iio_backend_data_format_set(struct iio_backend *back, unsigned int chan,
+@@ -186,6 +188,44 @@ int iio_backend_data_format_set(struct i
  }
  EXPORT_SYMBOL_NS_GPL(iio_backend_data_format_set, IIO_BACKEND);
  
@@ -96,7 +94,7 @@ index 2fea2bbbe47f..f08ed6d70ae5 100644
  static void iio_backend_free_buffer(void *arg)
  {
  	struct iio_backend_buffer_pair *pair = arg;
-@@ -231,6 +271,143 @@ int devm_iio_backend_request_buffer(struct device *dev,
+@@ -231,6 +271,143 @@ int devm_iio_backend_request_buffer(stru
  }
  EXPORT_SYMBOL_NS_GPL(devm_iio_backend_request_buffer, IIO_BACKEND);
  
@@ -240,7 +238,7 @@ index 2fea2bbbe47f..f08ed6d70ae5 100644
  static void iio_backend_release(void *arg)
  {
  	struct iio_backend *back = arg;
-@@ -263,6 +440,8 @@ static int __devm_iio_backend_get(struct device *dev, struct iio_backend *back)
+@@ -263,6 +440,8 @@ static int __devm_iio_backend_get(struct
  				     "Could not link to supplier(%s)\n",
  				     dev_name(back->dev));
  
@@ -249,8 +247,6 @@ index 2fea2bbbe47f..f08ed6d70ae5 100644
  	dev_dbg(dev, "Found backend(%s) device\n", dev_name(back->dev));
  
  	return 0;
-diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
-index a6d79381866e..9d144631134d 100644
 --- a/include/linux/iio/backend.h
 +++ b/include/linux/iio/backend.h
 @@ -4,6 +4,7 @@
@@ -324,7 +320,7 @@ index a6d79381866e..9d144631134d 100644
  };
  
  int iio_backend_chan_enable(struct iio_backend *back, unsigned int chan);
-@@ -56,10 +93,22 @@ int iio_backend_chan_disable(struct iio_backend *back, unsigned int chan);
+@@ -56,10 +93,22 @@ int iio_backend_chan_disable(struct iio_
  int devm_iio_backend_enable(struct device *dev, struct iio_backend *back);
  int iio_backend_data_format_set(struct iio_backend *back, unsigned int chan,
  				const struct iio_backend_data_fmt *data);
@@ -335,18 +331,16 @@ index a6d79381866e..9d144631134d 100644
  int devm_iio_backend_request_buffer(struct device *dev,
  				    struct iio_backend *back,
  				    struct iio_dev *indio_dev);
+-
 +ssize_t iio_backend_ext_info_set(struct iio_dev *indio_dev, uintptr_t private,
 +				 const struct iio_chan_spec *chan,
 +				 const char *buf, size_t len);
 +ssize_t iio_backend_ext_info_get(struct iio_dev *indio_dev, uintptr_t private,
 +				 const struct iio_chan_spec *chan, char *buf);
- 
++
 +int iio_backend_extend_chan_spec(struct iio_dev *indio_dev,
 +				 struct iio_backend *back,
 +				 struct iio_chan_spec *chan);
  void *iio_backend_get_priv(const struct iio_backend *conv);
  struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name);
  struct iio_backend *
--- 
-2.39.5
-

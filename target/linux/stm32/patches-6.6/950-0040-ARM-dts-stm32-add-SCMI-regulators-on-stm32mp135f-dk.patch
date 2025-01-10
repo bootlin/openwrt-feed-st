@@ -11,11 +11,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index cc83798f1266..5eda7f4cec74 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -165,6 +165,18 @@ &rtc {
+@@ -165,6 +165,18 @@
  };
  
  &scmi_regu {
@@ -34,6 +32,3 @@ index cc83798f1266..5eda7f4cec74 100644
  	scmi_vdd_adc: regulator@10 {
  		reg = <VOLTD_SCMI_STPMIC1_LDO1>;
  		regulator-name = "vdd_adc";
--- 
-2.39.5
-

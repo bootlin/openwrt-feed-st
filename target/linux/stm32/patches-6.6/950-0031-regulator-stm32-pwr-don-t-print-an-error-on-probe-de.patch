@@ -15,11 +15,9 @@ Change-Id: I471fd97856a113a513dbd96f5dbebca77365c848
  drivers/regulator/stm32-pwr.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/stm32-pwr.c b/drivers/regulator/stm32-pwr.c
-index ef02768fb854..55acf9d9af98 100644
 --- a/drivers/regulator/stm32-pwr.c
 +++ b/drivers/regulator/stm32-pwr.c
-@@ -163,7 +163,8 @@ static int is_stm32_soc_secured(struct platform_device *pdev, int *val)
+@@ -163,7 +163,8 @@ static int is_stm32_soc_secured(struct p
  
  	syscon = syscon_regmap_lookup_by_phandle(np, "st,tzcr");
  	if (IS_ERR(syscon)) {
@@ -29,6 +27,3 @@ index ef02768fb854..55acf9d9af98 100644
  		return PTR_ERR(syscon);
  	}
  
--- 
-2.39.5
-

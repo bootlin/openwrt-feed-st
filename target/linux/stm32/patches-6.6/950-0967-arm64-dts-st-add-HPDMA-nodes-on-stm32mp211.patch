@@ -22,11 +22,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 75 ++++++++++++++++++++++++++
  1 file changed, 75 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 07ad8fda5ab6..d5ef0b6436a4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -134,6 +134,81 @@ soc@0 {
+@@ -134,6 +134,81 @@
  		ranges = <0x0 0x0 0x0 0x80000000>;
  		dma-ranges = <0x0 0x0 0x80000000 0x80000000>;
  
@@ -108,6 +106,3 @@ index 07ad8fda5ab6..d5ef0b6436a4 100644
  		rifsc: bus@42080000 {
  			compatible = "st,stm32mp25-rifsc", "simple-bus";
  			reg = <0x42080000 0x1000>;
--- 
-2.39.5
-

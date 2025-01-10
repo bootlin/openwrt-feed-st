@@ -25,8 +25,6 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  create mode 100644 drivers/clk/clk-regmap.c
  create mode 100644 include/linux/clk-regmap.h
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 693e3ab14c89..209e4c7c5314 100644
 --- a/drivers/clk/Kconfig
 +++ b/drivers/clk/Kconfig
 @@ -33,6 +33,10 @@ menuconfig COMMON_CLK
@@ -40,11 +38,9 @@ index 693e3ab14c89..209e4c7c5314 100644
  config COMMON_CLK_WM831X
  	tristate "Clock driver for WM831x/2x PMICs"
  	depends on MFD_WM831X
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 7ba05060ed7f..1a3bf597abda 100644
 --- a/drivers/clk/Makefile
 +++ b/drivers/clk/Makefile
-@@ -56,6 +56,7 @@ obj-$(CONFIG_COMMON_CLK_PALMAS)		+= clk-palmas.o
+@@ -56,6 +56,7 @@ obj-$(CONFIG_COMMON_CLK_PALMAS)		+= clk-
  obj-$(CONFIG_CLK_LS1028A_PLLDIG)	+= clk-plldig.o
  obj-$(CONFIG_COMMON_CLK_PWM)		+= clk-pwm.o
  obj-$(CONFIG_CLK_QORIQ)			+= clk-qoriq.o
@@ -52,9 +48,6 @@ index 7ba05060ed7f..1a3bf597abda 100644
  obj-$(CONFIG_COMMON_CLK_RK808)		+= clk-rk808.o
  obj-$(CONFIG_COMMON_CLK_HI655X)		+= clk-hi655x.o
  obj-$(CONFIG_COMMON_CLK_S2MPS11)	+= clk-s2mps11.o
-diff --git a/drivers/clk/clk-regmap.c b/drivers/clk/clk-regmap.c
-new file mode 100644
-index 000000000000..491d6d52d5d0
 --- /dev/null
 +++ b/drivers/clk/clk-regmap.c
 @@ -0,0 +1,186 @@
@@ -244,9 +237,6 @@ index 000000000000..491d6d52d5d0
 +MODULE_DESCRIPTION("Amlogic regmap backed clock driver");
 +MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
 +MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/clk-regmap.h b/include/linux/clk-regmap.h
-new file mode 100644
-index 000000000000..0666c747fa80
 --- /dev/null
 +++ b/include/linux/clk-regmap.h
 @@ -0,0 +1,117 @@
@@ -367,6 +357,3 @@ index 000000000000..0666c747fa80
 +extern const struct clk_ops clk_regmap_mux_ro_ops;
 +
 +#endif /* __CLK_REGMAP_H */
--- 
-2.39.5
-

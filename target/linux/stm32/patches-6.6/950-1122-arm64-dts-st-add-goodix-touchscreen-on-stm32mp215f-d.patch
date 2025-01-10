@@ -19,8 +19,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts     | 16 +++++++++++++-
  2 files changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
-index 6da24b73fa39..03c850cb51bc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 @@ -6,6 +6,28 @@
@@ -52,11 +50,9 @@ index 6da24b73fa39..03c850cb51bc 100644
  	i2c2_pins_a: i2c2-0 {
  		pins {
  			pinmux = <STM32_PINMUX('B', 5, AF9)>, /* I2C2_SCL */
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 213455189466..e7f6a6ed6b92 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -150,7 +150,21 @@ &i2c2 {
+@@ -150,7 +150,21 @@
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c2_pins_a>;
  	pinctrl-1 = <&i2c2_sleep_pins_a>;
@@ -79,6 +75,3 @@ index 213455189466..e7f6a6ed6b92 100644
  
  	imx335: imx335@1a {
  		compatible = "sony,imx335";
--- 
-2.39.5
-

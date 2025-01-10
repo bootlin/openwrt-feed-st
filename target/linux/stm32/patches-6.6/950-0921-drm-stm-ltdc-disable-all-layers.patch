@@ -16,11 +16,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372037
  drivers/gpu/drm/stm/ltdc.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 53fb23709bf3..bab24dcecf42 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -971,6 +971,10 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -813,6 +813,10 @@ static void ltdc_crtc_atomic_disable(str
  	/* immediately commit disable of layers before switching off LTDC */
  	if (!ldev->caps.plane_reg_shadow)
  		regmap_set_bits(ldev->regmap, LTDC_SRCR, SRCR_IMR);
@@ -29,8 +27,5 @@ index 53fb23709bf3..bab24dcecf42 100644
 +			regmap_write_bits(ldev->regmap, LTDC_L1RCR + layer_index * LAY_OFS,
 +					  LXRCR_IMR | LXRCR_VBR | LXRCR_GRMSK, LXRCR_IMR);
  
- 	/* Disable LTDC */
- 	regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_LTDCEN);
--- 
-2.39.5
-
+ 	pm_runtime_put_sync(ddev->dev);
+ 

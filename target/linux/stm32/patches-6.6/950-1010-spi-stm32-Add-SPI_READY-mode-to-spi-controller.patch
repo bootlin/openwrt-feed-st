@@ -22,8 +22,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/spi/spi-stm32.c | 28 ++++++++++++++++++++++++----
  1 file changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6f1a2d6fa742..44ffb3515961 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
 @@ -146,6 +146,9 @@
@@ -52,7 +50,7 @@ index 6f1a2d6fa742..44ffb3515961 100644
  };
  
  struct stm32_spi;
-@@ -403,6 +408,8 @@ static const struct stm32_spi_regspec stm32mp25_spi_regspec = {
+@@ -403,6 +408,8 @@ static const struct stm32_spi_regspec st
  	.tx = { STM32H7_SPI_TXDR },
  
  	.fullcfg = { STM32MP25_SPI_HWCFGR1, STM32MP25_SPI_HWCFGR1_FULLCFG },
@@ -61,7 +59,7 @@ index 6f1a2d6fa742..44ffb3515961 100644
  };
  
  static inline void stm32_spi_set_bits(struct stm32_spi *spi,
-@@ -1066,11 +1073,17 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+@@ -1066,11 +1073,17 @@ static int stm32_spi_prepare_msg(struct
  	else
  		clrb |= spi->cfg->regs->cs_high.mask;
  
@@ -81,7 +79,7 @@ index 6f1a2d6fa742..44ffb3515961 100644
  
  	/* On STM32H7, messages should not exceed a maximum size setted
  	 * afterward via the set_number_of_data function. In order to
-@@ -1088,7 +1101,7 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+@@ -1088,7 +1101,7 @@ static int stm32_spi_prepare_msg(struct
  
  	spin_lock_irqsave(&spi->lock, flags);
  
@@ -90,7 +88,7 @@ index 6f1a2d6fa742..44ffb3515961 100644
  	if (clrb || setb)
  		writel_relaxed(
  			(readl_relaxed(spi->base + spi->cfg->regs->cpol.reg) &
-@@ -1635,6 +1648,13 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
+@@ -1635,6 +1648,13 @@ static int stm32_spi_transfer_one_setup(
  	spi->cur_bpw = transfer->bits_per_word;
  	spi->cfg->set_bpw(spi);
  
@@ -104,7 +102,7 @@ index 6f1a2d6fa742..44ffb3515961 100644
  	/* Update spi->cur_speed with real clock speed */
  	if (STM32_SPI_MASTER_MODE(spi)) {
  		mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
-@@ -2019,7 +2039,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
+@@ -2019,7 +2039,7 @@ static int stm32_spi_probe(struct platfo
  	ctrl->auto_runtime_pm = true;
  	ctrl->bus_num = pdev->id;
  	ctrl->mode_bits = SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST |
@@ -113,6 +111,3 @@ index 6f1a2d6fa742..44ffb3515961 100644
  	ctrl->bits_per_word_mask = spi->cfg->get_bpw_mask(spi);
  	ctrl->max_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_min;
  	ctrl->min_speed_hz = spi->clk_rate / spi->cfg->baud_rate_div_max;
--- 
-2.39.5
-

@@ -17,9 +17,6 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  1 file changed, 89 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
-new file mode 100644
-index 000000000000..87731f3ce7bd
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
 @@ -0,0 +1,89 @@
@@ -112,6 +109,3 @@ index 000000000000..87731f3ce7bd
 +    };
 +
 +...
--- 
-2.39.5
-

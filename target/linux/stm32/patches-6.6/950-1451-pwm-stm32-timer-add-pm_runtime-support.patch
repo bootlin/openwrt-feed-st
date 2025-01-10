@@ -16,8 +16,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/pwm/pwm-stm32.c | 93 +++++++++++++++++++++++++++++++++--------
  1 file changed, 75 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-index 5d8ee179a381..0399059a3555 100644
 --- a/drivers/pwm/pwm-stm32.c
 +++ b/drivers/pwm/pwm-stm32.c
 @@ -14,6 +14,7 @@
@@ -37,7 +35,7 @@ index 5d8ee179a381..0399059a3555 100644
  struct stm32_breakinput {
  	u32 index;
  	u32 level;
-@@ -184,16 +187,14 @@ static int stm32_pwm_capture(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -184,16 +187,14 @@ static int stm32_pwm_capture(struct pwm_
  		goto unlock;
  	}
  
@@ -57,7 +55,7 @@ index 5d8ee179a381..0399059a3555 100644
  	}
  
  	/* prescaler: fit timeout window provided by upper layer */
-@@ -316,8 +317,9 @@ static int stm32_pwm_capture(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -316,8 +317,9 @@ stop:
  	regmap_write(priv->regmap, TIM_CCER, 0);
  	regmap_write(priv->regmap, pwm->hwpwm < 2 ? TIM_CCMR1 : TIM_CCMR2, 0);
  	regmap_write(priv->regmap, TIM_PSC, 0);
@@ -69,7 +67,7 @@ index 5d8ee179a381..0399059a3555 100644
  unlock:
  	mutex_unlock(&priv->lock);
  
-@@ -410,8 +412,8 @@ static int stm32_pwm_enable(struct stm32_pwm *priv, int ch)
+@@ -410,8 +412,8 @@ static int stm32_pwm_enable(struct stm32
  	u32 mask;
  	int ret;
  
@@ -80,7 +78,7 @@ index 5d8ee179a381..0399059a3555 100644
  		return ret;
  
  	/* Enable channel */
-@@ -445,7 +447,8 @@ static void stm32_pwm_disable(struct stm32_pwm *priv, int ch)
+@@ -445,7 +447,8 @@ static void stm32_pwm_disable(struct stm
  	if (!active_channels(priv))
  		regmap_clear_bits(priv->regmap, TIM_CR1, TIM_CR1_CEN);
  
@@ -90,7 +88,7 @@ index 5d8ee179a381..0399059a3555 100644
  }
  
  static int stm32_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-@@ -659,8 +662,18 @@ static int stm32_pwm_probe(struct platform_device *pdev)
+@@ -659,8 +662,18 @@ static int stm32_pwm_probe(struct platfo
  	priv->chip.npwm = stm32_pwm_detect_channels(priv, ddata, &num_enabled);
  
  	/* Initialize clock refcount to number of enabled PWM channels. */
@@ -110,7 +108,7 @@ index 5d8ee179a381..0399059a3555 100644
  
  	ret = devm_pwmchip_add(dev, &priv->chip);
  	if (ret < 0)
-@@ -671,11 +684,12 @@ static int stm32_pwm_probe(struct platform_device *pdev)
+@@ -671,11 +684,12 @@ static int stm32_pwm_probe(struct platfo
  	return 0;
  }
  
@@ -124,7 +122,7 @@ index 5d8ee179a381..0399059a3555 100644
  
  	/* Look for active channels */
  	ccer = active_channels(priv);
-@@ -689,23 +703,66 @@ static int __maybe_unused stm32_pwm_suspend(struct device *dev)
+@@ -689,23 +703,66 @@ static int __maybe_unused stm32_pwm_susp
  		}
  	}
  
@@ -196,7 +194,7 @@ index 5d8ee179a381..0399059a3555 100644
  
  static const struct of_device_id stm32_pwm_of_match[] = {
  	{ .compatible = "st,stm32-pwm",	},
-@@ -720,7 +777,7 @@ static struct platform_driver stm32_pwm_driver = {
+@@ -720,7 +777,7 @@ static struct platform_driver stm32_pwm_
  	.driver	= {
  		.name = "stm32-pwm",
  		.of_match_table = stm32_pwm_of_match,
@@ -205,6 +203,3 @@ index 5d8ee179a381..0399059a3555 100644
  	},
  };
  module_platform_driver(stm32_pwm_driver);
--- 
-2.39.5
-

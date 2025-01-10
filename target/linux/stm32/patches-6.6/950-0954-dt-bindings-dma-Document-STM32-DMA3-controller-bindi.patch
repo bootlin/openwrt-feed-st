@@ -19,9 +19,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370765
  1 file changed, 135 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-new file mode 100644
-index 000000000000..36482ee7e9bc
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -0,0 +1,135 @@
@@ -160,6 +157,3 @@ index 000000000000..36482ee7e9bc
 +      #dma-cells = <3>;
 +    };
 +...
--- 
-2.39.5
-

@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index d19d58a8ad51..74afdeaecf3e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -406,9 +406,21 @@ static irqreturn_t dcmi_irq_thread(int irq, void *arg)
+@@ -406,9 +406,21 @@ static irqreturn_t dcmi_irq_thread(int i
  	spin_lock_irq(&dcmi->irqlock);
  
  	if (dcmi->misr & IT_OVR) {
@@ -45,6 +43,3 @@ index d19d58a8ad51..74afdeaecf3e 100644
  	}
  	if (dcmi->misr & IT_ERR)
  		dcmi->errors_count++;
--- 
-2.39.5
-

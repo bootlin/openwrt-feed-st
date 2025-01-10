@@ -12,11 +12,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157d-dk1-a7-examples.dts | 4 ++++
  2 files changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-a7-examples.dts
-index 22a151a05ea6..6ae06baab8d8 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-dk1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-a7-examples.dts
-@@ -13,6 +13,10 @@ / {
+@@ -13,6 +13,10 @@
  	compatible = "st,stm32mp157a-dk1-a7-examples", "st,stm32mp157a-dk1", "st,stm32mp157";
  };
  
@@ -27,11 +25,9 @@ index 22a151a05ea6..6ae06baab8d8 100644
  &uart7 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-dk1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-dk1-a7-examples.dts
-index 95aceb9f9d59..c5cf176c392f 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-dk1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-dk1-a7-examples.dts
-@@ -13,6 +13,10 @@ / {
+@@ -13,6 +13,10 @@
  	compatible = "st,stm32mp157d-dk1-a7-examples", "st,stm32mp157d-dk1", "st,stm32mp157";
  };
  
@@ -42,6 +38,3 @@ index 95aceb9f9d59..c5cf176c392f 100644
  &uart7 {
  	status = "okay";
  };
--- 
-2.39.5
-

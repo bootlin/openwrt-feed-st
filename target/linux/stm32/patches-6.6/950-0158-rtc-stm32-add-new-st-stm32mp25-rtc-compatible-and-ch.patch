@@ -21,8 +21,6 @@ Change-Id: Iae9fc006b37b62c5be47bcf09a8d74dac2fa6d2a
  drivers/rtc/rtc-stm32.c | 80 +++++++++++++++++++++++++++++++++++++++++
  1 file changed, 80 insertions(+)
 
-diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
-index 3c683472dc34..83978fbe8c64 100644
 --- a/drivers/rtc/rtc-stm32.c
 +++ b/drivers/rtc/rtc-stm32.c
 @@ -100,6 +100,18 @@
@@ -67,7 +65,7 @@ index 3c683472dc34..83978fbe8c64 100644
  /*
   *  -------------------------------------------------------------------------
   * | TAMPOE | OSEL[1:0] | COE | OUT2EN |     RTC_OUT1     |     RTC_OUT2     |
-@@ -722,6 +743,7 @@ static const struct stm32_rtc_data stm32_rtc_data = {
+@@ -722,6 +743,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = false,
  	.has_lsco = false,
  	.has_alarm_out = false,
@@ -75,7 +73,7 @@ index 3c683472dc34..83978fbe8c64 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -747,6 +769,7 @@ static const struct stm32_rtc_data stm32h7_rtc_data = {
+@@ -747,6 +769,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = false,
  	.has_lsco = false,
  	.has_alarm_out = false,
@@ -83,7 +81,7 @@ index 3c683472dc34..83978fbe8c64 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -781,6 +804,7 @@ static const struct stm32_rtc_data stm32mp1_data = {
+@@ -781,6 +804,7 @@ static const struct stm32_rtc_data stm32
  	.need_accuracy = true,
  	.has_lsco = true,
  	.has_alarm_out = true,
@@ -91,7 +89,7 @@ index 3c683472dc34..83978fbe8c64 100644
  	.regs = {
  		.tr = 0x00,
  		.dr = 0x04,
-@@ -800,14 +824,60 @@ static const struct stm32_rtc_data stm32mp1_data = {
+@@ -800,14 +824,60 @@ static const struct stm32_rtc_data stm32
  	.clear_events = stm32mp1_rtc_clear_events,
  };
  
@@ -152,7 +150,7 @@ index 3c683472dc34..83978fbe8c64 100644
  static int stm32_rtc_init(struct platform_device *pdev,
  			  struct stm32_rtc *rtc)
  {
-@@ -963,6 +1033,16 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+@@ -963,6 +1033,16 @@ static int stm32_rtc_probe(struct platfo
  		regmap_update_bits(rtc->dbp, rtc->dbp_reg,
  				   rtc->dbp_mask, rtc->dbp_mask);
  
@@ -169,6 +167,3 @@ index 3c683472dc34..83978fbe8c64 100644
  	/*
  	 * After a system reset, RTC_ISR.INITS flag can be read to check if
  	 * the calendar has been initialized or not. INITS flag is reset by a
--- 
-2.39.5
-

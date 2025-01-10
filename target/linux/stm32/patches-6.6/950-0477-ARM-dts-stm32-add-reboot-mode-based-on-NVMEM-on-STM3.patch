@@ -17,11 +17,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 6c7f511133c3..1281be41d7c9 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -2021,6 +2021,20 @@ m4_wakeup_area_hash: tamp-bkp@60 {
+@@ -2021,6 +2021,20 @@
  					reg = <0x60 0x20>;
  				};
  			};
@@ -42,6 +40,3 @@ index 6c7f511133c3..1281be41d7c9 100644
  		};
  
  		/*
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ Change-Id: I455619d2b3e2a35a449472cb5078cf3513cc013e
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 24 ++++++++++++++++++++++--
  1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index bee31f257c43..4e14ee918dc8 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -265,7 +265,7 @@ port@0 {
+@@ -265,7 +265,7 @@
  				mipid02_0: endpoint {
  					data-lanes = <1 2>;
  					lane-polarities = <0 0 0>;
@@ -30,7 +28,7 @@ index bee31f257c43..4e14ee918dc8 100644
  				};
  			};
  			port@2 {
-@@ -282,6 +282,26 @@ mipid02_2: endpoint {
+@@ -282,6 +282,26 @@
  		};
  	};
  
@@ -57,7 +55,7 @@ index bee31f257c43..4e14ee918dc8 100644
  	ov5640: camera@3c {
  		compatible = "ovti,ov5640";
  		reg = <0x3c>;
-@@ -294,7 +314,7 @@ ov5640: camera@3c {
+@@ -294,7 +314,7 @@
  
  		port {
  			ov5640_0: endpoint {
@@ -66,6 +64,3 @@ index bee31f257c43..4e14ee918dc8 100644
  				clock-lanes = <0>;
  				data-lanes = <1 2>;
  			};
--- 
-2.39.5
-

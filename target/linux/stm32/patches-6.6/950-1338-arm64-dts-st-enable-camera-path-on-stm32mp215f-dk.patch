@@ -17,11 +17,9 @@ Reviewed-by: Stephane DANIEAU <stephane.danieau@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index fd76d8de1b61..4dbf9eb49b83 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -142,7 +142,7 @@ &cryp1 {
+@@ -142,7 +142,7 @@
  &csi {
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_vdda_1v8>;
@@ -30,7 +28,7 @@ index fd76d8de1b61..4dbf9eb49b83 100644
  	ports {
  		#address-cells = <1>;
  		#size-cells = <0>;
-@@ -164,7 +164,7 @@ csi_source: endpoint {
+@@ -164,7 +164,7 @@
  };
  
  &dcmipp {
@@ -39,7 +37,7 @@ index fd76d8de1b61..4dbf9eb49b83 100644
  	port {
  		dcmipp_0: endpoint {
  			remote-endpoint = <&csi_source>;
-@@ -222,7 +222,7 @@ imx335: imx335@1a {
+@@ -222,7 +222,7 @@
  		clocks = <&clk_ext_camera>;
  		reset-gpios = <&gpiod 5 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
  		powerdown-gpios = <&gpiod 0 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
@@ -48,6 +46,3 @@ index fd76d8de1b61..4dbf9eb49b83 100644
  
  		port {
  			imx335_ep: endpoint {
--- 
-2.39.5
-

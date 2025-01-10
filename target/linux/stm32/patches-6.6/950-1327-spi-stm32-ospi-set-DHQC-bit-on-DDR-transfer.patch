@@ -19,11 +19,9 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/spi/spi-stm32-ospi.c | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 7c6a43d227e7..aa603410845b 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -282,6 +282,10 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -282,6 +282,10 @@ static int stm32_ospi_send(struct spi_de
  	if (op->cmd.dtr) {
  		ccr |= CCR_IDTR;
  		ccr |= CCR_DQSE;
@@ -34,7 +32,7 @@ index 7c6a43d227e7..aa603410845b 100644
  	}
  
  	if (op->addr.dtr)
-@@ -566,12 +570,9 @@ static int stm32_ospi_dtr_calibration(struct stm32_ospi *ospi)
+@@ -566,12 +570,9 @@ static int stm32_ospi_dtr_calibration(st
  	writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
  
  	prescaler = FIELD_GET(DCR2_PRESC_MASK,
@@ -48,6 +46,3 @@ index 7c6a43d227e7..aa603410845b 100644
  	if (bus_freq <= STM32_DLYB_FREQ_THRESHOLD) {
  		bypass_mode = true;
  		period_ps = NSEC_PER_SEC / (bus_freq / 1000);
--- 
-2.39.5
-

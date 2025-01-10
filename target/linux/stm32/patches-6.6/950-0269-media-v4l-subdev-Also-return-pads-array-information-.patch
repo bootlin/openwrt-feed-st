@@ -24,11 +24,9 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
  include/media/v4l2-subdev.h           |  9 ++--
  2 files changed, 69 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index 3da08932d9b1..97dbd70bf9ad 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -1657,6 +1657,27 @@ __v4l2_subdev_state_get_format(struct v4l2_subdev_state *state,
+@@ -1657,6 +1657,27 @@ __v4l2_subdev_state_get_format(struct v4
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
  
@@ -56,7 +54,7 @@ index 3da08932d9b1..97dbd70bf9ad 100644
  	lockdep_assert_held(state->lock);
  
  	stream_configs = &state->stream_configs;
-@@ -1678,6 +1699,27 @@ __v4l2_subdev_state_get_crop(struct v4l2_subdev_state *state, unsigned int pad,
+@@ -1678,6 +1699,27 @@ __v4l2_subdev_state_get_crop(struct v4l2
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
  
@@ -84,7 +82,7 @@ index 3da08932d9b1..97dbd70bf9ad 100644
  	lockdep_assert_held(state->lock);
  
  	stream_configs = &state->stream_configs;
-@@ -1699,6 +1741,27 @@ __v4l2_subdev_state_get_compose(struct v4l2_subdev_state *state,
+@@ -1699,6 +1741,27 @@ __v4l2_subdev_state_get_compose(struct v
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
  
@@ -112,11 +110,9 @@ index 3da08932d9b1..97dbd70bf9ad 100644
  	lockdep_assert_held(state->lock);
  
  	stream_configs = &state->stream_configs;
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index 13200ac48429..78bc2e593c15 100644
 --- a/include/media/v4l2-subdev.h
 +++ b/include/media/v4l2-subdev.h
-@@ -1558,7 +1558,8 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1558,7 +1558,8 @@ int v4l2_subdev_set_routing_with_fmt(str
   * This returns a pointer to &struct v4l2_mbus_framefmt for the given pad +
   * stream in the subdev state.
   *
@@ -126,7 +122,7 @@ index 13200ac48429..78bc2e593c15 100644
   */
  /*
   * Wrap v4l2_subdev_state_get_format(), allowing the function to be called with
-@@ -1587,7 +1588,8 @@ __v4l2_subdev_state_get_format(struct v4l2_subdev_state *state,
+@@ -1587,7 +1588,8 @@ __v4l2_subdev_state_get_format(struct v4
   * This returns a pointer to crop rectangle for the given pad + stream in the
   * subdev state.
   *
@@ -136,7 +132,7 @@ index 13200ac48429..78bc2e593c15 100644
   */
  #define v4l2_subdev_state_get_crop(state, pad, ...)			\
  	__v4l2_subdev_state_gen_call(crop, ##__VA_ARGS__, , _pad)	\
-@@ -1607,7 +1609,8 @@ __v4l2_subdev_state_get_crop(struct v4l2_subdev_state *state, unsigned int pad,
+@@ -1607,7 +1609,8 @@ __v4l2_subdev_state_get_crop(struct v4l2
   * This returns a pointer to compose rectangle for the given pad + stream in the
   * subdev state.
   *
@@ -146,6 +142,3 @@ index 13200ac48429..78bc2e593c15 100644
   */
  #define v4l2_subdev_state_get_compose(state, pad, ...)			\
  	__v4l2_subdev_state_gen_call(compose, ##__VA_ARGS__, , _pad)	\
--- 
-2.39.5
-

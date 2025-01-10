@@ -13,9 +13,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  1 file changed, 30 insertions(+)
  create mode 100644 CONTRIBUTING.md
 
-diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
-new file mode 100644
-index 000000000000..3d1bacd78a54
 --- /dev/null
 +++ b/CONTRIBUTING.md
 @@ -0,0 +1,30 @@
@@ -49,6 +46,3 @@ index 000000000000..3d1bacd78a54
 +__Note__
 +
 +Merge will not be done directly in GitHub but it will need first to follow internal integration process before public deliver in a standard release. The Pull request will stay open until it is merged and delivered.
--- 
-2.39.5
-

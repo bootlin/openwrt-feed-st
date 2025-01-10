@@ -39,8 +39,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c   | 21 +++++++++++++++----
  1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 07af6e39e274..b9b6b867a4d6 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -196,6 +196,9 @@ struct dcmipp_pixelcap_device {
@@ -53,7 +51,7 @@ index 07af6e39e274..b9b6b867a4d6 100644
  };
  
  static const struct v4l2_pix_format fmt_default = {
-@@ -488,6 +491,10 @@ static int dcmipp_pipeline_s_stream(struct dcmipp_pixelcap_device *vcap,
+@@ -488,6 +491,10 @@ static int dcmipp_pipeline_s_stream(stru
  		vcap->s_subdev = media_entity_to_v4l2_subdev(pad->entity);
  	}
  
@@ -64,7 +62,7 @@ index 07af6e39e274..b9b6b867a4d6 100644
  	ret = dcmipp_s_stream_helper(vcap->s_subdev, state);
  	if (ret < 0) {
  		dev_err(vcap->dev, "failed to %s streaming (%d)\n",
-@@ -520,6 +527,9 @@ static int dcmipp_start_capture(struct dcmipp_pixelcap_device *vcap,
+@@ -520,6 +527,9 @@ static int dcmipp_start_capture(struct d
  	if (buf->paddrs[2])
  		reg_write(vcap, DCMIPP_P1PPM2AR1, buf->paddrs[2]);
  
@@ -74,7 +72,7 @@ index 07af6e39e274..b9b6b867a4d6 100644
  	/* Capture request */
  	reg_set(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTREQ);
  
-@@ -941,11 +951,14 @@ static irqreturn_t dcmipp_pixelcap_irq_thread(int irq, void *arg)
+@@ -941,11 +951,14 @@ static irqreturn_t dcmipp_pixelcap_irq_t
  		 * the shadowing mechanism of the DCMIPP. In most of the cases, since a FRAMEEND
  		 * has already come, pointer next is NULL since active is reset during the
  		 * FRAMEEND handling. However, in case of framerate adjustment, there are more
@@ -93,6 +91,3 @@ index 07af6e39e274..b9b6b867a4d6 100644
  	}
  
  out:
--- 
-2.39.5
-

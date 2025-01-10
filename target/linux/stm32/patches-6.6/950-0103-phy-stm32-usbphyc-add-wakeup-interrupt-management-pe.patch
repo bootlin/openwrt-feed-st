@@ -23,8 +23,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-usbphyc.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index d5e7e44000b5..a11a85783621 100644
 --- a/drivers/phy/st/phy-stm32-usbphyc.c
 +++ b/drivers/phy/st/phy-stm32-usbphyc.c
 @@ -13,6 +13,7 @@
@@ -43,7 +41,7 @@ index d5e7e44000b5..a11a85783621 100644
  	u32 index;
  	bool active;
  	u32 tune;
-@@ -380,6 +382,12 @@ static int stm32_usbphyc_phy_exit(struct phy *phy)
+@@ -380,6 +382,12 @@ static int stm32_usbphyc_phy_exit(struct
  static int stm32_usbphyc_phy_power_on(struct phy *phy)
  {
  	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
@@ -56,7 +54,7 @@ index d5e7e44000b5..a11a85783621 100644
  
  	if (usbphyc_phy->vbus)
  		return regulator_enable(usbphyc_phy->vbus);
-@@ -390,6 +398,12 @@ static int stm32_usbphyc_phy_power_on(struct phy *phy)
+@@ -390,6 +398,12 @@ static int stm32_usbphyc_phy_power_on(st
  static int stm32_usbphyc_phy_power_off(struct phy *phy)
  {
  	struct stm32_usbphyc_phy *usbphyc_phy = phy_get_drvdata(phy);
@@ -69,7 +67,7 @@ index d5e7e44000b5..a11a85783621 100644
  
  	if (usbphyc_phy->vbus)
  		return regulator_disable(usbphyc_phy->vbus);
-@@ -736,6 +750,12 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
+@@ -736,6 +750,12 @@ static int stm32_usbphyc_probe(struct pl
  			usbphyc->phys[port]->vbus = NULL;
  		}
  
@@ -82,6 +80,3 @@ index d5e7e44000b5..a11a85783621 100644
  		/* Configure phy tuning */
  		stm32_usbphyc_phy_tuning(usbphyc, child, index);
  
--- 
-2.39.5
-

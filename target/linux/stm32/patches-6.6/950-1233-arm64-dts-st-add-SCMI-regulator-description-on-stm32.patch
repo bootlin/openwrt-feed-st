@@ -19,11 +19,9 @@ Tested-by: Pascal PAILLET <p.paillet@st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 24 +++++++++++++++++------
  1 file changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 12c5cab094a5..375ee23d4f47 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -141,7 +141,7 @@ &cryp1 {
+@@ -141,7 +141,7 @@
  
  &csi {
  	vdd-supply =  <&scmi_vddcore>;
@@ -32,7 +30,7 @@ index 12c5cab094a5..375ee23d4f47 100644
  	status = "disabled";
  	ports {
  		#address-cells = <1>;
-@@ -330,13 +330,25 @@ mdf_endpoint1: endpoint {
+@@ -330,13 +330,25 @@
  };
  
  &scmi_regu {
@@ -63,6 +61,3 @@ index 12c5cab094a5..375ee23d4f47 100644
  	};
  };
  
--- 
-2.39.5
-

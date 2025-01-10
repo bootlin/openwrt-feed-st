@@ -25,11 +25,9 @@ Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelcap.c         | 13 +++++++++++--
  1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index f51ae8a592ab..07af6e39e274 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -993,16 +993,25 @@ static int dcmipp_pixelcap_link_validate(struct media_link *link)
+@@ -993,16 +993,25 @@ static int dcmipp_pixelcap_link_validate
  		.pad = link->source->index,
  	};
  	int ret, i;
@@ -57,6 +55,3 @@ index f51ae8a592ab..07af6e39e274 100644
  		return -EINVAL;
  	}
  
--- 
-2.39.5
-

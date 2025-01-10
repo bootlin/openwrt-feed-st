@@ -15,8 +15,6 @@ Change-Id: I369827e80243c248e2a67ad4aa7d79a55a87b06d
  drivers/pinctrl/stm32/pinctrl-stm32.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index d21ee06b3ed7..e2a91c9b9d5d 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -90,8 +90,11 @@
@@ -33,7 +31,7 @@ index d21ee06b3ed7..e2a91c9b9d5d 100644
  
  #define SYSCFG_IRQMUX_MASK GENMASK(3, 0)
  
-@@ -655,7 +658,8 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+@@ -655,7 +658,8 @@ static int stm32_gpio_domain_alloc(struc
  	parent_fwspec.fwnode = d->parent->fwnode;
  	parent_fwspec.param_count = 2;
  	parent_fwspec.param[0] = fwspec->param[0];
@@ -43,6 +41,3 @@ index d21ee06b3ed7..e2a91c9b9d5d 100644
  
  	irq_domain_set_hwirq_and_chip(d, virq, hwirq, &stm32_gpio_irq_chip,
  				      bank);
--- 
-2.39.5
-

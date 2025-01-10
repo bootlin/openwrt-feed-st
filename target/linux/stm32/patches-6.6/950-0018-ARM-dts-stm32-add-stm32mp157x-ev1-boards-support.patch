@@ -26,8 +26,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  create mode 100644 arch/arm/boot/dts/st/stm32mp157d-ev1.dts
  create mode 100644 arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
-index 7893811e6e92..a8cc79fbe96b 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
 @@ -104,8 +104,16 @@ properties:
@@ -49,8 +47,6 @@ index 7893811e6e92..a8cc79fbe96b 100644
            - const: st,stm32mp157
  
        - description: DH STM32MP1 SoM based Boards
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index 09b273f0e618..c6ff69c3e4f7 100644
 --- a/arch/arm/boot/dts/st/Makefile
 +++ b/arch/arm/boot/dts/st/Makefile
 @@ -39,6 +39,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
@@ -73,9 +69,6 @@ index 09b273f0e618..c6ff69c3e4f7 100644
  dtb-$(CONFIG_ARCH_U8500) += \
  	ste-snowball.dtb \
  	ste-hrefprev60-stuib.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
-new file mode 100644
-index 000000000000..8bd2540f63ee
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
 @@ -0,0 +1,76 @@
@@ -155,9 +148,6 @@ index 000000000000..8bd2540f63ee
 +&rtc {
 +	clocks = <&scmi_clk CK_SCMI_RTCAPB>, <&scmi_clk CK_SCMI_RTC>;
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-new file mode 100644
-index 000000000000..6d5494bcac05
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 @@ -0,0 +1,415 @@
@@ -576,9 +566,6 @@ index 000000000000..6d5494bcac05
 +	st,tune-hs-rx-offset = <2>;
 +	st,no-lsfs-sc;
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-new file mode 100644
-index 000000000000..f844653183e3
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 @@ -0,0 +1,415 @@
@@ -997,9 +984,6 @@ index 000000000000..f844653183e3
 +	st,tune-hs-rx-offset = <2>;
 +	st,no-lsfs-sc;
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-new file mode 100644
-index 000000000000..099de12cf873
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 @@ -0,0 +1,415 @@
@@ -1418,6 +1402,3 @@ index 000000000000..099de12cf873
 +	st,tune-hs-rx-offset = <2>;
 +	st,no-lsfs-sc;
 +};
--- 
-2.39.5
-

@@ -19,8 +19,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/adc/stm32-mdf.h     |  1 +
  2 files changed, 35 insertions(+)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index 8e499379f4b1..c7e433a59176 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
 @@ -70,6 +70,8 @@ struct stm32_mdf_dev_data {
@@ -41,7 +39,7 @@ index 8e499379f4b1..c7e433a59176 100644
  	unsigned int bufi;
  	unsigned int buf_sz;
  	unsigned int dflt_max;
-@@ -524,6 +528,7 @@ static int stm32_mdf_adc_apply_filters_config(struct stm32_mdf_adc *adc, unsigne
+@@ -524,6 +528,7 @@ static int stm32_mdf_adc_apply_filters_c
  				adc_inter->datsrc = adc->datsrc;
  				adc_inter->cicmode = adc->cicmode;
  				adc_inter->decim_cic = adc->decim_cic;
@@ -49,7 +47,7 @@ index 8e499379f4b1..c7e433a59176 100644
  				adc_inter->hpf_cutoff = adc->hpf_cutoff;
  
  				stm32_mdf_adc_apply_filters_config(adc_inter, scale);
-@@ -542,6 +547,14 @@ static int stm32_mdf_adc_apply_filters_config(struct stm32_mdf_adc *adc, unsigne
+@@ -542,6 +547,14 @@ static int stm32_mdf_adc_apply_filters_c
  	if (ret)
  		return ret;
  
@@ -64,7 +62,7 @@ index 8e499379f4b1..c7e433a59176 100644
  	/* Configure CICR */
  	msk = MDF_SITFCR_SCKSRC_MASK | MDF_DFLTCICR_CICMOD_MASK |
  	      MDF_DFLTCICR_MCICD_MASK | MDF_DFLTCICR_SCALE_MASK;
-@@ -766,6 +779,16 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+@@ -766,6 +779,16 @@ static int mdf_adc_set_samp_freq(struct
  		dev_dbg(dev, "Sample rate deviation [%lu] ppm: [%lu] vs [%lu] Hz\n",
  			delta_ppm, sck_freq / decim_ratio, sample_freq);
  
@@ -81,7 +79,7 @@ index 8e499379f4b1..c7e433a59176 100644
  	ret = stm32_mdf_adc_set_filters_config(indio_dev, decim_ratio);
  	if (ret < 0)
  		goto err;
-@@ -1144,6 +1167,7 @@ static int stm32_mdf_channel_parse_of(struct iio_dev *indio_dev, struct fwnode_h
+@@ -1144,6 +1167,7 @@ static int stm32_mdf_channel_parse_of(st
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
  	struct iio_backend *backend;
  	int ret;
@@ -89,7 +87,7 @@ index 8e499379f4b1..c7e433a59176 100644
  
  	ret = fwnode_property_read_u32(node, "reg", &ch->channel);
  	if (ret < 0) {
-@@ -1151,6 +1175,16 @@ static int stm32_mdf_channel_parse_of(struct iio_dev *indio_dev, struct fwnode_h
+@@ -1151,6 +1175,16 @@ static int stm32_mdf_channel_parse_of(st
  		return ret;
  	}
  
@@ -106,8 +104,6 @@ index 8e499379f4b1..c7e433a59176 100644
  	if (adc->dev_data->type == STM32_MDF_IIO) {
  		backend = devm_iio_backend_fwnode_get(&indio_dev->dev, NULL, node);
  		if (IS_ERR(backend))
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index 71c51b0b4814..7e403c26d4dc 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -91,6 +91,7 @@
@@ -118,6 +114,3 @@ index 71c51b0b4814..7e403c26d4dc 100644
  #define MDF_DFLTCR_DFLTRUN BIT(30)
  #define MDF_DFLTCR_ACTIVE BIT(31)
  
--- 
-2.39.5
-

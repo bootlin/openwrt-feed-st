@@ -20,11 +20,9 @@ Signed-off-by: Eric Fourmont <eric.fourmont-ext@st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 062001de24f4..94e476801c79 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1574,7 +1574,7 @@ bsec: efuse@5c005000 {
+@@ -1574,7 +1574,7 @@
  			#address-cells = <1>;
  			#size-cells = <1>;
  
@@ -33,6 +31,3 @@ index 062001de24f4..94e476801c79 100644
  				reg = <0x4 0x2>;
  				bits = <0 12>;
  			};
--- 
-2.39.5
-

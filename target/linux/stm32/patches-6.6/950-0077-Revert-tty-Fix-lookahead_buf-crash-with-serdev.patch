@@ -14,11 +14,9 @@ Change-Id: If77bc695c185e2af0c8329e207c762fe98fe1566
  drivers/tty/tty_buffer.c | 14 +++++---------
  1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 5f6d0cf67571..3b99774d16de 100644
 --- a/drivers/tty/tty_buffer.c
 +++ b/drivers/tty/tty_buffer.c
-@@ -400,6 +400,7 @@ static void lookahead_bufs(struct tty_port *port, struct tty_buffer *head)
+@@ -400,6 +400,7 @@ static void lookahead_bufs(struct tty_po
  
  	while (head) {
  		struct tty_buffer *next;
@@ -26,7 +24,7 @@ index 5f6d0cf67571..3b99774d16de 100644
  		unsigned int count;
  
  		/*
-@@ -418,16 +419,11 @@ static void lookahead_bufs(struct tty_port *port, struct tty_buffer *head)
+@@ -418,16 +419,11 @@ static void lookahead_bufs(struct tty_po
  			continue;
  		}
  
@@ -47,6 +45,3 @@ index 5f6d0cf67571..3b99774d16de 100644
  		head->lookahead += count;
  	}
  }
--- 
-2.39.5
-

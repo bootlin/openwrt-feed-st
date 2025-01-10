@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215.dtsi | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-index e3a18bc867ae..8f25051bfe13 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-@@ -20,13 +20,13 @@ ltdc: display-controller@48010000 {
+@@ -20,13 +20,13 @@
  		access-controllers = <&rifsc 80>;
  		access-controller-names = "cmn";
  
@@ -38,6 +36,3 @@ index e3a18bc867ae..8f25051bfe13 100644
  		};
  		rot {
  			access-controllers = <&rifsc 121>;
--- 
-2.39.5
-

@@ -16,8 +16,6 @@ Change-Id: I0785de932af3c704b361a2043f86abd9d570e61b
  arch/arm64/boot/dts/st/stm32mp257.dtsi | 22 +++++++++++++++++++++-
  1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-index 5c5000d3d9db..798e5ede7c5c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
 @@ -5,5 +5,25 @@
@@ -47,6 +45,3 @@ index 5c5000d3d9db..798e5ede7c5c 100644
 +		};
 +	};
  };
--- 
-2.39.5
-

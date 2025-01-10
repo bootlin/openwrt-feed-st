@@ -18,11 +18,9 @@ Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
  drivers/tee/tee_shm.c | 78 +++++++++++++++++++++++--------------------
  1 file changed, 42 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index 673cf0359494..731d9028b67f 100644
 --- a/drivers/tee/tee_shm.c
 +++ b/drivers/tee/tee_shm.c
-@@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
+@@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct
  		put_page(pages[n]);
  }
  
@@ -48,7 +46,7 @@ index 673cf0359494..731d9028b67f 100644
  }
  
  static void release_registered_pages(struct tee_shm *shm)
-@@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
+@@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(s
  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
  
  static struct tee_shm *
@@ -67,7 +65,7 @@ index 673cf0359494..731d9028b67f 100644
  	void *ret;
  	int rc;
  
-@@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+@@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *
  	shm->flags = flags;
  	shm->ctx = ctx;
  	shm->id = id;
@@ -122,7 +120,7 @@ index 673cf0359494..731d9028b67f 100644
  	rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
  					     shm->num_pages, start);
  	if (rc) {
-@@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+@@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *
  
  	return shm;
  err_put_shm_pages:
@@ -135,7 +133,7 @@ index 673cf0359494..731d9028b67f 100644
  	kfree(shm->pages);
  err_free_shm:
  	kfree(shm);
-@@ -307,6 +305,7 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+@@ -307,6 +305,7 @@ struct tee_shm *tee_shm_register_user_bu
  	u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
  	struct tee_device *teedev = ctx->teedev;
  	struct tee_shm *shm;
@@ -143,7 +141,7 @@ index 673cf0359494..731d9028b67f 100644
  	void *ret;
  	int id;
  
-@@ -319,7 +318,8 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+@@ -319,7 +318,8 @@ struct tee_shm *tee_shm_register_user_bu
  	if (id < 0)
  		return ERR_PTR(id);
  
@@ -153,7 +151,7 @@ index 673cf0359494..731d9028b67f 100644
  	if (IS_ERR(shm)) {
  		mutex_lock(&teedev->mutex);
  		idr_remove(&teedev->idr, id);
-@@ -352,8 +352,14 @@ struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
+@@ -352,8 +352,14 @@ struct tee_shm *tee_shm_register_kernel_
  					    void *addr, size_t length)
  {
  	u32 flags = TEE_SHM_DYNAMIC;
@@ -169,6 +167,3 @@ index 673cf0359494..731d9028b67f 100644
  }
  EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
  
--- 
-2.39.5
-

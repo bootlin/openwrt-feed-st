@@ -14,8 +14,6 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 54c533a88dc2..0f1a88b6ef74 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -4,6 +4,8 @@ CONFIG_ARCH_FORCE_MAX_ORDER=12
@@ -27,6 +25,3 @@ index 54c533a88dc2..0f1a88b6ef74 100644
  CONFIG_CHR_DEV_SG=y
  CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
  CONFIG_DEBUG_PREEMPT=y
--- 
-2.39.5
-

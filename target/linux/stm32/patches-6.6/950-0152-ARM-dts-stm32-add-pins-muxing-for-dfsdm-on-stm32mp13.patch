@@ -12,11 +12,9 @@ Change-Id: Ice1981272d7012cd6251d09e2b88357a57320979
  arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 39 +++++++++++++++++++++
  1 file changed, 39 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index ceee3e8e83c5..6d53579ed2a9 100644
 --- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -13,6 +13,45 @@ pins {
+@@ -13,6 +13,45 @@
  		};
  	};
  
@@ -62,6 +60,3 @@ index ceee3e8e83c5..6d53579ed2a9 100644
  	i2c1_pins_a: i2c1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
--- 
-2.39.5
-

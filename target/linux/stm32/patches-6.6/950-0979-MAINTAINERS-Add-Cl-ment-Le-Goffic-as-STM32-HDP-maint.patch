@@ -20,11 +20,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  MAINTAINERS | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9232138a93a5..21484583d824 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20331,6 +20331,13 @@ F:	drivers/bus/stm32_etzpc.c
+@@ -20333,6 +20333,13 @@ F:	drivers/bus/stm32_etzpc.c
  F:	drivers/bus/stm32_firewall.c
  F:	drivers/bus/stm32_rifsc.c
  
@@ -38,6 +36,3 @@ index 9232138a93a5..21484583d824 100644
  ST STM32 I2C/SMBUS DRIVER
  M:	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
  M:	Alain Volmat <alain.volmat@foss.st.com>
--- 
-2.39.5
-

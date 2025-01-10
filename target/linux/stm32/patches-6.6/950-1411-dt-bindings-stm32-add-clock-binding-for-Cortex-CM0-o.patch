@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/dt-bindings/clock/st,stm32mp25-rcc.h | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
-index 66b3f95329af..29e202c9c920 100644
 --- a/include/dt-bindings/clock/st,stm32mp25-rcc.h
 +++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
 @@ -365,8 +365,9 @@
@@ -35,6 +33,3 @@ index 66b3f95329af..29e202c9c920 100644
  
  #define CK_SCMI_ICN_HS_MCU	0
  #define CK_SCMI_ICN_SDMMC	1
--- 
-2.39.5
-

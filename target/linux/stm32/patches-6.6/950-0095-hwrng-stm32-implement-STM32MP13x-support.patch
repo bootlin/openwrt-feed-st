@@ -22,8 +22,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 222 ++++++++++++++++++++---------
  1 file changed, 158 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index d64d25d0fee8..54bd5807bbac 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -17,22 +17,43 @@
@@ -80,7 +78,7 @@ index d64d25d0fee8..54bd5807bbac 100644
  	bool ced;
  };
  
-@@ -87,32 +108,145 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -87,32 +108,145 @@ static int stm32_rng_init(struct hwrng *
  	struct stm32_rng_private *priv =
  	    container_of(rng, struct stm32_rng_private, rng);
  	int err;
@@ -236,7 +234,7 @@ index d64d25d0fee8..54bd5807bbac 100644
  static int stm32_rng_probe(struct platform_device *ofdev)
  {
  	struct device *dev = &ofdev->dev;
-@@ -141,13 +275,14 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -141,13 +275,14 @@ static int stm32_rng_probe(struct platfo
  
  	priv->ced = of_property_read_bool(np, "clock-error-detect");
  
@@ -254,7 +252,7 @@ index d64d25d0fee8..54bd5807bbac 100644
  	priv->rng.read = stm32_rng_read;
  	priv->rng.priv = (unsigned long) dev;
  	priv->rng.quality = 900;
-@@ -159,47 +294,6 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -159,47 +294,6 @@ static int stm32_rng_probe(struct platfo
  	return devm_hwrng_register(dev, &priv->rng);
  }
  
@@ -302,6 +300,3 @@ index d64d25d0fee8..54bd5807bbac 100644
  static struct platform_driver stm32_rng_driver = {
  	.driver = {
  		.name = "stm32-rng",
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 16 +++++++++++++++-
  1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index f7c9529b59f9..e338110553a4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -1862,9 +1862,23 @@ ltdc: display-controller@48010000 {
+@@ -1862,9 +1862,23 @@
  				clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
  				clock-names = "bus", "lcd";
  				resets = <&rcc LTDC_R>;
@@ -47,6 +45,3 @@ index f7c9529b59f9..e338110553a4 100644
  			};
  
  			csi: csi@48020000 {
--- 
-2.39.5
-

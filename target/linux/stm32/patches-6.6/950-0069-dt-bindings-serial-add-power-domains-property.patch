@@ -11,8 +11,6 @@ Change-Id: Ic80db4c2184942468f4c1bddccbbffa35ccc8fad
  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 1df8ffe95fc6..62f97da1b2fd 100644
 --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
 +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
 @@ -58,6 +58,9 @@ properties:
@@ -25,6 +23,3 @@ index 1df8ffe95fc6..62f97da1b2fd 100644
    rx-threshold:
      description:
        If value is set to 1, RX FIFO threshold is disabled.
--- 
-2.39.5
-

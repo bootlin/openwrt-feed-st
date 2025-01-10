@@ -14,9 +14,6 @@ Change-Id: Ie49e6df580cbddabe6093b886cc36b81915ee019
  1 file changed, 184 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
-new file mode 100644
-index 000000000000..baf351793234
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 @@ -0,0 +1,184 @@
@@ -204,6 +201,3 @@ index 000000000000..baf351793234
 +        st,txpreempamp-tune = /bits/ 8 <0>;
 +        st,txpreemppulse-tune = /bits/ 8 <0>;
 +    };
--- 
-2.39.5
-

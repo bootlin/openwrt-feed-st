@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 39892ad70a82..2bfd0ca98307 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2991,6 +2991,13 @@ ipcc2: mailbox@46250000 {
+@@ -2991,6 +2991,13 @@
  			status = "disabled";
  		};
  
@@ -37,6 +35,3 @@ index 39892ad70a82..2bfd0ca98307 100644
  		fmc: memory-controller@48200000 {
  			compatible = "st,stm32mp25-fmc2-ebi";
  			reg = <0x48200000 0x400>;
--- 
-2.39.5
-

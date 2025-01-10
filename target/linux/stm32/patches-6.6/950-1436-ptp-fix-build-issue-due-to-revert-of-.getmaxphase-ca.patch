@@ -14,11 +14,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/ptp/ptp_sysfs.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
-index 24d4aa23101e..1263612ef275 100644
 --- a/drivers/ptp/ptp_sysfs.c
 +++ b/drivers/ptp/ptp_sysfs.c
-@@ -346,9 +346,6 @@ static umode_t ptp_is_attribute_visible(struct kobject *kobj,
+@@ -346,9 +346,6 @@ static umode_t ptp_is_attribute_visible(
  		   attr == &dev_attr_max_vclocks.attr) {
  		if (ptp->is_virtual_clock)
  			mode = 0;
@@ -28,6 +26,3 @@ index 24d4aa23101e..1263612ef275 100644
  	}
  
  	return mode;
--- 
-2.39.5
-

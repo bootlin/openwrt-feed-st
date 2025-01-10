@@ -12,11 +12,9 @@ Change-Id: I646a517cc5c1667c4ff5e5263b5fb5175f37fdff
  arch/arm/boot/dts/st/stm32mp151.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index f7872ee25115..247518c335c9 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1841,6 +1841,7 @@ pinctrl: pinctrl@50002000 {
+@@ -1841,6 +1841,7 @@
  			ranges = <0 0x50002000 0xa400>;
  			interrupt-parent = <&exti>;
  			st,syscfg = <&exti 0x60 0xff>;
@@ -24,7 +22,7 @@ index f7872ee25115..247518c335c9 100644
  
  			gpioa: gpio@50002000 {
  				gpio-controller;
-@@ -1971,6 +1972,7 @@ pinctrl_z: pinctrl@54004000 {
+@@ -1971,6 +1972,7 @@
  			ranges = <0 0x54004000 0x400>;
  			interrupt-parent = <&exti>;
  			st,syscfg = <&exti 0x60 0xff>;
@@ -32,6 +30,3 @@ index f7872ee25115..247518c335c9 100644
  
  			gpioz: gpio@54004000 {
  				gpio-controller;
--- 
-2.39.5
-

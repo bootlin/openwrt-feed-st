@@ -14,9 +14,6 @@ Change-Id: I608cb514a527d01dd40535aa562ab4e30e38ddde
  1 file changed, 58 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/remoteproc/rproc-srm.txt
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/rproc-srm.txt b/Documentation/devicetree/bindings/remoteproc/rproc-srm.txt
-new file mode 100644
-index 000000000000..baa6e8e135e1
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/remoteproc/rproc-srm.txt
 @@ -0,0 +1,58 @@
@@ -78,6 +75,3 @@ index 000000000000..baa6e8e135e1
 +			interrupt-names = "gpio_key";
 +		};
 +	};
--- 
-2.39.5
-

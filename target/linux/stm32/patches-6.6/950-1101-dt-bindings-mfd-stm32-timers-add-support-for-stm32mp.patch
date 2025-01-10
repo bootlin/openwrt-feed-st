@@ -17,8 +17,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index 6be0e3061aa3..8f259cc02f34 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 @@ -23,6 +23,7 @@ properties:
@@ -53,6 +51,3 @@ index 6be0e3061aa3..8f259cc02f34 100644
            - st,stm32mp25-timer-trigger
  
        reg:
--- 
-2.39.5
-

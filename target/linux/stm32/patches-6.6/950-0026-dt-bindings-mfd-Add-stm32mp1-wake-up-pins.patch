@@ -12,9 +12,6 @@ Change-Id: I37e5d5ac90382a88f84dac1411c492d040f6d507
  1 file changed, 57 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mfd/st,stm32mp1-pwr.txt
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32mp1-pwr.txt b/Documentation/devicetree/bindings/mfd/st,stm32mp1-pwr.txt
-new file mode 100644
-index 000000000000..b5f414a19120
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32mp1-pwr.txt
 @@ -0,0 +1,57 @@
@@ -75,6 +72,3 @@ index 000000000000..b5f414a19120
 +	};
 +};
 +
--- 
-2.39.5
-

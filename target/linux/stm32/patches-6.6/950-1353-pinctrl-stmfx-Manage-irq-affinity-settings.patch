@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pinctrl/pinctrl-stmfx.c | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-stmfx.c b/drivers/pinctrl/pinctrl-stmfx.c
-index 0974bbf57b54..2f4e21eb7966 100644
 --- a/drivers/pinctrl/pinctrl-stmfx.c
 +++ b/drivers/pinctrl/pinctrl-stmfx.c
 @@ -6,6 +6,7 @@
@@ -33,7 +31,7 @@ index 0974bbf57b54..2f4e21eb7966 100644
  #include <linux/interrupt.h>
  #include <linux/mfd/stmfx.h>
  #include <linux/module.h>
-@@ -601,6 +602,23 @@ static void stmfx_pinctrl_irq_print_chip(struct irq_data *d, struct seq_file *p)
+@@ -601,6 +602,23 @@ static void stmfx_pinctrl_irq_print_chip
  	seq_printf(p, dev_name(pctl->dev));
  }
  
@@ -57,7 +55,7 @@ index 0974bbf57b54..2f4e21eb7966 100644
  static const struct irq_chip stmfx_pinctrl_irq_chip = {
  	.irq_mask = stmfx_pinctrl_irq_mask,
  	.irq_unmask = stmfx_pinctrl_irq_unmask,
-@@ -611,6 +629,7 @@ static const struct irq_chip stmfx_pinctrl_irq_chip = {
+@@ -611,6 +629,7 @@ static const struct irq_chip stmfx_pinct
  	.irq_release_resources = stmfx_gpio_irq_release_resources,
  	.irq_print_chip = stmfx_pinctrl_irq_print_chip,
  	.flags = IRQCHIP_IMMUTABLE,
@@ -65,6 +63,3 @@ index 0974bbf57b54..2f4e21eb7966 100644
  };
  
  static int stmfx_pinctrl_gpio_function_enable(struct stmfx_pinctrl *pctl)
--- 
-2.39.5
-

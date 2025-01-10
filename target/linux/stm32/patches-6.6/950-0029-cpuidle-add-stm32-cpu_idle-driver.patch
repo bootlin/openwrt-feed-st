@@ -21,8 +21,6 @@ Reviewed-by: CIBUILD <smet-aci-builds@lists.codex.cro.st.com>
  4 files changed, 286 insertions(+), 9 deletions(-)
  create mode 100644 drivers/cpuidle/cpuidle-stm32.c
 
-diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
-index a1ee475d180d..6323c2ad4606 100644
 --- a/drivers/cpuidle/Kconfig.arm
 +++ b/drivers/cpuidle/Kconfig.arm
 @@ -101,6 +101,14 @@ config ARM_EXYNOS_CPUIDLE
@@ -40,11 +38,9 @@ index a1ee475d180d..6323c2ad4606 100644
  config ARM_MVEBU_V7_CPUIDLE
  	bool "CPU Idle Driver for mvebu v7 family processors"
  	depends on (ARCH_MVEBU || COMPILE_TEST) && !ARM64
-diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-index d103342b7cfc..169d60fb9231 100644
 --- a/drivers/cpuidle/Makefile
 +++ b/drivers/cpuidle/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_ARM_PSCI_CPUIDLE)		+= cpuidle-psci.o
+@@ -26,6 +26,7 @@ obj-$(CONFIG_ARM_PSCI_CPUIDLE)		+= cpuid
  obj-$(CONFIG_ARM_PSCI_CPUIDLE_DOMAIN)	+= cpuidle-psci-domain.o
  obj-$(CONFIG_ARM_TEGRA_CPUIDLE)		+= cpuidle-tegra.o
  obj-$(CONFIG_ARM_QCOM_SPM_CPUIDLE)	+= cpuidle-qcom-spm.o
@@ -52,9 +48,6 @@ index d103342b7cfc..169d60fb9231 100644
  
  ###############################################################################
  # MIPS drivers
-diff --git a/drivers/cpuidle/cpuidle-stm32.c b/drivers/cpuidle/cpuidle-stm32.c
-new file mode 100644
-index 000000000000..8baf43721096
 --- /dev/null
 +++ b/drivers/cpuidle/cpuidle-stm32.c
 @@ -0,0 +1,277 @@
@@ -335,11 +328,9 @@ index 000000000000..8baf43721096
 +MODULE_AUTHOR("<>");
 +MODULE_DESCRIPTION("STM32 cpu idle driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mfd/stm32-pwr.c b/drivers/mfd/stm32-pwr.c
-index c06e2fb6c0eb..612be80795c6 100644
 --- a/drivers/mfd/stm32-pwr.c
 +++ b/drivers/mfd/stm32-pwr.c
-@@ -205,14 +205,6 @@ static int stm32_pwr_irq_request_resources(struct irq_data *d)
+@@ -205,14 +205,6 @@ static int stm32_pwr_irq_request_resourc
  	return 0;
  }
  
@@ -354,7 +345,7 @@ index c06e2fb6c0eb..612be80795c6 100644
  static struct irq_chip stm32_pwr_irq_chip = {
  	.name = "stm32-pwr-irq",
  	.irq_ack = stm32_pwr_irq_ack,
-@@ -221,7 +213,6 @@ static struct irq_chip stm32_pwr_irq_chip = {
+@@ -221,7 +213,6 @@ static struct irq_chip stm32_pwr_irq_chi
  	.irq_set_type = stm32_pwr_irq_set_type,
  	.irq_set_wake = stm32_pwr_irq_set_wake,
  	.irq_request_resources = stm32_pwr_irq_request_resources,
@@ -362,6 +353,3 @@ index c06e2fb6c0eb..612be80795c6 100644
  #ifdef CONFIG_SMP
  	.irq_set_affinity = stm32_pwr_set_affinity_parent,
  #endif
--- 
-2.39.5
-

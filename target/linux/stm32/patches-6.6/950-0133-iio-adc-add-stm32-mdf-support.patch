@@ -31,8 +31,6 @@ Change-Id: Ie78964ac55356e78f0810269203bde99140ce399
  create mode 100644 drivers/iio/adc/stm32-mdf.h
  create mode 100644 include/linux/iio/adc/stm32-mdf-adc.h
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index dfb925cfe38e..1a919167d5d0 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
 @@ -1108,6 +1108,31 @@ config STM32_DFSDM_ADC
@@ -67,11 +65,9 @@ index dfb925cfe38e..1a919167d5d0 100644
  config STMPE_ADC
  	tristate "STMicroelectronics STMPE ADC driver"
  	depends on OF && MFD_STMPE
-diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-index 2facf979327d..a2a8e4337f74 100644
 --- a/drivers/iio/adc/Makefile
 +++ b/drivers/iio/adc/Makefile
-@@ -101,6 +101,9 @@ obj-$(CONFIG_STM32_ADC_CORE) += stm32-adc-core.o
+@@ -101,6 +101,9 @@ obj-$(CONFIG_STM32_ADC_CORE) += stm32-ad
  obj-$(CONFIG_STM32_ADC) += stm32-adc.o
  obj-$(CONFIG_STM32_DFSDM_CORE) += stm32-dfsdm-core.o
  obj-$(CONFIG_STM32_DFSDM_ADC) += stm32-dfsdm-adc.o
@@ -81,9 +77,6 @@ index 2facf979327d..a2a8e4337f74 100644
  obj-$(CONFIG_STMPE_ADC) += stmpe-adc.o
  obj-$(CONFIG_TI_ADC081C) += ti-adc081c.o
  obj-$(CONFIG_TI_ADC0832) += ti-adc0832.o
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-new file mode 100644
-index 000000000000..b8eea6eed9a7
 --- /dev/null
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
 @@ -0,0 +1,1389 @@
@@ -1476,9 +1469,6 @@ index 000000000000..b8eea6eed9a7
 +MODULE_DESCRIPTION("STM32 MDF sigma delta ADC");
 +MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-new file mode 100644
-index 000000000000..559b1efc3ad7
 --- /dev/null
 +++ b/drivers/iio/adc/stm32-mdf-core.c
 @@ -0,0 +1,645 @@
@@ -2127,9 +2117,6 @@ index 000000000000..559b1efc3ad7
 +MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 MDF driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/iio/adc/stm32-mdf-serial.c b/drivers/iio/adc/stm32-mdf-serial.c
-new file mode 100644
-index 000000000000..0118409083dd
 --- /dev/null
 +++ b/drivers/iio/adc/stm32-mdf-serial.c
 @@ -0,0 +1,310 @@
@@ -2443,9 +2430,6 @@ index 000000000000..0118409083dd
 +MODULE_AUTHOR("Olivier Moysan <olivier.moysan@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 MDF serial driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-new file mode 100644
-index 000000000000..a5b96516502e
 --- /dev/null
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -0,0 +1,309 @@
@@ -2758,9 +2742,6 @@ index 000000000000..a5b96516502e
 +
 +int stm32_mdf_sitf_start(struct stm32_mdf_sitf *sitf);
 +int stm32_mdf_sitf_stop(struct stm32_mdf_sitf *sitf);
-diff --git a/include/linux/iio/adc/stm32-mdf-adc.h b/include/linux/iio/adc/stm32-mdf-adc.h
-new file mode 100644
-index 000000000000..b4b4d078a2a8
 --- /dev/null
 +++ b/include/linux/iio/adc/stm32-mdf-adc.h
 @@ -0,0 +1,18 @@
@@ -2782,6 +2763,3 @@ index 000000000000..b4b4d078a2a8
 +int stm32_mdf_release_buff_cb(struct iio_dev *iio_dev);
 +
 +#endif
--- 
-2.39.5
-

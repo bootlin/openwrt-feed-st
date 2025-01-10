@@ -23,8 +23,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 25 ++++++++++++++++++-
  1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-index e72cb5bacaf0..b8ef9ba88e92 100644
 --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
 +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
 @@ -14,10 +14,11 @@ properties:
@@ -69,6 +67,3 @@ index e72cb5bacaf0..b8ef9ba88e92 100644
  required:
    - compatible
    - reg
--- 
-2.39.5
-

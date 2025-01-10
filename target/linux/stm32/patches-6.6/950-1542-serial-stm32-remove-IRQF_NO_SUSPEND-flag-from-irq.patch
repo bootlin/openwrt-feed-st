@@ -23,11 +23,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/tty/serial/stm32-usart.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index d7b67883d674..48cd2d8d69d8 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -1282,8 +1282,7 @@ static int stm32_usart_startup(struct uart_port *port)
+@@ -1282,8 +1282,7 @@ static int stm32_usart_startup(struct ua
  	u32 val;
  	int ret;
  
@@ -37,6 +35,3 @@ index d7b67883d674..48cd2d8d69d8 100644
  	if (ret)
  		return ret;
  
--- 
-2.39.5
-

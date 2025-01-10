@@ -14,11 +14,9 @@ Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 21b537143661..1b346c0a429b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -125,6 +125,19 @@ usart2: serial@400e0000 {
+@@ -125,6 +125,19 @@
  				clocks = <&ck_flexgen_08>;
  				status = "disabled";
  			};
@@ -38,6 +36,3 @@ index 21b537143661..1b346c0a429b 100644
  		};
  
  		syscfg: syscon@44230000 {
--- 
-2.39.5
-

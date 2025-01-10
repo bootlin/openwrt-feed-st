@@ -19,11 +19,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index d5ef0b6436a4..1385f0c538e9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -292,6 +292,13 @@ sdmmc3: mmc@48240000 {
+@@ -292,6 +292,13 @@
  			};
  		};
  
@@ -37,6 +35,3 @@ index d5ef0b6436a4..1385f0c538e9 100644
  		rcc: clock-controller@44200000 {
  			compatible = "st,stm32mp21-rcc";
  			reg = <0x44200000 0x10000>;
--- 
-2.39.5
-

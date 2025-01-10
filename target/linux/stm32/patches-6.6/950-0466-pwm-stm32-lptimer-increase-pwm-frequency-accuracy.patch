@@ -16,11 +16,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pwm/pwm-stm32-lp.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-stm32-lp.c b/drivers/pwm/pwm-stm32-lp.c
-index bb3a045a7334..3f9f668caa13 100644
 --- a/drivers/pwm/pwm-stm32-lp.c
 +++ b/drivers/pwm/pwm-stm32-lp.c
-@@ -58,7 +58,7 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -58,7 +58,7 @@ static int stm32_pwm_lp_apply(struct pwm
  
  	/* Calculate the period and prescaler value */
  	div = (unsigned long long)clk_get_rate(priv->clk) * state->period;
@@ -29,7 +27,7 @@ index bb3a045a7334..3f9f668caa13 100644
  	if (!div) {
  		/* Clock is too slow to achieve requested period. */
  		dev_dbg(priv->chip.dev, "Can't reach %llu ns\n", state->period);
-@@ -78,7 +78,7 @@ static int stm32_pwm_lp_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+@@ -78,7 +78,7 @@ static int stm32_pwm_lp_apply(struct pwm
  
  	/* Calculate the duty cycle */
  	dty = prd * state->duty_cycle;
@@ -38,6 +36,3 @@ index bb3a045a7334..3f9f668caa13 100644
  
  	if (!cstate.enabled) {
  		/* enable clock to drive PWM counter */
--- 
-2.39.5
-

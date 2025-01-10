@@ -18,8 +18,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
-index 134fd223a02b..edd253e4c35b 100644
 --- a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
 +++ b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
 @@ -50,7 +50,6 @@ required:
@@ -30,6 +28,3 @@ index 134fd223a02b..edd253e4c35b 100644
    - interrupt-names
    - "#mbox-cells"
    - interrupts
--- 
-2.39.5
-

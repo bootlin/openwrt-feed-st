@@ -23,8 +23,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  tools/counter/counter_watch_events.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/counter/counter_watch_events.c b/tools/counter/counter_watch_events.c
-index 37d1b4b3e63d..107631e0f2e3 100644
 --- a/tools/counter/counter_watch_events.c
 +++ b/tools/counter/counter_watch_events.c
 @@ -230,8 +230,8 @@ int main(int argc, char **argv)
@@ -47,6 +45,3 @@ index 37d1b4b3e63d..107631e0f2e3 100644
  
  	if (debug)
  		print_watch(watches, nwatch);
--- 
-2.39.5
-

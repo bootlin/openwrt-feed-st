@@ -15,11 +15,9 @@ Change-Id: Ica0561e6aa5fbebcdc8786412975af204f6fc4b7
  arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 71 +++++++++++++++++++++
  1 file changed, 71 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index 21ec7a1f22e1..33416738a345 100644
 --- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -85,6 +85,77 @@ pins {
+@@ -85,6 +85,77 @@
  		};
  	};
  
@@ -97,6 +95,3 @@ index 21ec7a1f22e1..33416738a345 100644
  	goodix_pins_a: goodix-0 {
  		/*
  		 * touchscreen reset needs to be configured
--- 
-2.39.5
-

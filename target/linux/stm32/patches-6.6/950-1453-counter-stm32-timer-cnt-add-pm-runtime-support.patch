@@ -17,8 +17,6 @@ Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
  drivers/counter/stm32-timer-cnt.c | 64 +++++++++++++++++++++++--------
  1 file changed, 48 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 07191ec21209..823062603f0e 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
 @@ -15,6 +15,7 @@
@@ -29,7 +27,7 @@ index 07191ec21209..823062603f0e 100644
  #include <linux/types.h>
  
  #define TIM_CCMR_CCXS	(BIT(8) | BIT(0))
-@@ -219,20 +220,22 @@ static int stm32_count_enable_write(struct counter_device *counter,
+@@ -219,20 +220,22 @@ static int stm32_count_enable_write(stru
  	if (enable) {
  		regmap_read(priv->regmap, TIM_CR1, &cr1);
  		if (!(cr1 & TIM_CR1_CEN)) {
@@ -58,7 +56,7 @@ index 07191ec21209..823062603f0e 100644
  	}
  
  	/* Keep enabled state to properly handle low power states */
-@@ -787,6 +790,10 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+@@ -787,6 +790,10 @@ static int stm32_timer_cnt_probe(struct
  	/* Reset input selector to its default input */
  	regmap_write(priv->regmap, TIM_TISEL, 0x0);
  
@@ -69,7 +67,7 @@ index 07191ec21209..823062603f0e 100644
  	/* Register Counter device */
  	ret = devm_counter_add(dev, counter);
  	if (ret < 0)
-@@ -795,9 +802,10 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+@@ -795,9 +802,10 @@ static int stm32_timer_cnt_probe(struct
  	return ret;
  }
  
@@ -81,7 +79,7 @@ index 07191ec21209..823062603f0e 100644
  
  	/* Only take care of enabled counter: don't disturb other MFD child */
  	if (priv->enabled) {
-@@ -809,13 +817,16 @@ static int __maybe_unused stm32_timer_cnt_suspend(struct device *dev)
+@@ -809,13 +817,16 @@ static int __maybe_unused stm32_timer_cn
  
  		/* Disable the counter */
  		regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_CEN, 0);
@@ -100,7 +98,7 @@ index 07191ec21209..823062603f0e 100644
  {
  	struct stm32_timer_cnt *priv = dev_get_drvdata(dev);
  	int ret;
-@@ -825,11 +836,9 @@ static int __maybe_unused stm32_timer_cnt_resume(struct device *dev)
+@@ -825,11 +836,9 @@ static int __maybe_unused stm32_timer_cn
  		return ret;
  
  	if (priv->enabled) {
@@ -114,7 +112,7 @@ index 07191ec21209..823062603f0e 100644
  
  		/* Restore registers that may have been lost */
  		regmap_write(priv->regmap, TIM_SMCR, priv->bak.smcr);
-@@ -843,8 +852,31 @@ static int __maybe_unused stm32_timer_cnt_resume(struct device *dev)
+@@ -843,8 +852,31 @@ static int __maybe_unused stm32_timer_cn
  	return 0;
  }
  
@@ -148,7 +146,7 @@ index 07191ec21209..823062603f0e 100644
  
  static const struct of_device_id stm32_timer_cnt_of_match[] = {
  	{ .compatible = "st,stm32-timer-counter", },
-@@ -859,7 +891,7 @@ static struct platform_driver stm32_timer_cnt_driver = {
+@@ -859,7 +891,7 @@ static struct platform_driver stm32_time
  	.driver = {
  		.name = "stm32-timer-counter",
  		.of_match_table = stm32_timer_cnt_of_match,
@@ -157,6 +155,3 @@ index 07191ec21209..823062603f0e 100644
  	},
  };
  module_platform_driver(stm32_timer_cnt_driver);
--- 
-2.39.5
-

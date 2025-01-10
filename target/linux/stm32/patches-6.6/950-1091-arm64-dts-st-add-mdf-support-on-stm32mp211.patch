@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 80 ++++++++++++++++++++++++++
  1 file changed, 80 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 0c41f30a21e7..a49b81ada983 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -620,6 +620,86 @@ sai4b: audio-controller@40340024 {
+@@ -620,6 +620,86 @@
  				};
  			};
  
@@ -107,6 +105,3 @@ index 0c41f30a21e7..a49b81ada983 100644
  			uart7: serial@40370000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40370000 0x400>;
--- 
-2.39.5
-

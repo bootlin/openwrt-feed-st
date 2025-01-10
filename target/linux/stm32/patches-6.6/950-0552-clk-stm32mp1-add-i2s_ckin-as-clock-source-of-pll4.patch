@@ -15,11 +15,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 7e2337297402..07cb42515104 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -120,7 +120,7 @@ static const char * const ref3_parents[] = {
+@@ -120,7 +120,7 @@ static const char * const ref3_parents[]
  };
  
  static const char * const ref4_parents[] = {
@@ -28,6 +26,3 @@ index 7e2337297402..07cb42515104 100644
  };
  
  static const char * const cpu_src[] = {
--- 
-2.39.5
-

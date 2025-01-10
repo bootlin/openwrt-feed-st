@@ -13,11 +13,9 @@ Change-Id: I85271ddb811a7cf73532fec90de7281cb24ce260
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 20cb3a557c60..0528a112f535 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -253,7 +253,7 @@ timer {
+@@ -253,7 +253,7 @@
  			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
  			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
  			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
@@ -26,6 +24,3 @@ index 20cb3a557c60..0528a112f535 100644
  	};
  
  	usb2_phy1: usb2-phy1 {
--- 
-2.39.5
-

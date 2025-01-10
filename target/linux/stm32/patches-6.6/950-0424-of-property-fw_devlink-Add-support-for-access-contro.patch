@@ -12,11 +12,9 @@ Acked-by: Rob Herring <robh@kernel.org>
  drivers/of/property.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index b3f0285e401c..311288d3dfb2 100644
 --- a/drivers/of/property.c
 +++ b/drivers/of/property.c
-@@ -1238,6 +1238,7 @@ DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
+@@ -1238,6 +1238,7 @@ DEFINE_SIMPLE_PROP(resets, "resets", "#r
  DEFINE_SIMPLE_PROP(leds, "leds", NULL)
  DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
  DEFINE_SIMPLE_PROP(panel, "panel", NULL)
@@ -24,7 +22,7 @@ index b3f0285e401c..311288d3dfb2 100644
  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
  
-@@ -1346,6 +1347,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+@@ -1346,6 +1347,7 @@ static const struct supplier_bindings of
  	{ .parse_prop = parse_regulators, },
  	{ .parse_prop = parse_gpio, },
  	{ .parse_prop = parse_gpios, },
@@ -32,6 +30,3 @@ index b3f0285e401c..311288d3dfb2 100644
  	{}
  };
  
--- 
-2.39.5
-

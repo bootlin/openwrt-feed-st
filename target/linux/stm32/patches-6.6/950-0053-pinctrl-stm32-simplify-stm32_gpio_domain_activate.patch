@@ -12,11 +12,9 @@ Change-Id: I317786d3573a943c8ae22f9c5fe89bb3c054aa9b
  drivers/pinctrl/stm32/pinctrl-stm32.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 1f1cc352153f..d21ee06b3ed7 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -604,7 +604,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
+@@ -604,7 +604,7 @@ static int stm32_gpio_domain_activate(st
  {
  	struct stm32_gpio_bank *bank = d->host_data;
  	struct stm32_pinctrl *pctl = dev_get_drvdata(bank->gpio_chip.parent);
@@ -25,7 +23,7 @@ index 1f1cc352153f..d21ee06b3ed7 100644
  
  	if (pctl->hwlock) {
  		ret = hwspin_lock_timeout_in_atomic(pctl->hwlock,
-@@ -620,7 +620,7 @@ static int stm32_gpio_domain_activate(struct irq_domain *d,
+@@ -620,7 +620,7 @@ static int stm32_gpio_domain_activate(st
  	if (pctl->hwlock)
  		hwspin_unlock_in_atomic(pctl->hwlock);
  
@@ -34,6 +32,3 @@ index 1f1cc352153f..d21ee06b3ed7 100644
  }
  
  static int stm32_gpio_domain_alloc(struct irq_domain *d,
--- 
-2.39.5
-

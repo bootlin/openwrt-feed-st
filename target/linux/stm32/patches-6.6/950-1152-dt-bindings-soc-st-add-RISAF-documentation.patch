@@ -21,9 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  2 files changed, 70 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/soc/st/st,stm32mp25-risaf.yaml
 
-diff --git a/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risaf.yaml b/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risaf.yaml
-new file mode 100644
-index 000000000000..e3bd855419ad
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/soc/st/st,stm32mp25-risaf.yaml
 @@ -0,0 +1,65 @@
@@ -92,11 +89,9 @@ index 000000000000..e3bd855419ad
 +          clocks = <&rcc CK_BUS_RISAF4>;
 +          st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
 +        };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 21484583d824..34aeedcfcb73 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20639,6 +20639,11 @@ F:	Documentation/arch/arm/stm32/stm32-dma-mdma-chaining.rst
+@@ -20641,6 +20641,11 @@ F:	Documentation/arch/arm/stm32/stm32-dm
  F:	Documentation/devicetree/bindings/dma/stm32/
  F:	drivers/dma/stm32/
  
@@ -108,6 +103,3 @@ index 21484583d824..34aeedcfcb73 100644
  STM32 TAMP DRIVERS
  M:	Siméon Marijon <simeon.marijon@foss.st.com>
  S:	Maintained
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  drivers/memory/stm32-omi.c | 15 ++++++++-------
  1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 44bdb0664f9a..814f26871351 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -92,13 +92,15 @@ int stm32_omi_wait_cmd(struct stm32_omi *omi)
+@@ -92,13 +92,15 @@ int stm32_omi_wait_cmd(struct stm32_omi
  	writel_relaxed(cr | CR_TCIE | CR_TEIE, regs_base + OSPI_CR);
  
  	if (!wait_for_completion_timeout(&omi->data_completion,
@@ -44,7 +42,7 @@ index 44bdb0664f9a..814f26871351 100644
  
  out:
  	/* clear flags */
-@@ -139,7 +141,6 @@ static irqreturn_t stm32_omi_irq(int irq, void *dev_id)
+@@ -139,7 +141,6 @@ static irqreturn_t stm32_omi_irq(int irq
  
  	if (sr & (SR_TEF | SR_TCF)) {
  		/* disable irq */
@@ -52,6 +50,3 @@ index 44bdb0664f9a..814f26871351 100644
  		cr &= ~CR_TCIE & ~CR_TEIE;
  		writel_relaxed(cr, regs_base + OSPI_CR);
  		complete(&omi->data_completion);
--- 
-2.39.5
-

@@ -22,11 +22,9 @@ Change-Id: I8801acb69d453410bc2abe7abe1b9db6f2f4dbc2
  drivers/i2c/busses/i2c-stm32f7.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 5c5ef20a3e49..5f4150cb5073 100644
 --- a/drivers/i2c/busses/i2c-stm32f7.c
 +++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1439,7 +1439,7 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev,
+@@ -1439,7 +1439,7 @@ static irqreturn_t stm32f7_i2c_slave_isr
  	int ret;
  
  	/* Slave transmitter mode */
@@ -35,7 +33,7 @@ index 5c5ef20a3e49..5f4150cb5073 100644
  		i2c_slave_event(i2c_dev->slave_running,
  				I2C_SLAVE_READ_PROCESSED,
  				&val);
-@@ -1449,7 +1449,8 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev,
+@@ -1449,7 +1449,8 @@ static irqreturn_t stm32f7_i2c_slave_isr
  	}
  
  	/* Transfer Complete Reload for Slave receiver mode */
@@ -45,7 +43,7 @@ index 5c5ef20a3e49..5f4150cb5073 100644
  		/*
  		 * Read data byte then set NBYTES to receive next byte or NACK
  		 * the current received byte
-@@ -1475,7 +1476,7 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev,
+@@ -1475,7 +1476,7 @@ static irqreturn_t stm32f7_i2c_slave_isr
  	}
  
  	/* STOP received */
@@ -54,6 +52,3 @@ index 5c5ef20a3e49..5f4150cb5073 100644
  		/* Disable interrupts */
  		stm32f7_i2c_disable_irq(i2c_dev, STM32F7_I2C_XFER_IRQ_MASK);
  
--- 
-2.39.5
-

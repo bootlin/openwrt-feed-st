@@ -21,8 +21,6 @@ Tested-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/usb/dwc2/platform.c | 32 +++++++++++++++++++
  5 files changed, 100 insertions(+)
 
-diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
-index a141f83aba0c..9ffa08647e27 100644
 --- a/drivers/usb/dwc2/core.h
 +++ b/drivers/usb/dwc2/core.h
 @@ -396,6 +396,9 @@ enum dwc2_ep0_state {
@@ -43,8 +41,6 @@ index a141f83aba0c..9ffa08647e27 100644
  	bool activate_ingenic_overcurrent_detection;
  	bool ipg_isoc_en;
  	u16 max_packet_count;
-diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
-index 70181edd5d7a..0746316b1d0c 100644
 --- a/drivers/usb/dwc2/drd.c
 +++ b/drivers/usb/dwc2/drd.c
 @@ -17,11 +17,66 @@
@@ -114,7 +110,7 @@ index 70181edd5d7a..0746316b1d0c 100644
  	spin_lock_irqsave(&hsotg->lock, flags);
  
  	gotgctl = dwc2_readl(hsotg, GOTGCTL);
-@@ -43,6 +98,9 @@ static int dwc2_ovr_avalid(struct dwc2_hsotg *hsotg, bool valid)
+@@ -43,6 +98,9 @@ static int dwc2_ovr_avalid(struct dwc2_h
  {
  	u32 gotgctl = dwc2_readl(hsotg, GOTGCTL);
  
@@ -124,7 +120,7 @@ index 70181edd5d7a..0746316b1d0c 100644
  	/* Check if A-Session is already in the right state */
  	if ((valid && (gotgctl & GOTGCTL_AVALOVAL) && (gotgctl & GOTGCTL_VBVALOVAL)) ||
  	    (!valid && !(gotgctl & (GOTGCTL_AVALOVAL | GOTGCTL_VBVALOVAL))))
-@@ -65,6 +123,9 @@ static int dwc2_ovr_bvalid(struct dwc2_hsotg *hsotg, bool valid)
+@@ -65,6 +123,9 @@ static int dwc2_ovr_bvalid(struct dwc2_h
  {
  	u32 gotgctl = dwc2_readl(hsotg, GOTGCTL);
  
@@ -134,8 +130,6 @@ index 70181edd5d7a..0746316b1d0c 100644
  	/* Check if B-Session is already in the right state */
  	if ((valid && (gotgctl & GOTGCTL_BVALOVAL) && (gotgctl & GOTGCTL_VBVALOVAL)) ||
  	    (!valid && !(gotgctl & (GOTGCTL_BVALOVAL | GOTGCTL_VBVALOVAL))))
-diff --git a/drivers/usb/dwc2/hw.h b/drivers/usb/dwc2/hw.h
-index 12f8c7f86dc9..f52fe22aa8e5 100644
 --- a/drivers/usb/dwc2/hw.h
 +++ b/drivers/usb/dwc2/hw.h
 @@ -207,6 +207,8 @@
@@ -147,11 +141,9 @@ index 12f8c7f86dc9..f52fe22aa8e5 100644
  
  #define GUID				HSOTG_REG(0x003c)
  #define GSNPSID				HSOTG_REG(0x0040)
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 84341419e31d..f104c0cece09 100644
 --- a/drivers/usb/dwc2/params.c
 +++ b/drivers/usb/dwc2/params.c
-@@ -282,6 +282,7 @@ static void dwc2_set_stm32mp21_hsotg_params(struct dwc2_hsotg *hsotg)
+@@ -282,6 +282,7 @@ static void dwc2_set_stm32mp21_hsotg_par
  	p->lpm_clock_gating = false;
  	p->besl = false;
  	p->hird_threshold_en = false;
@@ -159,11 +151,9 @@ index 84341419e31d..f104c0cece09 100644
  }
  
  const struct of_device_id dwc2_of_match_table[] = {
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index ffa58e248652..5c888f00d080 100644
 --- a/drivers/usb/dwc2/platform.c
 +++ b/drivers/usb/dwc2/platform.c
-@@ -351,6 +351,14 @@ static void dwc2_driver_remove(struct platform_device *dev)
+@@ -351,6 +351,14 @@ static void dwc2_driver_remove(struct pl
  
  	if (hsotg->ll_hw_enabled)
  		dwc2_lowlevel_hw_disable(hsotg);
@@ -178,7 +168,7 @@ index ffa58e248652..5c888f00d080 100644
  }
  
  /**
-@@ -559,6 +567,14 @@ static int dwc2_driver_probe(struct platform_device *dev)
+@@ -561,6 +569,14 @@ static int dwc2_driver_probe(struct plat
  		usleep_range(5000, 7000);
  	}
  
@@ -193,7 +183,7 @@ index ffa58e248652..5c888f00d080 100644
  	retval = dwc2_drd_init(hsotg);
  	if (retval) {
  		dev_err_probe(hsotg->dev, retval, "failed to initialize dual-role\n");
-@@ -694,6 +710,14 @@ static int __maybe_unused dwc2_suspend(struct device *dev)
+@@ -696,6 +712,14 @@ static int __maybe_unused dwc2_suspend(s
  		regulator_disable(dwc2->usb33d);
  	}
  
@@ -208,7 +198,7 @@ index ffa58e248652..5c888f00d080 100644
  	if (dwc2->ll_hw_enabled &&
  	    (is_device_mode || dwc2_host_can_poweroff_phy(dwc2))) {
  		ret = __dwc2_lowlevel_hw_disable(dwc2);
-@@ -746,6 +770,14 @@ static int __maybe_unused dwc2_resume(struct device *dev)
+@@ -748,6 +772,14 @@ static int __maybe_unused dwc2_resume(st
  		spin_unlock_irqrestore(&dwc2->lock, flags);
  	}
  
@@ -223,6 +213,3 @@ index ffa58e248652..5c888f00d080 100644
  	if (!dwc2->role_sw) {
  		/* Need to restore FORCEDEVMODE/FORCEHOSTMODE */
  		dwc2_force_dr_mode(dwc2);
--- 
-2.39.5
-

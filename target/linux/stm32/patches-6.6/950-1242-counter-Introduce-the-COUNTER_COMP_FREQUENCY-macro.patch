@@ -21,8 +21,6 @@ Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
  include/linux/counter.h | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/counter.h b/include/linux/counter.h
-index b767b5c821f5..cd35d8574ee2 100644
 --- a/include/linux/counter.h
 +++ b/include/linux/counter.h
 @@ -601,6 +601,9 @@ struct counter_array {
@@ -35,6 +33,3 @@ index b767b5c821f5..cd35d8574ee2 100644
  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
  { \
  	.type = COUNTER_COMP_SIGNAL_POLARITY, \
--- 
-2.39.5
-

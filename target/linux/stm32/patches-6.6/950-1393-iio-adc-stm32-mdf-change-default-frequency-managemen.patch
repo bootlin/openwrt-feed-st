@@ -24,8 +24,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/iio/adc/stm32-mdf.h      |  7 ++-----
  3 files changed, 26 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index 5b6320d41b7f..054479e06c6c 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
 @@ -32,7 +32,11 @@
@@ -41,7 +39,7 @@ index 5b6320d41b7f..054479e06c6c 100644
  
  #define MDF_IS_FILTER0(adc)			(!((adc)->fl_id))
  #define MDF_IS_INTERLEAVED_FILT(adc)		((adc)->interleaved)
-@@ -653,6 +657,7 @@ static int stm32_mdf_adc_check_clock_config(struct stm32_mdf_adc *adc, unsigned
+@@ -653,6 +657,7 @@ err:
  static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample_freq, int lock)
  {
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
@@ -49,7 +47,7 @@ index 5b6320d41b7f..054479e06c6c 100644
  	unsigned int decim_ratio;
  	unsigned long delta, delta_ppm, sck_freq;
  	unsigned long cck_expected_freq;
-@@ -666,11 +671,20 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+@@ -666,12 +671,21 @@ static int mdf_adc_set_samp_freq(struct
  
  	sck_freq = clk_get_rate(adc->sitf->sck);
  	if (!sck_freq) {
@@ -59,7 +57,7 @@ index 5b6320d41b7f..054479e06c6c 100644
  		goto err;
  	}
  
-+	/*
+ 	/*
 +	 * If requested sampling frequency is 0, set a default frequency.
 +	 * The default frequency is computed from default decimation ratio.
 +	 * This ensures that a filter configuration can be found whatever the selected filter
@@ -68,10 +66,11 @@ index 5b6320d41b7f..054479e06c6c 100644
 +	if (!sample_freq)
 +		sample_freq = sck_freq / MDF_DEFAULT_DECIM_RATIO;
 +
- 	/*
++	/*
  	 * MDF may share its parent clock with SAI, so kernel clock rate may have been changed.
  	 * The set_rate ops is called implicitly through clk_get_rate() call, and MDF dividers
-@@ -696,10 +710,10 @@ static int mdf_adc_set_samp_freq(struct iio_dev *indio_dev, unsigned long sample
+ 	 * may have been updated to keep the expected rate on cck clock. Check if sitf clock
+@@ -696,10 +710,10 @@ static int mdf_adc_set_samp_freq(struct
  	delta = abs(sck_freq - (decim_ratio * sample_freq));
  	delta_ppm = (1000000 * delta) / sck_freq;
  	if (delta_ppm > 1000)
@@ -84,7 +83,7 @@ index 5b6320d41b7f..054479e06c6c 100644
  			delta_ppm, sck_freq / decim_ratio, sample_freq);
  
  	ret = stm32_mdf_adc_set_filters_config(indio_dev, decim_ratio);
-@@ -768,7 +782,8 @@ static int stm32_mdf_adc_start_conv(struct iio_dev *indio_dev)
+@@ -768,7 +782,8 @@ static int stm32_mdf_adc_start_conv(stru
  	 * before setting the sampling frequency.
  	 */
  	if (!adc->sample_freq) {
@@ -94,11 +93,9 @@ index 5b6320d41b7f..054479e06c6c 100644
  		if (ret < 0)
  			goto stop_sitf;
  	}
-diff --git a/drivers/iio/adc/stm32-mdf-core.c b/drivers/iio/adc/stm32-mdf-core.c
-index 7cb8873f5b21..23360563e222 100644
 --- a/drivers/iio/adc/stm32-mdf-core.c
 +++ b/drivers/iio/adc/stm32-mdf-core.c
-@@ -308,11 +308,11 @@ static int stm32_mdf_core_cck_divider_set_rate(struct platform_device *pdev,
+@@ -308,11 +308,11 @@ static int stm32_mdf_core_cck_divider_se
  	 * cck divider. Try to maximize cck divider first, to help fulfilling
  	 * frequency ratio requirements between fproc and fcck.
  	 */
@@ -112,7 +109,7 @@ index 7cb8873f5b21..23360563e222 100644
  		return -EINVAL;
  	}
  
-@@ -446,7 +446,8 @@ static int stm32_mdf_core_register_clock_provider(struct platform_device *pdev,
+@@ -446,7 +446,8 @@ static int stm32_mdf_core_register_clock
  	clk_data->num = STM32_MDF_MAX_CCK;
  	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
  	if (ret) {
@@ -122,8 +119,6 @@ index 7cb8873f5b21..23360563e222 100644
  		return ret;
  	}
  
-diff --git a/drivers/iio/adc/stm32-mdf.h b/drivers/iio/adc/stm32-mdf.h
-index 830e3b64eef8..71c51b0b4814 100644
 --- a/drivers/iio/adc/stm32-mdf.h
 +++ b/drivers/iio/adc/stm32-mdf.h
 @@ -52,11 +52,11 @@
@@ -150,6 +145,3 @@ index 830e3b64eef8..71c51b0b4814 100644
  #define STM32MP25_MDF_IPIDR_NUMBER 0x00110032
  
  #define STM32_MDF_CCK0 "clk_cck0"
--- 
-2.39.5
-

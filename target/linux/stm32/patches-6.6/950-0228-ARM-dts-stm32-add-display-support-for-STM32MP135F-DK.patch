@@ -13,11 +13,9 @@ Change-Id: I9507f8d1da78914d89cbe71587c4065a0088a4a6
  arch/arm/boot/dts/st/stm32mp135f-dk.dts     | 55 ++++++++++++++++++++
  2 files changed, 112 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index 9d02a40fed9f..a15c0d5cdd69 100644
 --- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -86,6 +86,63 @@ pins {
+@@ -86,6 +86,63 @@
  		};
  	};
  
@@ -81,11 +79,9 @@ index 9d02a40fed9f..a15c0d5cdd69 100644
  	mcp23017_pins_a: mcp23017-0 {
  		pins {
  			pinmux = <STM32_PINMUX('G', 12, GPIO)>;
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index db4261a6b114..1a53a251a20b 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -67,6 +67,48 @@ led-blue {
+@@ -67,6 +67,48 @@
  			default-state = "off";
  		};
  	};
@@ -134,7 +130,7 @@ index db4261a6b114..1a53a251a20b 100644
  };
  
  &adc_1 {
-@@ -161,6 +203,19 @@ &i2c5 {
+@@ -161,6 +203,19 @@
  	/delete-property/dma-names;
  };
  
@@ -154,6 +150,3 @@ index db4261a6b114..1a53a251a20b 100644
  &rtc {
  	st,lsco = <RTC_OUT2_RMP>;
  	pinctrl-0 = <&rtc_out2_rmp_pins_a>;
--- 
-2.39.5
-

@@ -25,8 +25,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  3 files changed, 316 insertions(+)
  create mode 100644 drivers/irqchip/irq-rpmsg.c
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index e7b736800dd0..e80aa05916fc 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
 @@ -679,4 +679,11 @@ config SUNPLUS_SP7021_INTC
@@ -41,18 +39,13 @@ index e7b736800dd0..e80aa05916fc 100644
 +	  Support for the RPMSG Interrupt Controller.
 +
  endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index ffd945fe71aa..30a277b3b70d 100644
 --- a/drivers/irqchip/Makefile
 +++ b/drivers/irqchip/Makefile
-@@ -120,3 +120,4 @@ obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
+@@ -120,3 +120,4 @@ obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt32
  obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
  obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
  obj-$(CONFIG_SUNPLUS_SP7021_INTC)	+= irq-sp7021-intc.o
 +obj-$(CONFIG_RPMSG_IRQ)			+= irq-rpmsg.o
-diff --git a/drivers/irqchip/irq-rpmsg.c b/drivers/irqchip/irq-rpmsg.c
-new file mode 100644
-index 000000000000..a7b2bbf3e75c
 --- /dev/null
 +++ b/drivers/irqchip/irq-rpmsg.c
 @@ -0,0 +1,308 @@
@@ -364,6 +357,3 @@ index 000000000000..a7b2bbf3e75c
 +
 +MODULE_DESCRIPTION("RPMsg IRQC Driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

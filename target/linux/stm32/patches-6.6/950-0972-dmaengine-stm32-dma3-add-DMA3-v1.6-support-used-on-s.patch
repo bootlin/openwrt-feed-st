@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 90 ++++++++++++++++++++++++++++------
  1 file changed, 76 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index a23d0c80092d..8ced23432fce 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -104,6 +104,7 @@ enum ccidcfgr_cid {
@@ -59,7 +57,7 @@ index a23d0c80092d..8ced23432fce 100644
  };
  
  static inline struct stm32_dma3_ddata *to_stm32_dma3_ddata(struct stm32_dma3_chan *chan)
-@@ -1053,6 +1062,31 @@ static int stm32_dma3_chan_suspend(struct stm32_dma3_chan *chan, bool susp)
+@@ -1053,6 +1062,31 @@ static int stm32_dma3_chan_suspend(struc
  	return ret;
  }
  
@@ -91,7 +89,7 @@ index a23d0c80092d..8ced23432fce 100644
  static void stm32_dma3_chan_reset(struct stm32_dma3_chan *chan)
  {
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
-@@ -1091,7 +1125,7 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1091,7 +1125,7 @@ static void stm32_dma3_chan_set_residue(
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
  	struct device *dev = chan2dev(chan);
  	struct stm32_dma3_hwdesc *hwdesc;
@@ -100,7 +98,7 @@ index a23d0c80092d..8ced23432fce 100644
  	bool pack_unpack;
  	int ret;
  
-@@ -1124,7 +1158,8 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1124,7 +1158,8 @@ static void stm32_dma3_chan_set_residue(
  	/* Read registers to have a snapshot */
  	cllr = readl_relaxed(ddata->base + STM32_DMA3_CLLR(chan->id));
  	cbr1 = readl_relaxed(ddata->base + STM32_DMA3_CBR1(chan->id));
@@ -110,7 +108,7 @@ index a23d0c80092d..8ced23432fce 100644
  
  	/* Resume current transfer */
  	if (csr & CSR_SUSPF) {
-@@ -1144,12 +1179,17 @@ static void stm32_dma3_chan_set_residue(struct stm32_dma3_chan *chan,
+@@ -1144,12 +1179,17 @@ static void stm32_dma3_chan_set_residue(
  	}
  	curr_lli = ret;
  
@@ -133,7 +131,7 @@ index a23d0c80092d..8ced23432fce 100644
  
  	/*
  	 * In case of PACKING (Destination burst length > Source burst length) or UNPACKING
-@@ -1201,16 +1241,16 @@ static int stm32_dma3_chan_stop(struct stm32_dma3_chan *chan)
+@@ -1201,16 +1241,16 @@ static int stm32_dma3_chan_stop(struct s
  	ccr = readl_relaxed(ddata->base + STM32_DMA3_CCR(chan->id));
  	writel_relaxed(ccr & ~(CCR_ALLIE | CCR_EN), ddata->base + STM32_DMA3_CCR(chan->id));
  
@@ -157,7 +155,7 @@ index a23d0c80092d..8ced23432fce 100644
  	 */
  	stm32_dma3_chan_reset(chan);
  
-@@ -1337,6 +1377,15 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1337,6 +1377,15 @@ static int stm32_dma3_alloc_chan_resourc
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
  	int ret;
  
@@ -173,7 +171,7 @@ index a23d0c80092d..8ced23432fce 100644
  	ret = pm_runtime_resume_and_get(ddata->dma_dev.dev);
  	if (ret < 0)
  		return ret;
-@@ -1386,6 +1435,7 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1386,6 +1435,7 @@ static void stm32_dma3_free_chan_resourc
  	/* Reset configuration */
  	memset(&chan->dt_config, 0, sizeof(chan->dt_config));
  	memset(&chan->dma_config, 0, sizeof(chan->dma_config));
@@ -181,7 +179,7 @@ index a23d0c80092d..8ced23432fce 100644
  	chan->config_set = 0;
  }
  
-@@ -1702,6 +1752,14 @@ static int stm32_dma3_config(struct dma_chan *c, struct dma_slave_config *config
+@@ -1702,6 +1752,14 @@ static int stm32_dma3_config(struct dma_
  	struct stm32_dma3_chan *chan = to_stm32_dma3_chan(c);
  
  	memcpy(&chan->dma_config, config, sizeof(*config));
@@ -196,7 +194,7 @@ index a23d0c80092d..8ced23432fce 100644
  	chan->config_set |= STM32_DMA3_CFG_SET_DMA;
  
  	return 0;
-@@ -2160,6 +2218,10 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -2160,6 +2218,10 @@ static int stm32_dma3_probe(struct platf
  	}
  
  	verr = readl_relaxed(ddata->base + STM32_DMA3_VERR);
@@ -207,6 +205,3 @@ index a23d0c80092d..8ced23432fce 100644
  
  	pm_runtime_set_active(&pdev->dev);
  	pm_runtime_enable(&pdev->dev);
--- 
-2.39.5
-

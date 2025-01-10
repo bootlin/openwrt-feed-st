@@ -26,11 +26,9 @@ Reviewed-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
  include/linux/mtd/cfi.h             |  1 +
  2 files changed, 26 insertions(+)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index df589d9b4d70..1faeb9d3c3f9 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -122,6 +122,10 @@ static int cfi_use_status_reg(struct cfi_private *cfi)
+@@ -122,6 +122,10 @@ static int cfi_use_status_reg(struct cfi
  	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
  	u8 poll_mask = CFI_POLL_STATUS_REG | CFI_POLL_DQ;
  
@@ -41,7 +39,7 @@ index df589d9b4d70..1faeb9d3c3f9 100644
  	return extp && extp->MinorVersion >= '5' &&
  		(extp->SoftwareFeatures & poll_mask) == CFI_POLL_STATUS_REG;
  }
-@@ -448,6 +452,23 @@ static void fixup_quirks(struct mtd_info *mtd)
+@@ -448,6 +452,23 @@ static void fixup_quirks(struct mtd_info
  		cfi->quirks |= CFI_QUIRK_DQ_TRUE_DATA;
  }
  
@@ -65,7 +63,7 @@ index df589d9b4d70..1faeb9d3c3f9 100644
  /* Used to fix CFI-Tables of chips without Extended Query Tables */
  static struct cfi_fixup cfi_nopri_fixup_table[] = {
  	{ CFI_MFR_SST, 0x234a, fixup_sst39vf }, /* SST39VF1602 */
-@@ -458,6 +479,10 @@ static struct cfi_fixup cfi_nopri_fixup_table[] = {
+@@ -458,6 +479,10 @@ static struct cfi_fixup cfi_nopri_fixup_
  	{ CFI_MFR_SST, 0x235d, fixup_sst39vf_rev_b }, /* SST39VF3201B */
  	{ CFI_MFR_SST, 0x236c, fixup_sst39vf_rev_b }, /* SST39VF6402B */
  	{ CFI_MFR_SST, 0x236d, fixup_sst39vf_rev_b }, /* SST39VF6401B */
@@ -76,8 +74,6 @@ index df589d9b4d70..1faeb9d3c3f9 100644
  	{ 0, 0, NULL }
  };
  
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index d88bb56c18e2..29668241b44e 100644
 --- a/include/linux/mtd/cfi.h
 +++ b/include/linux/mtd/cfi.h
 @@ -374,6 +374,7 @@ struct cfi_fixup {
@@ -88,6 +84,3 @@ index d88bb56c18e2..29668241b44e 100644
  
  void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
  
--- 
-2.39.5
-

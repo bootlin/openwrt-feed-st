@@ -11,8 +11,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  .../bindings/display/st,stm32-dsi.yaml        | 31 +++++++++++++++++--
  1 file changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-index 53560052aaf0..402c7db195da 100644
 --- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 +++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
 @@ -19,6 +19,7 @@ allOf:
@@ -60,6 +58,3 @@ index 53560052aaf0..402c7db195da 100644
  
    ports:
      $ref: /schemas/graph.yaml#/properties/ports
--- 
-2.39.5
-

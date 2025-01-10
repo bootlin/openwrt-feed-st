@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
-index 835ae61c9b9b..f88d1297f708 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 @@ -6,6 +6,23 @@
@@ -48,6 +46,3 @@ index 835ae61c9b9b..f88d1297f708 100644
  	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
--- 
-2.39.5
-

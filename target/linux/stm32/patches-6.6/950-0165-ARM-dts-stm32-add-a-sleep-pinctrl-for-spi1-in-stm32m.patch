@@ -17,11 +17,9 @@ Change-Id: Ic0911e44460ea6cf5fc5dde448d15eb214d1d34a
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 3 ++-
  4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index 45c9ef2679c0..df74bd3a7287 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+@@ -619,8 +619,9 @@
  };
  
  &spi1 {
@@ -32,11 +30,9 @@ index 45c9ef2679c0..df74bd3a7287 100644
  	status = "disabled";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index fc9f5d36c26c..dffd79caa23b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+@@ -619,8 +619,9 @@
  };
  
  &spi1 {
@@ -47,11 +43,9 @@ index fc9f5d36c26c..dffd79caa23b 100644
  	status = "disabled";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-index d925657d8b65..980f2eaf5f79 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+@@ -619,8 +619,9 @@
  };
  
  &spi1 {
@@ -62,11 +56,9 @@ index d925657d8b65..980f2eaf5f79 100644
  	status = "disabled";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index 2410a53a1bc8..184b4914fa63 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -619,8 +619,9 @@ spdifrx_endpoint: endpoint {
+@@ -619,8 +619,9 @@
  };
  
  &spi1 {
@@ -77,6 +69,3 @@ index 2410a53a1bc8..184b4914fa63 100644
  	status = "disabled";
  };
  
--- 
-2.39.5
-

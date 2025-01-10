@@ -23,11 +23,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/spi/spi-stm32.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 331c036c44bc..d9e57a3cd9b7 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
-@@ -1984,6 +1984,7 @@ static const struct stm32_spi_cfg stm32mp25_spi_cfg = {
+@@ -1984,6 +1984,7 @@ static const struct stm32_spi_cfg stm32m
  	.baud_rate_div_max = STM32H7_SPI_MBR_DIV_MAX,
  	.has_fifo = true,
  	.prevent_dma_burst = true,
@@ -35,6 +33,3 @@ index 331c036c44bc..d9e57a3cd9b7 100644
  };
  
  static const struct of_device_id stm32_spi_of_match[] = {
--- 
-2.39.5
-

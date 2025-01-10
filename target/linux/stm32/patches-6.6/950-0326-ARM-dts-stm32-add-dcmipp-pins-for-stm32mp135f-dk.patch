@@ -11,11 +11,9 @@ Change-Id: I1402765449c1fe288475b8ce020da36d7d9cf8e7
  arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 33 +++++++++++++++++++++
  1 file changed, 33 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index cd87deb59c19..21ec7a1f22e1 100644
 --- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -13,6 +13,39 @@ pins {
+@@ -13,6 +13,39 @@
  		};
  	};
  
@@ -55,6 +53,3 @@ index cd87deb59c19..21ec7a1f22e1 100644
  	dfsdm_clkout_pins_a: dfsdm-clkout-pins-0 {
  		pins {
  			pinmux = <STM32_PINMUX('C', 3, AF3)>; /* DFSDM_CKOUT */
--- 
-2.39.5
-

@@ -13,8 +13,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 615 +++++++++++++++++++++++---
  1 file changed, 564 insertions(+), 51 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index a0ca4d7f3b8a..5274cb726d50 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -2,14 +2,16 @@
@@ -118,7 +116,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  };
  
  static inline void dsi_write(struct dw_mipi_dsi_stm *dsi, u32 reg, u32 val)
-@@ -196,6 +252,286 @@ static int dsi_pll_get_params(struct dw_mipi_dsi_stm *dsi,
+@@ -196,6 +252,286 @@ static int dsi_pll_get_params(struct dw_
  	return 0;
  }
  
@@ -405,7 +403,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  static int dw_mipi_dsi_phy_init(void *priv_data)
  {
  	struct dw_mipi_dsi_stm *dsi = priv_data;
-@@ -324,6 +660,107 @@ dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
+@@ -324,6 +660,107 @@ dw_mipi_dsi_phy_get_timing(void *priv_da
  	return 0;
  }
  
@@ -513,7 +511,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  #define CLK_TOLERANCE_HZ 50
  
  static enum drm_mode_status
-@@ -404,18 +841,21 @@ dw_mipi_dsi_stm_mode_valid(void *priv_data,
+@@ -404,18 +841,21 @@ dw_mipi_dsi_stm_mode_valid(void *priv_da
  		}
  
  		lane_mbps = pll_out_khz / 1000;
@@ -547,7 +545,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  	}
  
  	return MODE_OK;
-@@ -429,14 +869,29 @@ static const struct dw_mipi_dsi_phy_ops dw_mipi_dsi_stm_phy_ops = {
+@@ -429,14 +869,29 @@ static const struct dw_mipi_dsi_phy_ops
  	.get_timing = dw_mipi_dsi_phy_get_timing,
  };
  
@@ -577,7 +575,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  	{ },
  };
  MODULE_DEVICE_TABLE(of, dw_mipi_dsi_stm_dt_ids);
-@@ -445,6 +900,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -445,6 +900,7 @@ static int dw_mipi_dsi_stm_probe(struct
  {
  	struct device *dev = &pdev->dev;
  	struct dw_mipi_dsi_stm *dsi;
@@ -585,7 +583,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  	int ret;
  
  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-@@ -458,78 +914,120 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -458,78 +914,120 @@ static int dw_mipi_dsi_stm_probe(struct
  		return ret;
  	}
  
@@ -736,7 +734,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  err_clk_get:
  	regulator_disable(dsi->vdd_supply);
  
-@@ -541,39 +1039,51 @@ static void dw_mipi_dsi_stm_remove(struct platform_device *pdev)
+@@ -541,39 +1039,51 @@ static void dw_mipi_dsi_stm_remove(struc
  	struct dw_mipi_dsi_stm *dsi = platform_get_drvdata(pdev);
  
  	dw_mipi_dsi_remove(dsi->dsi);
@@ -793,7 +791,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  		DRM_ERROR("Failed to enable pclk: %d\n", ret);
  		return ret;
  	}
-@@ -582,6 +1092,8 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -582,6 +1092,8 @@ static int __maybe_unused dw_mipi_dsi_st
  	if (ret) {
  		clk_disable_unprepare(dsi->pclk);
  		regulator_disable(dsi->vdd_supply);
@@ -802,7 +800,7 @@ index a0ca4d7f3b8a..5274cb726d50 100644
  		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
  		return ret;
  	}
-@@ -608,7 +1120,8 @@ static struct platform_driver dw_mipi_dsi_stm_driver = {
+@@ -608,7 +1120,8 @@ static struct platform_driver dw_mipi_ds
  
  module_platform_driver(dw_mipi_dsi_stm_driver);
  
@@ -813,6 +811,3 @@ index a0ca4d7f3b8a..5274cb726d50 100644
 +MODULE_AUTHOR("Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>");
  MODULE_DESCRIPTION("STMicroelectronics DW MIPI DSI host controller driver");
  MODULE_LICENSE("GPL v2");
--- 
-2.39.5
-

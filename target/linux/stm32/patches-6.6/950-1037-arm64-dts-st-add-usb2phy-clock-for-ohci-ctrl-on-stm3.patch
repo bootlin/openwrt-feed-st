@@ -16,11 +16,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index fc6f5447395f..e95e72c47755 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -259,6 +259,7 @@ timer {
+@@ -259,6 +259,7 @@
  	usb2_phy1: usb2-phy1 {
  		compatible      = "st,stm32mp25-usb2phy";
  		#phy-cells      = <0>;
@@ -28,7 +26,7 @@ index fc6f5447395f..e95e72c47755 100644
  		st,syscfg       = <&syscfg 0x2400>;
  		clocks          = <&rcc CK_KER_USB2PHY1>;
  		resets          = <&rcc USB2PHY1_R>;
-@@ -268,6 +269,7 @@ usb2_phy1: usb2-phy1 {
+@@ -268,6 +269,7 @@
  	usb2_phy2: usb2-phy2 {
  		compatible      = "st,stm32mp25-usb2phy";
  		#phy-cells      = <0>;
@@ -36,7 +34,7 @@ index fc6f5447395f..e95e72c47755 100644
  		st,syscfg       = <&syscfg 0x2800>;
  		clocks          = <&rcc CK_KER_USB2PHY2EN>;
  		resets          = <&rcc USB2PHY2_R>;
-@@ -2271,7 +2273,7 @@ usbh: usb@482e0000 {
+@@ -2271,7 +2273,7 @@
  				usbh_ohci: usb@482e0000 {
  					compatible = "generic-ohci";
  					reg = <0x482e0000 0x1000>;
@@ -45,6 +43,3 @@ index fc6f5447395f..e95e72c47755 100644
  					resets = <&rcc USB2_R>;
  					interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
  					phys = <&usb2_phy1>;
--- 
-2.39.5
-

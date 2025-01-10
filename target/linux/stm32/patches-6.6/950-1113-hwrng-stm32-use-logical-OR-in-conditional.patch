@@ -22,11 +22,9 @@ Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
  drivers/char/hw_random/stm32-rng.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 6297a928e018..ba2fbe88bc0c 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -361,7 +361,7 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -361,7 +361,7 @@ static int stm32_rng_init(struct hwrng *
  	err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_SR, reg,
  						reg & RNG_SR_DRDY,
  						10, 100000);
@@ -35,6 +33,3 @@ index 6297a928e018..ba2fbe88bc0c 100644
  		if (priv->bus_clk)
  			clk_disable_unprepare(priv->bus_clk);
  		clk_disable_unprepare(priv->clk);
--- 
-2.39.5
-

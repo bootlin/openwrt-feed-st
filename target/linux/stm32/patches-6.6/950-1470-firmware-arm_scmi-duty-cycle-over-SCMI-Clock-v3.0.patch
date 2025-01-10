@@ -28,8 +28,6 @@ Tested-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
  drivers/firmware/arm_scmi/clock.c             | 115 +++++++++++++++---
  4 files changed, 108 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index fe5c37b26475..48383caa1e84 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -59,6 +59,7 @@ CONFIG_RPMSG_VIRTIO=y
@@ -40,8 +38,6 @@ index fe5c37b26475..48383caa1e84 100644
  CONFIG_SD_ADC_MODULATOR=y
  CONFIG_SERIAL_NONSTANDARD=y
  CONFIG_SRAM=y
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index e193c2801043..e177df6bdd0b 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -80,6 +80,7 @@ CONFIG_RPMSG_VIRTIO=m
@@ -52,11 +48,9 @@ index e193c2801043..e177df6bdd0b 100644
  CONFIG_SD_ADC_MODULATOR=m
  CONFIG_SENSORS_MR75203=y
  CONFIG_SMSC_PHY=y
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index ea0f5083ac47..bd04a20484ee 100644
 --- a/drivers/firmware/arm_scmi/Kconfig
 +++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -166,6 +166,12 @@ config ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_ENABLE
+@@ -166,6 +166,12 @@ config ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_
  	  in atomic context too, at the price of using a number of busy-waiting
  	  primitives all over instead. If unsure say N.
  
@@ -69,8 +63,6 @@ index ea0f5083ac47..bd04a20484ee 100644
  endif #ARM_SCMI_PROTOCOL
  
  config ARM_SCMI_POWER_DOMAIN
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 726ce33915fe..8732e5f2345d 100644
 --- a/drivers/firmware/arm_scmi/clock.c
 +++ b/drivers/firmware/arm_scmi/clock.c
 @@ -13,16 +13,30 @@
@@ -138,7 +130,7 @@ index 726ce33915fe..8732e5f2345d 100644
  struct scmi_msg_clock_describe_rates {
  	__le32 id;
  	__le32 rate_index;
-@@ -337,23 +376,51 @@ scmi_clock_get_duty_cycle(const struct scmi_protocol_handle *ph,
+@@ -337,23 +376,51 @@ scmi_clock_get_duty_cycle(const struct s
  {
  	int ret;
  	struct scmi_xfer *t;
@@ -147,18 +139,14 @@ index 726ce33915fe..8732e5f2345d 100644
  
 -	ret = ph->xops->xfer_get_init(ph, CLOCK_DUTY_CYCLE_GET,
 -				      sizeof(__le32), sizeof(u64), &t);
--	if (ret)
--		return ret;
 +	if (PROTOCOL_REV_MAJOR(ci->version) >= 0x3) {
 +		struct scmi_msg_clock_config_get *cfg;
- 
--	resp = t->rx.buf;
++
 +		ret = ph->xops->xfer_get_init(ph, CLOCK_CONFIG_GET,
 +					      sizeof(*cfg), 0, &t);
 +		if (ret)
 +			return ret;
- 
--	put_unaligned_le32(clk_id, t->tx.buf);
++
 +		cfg = t->tx.buf;
 +		cfg->id = cpu_to_le32(clk_id);
 +		cfg->flags = cpu_to_le32(REGMASK_OEM_TYPE_DUTY_CYCLE);
@@ -174,21 +162,25 @@ index 726ce33915fe..8732e5f2345d 100644
 +		return -EOPNOTSUPP;
 +#endif
 +	}
- 
- 	ret = ph->xops->do_xfer(ph, t);
--	if (!ret) {
-+	if (ret)
-+		goto out;
 +
++	ret = ph->xops->do_xfer(ph, t);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+-	resp = t->rx.buf;
 +	if (PROTOCOL_REV_MAJOR(ci->version) >= 0x3) {
 +		struct scmi_msg_resp_clock_config_get *resp = t->rx.buf;
-+
+ 
+-	put_unaligned_le32(clk_id, t->tx.buf);
 +		*num = le32_to_cpu(resp->oem_config_val);
 +		*den = 100;
 +	} else {
 +#ifdef CONFIG_SCMI_STM32MP_OSTL_V5
 +		struct scmi_msg_resp_get_duty_cyle *resp = t->rx.buf;
-+
+ 
+-	ret = ph->xops->do_xfer(ph, t);
+-	if (!ret) {
  		*num = resp->num;
  		*den = resp->den;
 +#endif
@@ -214,7 +206,7 @@ index 726ce33915fe..8732e5f2345d 100644
  				      sizeof(*cfg), 0, &t);
  	if (ret)
  		return ret;
-@@ -467,6 +535,9 @@ scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+@@ -467,6 +535,9 @@ scmi_clock_round_rate_get(const struct s
  	ph->xops->xfer_put(ph, t);
  
  	return ret;
@@ -224,7 +216,7 @@ index 726ce33915fe..8732e5f2345d 100644
  }
  
  static int
-@@ -474,19 +545,33 @@ scmi_clock_config_set(const struct scmi_protocol_handle *ph, u32 clk_id,
+@@ -474,19 +545,33 @@ scmi_clock_config_set(const struct scmi_
  		      u32 config, bool atomic)
  {
  	int ret;
@@ -262,6 +254,3 @@ index 726ce33915fe..8732e5f2345d 100644
  
  	ret = ph->xops->do_xfer(ph, t);
  
--- 
-2.39.5
-

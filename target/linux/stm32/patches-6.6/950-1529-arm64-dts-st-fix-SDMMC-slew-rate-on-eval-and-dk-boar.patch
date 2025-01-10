@@ -23,11 +23,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 32 +++++++++----------
  1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index b97e10591a6c..a172cc1bd6e7 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -523,13 +523,13 @@ pins1 {
+@@ -523,13 +523,13 @@
  				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
  				 <STM32_PINMUX('E', 1, AF10)>, /* SDMMC1_D3 */
  				 <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
@@ -43,7 +41,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-push-pull;
  			bias-disable;
  		};
-@@ -541,19 +541,19 @@ pins1 {
+@@ -541,19 +541,19 @@
  				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
  				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
  				 <STM32_PINMUX('E', 1, AF10)>; /* SDMMC1_D3 */
@@ -66,7 +64,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-open-drain;
  			bias-disable;
  		};
-@@ -577,13 +577,13 @@ pins1 {
+@@ -577,13 +577,13 @@
  				 <STM32_PINMUX('E', 8, AF12)>, /* SDMMC2_D2 */
  				 <STM32_PINMUX('E', 12, AF12)>, /* SDMMC2_D3 */
  				 <STM32_PINMUX('E', 15, AF12)>; /* SDMMC2_CMD */
@@ -82,7 +80,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-push-pull;
  			bias-pull-up;
  		};
-@@ -595,19 +595,19 @@ pins1 {
+@@ -595,19 +595,19 @@
  				 <STM32_PINMUX('E', 11, AF12)>, /* SDMMC2_D1 */
  				 <STM32_PINMUX('E', 8, AF12)>, /* SDMMC2_D2 */
  				 <STM32_PINMUX('E', 12, AF12)>; /* SDMMC2_D3 */
@@ -105,7 +103,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-open-drain;
  			bias-pull-up;
  		};
-@@ -630,7 +630,7 @@ pins {
+@@ -630,7 +630,7 @@
  				 <STM32_PINMUX('E', 9, AF12)>, /* SDMMC2_D5 */
  				 <STM32_PINMUX('E', 6, AF12)>, /* SDMMC2_D6 */
  				 <STM32_PINMUX('E', 7, AF12)>; /* SDMMC2_D7 */
@@ -114,7 +112,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-push-pull;
  			bias-pull-up;
  		};
-@@ -652,13 +652,13 @@ pins1 {
+@@ -652,13 +652,13 @@
  				 <STM32_PINMUX('B', 12, AF10)>, /* SDMMC3_D2 */
  				 <STM32_PINMUX('I', 11, AF10)>, /* SDMMC3_D3 */
  				 <STM32_PINMUX('D', 12, AF10)>; /* SDMMC3_CMD */
@@ -130,7 +128,7 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-push-pull;
  			bias-pull-up;
  		};
-@@ -670,19 +670,19 @@ pins1 {
+@@ -670,19 +670,19 @@
  				 <STM32_PINMUX('D', 13, AF10)>, /* SDMMC3_D1 */
  				 <STM32_PINMUX('B', 12, AF10)>, /* SDMMC3_D2 */
  				 <STM32_PINMUX('I', 11, AF10)>; /* SDMMC3_D3 */
@@ -153,6 +151,3 @@ index b97e10591a6c..a172cc1bd6e7 100644
  			drive-open-drain;
  			bias-pull-up;
  		};
--- 
-2.39.5
-

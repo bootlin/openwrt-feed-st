@@ -20,11 +20,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index cc726cef0946..8a1b9a84ce69 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -44,6 +44,13 @@ fw@80000000 {
+@@ -44,6 +44,13 @@
  	};
  };
  
@@ -38,6 +36,3 @@ index cc726cef0946..8a1b9a84ce69 100644
  &uart4 {
  	pinctrl-names = "default", "idle", "sleep";
  	pinctrl-0 = <&uart4_pins_a>;
--- 
-2.39.5
-

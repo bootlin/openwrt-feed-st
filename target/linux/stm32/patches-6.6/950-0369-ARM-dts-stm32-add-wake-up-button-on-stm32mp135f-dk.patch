@@ -11,11 +11,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 893378d27470..72ef5fcc30c6 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -77,6 +77,12 @@ button-user {
+@@ -77,6 +77,12 @@
  			linux,code = <BTN_1>;
  			gpios = <&gpioa 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
  		};
@@ -28,6 +26,3 @@ index 893378d27470..72ef5fcc30c6 100644
  	};
  
  	leds {
--- 
-2.39.5
-

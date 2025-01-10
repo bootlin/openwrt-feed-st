@@ -16,11 +16,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 116 ++++++++++++++++++++++
  1 file changed, 116 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 9566f8b452bd..5cf57bd4b71e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -45,6 +45,32 @@ clk_ext_cec: clk-ext-cec {
+@@ -45,6 +45,32 @@
  		};
  	};
  
@@ -53,7 +51,7 @@ index 9566f8b452bd..5cf57bd4b71e 100644
  	gpio-keys {
  		compatible = "gpio-keys";
  
-@@ -123,6 +149,13 @@ panel_lvds_backlight: panel-lvds-backlight {
+@@ -123,6 +149,13 @@
  		status = "okay";
  	};
  
@@ -67,7 +65,7 @@ index 9566f8b452bd..5cf57bd4b71e 100644
  	wifi_pwrseq: wifi-pwrseq {
  		compatible = "mmc-pwrseq-simple";
  		reset-gpios = <&gpiog 8 GPIO_ACTIVE_LOW>;
-@@ -309,6 +342,13 @@ adv7535_out: endpoint {
+@@ -309,6 +342,13 @@
  					remote-endpoint = <&hdmi_connector_in>;
  				};
  			};
@@ -81,7 +79,7 @@ index 9566f8b452bd..5cf57bd4b71e 100644
  		};
  	};
  
-@@ -335,6 +375,21 @@ &i2c8 {
+@@ -335,6 +375,21 @@
  	/delete-property/dma-names;
  };
  
@@ -103,7 +101,7 @@ index 9566f8b452bd..5cf57bd4b71e 100644
  &ipcc1 {
  	status = "okay";
  };
-@@ -400,6 +455,67 @@ &m33_rproc {
+@@ -400,6 +455,67 @@
  	status = "okay";
  };
  
@@ -171,6 +169,3 @@ index 9566f8b452bd..5cf57bd4b71e 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.5
-

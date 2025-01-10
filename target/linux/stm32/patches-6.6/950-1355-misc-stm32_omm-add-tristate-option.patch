@@ -16,8 +16,6 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  drivers/misc/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index b1bd4e35e934..db2e0319effa 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -459,7 +459,7 @@ config DW_XDATA_PCIE
@@ -29,6 +27,3 @@ index b1bd4e35e934..db2e0319effa 100644
  	depends on SPI_STM32_OSPI || TEST_COMPILE
  	help
  	  This driver manages the muxing between the 2 OSPI busses and
--- 
-2.39.5
-

@@ -16,11 +16,9 @@ Change-Id: I043e4148ee68126154cb75d515aecdbdae9a83c4
  drivers/cpufreq/stm32-cpufreq.c      | 10 +++++-----
  2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index fb2875ce1fdd..3c99e4959c0b 100644
 --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -169,6 +169,7 @@ static const struct of_device_id blocklist[] __initconst = {
+@@ -169,6 +169,7 @@ static const struct of_device_id blockli
  	{ .compatible = "st,stih407", },
  	{ .compatible = "st,stih410", },
  	{ .compatible = "st,stih418", },
@@ -28,8 +26,6 @@ index fb2875ce1fdd..3c99e4959c0b 100644
  
  	{ .compatible = "ti,am33xx", },
  	{ .compatible = "ti,am43", },
-diff --git a/drivers/cpufreq/stm32-cpufreq.c b/drivers/cpufreq/stm32-cpufreq.c
-index 35fb3520d48d..cb520c730f68 100644
 --- a/drivers/cpufreq/stm32-cpufreq.c
 +++ b/drivers/cpufreq/stm32-cpufreq.c
 @@ -14,7 +14,7 @@
@@ -41,7 +37,7 @@ index 35fb3520d48d..cb520c730f68 100644
  	struct platform_device *cpufreq_dt_pdev;
  };
  
-@@ -51,9 +51,9 @@ static int stm32_cpufreq_probe(struct platform_device *pdev)
+@@ -51,9 +51,9 @@ static int stm32_cpufreq_probe(struct pl
  	if (!priv)
  		return -ENOMEM;
  
@@ -54,7 +50,7 @@ index 35fb3520d48d..cb520c730f68 100644
  		if (ret != -EPROBE_DEFER)
  			dev_err(&pdev->dev, "Failed to set supported opp: %d\n",
  				ret);
-@@ -74,7 +74,7 @@ static int stm32_cpufreq_remove(struct platform_device *pdev)
+@@ -74,7 +74,7 @@ static int stm32_cpufreq_remove(struct p
  	struct stm32_cpufreq_priv *priv	= platform_get_drvdata(pdev);
  
  	platform_device_unregister(priv->cpufreq_dt_pdev);
@@ -63,6 +59,3 @@ index 35fb3520d48d..cb520c730f68 100644
  
  	return 0;
  }
--- 
-2.39.5
-

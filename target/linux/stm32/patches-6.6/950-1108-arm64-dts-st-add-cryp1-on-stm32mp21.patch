@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp21xf.dtsi | 14 +++++++++++++-
  2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
-index 39507a7564c8..99bb8761530c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
 @@ -4,5 +4,17 @@
@@ -42,8 +40,6 @@ index 39507a7564c8..99bb8761530c 100644
 +		status = "disabled";
 +	};
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
-index 39507a7564c8..99bb8761530c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
 @@ -4,5 +4,17 @@
@@ -65,6 +61,3 @@ index 39507a7564c8..99bb8761530c 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.5
-

@@ -28,25 +28,21 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/iio/adc/stm32-adc.c      | 76 ++++++++++++++++++++++++++++++++
  2 files changed, 79 insertions(+)
 
-diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-index c24425995067..b924b39b65ed 100644
 --- a/drivers/iio/adc/stm32-adc-core.c
 +++ b/drivers/iio/adc/stm32-adc-core.c
-@@ -1071,6 +1071,9 @@ static const struct of_device_id stm32_adc_of_match[] = {
- 	}, {
+@@ -1072,6 +1072,9 @@ static const struct of_device_id stm32_a
  		.compatible = "st,stm32mp21-adc-core",
  		.data = (void *)&stm32mp21_adc_priv_cfg
-+	}, {
+ 	}, {
 +		.compatible = "st,stm32mp23-adc-core",
 +		.data = (void *)&stm32mp25_adc_priv_cfg
- 	}, {
++	}, {
  		.compatible = "st,stm32mp25-adc-core",
  		.data = (void *)&stm32mp25_adc_priv_cfg
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index e2fa4d4c89c1..54843f364bd5 100644
+ 	}, {
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -634,6 +634,64 @@ static struct stm32_adc_trig_info stm32mp21_adc2_trigs[] = {
+@@ -634,6 +634,64 @@ static struct stm32_adc_trig_info stm32m
  	{},
  };
  
@@ -111,7 +107,7 @@ index e2fa4d4c89c1..54843f364bd5 100644
  /* STM32MP25 external trigger sources for ADC12 */
  static struct stm32_adc_trig_info stm32mp25_adc12_trigs[] = {
  	{ TIM1_TRGO, STM32_EXT0 },
-@@ -3203,6 +3261,23 @@ static const struct stm32_adc_cfg stm32mp21_adc_cfg = {
+@@ -3203,6 +3261,23 @@ static const struct stm32_adc_cfg stm32m
  	.vref_charac = 1800,
  };
  
@@ -135,7 +131,7 @@ index e2fa4d4c89c1..54843f364bd5 100644
  static const struct stm32_adc_cfg stm32mp25_adc_cfg = {
  	.regs = &stm32mp25_adc_regspec,
  	.adc_info = &stm32mp25_adc_info,
-@@ -3226,6 +3301,7 @@ static const struct of_device_id stm32_adc_of_match[] = {
+@@ -3226,6 +3301,7 @@ static const struct of_device_id stm32_a
  	{ .compatible = "st,stm32mp1-adc", .data = (void *)&stm32mp1_adc_cfg },
  	{ .compatible = "st,stm32mp13-adc", .data = (void *)&stm32mp13_adc_cfg },
  	{ .compatible = "st,stm32mp21-adc", .data = (void *)&stm32mp21_adc_cfg },
@@ -143,6 +139,3 @@ index e2fa4d4c89c1..54843f364bd5 100644
  	{ .compatible = "st,stm32mp25-adc", .data = (void *)&stm32mp25_adc_cfg },
  	{},
  };
--- 
-2.39.5
-

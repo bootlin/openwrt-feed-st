@@ -21,11 +21,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/mfd/stmfx.c | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
-index bfb382972bb4..1e48eedf76ff 100644
 --- a/drivers/mfd/stmfx.c
 +++ b/drivers/mfd/stmfx.c
-@@ -191,12 +191,28 @@ static void stmfx_irq_unmask(struct irq_data *data)
+@@ -191,12 +191,28 @@ static void stmfx_irq_unmask(struct irq_
  	stmfx->irq_src |= BIT(data->hwirq % 8);
  }
  
@@ -54,6 +52,3 @@ index bfb382972bb4..1e48eedf76ff 100644
  };
  
  static irqreturn_t stmfx_irq_handler(int irq, void *data)
--- 
-2.39.5
-

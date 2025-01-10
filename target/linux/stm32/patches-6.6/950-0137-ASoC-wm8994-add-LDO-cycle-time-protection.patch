@@ -14,11 +14,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
  drivers/mfd/wm8994-core.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index aba7af688175..45d641ef33fc 100644
 --- a/drivers/mfd/wm8994-core.c
 +++ b/drivers/mfd/wm8994-core.c
-@@ -184,6 +184,12 @@ static int wm8994_resume(struct device *dev)
+@@ -184,6 +184,12 @@ static int wm8994_resume(struct device *
  	if (!wm8994->suspended)
  		return 0;
  
@@ -31,6 +29,3 @@ index aba7af688175..45d641ef33fc 100644
  	ret = regulator_bulk_enable(wm8994->num_supplies,
  				    wm8994->supplies);
  	if (ret != 0) {
--- 
-2.39.5
-

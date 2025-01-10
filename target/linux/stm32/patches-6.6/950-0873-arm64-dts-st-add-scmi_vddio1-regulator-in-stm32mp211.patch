@@ -18,8 +18,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  2 files changed, 75 insertions(+)
  create mode 100644 include/dt-bindings/regulator/st,stm32mp21-regulator.h
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 9c411cfcfeb4..72eac470d31c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
 @@ -6,6 +6,7 @@
@@ -30,7 +28,7 @@ index 9c411cfcfeb4..72eac470d31c 100644
  
  / {
  	#address-cells = <2>;
-@@ -51,6 +52,32 @@ scmi_reset: protocol@16 {
+@@ -51,6 +52,32 @@
  				reg = <0x16>;
  				#reset-cells = <1>;
  			};
@@ -63,9 +61,6 @@ index 9c411cfcfeb4..72eac470d31c 100644
  		};
  	};
  
-diff --git a/include/dt-bindings/regulator/st,stm32mp21-regulator.h b/include/dt-bindings/regulator/st,stm32mp21-regulator.h
-new file mode 100644
-index 000000000000..aac6426363d8
 --- /dev/null
 +++ b/include/dt-bindings/regulator/st,stm32mp21-regulator.h
 @@ -0,0 +1,48 @@
@@ -117,6 +112,3 @@ index 000000000000..aac6426363d8
 +#define VOLTD_SCMI_REGU4		30
 +
 +#endif /*__DT_BINDINGS_REGULATOR_STM32MP21_REGULATOR_H */
--- 
-2.39.5
-

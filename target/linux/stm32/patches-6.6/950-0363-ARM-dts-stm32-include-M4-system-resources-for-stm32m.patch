@@ -15,8 +15,6 @@ Change-Id: I2ba9436552cb40fba07fb2539783f847a3f7f709
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 72fb77bd9d6c..8fce8e6b07e8 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 @@ -6,6 +6,8 @@
@@ -28,6 +26,3 @@ index 72fb77bd9d6c..8fce8e6b07e8 100644
  
  / {
  	aliases {
--- 
-2.39.5
-

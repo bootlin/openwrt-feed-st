@@ -29,8 +29,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  9 files changed, 716 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/verisilicon/hantro_g1_jpeg_dec.c
 
-diff --git a/drivers/media/platform/verisilicon/Kconfig b/drivers/media/platform/verisilicon/Kconfig
-index 7642ff9cf96c..a4e855300491 100644
 --- a/drivers/media/platform/verisilicon/Kconfig
 +++ b/drivers/media/platform/verisilicon/Kconfig
 @@ -14,6 +14,7 @@ config VIDEO_HANTRO
@@ -41,8 +39,6 @@ index 7642ff9cf96c..a4e855300491 100644
  	help
  	  Support for the Hantro IP based Video Processing Units present on
  	  Rockchip, NXP i.MX8M and STM32MP25 SoCs, which accelerate video
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index bc31da01ac9b..d59d632afa99 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -15,6 +15,7 @@ hantro-vpu-y += \
@@ -53,8 +49,6 @@ index bc31da01ac9b..d59d632afa99 100644
  		hantro_g2.o \
  		hantro_g2_hevc_dec.o \
  		hantro_g2_vp9_dec.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 24b0e96a7b72..44cd8517aaaa 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -41,6 +41,7 @@ struct hantro_postproc_ops;
@@ -97,9 +91,6 @@ index 24b0e96a7b72..44cd8517aaaa 100644
  		struct hantro_vp8_enc_hw_ctx vp8_enc;
  		struct hantro_h264_enc_hw_ctx h264_enc;
  	};
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_jpeg_dec.c b/drivers/media/platform/verisilicon/hantro_g1_jpeg_dec.c
-new file mode 100644
-index 000000000000..d06be32e227c
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_g1_jpeg_dec.c
 @@ -0,0 +1,421 @@
@@ -524,8 +515,6 @@ index 000000000000..d06be32e227c
 +
 +	return 0;
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_g1_regs.h b/drivers/media/platform/verisilicon/hantro_g1_regs.h
-index a3fc3187d313..41d26e7c5b4c 100644
 --- a/drivers/media/platform/verisilicon/hantro_g1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_g1_regs.h
 @@ -233,9 +233,88 @@
@@ -617,8 +606,6 @@ index a3fc3187d313..41d26e7c5b4c 100644
  #define G1_REG_REF_PIC(i)				(0x078 + ((i) * 0x4))
  #define     G1_REG_REF_PIC_FILT_TYPE_E			BIT(31)
  #define     G1_REG_REF_PIC_FILT_SHARPNESS(x)		(((x) & 0x7) << 28)
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 6710b56437a9..b94620583626 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
 @@ -254,6 +254,10 @@ struct hantro_vp9_dec_hw_ctx {
@@ -632,7 +619,7 @@ index 6710b56437a9..b94620583626 100644
  /**
   * struct hantro_av1_dec_ctrls
   * @sequence:		AV1 Sequence
-@@ -650,6 +654,10 @@ void hantro_vp9_dec_exit(struct hantro_ctx *ctx);
+@@ -650,6 +654,10 @@ void hantro_vp9_dec_exit(struct hantro_c
  void hantro_g2_check_idle(struct hantro_dev *vpu);
  irqreturn_t hantro_g2_irq(int irq, void *dev_id);
  
@@ -643,8 +630,6 @@ index 6710b56437a9..b94620583626 100644
  int rockchip_vpu2_vp8_enc_run(struct hantro_ctx *ctx);
  int hantro_vp8_enc_init(struct hantro_ctx *ctx);
  void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx);
-diff --git a/drivers/media/platform/verisilicon/hantro_jpeg.c b/drivers/media/platform/verisilicon/hantro_jpeg.c
-index d07b1b449b61..ef88130431f4 100644
 --- a/drivers/media/platform/verisilicon/hantro_jpeg.c
 +++ b/drivers/media/platform/verisilicon/hantro_jpeg.c
 @@ -5,6 +5,9 @@
@@ -657,7 +642,7 @@ index d07b1b449b61..ef88130431f4 100644
   */
  
  #include <linux/align.h>
-@@ -346,3 +349,164 @@ void hantro_jpeg_header_assemble(struct hantro_jpeg_ctx *ctx)
+@@ -346,3 +349,164 @@ void hantro_jpeg_header_assemble(struct
  
  	jpeg_set_quality(ctx);
  }
@@ -822,8 +807,6 @@ index d07b1b449b61..ef88130431f4 100644
 +	return 0;
 +}
 +
-diff --git a/drivers/media/platform/verisilicon/hantro_jpeg.h b/drivers/media/platform/verisilicon/hantro_jpeg.h
-index 0b49d0b82caa..8e91fc85d7e2 100644
 --- a/drivers/media/platform/verisilicon/hantro_jpeg.h
 +++ b/drivers/media/platform/verisilicon/hantro_jpeg.h
 @@ -1,5 +1,7 @@
@@ -841,15 +824,12 @@ index 0b49d0b82caa..8e91fc85d7e2 100644
 +void hantro_jpeg_get_default_huffman_tables(struct v4l2_jpeg_reference *huffman_tables);
 +int hantro_jpeg_prepare_vlc_hw_table(struct v4l2_jpeg_header *header,
 +				     u8 *vlc_hw_table);
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-index 62ce75348ed4..0218e6ff3ca0 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-@@ -29,6 +29,18 @@ static const struct hantro_fmt stm32mp25_vdec_fmts[] = {
- 			.step_height = MB_DIM,
+@@ -30,6 +30,18 @@ static const struct hantro_fmt stm32mp25
  		},
  	},
-+	{
+ 	{
 +		.fourcc = V4L2_PIX_FMT_NV16,
 +		.codec_mode = HANTRO_MODE_NONE,
 +		.frmsize = {
@@ -861,10 +841,11 @@ index 62ce75348ed4..0218e6ff3ca0 100644
 +			.step_height = MB_DIM,
 +		},
 +	},
- 	{
++	{
  		.fourcc = V4L2_PIX_FMT_VP8_FRAME,
  		.codec_mode = HANTRO_MODE_VP8_DEC,
-@@ -55,6 +67,19 @@ static const struct hantro_fmt stm32mp25_vdec_fmts[] = {
+ 		.max_depth = 2,
+@@ -55,6 +67,19 @@ static const struct hantro_fmt stm32mp25
  			.step_height = MB_DIM,
  		},
  	},
@@ -884,7 +865,7 @@ index 62ce75348ed4..0218e6ff3ca0 100644
  };
  
  static const struct hantro_fmt stm32mp25_venc_fmts[] = {
-@@ -196,6 +221,12 @@ static const struct hantro_codec_ops stm32mp25_vdec_codec_ops[] = {
+@@ -196,6 +221,12 @@ static const struct hantro_codec_ops stm
  		.init = hantro_h264_dec_init,
  		.exit = hantro_h264_dec_exit,
  	},
@@ -897,7 +878,7 @@ index 62ce75348ed4..0218e6ff3ca0 100644
  };
  
  static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
-@@ -233,7 +264,7 @@ static const char * const stm32mp25_vdec_clk_names[] = { "vdec-clk" };
+@@ -233,7 +264,7 @@ static const char * const stm32mp25_vdec
  const struct hantro_variant stm32mp25_vdec_variant = {
  	.dec_fmts = stm32mp25_vdec_fmts,
  	.num_dec_fmts = ARRAY_SIZE(stm32mp25_vdec_fmts),
@@ -906,6 +887,3 @@ index 62ce75348ed4..0218e6ff3ca0 100644
  	.codec_ops = stm32mp25_vdec_codec_ops,
  	.irqs = stm32mp25_vdec_irqs,
  	.num_irqs = ARRAY_SIZE(stm32mp25_vdec_irqs),
--- 
-2.39.5
-

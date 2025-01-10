@@ -21,11 +21,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/usb/dwc2/hcd.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 70aefd421008..b11d24009cea 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4271,9 +4271,11 @@ static int _dwc2_hcd_start(struct usb_hcd *hcd)
+@@ -4266,9 +4266,11 @@ static int _dwc2_hcd_start(struct usb_hc
  		return 0;	/* why 0 ?? */
  	}
  
@@ -38,6 +36,3 @@ index 70aefd421008..b11d24009cea 100644
  	/* Has vbus power been turned on in dwc2_core_host_init ? */
  	if (hprt0 & HPRT0_PWR) {
  		/* Enable external vbus supply before resuming root hub */
--- 
-2.39.5
-

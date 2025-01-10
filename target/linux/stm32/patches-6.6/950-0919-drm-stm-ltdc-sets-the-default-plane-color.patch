@@ -17,11 +17,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/372035
  drivers/gpu/drm/stm/ltdc.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 807452eb2dfe..647709dfb7ac 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -180,6 +180,12 @@
+@@ -166,6 +166,12 @@
  #define BCCR_BCRED	GENMASK(23, 16)	/* Background Color RED */
  #define BCCR_BCWHITE	GENMASK(23, 0)	/* Background Color WHITE */
  
@@ -34,7 +32,7 @@ index 807452eb2dfe..647709dfb7ac 100644
  #define IER_LIE		BIT(0)		/* Line Interrupt Enable */
  #define IER_FUWIE	BIT(1)		/* Fifo Underrun Warning Interrupt Enable */
  #define IER_TERRIE	BIT(2)		/* Transfer ERRor Interrupt Enable */
-@@ -1654,6 +1660,9 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1336,6 +1342,9 @@ static void ltdc_plane_atomic_update(str
  	val = newstate->alpha >> 8;
  	regmap_write_bits(ldev->regmap, LTDC_L1CACR + lofs, LXCACR_CONSTA, val);
  
@@ -44,6 +42,3 @@ index 807452eb2dfe..647709dfb7ac 100644
  	/* Specifies the blending factors */
  	val = BF1_PAXCA | BF2_1PAXCA;
  	if (!fb->format->has_alpha)
--- 
-2.39.5
-

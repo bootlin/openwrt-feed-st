@@ -24,8 +24,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374018
  .../platform/verisilicon/hantro_h1_regs.h     |  1 +
  5 files changed, 83 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index d1c89492df42..24b0e96a7b72 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -237,6 +237,7 @@ struct hantro_dev {
@@ -44,7 +42,7 @@ index d1c89492df42..24b0e96a7b72 100644
  
  	const struct hantro_codec_ops *codec_ops;
  	struct hantro_postproc_ctx postproc;
-@@ -506,5 +508,7 @@ int hanto_postproc_enum_framesizes(struct hantro_ctx *ctx,
+@@ -506,5 +508,7 @@ int hanto_postproc_enum_framesizes(struc
  
  void hantro_h1_set_axi_ctrl(struct hantro_dev *vpu, struct hantro_ctx *ctx);
  void hantro_h1_set_color_conv(struct hantro_dev *vpu, struct hantro_ctx *ctx);
@@ -52,11 +50,9 @@ index d1c89492df42..24b0e96a7b72 100644
 +
  
  #endif /* HANTRO_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index 2845fe225961..7dba2c0dde98 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -288,6 +288,37 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
+@@ -288,6 +288,37 @@ static int hantro_try_ctrl(struct v4l2_c
  	return 0;
  }
  
@@ -94,7 +90,7 @@ index 2845fe225961..7dba2c0dde98 100644
  static int hantro_jpeg_s_ctrl(struct v4l2_ctrl *ctrl)
  {
  	struct hantro_ctx *ctx;
-@@ -389,6 +420,11 @@ static const struct v4l2_ctrl_ops hantro_ctrl_ops = {
+@@ -389,6 +420,11 @@ static const struct v4l2_ctrl_ops hantro
  	.try_ctrl = hantro_try_ctrl,
  };
  
@@ -106,7 +102,7 @@ index 2845fe225961..7dba2c0dde98 100644
  static const struct v4l2_ctrl_ops hantro_jpeg_ctrl_ops = {
  	.s_ctrl = hantro_jpeg_s_ctrl,
  };
-@@ -624,7 +660,11 @@ static int hantro_ctrls_setup(struct hantro_dev *vpu,
+@@ -624,7 +660,11 @@ static int hantro_ctrls_setup(struct han
  {
  	int i, num_ctrls = ARRAY_SIZE(controls);
  
@@ -119,11 +115,9 @@ index 2845fe225961..7dba2c0dde98 100644
  
  	for (i = 0; i < num_ctrls; i++) {
  		if (!(allowed_codecs & controls[i].codec))
-diff --git a/drivers/media/platform/verisilicon/hantro_h1.c b/drivers/media/platform/verisilicon/hantro_h1.c
-index cd4b7b291e86..495622c6852c 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1.c
-@@ -338,3 +338,40 @@ void hantro_h1_set_axi_ctrl(struct hantro_dev *vpu, struct hantro_ctx *ctx)
+@@ -338,3 +338,40 @@ void hantro_h1_set_axi_ctrl(struct hantr
  
  	vepu_write(vpu, reg, H1_REG_AXI_CTRL);
  }
@@ -164,8 +158,6 @@ index cd4b7b291e86..495622c6852c 100644
 +		| H1_REG_IN_IMG_CTRL_ROTATION(hantro_rotation(ctx->rotation));
 +	vepu_write_relaxed(vpu, reg, H1_REG_IN_IMG_CTRL);
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
-index 16b05a44592f..7cce2f21de7f 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
 +++ b/drivers/media/platform/verisilicon/hantro_h1_jpeg_enc.c
 @@ -15,28 +15,6 @@
@@ -197,8 +189,6 @@ index 16b05a44592f..7cce2f21de7f 100644
  static void hantro_h1_jpeg_enc_set_buffers(struct hantro_dev *vpu,
  					   struct hantro_ctx *ctx,
  					   struct vb2_buffer *src_buf,
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 95367833582f..2a75c0afd798 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -61,6 +61,7 @@
@@ -209,6 +199,3 @@ index 95367833582f..2a75c0afd798 100644
  #define H1_REG_ENC_CTRL0				0x040
  #define    H1_REG_ENC_CTRL0_INIT_QP(x)			((x) << 26)
  #define    H1_REG_ENC_CTRL0_SLICE_ALPHA(x)		((x) << 22)
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 33 +++++++++-----------
  1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 4f8a9a724e2e..d19d58a8ad51 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -302,24 +302,6 @@ static void dcmi_dma_callback(void *param)
+@@ -302,24 +302,6 @@ static void dcmi_dma_callback(void *para
  static int dcmi_start_dma(struct stm32_dcmi *dcmi,
  			  struct dcmi_buf *buf)
  {
@@ -46,7 +44,7 @@ index 4f8a9a724e2e..d19d58a8ad51 100644
  	/* Push current DMA transaction in the pending queue */
  	dcmi->dma_cookie = dmaengine_submit(buf->dma_desc);
  	if (dma_submit_error(dcmi->dma_cookie)) {
-@@ -1913,6 +1895,7 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1913,6 +1895,7 @@ static int dcmi_probe(struct platform_de
  	struct vb2_queue *q;
  	struct dma_chan *chan;
  	struct dma_slave_caps caps;
@@ -54,7 +52,7 @@ index 4f8a9a724e2e..d19d58a8ad51 100644
  	struct clk *mclk;
  	int ret = 0;
  
-@@ -1985,6 +1968,19 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -1985,6 +1968,19 @@ static int dcmi_probe(struct platform_de
  	if (!ret && caps.max_sg_burst)
  		dcmi->dma_max_burst = caps.max_sg_burst	* DMA_SLAVE_BUSWIDTH_4_BYTES;
  
@@ -74,7 +72,7 @@ index 4f8a9a724e2e..d19d58a8ad51 100644
  	spin_lock_init(&dcmi->irqlock);
  	mutex_init(&dcmi->lock);
  	mutex_init(&dcmi->dma_lock);
-@@ -2103,6 +2099,7 @@ static int dcmi_probe(struct platform_device *pdev)
+@@ -2103,6 +2099,7 @@ err_device_unregister:
  	v4l2_device_unregister(&dcmi->v4l2_dev);
  err_media_device_cleanup:
  	media_device_cleanup(&dcmi->mdev);
@@ -82,6 +80,3 @@ index 4f8a9a724e2e..d19d58a8ad51 100644
  	dma_release_channel(dcmi->dma_chan);
  
  	return ret;
--- 
-2.39.5
-

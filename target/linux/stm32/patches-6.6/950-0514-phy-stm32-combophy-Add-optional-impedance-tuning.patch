@@ -17,8 +17,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 86 ++++++++++++++++++++++++++++-
  1 file changed, 85 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 7879ae390f9c..147860f82d0d 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -6,6 +6,7 @@
@@ -119,7 +117,7 @@ index 7879ae390f9c..147860f82d0d 100644
  static int stm32_combophy_pll_init(struct stm32_combophy *combophy)
  {
  	int ret;
-@@ -116,10 +193,17 @@ static int stm32_combophy_pll_init(struct stm32_combophy *combophy)
+@@ -116,10 +193,17 @@ static int stm32_combophy_pll_init(struc
  				   SYSCFG_COMBOPHY_CR1_SSCEN, SYSCFG_COMBOPHY_CR1_SSCEN);
  	}
  
@@ -138,6 +136,3 @@ index 7879ae390f9c..147860f82d0d 100644
  
  	switch (clk_rate) {
  	case 100000000:
--- 
-2.39.5
-

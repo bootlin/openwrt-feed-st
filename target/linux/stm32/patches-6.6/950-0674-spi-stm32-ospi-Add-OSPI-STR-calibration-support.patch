@@ -25,8 +25,6 @@ Change-Id: Ia78dd726be3715922116f87ee23909a8ec4373f1
  drivers/spi/spi-stm32-ospi.c | 301 +++++++++++++++++++++++++++++++----
  1 file changed, 267 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 1abe33d168e5..f14f9484cdd7 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -9,8 +9,14 @@
@@ -55,7 +53,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	unsigned long status_timeout;
  
  	/*
-@@ -163,13 +170,26 @@ static int stm32_ospi_get_mode(u8 buswidth)
+@@ -163,13 +170,26 @@ static int stm32_ospi_get_mode(u8 buswid
  	}
  }
  
@@ -83,7 +81,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	int timeout, err = 0, err_poll_status = 0;
  
  	dev_dbg(ospi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
-@@ -179,18 +199,16 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -179,18 +199,16 @@ static int stm32_ospi_send(struct spi_de
  
  	cr = readl_relaxed(regs_base + OSPI_CR);
  	cr &= ~CR_CSSEL;
@@ -107,7 +105,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  
  	ccr = FIELD_PREP(CCR_IMODE_MASK, stm32_ospi_get_mode(op->cmd.buswidth));
  
-@@ -200,21 +218,23 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -200,21 +218,23 @@ static int stm32_ospi_send(struct spi_de
  		ccr |= FIELD_PREP(CCR_ADSIZE_MASK, op->addr.nbytes - 1);
  	}
  
@@ -137,7 +135,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	writel_relaxed(op->cmd.opcode, regs_base + OSPI_IR);
  
  	if (op->addr.nbytes && omi->fmode != CR_FMODE_MM)
-@@ -246,13 +266,166 @@ static int stm32_ospi_send(struct spi_device *spi, const struct spi_mem_op *op)
+@@ -246,13 +266,166 @@ abort:
  	timeout = stm32_omi_abort(omi);
  	writel_relaxed(FCR_CTCF | FCR_CSMF, regs_base + OSPI_FCR);
  
@@ -305,7 +303,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  static int stm32_ospi_poll_status(struct spi_mem *mem,
  				  const struct spi_mem_op *op,
  				  u16 mask, u16 match,
-@@ -270,15 +443,16 @@ static int stm32_ospi_poll_status(struct spi_mem *mem,
+@@ -270,15 +443,16 @@ static int stm32_ospi_poll_status(struct
  		return ret;
  
  	mutex_lock(&ospi->lock);
@@ -325,7 +323,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -301,9 +475,11 @@ static int stm32_ospi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+@@ -301,9 +475,11 @@ static int stm32_ospi_exec_op(struct spi
  	else
  		omi->fmode = CR_FMODE_INDW;
  
@@ -339,7 +337,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -360,9 +536,11 @@ static ssize_t stm32_ospi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+@@ -360,9 +536,11 @@ static ssize_t stm32_ospi_dirmap_read(st
  	else
  		omi->fmode = CR_FMODE_INDR;
  
@@ -353,7 +351,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -433,6 +611,10 @@ static int stm32_ospi_transfer_one_message(struct spi_controller *ctrl,
+@@ -433,6 +611,10 @@ static int stm32_ospi_transfer_one_messa
  			op.data.buf.out = transfer->tx_buf;
  		}
  
@@ -364,7 +362,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  		ret = stm32_ospi_send(spi, &op);
  		if (ret)
  			goto end_of_transfer;
-@@ -474,20 +656,43 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -474,20 +656,43 @@ static int stm32_ospi_setup(struct spi_d
  		return ret;
  
  	flash = &ospi->flash[spi->chip_select];
@@ -389,9 +387,9 @@ index 1abe33d168e5..f14f9484cdd7 100644
 +	writel_relaxed(flash->dcr_reg, regs_base + OSPI_DCR1);
 +
 +	stm32_ospi_set_prescaler(ospi, flash->presc);
-+
-+	ospi->last_cs = spi->chip_select;
  
++	ospi->last_cs = spi->chip_select;
++
 +	ret = stm32_ospi_str_calibration(ospi);
 +	if (ret) {
 +		dev_info(ospi->dev, "Set flash frequency to a safe value (%d Hz)\n",
@@ -413,7 +411,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
-@@ -499,10 +704,10 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -499,10 +704,10 @@ static int stm32_ospi_setup(struct spi_d
   * to check supported mode.
   */
  static const struct spi_controller_mem_ops stm32_ospi_mem_ops = {
@@ -428,7 +426,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  };
  
  static int stm32_ospi_probe(struct platform_device *pdev)
-@@ -513,6 +718,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -513,6 +718,7 @@ static int stm32_ospi_probe(struct platf
  	struct stm32_ospi *ospi;
  	struct stm32_omi *omi = dev_get_drvdata(parent);
  	struct dma_slave_config dma_cfg;
@@ -436,7 +434,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	int ret;
  
  	ctrl = devm_spi_alloc_master(dev, sizeof(*ospi));
-@@ -522,6 +728,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -522,6 +728,7 @@ static int stm32_ospi_probe(struct platf
  	ospi = spi_controller_get_devdata(ctrl);
  	ospi->ctrl = ctrl;
  	ospi->omi = omi;
@@ -444,7 +442,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  
  	ospi->dev = &pdev->dev;
  	platform_set_drvdata(pdev, ospi);
-@@ -562,6 +769,31 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -562,6 +769,31 @@ static int stm32_ospi_probe(struct platf
  		reset_control_deassert(omi->rstc);
  	}
  
@@ -476,7 +474,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	ret = spi_register_master(ctrl);
  	if (ret)
  		goto err_spi_register;
-@@ -593,6 +825,7 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+@@ -593,6 +825,7 @@ static int stm32_ospi_remove(struct plat
  	spi_unregister_master(ospi->ctrl);
  	/* Disable ospi */
  	writel_relaxed(0, omi->regs_base + OSPI_CR);
@@ -484,7 +482,7 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	mutex_destroy(&ospi->lock);
  	pm_runtime_put_sync_suspend(omi->dev);
  	pm_runtime_disable(omi->dev);
-@@ -628,7 +861,7 @@ static int __maybe_unused stm32_ospi_resume(struct device *dev)
+@@ -628,7 +861,7 @@ static int __maybe_unused stm32_ospi_res
  		return ret;
  
  	writel_relaxed(ospi->cr_reg, regs_base + OSPI_CR);
@@ -493,6 +491,3 @@ index 1abe33d168e5..f14f9484cdd7 100644
  	pm_runtime_mark_last_busy(omi->dev);
  	pm_runtime_put_autosuspend(omi->dev);
  
--- 
-2.39.5
-

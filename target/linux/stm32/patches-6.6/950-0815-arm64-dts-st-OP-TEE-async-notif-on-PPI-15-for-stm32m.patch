@@ -12,11 +12,9 @@ Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 0528a112f535..cfe601b126bf 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -91,9 +91,13 @@ clk_rcbsec: clk-rcbsec {
+@@ -91,9 +91,13 @@
  	};
  
  	firmware {
@@ -31,6 +29,3 @@ index 0528a112f535..cfe601b126bf 100644
  		};
  
  		scmi {
--- 
-2.39.5
-

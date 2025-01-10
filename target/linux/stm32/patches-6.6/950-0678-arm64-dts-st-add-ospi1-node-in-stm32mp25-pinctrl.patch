@@ -11,11 +11,9 @@ Change-Id: I15625abed52428bf081abeae16339f8eeb6a69e7
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 51 +++++++++++++++++++
  1 file changed, 51 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 0ca4671055a5..6dfa01d065ec 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -153,6 +153,57 @@ pins {
+@@ -153,6 +153,57 @@
  		};
  	};
  
@@ -73,6 +71,3 @@ index 0ca4671055a5..6dfa01d065ec 100644
  	pcie_pins_a: pcie-0 {
  		pins {
  			pinmux = <STM32_PINMUX('J', 0, AF4)>;
--- 
-2.39.5
-

@@ -25,8 +25,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/374629
  include/uapi/linux/stm32-dcmipp-config.h      | 23 ++++---
  2 files changed, 43 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 629670dc8de4..e8e9d86495fc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -30,6 +30,8 @@
@@ -46,7 +44,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  	enum v4l2_isp_stat_avg_filter avg_filter;
  	enum v4l2_isp_stat_bin_comp bin_comp;
  
-@@ -469,9 +470,6 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -469,9 +470,6 @@ static int dcmipp_statcap_s_ctrl(struct
  			DCMIPP_P1STSZR_ENABLE);
  		spin_unlock_irq(&vcap->irqlock);
  		break;
@@ -56,12 +54,10 @@ index 629670dc8de4..e8e9d86495fc 100644
  	case V4L2_CID_ISP_STAT_AVG_FILTER:
  		vcap->avg_filter = ctrl->val;
  		break;
-@@ -493,16 +491,6 @@ static const struct v4l2_ctrl_config dcmipp_statcap_ctrls[] = {
- 		.id	= V4L2_CID_ISP_STAT_REGION,
- 		.type	= V4L2_CTRL_TYPE_ISP_STAT_REGION,
+@@ -495,16 +493,6 @@ static const struct v4l2_ctrl_config dcm
  		.name	= "ISP stat region control",
--	}, {
--		.ops	= &dcmipp_statcap_ctrl_ops,
+ 	}, {
+ 		.ops	= &dcmipp_statcap_ctrl_ops,
 -		.id	= V4L2_CID_ISP_STAT_LOCATION,
 -		.type	= V4L2_CTRL_TYPE_INTEGER,
 -		.name	= "ISP stat location control",
@@ -70,10 +66,12 @@ index 629670dc8de4..e8e9d86495fc 100644
 -		.step	= 1,
 -		.def	= 0,
 -		.flags	= 0,
- 	}, {
- 		.ops	= &dcmipp_statcap_ctrl_ops,
+-	}, {
+-		.ops	= &dcmipp_statcap_ctrl_ops,
  		.id	= V4L2_CID_ISP_STAT_AVG_FILTER,
-@@ -570,7 +558,7 @@ static void dcmipp_statcap_buffer_done(struct dcmipp_statcap_device *vcap)
+ 		.type	= V4L2_CTRL_TYPE_INTEGER,
+ 		.name	= "ISP stat average filter control",
+@@ -570,7 +558,7 @@ static void dcmipp_statcap_buffer_done(s
  	vb2_buffer_done(&cur_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
  }
  
@@ -82,7 +80,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  				  enum v4l2_isp_stat_bin_comp comp)
  {
  	return (location << DCMIPP_P1STXCR_SRC_LOC_SHIFT) | (comp << DCMIPP_P1STXCR_SRC_COMP_SHIFT);
-@@ -581,6 +569,10 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -581,6 +569,10 @@ static irqreturn_t dcmipp_statcap_irq_th
  	struct dcmipp_statcap_device *vcap =
  			container_of(arg, struct dcmipp_statcap_device, ved);
  	struct dcmipp_ent_device *ved = arg;
@@ -93,7 +91,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  	static bool stat_ready;
  	int i;
  
-@@ -610,6 +602,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -610,6 +602,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  	switch (vcap->capture_state) {
  	case COLD_START:
  		stat_ready = false;
@@ -101,7 +99,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  		/*
  		 * We've just started, set control registers to capture
  		 * AVERAGES (RGB) and leave
-@@ -617,7 +610,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -617,7 +610,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_AVERAGE |
@@ -110,7 +108,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  				  vcap->avg_filter << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  		break;
-@@ -627,14 +620,14 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -627,14 +620,14 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -127,7 +125,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  		}
  		break;
  
-@@ -643,29 +636,29 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -643,29 +636,29 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -165,7 +163,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  				(vcap->stat_region.width * vcap->stat_region.height);
  		}
  		break;
-@@ -675,13 +668,13 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -675,13 +668,13 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -181,7 +179,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  		break;
  
  	case PHY_BIN_2_SHA_BIN_3:
-@@ -689,27 +682,28 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -689,27 +682,28 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -214,7 +212,7 @@ index 629670dc8de4..e8e9d86495fc 100644
  		break;
  	}
  
-@@ -724,8 +718,10 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -724,8 +718,10 @@ static irqreturn_t dcmipp_statcap_irq_th
  	if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
  		vcap->capture_state++;
  	} else {
@@ -226,8 +224,6 @@ index 629670dc8de4..e8e9d86495fc 100644
  	}
  
  	return IRQ_HANDLED;
-diff --git a/include/uapi/linux/stm32-dcmipp-config.h b/include/uapi/linux/stm32-dcmipp-config.h
-index 8cff27f51d71..af80b3b3a258 100644
 --- a/include/uapi/linux/stm32-dcmipp-config.h
 +++ b/include/uapi/linux/stm32-dcmipp-config.h
 @@ -168,21 +168,26 @@ struct stm32_dcmipp_params_cfg {
@@ -266,6 +262,3 @@ index 8cff27f51d71..af80b3b3a258 100644
  	__u32 bad_pixel_count;
  };
  
--- 
-2.39.5
-

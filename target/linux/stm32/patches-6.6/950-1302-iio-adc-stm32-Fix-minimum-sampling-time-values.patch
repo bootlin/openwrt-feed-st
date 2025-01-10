@@ -23,11 +23,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/adc/stm32-adc.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index c364e03d0182..ba1fb9477f16 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -3175,6 +3175,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
+@@ -3175,6 +3175,7 @@ static const struct stm32_adc_cfg stm32f
  	.vref_charac = 3300,
  };
  
@@ -35,7 +33,7 @@ index c364e03d0182..ba1fb9477f16 100644
  static const unsigned int stm32_adc_min_ts_h7[] = { 0, 0, 0, 4300, 9000, 0 };
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_h7) == STM32_ADC_INT_CH_NB);
  
-@@ -3198,7 +3199,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -3198,7 +3199,7 @@ static const struct stm32_adc_cfg stm32h
  	.vref_charac = 3300,
  };
  
@@ -44,7 +42,7 @@ index c364e03d0182..ba1fb9477f16 100644
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp1) == STM32_ADC_INT_CH_NB);
  
  static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
-@@ -3222,7 +3223,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -3222,7 +3223,7 @@ static const struct stm32_adc_cfg stm32m
  	.vref_charac = 3300,
  };
  
@@ -53,6 +51,3 @@ index c364e03d0182..ba1fb9477f16 100644
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp13) == STM32_ADC_INT_CH_NB);
  
  static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
--- 
-2.39.5
-

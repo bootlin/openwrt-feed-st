@@ -22,11 +22,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/364932
  drivers/input/touchscreen/goodix.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 947b20d4fb65..a94b8f5fac56 100644
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
-@@ -259,7 +259,7 @@ static int goodix_ts_read_input_report(struct goodix_ts_data *ts, u8 *data)
+@@ -259,7 +259,7 @@ static int goodix_ts_read_input_report(s
  		error = goodix_i2c_read(ts->client, addr, data,
  					header_contact_keycode_size);
  		if (error) {
@@ -35,7 +33,7 @@ index 947b20d4fb65..a94b8f5fac56 100644
  			return error;
  		}
  
-@@ -500,7 +500,7 @@ static irqreturn_t goodix_ts_irq_handler(int irq, void *dev_id)
+@@ -500,7 +500,7 @@ static irqreturn_t goodix_ts_irq_handler
  	goodix_process_events(ts);
  
  	if (goodix_i2c_write_u8(ts->client, GOODIX_READ_COOR_ADDR, 0) < 0)
@@ -44,6 +42,3 @@ index 947b20d4fb65..a94b8f5fac56 100644
  
  	return IRQ_HANDLED;
  }
--- 
-2.39.5
-

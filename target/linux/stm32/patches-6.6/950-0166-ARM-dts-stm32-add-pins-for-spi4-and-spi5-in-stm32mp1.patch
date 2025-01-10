@@ -13,11 +13,9 @@ Change-Id: Ibda61b11be277b2e488a20dd4d1362c3631adf82
  arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 31 +++++++++++++++++++++
  1 file changed, 31 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-index a9b36f408a88..ce08af4e3925 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-@@ -2227,6 +2227,29 @@ pins2 {
+@@ -2227,6 +2227,29 @@
  		};
  	};
  
@@ -47,7 +45,7 @@ index a9b36f408a88..ce08af4e3925 100644
  	spi5_pins_a: spi5-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('F', 7, AF5)>, /* SPI5_SCK */
-@@ -2242,6 +2265,14 @@ pins2 {
+@@ -2242,6 +2265,14 @@
  		};
  	};
  
@@ -62,6 +60,3 @@ index a9b36f408a88..ce08af4e3925 100644
  	stusb1600_pins_a: stusb1600-0 {
  		pins {
  			pinmux = <STM32_PINMUX('I', 11, GPIO)>;
--- 
-2.39.5
-

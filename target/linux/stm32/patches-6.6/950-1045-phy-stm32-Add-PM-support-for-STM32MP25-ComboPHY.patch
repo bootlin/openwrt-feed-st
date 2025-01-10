@@ -16,8 +16,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/phy/st/phy-stm32-combophy.c | 49 ++++++++++++++++++++++++++++-
  1 file changed, 48 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index 952163f96f94..71665e3dce29 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -85,6 +85,7 @@ struct stm32_combophy {
@@ -28,7 +26,7 @@ index 952163f96f94..71665e3dce29 100644
  };
  
  struct clk_impedance  {
-@@ -390,11 +391,49 @@ static void stm32_combophy_disable_clocks(struct stm32_combophy *combophy)
+@@ -390,11 +391,49 @@ static void stm32_combophy_disable_clock
  	clk_disable_unprepare(combophy->phy_clk);
  }
  
@@ -78,7 +76,7 @@ index 952163f96f94..71665e3dce29 100644
  	if (combophy->type == PHY_TYPE_PCIE && !combophy->pad_clk)
  		regmap_update_bits(combophy->regmap, SYSCFG_PCIEPRGCR,
  				   STM32MP25_PCIEPRGCR_EN, 0);
-@@ -437,7 +476,7 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -437,7 +476,7 @@ static int stm32_combophy_init(struct ph
  	}
  
  	ret = stm32_combophy_pll_init(combophy);
@@ -87,7 +85,7 @@ index 952163f96f94..71665e3dce29 100644
  		stm32_combophy_disable_clocks(combophy);
  		pm_runtime_put_noidle(dev);
  		return ret;
-@@ -447,6 +486,8 @@ static int stm32_combophy_init(struct phy *phy)
+@@ -447,6 +486,8 @@ static int stm32_combophy_init(struct ph
  	pm_runtime_set_active(dev);
  	pm_runtime_enable(dev);
  
@@ -96,7 +94,7 @@ index 952163f96f94..71665e3dce29 100644
  	return ret;
  }
  
-@@ -517,6 +558,11 @@ static int stm32_combophy_probe(struct platform_device *pdev)
+@@ -517,6 +558,11 @@ static int stm32_combophy_probe(struct p
  	return PTR_ERR_OR_ZERO(phy_provider);
  }
  
@@ -108,7 +106,7 @@ index 952163f96f94..71665e3dce29 100644
  static const struct of_device_id stm32_combophy_of_match[] = {
  	{ .compatible = "st,stm32mp25-combophy", },
  	{ },
-@@ -528,6 +574,7 @@ static struct platform_driver stm32_combophy_driver = {
+@@ -528,6 +574,7 @@ static struct platform_driver stm32_comb
  	.driver = {
  		   .name = "stm32-combophy",
  		   .of_match_table = stm32_combophy_of_match,
@@ -116,6 +114,3 @@ index 952163f96f94..71665e3dce29 100644
  	}
  };
  
--- 
-2.39.5
-

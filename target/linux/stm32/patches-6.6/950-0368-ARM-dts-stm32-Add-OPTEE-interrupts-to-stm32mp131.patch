@@ -13,11 +13,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 97f589c15696..f1fa3e3710eb 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -40,11 +40,13 @@ arm_wdt: watchdog {
+@@ -40,11 +40,13 @@
  	};
  
  	firmware {
@@ -32,6 +30,3 @@ index 97f589c15696..f1fa3e3710eb 100644
  		};
  
  		scmi: scmi {
--- 
-2.39.5
-

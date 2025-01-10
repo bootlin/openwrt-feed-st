@@ -26,8 +26,6 @@ Change-Id: I4c98ea3519a59e4a7af1cd1ac1b05bec59349401
  4 files changed, 518 insertions(+), 65 deletions(-)
  create mode 100644 drivers/remoteproc/rproc_srm_core.h
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 37cea7519b2b..4d12e3812f63 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -25,6 +25,7 @@ config REMOTEPROC_CDEV
@@ -38,8 +36,6 @@ index 37cea7519b2b..4d12e3812f63 100644
  	help
  	  Say y here to enable the core driver of the remoteproc System Resource
  	  Manager (SRM).
-diff --git a/drivers/remoteproc/rproc_srm_core.c b/drivers/remoteproc/rproc_srm_core.c
-index cc523ac54c25..b1251cd4f6e7 100644
 --- a/drivers/remoteproc/rproc_srm_core.c
 +++ b/drivers/remoteproc/rproc_srm_core.c
 @@ -9,6 +9,9 @@
@@ -154,7 +150,7 @@ index cc523ac54c25..b1251cd4f6e7 100644
  static int compare_of(struct device *dev, void *data)
  {
  	return dev->of_node == data;
-@@ -100,6 +194,15 @@ static int rproc_srm_core_prepare(struct rproc_subdev *subdev)
+@@ -100,6 +194,15 @@ static int rproc_srm_core_prepare(struct
  		dev_err(dev, "failed to bind\n");
  		goto master;
  	}
@@ -170,7 +166,7 @@ index cc523ac54c25..b1251cd4f6e7 100644
  done:
  	atomic_inc(&rproc_srm_core->prepared);
  
-@@ -122,6 +225,8 @@ static void rproc_srm_core_unprepare(struct rproc_subdev *subdev)
+@@ -122,6 +225,8 @@ static void rproc_srm_core_unprepare(str
  
  	atomic_dec(&rproc_srm_core->prepared);
  
@@ -179,7 +175,7 @@ index cc523ac54c25..b1251cd4f6e7 100644
  	component_master_del(dev, &srm_comp_ops);
  	devm_of_platform_depopulate(dev);
  }
-@@ -138,6 +243,7 @@ static int rproc_srm_core_probe(struct platform_device *pdev)
+@@ -138,6 +243,7 @@ static int rproc_srm_core_probe(struct p
  		return -ENOMEM;
  
  	rproc_srm_core->dev = dev;
@@ -187,9 +183,6 @@ index cc523ac54c25..b1251cd4f6e7 100644
  
  	/* Register rproc subdevice with (un)prepare ops */
  	rproc_srm_core->subdev.prepare = rproc_srm_core_prepare;
-diff --git a/drivers/remoteproc/rproc_srm_core.h b/drivers/remoteproc/rproc_srm_core.h
-new file mode 100644
-index 000000000000..7dffdb38f4d4
 --- /dev/null
 +++ b/drivers/remoteproc/rproc_srm_core.h
 @@ -0,0 +1,98 @@
@@ -291,8 +284,6 @@ index 000000000000..7dffdb38f4d4
 +int rpmsg_srm_send(struct rpmsg_endpoint *ept, struct rpmsg_srm_msg *msg);
 +
 +#endif
-diff --git a/drivers/remoteproc/rproc_srm_dev.c b/drivers/remoteproc/rproc_srm_dev.c
-index 7aa32f909135..f8145f1746f7 100644
 --- a/drivers/remoteproc/rproc_srm_dev.c
 +++ b/drivers/remoteproc/rproc_srm_dev.c
 @@ -16,7 +16,7 @@
@@ -338,7 +329,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	}
  }
  
-@@ -71,13 +72,12 @@ static irqreturn_t rproc_srm_dev_irq_handler(int irq, void *dev)
+@@ -71,13 +72,12 @@ static irqreturn_t rproc_srm_dev_irq_han
  	return IRQ_HANDLED;
  }
  
@@ -353,7 +344,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	const char *name;
  	int nr, ret, irq;
  	unsigned int i;
-@@ -129,45 +129,46 @@ static int rproc_srm_dev_get_irqs(struct rproc_srm_dev *rproc_srm_dev)
+@@ -129,45 +129,46 @@ static int rproc_srm_dev_get_irqs(struct
  		irq_set_status_flags(info->irq, IRQ_DISABLE_UNLAZY);
  		disable_irq(info->irq);
  
@@ -408,7 +399,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	int ret;
  
  	/*
-@@ -179,7 +180,7 @@ static int rproc_srm_dev_config_clocks(struct rproc_srm_dev *rproc_srm_dev)
+@@ -179,7 +180,7 @@ static int rproc_srm_dev_config_clocks(s
  	 * Hence we prepare and enable the parent clock.
  	 */
  
@@ -417,7 +408,7 @@ index 7aa32f909135..f8145f1746f7 100644
  		if (c->parent_enabled)
  			continue;
  
-@@ -188,7 +189,7 @@ static int rproc_srm_dev_config_clocks(struct rproc_srm_dev *rproc_srm_dev)
+@@ -188,7 +189,7 @@ static int rproc_srm_dev_config_clocks(s
  			dev_err(rproc_srm_dev->dev,
  				"clk %d (%s) parent enable failed\n",
  				c->index, c->name);
@@ -426,7 +417,7 @@ index 7aa32f909135..f8145f1746f7 100644
  			return ret;
  		}
  		c->parent_enabled = true;
-@@ -199,25 +200,89 @@ static int rproc_srm_dev_config_clocks(struct rproc_srm_dev *rproc_srm_dev)
+@@ -199,25 +200,89 @@ static int rproc_srm_dev_config_clocks(s
  	return 0;
  }
  
@@ -521,7 +512,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	const char *name;
  	int nb_c, ret;
  	unsigned int i;
-@@ -244,48 +309,53 @@ static int rproc_srm_dev_get_clocks(struct rproc_srm_dev *rproc_srm_dev)
+@@ -244,48 +309,53 @@ static int rproc_srm_dev_get_clocks(stru
  			goto err;
  		}
  
@@ -586,7 +577,7 @@ index 7aa32f909135..f8145f1746f7 100644
  		if (r->enabled)
  			continue;
  
-@@ -297,7 +367,7 @@ static int rproc_srm_dev_config_regus(struct rproc_srm_dev *rproc_srm_dev)
+@@ -297,7 +367,7 @@ static int rproc_srm_dev_config_regus(st
  		if (ret) {
  			dev_err(rproc_srm_dev->dev, "regu %d (%s) failed\n",
  				r->index, r->name);
@@ -595,7 +586,7 @@ index 7aa32f909135..f8145f1746f7 100644
  			return ret;
  		}
  		r->enabled = true;
-@@ -308,20 +378,114 @@ static int rproc_srm_dev_config_regus(struct rproc_srm_dev *rproc_srm_dev)
+@@ -308,20 +378,114 @@ static int rproc_srm_dev_config_regus(st
  	return 0;
  }
  
@@ -714,7 +705,7 @@ index 7aa32f909135..f8145f1746f7 100644
  {
  	struct device *dev = rproc_srm_dev->dev;
  	struct device_node *np = dev->of_node;
-@@ -329,14 +493,13 @@ static int rproc_srm_dev_get_regus(struct rproc_srm_dev *rproc_srm_dev)
+@@ -329,14 +493,13 @@ static int rproc_srm_dev_get_regus(struc
  	const char *n;
  	char *name;
  	struct rproc_srm_regu_info *r;
@@ -730,7 +721,7 @@ index 7aa32f909135..f8145f1746f7 100644
  		if (!n || n == p->name)
  			continue;
  
-@@ -347,7 +510,7 @@ static int rproc_srm_dev_get_regus(struct rproc_srm_dev *rproc_srm_dev)
+@@ -347,7 +510,7 @@ static int rproc_srm_dev_get_regus(struc
  		}
  
  		name = devm_kstrdup(dev, p->name, GFP_KERNEL);
@@ -739,7 +730,7 @@ index 7aa32f909135..f8145f1746f7 100644
  		r->name = name;
  
  		r->regu = devm_regulator_get(dev, r->name);
-@@ -359,27 +522,99 @@ static int rproc_srm_dev_get_regus(struct rproc_srm_dev *rproc_srm_dev)
+@@ -359,27 +522,99 @@ static int rproc_srm_dev_get_regus(struc
  
  		r->index = nb_s++;
  
@@ -844,7 +835,7 @@ index 7aa32f909135..f8145f1746f7 100644
  }
  
  static int
-@@ -388,11 +623,11 @@ rproc_srm_dev_bind(struct device *dev, struct device *master, void *data)
+@@ -388,11 +623,11 @@ rproc_srm_dev_bind(struct device *dev, s
  	struct rproc_srm_dev *rproc_srm_dev = dev_get_drvdata(dev);
  	int ret;
  
@@ -858,7 +849,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	if (ret)
  		return ret;
  
-@@ -422,32 +657,42 @@ static int rproc_srm_dev_probe(struct platform_device *pdev)
+@@ -422,32 +657,42 @@ static int rproc_srm_dev_probe(struct pl
  	rproc_srm_dev->dev = dev;
  	rproc = (struct rproc *)dev_get_drvdata(dev->parent->parent);
  	rproc_srm_dev->early_boot = (rproc->state == RPROC_DETACHED);
@@ -911,7 +902,7 @@ index 7aa32f909135..f8145f1746f7 100644
  	return ret;
  }
  
-@@ -458,9 +703,12 @@ static int rproc_srm_dev_remove(struct platform_device *pdev)
+@@ -458,9 +703,12 @@ static int rproc_srm_dev_remove(struct p
  
  	component_del(dev, &rproc_srm_dev_ops);
  
@@ -927,6 +918,3 @@ index 7aa32f909135..f8145f1746f7 100644
  
  	return 0;
  }
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index 0ea199baa5dc..146453a0084a 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -125,6 +125,7 @@ &sdmmc2 {
+@@ -125,6 +125,7 @@
  	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
  	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
  	non-removable;
@@ -29,7 +27,7 @@ index 0ea199baa5dc..146453a0084a 100644
  	st,neg-edge;
  	bus-width = <4>;
  	vmmc-supply = <&v3v3>;
-@@ -136,9 +137,6 @@ &sdmmc2 {
+@@ -136,9 +137,6 @@
  	brcmf: bcrmf@1 {
  		reg = <1>;
  		compatible = "brcm,bcm4329-fmac";
@@ -39,6 +37,3 @@ index 0ea199baa5dc..146453a0084a 100644
  	};
  };
  
--- 
-2.39.5
-

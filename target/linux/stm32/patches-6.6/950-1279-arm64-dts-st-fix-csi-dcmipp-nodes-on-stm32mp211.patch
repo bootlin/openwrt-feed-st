@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 22 +++++++++++-----------
  1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 4992fbca8ba5..79a02c591728 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1547,17 +1547,6 @@ csi: csi@48020000 {
+@@ -1547,17 +1547,6 @@
  				status = "disabled";
  			};
  
@@ -38,7 +36,7 @@ index 4992fbca8ba5..79a02c591728 100644
  			lptimer3: timer@46050000 {
  				compatible = "st,stm32mp21-lptimer";
  				reg = <0x46050000 0x0 0x400>;
-@@ -2288,6 +2277,17 @@ soc1: soc@1 {
+@@ -2288,6 +2277,17 @@
  		interrupt-parent = <&intc>;
  		ranges = <0x0 0x0 0x0 0x80000000>;
  
@@ -56,6 +54,3 @@ index 4992fbca8ba5..79a02c591728 100644
  		eth1: eth1@482c0000 {
  			compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  			reg = <0x482c0000 0x4000>;
--- 
-2.39.5
-

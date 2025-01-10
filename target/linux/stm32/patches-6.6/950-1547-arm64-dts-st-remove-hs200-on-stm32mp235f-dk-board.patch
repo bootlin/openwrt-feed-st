@@ -16,11 +16,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index 71eb71e3028d..655ed73e6be3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-@@ -651,7 +651,6 @@ &sdmmc2 {
+@@ -651,7 +651,6 @@
  	vmmc-supply = <&scmi_vdd_emmc>;
  	vqmmc-supply = <&scmi_vddio2>;
  	mmc-ddr-1_8v;
@@ -28,6 +26,3 @@ index 71eb71e3028d..655ed73e6be3 100644
  	status = "okay";
  };
  
--- 
-2.39.5
-

@@ -24,8 +24,6 @@ Change-Id: I23c4e676146289fe957970986a3ef6907740ba10
  drivers/pinctrl/stm32/pinctrl-stm32.c | 148 +++++++++++++++++++-------
  1 file changed, 111 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index c8f0b70c85a2..b02258bd58a2 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -141,12 +141,11 @@ struct stm32_gpio_bank {
@@ -42,7 +40,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	bool secure_control;
  	bool io_sync_control;
  	bool rif_control;
-@@ -373,6 +372,7 @@ static int stm32_gpio_request(struct gpio_chip *chip, unsigned offset)
+@@ -373,6 +372,7 @@ static int stm32_gpio_request(struct gpi
  static void stm32_gpio_free(struct gpio_chip *chip, unsigned offset)
  {
  	struct stm32_gpio_bank *bank = gpiochip_get_data(chip);
@@ -50,7 +48,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	unsigned int virq;
  
  	pinctrl_gpio_free(chip->base + offset);
-@@ -380,9 +380,12 @@ static void stm32_gpio_free(struct gpio_chip *chip, unsigned offset)
+@@ -380,9 +380,12 @@ static void stm32_gpio_free(struct gpio_
  	if (bank->rif_control)
  		stm32_gpio_rif_release_semaphore(bank, offset);
  
@@ -64,7 +62,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  }
  
  static int stm32_gpio_get(struct gpio_chip *chip, unsigned offset)
-@@ -421,7 +424,10 @@ static int stm32_gpio_to_irq(struct gpio_chip *chip, unsigned int offset)
+@@ -421,7 +424,10 @@ static int stm32_gpio_to_irq(struct gpio
  	struct stm32_gpio_bank *bank = gpiochip_get_data(chip);
  	struct irq_fwspec fwspec;
  
@@ -76,7 +74,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	fwspec.param_count = 2;
  	fwspec.param[0] = offset;
  	fwspec.param[1] = IRQ_TYPE_NONE;
-@@ -500,9 +506,21 @@ static const struct gpio_chip stm32_gpio_template = {
+@@ -500,9 +506,21 @@ static const struct gpio_chip stm32_gpio
  	.init_valid_mask	= stm32_gpio_init_valid_mask,
  };
  
@@ -99,7 +97,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	int level;
  
  	/* Do not access the GPIO if this is not LEVEL triggered IRQ. */
-@@ -524,7 +542,7 @@ static void stm32_gpio_irq_eoi(struct irq_data *d)
+@@ -524,7 +542,7 @@ static void stm32_gpio_irq_eoi(struct ir
  
  static int stm32_gpio_set_type(struct irq_data *d, unsigned int type)
  {
@@ -108,7 +106,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	u32 parent_type;
  
  	switch (type) {
-@@ -550,8 +568,8 @@ static int stm32_gpio_set_type(struct irq_data *d, unsigned int type)
+@@ -550,8 +568,8 @@ static int stm32_gpio_set_type(struct ir
  
  static int stm32_gpio_irq_request_resources(struct irq_data *irq_data)
  {
@@ -119,7 +117,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	int ret;
  
  	ret = stm32_gpio_direction_input(&bank->gpio_chip, irq_data->hwirq);
-@@ -570,7 +588,7 @@ static int stm32_gpio_irq_request_resources(struct irq_data *irq_data)
+@@ -570,7 +588,7 @@ static int stm32_gpio_irq_request_resour
  
  static void stm32_gpio_irq_release_resources(struct irq_data *irq_data)
  {
@@ -128,7 +126,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  
  	gpiochip_unlock_as_irq(&bank->gpio_chip, irq_data->hwirq);
  }
-@@ -593,6 +611,39 @@ static struct irq_chip stm32_gpio_irq_chip = {
+@@ -593,6 +611,39 @@ static struct irq_chip stm32_gpio_irq_ch
  	.irq_release_resources = stm32_gpio_irq_release_resources,
  };
  
@@ -168,7 +166,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  static int stm32_gpio_domain_translate(struct irq_domain *d,
  				       struct irq_fwspec *fwspec,
  				       unsigned long *hwirq,
-@@ -610,8 +661,8 @@ static int stm32_gpio_domain_translate(struct irq_domain *d,
+@@ -610,8 +661,8 @@ static int stm32_gpio_domain_translate(s
  static int stm32_gpio_domain_activate(struct irq_domain *d,
  				      struct irq_data *irq_data, bool reserve)
  {
@@ -179,7 +177,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	int ret;
  
  	if (!stm32_pctl_uses_syscfg(pctl))
-@@ -638,14 +689,19 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+@@ -638,14 +689,19 @@ static int stm32_gpio_domain_alloc(struc
  				   unsigned int virq,
  				   unsigned int nr_irqs, void *data)
  {
@@ -201,7 +199,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	if (stm32_pctl_uses_syscfg(pctl)) {
  		/*
  		 * Check first that the IRQ MUX of that line is free.
-@@ -674,15 +730,21 @@ static int stm32_gpio_domain_alloc(struct irq_domain *d,
+@@ -674,15 +730,21 @@ static int stm32_gpio_domain_alloc(struc
  	irq_domain_set_hwirq_and_chip(d, virq, hwirq, &stm32_gpio_irq_chip,
  				      bank);
  
@@ -226,7 +224,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	unsigned long flags, hwirq = irq_data->hwirq;
  
  	irq_domain_free_irqs_common(d, virq, nr_irqs);
-@@ -692,9 +754,13 @@ static void stm32_gpio_domain_free(struct irq_domain *d, unsigned int virq,
+@@ -692,9 +754,13 @@ static void stm32_gpio_domain_free(struc
  		pctl->irqmux_map &= ~BIT(hwirq);
  		spin_unlock_irqrestore(&pctl->irqmux_lock, flags);
  	}
@@ -240,7 +238,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	.translate	= stm32_gpio_domain_translate,
  	.alloc		= stm32_gpio_domain_alloc,
  	.free		= stm32_gpio_domain_free,
-@@ -1703,20 +1769,6 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
+@@ -1703,20 +1769,6 @@ static int stm32_gpiolib_register_bank(s
  	bank->rif_control = pctl->match_data->rif_control;
  	spin_lock_init(&bank->lock);
  
@@ -261,7 +259,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	names = devm_kcalloc(dev, npins, sizeof(char *), GFP_KERNEL);
  	if (!names) {
  		err = -ENOMEM;
-@@ -1747,11 +1799,19 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
+@@ -1752,11 +1804,19 @@ err_clk:
  	return err;
  }
  
@@ -284,7 +282,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  
  	if (!of_property_present(np, "interrupt-parent"))
  		return NULL;
-@@ -1760,12 +1820,25 @@ static struct irq_domain *stm32_pctrl_get_irq_domain(struct platform_device *pde
+@@ -1765,12 +1825,25 @@ static struct irq_domain *stm32_pctrl_ge
  	if (!parent)
  		return ERR_PTR(-ENXIO);
  
@@ -312,7 +310,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	return domain;
  }
  
-@@ -1885,8 +1958,10 @@ int stm32_pctl_probe(struct platform_device *pdev)
+@@ -1890,8 +1963,10 @@ int stm32_pctl_probe(struct platform_dev
  
  	platform_set_drvdata(pdev, pctl);
  
@@ -324,7 +322,7 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	if (IS_ERR(pctl->domain))
  		return PTR_ERR(pctl->domain);
  	if (!pctl->domain)
-@@ -1903,7 +1978,6 @@ int stm32_pctl_probe(struct platform_device *pdev)
+@@ -1908,7 +1983,6 @@ int stm32_pctl_probe(struct platform_dev
  
  	spin_lock_init(&pctl->irqmux_lock);
  
@@ -332,6 +330,3 @@ index c8f0b70c85a2..b02258bd58a2 100644
  	pctl->match_data = match_data;
  
  	/*  get optional package information */
--- 
-2.39.5
-

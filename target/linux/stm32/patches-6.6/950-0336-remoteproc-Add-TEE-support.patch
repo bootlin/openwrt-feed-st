@@ -20,8 +20,6 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
  create mode 100644 drivers/remoteproc/tee_remoteproc.c
  create mode 100644 include/linux/tee_remoteproc.h
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 48845dc8fa85..85299606806c 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -365,6 +365,15 @@ config XLNX_R5_REMOTEPROC
@@ -40,11 +38,9 @@ index 48845dc8fa85..85299606806c 100644
  endif # REMOTEPROC
  
  endmenu
-diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-index 91314a9b43ce..fa8daebce277 100644
 --- a/drivers/remoteproc/Makefile
 +++ b/drivers/remoteproc/Makefile
-@@ -36,6 +36,7 @@ obj-$(CONFIG_RCAR_REMOTEPROC)		+= rcar_rproc.o
+@@ -36,6 +36,7 @@ obj-$(CONFIG_RCAR_REMOTEPROC)		+= rcar_r
  obj-$(CONFIG_ST_REMOTEPROC)		+= st_remoteproc.o
  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
@@ -52,9 +48,6 @@ index 91314a9b43ce..fa8daebce277 100644
  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o
  obj-$(CONFIG_TI_K3_R5_REMOTEPROC)	+= ti_k3_r5_remoteproc.o
  obj-$(CONFIG_XLNX_R5_REMOTEPROC)	+= xlnx_r5_remoteproc.o
-diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
-new file mode 100644
-index 000000000000..49e1e0caf889
 --- /dev/null
 +++ b/drivers/remoteproc/tee_remoteproc.c
 @@ -0,0 +1,393 @@
@@ -451,9 +444,6 @@ index 000000000000..49e1e0caf889
 +
 +MODULE_DESCRIPTION(" TEE remote processor control driver");
 +MODULE_LICENSE("GPL");
-diff --git a/include/linux/tee_remoteproc.h b/include/linux/tee_remoteproc.h
-new file mode 100644
-index 000000000000..537d6dc3b858
 --- /dev/null
 +++ b/include/linux/tee_remoteproc.h
 @@ -0,0 +1,99 @@
@@ -556,6 +546,3 @@ index 000000000000..537d6dc3b858
 +
 +#endif /* CONFIG_TEE_REMOTEPROC */
 +#endif /* TEE_REMOTEPROC_H */
--- 
-2.39.5
-

@@ -13,8 +13,6 @@ Change-Id: I1d0326934fc6f64051b50ddb3d4f35629eb36957
  drivers/pinctrl/stm32/pinctrl-stm32.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 619ec3609be0..72fb5b64d923 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -50,13 +50,18 @@
@@ -46,6 +44,3 @@ index 619ec3609be0..72fb5b64d923 100644
  #define STM32_GPIO_BKP_ADVCFG_MASK	GENMASK(15, 12)
  #define STM32_GPIO_BKP_DELAY_SHIFT	16
  #define STM32_GPIO_BKP_DELAY_MASK	GENMASK(19, 16)
--- 
-2.39.5
-

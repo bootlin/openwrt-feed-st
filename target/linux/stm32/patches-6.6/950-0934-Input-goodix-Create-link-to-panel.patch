@@ -24,8 +24,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/input/touchscreen/goodix.c | 26 ++++++++++++++++++++++++++
  1 file changed, 26 insertions(+)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index b068ff8afbc9..f0879730cb6a 100644
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
 @@ -16,6 +16,7 @@
@@ -36,7 +34,7 @@ index b068ff8afbc9..f0879730cb6a 100644
  #include <linux/irq.h>
  #include <linux/interrupt.h>
  #include <linux/platform_data/x86/soc.h>
-@@ -1296,10 +1297,35 @@ static int goodix_ts_probe(struct i2c_client *client)
+@@ -1296,10 +1297,35 @@ static int goodix_ts_probe(struct i2c_cl
  {
  	struct goodix_ts_data *ts;
  	const char *cfg_name;
@@ -72,6 +70,3 @@ index b068ff8afbc9..f0879730cb6a 100644
  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
  		dev_err(&client->dev, "I2C check functionality failed.\n");
  		return -ENXIO;
--- 
-2.39.5
-

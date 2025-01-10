@@ -15,11 +15,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/clk/clk-scmi.c | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index fdec715c9ba9..d54678c329f3 100644
 --- a/drivers/clk/clk-scmi.c
 +++ b/drivers/clk/clk-scmi.c
-@@ -37,6 +37,22 @@ static unsigned long scmi_clk_recalc_rate(struct clk_hw *hw,
+@@ -37,6 +37,22 @@ static unsigned long scmi_clk_recalc_rat
  	return rate;
  }
  
@@ -42,7 +40,7 @@ index fdec715c9ba9..d54678c329f3 100644
  static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
  				unsigned long *parent_rate)
  {
-@@ -121,6 +137,7 @@ static const struct clk_ops scmi_clk_ops = {
+@@ -121,6 +137,7 @@ static const struct clk_ops scmi_clk_ops
  	.set_rate = scmi_clk_set_rate,
  	.prepare = scmi_clk_enable,
  	.unprepare = scmi_clk_disable,
@@ -50,7 +48,7 @@ index fdec715c9ba9..d54678c329f3 100644
  };
  
  static const struct clk_ops scmi_atomic_clk_ops = {
-@@ -129,6 +146,7 @@ static const struct clk_ops scmi_atomic_clk_ops = {
+@@ -129,6 +146,7 @@ static const struct clk_ops scmi_atomic_
  	.set_rate = scmi_clk_set_rate,
  	.enable = scmi_clk_atomic_enable,
  	.disable = scmi_clk_atomic_disable,
@@ -58,6 +56,3 @@ index fdec715c9ba9..d54678c329f3 100644
  };
  
  static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
--- 
-2.39.5
-

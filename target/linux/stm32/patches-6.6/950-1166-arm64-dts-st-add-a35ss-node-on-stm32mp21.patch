@@ -16,11 +16,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 0ed2a0a07722..b33f0938824e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -2076,6 +2076,12 @@ nand-controller@4,0 {
+@@ -2076,6 +2076,12 @@
  				status = "disabled";
  			};
  		};
@@ -33,6 +31,3 @@ index 0ed2a0a07722..b33f0938824e 100644
  	};
  
  	soc@1 {
--- 
-2.39.5
-

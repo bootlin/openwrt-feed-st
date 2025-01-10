@@ -18,11 +18,9 @@ Change-Id: If4f16921afc36a2dc05fd0bbd4f725f75034b955
  arch/arm/boot/dts/st/stm32mp151.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 0ddde1aec082..2b5c82414b03 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1243,6 +1243,7 @@ exti: interrupt-controller@5000d000 {
+@@ -1243,6 +1243,7 @@
  			#interrupt-cells = <2>;
  			#address-cells = <0>;
  			reg = <0x5000d000 0x400>;
@@ -30,7 +28,7 @@ index 0ddde1aec082..2b5c82414b03 100644
  
  			exti-interrupt-map {
  				#address-cells = <0>;
-@@ -1288,6 +1289,12 @@ exti-interrupt-map {
+@@ -1288,6 +1289,12 @@
  					<52 0 &intc GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
  					<53 0 &intc GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
  					<54 0 &intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
@@ -43,6 +41,3 @@ index 0ddde1aec082..2b5c82414b03 100644
  					<61 0 &intc GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
  					<65 0 &intc GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
  					<68 0 &intc GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.39.5
-

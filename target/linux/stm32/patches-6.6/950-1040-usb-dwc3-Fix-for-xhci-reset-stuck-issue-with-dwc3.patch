@@ -25,11 +25,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/usb/host/xhci-plat.h |  2 ++
  4 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index d7ee706094a6..053e677ee747 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -177,6 +177,8 @@ static void __dwc3_set_mode(struct work_struct *work)
+@@ -177,6 +177,8 @@ static void __dwc3_set_mode(struct work_
  	if (desired_dr_role == DWC3_GCTL_PRTCAP_OTG && dwc->edev)
  		goto out;
  
@@ -38,11 +36,9 @@ index d7ee706094a6..053e677ee747 100644
  	switch (dwc->current_dr_role) {
  	case DWC3_GCTL_PRTCAP_HOST:
  		dwc3_host_exit(dwc);
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 358f618db997..0dc0546ab124 100644
 --- a/drivers/usb/dwc3/core.h
 +++ b/drivers/usb/dwc3/core.h
-@@ -983,6 +983,7 @@ struct dwc3_scratchpad_array {
+@@ -985,6 +985,7 @@ struct dwc3_scratchpad_array {
   * @bounce_addr: dma address of @bounce
   * @ep0_usb_req: dummy req used while handling STD USB requests
   * @ep0_in_setup: one control transfer is completed and enter setup phase
@@ -50,7 +46,7 @@ index 358f618db997..0dc0546ab124 100644
   * @lock: for synchronizing
   * @mutex: for mode switching
   * @dev: pointer to our struct device
-@@ -1145,6 +1146,8 @@ struct dwc3 {
+@@ -1149,6 +1150,8 @@ struct dwc3 {
  	struct dwc3_request	ep0_usb_req;
  	struct completion	ep0_in_setup;
  
@@ -59,11 +55,9 @@ index 358f618db997..0dc0546ab124 100644
  	/* device lock */
  	spinlock_t		lock;
  
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index d68e9abcdc69..f1f0c3b09e58 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
-@@ -44,6 +44,14 @@ static void xhci_priv_plat_start(struct usb_hcd *hcd)
+@@ -44,6 +44,14 @@ static void xhci_priv_plat_start(struct
  		priv->plat_start(hcd);
  }
  
@@ -78,7 +72,7 @@ index d68e9abcdc69..f1f0c3b09e58 100644
  static int xhci_priv_init_quirk(struct usb_hcd *hcd)
  {
  	struct xhci_plat_priv *priv = hcd_to_xhci_priv(hcd);
-@@ -96,8 +104,16 @@ static int xhci_plat_setup(struct usb_hcd *hcd)
+@@ -96,8 +104,16 @@ static int xhci_plat_setup(struct usb_hc
  
  static int xhci_plat_start(struct usb_hcd *hcd)
  {
@@ -96,8 +90,6 @@ index d68e9abcdc69..f1f0c3b09e58 100644
  }
  
  #ifdef CONFIG_OF
-diff --git a/drivers/usb/host/xhci-plat.h b/drivers/usb/host/xhci-plat.h
-index 6475130eac4b..960ab025c961 100644
 --- a/drivers/usb/host/xhci-plat.h
 +++ b/drivers/usb/host/xhci-plat.h
 @@ -16,9 +16,11 @@ struct xhci_plat_priv {
@@ -112,6 +104,3 @@ index 6475130eac4b..960ab025c961 100644
  };
  
  #define hcd_to_xhci_priv(h) ((struct xhci_plat_priv *)hcd_to_xhci(h)->priv)
--- 
-2.39.5
-

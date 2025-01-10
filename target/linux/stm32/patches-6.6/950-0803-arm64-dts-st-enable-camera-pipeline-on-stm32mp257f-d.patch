@@ -14,11 +14,9 @@ Change-Id: Idd9f04c07acb5b75962ff733a4dd6f225fb6993a
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 56 +++++++++++++++++++++++
  1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index caf8d3190bcf..fc297fbaa6f1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -32,6 +32,12 @@ chosen {
+@@ -32,6 +32,12 @@
  	};
  
  	clocks {
@@ -31,7 +29,7 @@ index caf8d3190bcf..fc297fbaa6f1 100644
  		clk_ext_cec: clk-ext-cec {
  			#clock-cells = <0>;
  			compatible = "fixed-clock";
-@@ -128,6 +134,38 @@ &arm_wdt {
+@@ -128,6 +134,38 @@
  	status = "okay";
  };
  
@@ -70,7 +68,7 @@ index caf8d3190bcf..fc297fbaa6f1 100644
  &dsi {
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_v1v8>;
-@@ -189,6 +227,24 @@ &i2c2 {
+@@ -189,6 +227,24 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  
@@ -95,6 +93,3 @@ index caf8d3190bcf..fc297fbaa6f1 100644
  	adv7535: hdmi@3d {
  		compatible = "adi,adv7535";
  		reg = <0x3d>, <0x3c>, <0x3f>, <0x38>;
--- 
-2.39.5
-

@@ -19,11 +19,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/usb/dwc2/gadget.c    | 1 -
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index 26d752a4c3ca..7948e352643f 100644
 --- a/drivers/usb/dwc2/core_intr.c
 +++ b/drivers/usb/dwc2/core_intr.c
-@@ -425,7 +425,6 @@ static void dwc2_handle_wakeup_detected_intr(struct dwc2_hsotg *hsotg)
+@@ -425,7 +425,6 @@ static void dwc2_handle_wakeup_detected_
  				if (ret)
  					dev_err(hsotg->dev,
  						"exit partial_power_down failed\n");
@@ -31,7 +29,7 @@ index 26d752a4c3ca..7948e352643f 100644
  			}
  
  			/* Exit gadget mode clock gating. */
-@@ -433,6 +432,8 @@ static void dwc2_handle_wakeup_detected_intr(struct dwc2_hsotg *hsotg)
+@@ -433,6 +432,8 @@ static void dwc2_handle_wakeup_detected_
  			    DWC2_POWER_DOWN_PARAM_NONE && hsotg->bus_suspended &&
  			    !hsotg->params.no_clock_gating)
  				dwc2_gadget_exit_clock_gating(hsotg, 0);
@@ -40,11 +38,9 @@ index 26d752a4c3ca..7948e352643f 100644
  		} else {
  			/* Change to L0 state */
  			hsotg->lx_state = DWC2_L0;
-diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index b2f6da5b65cc..f9166e5124a0 100644
 --- a/drivers/usb/dwc2/gadget.c
 +++ b/drivers/usb/dwc2/gadget.c
-@@ -5680,7 +5680,6 @@ void dwc2_gadget_exit_clock_gating(struct dwc2_hsotg *hsotg, int rem_wakeup)
+@@ -5680,7 +5680,6 @@ void dwc2_gadget_exit_clock_gating(struc
  	}
  
  	/* Change to L0 state */
@@ -52,6 +48,3 @@ index b2f6da5b65cc..f9166e5124a0 100644
  	hsotg->lx_state = DWC2_L0;
  	hsotg->bus_suspended = false;
  }
--- 
-2.39.5
-

@@ -13,11 +13,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index b338cea6a8a4..04bde162370d 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -69,6 +69,11 @@ retram: retram@38000000 {
+@@ -69,6 +69,11 @@
  			no-map;
  		};
  
@@ -29,7 +27,7 @@ index b338cea6a8a4..04bde162370d 100644
  		/* global autoconfigured region for contiguous allocations */
  		linux,cma {
  			compatible = "shared-dma-pool";
-@@ -196,6 +201,10 @@ phy0: ethernet-phy@0 {
+@@ -196,6 +201,10 @@
  	};
  };
  
@@ -40,6 +38,3 @@ index b338cea6a8a4..04bde162370d 100644
  &hash1 {
  	status = "okay";
  };
--- 
-2.39.5
-

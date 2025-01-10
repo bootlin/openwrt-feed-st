@@ -16,11 +16,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  include/linux/clk-regmap.h | 21 +++++++++++++++++++++
  1 file changed, 21 insertions(+)
 
-diff --git a/include/linux/clk-regmap.h b/include/linux/clk-regmap.h
-index 0666c747fa80..48ccd3b89750 100644
 --- a/include/linux/clk-regmap.h
 +++ b/include/linux/clk-regmap.h
-@@ -114,4 +114,25 @@ clk_get_regmap_mux_data(struct clk_regmap *clk)
+@@ -114,4 +114,25 @@ clk_get_regmap_mux_data(struct clk_regma
  extern const struct clk_ops clk_regmap_mux_ops;
  extern const struct clk_ops clk_regmap_mux_ro_ops;
  
@@ -46,6 +44,3 @@ index 0666c747fa80..48ccd3b89750 100644
 +	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ro_ops, _pname)
 +
  #endif /* __CLK_REGMAP_H */
--- 
-2.39.5
-

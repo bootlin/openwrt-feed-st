@@ -29,8 +29,6 @@ Change-Id: I3e03f1b732e1446824bb2fb062114d1e308d43af
  drivers/iio/adc/stm32-adc.c      | 144 +++++++++++++++++++++++++++++++
  2 files changed, 160 insertions(+)
 
-diff --git a/drivers/iio/adc/stm32-adc-core.h b/drivers/iio/adc/stm32-adc-core.h
-index 73b2c2e91c08..86a98286eeb3 100644
 --- a/drivers/iio/adc/stm32-adc-core.h
 +++ b/drivers/iio/adc/stm32-adc-core.h
 @@ -91,6 +91,7 @@
@@ -70,8 +68,6 @@ index 73b2c2e91c08..86a98286eeb3 100644
  /* STM32MP13_ADC_DIFSEL - bit fields */
  #define STM32MP13_DIFSEL_MASK		GENMASK(18, 0)
  
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 0b3e487440a6..333e9b62903e 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
 @@ -6,6 +6,7 @@
@@ -167,7 +163,7 @@ index 0b3e487440a6..333e9b62903e 100644
  };
  
  static const unsigned int stm32f4_adc_resolutions[] = {
-@@ -322,14 +343,18 @@ static const unsigned int stm32h7_adc_resolutions[] = {
+@@ -322,14 +343,18 @@ static const unsigned int stm32h7_adc_re
  static const struct stm32_adc_info stm32h7_adc_info = {
  	.max_channels = STM32_ADC_CH_MAX,
  	.resolutions = stm32h7_adc_resolutions,
@@ -186,7 +182,7 @@ index 0b3e487440a6..333e9b62903e 100644
  };
  
  /*
-@@ -889,6 +914,44 @@ static void stm32mp13_adc_start_conv(struct iio_dev *indio_dev, bool dma)
+@@ -889,6 +914,44 @@ static void stm32mp13_adc_start_conv(str
  	stm32_adc_set_bits(adc, STM32H7_ADC_CR, STM32H7_ADSTART);
  }
  
@@ -231,7 +227,7 @@ index 0b3e487440a6..333e9b62903e 100644
  static int stm32h7_adc_exit_pwr_down(struct iio_dev *indio_dev)
  {
  	struct stm32_adc *adc = iio_priv(indio_dev);
-@@ -1461,6 +1524,71 @@ static int stm32_adc_single_conv(struct iio_dev *indio_dev,
+@@ -1461,6 +1524,71 @@ static int stm32_adc_single_conv(struct
  	return ret;
  }
  
@@ -303,7 +299,7 @@ index 0b3e487440a6..333e9b62903e 100644
  static int stm32_adc_read_raw(struct iio_dev *indio_dev,
  			      struct iio_chan_spec const *chan,
  			      int *val, int *val2, long mask)
-@@ -1503,6 +1631,10 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
+@@ -1503,6 +1631,10 @@ static int stm32_adc_read_raw(struct iio
  			*val = 0;
  		return IIO_VAL_INT;
  
@@ -314,7 +310,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	default:
  		return -EINVAL;
  	}
-@@ -1679,6 +1811,8 @@ static int stm32_adc_debugfs_reg_access(struct iio_dev *indio_dev,
+@@ -1679,6 +1811,8 @@ static int stm32_adc_debugfs_reg_access(
  
  static const struct iio_info stm32_adc_iio_info = {
  	.read_raw = stm32_adc_read_raw,
@@ -323,7 +319,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	.validate_trigger = stm32_adc_validate_trigger,
  	.hwfifo_set_watermark = stm32_adc_set_watermark,
  	.update_scan_mode = stm32_adc_update_scan_mode,
-@@ -1972,6 +2106,10 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+@@ -1972,6 +2106,10 @@ static void stm32_adc_chan_init_one(stru
  		chan->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
  	chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |
  					 BIT(IIO_CHAN_INFO_OFFSET);
@@ -334,7 +330,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	chan->scan_type.sign = 'u';
  	chan->scan_type.realbits = adc->cfg->adc_info->resolutions[adc->res];
  	chan->scan_type.storagebits = 16;
-@@ -2604,6 +2742,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -2604,6 +2742,7 @@ static const struct stm32_adc_cfg stm32h
  	.has_boostmode = true,
  	.has_linearcal = true,
  	.has_presel = true,
@@ -342,7 +338,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	.start_conv = stm32h7_adc_start_conv,
  	.stop_conv = stm32h7_adc_stop_conv,
  	.prepare = stm32h7_adc_prepare,
-@@ -2611,6 +2750,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -2611,6 +2750,7 @@ static const struct stm32_adc_cfg stm32h
  	.smp_cycles = stm32h7_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_h7,
@@ -350,7 +346,7 @@ index 0b3e487440a6..333e9b62903e 100644
  };
  
  static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800 };
-@@ -2624,6 +2764,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -2624,6 +2764,7 @@ static const struct stm32_adc_cfg stm32m
  	.has_boostmode = true,
  	.has_linearcal = true,
  	.has_presel = true,
@@ -358,7 +354,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	.start_conv = stm32h7_adc_start_conv,
  	.stop_conv = stm32h7_adc_stop_conv,
  	.prepare = stm32h7_adc_prepare,
-@@ -2631,6 +2772,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -2631,6 +2772,7 @@ static const struct stm32_adc_cfg stm32m
  	.smp_cycles = stm32h7_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_mp1,
@@ -366,7 +362,7 @@ index 0b3e487440a6..333e9b62903e 100644
  };
  
  static const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800 };
-@@ -2640,6 +2782,7 @@ static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
+@@ -2640,6 +2782,7 @@ static const struct stm32_adc_cfg stm32m
  	.regs = &stm32mp13_adc_regspec,
  	.adc_info = &stm32mp13_adc_info,
  	.trigs = stm32h7_adc_trigs,
@@ -374,7 +370,7 @@ index 0b3e487440a6..333e9b62903e 100644
  	.start_conv = stm32mp13_adc_start_conv,
  	.stop_conv = stm32h7_adc_stop_conv,
  	.prepare = stm32h7_adc_prepare,
-@@ -2647,6 +2790,7 @@ static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
+@@ -2647,6 +2790,7 @@ static const struct stm32_adc_cfg stm32m
  	.smp_cycles = stm32mp13_adc_smp_cycles,
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_mp13,
@@ -382,6 +378,3 @@ index 0b3e487440a6..333e9b62903e 100644
  };
  
  static const struct of_device_id stm32_adc_of_match[] = {
--- 
-2.39.5
-

@@ -13,11 +13,9 @@ Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 47 +++++++++++++++++++++++++
  1 file changed, 47 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 11c46284dd9b..178f07a8ad49 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -140,6 +140,19 @@ panel-timing {
+@@ -140,6 +140,19 @@
  			pixelclk-active = <1>;
  		};
  	};
@@ -37,7 +35,7 @@ index 11c46284dd9b..178f07a8ad49 100644
  };
  
  &adc_1 {
-@@ -468,6 +481,31 @@ &sdmmc1 {
+@@ -468,6 +481,31 @@
  	status = "okay";
  };
  
@@ -69,7 +67,7 @@ index 11c46284dd9b..178f07a8ad49 100644
  &spi5 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&spi5_pins_a>;
-@@ -570,6 +608,15 @@ &usart2 {
+@@ -570,6 +608,15 @@
  	pinctrl-2 = <&usart2_idle_pins_a>;
  	uart-has-rtscts;
  	status = "okay";
@@ -85,6 +83,3 @@ index 11c46284dd9b..178f07a8ad49 100644
  };
  
  &usbh_ehci {
--- 
-2.39.5
-

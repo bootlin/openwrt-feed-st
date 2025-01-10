@@ -13,8 +13,6 @@ Change-Id: I902cb50e2a648b1e19c4e6bffd9e5676bc3d394d
  .../devicetree/bindings/hwlock/hwlock.txt     | 27 ++++++++++++++-----
  1 file changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwlock/hwlock.txt b/Documentation/devicetree/bindings/hwlock/hwlock.txt
-index 085d1f5c916a..e98088a409ba 100644
 --- a/Documentation/devicetree/bindings/hwlock/hwlock.txt
 +++ b/Documentation/devicetree/bindings/hwlock/hwlock.txt
 @@ -13,7 +13,7 @@ hwlock providers:
@@ -68,6 +66,3 @@ index 085d1f5c916a..e98088a409ba 100644
 +		...
 +	};
 \ No newline at end of file
--- 
-2.39.5
-

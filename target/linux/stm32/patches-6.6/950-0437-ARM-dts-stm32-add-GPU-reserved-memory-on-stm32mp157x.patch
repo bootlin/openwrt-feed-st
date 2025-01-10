@@ -17,11 +17,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157f-ed1.dts | 9 +++++++++
  4 files changed, 36 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index f7590680f89d..7722b32828f1 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -79,6 +79,11 @@ retram: retram@38000000 {
+@@ -79,6 +79,11 @@
  			no-map;
  		};
  
@@ -33,7 +31,7 @@ index f7590680f89d..7722b32828f1 100644
  		/* global autoconfigured region for contiguous allocations */
  		linux,cma {
  			compatible = "shared-dma-pool";
-@@ -182,6 +187,10 @@ &dts {
+@@ -182,6 +187,10 @@
  	status = "okay";
  };
  
@@ -44,11 +42,9 @@ index f7590680f89d..7722b32828f1 100644
  &hash1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 5ee944d0db0f..849227aa47f4 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -79,6 +79,11 @@ retram: retram@38000000 {
+@@ -79,6 +79,11 @@
  			no-map;
  		};
  
@@ -60,7 +56,7 @@ index 5ee944d0db0f..849227aa47f4 100644
  		/* global autoconfigured region for contiguous allocations */
  		linux,cma {
  			compatible = "shared-dma-pool";
-@@ -186,6 +191,10 @@ &dts {
+@@ -186,6 +191,10 @@
  	status = "okay";
  };
  
@@ -71,11 +67,9 @@ index 5ee944d0db0f..849227aa47f4 100644
  &hash1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 8c6cdb88154e..068e598b1329 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -79,6 +79,11 @@ retram: retram@38000000 {
+@@ -79,6 +79,11 @@
  			no-map;
  		};
  
@@ -87,7 +81,7 @@ index 8c6cdb88154e..068e598b1329 100644
  		/* global autoconfigured region for contiguous allocations */
  		linux,cma {
  			compatible = "shared-dma-pool";
-@@ -182,6 +187,10 @@ &dts {
+@@ -182,6 +187,10 @@
  	status = "okay";
  };
  
@@ -98,11 +92,9 @@ index 8c6cdb88154e..068e598b1329 100644
  &hash1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index db6a2a43950b..fbfb25cd65be 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -79,6 +79,11 @@ retram: retram@38000000 {
+@@ -79,6 +79,11 @@
  			no-map;
  		};
  
@@ -114,7 +106,7 @@ index db6a2a43950b..fbfb25cd65be 100644
  		/* global autoconfigured region for contiguous allocations */
  		linux,cma {
  			compatible = "shared-dma-pool";
-@@ -186,6 +191,10 @@ &dts {
+@@ -186,6 +191,10 @@
  	status = "okay";
  };
  
@@ -125,6 +117,3 @@ index db6a2a43950b..fbfb25cd65be 100644
  &hash1 {
  	status = "okay";
  };
--- 
-2.39.5
-

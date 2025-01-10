@@ -13,11 +13,9 @@ Change-Id: I6c0b61f8c7a33f75835d4ec7e106832979e862af
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 6c564ab7c268..26f6ce4643c6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2563,6 +2563,12 @@ nand-controller@4,0 {
+@@ -2563,6 +2563,12 @@
  				status = "disabled";
  			};
  		};
@@ -30,6 +28,3 @@ index 6c564ab7c268..26f6ce4643c6 100644
  	};
  
  	mlahb: ahb@1 {
--- 
-2.39.5
-

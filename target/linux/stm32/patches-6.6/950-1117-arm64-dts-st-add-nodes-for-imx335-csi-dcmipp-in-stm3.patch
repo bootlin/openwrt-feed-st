@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 72 +++++++++++++++++++++++
  1 file changed, 72 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 8df8b496f3e0..aa316b066d69 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 @@ -6,6 +6,7 @@
@@ -33,7 +31,7 @@ index 8df8b496f3e0..aa316b066d69 100644
  #include "stm32mp215.dtsi"
  #include "stm32mp21xf.dtsi"
  #include "stm32mp21-pinctrl.dtsi"
-@@ -26,6 +27,14 @@ chosen {
+@@ -26,6 +27,14 @@
  		stdout-path = "serial0:115200n8";
  	};
  
@@ -48,7 +46,7 @@ index 8df8b496f3e0..aa316b066d69 100644
  	memory@80000000 {
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
-@@ -52,11 +61,74 @@ &cryp1 {
+@@ -52,11 +61,74 @@
  	status = "okay";
  };
  
@@ -123,6 +121,3 @@ index 8df8b496f3e0..aa316b066d69 100644
  };
  
  &spi1 {
--- 
-2.39.5
-

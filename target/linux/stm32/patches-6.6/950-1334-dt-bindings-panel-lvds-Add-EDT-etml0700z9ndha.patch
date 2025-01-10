@@ -15,8 +15,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Documentation/devicetree/bindings/display/panel/panel-lvds.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
-index 9f1016551e0b..a53d263419a9 100644
 --- a/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
 +++ b/Documentation/devicetree/bindings/display/panel/panel-lvds.yaml
 @@ -31,6 +31,7 @@ select:
@@ -27,6 +25,3 @@ index 9f1016551e0b..a53d263419a9 100644
  
    required:
      - compatible
--- 
-2.39.5
-

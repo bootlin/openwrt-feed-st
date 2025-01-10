@@ -21,11 +21,9 @@ Change-Id: I2fcbaf9b3360c175846144e7b5b202eadfb8df97
  4 files changed, 217 insertions(+)
  create mode 100644 drivers/remoteproc/rproc_srm_core.c
 
-diff --git a/Documentation/staging/remoteproc.rst b/Documentation/staging/remoteproc.rst
-index 348ee7e508ac..fadd42edbbf5 100644
 --- a/Documentation/staging/remoteproc.rst
 +++ b/Documentation/staging/remoteproc.rst
-@@ -358,3 +358,25 @@ Of course, RSC_VDEV resource entries are only good enough for static
+@@ -358,3 +358,25 @@ Of course, RSC_VDEV resource entries are
  allocation of virtio devices. Dynamic allocations will also be made possible
  using the rpmsg bus (similar to how we already do dynamic allocations of
  rpmsg channels; read more about it in rpmsg.txt).
@@ -51,8 +49,6 @@ index 348ee7e508ac..fadd42edbbf5 100644
 +
 +The resources handled by the SRM are defined in the DeviceTree: please read
 +Documentation/devicetree/bindings/remoteproc/rproc-srm.txt for details.
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 85299606806c..993e0cf0a43a 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -23,6 +23,14 @@ config REMOTEPROC_CDEV
@@ -70,8 +66,6 @@ index 85299606806c..993e0cf0a43a 100644
  config IMX_REMOTEPROC
  	tristate "i.MX remoteproc support"
  	depends on ARCH_MXC
-diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-index fa8daebce277..1ab1b2fe075d 100644
 --- a/drivers/remoteproc/Makefile
 +++ b/drivers/remoteproc/Makefile
 @@ -11,6 +11,7 @@ remoteproc-y				+= remoteproc_sysfs.o
@@ -82,9 +76,6 @@ index fa8daebce277..1ab1b2fe075d 100644
  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
  obj-$(CONFIG_IMX_DSP_REMOTEPROC)	+= imx_dsp_rproc.o
  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
-diff --git a/drivers/remoteproc/rproc_srm_core.c b/drivers/remoteproc/rproc_srm_core.c
-new file mode 100644
-index 000000000000..cc523ac54c25
 --- /dev/null
 +++ b/drivers/remoteproc/rproc_srm_core.c
 @@ -0,0 +1,186 @@
@@ -274,6 +265,3 @@ index 000000000000..cc523ac54c25
 +MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@st.com>");
 +MODULE_DESCRIPTION("Remoteproc System Resource Manager driver - core");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

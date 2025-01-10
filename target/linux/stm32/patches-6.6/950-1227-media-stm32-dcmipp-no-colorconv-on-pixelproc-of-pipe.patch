@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c     | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 81ffb4ee920a..b8d5156b420b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -675,6 +675,14 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -675,6 +675,14 @@ static int dcmipp_pixelproc_set_fmt(stru
  	} else {
  		struct v4l2_rect *compose;
  
@@ -36,6 +34,3 @@ index 81ffb4ee920a..b8d5156b420b 100644
  		compose = v4l2_subdev_state_get_compose(state, 0);
  
  		fmt->format.width = compose->width;
--- 
-2.39.5
-

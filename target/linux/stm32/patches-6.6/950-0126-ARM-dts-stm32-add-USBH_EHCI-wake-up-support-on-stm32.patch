@@ -13,11 +13,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index e068121c7bf4..618147ae336e 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1636,8 +1636,10 @@ usbh_ehci: usb@5800d000 {
+@@ -1636,8 +1636,10 @@
  			reg = <0x5800d000 0x1000>;
  			clocks = <&usbphyc>, <&rcc USBH>;
  			resets = <&rcc USBH_R>;
@@ -29,6 +27,3 @@ index e068121c7bf4..618147ae336e 100644
  			status = "disabled";
  		};
  
--- 
-2.39.5
-

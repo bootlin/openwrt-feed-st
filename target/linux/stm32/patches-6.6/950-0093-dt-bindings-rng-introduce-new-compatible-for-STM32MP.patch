@@ -16,8 +16,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  .../devicetree/bindings/rng/st,stm32-rng.yaml | 20 ++++++++++++++++++-
  1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 187b172d0cca..717f6b321f88 100644
 --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
 @@ -15,7 +15,9 @@ maintainers:
@@ -59,6 +57,3 @@ index 187b172d0cca..717f6b321f88 100644
  additionalProperties: false
  
  examples:
--- 
-2.39.5
-

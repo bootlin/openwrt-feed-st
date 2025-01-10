@@ -20,11 +20,9 @@ Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index ee84c40757a3..327730550b3e 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -610,6 +610,7 @@ static struct irq_chip stm32_gpio_irq_chip = {
+@@ -610,6 +610,7 @@ static struct irq_chip stm32_gpio_irq_ch
  	.irq_set_wake	= irq_chip_set_wake_parent,
  	.irq_request_resources = stm32_gpio_irq_request_resources,
  	.irq_release_resources = stm32_gpio_irq_release_resources,
@@ -32,6 +30,3 @@ index ee84c40757a3..327730550b3e 100644
  };
  
  static int stm32_gpio_domain_select(struct irq_domain *dm,
--- 
-2.39.5
-

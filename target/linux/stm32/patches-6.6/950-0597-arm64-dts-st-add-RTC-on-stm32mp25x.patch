@@ -12,11 +12,9 @@ Change-Id: Ib698d57d6530a3ddd1de43cd6bc85c1f3bfb0b12
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 820cfc753b0f..cc0c2aee6f89 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -641,6 +641,16 @@ gpiok: gpio@442e0000 {
+@@ -641,6 +641,16 @@
  			};
  		};
  
@@ -33,6 +31,3 @@ index 820cfc753b0f..cc0c2aee6f89 100644
  		pinctrl_z: pinctrl@46200000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.5
-

@@ -14,11 +14,9 @@ Change-Id: Ic30cdf156994a9ea969f127ec9feccdcc44f3c0d
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 51 ++++++++++++++++++++++++++
  2 files changed, 100 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index aa1d9cd4ac52..84dc1b1efd36 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -409,6 +409,55 @@ sdmmc1: mmc@48220000 {
+@@ -409,6 +409,55 @@
  				status = "disabled";
  			};
  
@@ -74,11 +72,9 @@ index aa1d9cd4ac52..84dc1b1efd36 100644
  			usbh: usb@482e0000 {
  				compatible = "st,stm32mp25-usbh";
  				st,syscfg = <&syscfg 0x2420>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 5a92efc198a4..ef5a4facd470 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -23,3 +23,54 @@ arm-pmu {
+@@ -23,3 +23,54 @@
  		interrupt-affinity = <&cpu0>, <&cpu1>;
  	};
  };
@@ -133,6 +129,3 @@ index 5a92efc198a4..ef5a4facd470 100644
 +		};
 +	};
 +};
--- 
-2.39.5
-

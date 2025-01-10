@@ -16,8 +16,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/mach-stm32/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index a401a991fe08..630b992f32b1 100644
 --- a/arch/arm/mach-stm32/Kconfig
 +++ b/arch/arm/mach-stm32/Kconfig
 @@ -11,7 +11,6 @@ menuconfig ARCH_STM32
@@ -28,6 +26,3 @@ index a401a991fe08..630b992f32b1 100644
  	select STM32_EXTI if ARM_SINGLE_ARMV7M
  	select STM32_FIREWALL
  	help
--- 
-2.39.5
-

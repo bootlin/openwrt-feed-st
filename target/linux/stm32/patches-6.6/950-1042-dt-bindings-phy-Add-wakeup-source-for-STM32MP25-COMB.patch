@@ -18,8 +18,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/phy/st,stm32-combophy.yaml       | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
-index 5c46225f4e7e..132a7c3e4f9f 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 @@ -94,6 +94,12 @@ properties:
@@ -68,6 +66,3 @@ index 5c46225f4e7e..132a7c3e4f9f 100644
 +              interrupts-extended = <&exti1 45 IRQ_TYPE_EDGE_FALLING>;
      };
  ...
--- 
-2.39.5
-

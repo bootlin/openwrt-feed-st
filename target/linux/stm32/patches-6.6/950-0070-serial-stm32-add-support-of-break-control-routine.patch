@@ -12,11 +12,9 @@ Change-Id: Idf9e865e264b1f2b2cc7816ab703f926d9fa3744
  drivers/tty/serial/stm32-usart.c | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 9ef90bb30a47..5b5a4d2dd6f3 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -1053,9 +1053,20 @@ static void stm32_usart_stop_rx(struct uart_port *port)
+@@ -1053,9 +1053,20 @@ static void stm32_usart_stop_rx(struct u
  		stm32_usart_clr_bits(port, ofs->cr3, stm32_port->cr3_irq);
  }
  
@@ -38,6 +36,3 @@ index 9ef90bb30a47..5b5a4d2dd6f3 100644
  }
  
  static int stm32_usart_startup(struct uart_port *port)
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/usb/dwc3/dwc3-stm32.c | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/drivers/usb/dwc3/dwc3-stm32.c b/drivers/usb/dwc3/dwc3-stm32.c
-index e56f46d6459b..85fd649bd48f 100644
 --- a/drivers/usb/dwc3/dwc3-stm32.c
 +++ b/drivers/usb/dwc3/dwc3-stm32.c
-@@ -195,6 +195,14 @@ static int stm32_dwc3_probe(struct platform_device *pdev)
+@@ -195,6 +195,14 @@ static int stm32_dwc3_probe(struct platf
  	if (ret)
  		return dev_err_probe(dev, ret, "failed to add dwc3 core\n");
  
@@ -37,6 +35,3 @@ index e56f46d6459b..85fd649bd48f 100644
  	platform_set_drvdata(pdev, dwc3_data);
  
  	if (wakeup_source)
--- 
-2.39.5
-

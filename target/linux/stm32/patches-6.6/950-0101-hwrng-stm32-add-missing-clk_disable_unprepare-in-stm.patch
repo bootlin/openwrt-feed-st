@@ -14,11 +14,9 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 41e1dbea5d2e..efd6edcd7066 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -325,6 +325,7 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -325,6 +325,7 @@ static int stm32_rng_init(struct hwrng *
  							(!(reg & RNG_CR_CONDRST)),
  							10, 50000);
  		if (err) {
@@ -26,6 +24,3 @@ index 41e1dbea5d2e..efd6edcd7066 100644
  			dev_err((struct device *)priv->rng.priv,
  				"%s: timeout %x!\n", __func__, reg);
  			return -EINVAL;
--- 
-2.39.5
-

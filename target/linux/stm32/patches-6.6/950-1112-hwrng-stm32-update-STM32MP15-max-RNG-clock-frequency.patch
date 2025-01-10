@@ -20,11 +20,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/char/hw_random/stm32-rng.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 1c30e359c184..6297a928e018 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -531,7 +531,7 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+@@ -531,7 +531,7 @@ static const struct stm32_rng_data stm32
  
  static const struct stm32_rng_data stm32_rng_data = {
  	.has_cond_reset = false,
@@ -33,6 +31,3 @@ index 1c30e359c184..6297a928e018 100644
  	.nb_clock = 1,
  };
  
--- 
-2.39.5
-

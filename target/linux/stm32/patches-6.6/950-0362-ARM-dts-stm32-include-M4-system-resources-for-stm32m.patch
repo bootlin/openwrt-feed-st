@@ -17,8 +17,6 @@ Change-Id: Ia067342c2a26b57186eb21c8ef80d889e4414f40
  arch/arm/boot/dts/st/stm32mp157f-ed1.dts | 2 ++
  4 files changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 9d0938239d1c..3f0ce0f75705 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 @@ -9,6 +9,8 @@
@@ -30,8 +28,6 @@ index 9d0938239d1c..3f0ce0f75705 100644
  #include "stm32mp157a-ed1-scmi.dtsi"
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/mfd/st,stpmic1.h>
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 7b80bbe2abfd..d129b47f80f7 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 @@ -9,6 +9,8 @@
@@ -43,8 +39,6 @@ index 7b80bbe2abfd..d129b47f80f7 100644
  #include "stm32mp157c-ed1-scmi.dtsi"
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/mfd/st,stpmic1.h>
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index c1d48e47d808..52f1499a2cc5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 @@ -9,6 +9,8 @@
@@ -56,8 +50,6 @@ index c1d48e47d808..52f1499a2cc5 100644
  #include "stm32mp157a-ed1-scmi.dtsi"
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/mfd/st,stpmic1.h>
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 8c350df748e9..4b1c7006cbdc 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 @@ -9,6 +9,8 @@
@@ -69,6 +61,3 @@ index 8c350df748e9..4b1c7006cbdc 100644
  #include "stm32mp157c-ed1-scmi.dtsi"
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/mfd/st,stpmic1.h>
--- 
-2.39.5
-

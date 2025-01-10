@@ -11,8 +11,6 @@ Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index f892f465b08a..c6f72c9383b7 100644
 --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 @@ -82,6 +82,9 @@ properties:
@@ -25,6 +23,3 @@ index f892f465b08a..c6f72c9383b7 100644
    st,ext-phyclk:
      description:
        set this property in RMII mode when you have PHY without crystal 50MHz and want to
--- 
-2.39.5
-

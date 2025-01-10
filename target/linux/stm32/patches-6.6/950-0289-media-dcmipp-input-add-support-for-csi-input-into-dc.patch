@@ -14,8 +14,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-input.c      | 141 +++++++++++++++---
  1 file changed, 119 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-index 574df990e0e6..8d8db53f4776 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 @@ -9,6 +9,7 @@
@@ -127,7 +125,7 @@ index 574df990e0e6..8d8db53f4776 100644
  };
  
  /*
-@@ -269,7 +305,8 @@ static const struct v4l2_subdev_pad_ops dcmipp_inp_pad_ops = {
+@@ -269,7 +305,8 @@ static const struct v4l2_subdev_pad_ops
  	.set_fmt		= dcmipp_inp_set_fmt,
  };
  
@@ -137,7 +135,7 @@ index 574df990e0e6..8d8db53f4776 100644
  {
  	u32 val = 0;
  	const struct dcmipp_inp_pix_map *vpix;
-@@ -277,6 +314,13 @@ static int dcmipp_inp_configure(struct dcmipp_inp_device *inp)
+@@ -277,6 +314,13 @@ static int dcmipp_inp_configure(struct d
  	struct v4l2_mbus_framefmt *sink_fmt;
  	struct v4l2_mbus_framefmt *src_fmt;
  
@@ -151,7 +149,7 @@ index 574df990e0e6..8d8db53f4776 100644
  	/* Set vertical synchronization polarity */
  	if (inp->ved.bus.flags & V4L2_MBUS_VSYNC_ACTIVE_HIGH)
  		val |= DCMIPP_PRCR_VSPOL;
-@@ -326,6 +370,54 @@ static int dcmipp_inp_configure(struct dcmipp_inp_device *inp)
+@@ -326,6 +370,54 @@ static int dcmipp_inp_configure(struct d
  
  	reg_write(inp, DCMIPP_PRCR, val);
  
@@ -206,7 +204,7 @@ index 574df990e0e6..8d8db53f4776 100644
  	return 0;
  }
  
-@@ -344,13 +436,14 @@ static int dcmipp_inp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -344,13 +436,14 @@ static int dcmipp_inp_s_stream(struct v4
  	s_subdev = media_entity_to_v4l2_subdev(pad->entity);
  
  	if (enable) {
@@ -225,7 +223,7 @@ index 574df990e0e6..8d8db53f4776 100644
  		ret = v4l2_subdev_call(s_subdev, video, s_stream, enable);
  		if (ret < 0) {
  			dev_err(inp->dev,
-@@ -367,8 +460,12 @@ static int dcmipp_inp_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -367,8 +460,12 @@ static int dcmipp_inp_s_stream(struct v4
  			return ret;
  		}
  
@@ -240,6 +238,3 @@ index 574df990e0e6..8d8db53f4776 100644
  	}
  
  	inp->streaming = enable;
--- 
-2.39.5
-

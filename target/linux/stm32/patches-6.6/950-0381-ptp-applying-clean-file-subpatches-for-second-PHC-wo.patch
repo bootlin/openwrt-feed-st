@@ -24,11 +24,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  net/ethtool/common.c             |  4 ++++
  8 files changed, 79 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 91cc6ffa0095..bb1a9e3be848 100644
 --- a/drivers/ptp/ptp_chardev.c
 +++ b/drivers/ptp/ptp_chardev.c
-@@ -112,6 +112,8 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+@@ -112,6 +112,8 @@ long ptp_ioctl(struct posix_clock *pc, u
  	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
  	struct ptp_sys_offset_extended *extoff = NULL;
  	struct ptp_sys_offset_precise precise_offset;
@@ -37,7 +35,7 @@ index 91cc6ffa0095..bb1a9e3be848 100644
  	struct system_device_crosststamp xtstamp;
  	struct ptp_clock_info *ops = ptp->info;
  	struct ptp_sys_offset *sysoff = NULL;
-@@ -139,6 +141,7 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+@@ -139,6 +141,7 @@ long ptp_ioctl(struct posix_clock *pc, u
  		caps.cross_timestamping = ptp->info->getcrosststamp != NULL;
  		caps.adjust_phase = ptp->info->adjphase != NULL &&
  				    ptp->info->getmaxphase != NULL;
@@ -45,7 +43,7 @@ index 91cc6ffa0095..bb1a9e3be848 100644
  		if (caps.adjust_phase)
  			caps.max_phase_adj = ptp->info->getmaxphase(ptp->info);
  		if (copy_to_user((void __user *)arg, &caps, sizeof(caps)))
-@@ -325,6 +328,26 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+@@ -325,6 +328,26 @@ long ptp_ioctl(struct posix_clock *pc, u
  			err = -EFAULT;
  		break;
  
@@ -72,11 +70,9 @@ index 91cc6ffa0095..bb1a9e3be848 100644
  	case PTP_SYS_OFFSET:
  	case PTP_SYS_OFFSET2:
  		sysoff = memdup_user((void __user *)arg, sizeof(*sysoff));
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 9a50bfb56453..8d6b04ae53dd 100644
 --- a/drivers/ptp/ptp_clock.c
 +++ b/drivers/ptp/ptp_clock.c
-@@ -227,6 +227,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+@@ -228,6 +228,7 @@ struct ptp_clock *ptp_clock_register(str
  
  	ptp->clock.ops = ptp_clock_ops;
  	ptp->info = info;
@@ -84,7 +80,7 @@ index 9a50bfb56453..8d6b04ae53dd 100644
  	ptp->devid = MKDEV(major, index);
  	ptp->index = index;
  	spin_lock_init(&ptp->tsevq.lock);
-@@ -350,6 +351,25 @@ static int unregister_vclock(struct device *dev, void *data)
+@@ -351,6 +352,25 @@ static int unregister_vclock(struct devi
  	return 0;
  }
  
@@ -110,8 +106,6 @@ index 9a50bfb56453..8d6b04ae53dd 100644
  int ptp_clock_unregister(struct ptp_clock *ptp)
  {
  	if (ptp_vclock_in_use(ptp)) {
-diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
-index b8d4f61f14be..be4d7033e388 100644
 --- a/drivers/ptp/ptp_private.h
 +++ b/drivers/ptp/ptp_private.h
 @@ -27,10 +27,13 @@ struct timestamp_event_queue {
@@ -128,8 +122,6 @@ index b8d4f61f14be..be4d7033e388 100644
  	dev_t devid;
  	int index; /* index into clocks.map */
  	struct pps_device *pps_source;
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 1ef4e0f9bd2a..0e0cb8cf5bd3 100644
 --- a/include/linux/ptp_clock_kernel.h
 +++ b/include/linux/ptp_clock_kernel.h
 @@ -193,6 +193,9 @@ struct ptp_clock_info {
@@ -142,7 +134,7 @@ index 1ef4e0f9bd2a..0e0cb8cf5bd3 100644
  };
  
  struct ptp_clock;
-@@ -311,6 +314,8 @@ static inline u64 adjust_by_scaled_ppm(u64 base, long scaled_ppm)
+@@ -311,6 +314,8 @@ static inline u64 adjust_by_scaled_ppm(u
  extern struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
  					    struct device *parent);
  
@@ -151,8 +143,6 @@ index 1ef4e0f9bd2a..0e0cb8cf5bd3 100644
  /**
   * ptp_clock_unregister() - unregister a PTP hardware clock driver
   *
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index fe1e467ba046..f03dfe10b325 100644
 --- a/include/linux/timekeeping.h
 +++ b/include/linux/timekeeping.h
 @@ -266,6 +266,11 @@ struct system_device_crosststamp {
@@ -167,8 +157,6 @@ index fe1e467ba046..f03dfe10b325 100644
  /**
   * struct system_counterval_t - system counter value with the pointer to the
   *				corresponding clocksource
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index f7fba0dc87e5..891931994ea0 100644
 --- a/include/uapi/linux/ethtool.h
 +++ b/include/uapi/linux/ethtool.h
 @@ -1456,7 +1456,9 @@ struct ethtool_ts_info {
@@ -193,8 +181,6 @@ index f7fba0dc87e5..891931994ea0 100644
 +};
 +
  #endif /* _UAPI_LINUX_ETHTOOL_H */
-diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
-index 05cc35fc94ac..bbdab19baa48 100644
 --- a/include/uapi/linux/ptp_clock.h
 +++ b/include/uapi/linux/ptp_clock.h
 @@ -97,6 +97,8 @@ struct ptp_clock_caps {
@@ -228,11 +214,9 @@ index 05cc35fc94ac..bbdab19baa48 100644
  
  struct ptp_extts_event {
  	struct ptp_clock_time t; /* Time event occured. */
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index f5598c5f50de..f0a6853570c7 100644
 --- a/net/ethtool/common.c
 +++ b/net/ethtool/common.c
-@@ -636,6 +636,10 @@ int __ethtool_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
+@@ -636,6 +636,10 @@ int __ethtool_get_ts_info(struct net_dev
  
  	memset(info, 0, sizeof(*info));
  	info->cmd = ETHTOOL_GET_TS_INFO;
@@ -243,6 +227,3 @@ index f5598c5f50de..f0a6853570c7 100644
  
  	if (phy_has_tsinfo(phydev))
  		return phy_ts_info(phydev, info);
--- 
-2.39.5
-

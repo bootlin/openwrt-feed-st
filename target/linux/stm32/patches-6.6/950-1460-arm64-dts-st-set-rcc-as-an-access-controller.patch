@@ -21,11 +21,9 @@ Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 801d9ab6f7c5..b9322a66e8b0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2182,6 +2182,7 @@ rcc: clock-controller@44200000 {
+@@ -2182,6 +2182,7 @@
  			reg = <0x44200000 0x10000>;
  			#clock-cells = <1>;
  			#reset-cells = <1>;
@@ -33,11 +31,9 @@ index 801d9ab6f7c5..b9322a66e8b0 100644
  			clocks =
  				<&scmi_clk CK_SCMI_HSE>,
  				<&scmi_clk CK_SCMI_HSI>,
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index f2fa4a06e36a..39892ad70a82 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2502,6 +2502,7 @@ rcc: clock-controller@44200000 {
+@@ -2502,6 +2502,7 @@
  			reg = <0x44200000 0x10000>;
  			#clock-cells = <1>;
  			#reset-cells = <1>;
@@ -45,6 +41,3 @@ index f2fa4a06e36a..39892ad70a82 100644
  			clocks =
  				<&scmi_clk CK_SCMI_HSE>,
  				<&scmi_clk CK_SCMI_HSI>,
--- 
-2.39.5
-

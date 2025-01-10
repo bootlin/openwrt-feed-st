@@ -19,11 +19,9 @@ Reviewed-by: Simeon MARIJON <simeon.marijon@st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 24 +++++++++++++-----------
  1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index e338110553a4..3b7c6db3a3ec 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2468,18 +2468,20 @@ tamp: tamp@46010000 {
+@@ -2468,18 +2468,20 @@
  
  			nvram: nvram@46010100 {
  				compatible = "st,stm32mp25-tamp-nvram";
@@ -55,6 +53,3 @@ index e338110553a4..3b7c6db3a3ec 100644
  				};
  			};
  
--- 
-2.39.5
-

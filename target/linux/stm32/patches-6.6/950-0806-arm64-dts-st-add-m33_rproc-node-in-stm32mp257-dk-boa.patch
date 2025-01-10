@@ -12,11 +12,9 @@ Change-Id: Idcfedf0186444653b31bfb94debb30698eea7537
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index e20a5e17eebc..31de85df14b9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -129,6 +129,10 @@ wifi_pwrseq: wifi-pwrseq {
+@@ -129,6 +129,10 @@
  	};
  };
  
@@ -27,7 +25,7 @@ index e20a5e17eebc..31de85df14b9 100644
  &arm_wdt {
  	timeout-sec = <32>;
  	status = "okay";
-@@ -366,6 +370,16 @@ lvds_out0: endpoint {
+@@ -366,6 +370,16 @@
  	};
  };
  
@@ -44,6 +42,3 @@ index e20a5e17eebc..31de85df14b9 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.5
-

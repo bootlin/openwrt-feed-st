@@ -11,11 +11,9 @@ Change-Id: I6726eedf01cbb5883ac13b10fc2435267542970e
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 52f0b9a29638..6c564ab7c268 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1678,6 +1678,18 @@ channel@18 {
+@@ -1678,6 +1678,18 @@
  				};
  			};
  
@@ -34,6 +32,3 @@ index 52f0b9a29638..6c564ab7c268 100644
  			rng: rng@42020000 {
  				compatible = "st,stm32mp25-rng";
  				reg = <0x42020000 0x400>;
--- 
-2.39.5
-

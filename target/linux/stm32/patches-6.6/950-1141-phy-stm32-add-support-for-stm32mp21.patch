@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/phy/st/phy-stm32-usb2phy.c | 91 +++++++++++++++++++++---------
  1 file changed, 64 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index 3847d40a4331..b7515c0db318 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -90,6 +90,7 @@ struct stm32_usb2phy {
@@ -62,7 +60,7 @@ index 3847d40a4331..b7515c0db318 100644
  	{
  		.cr_offset = PHY1CR_OFFSET,
  		.trim1_offset = PHY1TRIM1_OFFSET,
-@@ -113,6 +135,8 @@ static const struct stm32mp2_usb2phy_hw_data stm32mp2_usb2phy_hwdata[] = {
+@@ -113,6 +135,8 @@ static const struct stm32mp2_usb2phy_hw_
  		.valid_mode = USB2_MODE_DRD,
  		.phyrefsel_mask = 0x7,
  		.phyrefsel_bitpos = 12,
@@ -71,7 +69,7 @@ index 3847d40a4331..b7515c0db318 100644
  	}
  };
  
-@@ -121,16 +145,20 @@ static const struct stm32mp2_usb2phy_hw_data stm32mp2_usb2phy_hwdata[] = {
+@@ -121,16 +145,20 @@ static const struct stm32mp2_usb2phy_hw_
   * depending on the instance. So identify the instance by using CR offset to report
   * the correct bitfields & modes to use
   */
@@ -98,7 +96,7 @@ index 3847d40a4331..b7515c0db318 100644
  
  	return NULL;
  }
-@@ -345,7 +373,8 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -345,7 +373,8 @@ static int stm32_usb2phy_set_mode(struct
  
  	switch (mode) {
  	case PHY_MODE_USB_HOST:
@@ -108,7 +106,7 @@ index 3847d40a4331..b7515c0db318 100644
  			ret = regmap_update_bits(phy_dev->regmap,
  						 phy_data->cr_offset,
  						 SYSCFG_USB2PHY2CR_USB2PHY2CMN_MASK,
-@@ -374,25 +403,32 @@ static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submo
+@@ -374,25 +403,32 @@ static int stm32_usb2phy_set_mode(struct
  		break;
  
  	case PHY_MODE_USB_DEVICE:
@@ -158,7 +156,7 @@ index 3847d40a4331..b7515c0db318 100644
  		}
  		if (ret) {
  			dev_err(dev, "can't set usb2phycr (%d)\n", ret);
-@@ -728,7 +764,7 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -728,7 +764,7 @@ static int stm32_usb2phy_probe(struct pl
  		phy_dev->vdda18 = NULL;
  	}
  
@@ -167,7 +165,7 @@ index 3847d40a4331..b7515c0db318 100644
  	if (!phy_dev->hw_data) {
  		dev_err(dev, "can't get matching stm32mp2_usb2_of_data\n");
  		return -EINVAL;
-@@ -764,7 +800,8 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_usb2phy_pm_ops, stm32_usb2phy_suspend,
+@@ -764,7 +800,8 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_us
  				stm32_usb2phy_resume);
  
  static const struct of_device_id stm32_usb2phy_of_match[] = {
@@ -177,6 +175,3 @@ index 3847d40a4331..b7515c0db318 100644
  	{ /* sentinel */ },
  };
  MODULE_DEVICE_TABLE(of, stm32_usb2phy_of_match);
--- 
-2.39.5
-

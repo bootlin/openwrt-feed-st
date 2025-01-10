@@ -26,11 +26,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp233.dtsi | 2 ++
  4 files changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index c2a16c960f99..edcc72708e28 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -2615,6 +2615,8 @@ eth1: eth1@482c0000 {
+@@ -2615,6 +2615,8 @@
  			st,syscon = <&syscfg 0x3000 0xffffffff>;
  			snps,mixed-burst;
  			snps,pbl = <2>;
@@ -39,11 +37,9 @@ index c2a16c960f99..edcc72708e28 100644
  			snps,axi-config = <&stmmac_axi_config_1>;
  			snps,tso;
  			status = "disabled";
-diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-index a601265e3b6e..f0fa2487c359 100644
 --- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-@@ -28,6 +28,8 @@ eth2: eth2@482d0000 {
+@@ -28,6 +28,8 @@
  			st,syscon = <&syscfg 0x3400 0xffffffff>;
  			snps,mixed-burst;
  			snps,pbl = <2>;
@@ -52,11 +48,9 @@ index a601265e3b6e..f0fa2487c359 100644
  			snps,axi-config = <&stmmac_axi_config_2>;
  			snps,tso;
  			access-controllers = <&rifsc 61>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 7d320d762171..08b816a70ed6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2035,6 +2035,8 @@ eth1: eth1@482c0000 {
+@@ -2035,6 +2035,8 @@
  				st,syscon = <&syscfg 0x3000 0xffffffff>;
  				snps,mixed-burst;
  				snps,pbl = <2>;
@@ -65,11 +59,9 @@ index 7d320d762171..08b816a70ed6 100644
  				snps,axi-config = <&stmmac_axi_config_1>;
  				snps,tso;
  				access-controllers = <&rifsc 60>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp233.dtsi b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-index b0528fd92a5f..952cda24cf76 100644
 --- a/arch/arm64/boot/dts/st/stm32mp233.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-@@ -138,6 +138,8 @@ eth2: eth2@482d0000 {
+@@ -138,6 +138,8 @@
  		st,syscon = <&syscfg 0x3400 0xffffffff>;
  		snps,mixed-burst;
  		snps,pbl = <2>;
@@ -78,6 +70,3 @@ index b0528fd92a5f..952cda24cf76 100644
  		snps,axi-config = <&stmmac_axi_config_2>;
  		snps,tso;
  		access-controllers = <&rifsc 61>;
--- 
-2.39.5
-

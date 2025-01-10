@@ -11,11 +11,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 39 ++++++++++++++++++++++++++
  1 file changed, 39 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index dd64c22eab67..8e18748aa116 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2371,5 +2371,44 @@ gpioz: gpio@46200000 {
+@@ -2371,5 +2371,44 @@
  				status = "disabled";
  			};
  		};
@@ -60,6 +58,3 @@ index dd64c22eab67..8e18748aa116 100644
 +		};
  	};
  };
--- 
-2.39.5
-

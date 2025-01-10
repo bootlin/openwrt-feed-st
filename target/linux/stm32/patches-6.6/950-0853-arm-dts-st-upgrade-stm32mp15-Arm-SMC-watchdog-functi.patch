@@ -18,11 +18,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 0cccefa7e280..5ec9697f96e0 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -42,7 +42,7 @@ arm-pmu {
+@@ -42,7 +42,7 @@
  
  	arm_wdt: watchdog {
  		compatible = "arm,smc-wdt";
@@ -31,6 +29,3 @@ index 0cccefa7e280..5ec9697f96e0 100644
  		status = "disabled";
  	};
  
--- 
-2.39.5
-

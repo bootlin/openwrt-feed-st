@@ -22,11 +22,9 @@ Change-Id: I3a721ee818246f35adc7091a92e84c46091771d0
  arch/arm/boot/dts/st/stm32mp151.dtsi | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index e37144599d1a..d0b33c5ddc2d 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -181,6 +181,10 @@ rcc: rcc@50000000 {
+@@ -181,6 +181,10 @@
  			reg = <0x50000000 0x1000>;
  			#clock-cells = <1>;
  			#reset-cells = <1>;
@@ -37,6 +35,3 @@ index e37144599d1a..d0b33c5ddc2d 100644
  		};
  
  		pwr_regulators: pwr@50001000 {
--- 
-2.39.5
-

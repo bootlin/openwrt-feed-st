@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/ltdc.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 747e3ba3b9d3..085554967c29 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -785,7 +785,7 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+@@ -786,7 +786,7 @@ static void ltdc_crtc_atomic_enable(stru
  	regmap_write(ldev->regmap, LTDC_BCCR, BCCR_BCBLACK);
  
  	/* Enable IRQ */
@@ -25,7 +23,7 @@ index 747e3ba3b9d3..085554967c29 100644
  
  	/* Commit shadow registers = update planes at next vblank */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -810,7 +810,7 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *crtc,
+@@ -811,7 +811,7 @@ static void ltdc_crtc_atomic_disable(str
  		regmap_write_bits(ldev->regmap, LTDC_L1CR + layer_index * LAY_OFS, LXCR_MASK, 0);
  
  	/* disable IRQ */
@@ -34,7 +32,7 @@ index 747e3ba3b9d3..085554967c29 100644
  
  	/* immediately commit disable of layers before switching off LTDC */
  	if (!ldev->caps.plane_reg_shadow)
-@@ -2018,10 +2018,10 @@ int ltdc_load(struct drm_device *ddev)
+@@ -1994,10 +1994,10 @@ int ltdc_load(struct drm_device *ddev)
  
  	/* Disable interrupts */
  	if (ldev->caps.fifo_threshold)
@@ -47,6 +45,3 @@ index 747e3ba3b9d3..085554967c29 100644
  				  IER_TERRIE | IER_FUEIE);
  
  	DRM_DEBUG_DRIVER("ltdc hw version 0x%08x\n", ldev->caps.hw_version);
--- 
-2.39.5
-

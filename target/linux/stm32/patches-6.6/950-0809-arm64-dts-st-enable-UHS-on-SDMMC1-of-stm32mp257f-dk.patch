@@ -11,11 +11,9 @@ Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index c61d41bee526..50fc8b5edb2f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -462,6 +462,11 @@ &sdmmc1 {
+@@ -462,6 +462,11 @@
  	bus-width = <4>;
  	vmmc-supply = <&scmi_vdd_sdcard>;
  	vqmmc-supply = <&scmi_vddio1>;
@@ -27,6 +25,3 @@ index c61d41bee526..50fc8b5edb2f 100644
  	status = "okay";
  };
  
--- 
-2.39.5
-

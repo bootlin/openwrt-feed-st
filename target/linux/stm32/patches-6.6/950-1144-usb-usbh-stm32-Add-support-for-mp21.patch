@@ -17,8 +17,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/usb/host/usbh-stm32.c | 25 +++++++++++++++++++++++++
  1 file changed, 25 insertions(+)
 
-diff --git a/drivers/usb/host/usbh-stm32.c b/drivers/usb/host/usbh-stm32.c
-index 75fa1b06a984..0451b728e00d 100644
 --- a/drivers/usb/host/usbh-stm32.c
 +++ b/drivers/usb/host/usbh-stm32.c
 @@ -17,6 +17,16 @@
@@ -68,7 +66,7 @@ index 75fa1b06a984..0451b728e00d 100644
  	return regmap_update_bits(usbh_data->regmap, usbh_data->syscfg_usbhcr_reg_off,
  				  SYSCFG_USBHCR_OVRCUR_POLARITY_MASK |
  				  SYSCFG_USBHCR_VBUSEN_POLARITY_MASK,
-@@ -63,6 +82,7 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+@@ -63,6 +82,7 @@ static int stm32_usbh_probe(struct platf
  	struct regmap *regmap;
  	struct stm32_usbh *usbh_data;
  	int ret, irq;
@@ -76,7 +74,7 @@ index 75fa1b06a984..0451b728e00d 100644
  
  	if (usb_disabled())
  		return -ENODEV;
-@@ -89,6 +109,10 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+@@ -89,6 +109,10 @@ static int stm32_usbh_probe(struct platf
  	if (device_property_read_bool(dev, "st,ovrcur-active-low"))
  		usbh_data->ovrcur_polarity_low = true;
  
@@ -87,7 +85,7 @@ index 75fa1b06a984..0451b728e00d 100644
  	/* ST USBH glue logic init */
  	ret = stm32_usbh_init(usbh_data);
  	if (ret)
-@@ -162,6 +186,7 @@ static SIMPLE_DEV_PM_OPS(stm32_usbh_pm_ops, stm32_usbh_suspend, stm32_usbh_resum
+@@ -162,6 +186,7 @@ static SIMPLE_DEV_PM_OPS(stm32_usbh_pm_o
  
  static const struct of_device_id stm32_usbh_match[] = {
  	{ .compatible = "st,stm32mp25-usbh" },
@@ -95,6 +93,3 @@ index 75fa1b06a984..0451b728e00d 100644
  	{ /* sentinel */ },
  };
  
--- 
-2.39.5
-

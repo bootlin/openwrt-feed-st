@@ -25,8 +25,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/spi/spi-stm32-ospi.c | 57 ++++++++++++++++++++++++++----------
  1 file changed, 41 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 36e1d37d86ca..7c4b043297a6 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -13,7 +13,8 @@
@@ -51,7 +49,7 @@ index 36e1d37d86ca..7c4b043297a6 100644
  };
  
  struct stm32_ospi {
-@@ -519,7 +521,7 @@ static int stm32_ospi_str_calibration(struct stm32_ospi *ospi)
+@@ -519,7 +521,7 @@ static int stm32_ospi_str_calibration(st
  		 * Save flash delay block configuration, will be restored
  		 * each time this flash is addressed
  		 */
@@ -60,7 +58,7 @@ index 36e1d37d86ca..7c4b043297a6 100644
  
  	stm32_omi_dlyb_stop(omi);
  	ret = stm32_omi_dlyb_init(omi, false, 0);
-@@ -537,14 +539,14 @@ static int stm32_ospi_str_calibration(struct stm32_ospi *ospi)
+@@ -537,14 +539,14 @@ static int stm32_ospi_str_calibration(st
  		flash->sample_later = false;
  		stm32_omi_dlyb_stop(omi);
  
@@ -78,7 +76,7 @@ index 36e1d37d86ca..7c4b043297a6 100644
  
  	return 0;
  }
-@@ -594,8 +596,8 @@ static int stm32_ospi_dtr_calibration(struct stm32_ospi *ospi)
+@@ -594,8 +596,8 @@ static int stm32_ospi_dtr_calibration(st
  			/* Stop delay block when configured in lock mode */
  			stm32_omi_dlyb_stop(omi);
  	} else {
@@ -89,7 +87,7 @@ index 36e1d37d86ca..7c4b043297a6 100644
  	}
  
  	return ret;
-@@ -608,19 +610,15 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+@@ -608,19 +610,15 @@ static int stm32_ospi_prepare_to_send(st
  	struct stm32_ospi_flash *flash = &ospi->flash[spi->chip_select];
  	struct stm32_omi *omi = ospi->omi;
  	int ret = 0;
@@ -112,7 +110,7 @@ index 36e1d37d86ca..7c4b043297a6 100644
  
  	if (op->cmd.dtr && !flash->dtr_calibration_done_once) {
  		if (spi->cs_gpiod)
-@@ -634,11 +632,38 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+@@ -634,11 +632,38 @@ static int stm32_ospi_prepare_to_send(st
  		if (ret)
  			return ret;
  
@@ -152,6 +150,3 @@ index 36e1d37d86ca..7c4b043297a6 100644
  	return ret;
  }
  
--- 
-2.39.5
-

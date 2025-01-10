@@ -12,11 +12,9 @@ Change-Id: Ib740907468d5404001183bc12e60ada5be2be751
  arch/arm/boot/dts/st/stm32mp135f-dk.dts     | 14 +++++++++++++
  2 files changed, 36 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index a15c0d5cdd69..cd87deb59c19 100644
 --- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -52,6 +52,28 @@ pins {
+@@ -52,6 +52,28 @@
  		};
  	};
  
@@ -45,11 +43,9 @@ index a15c0d5cdd69..cd87deb59c19 100644
  	i2c1_pins_a: i2c1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 1a53a251a20b..d58b0153cae6 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -201,6 +201,20 @@ &i2c5 {
+@@ -201,6 +201,20 @@
  	/* spare dmas for other usage */
  	/delete-property/dmas;
  	/delete-property/dma-names;
@@ -70,6 +66,3 @@ index 1a53a251a20b..d58b0153cae6 100644
  };
  
  &ltdc {
--- 
-2.39.5
-

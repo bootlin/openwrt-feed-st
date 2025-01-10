@@ -11,11 +11,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index a496bc2d2b35..bec0455e0b2e 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -373,6 +373,8 @@ static int otm8009a_get_modes(struct drm_panel *panel,
+@@ -373,6 +373,8 @@ static int otm8009a_get_modes(struct drm
  
  	connector->display_info.width_mm = mode->width_mm;
  	connector->display_info.height_mm = mode->height_mm;
@@ -24,6 +22,3 @@ index a496bc2d2b35..bec0455e0b2e 100644
  
  	return num_modes;
  }
--- 
-2.39.5
-

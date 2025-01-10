@@ -11,11 +11,9 @@ Change-Id: I584361b22d6c9f085ba3d73c9b21debdb0020f12
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 2ee0a76394d1..cab814526ad6 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -172,6 +172,10 @@ &arm_wdt {
+@@ -172,6 +172,10 @@
  	status = "okay";
  };
  
@@ -26,6 +24,3 @@ index 2ee0a76394d1..cab814526ad6 100644
  &dcmipp {
  	status = "okay";
  	pinctrl-names = "default", "sleep";
--- 
-2.39.5
-

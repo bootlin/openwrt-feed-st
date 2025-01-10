@@ -22,11 +22,9 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c    | 4 ++++
  2 files changed, 8 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 2c458debd281..1fa3ab39a64b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -445,7 +445,9 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+@@ -445,7 +445,9 @@ static int dcmipp_bytecap_start_streamin
  
  	/* Enable interruptions */
  	vcap->cmier |= DCMIPP_CMIER_P0ALL;
@@ -36,7 +34,7 @@ index 2c458debd281..1fa3ab39a64b 100644
  
  	vcap->state = DCMIPP_RUNNING;
  
-@@ -498,7 +500,9 @@ static void dcmipp_bytecap_stop_streaming(struct vb2_queue *vq)
+@@ -498,7 +500,9 @@ static void dcmipp_bytecap_stop_streamin
  	media_pipeline_stop(vcap->vdev.entity.pads);
  
  	/* Disable interruptions */
@@ -46,11 +44,9 @@ index 2c458debd281..1fa3ab39a64b 100644
  
  	/* Stop capture */
  	reg_clear(vcap, DCMIPP_P0FCTCR, DCMIPP_P0FCTCR_CPTREQ);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 06838fa28b89..68908abc2be3 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-@@ -520,7 +520,9 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -520,7 +520,9 @@ static int dcmipp_pixelcap_start_streami
  
  	/* Enable interruptions */
  	vcap->cmier |= DCMIPP_CMIER_PxALL(vcap->pipe_id);
@@ -60,7 +56,7 @@ index 06838fa28b89..68908abc2be3 100644
  
  	/* Snapshot mode */
  	reg_set(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTMODE);
-@@ -588,7 +590,9 @@ static void dcmipp_pixelcap_stop_streaming(struct vb2_queue *vq)
+@@ -588,7 +590,9 @@ static void dcmipp_pixelcap_stop_streami
  	media_pipeline_stop(vcap->vdev.entity.pads);
  
  	/* Disable interruptions */
@@ -70,6 +66,3 @@ index 06838fa28b89..68908abc2be3 100644
  
  	/* Stop capture */
  	reg_clear(vcap, DCMIPP_PxFCTCR(vcap->pipe_id), DCMIPP_PxFCTCR_CPTREQ);
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Change-Id: I02d5a36036000f6bd7e071612f58de94932cd1f3
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 9 +++++++++
  5 files changed, 45 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 892b7708d0cd..f7590680f89d 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -78,6 +78,15 @@ retram: retram@38000000 {
+@@ -78,6 +78,15 @@
  			reg = <0x38000000 0x10000>;
  			no-map;
  		};
@@ -38,11 +36,9 @@ index 892b7708d0cd..f7590680f89d 100644
  	};
  
  	led {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 0fbf3550d17a..5ee944d0db0f 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -78,6 +78,15 @@ retram: retram@38000000 {
+@@ -78,6 +78,15 @@
  			reg = <0x38000000 0x10000>;
  			no-map;
  		};
@@ -58,11 +54,9 @@ index 0fbf3550d17a..5ee944d0db0f 100644
  	};
  
  	led {
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 3dbf201358bb..8c6cdb88154e 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -78,6 +78,15 @@ retram: retram@38000000 {
+@@ -78,6 +78,15 @@
  			reg = <0x38000000 0x10000>;
  			no-map;
  		};
@@ -78,11 +72,9 @@ index 3dbf201358bb..8c6cdb88154e 100644
  	};
  
  	led {
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 6d92e676acd9..db6a2a43950b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -78,6 +78,15 @@ retram: retram@38000000 {
+@@ -78,6 +78,15 @@
  			reg = <0x38000000 0x10000>;
  			no-map;
  		};
@@ -98,11 +90,9 @@ index 6d92e676acd9..db6a2a43950b 100644
  	};
  
  	led {
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index a96c4bd8286c..b338cea6a8a4 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -68,6 +68,15 @@ retram: retram@38000000 {
+@@ -68,6 +68,15 @@
  			reg = <0x38000000 0x10000>;
  			no-map;
  		};
@@ -118,6 +108,3 @@ index a96c4bd8286c..b338cea6a8a4 100644
  	};
  
  	led {
--- 
-2.39.5
-

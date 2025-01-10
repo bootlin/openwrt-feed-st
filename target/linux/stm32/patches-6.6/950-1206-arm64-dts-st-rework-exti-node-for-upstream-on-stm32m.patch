@@ -15,11 +15,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 240 ++++++++++++++-----------
  1 file changed, 136 insertions(+), 104 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index a19bcc0bbef5..4a93c1def992 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1823,70 +1823,88 @@ exti1: interrupt-controller@44220000 {
+@@ -1823,70 +1823,88 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -171,7 +169,7 @@ index a19bcc0bbef5..4a93c1def992 100644
  		};
  
  		syscfg: syscon@44230000 {
-@@ -2004,48 +2022,62 @@ exti2: interrupt-controller@442d0000 {
+@@ -2004,48 +2022,62 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -275,6 +273,3 @@ index a19bcc0bbef5..4a93c1def992 100644
  		};
  
  		rtc: rtc@46000000 {
--- 
-2.39.5
-

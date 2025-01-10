@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 12 +++++++++++-
  1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 552c401d5c63..48d785de2e5b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -16,7 +16,7 @@ / {
+@@ -16,7 +16,7 @@
  	compatible = "st,stm32mp215f-dk", "st,stm32mp215";
  
  	aliases {
@@ -32,7 +30,7 @@ index 552c401d5c63..48d785de2e5b 100644
  	};
  
  	chosen {
-@@ -40,3 +40,13 @@ fw@80000000 {
+@@ -40,3 +40,13 @@
  		};
  	};
  };
@@ -46,6 +44,3 @@ index 552c401d5c63..48d785de2e5b 100644
 +	/delete-property/dma-names;
 +	status = "okay";
 +};
--- 
-2.39.5
-

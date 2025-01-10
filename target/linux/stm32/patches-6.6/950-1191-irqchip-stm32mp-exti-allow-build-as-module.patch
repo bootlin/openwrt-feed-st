@@ -20,8 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 15 ++++-----------
  2 files changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 221e83250bd6..887a20b2bcb0 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
 @@ -393,9 +393,13 @@ config PARTITION_PERCPU
@@ -40,11 +38,9 @@ index 221e83250bd6..887a20b2bcb0 100644
  
  config STM32_EXTI
  	bool
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 3ceff6d25b70..2958fbcfbda1 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -730,15 +730,8 @@ static struct platform_driver stm32mp_exti_driver = {
+@@ -730,15 +730,8 @@ static struct platform_driver stm32mp_ex
  	},
  };
  
@@ -52,18 +48,15 @@ index 3ceff6d25b70..2958fbcfbda1 100644
 -{
 -	return platform_driver_register(&stm32mp_exti_driver);
 -}
--
++module_platform_driver(stm32mp_exti_driver);
+ 
 -static void __exit stm32mp_exti_arch_exit(void)
 -{
 -	return platform_driver_unregister(&stm32mp_exti_driver);
 -}
-+module_platform_driver(stm32mp_exti_driver);
- 
+-
 -arch_initcall(stm32mp_exti_arch_init);
 -module_exit(stm32mp_exti_arch_exit);
 +MODULE_AUTHOR("Maxime Coquelin <mcoquelin.stm32@gmail.com>");
 +MODULE_DESCRIPTION("STM32MP EXTI driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

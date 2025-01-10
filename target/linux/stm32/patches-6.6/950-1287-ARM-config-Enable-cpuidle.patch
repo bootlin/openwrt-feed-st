@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
-index 161be292536c..11aecbba58c6 100644
 --- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
 +++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
 @@ -46,7 +46,6 @@
@@ -29,6 +27,3 @@ index 161be292536c..11aecbba58c6 100644
  # CONFIG_CXD2880_SPI_DRV is not set
  # CONFIG_DETECT_HUNG_TASK is not set
  # CONFIG_DRM_FBDEV_EMULATION is not set
--- 
-2.39.5
-

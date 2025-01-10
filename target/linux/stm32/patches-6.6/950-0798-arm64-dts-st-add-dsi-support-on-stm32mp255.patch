@@ -11,11 +11,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index a96fcb6cfbfc..05dbc97cf941 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -11,6 +11,20 @@ &ltdc {
+@@ -11,6 +11,20 @@
  };
  
  &rifsc {
@@ -36,6 +34,3 @@ index a96fcb6cfbfc..05dbc97cf941 100644
  	lvds: lvds@48060000 {
  		#clock-cells = <0>;
  		compatible = "st,stm32mp25-lvds";
--- 
-2.39.5
-

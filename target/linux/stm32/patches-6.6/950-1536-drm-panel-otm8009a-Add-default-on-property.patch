@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../gpu/drm/panel/panel-orisetech-otm8009a.c  | 30 +++++++++++--------
  1 file changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index 2159e34629c9..138caa5f1eb5 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -299,7 +299,6 @@ static int otm8009a_unprepare(struct drm_panel *panel)
+@@ -299,7 +299,6 @@ static int otm8009a_unprepare(struct drm
  	if (!ctx->prepared)
  		return 0;
  
@@ -28,7 +26,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  	pm_runtime_mark_last_busy(panel->dev);
  	ret = pm_runtime_put_autosuspend(panel->dev);
  	if (ret < 0)
-@@ -447,7 +446,11 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -447,7 +446,11 @@ static int otm8009a_probe(struct mipi_ds
  	if (!ctx)
  		return -ENOMEM;
  
@@ -41,7 +39,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  	if (IS_ERR(ctx->reset_gpio))
  		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
  				     "cannot get reset GPIO\n");
-@@ -467,17 +470,12 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -467,17 +470,12 @@ static int otm8009a_probe(struct mipi_ds
  			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
  
  	pm_runtime_enable(ctx->dev);
@@ -60,7 +58,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  	ctx->bl_dev = devm_backlight_device_register(dev, dev_name(dev),
  						     dev, ctx,
  						     &otm8009a_backlight_ops,
-@@ -485,7 +483,7 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -485,7 +483,7 @@ static int otm8009a_probe(struct mipi_ds
  	if (IS_ERR(ctx->bl_dev)) {
  		ret = PTR_ERR(ctx->bl_dev);
  		dev_err(dev, "failed to register backlight: %d\n", ret);
@@ -69,7 +67,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  	}
  
  	ctx->bl_dev->props.max_brightness = OTM8009A_BACKLIGHT_MAX;
-@@ -499,10 +497,16 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
+@@ -499,10 +497,16 @@ static int otm8009a_probe(struct mipi_ds
  	if (ret < 0) {
  		dev_err(dev, "mipi_dsi_attach failed. Is host ready?\n");
  		drm_panel_remove(&ctx->panel);
@@ -87,7 +85,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  }
  
  static void otm8009a_remove(struct mipi_dsi_device *dsi)
-@@ -520,9 +524,6 @@ static __maybe_unused int orisetech_otm8009a_suspend(struct device *dev)
+@@ -520,9 +524,6 @@ static __maybe_unused int orisetech_otm8
  {
  	struct otm8009a *ctx = dev_get_drvdata(dev);
  
@@ -97,7 +95,7 @@ index 2159e34629c9..138caa5f1eb5 100644
  	regulator_disable(ctx->supply);
  
  	return 0;
-@@ -533,6 +534,9 @@ static __maybe_unused int orisetech_otm8009a_resume(struct device *dev)
+@@ -533,6 +534,9 @@ static __maybe_unused int orisetech_otm8
  	struct otm8009a *ctx = dev_get_drvdata(dev);
  	int ret;
  
@@ -107,6 +105,3 @@ index 2159e34629c9..138caa5f1eb5 100644
  	ret = regulator_enable(ctx->supply);
  	if (ret < 0) {
  		dev_err(ctx->dev, "failed to enable supply: %d\n", ret);
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Reviewed-by: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/usb/dwc2/hcd.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 40be338278bc..de8073538cc6 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -3724,6 +3724,7 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
+@@ -3719,6 +3719,7 @@ static int dwc2_hcd_hub_control(struct d
  			hprt0 &= ~HPRT0_TSTCTL_MASK;
  			hprt0 |= (windex >> 8) << HPRT0_TSTCTL_SHIFT;
  			dwc2_writel(hsotg, hprt0, HPRT0);
@@ -30,6 +28,3 @@ index 40be338278bc..de8073538cc6 100644
  			break;
  
  		default:
--- 
-2.39.5
-

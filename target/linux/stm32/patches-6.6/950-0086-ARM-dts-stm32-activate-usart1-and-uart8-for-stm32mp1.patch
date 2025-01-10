@@ -13,11 +13,9 @@ Change-Id: I77fcbc9e869f187807106222b8668face9e05c18
  arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
-index ef2cccea6955..02dd01732705 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
-@@ -12,3 +12,11 @@ / {
+@@ -12,3 +12,11 @@
  	model = "STMicroelectronics STM32MP135F-DK configured to run Linux A7 examples";
  	compatible = "st,stm32mp135f-dk-a7-examples", "st,stm32mp135f-dk", "st,stm32mp135";
  };
@@ -29,6 +27,3 @@ index ef2cccea6955..02dd01732705 100644
 +&usart1 {
 +	status = "okay";
 +};
--- 
-2.39.5
-

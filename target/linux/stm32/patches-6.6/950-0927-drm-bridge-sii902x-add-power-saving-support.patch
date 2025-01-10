@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/bridge/sii902x.c | 66 +++++++++++++++++++++++++++++++-
  1 file changed, 64 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-index a393e7ccf0f1..35fcbc86769c 100644
 --- a/drivers/gpu/drm/bridge/sii902x.c
 +++ b/drivers/gpu/drm/bridge/sii902x.c
 @@ -17,6 +17,7 @@
@@ -31,7 +29,7 @@ index a393e7ccf0f1..35fcbc86769c 100644
  #include <linux/regmap.h>
  #include <linux/regulator/consumer.h>
  #include <linux/clk.h>
-@@ -1089,8 +1090,9 @@ static int sii902x_init(struct sii902x *sii902x)
+@@ -1089,8 +1090,9 @@ static int sii902x_init(struct sii902x *
  	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
  
  	if (sii902x->i2c->irq > 0) {
@@ -43,7 +41,7 @@ index a393e7ccf0f1..35fcbc86769c 100644
  
  		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
  						sii902x_interrupt,
-@@ -1214,6 +1216,65 @@ static void sii902x_remove(struct i2c_client *client)
+@@ -1214,6 +1216,65 @@ static void sii902x_remove(struct i2c_cl
  		platform_device_unregister(sii902x->audio.pdev);
  }
  
@@ -109,7 +107,7 @@ index a393e7ccf0f1..35fcbc86769c 100644
  static const struct of_device_id sii902x_dt_ids[] = {
  	{ .compatible = "sil,sii9022", },
  	{ }
-@@ -1232,6 +1293,7 @@ static struct i2c_driver sii902x_driver = {
+@@ -1232,6 +1293,7 @@ static struct i2c_driver sii902x_driver
  	.driver = {
  		.name = "sii902x",
  		.of_match_table = sii902x_dt_ids,
@@ -117,6 +115,3 @@ index a393e7ccf0f1..35fcbc86769c 100644
  	},
  	.id_table = sii902x_i2c_ids,
  };
--- 
-2.39.5
-

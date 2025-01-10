@@ -14,11 +14,9 @@ Change-Id: I9d3c1aa8e9736c266c15b30f05537f03d94c767b
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index fc297fbaa6f1..a8b467c97700 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -215,6 +215,18 @@ phy1_eth1: ethernet-phy@1 {
+@@ -215,6 +215,18 @@
  	};
  };
  
@@ -37,6 +35,3 @@ index fc297fbaa6f1..a8b467c97700 100644
  &i2c2 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c2_pins_b>;
--- 
-2.39.5
-

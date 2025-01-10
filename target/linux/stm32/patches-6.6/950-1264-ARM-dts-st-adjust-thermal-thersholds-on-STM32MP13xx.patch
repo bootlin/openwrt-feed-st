@@ -29,11 +29,9 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp13xf.dtsi | 23 +++++++++++++++++++++++
  3 files changed, 47 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 70b52de518e0..2d86424c5aae 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -144,24 +144,12 @@ cpu_thermal: cpu-thermal {
+@@ -144,24 +144,12 @@
  			thermal-sensors = <&dts>;
  
  			trips {
@@ -59,8 +57,6 @@ index 70b52de518e0..2d86424c5aae 100644
  		};
  	};
  
-diff --git a/arch/arm/boot/dts/st/stm32mp13xd.dtsi b/arch/arm/boot/dts/st/stm32mp13xd.dtsi
-index cc6456e71be9..2a436a379ede 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xd.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xd.dtsi
 @@ -3,3 +3,26 @@
@@ -90,8 +86,6 @@ index cc6456e71be9..2a436a379ede 100644
 +		};
 +	};
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp13xf.dtsi b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-index 5ed8fdd40cd3..99ddf7e9d5f2 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 @@ -4,6 +4,29 @@
@@ -124,6 +118,3 @@ index 5ed8fdd40cd3..99ddf7e9d5f2 100644
  &etzpc {
  	cryp: crypto@54002000 {
  		compatible = "st,stm32mp1-cryp";
--- 
-2.39.5
-

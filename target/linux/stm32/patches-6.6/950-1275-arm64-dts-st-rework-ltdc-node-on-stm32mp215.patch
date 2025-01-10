@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215.dtsi | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 64a62564d1f2..353ac85c38a1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -2267,7 +2267,7 @@ a35ss_syscfg: syscon@48802000  {
+@@ -2267,7 +2267,7 @@
  		};
  	};
  
@@ -29,8 +27,6 @@ index 64a62564d1f2..353ac85c38a1 100644
  		compatible = "simple-bus";
  		#address-cells = <1>;
  		#size-cells = <1>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-index 7aa6f2f25ca7..e3a18bc867ae 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
 @@ -5,10 +5,10 @@
@@ -46,6 +42,3 @@ index 7aa6f2f25ca7..e3a18bc867ae 100644
  		st,syscon = <&syscfg>;
  		interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
  			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.39.5
-

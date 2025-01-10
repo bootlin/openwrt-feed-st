@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp235f-dk.dts | 56 +++++++++++++++++++++++
  1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-index 8d5a2d547731..ad55a3d58338 100644
 --- a/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp235f-dk.dts
-@@ -199,6 +199,62 @@ &cryp1 {
+@@ -199,6 +199,62 @@
  	status = "okay";
  };
  
@@ -81,6 +79,3 @@ index 8d5a2d547731..ad55a3d58338 100644
  &csi {
  	vdd-supply =  <&scmi_vddcore>;
  	vdda18-supply = <&scmi_v1v8>;
--- 
-2.39.5
-

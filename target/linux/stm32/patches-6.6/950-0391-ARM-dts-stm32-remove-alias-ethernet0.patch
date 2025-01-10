@@ -11,11 +11,9 @@ Change-Id: Ibf373547da3d2058771228089165feb2260bd56a
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index b46726a14fc4..a3d51f2ad577 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -19,7 +19,6 @@ / {
+@@ -19,7 +19,6 @@
  	compatible = "st,stm32mp157f-dk2", "st,stm32mp157";
  
  	aliases {
@@ -23,6 +21,3 @@ index b46726a14fc4..a3d51f2ad577 100644
  		serial3 = &usart2;
  	};
  
--- 
-2.39.5
-

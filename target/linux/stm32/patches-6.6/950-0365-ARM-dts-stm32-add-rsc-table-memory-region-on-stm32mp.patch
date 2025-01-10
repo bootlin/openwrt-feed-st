@@ -14,11 +14,9 @@ Change-Id: I04bcf6e8716ac145ae4d3cd8b91750c1a16e3673
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 8fce8e6b07e8..2d83b679f3ba 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -50,6 +50,12 @@ vdev0buffer: vdev0buffer@10042000 {
+@@ -50,6 +50,12 @@
  			no-map;
  		};
  
@@ -31,7 +29,7 @@ index 8fce8e6b07e8..2d83b679f3ba 100644
  		mcuram: mcuram@30000000 {
  			compatible = "shared-dma-pool";
  			reg = <0x30000000 0x40000>;
-@@ -486,7 +492,7 @@ ltdc_ep0_out: endpoint {
+@@ -486,7 +492,7 @@
  
  &m4_rproc {
  	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
@@ -40,6 +38,3 @@ index 8fce8e6b07e8..2d83b679f3ba 100644
  	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>, <&ipcc 3>;
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
--- 
-2.39.5
-

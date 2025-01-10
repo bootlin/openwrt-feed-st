@@ -13,11 +13,9 @@ Change-Id: Ic918f905ac7bca763f85f46f626f96c3fcf82f69
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 0668d162e585..5049a06edb77 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -253,6 +253,23 @@ pins {
+@@ -253,6 +253,23 @@
  		};
  	};
  
@@ -41,6 +39,3 @@ index 0668d162e585..5049a06edb77 100644
  	i2s2_pins_a: i2s2-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('K', 1, AF2)>, /* I2S2_SDO */
--- 
-2.39.5
-

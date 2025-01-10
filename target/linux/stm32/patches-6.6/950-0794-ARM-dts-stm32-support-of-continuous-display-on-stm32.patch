@@ -14,11 +14,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 5 ++++-
  2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index 127aa0e36554..8736d78ee9a2 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -29,7 +29,7 @@ chosen {
+@@ -29,7 +29,7 @@
  
  		framebuffer {
  			compatible = "simple-framebuffer";
@@ -27,7 +25,7 @@ index 127aa0e36554..8736d78ee9a2 100644
  			status = "disabled";
  		};
  	};
-@@ -134,6 +134,7 @@ panel_backlight: panel-backlight {
+@@ -134,6 +134,7 @@
  		compatible = "gpio-backlight";
  		gpios = <&gpiod 13 GPIO_ACTIVE_LOW>;
  		default-on;
@@ -35,7 +33,7 @@ index 127aa0e36554..8736d78ee9a2 100644
  		status = "okay";
  	};
  
-@@ -319,6 +320,7 @@ dfsdm_endpoint3: endpoint {
+@@ -319,6 +320,7 @@
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -43,7 +41,7 @@ index 127aa0e36554..8736d78ee9a2 100644
  	status = "okay";
  
  	panel_dsi: panel@0 {
-@@ -525,6 +527,7 @@ &i2c5 {
+@@ -525,6 +527,7 @@
  };
  
  &ltdc {
@@ -51,11 +49,9 @@ index 127aa0e36554..8736d78ee9a2 100644
  	status = "okay";
  
  	port {
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index 0b78ca882582..74cea13fcfa1 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -29,7 +29,7 @@ chosen {
+@@ -29,7 +29,7 @@
  
  		framebuffer {
  			compatible = "simple-framebuffer";
@@ -64,7 +60,7 @@ index 0b78ca882582..74cea13fcfa1 100644
  			status = "disabled";
  		};
  	};
-@@ -134,6 +134,7 @@ panel_backlight: panel-backlight {
+@@ -134,6 +134,7 @@
  		compatible = "gpio-backlight";
  		gpios = <&gpiod 13 GPIO_ACTIVE_LOW>;
  		default-on;
@@ -72,7 +68,7 @@ index 0b78ca882582..74cea13fcfa1 100644
  		status = "okay";
  	};
  
-@@ -320,6 +321,7 @@ dfsdm_endpoint3: endpoint {
+@@ -320,6 +321,7 @@
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -80,7 +76,7 @@ index 0b78ca882582..74cea13fcfa1 100644
  	status = "okay";
  
  	panel_dsi: panel@0 {
-@@ -526,6 +528,7 @@ &i2c5 {
+@@ -526,6 +528,7 @@
  };
  
  &ltdc {
@@ -88,6 +84,3 @@ index 0b78ca882582..74cea13fcfa1 100644
  	status = "okay";
  
  	port {
--- 
-2.39.5
-

@@ -25,8 +25,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 265 +++++++++++++++++++++++++++---
  1 file changed, 243 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 8109e3a38c66..fb0205a91a6f 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -129,6 +129,9 @@ enum {
@@ -169,7 +167,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_SRAM1,
  	GATE_SRAM2,
  	GATE_STGEN,
-@@ -457,7 +476,10 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -457,7 +476,10 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_ADC12,		RCC_ADC12CFGR,		1,	0),
  	GATE_CFG(GATE_ADC3,		RCC_ADC3CFGR,		1,	0),
  	GATE_CFG(GATE_ADF1,		RCC_ADF1CFGR,		1,	0),
@@ -180,7 +178,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_CCI,		RCC_CCICFGR,		1,	0),
  	GATE_CFG(GATE_CRC,		RCC_CRCCFGR,		1,	0),
  	GATE_CFG(GATE_CRYP1,		RCC_CRYP1CFGR,		1,	0),
-@@ -482,6 +504,7 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -482,6 +504,7 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_ETHSWMAC,		RCC_ETHSWCFGR,		1,	0),
  	GATE_CFG(GATE_ETHSWREF,		RCC_ETHSWCFGR,		21,	0),
  	GATE_CFG(GATE_FDCAN,		RCC_FDCANCFGR,		1,	0),
@@ -188,7 +186,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_GPU,		RCC_GPUCFGR,		1,	0),
  	GATE_CFG(GATE_HASH,		RCC_HASHCFGR,		1,	0),
  	GATE_CFG(GATE_HDP,		RCC_HDPCFGR,		1,	0),
-@@ -493,22 +516,35 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -493,22 +516,35 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_I2C6,		RCC_I2C6CFGR,		1,	0),
  	GATE_CFG(GATE_I2C7,		RCC_I2C7CFGR,		1,	0),
  	GATE_CFG(GATE_I2C8,		RCC_I2C8CFGR,		1,	0),
@@ -224,7 +222,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_LTDC,		RCC_LTDCCFGR,		1,	0),
  	GATE_CFG(GATE_LVDS,		RCC_LVDSCFGR,		1,	0),
  	GATE_CFG(GATE_MCO1,		RCC_MCO1CFGR,		8,	0),
-@@ -517,6 +553,7 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -517,6 +553,7 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_OSPIIOM,		RCC_OSPIIOMCFGR,	1,	0),
  	GATE_CFG(GATE_PCIE,		RCC_PCIECFGR,		1,	0),
  	GATE_CFG(GATE_PKA,		RCC_PKACFGR,		1,	0),
@@ -232,7 +230,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_RNG,		RCC_RNGCFGR,		1,	0),
  	GATE_CFG(GATE_SAES,		RCC_SAESCFGR,		1,	0),
  	GATE_CFG(GATE_SAI1,		RCC_SAI1CFGR,		1,	0),
-@@ -536,6 +573,8 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -536,6 +573,8 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_SPI6,		RCC_SPI6CFGR,		1,	0),
  	GATE_CFG(GATE_SPI7,		RCC_SPI7CFGR,		1,	0),
  	GATE_CFG(GATE_SPI8,		RCC_SPI8CFGR,		1,	0),
@@ -241,7 +239,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_TIM1,		RCC_TIM1CFGR,		1,	0),
  	GATE_CFG(GATE_TIM10,		RCC_TIM10CFGR,		1,	0),
  	GATE_CFG(GATE_TIM11,		RCC_TIM11CFGR,		1,	0),
-@@ -574,7 +613,6 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -574,7 +613,6 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_WWDG1,		RCC_WWDG1CFGR,		1,	0),
  	GATE_CFG(GATE_WWDG2,		RCC_WWDG2CFGR,		1,	0),
  #ifdef CONFIG_DEBUG_FS
@@ -249,7 +247,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_BKPSRAM,		RCC_BKPSRAMCFGR,	1,	0),
  	GATE_CFG(GATE_BSEC,		RCC_BSECCFGR,		1,	0),
  	GATE_CFG(GATE_DBG,		RCC_DBGCFGR,		8,	0),
-@@ -598,30 +636,28 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -598,30 +636,28 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_GPIOJ,		RCC_GPIOJCFGR,		1,	0),
  	GATE_CFG(GATE_GPIOK,		RCC_GPIOKCFGR,		1,	0),
  	GATE_CFG(GATE_GPIOZ,		RCC_GPIOZCFGR,		1,	0),
@@ -286,7 +284,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_OSPI1,		RCC_OSPI1CFGR,		1,	0),
  	GATE_CFG(GATE_OSPI2,		RCC_OSPI2CFGR,		1,	0),
  	GATE_CFG(GATE_PLL1,		RCC_PLL2CFGR1,		8,	0),
-@@ -634,9 +670,8 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -634,9 +670,8 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_PLL8,		RCC_PLL8CFGR1,		8,	0),
  	GATE_CFG(GATE_RETRAM,		RCC_RETRAMCFGR,		1,	0),
  	GATE_CFG(GATE_RTC,		RCC_RTCCFGR,		1,	0),
@@ -297,7 +295,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	GATE_CFG(GATE_SRAM1,		RCC_SRAM1CFGR,		1,	0),
  	GATE_CFG(GATE_SRAM2,		RCC_SRAM2CFGR,		1,	0),
  	GATE_CFG(GATE_STGEN,		RCC_STGENCFGR,		1,	0),
-@@ -731,12 +766,77 @@ static struct clk_stm32_gate ck_ker_adf1 = {
+@@ -731,12 +766,77 @@ static struct clk_stm32_gate ck_ker_adf1
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_adf1", FLEXGEN_42, &clk_stm32_gate_ops, 0),
  };
  
@@ -375,7 +373,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* DCMI */
  static struct clk_stm32_gate ck_icn_p_cci = {
  	.gate_id = GATE_CCI,
-@@ -1063,6 +1163,11 @@ static struct clk_stm32_gate ck_ker_i2c8 = {
+@@ -1063,6 +1163,11 @@ static struct clk_stm32_gate ck_ker_i2c8
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i2c8", FLEXGEN_38, &clk_stm32_gate_ops, 0),
  };
  
@@ -387,7 +385,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* I3C */
  static struct clk_stm32_gate ck_icn_p_i3c1 = {
  	.gate_id = GATE_I3C1,
-@@ -1104,6 +1209,11 @@ static struct clk_stm32_gate ck_ker_i3c4 = {
+@@ -1104,6 +1209,11 @@ static struct clk_stm32_gate ck_ker_i3c4
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_i3c4", FLEXGEN_36, &clk_stm32_gate_ops, 0),
  };
  
@@ -399,7 +397,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* I2S */
  static struct clk_stm32_gate ck_icn_p_is2m = {
  	.gate_id = GATE_IS2M,
-@@ -1177,16 +1287,31 @@ static struct clk_stm32_gate ck_ker_lptim3 = {
+@@ -1177,16 +1287,31 @@ static struct clk_stm32_gate ck_ker_lpti
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lptim3", FLEXGEN_40, &clk_stm32_gate_ops, 0),
  };
  
@@ -431,7 +429,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* LPUART */
  static struct clk_stm32_gate ck_icn_p_lpuart1 = {
  	.gate_id = GATE_LPUART1,
-@@ -1198,6 +1323,11 @@ static struct clk_stm32_gate ck_ker_lpuart1 = {
+@@ -1198,6 +1323,11 @@ static struct clk_stm32_gate ck_ker_lpua
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_lpuart1", FLEXGEN_39, &clk_stm32_gate_ops, 0),
  };
  
@@ -443,7 +441,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* MCO1 & MCO2 */
  static struct clk_stm32_composite ck_mco1 = {
  	.gate_id = GATE_MCO1,
-@@ -1432,6 +1562,11 @@ static struct clk_stm32_gate ck_ker_spi8 = {
+@@ -1432,6 +1562,11 @@ static struct clk_stm32_gate ck_ker_spi8
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_spi8", FLEXGEN_37, &clk_stm32_gate_ops, 0),
  };
  
@@ -455,7 +453,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  /* Timers */
  static struct clk_stm32_gate ck_icn_p_tim2 = {
  	.gate_id = GATE_TIM2,
-@@ -2010,14 +2145,34 @@ static const struct clock_config stm32mp25_clock_cfg[] = {
+@@ -2010,14 +2145,34 @@ static const struct clock_config stm32mp
  	STM32_GATE_CFG(CK_KER_CSIPHY, ck_ker_csiphy, SEC_RIFSC(86)),
  	STM32_GATE_CFG(CK_KER_USBTC, ck_ker_usbtc, SEC_RIFSC(69)),
  	STM32_GATE_CFG(CK_KER_I3C4, ck_ker_i3c4, SEC_RIFSC(117)),
@@ -490,7 +488,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	STM32_GATE_CFG(CK_KER_SDMMC1, ck_ker_sdmmc1, SEC_RIFSC(76)),
  	STM32_GATE_CFG(CK_KER_SDMMC2, ck_ker_sdmmc2, SEC_RIFSC(77)),
  	STM32_GATE_CFG(CK_KER_SDMMC3, ck_ker_sdmmc3, SEC_RIFSC(78)),
-@@ -2522,6 +2677,14 @@ static unsigned long cs_stm32_timer_recalc_rate(struct clk_stm32_clock_data *dat
+@@ -2522,6 +2677,14 @@ static unsigned long cs_stm32_timer_reca
  		.clks		= (struct clk_summary *[]) {  &cs_##_parent },	\
  	}
  
@@ -515,7 +513,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  
  CS_EXT(spdifsymb);
  CS_EXT(i2sckin);
-@@ -2724,6 +2890,21 @@ CS_GATE_DIV(ck_icn_apbdbg, ck_icn_ls_mcu, GATE_DBG, DIV_APBDBG);
+@@ -2724,6 +2890,21 @@ CS_GATE_DIV(ck_icn_apbdbg, ck_icn_ls_mcu
  CS_STM32_TIMER(ck_timg1, ck_icn_apb1, RCC_APB1DIVR, RCC_TIMG1PRER);
  CS_STM32_TIMER(ck_timg2, ck_icn_apb2, RCC_APB2DIVR, RCC_TIMG2PRER);
  
@@ -537,7 +535,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  CS_GATE(ck_icn_s_sysram, ck_icn_hs_mcu, GATE_SYSRAM);
  CS_GATE(ck_icn_s_vderam, ck_icn_hs_mcu, GATE_VDERAM);
  CS_GATE(ck_icn_s_retram, ck_icn_hs_mcu, GATE_RETRAM);
-@@ -2741,6 +2922,7 @@ CS_GATE(ck_icn_p_hpdma2, ck_icn_ls_mcu, GATE_HPDMA2);
+@@ -2741,6 +2922,7 @@ CS_GATE(ck_icn_p_hpdma2, ck_icn_ls_mcu,
  CS_GATE(ck_icn_p_hpdma3, ck_icn_ls_mcu, GATE_HPDMA3);
  CS_GATE(ck_icn_p_ipcc1, ck_icn_ls_mcu, GATE_IPCC1);
  CS_GATE(ck_icn_p_ipcc2, ck_icn_ls_mcu, GATE_IPCC2);
@@ -545,7 +543,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  CS_GATE(ck_icn_p_cci, ck_icn_ls_mcu, GATE_CCI);
  CS_GATE(ck_icn_p_crc, ck_icn_ls_mcu, GATE_CRC);
  CS_GATE(ck_icn_p_ospiiom, ck_icn_ls_mcu, GATE_OSPIIOM);
-@@ -2765,10 +2947,13 @@ CS_GATE(ck_icn_s_lpsram1, ck_icn_ls_mcu, GATE_LPSRAM1);
+@@ -2765,10 +2947,13 @@ CS_GATE(ck_icn_s_lpsram1, ck_icn_ls_mcu,
  CS_GATE(ck_icn_s_lpsram2, ck_icn_ls_mcu, GATE_LPSRAM2);
  CS_GATE(ck_icn_s_lpsram3, ck_icn_ls_mcu, GATE_LPSRAM3);
  CS_GATE(ck_icn_p_gpioz, ck_icn_ls_mcu, GATE_GPIOZ);
@@ -559,7 +557,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  CS_GATE(ck_icn_p_iwdg5, ck_icn_ls_mcu, GATE_IWDG5);
  CS_GATE(ck_icn_p_wwdg2, ck_icn_ls_mcu, GATE_WWDG2);
  CS_GATE(ck_icn_s_stm, ck_icn_ls_mcu, GATE_STM);
-@@ -2931,13 +3116,21 @@ CS_GATE(ck_ker_csi2phy, ck_flexgen_31, GATE_CSI);
+@@ -2931,13 +3116,21 @@ CS_GATE(ck_ker_csi2phy, ck_flexgen_31, G
  CS_GATE(ck_ker_stgen, ck_flexgen_33, GATE_STGEN);
  CS_GATE(ck_ker_usbtc, ck_flexgen_35, GATE_USBTC);
  CS_GATE(ck_ker_i3c4, ck_flexgen_36, GATE_I3C4);
@@ -581,7 +579,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  CS_GATE(ck_ker_tsdbg, ck_flexgen_43, GATE_DBG);
  CS_GATE(ck_ker_tpiu, ck_flexgen_44, GATE_TRACE);
  CS_GATE(ck_icn_m_etr, ck_flexgen_45, GATE_ETR);
-@@ -3028,6 +3221,9 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3028,6 +3221,9 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(msi_ck),
  	CS_CLOCK(hse_ck),
  	CS_CLOCK(lse_ck),
@@ -591,7 +589,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	CS_CLOCK(spdifsymb),
  	CS_CLOCK(i2sckin),
  	CS_CLOCK(txbyteclk),
-@@ -3113,6 +3309,19 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3113,6 +3309,19 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_icn_apbdbg),
  	CS_CLOCK(ck_timg1),
  	CS_CLOCK(ck_timg2),
@@ -611,7 +609,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	CS_CLOCK(ck_icn_s_sysram),
  	CS_CLOCK(ck_icn_s_vderam),
  	CS_CLOCK(ck_icn_s_retram),
-@@ -3130,6 +3339,7 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3130,6 +3339,7 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_icn_p_hpdma3),
  	CS_CLOCK(ck_icn_p_ipcc1),
  	CS_CLOCK(ck_icn_p_ipcc2),
@@ -619,7 +617,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	CS_CLOCK(ck_icn_p_cci),
  	CS_CLOCK(ck_icn_p_crc),
  	CS_CLOCK(ck_icn_p_ospiiom),
-@@ -3154,10 +3364,13 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3154,10 +3364,13 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_icn_s_lpsram2),
  	CS_CLOCK(ck_icn_s_lpsram3),
  	CS_CLOCK(ck_icn_p_gpioz),
@@ -633,7 +631,7 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	CS_CLOCK(ck_icn_p_iwdg5),
  	CS_CLOCK(ck_icn_p_wwdg2),
  	CS_CLOCK(ck_icn_s_stm),
-@@ -3320,13 +3533,21 @@ static struct clk_summary *stm32mp25_clock_summary[] = {
+@@ -3320,13 +3533,21 @@ static struct clk_summary *stm32mp25_clo
  	CS_CLOCK(ck_ker_stgen),
  	CS_CLOCK(ck_ker_usbtc),
  	CS_CLOCK(ck_ker_i3c4),
@@ -655,6 +653,3 @@ index 8109e3a38c66..fb0205a91a6f 100644
  	CS_CLOCK(ck_ker_tsdbg),
  	CS_CLOCK(ck_ker_tpiu),
  	CS_CLOCK(ck_icn_m_etr),
--- 
-2.39.5
-

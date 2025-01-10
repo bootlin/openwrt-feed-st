@@ -14,11 +14,9 @@ Change-Id: I63ef20b7b3877cca4e7026d7ee79b19ae80e464c
  arch/arm/boot/dts/st/stm32mp157a-ev1.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index 6ba96736827c..f70d077207a5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -204,6 +204,7 @@ dcmi_0: endpoint {
+@@ -204,6 +204,7 @@
  			hsync-active = <0>;
  			vsync-active = <0>;
  			pclk-sample = <1>;
@@ -26,7 +24,7 @@ index 6ba96736827c..f70d077207a5 100644
  		};
  	};
  };
-@@ -455,6 +456,7 @@ ov5640_0: endpoint {
+@@ -455,6 +456,7 @@
  				hsync-active = <0>;
  				vsync-active = <0>;
  				pclk-sample = <1>;
@@ -34,6 +32,3 @@ index 6ba96736827c..f70d077207a5 100644
  			};
  		};
  	};
--- 
-2.39.5
-

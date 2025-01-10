@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/rtc/rtc-optee.c | 25 +++++++++++--------------
  1 file changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/rtc/rtc-optee.c b/drivers/rtc/rtc-optee.c
-index 73aefd32a751..f3a14a2ec1ca 100644
 --- a/drivers/rtc/rtc-optee.c
 +++ b/drivers/rtc/rtc-optee.c
-@@ -194,18 +194,9 @@ static int optee_rtc_settime(struct device *dev, struct rtc_time *tm)
+@@ -194,18 +194,9 @@ static int optee_rtc_settime(struct devi
  	struct optee_rtc *priv = dev_get_drvdata(dev);
  	struct tee_ioctl_invoke_arg inv_arg = {0};
  	struct tee_param param[4] = {0};
@@ -44,18 +42,19 @@ index 73aefd32a751..f3a14a2ec1ca 100644
  	inv_arg.func = PTA_CMD_RTC_SET_TIME;
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
-@@ -214,11 +205,17 @@ static int optee_rtc_settime(struct device *dev, struct rtc_time *tm)
+@@ -214,11 +205,17 @@ static int optee_rtc_settime(struct devi
  	param[0].u.memref.shm = priv->shm;
  	param[0].u.memref.size = sizeof(struct optee_rtc_time);
  
 -	rtc_data = tee_shm_get_va(priv->shm, 0);
 -	if (IS_ERR(rtc_data))
 -		return PTR_ERR(rtc_data);
+-
+-	memcpy(rtc_data, &optee_tm, sizeof(struct optee_rtc_time));
 +	optee_tm = tee_shm_get_va(priv->shm, 0);
 +	if (IS_ERR(optee_tm))
 +		return PTR_ERR(optee_tm);
- 
--	memcpy(rtc_data, &optee_tm, sizeof(struct optee_rtc_time));
++
 +	optee_tm->tm_min = tm->tm_min;
 +	optee_tm->tm_sec = tm->tm_sec;
 +	optee_tm->tm_hour = tm->tm_hour;
@@ -66,6 +65,3 @@ index 73aefd32a751..f3a14a2ec1ca 100644
  
  	ret = tee_client_invoke_func(priv->ctx, &inv_arg, param);
  	if (ret < 0 || inv_arg.ret != 0)
--- 
-2.39.5
-

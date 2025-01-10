@@ -18,8 +18,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 127 ++++++++++++++++++-------
  1 file changed, 94 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index ae36892c231b..ba2aa514fc42 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
 @@ -3,7 +3,9 @@
@@ -32,7 +30,7 @@ index ae36892c231b..ba2aa514fc42 100644
  
  / {
  	#address-cells = <2>;
-@@ -28,26 +30,6 @@ arm-pmu {
+@@ -28,26 +30,6 @@
  		interrupt-parent = <&intc>;
  	};
  
@@ -59,7 +57,7 @@ index ae36892c231b..ba2aa514fc42 100644
  	firmware {
  		optee {
  			compatible = "linaro,optee-tz";
-@@ -115,7 +97,7 @@ usart2: serial@400e0000 {
+@@ -115,7 +97,7 @@
  				compatible = "st,stm32h7-uart";
  				reg = <0x400e0000 0x400>;
  				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
@@ -68,7 +66,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				status = "disabled";
  			};
  
-@@ -123,7 +105,7 @@ uart4: serial@40100000 {
+@@ -123,7 +105,7 @@
  				compatible = "st,stm32h7-uart";
  				reg = <0x40100000 0x400>;
  				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
@@ -77,7 +75,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				status = "disabled";
  			};
  
-@@ -132,8 +114,9 @@ sdmmc1: mmc@48220000 {
+@@ -132,8 +114,9 @@
  				arm,primecell-periphid = <0x00353180>;
  				reg = <0x48220000 0x400>, <0x44230400 0x8>;
  				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
@@ -88,7 +86,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <120000000>;
-@@ -141,6 +124,84 @@ sdmmc1: mmc@48220000 {
+@@ -141,6 +124,84 @@
  			};
  		};
  
@@ -173,7 +171,7 @@ index ae36892c231b..ba2aa514fc42 100644
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
  			reg = <0x44230000 0x10000>;
-@@ -158,7 +219,7 @@ gpioa: gpio@44240000 {
+@@ -158,7 +219,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x0 0x400>;
@@ -182,7 +180,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOA";
  				status = "disabled";
  			};
-@@ -169,7 +230,7 @@ gpiob: gpio@44250000 {
+@@ -169,7 +230,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x10000 0x400>;
@@ -191,7 +189,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOB";
  				status = "disabled";
  			};
-@@ -180,7 +241,7 @@ gpioc: gpio@44260000 {
+@@ -180,7 +241,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x20000 0x400>;
@@ -200,7 +198,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOC";
  				status = "disabled";
  			};
-@@ -191,7 +252,7 @@ gpiod: gpio@44270000 {
+@@ -191,7 +252,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x30000 0x400>;
@@ -209,7 +207,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOD";
  				status = "disabled";
  			};
-@@ -202,7 +263,7 @@ gpioe: gpio@44280000 {
+@@ -202,7 +263,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x40000 0x400>;
@@ -218,7 +216,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOE";
  				status = "disabled";
  			};
-@@ -213,7 +274,7 @@ gpiof: gpio@44290000 {
+@@ -213,7 +274,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x50000 0x400>;
@@ -227,7 +225,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOF";
  				status = "disabled";
  			};
-@@ -224,7 +285,7 @@ gpiog: gpio@442a0000 {
+@@ -224,7 +285,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x60000 0x400>;
@@ -236,7 +234,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOG";
  				status = "disabled";
  			};
-@@ -235,7 +296,7 @@ gpioh: gpio@442b0000 {
+@@ -235,7 +296,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x70000 0x400>;
@@ -245,7 +243,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOH";
  				status = "disabled";
  			};
-@@ -246,7 +307,7 @@ gpioi: gpio@442c0000 {
+@@ -246,7 +307,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0x80000 0x400>;
@@ -254,7 +252,7 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOI";
  				status = "disabled";
  			};
-@@ -264,7 +325,7 @@ gpioz: gpio@46200000 {
+@@ -264,7 +325,7 @@
  				interrupt-controller;
  				#interrupt-cells = <2>;
  				reg = <0 0x400>;
@@ -263,6 +261,3 @@ index ae36892c231b..ba2aa514fc42 100644
  				st,bank-name = "GPIOZ";
  				st,bank-ioport = <11>;
  				status = "disabled";
--- 
-2.39.5
-

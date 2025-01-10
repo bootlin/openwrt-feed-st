@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 236 +++++++++++++--------------
  1 file changed, 116 insertions(+), 120 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index d9a65d22edb8..5185d3f7498d 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -840,6 +840,122 @@ rcc: rcc@50000000 {
+@@ -840,6 +840,122 @@
  				 <&scmi_clk CK_SCMI_LSI>;
  		};
  
@@ -146,7 +144,7 @@ index d9a65d22edb8..5185d3f7498d 100644
  		exti: interrupt-controller@5000d000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
-@@ -1718,125 +1834,5 @@ reboot_mode: reboot-mode {
+@@ -1718,125 +1834,5 @@
  				mode-romcode_serial = <0xff>;
  			};
  		};
@@ -272,6 +270,3 @@ index d9a65d22edb8..5185d3f7498d 100644
 -		};
  	};
  };
--- 
-2.39.5
-

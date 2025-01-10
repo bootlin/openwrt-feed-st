@@ -15,8 +15,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  3 files changed, 437 insertions(+)
  create mode 100644 drivers/gpu/drm/panel/panel-rocktech-hx8394.c
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 3a2f4a9f1d46..f2378592e496 100644
 --- a/drivers/gpu/drm/panel/Kconfig
 +++ b/drivers/gpu/drm/panel/Kconfig
 @@ -505,6 +505,15 @@ config DRM_PANEL_RAYDIUM_RM68200
@@ -35,11 +33,9 @@ index 3a2f4a9f1d46..f2378592e496 100644
  config DRM_PANEL_RONBO_RB070D30
  	tristate "Ronbo Electronics RB070D30 panel"
  	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index 433e93d57949..930d8b9a8b24 100644
 --- a/drivers/gpu/drm/panel/Makefile
 +++ b/drivers/gpu/drm/panel/Makefile
-@@ -48,6 +48,7 @@ obj-$(CONFIG_DRM_PANEL_PANASONIC_VVX10F034N00) += panel-panasonic-vvx10f034n00.o
+@@ -48,6 +48,7 @@ obj-$(CONFIG_DRM_PANEL_PANASONIC_VVX10F0
  obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen.o
  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
@@ -47,9 +43,6 @@ index 433e93d57949..930d8b9a8b24 100644
  obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
  obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
  obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
-diff --git a/drivers/gpu/drm/panel/panel-rocktech-hx8394.c b/drivers/gpu/drm/panel/panel-rocktech-hx8394.c
-new file mode 100644
-index 000000000000..148df3c6c481
 --- /dev/null
 +++ b/drivers/gpu/drm/panel/panel-rocktech-hx8394.c
 @@ -0,0 +1,427 @@
@@ -480,6 +473,3 @@ index 000000000000..148df3c6c481
 +MODULE_AUTHOR("Yannick Fertre <yannick.fertre@foss.st.com>");
 +MODULE_DESCRIPTION("DRM Driver for rocktech HX8394 MIPI DSI panel");
 +MODULE_LICENSE("GPL v2");
--- 
-2.39.5
-

@@ -22,8 +22,6 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/linux/smscphy.h | 20 +++++++++
  2 files changed, 107 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
-index 692930750215..c2fceb4a74a9 100644
 --- a/drivers/net/phy/smsc.c
 +++ b/drivers/net/phy/smsc.c
 @@ -51,6 +51,10 @@ struct smsc_phy_priv {
@@ -37,7 +35,7 @@ index 692930750215..c2fceb4a74a9 100644
  };
  
  static int smsc_phy_ack_interrupt(struct phy_device *phydev)
-@@ -62,6 +66,7 @@ static int smsc_phy_ack_interrupt(struct phy_device *phydev)
+@@ -62,6 +66,7 @@ static int smsc_phy_ack_interrupt(struct
  
  int smsc_phy_config_intr(struct phy_device *phydev)
  {
@@ -45,7 +43,7 @@ index 692930750215..c2fceb4a74a9 100644
  	int rc;
  
  	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-@@ -69,9 +74,12 @@ int smsc_phy_config_intr(struct phy_device *phydev)
+@@ -69,9 +74,12 @@ int smsc_phy_config_intr(struct phy_devi
  		if (rc)
  			return rc;
  
@@ -60,7 +58,7 @@ index 692930750215..c2fceb4a74a9 100644
  		rc = phy_write(phydev, MII_LAN83C185_IM, 0);
  		if (rc)
  			return rc;
-@@ -97,6 +105,7 @@ static int smsc_phy_config_edpd(struct phy_device *phydev)
+@@ -97,6 +105,7 @@ static int smsc_phy_config_edpd(struct p
  
  irqreturn_t smsc_phy_handle_interrupt(struct phy_device *phydev)
  {
@@ -68,7 +66,7 @@ index 692930750215..c2fceb4a74a9 100644
  	int irq_status;
  
  	irq_status = phy_read(phydev, MII_LAN83C185_ISF);
-@@ -107,7 +116,7 @@ irqreturn_t smsc_phy_handle_interrupt(struct phy_device *phydev)
+@@ -107,7 +116,7 @@ irqreturn_t smsc_phy_handle_interrupt(st
  		return IRQ_NONE;
  	}
  
@@ -77,7 +75,7 @@ index 692930750215..c2fceb4a74a9 100644
  		return IRQ_NONE;
  
  	phy_trigger_machine(phydev);
-@@ -116,6 +125,44 @@ irqreturn_t smsc_phy_handle_interrupt(struct phy_device *phydev)
+@@ -116,6 +125,44 @@ irqreturn_t smsc_phy_handle_interrupt(st
  }
  EXPORT_SYMBOL_GPL(smsc_phy_handle_interrupt);
  
@@ -122,7 +120,7 @@ index 692930750215..c2fceb4a74a9 100644
  int smsc_phy_config_init(struct phy_device *phydev)
  {
  	struct smsc_phy_priv *priv = phydev->priv;
-@@ -123,6 +170,9 @@ int smsc_phy_config_init(struct phy_device *phydev)
+@@ -123,6 +170,9 @@ int smsc_phy_config_init(struct phy_devi
  	if (!priv)
  		return 0;
  
@@ -132,7 +130,7 @@ index 692930750215..c2fceb4a74a9 100644
  	/* don't use EDPD in irq mode except overridden by user */
  	if (!priv->edpd_mode_set_by_user && phydev->irq != PHY_POLL)
  		priv->edpd_enable = false;
-@@ -150,6 +200,17 @@ static int smsc_phy_reset(struct phy_device *phydev)
+@@ -150,6 +200,17 @@ static int smsc_phy_reset(struct phy_dev
  	return genphy_soft_reset(phydev);
  }
  
@@ -150,7 +148,7 @@ index 692930750215..c2fceb4a74a9 100644
  static int lan87xx_config_aneg(struct phy_device *phydev)
  {
  	int rc;
-@@ -254,6 +315,20 @@ int lan87xx_read_status(struct phy_device *phydev)
+@@ -254,6 +315,20 @@ int lan87xx_read_status(struct phy_devic
  			return rc;
  	}
  
@@ -171,7 +169,7 @@ index 692930750215..c2fceb4a74a9 100644
  	return err;
  }
  EXPORT_SYMBOL_GPL(lan87xx_read_status);
-@@ -376,16 +451,24 @@ int smsc_phy_probe(struct phy_device *phydev)
+@@ -376,16 +451,24 @@ int smsc_phy_probe(struct phy_device *ph
  	struct smsc_phy_priv *priv;
  	struct clk *refclk;
  
@@ -196,7 +194,7 @@ index 692930750215..c2fceb4a74a9 100644
  	phydev->priv = priv;
  
  	/* Make clk optional to keep DTB backward compatibility. */
-@@ -581,7 +664,7 @@ static struct phy_driver smsc_phy_driver[] = {
+@@ -581,7 +664,7 @@ static struct phy_driver smsc_phy_driver
  	.get_tunable	= smsc_phy_get_tunable,
  	.set_tunable	= smsc_phy_set_tunable,
  
@@ -205,8 +203,6 @@ index 692930750215..c2fceb4a74a9 100644
  	.resume		= genphy_resume,
  } };
  
-diff --git a/include/linux/smscphy.h b/include/linux/smscphy.h
-index e1c88627755a..703f030cc947 100644
 --- a/include/linux/smscphy.h
 +++ b/include/linux/smscphy.h
 @@ -14,6 +14,7 @@
@@ -243,6 +239,3 @@ index e1c88627755a..703f030cc947 100644
  int smsc_phy_config_intr(struct phy_device *phydev);
  irqreturn_t smsc_phy_handle_interrupt(struct phy_device *phydev);
  int smsc_phy_config_init(struct phy_device *phydev);
--- 
-2.39.5
-

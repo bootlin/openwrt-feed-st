@@ -30,8 +30,6 @@ Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
  4 files changed, 483 insertions(+), 3 deletions(-)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-tpg.c
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index a9370fc87d5c..b0738df44ac8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -1,5 +1,5 @@
@@ -41,11 +39,9 @@ index a9370fc87d5c..b0738df44ac8 100644
 +stm32-dcmipp-y += dcmipp-tpg.o dcmipp-isp.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o dcmipp-isp-params.o
  
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 763b2ea57518..4d0539289eb8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-@@ -276,6 +276,9 @@ static inline int dcmipp_s_stream_helper(struct v4l2_subdev *sd, int state)
+@@ -276,6 +276,9 @@ static inline int dcmipp_s_stream_helper
  }
  
  /* DCMIPP subdev init / release entry points */
@@ -55,11 +51,9 @@ index 763b2ea57518..4d0539289eb8 100644
  struct dcmipp_ent_device *dcmipp_inp_ent_init(const char *entity_name,
  					      struct dcmipp_device *dcmipp);
  void dcmipp_inp_ent_release(struct dcmipp_ent_device *ved);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 2cc66cd29da8..7c7cc6f60b88 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -118,6 +118,7 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -118,6 +118,7 @@ static const struct dcmipp_pipeline_conf
  #define	ID_AUX_CAPTURE 7
  #define	ID_ISP_STAT_CAPTURE 8
  #define	ID_ISP_PARAMS_OUTPUT 9
@@ -67,7 +61,7 @@ index 2cc66cd29da8..7c7cc6f60b88 100644
  static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
  	{
  		.name = "dcmipp_input",
-@@ -169,9 +170,15 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+@@ -169,9 +170,15 @@ static const struct dcmipp_ent_config st
  		.init = dcmipp_isp_params_ent_init,
  		.release = dcmipp_isp_params_ent_release,
  	},
@@ -83,7 +77,7 @@ index 2cc66cd29da8..7c7cc6f60b88 100644
  	DCMIPP_ENT_LINK(ID_INPUT, 1, ID_DUMP_BYTEPROC, 0, 0),
  	DCMIPP_ENT_LINK(ID_DUMP_BYTEPROC, 1, ID_DUMP_CAPTURE,  0,
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
-@@ -340,6 +347,7 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -340,6 +347,7 @@ static int dcmipp_graph_notify_bound(str
  		V4L2_MBUS_PARALLEL, V4L2_MBUS_BT656, V4L2_MBUS_CSI2_DPHY
  	};
  	int supported_types_nb = ARRAY_SIZE(supported_types);
@@ -91,7 +85,7 @@ index 2cc66cd29da8..7c7cc6f60b88 100644
  
  	dev_dbg(dcmipp->dev, "Subdev \"%s\" bound\n", subdev->name);
  
-@@ -401,9 +409,17 @@ static int dcmipp_graph_notify_bound(struct v4l2_async_notifier *notifier,
+@@ -401,9 +409,17 @@ static int dcmipp_graph_notify_bound(str
  		sink->bus.data_shift = vep.bus.parallel.data_shift;
  	}
  	sink->bus_type = vep.bus_type;
@@ -111,9 +105,6 @@ index 2cc66cd29da8..7c7cc6f60b88 100644
  	if (ret) {
  		dev_err(dcmipp->dev, "Failed to create media pad link with subdev \"%s\"\n",
  			subdev->name);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-tpg.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-tpg.c
-new file mode 100644
-index 000000000000..6374a5cdc47e
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-tpg.c
 @@ -0,0 +1,461 @@
@@ -578,6 +569,3 @@ index 000000000000..6374a5cdc47e
 +
 +	return &tpg->ved;
 +}
--- 
-2.39.5
-

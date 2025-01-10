@@ -11,11 +11,9 @@ Change-Id: Idc3ccde79360c4c8e6e3d53bc9dd877400c7a463
  arch/arm/boot/dts/st/stm32mp131.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index ac3e902edf34..062001de24f4 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1362,6 +1362,14 @@ hash: hash@54003000 {
+@@ -1362,6 +1362,14 @@
  			status = "disabled";
  		};
  
@@ -30,6 +28,3 @@ index ac3e902edf34..062001de24f4 100644
  		mdma: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
--- 
-2.39.5
-

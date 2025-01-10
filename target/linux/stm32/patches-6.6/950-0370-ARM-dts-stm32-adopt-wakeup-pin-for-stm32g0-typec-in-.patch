@@ -16,11 +16,9 @@ Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 9 +++------
  1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 72ef5fcc30c6..013b77c3ecaf 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -220,13 +220,10 @@ mcp23017: pinctrl@21 {
+@@ -220,13 +220,10 @@
  	typec@53 {
  		compatible = "st,stm32g0-typec";
  		reg = <0x53>;
@@ -37,6 +35,3 @@ index 72ef5fcc30c6..013b77c3ecaf 100644
  		connector {
  			compatible = "usb-c-connector";
  			label = "USB-C";
--- 
-2.39.5
-

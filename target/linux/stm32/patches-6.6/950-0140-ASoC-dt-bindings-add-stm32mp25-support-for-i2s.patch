@@ -12,8 +12,6 @@ Change-Id: I3b1c8ad4b6bb5b6d14c71f9dc684bf04d64867d7
  .../bindings/sound/st,stm32-i2s.yaml          | 61 +++++++++++++++----
  1 file changed, 48 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-index b9111d375b93..0a67bcb05305 100644
 --- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 +++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
 @@ -13,13 +13,11 @@ description:
@@ -104,6 +102,3 @@ index b9111d375b93..0a67bcb05305 100644
  unevaluatedProperties: false
  
  examples:
--- 
-2.39.5
-

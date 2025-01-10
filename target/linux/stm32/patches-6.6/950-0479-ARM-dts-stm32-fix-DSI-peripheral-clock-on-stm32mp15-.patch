@@ -19,11 +19,9 @@ Change-Id: I71e98719b1ad033fa2f36b5026791b8b1eac0336
  arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi | 2 +-
  7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157.dtsi b/arch/arm/boot/dts/st/stm32mp157.dtsi
-index 6197d878894d..97cd24227cef 100644
 --- a/arch/arm/boot/dts/st/stm32mp157.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157.dtsi
-@@ -20,7 +20,7 @@ gpu: gpu@59000000 {
+@@ -20,7 +20,7 @@
  		dsi: dsi@5a000000 {
  			compatible = "st,stm32-dsi";
  			reg = <0x5a000000 0x800>;
@@ -32,11 +30,9 @@ index 6197d878894d..97cd24227cef 100644
  			clock-names = "pclk", "ref", "px_clk";
  			phy-dsi-supply = <&reg18>;
  			resets = <&rcc DSI_R>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
-index 3d14c9f6bef4..34fcf8c155d6 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dtsi
-@@ -24,7 +24,7 @@ &cpu1 {
+@@ -24,7 +24,7 @@
  };
  
  &dsi {
@@ -45,11 +41,9 @@ index 3d14c9f6bef4..34fcf8c155d6 100644
  };
  
  &gpioz {
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
-index ab9d6bd30d9f..62a0117f050b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
-@@ -24,7 +24,7 @@ &cpu1 {
+@@ -24,7 +24,7 @@
  };
  
  &dsi {
@@ -58,11 +52,9 @@ index ab9d6bd30d9f..62a0117f050b 100644
  };
  
  &gpioz {
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
-index 7cceaa9d5c60..0c79a2b3edab 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
-@@ -22,7 +22,7 @@ &cpu1 {
+@@ -22,7 +22,7 @@
  };
  
  &dsi {
@@ -71,11 +63,9 @@ index 7cceaa9d5c60..0c79a2b3edab 100644
  };
  
  &gpioz {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
-index c260c35c2a67..0b8bba427cda 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
-@@ -29,7 +29,7 @@ &cryp1 {
+@@ -29,7 +29,7 @@
  };
  
  &dsi {
@@ -84,11 +74,9 @@ index c260c35c2a67..0b8bba427cda 100644
  };
  
  &gpioz {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
-index 44c51405b0ea..0ae22edb2537 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
-@@ -29,7 +29,7 @@ &cryp1 {
+@@ -29,7 +29,7 @@
  };
  
  &dsi {
@@ -97,11 +85,9 @@ index 44c51405b0ea..0ae22edb2537 100644
  };
  
  &gpioz {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
-index 05acff2e3cec..b682649ebe9b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
-@@ -27,7 +27,7 @@ &cryp1 {
+@@ -27,7 +27,7 @@
  };
  
  &dsi {
@@ -110,6 +96,3 @@ index 05acff2e3cec..b682649ebe9b 100644
  };
  
  &gpioz {
--- 
-2.39.5
-

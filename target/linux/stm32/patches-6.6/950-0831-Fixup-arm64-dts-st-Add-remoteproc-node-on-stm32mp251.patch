@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index cfe601b126bf..5131a4457f11 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2860,7 +2860,8 @@ mlahb: ahb@1 {
+@@ -2860,7 +2860,8 @@
  		compatible = "st,mlahb", "simple-bus";
  		#address-cells = <1>;
  		#size-cells = <1>;
@@ -33,6 +31,3 @@ index cfe601b126bf..5131a4457f11 100644
  
  		m33_rproc: m33@0 {
  			compatible = "st,stm32mp2-m33";
--- 
-2.39.5
-

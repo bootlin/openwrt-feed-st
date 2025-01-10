@@ -19,8 +19,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 68 +++++++++++++++++++++++++
  1 file changed, 68 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index 44a15b952213..91da681bed67 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -25,6 +25,7 @@ struct stm32_pcie {
@@ -31,7 +29,7 @@ index 44a15b952213..91da681bed67 100644
  };
  
  static const struct of_device_id stm32_pcie_of_match[] = {
-@@ -191,6 +192,9 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -191,6 +192,9 @@ static int stm32_pcie_probe(struct platf
  	if (ret && ret != -EINVAL)
  		return dev_err_probe(dev, ret, "Error reading max-payload value\n");
  
@@ -41,7 +39,7 @@ index 44a15b952213..91da681bed67 100644
  	stm32_pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
  	if (IS_ERR(stm32_pcie->reset_gpio))
  		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
-@@ -239,6 +243,70 @@ static struct platform_driver stm32_pcie_driver = {
+@@ -239,6 +243,70 @@ static struct platform_driver stm32_pcie
  	},
  };
  
@@ -112,6 +110,3 @@ index 44a15b952213..91da681bed67 100644
  module_platform_driver(stm32_pcie_driver);
  MODULE_DESCRIPTION("STM32MP25 PCIe Controller driver");
  MODULE_LICENSE("GPL");
--- 
-2.39.5
-

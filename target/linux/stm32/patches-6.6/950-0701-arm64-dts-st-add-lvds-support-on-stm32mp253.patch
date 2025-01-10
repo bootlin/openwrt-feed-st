@@ -17,11 +17,9 @@ Change-Id: I04c283b32bbe5cae4b9baed0b3a678501a05715a
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index d1436509699c..32314619275d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -57,6 +57,17 @@ m_can3: can@402f0000 {
+@@ -57,6 +57,17 @@
  		status = "disabled";
  	};
  
@@ -39,6 +37,3 @@ index d1436509699c..32314619275d 100644
  	eth2: eth2@482d0000 {
  		compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  		reg = <0x482d0000 0x4000>;
--- 
-2.39.5
-

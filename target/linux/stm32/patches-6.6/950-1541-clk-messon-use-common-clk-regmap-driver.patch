@@ -41,8 +41,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  delete mode 100644 drivers/clk/meson/clk-regmap.c
  delete mode 100644 drivers/clk/meson/clk-regmap.h
 
-diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-index 135da8f2d0b1..dfa9ed31e1de 100644
 --- a/drivers/clk/meson/Kconfig
 +++ b/drivers/clk/meson/Kconfig
 @@ -2,57 +2,53 @@
@@ -167,11 +165,9 @@ index 135da8f2d0b1..dfa9ed31e1de 100644
  	select COMMON_CLK_MESON_DUALDIV
  	select COMMON_CLK_MESON_MPLL
  	select COMMON_CLK_MESON_PLL
-diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-index cd961cc4f4db..48967102041b 100644
 --- a/drivers/clk/meson/Makefile
 +++ b/drivers/clk/meson/Makefile
-@@ -9,7 +9,6 @@ obj-$(CONFIG_COMMON_CLK_MESON_EE_CLKC) += meson-eeclk.o
+@@ -9,7 +9,6 @@ obj-$(CONFIG_COMMON_CLK_MESON_EE_CLKC) +
  obj-$(CONFIG_COMMON_CLK_MESON_MPLL) += clk-mpll.o
  obj-$(CONFIG_COMMON_CLK_MESON_PHASE) += clk-phase.o
  obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
@@ -179,8 +175,6 @@ index cd961cc4f4db..48967102041b 100644
  obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
  obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
  
-diff --git a/drivers/clk/meson/a1-peripherals.c b/drivers/clk/meson/a1-peripherals.c
-index e2a1f12f9175..51cafc43a6d4 100644
 --- a/drivers/clk/meson/a1-peripherals.c
 +++ b/drivers/clk/meson/a1-peripherals.c
 @@ -8,11 +8,11 @@
@@ -196,8 +190,6 @@ index e2a1f12f9175..51cafc43a6d4 100644
  #include "meson-clkc-utils.h"
  
  #include <dt-bindings/clock/amlogic,a1-peripherals-clkc.h>
-diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
-index 4325e8a6a3ef..b66610425569 100644
 --- a/drivers/clk/meson/a1-pll.c
 +++ b/drivers/clk/meson/a1-pll.c
 @@ -8,10 +8,10 @@
@@ -212,8 +204,6 @@ index 4325e8a6a3ef..b66610425569 100644
  #include "meson-clkc-utils.h"
  
  #include <dt-bindings/clock/amlogic,a1-pll-clkc.h>
-diff --git a/drivers/clk/meson/axg-aoclk.c b/drivers/clk/meson/axg-aoclk.c
-index d80ab4728f7a..37c9200cac95 100644
 --- a/drivers/clk/meson/axg-aoclk.c
 +++ b/drivers/clk/meson/axg-aoclk.c
 @@ -9,13 +9,13 @@
@@ -231,8 +221,6 @@ index d80ab4728f7a..37c9200cac95 100644
  #include "clk-dualdiv.h"
  
  #include <dt-bindings/clock/axg-aoclkc.h>
-diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-index ac3482960903..10a64b96a805 100644
 --- a/drivers/clk/meson/axg-audio.c
 +++ b/drivers/clk/meson/axg-audio.c
 @@ -6,6 +6,7 @@
@@ -251,8 +239,6 @@ index ac3482960903..10a64b96a805 100644
  #include "clk-phase.h"
  #include "sclk-div.h"
  
-diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
-index 5f60f2bcca59..3c6684a6d545 100644
 --- a/drivers/clk/meson/axg.c
 +++ b/drivers/clk/meson/axg.c
 @@ -10,12 +10,12 @@
@@ -269,8 +255,6 @@ index 5f60f2bcca59..3c6684a6d545 100644
  #include "clk-pll.h"
  #include "clk-mpll.h"
  #include "axg.h"
-diff --git a/drivers/clk/meson/clk-cpu-dyndiv.c b/drivers/clk/meson/clk-cpu-dyndiv.c
-index 8778c149d26a..860c2cd035eb 100644
 --- a/drivers/clk/meson/clk-cpu-dyndiv.c
 +++ b/drivers/clk/meson/clk-cpu-dyndiv.c
 @@ -5,9 +5,9 @@
@@ -284,8 +268,6 @@ index 8778c149d26a..860c2cd035eb 100644
  #include "clk-cpu-dyndiv.h"
  
  static inline struct meson_clk_cpu_dyndiv_data *
-diff --git a/drivers/clk/meson/clk-dualdiv.c b/drivers/clk/meson/clk-dualdiv.c
-index feae49a8f6dc..79bde3d38b84 100644
 --- a/drivers/clk/meson/clk-dualdiv.c
 +++ b/drivers/clk/meson/clk-dualdiv.c
 @@ -22,9 +22,9 @@
@@ -299,8 +281,6 @@ index feae49a8f6dc..79bde3d38b84 100644
  #include "clk-dualdiv.h"
  
  static inline struct meson_clk_dualdiv_data *
-diff --git a/drivers/clk/meson/clk-mpll.c b/drivers/clk/meson/clk-mpll.c
-index 20255e129b37..d3ea287feba1 100644
 --- a/drivers/clk/meson/clk-mpll.c
 +++ b/drivers/clk/meson/clk-mpll.c
 @@ -12,10 +12,10 @@
@@ -315,8 +295,6 @@ index 20255e129b37..d3ea287feba1 100644
  #include "clk-mpll.h"
  
  #define SDM_DEN 16384
-diff --git a/drivers/clk/meson/clk-phase.c b/drivers/clk/meson/clk-phase.c
-index a6763439f7d2..959edd3a95c8 100644
 --- a/drivers/clk/meson/clk-phase.c
 +++ b/drivers/clk/meson/clk-phase.c
 @@ -5,9 +5,9 @@
@@ -330,8 +308,6 @@ index a6763439f7d2..959edd3a95c8 100644
  #include "clk-phase.h"
  
  #define phase_step(_width) (360 / (1 << (_width)))
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 6fa7639a3050..49808bdeacea 100644
 --- a/drivers/clk/meson/clk-pll.c
 +++ b/drivers/clk/meson/clk-pll.c
 @@ -27,13 +27,13 @@
@@ -349,9 +325,6 @@ index 6fa7639a3050..49808bdeacea 100644
  #include "clk-pll.h"
  
  static inline struct meson_clk_pll_data *
-diff --git a/drivers/clk/meson/clk-regmap.c b/drivers/clk/meson/clk-regmap.c
-deleted file mode 100644
-index 8ad8977cf1c2..000000000000
 --- a/drivers/clk/meson/clk-regmap.c
 +++ /dev/null
 @@ -1,186 +0,0 @@
@@ -541,9 +514,6 @@ index 8ad8977cf1c2..000000000000
 -MODULE_DESCRIPTION("Amlogic regmap backed clock driver");
 -MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
 -MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/meson/clk-regmap.h b/drivers/clk/meson/clk-regmap.h
-deleted file mode 100644
-index e365312da54e..000000000000
 --- a/drivers/clk/meson/clk-regmap.h
 +++ /dev/null
 @@ -1,137 +0,0 @@
@@ -684,8 +654,6 @@ index e365312da54e..000000000000
 -#define MESON_PCLK_RO(_name, _reg, _bit, _pname)	\
 -	__MESON_PCLK(_name, _reg, _bit, &clk_regmap_gate_ro_ops, _pname)
 -#endif /* __CLK_REGMAP_H */
-diff --git a/drivers/clk/meson/g12a-aoclk.c b/drivers/clk/meson/g12a-aoclk.c
-index c6b1d55cd7c8..e7cdcd0b89c7 100644
 --- a/drivers/clk/meson/g12a-aoclk.c
 +++ b/drivers/clk/meson/g12a-aoclk.c
 @@ -9,13 +9,13 @@
@@ -703,8 +671,6 @@ index c6b1d55cd7c8..e7cdcd0b89c7 100644
  #include "clk-dualdiv.h"
  
  #include <dt-bindings/clock/g12a-aoclkc.h>
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index f373a8d48b1d..3dfa7270f4ea 100644
 --- a/drivers/clk/meson/g12a.c
 +++ b/drivers/clk/meson/g12a.c
 @@ -11,6 +11,7 @@
@@ -723,8 +689,6 @@ index f373a8d48b1d..3dfa7270f4ea 100644
  #include "clk-cpu-dyndiv.h"
  #include "vid-pll-div.h"
  #include "meson-eeclk.h"
-diff --git a/drivers/clk/meson/gxbb-aoclk.c b/drivers/clk/meson/gxbb-aoclk.c
-index 4aec1740ac34..d4a96fccb859 100644
 --- a/drivers/clk/meson/gxbb-aoclk.c
 +++ b/drivers/clk/meson/gxbb-aoclk.c
 @@ -3,12 +3,12 @@
@@ -741,8 +705,6 @@ index 4aec1740ac34..d4a96fccb859 100644
  #include "clk-dualdiv.h"
  
  #include <dt-bindings/clock/gxbb-aoclkc.h>
-diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
-index 1b1279d94781..171a4d980aca 100644
 --- a/drivers/clk/meson/gxbb.c
 +++ b/drivers/clk/meson/gxbb.c
 @@ -5,13 +5,13 @@
@@ -760,8 +722,6 @@ index 1b1279d94781..171a4d980aca 100644
  #include "clk-pll.h"
  #include "clk-mpll.h"
  #include "meson-eeclk.h"
-diff --git a/drivers/clk/meson/meson-aoclk.h b/drivers/clk/meson/meson-aoclk.h
-index 308be3e4814a..4ff65c2f83c6 100644
 --- a/drivers/clk/meson/meson-aoclk.h
 +++ b/drivers/clk/meson/meson-aoclk.h
 @@ -12,11 +12,11 @@
@@ -777,8 +737,6 @@ index 308be3e4814a..4ff65c2f83c6 100644
  #include "meson-clkc-utils.h"
  
  struct meson_aoclk_data {
-diff --git a/drivers/clk/meson/meson-eeclk.c b/drivers/clk/meson/meson-eeclk.c
-index 845ca8bfa346..4b3fd9edcc99 100644
 --- a/drivers/clk/meson/meson-eeclk.c
 +++ b/drivers/clk/meson/meson-eeclk.c
 @@ -5,13 +5,13 @@
@@ -796,8 +754,6 @@ index 845ca8bfa346..4b3fd9edcc99 100644
  #include "meson-eeclk.h"
  
  int meson_eeclkc_probe(struct platform_device *pdev)
-diff --git a/drivers/clk/meson/meson-eeclk.h b/drivers/clk/meson/meson-eeclk.h
-index 37a48b75c660..ed1c996d5ff3 100644
 --- a/drivers/clk/meson/meson-eeclk.h
 +++ b/drivers/clk/meson/meson-eeclk.h
 @@ -8,7 +8,7 @@
@@ -809,8 +765,6 @@ index 37a48b75c660..ed1c996d5ff3 100644
  #include "meson-clkc-utils.h"
  
  struct platform_device;
-diff --git a/drivers/clk/meson/meson8-ddr.c b/drivers/clk/meson/meson8-ddr.c
-index 4b73ea244b63..c9b8ea5e1943 100644
 --- a/drivers/clk/meson/meson8-ddr.c
 +++ b/drivers/clk/meson/meson8-ddr.c
 @@ -8,9 +8,9 @@
@@ -824,8 +778,6 @@ index 4b73ea244b63..c9b8ea5e1943 100644
  #include "clk-pll.h"
  
  #define AM_DDR_PLL_CNTL			0x00
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index b7417ac262d3..203ee2d09b44 100644
 --- a/drivers/clk/meson/meson8b.c
 +++ b/drivers/clk/meson/meson8b.c
 @@ -9,6 +9,7 @@
@@ -844,8 +796,6 @@ index b7417ac262d3..203ee2d09b44 100644
  #include "meson-clkc-utils.h"
  #include "clk-pll.h"
  #include "clk-mpll.h"
-diff --git a/drivers/clk/meson/sclk-div.c b/drivers/clk/meson/sclk-div.c
-index d12c45c4c261..e8fa8b3ae251 100644
 --- a/drivers/clk/meson/sclk-div.c
 +++ b/drivers/clk/meson/sclk-div.c
 @@ -17,9 +17,9 @@
@@ -859,8 +809,6 @@ index d12c45c4c261..e8fa8b3ae251 100644
  #include "sclk-div.h"
  
  static inline struct meson_sclk_div_data *
-diff --git a/drivers/clk/meson/vid-pll-div.c b/drivers/clk/meson/vid-pll-div.c
-index daff235bc763..357e1fcfbd0c 100644
 --- a/drivers/clk/meson/vid-pll-div.c
 +++ b/drivers/clk/meson/vid-pll-div.c
 @@ -5,9 +5,9 @@
@@ -874,6 +822,3 @@ index daff235bc763..357e1fcfbd0c 100644
  #include "vid-pll-div.h"
  
  static inline struct meson_vid_pll_div_data *
--- 
-2.39.5
-

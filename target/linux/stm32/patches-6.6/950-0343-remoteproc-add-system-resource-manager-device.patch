@@ -20,8 +20,6 @@ Change-Id: I6d209d32b31f81f19e5ace1c56cb40bcb0b5c253
  3 files changed, 499 insertions(+)
  create mode 100644 drivers/remoteproc/rproc_srm_dev.c
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 993e0cf0a43a..37cea7519b2b 100644
 --- a/drivers/remoteproc/Kconfig
 +++ b/drivers/remoteproc/Kconfig
 @@ -31,6 +31,16 @@ config REMOTEPROC_SRM_CORE
@@ -41,8 +39,6 @@ index 993e0cf0a43a..37cea7519b2b 100644
  config IMX_REMOTEPROC
  	tristate "i.MX remoteproc support"
  	depends on ARCH_MXC
-diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-index 1ab1b2fe075d..f25a276e6c15 100644
 --- a/drivers/remoteproc/Makefile
 +++ b/drivers/remoteproc/Makefile
 @@ -12,6 +12,7 @@ remoteproc-y				+= remoteproc_virtio.o
@@ -53,9 +49,6 @@ index 1ab1b2fe075d..f25a276e6c15 100644
  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
  obj-$(CONFIG_IMX_DSP_REMOTEPROC)	+= imx_dsp_rproc.o
  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
-diff --git a/drivers/remoteproc/rproc_srm_dev.c b/drivers/remoteproc/rproc_srm_dev.c
-new file mode 100644
-index 000000000000..7aa32f909135
 --- /dev/null
 +++ b/drivers/remoteproc/rproc_srm_dev.c
 @@ -0,0 +1,488 @@
@@ -547,6 +540,3 @@ index 000000000000..7aa32f909135
 +MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@st.com>");
 +MODULE_DESCRIPTION("Remoteproc System Resource Manager driver - dev");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

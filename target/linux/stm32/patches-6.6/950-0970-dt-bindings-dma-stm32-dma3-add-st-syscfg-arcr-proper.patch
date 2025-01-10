@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index e7fd006fea40..b3072edccb1e 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -78,6 +78,18 @@ properties:
@@ -42,6 +40,3 @@ index e7fd006fea40..b3072edccb1e 100644
    "#dma-cells":
      const: 3
      description: |
--- 
-2.39.5
-

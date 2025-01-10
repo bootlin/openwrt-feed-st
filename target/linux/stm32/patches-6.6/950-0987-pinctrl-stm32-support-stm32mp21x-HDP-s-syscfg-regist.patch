@@ -20,8 +20,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/pinctrl/stm32/pinctrl-stm32-hdp.c | 33 +++++++++++++++++++++++
  1 file changed, 33 insertions(+)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c b/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
-index 3b675865ae95..48a673b247cb 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32-hdp.c
 @@ -7,6 +7,7 @@
@@ -58,7 +56,7 @@ index 3b675865ae95..48a673b247cb 100644
  };
  
  static const struct pinctrl_pin_desc stm32_hdp_pins[] = {
-@@ -191,6 +197,29 @@ static const struct of_device_id stm32_hdp_of_match[] = {
+@@ -191,6 +197,29 @@ static const struct of_device_id stm32_h
  	{}
  };
  
@@ -88,7 +86,7 @@ index 3b675865ae95..48a673b247cb 100644
  static int stm32_hdp_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
-@@ -209,6 +238,10 @@ static int stm32_hdp_probe(struct platform_device *pdev)
+@@ -209,6 +238,10 @@ static int stm32_hdp_probe(struct platfo
  	if (IS_ERR(hdp->base))
  		return PTR_ERR(hdp->base);
  
@@ -99,6 +97,3 @@ index 3b675865ae95..48a673b247cb 100644
  	hdp->clk = devm_clk_get_enabled(dev, NULL);
  	if (IS_ERR(hdp->clk))
  		return dev_err_probe(dev, PTR_ERR(hdp->clk), "No HDP clock provided\n");
--- 
-2.39.5
-

@@ -11,11 +11,9 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index a68d7a37f628..6ee987ce2b1d 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -1901,7 +1901,7 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1901,7 +1901,7 @@ static const struct clock_config stm32mp
  	PLL(PLL4, "pll4", ref4_parents, 0, RCC_PLL4CR, RCC_RCK4SELR),
  
  	/* ODF */
@@ -24,7 +22,7 @@ index a68d7a37f628..6ee987ce2b1d 100644
  		  _GATE(RCC_PLL1CR, 4, 0),
  		  _NO_MUX,
  		  _DIV(RCC_PLL1CFGR2, 0, 7, 0, NULL)),
-@@ -1956,7 +1956,7 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1956,7 +1956,7 @@ static const struct clock_config stm32mp
  	    RCC_CPERCKSELR, 0, 2, 0),
  
  	MUX(CK_MPU, "ck_mpu", cpu_src, CLK_OPS_PARENT_ENABLE |
@@ -33,6 +31,3 @@ index a68d7a37f628..6ee987ce2b1d 100644
  
  	COMPOSITE(CK_AXI, "ck_axi", axi_src, CLK_IS_CRITICAL |
  		   CLK_OPS_PARENT_ENABLE,
--- 
-2.39.5
-

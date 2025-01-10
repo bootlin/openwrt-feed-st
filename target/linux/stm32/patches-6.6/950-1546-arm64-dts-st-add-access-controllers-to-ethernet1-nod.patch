@@ -12,11 +12,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index dc2f14cea6cf..748f66f9decf 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -2621,6 +2621,7 @@ eth1: eth1@482c0000 {
+@@ -2621,6 +2621,7 @@
  			snps,rxqos = <7>;
  			snps,axi-config = <&stmmac_axi_config_1>;
  			snps,tso;
@@ -24,6 +22,3 @@ index dc2f14cea6cf..748f66f9decf 100644
  			power-domains = <&CLUSTER_PD>;
  			wakeup-source;
  			status = "disabled";
--- 
-2.39.5
-

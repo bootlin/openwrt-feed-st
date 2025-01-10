@@ -14,8 +14,6 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index d8186a79902b..ee1740b8b927 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -23,6 +23,7 @@ CONFIG_MTD_MCHP23K256=m
@@ -26,6 +24,3 @@ index d8186a79902b..ee1740b8b927 100644
  CONFIG_NVMEM_STM32_TAMP=y
  CONFIG_OF_OVERLAY=y
  CONFIG_OVERLAY_FS=y
--- 
-2.39.5
-

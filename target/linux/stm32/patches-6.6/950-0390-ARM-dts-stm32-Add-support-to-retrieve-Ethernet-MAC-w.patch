@@ -16,11 +16,9 @@ Change-Id: Iad564edd07682d7ad6e7ef0e529987180d22c14e
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 16368c82a4bc..2ee0a76394d1 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -201,6 +201,8 @@ &ethernet1 {
+@@ -201,6 +201,8 @@
  	phy-mode = "rmii";
  	max-speed = <100>;
  	phy-handle = <&phy0_eth1>;
@@ -29,7 +27,7 @@ index 16368c82a4bc..2ee0a76394d1 100644
  
  	mdio {
  		#address-cells = <1>;
-@@ -226,6 +228,8 @@ &ethernet2 {
+@@ -226,6 +228,8 @@
  	phy-handle = <&phy0_eth2>;
  	st,ext-phyclk;
  	phy-supply = <&scmi_v3v3_sw>;
@@ -38,6 +36,3 @@ index 16368c82a4bc..2ee0a76394d1 100644
  
  	mdio {
  		#address-cells = <1>;
--- 
-2.39.5
-

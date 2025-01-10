@@ -35,8 +35,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 189 +++++++++---------
  1 file changed, 97 insertions(+), 92 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index 3d9211158a65..629670dc8de4 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -82,7 +82,6 @@ struct dcmipp_statcap_device {
@@ -63,7 +61,7 @@ index 3d9211158a65..629670dc8de4 100644
  
  	/*
  	 * indicate the current state of the capture stat machine,
-@@ -180,35 +176,6 @@ static const struct v4l2_ioctl_ops dcmipp_statcap_ioctl_ops = {
+@@ -180,35 +176,6 @@ static const struct v4l2_ioctl_ops dcmip
  	.vidioc_streamoff = vb2_ioctl_streamoff,
  };
  
@@ -99,7 +97,7 @@ index 3d9211158a65..629670dc8de4 100644
  static int dcmipp_pipeline_s_stream(struct dcmipp_statcap_device *vcap,
  				    int state)
  {
-@@ -242,9 +209,9 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+@@ -242,9 +209,9 @@ static int dcmipp_statcap_start_streamin
  	struct dcmipp_statcap_device *vcap = vb2_get_drv_priv(vq);
  	struct media_entity *entity = &vcap->vdev.entity;
  	struct dcmipp_buf *buf, *node;
@@ -111,7 +109,7 @@ index 3d9211158a65..629670dc8de4 100644
  
  	vcap->sequence = 0;
  
-@@ -267,6 +234,18 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+@@ -267,6 +234,18 @@ static int dcmipp_statcap_start_streamin
  	if (ret)
  		goto err_media_pipeline_stop;
  
@@ -130,7 +128,7 @@ index 3d9211158a65..629670dc8de4 100644
  	/* Get frame format info from ISP sink pad */
  	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
  	fmt.pad = 0;
-@@ -278,21 +257,12 @@ static int dcmipp_statcap_start_streaming(struct vb2_queue *vq,
+@@ -278,21 +257,12 @@ static int dcmipp_statcap_start_streamin
  	}
  	vcap->frame_format = fmt.format.code;
  
@@ -155,7 +153,7 @@ index 3d9211158a65..629670dc8de4 100644
  
  	return 0;
  
-@@ -326,7 +296,6 @@ static void dcmipp_statcap_stop_streaming(struct vb2_queue *vq)
+@@ -326,7 +296,6 @@ static void dcmipp_statcap_stop_streamin
  
  	/* Reset the capture state machine */
  	vcap->capture_state = COLD_START;
@@ -163,7 +161,7 @@ index 3d9211158a65..629670dc8de4 100644
  
  	dcmipp_pipeline_s_stream(vcap, 0);
  
-@@ -425,54 +394,83 @@ static int dcmipp_statcap_s_ctrl(struct v4l2_ctrl *ctrl)
+@@ -425,54 +394,83 @@ static int dcmipp_statcap_s_ctrl(struct
  {
  	struct dcmipp_statcap_device *vcap =
  			container_of(ctrl->handler, struct dcmipp_statcap_device, ctrls);
@@ -278,7 +276,7 @@ index 3d9211158a65..629670dc8de4 100644
  		break;
  	case V4L2_CID_ISP_STAT_AVG_FILTER:
  		vcap->avg_filter = ctrl->val;
-@@ -586,12 +584,12 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -586,12 +584,12 @@ static irqreturn_t dcmipp_statcap_irq_th
  	static bool stat_ready;
  	int i;
  
@@ -295,7 +293,7 @@ index 3d9211158a65..629670dc8de4 100644
  		return IRQ_HANDLED;
  
  	spin_lock_irq(&vcap->irqlock);
-@@ -654,7 +652,21 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -654,7 +652,21 @@ static irqreturn_t dcmipp_statcap_irq_th
  			vcap->local_buf.average_RGB[i] = reg_read(vcap, DCMIPP_P1STXSR(i));
  			/* Normalize values */
  			vcap->local_buf.average_RGB[i] <<= 8;
@@ -318,7 +316,7 @@ index 3d9211158a65..629670dc8de4 100644
  		}
  		break;
  
-@@ -799,7 +811,6 @@ dcmipp_statcap_ent_init(const char *entity_name, struct dcmipp_device *dcmipp)
+@@ -799,7 +811,6 @@ dcmipp_statcap_ent_init(const char *enti
  
  	/* Add controls */
  	v4l2_ctrl_handler_init(&vcap->ctrls, ARRAY_SIZE(dcmipp_statcap_ctrls));
@@ -326,7 +324,7 @@ index 3d9211158a65..629670dc8de4 100644
  
  	for (i = 0; i < ARRAY_SIZE(dcmipp_statcap_ctrls); i++) {
  		v4l2_ctrl_new_custom(&vcap->ctrls, &dcmipp_statcap_ctrls[i], NULL);
-@@ -811,12 +822,6 @@ dcmipp_statcap_ent_init(const char *entity_name, struct dcmipp_device *dcmipp)
+@@ -811,12 +822,6 @@ dcmipp_statcap_ent_init(const char *enti
  	}
  	vcap->vdev.ctrl_handler = &vcap->ctrls;
  
@@ -339,6 +337,3 @@ index 3d9211158a65..629670dc8de4 100644
  	/* Register the video_device with the v4l2 and the media framework */
  	ret = video_register_device(vdev, VFL_TYPE_VIDEO, -1);
  	if (ret) {
--- 
-2.39.5
-

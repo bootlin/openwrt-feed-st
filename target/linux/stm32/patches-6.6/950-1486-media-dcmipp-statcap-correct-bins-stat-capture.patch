@@ -21,11 +21,9 @@ Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index eb34971ec151..a8399f21eb94 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-@@ -687,9 +687,15 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -687,9 +687,15 @@ static irqreturn_t dcmipp_statcap_irq_th
  				  DCMIPP_P1STXCR_ENABLE);
  
  		if (vcap->prev_capture_state == PHY_BIN_3_SHA_AV_RGB) {
@@ -41,7 +39,7 @@ index eb34971ec151..a8399f21eb94 100644
  		}
  		break;
  
-@@ -768,8 +774,6 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -768,8 +774,6 @@ static irqreturn_t dcmipp_statcap_irq_th
  		if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
  			vcap->capture_state++;
  		} else {
@@ -50,6 +48,3 @@ index eb34971ec151..a8399f21eb94 100644
  			vcap->stat_location = !vcap->stat_location;
  			vcap->capture_state = PHY_AV_RGB_SHA_BIN_0;
  		}
--- 
-2.39.5
-

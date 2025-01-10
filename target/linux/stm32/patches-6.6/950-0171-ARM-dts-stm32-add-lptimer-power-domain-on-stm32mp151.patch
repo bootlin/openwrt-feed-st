@@ -13,11 +13,9 @@ Change-Id: Id3ecad5d5bf4a44e786f989453cced351d27c2b4
  arch/arm/boot/dts/st/stm32mp151.dtsi | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index b97513574b50..84ef281ae812 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -405,6 +405,7 @@ lptimer1: timer@40009000 {
+@@ -405,6 +405,7 @@
  			interrupts-extended = <&exti 47 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc LPTIM1_K>;
  			clock-names = "mux";
@@ -25,7 +23,7 @@ index b97513574b50..84ef281ae812 100644
  			wakeup-source;
  			status = "disabled";
  
-@@ -1347,6 +1348,7 @@ lptimer2: timer@50021000 {
+@@ -1347,6 +1348,7 @@
  			interrupts-extended = <&exti 48 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc LPTIM2_K>;
  			clock-names = "mux";
@@ -33,7 +31,7 @@ index b97513574b50..84ef281ae812 100644
  			wakeup-source;
  			status = "disabled";
  
-@@ -1376,6 +1378,7 @@ lptimer3: timer@50022000 {
+@@ -1376,6 +1378,7 @@
  			interrupts-extended = <&exti 50 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc LPTIM3_K>;
  			clock-names = "mux";
@@ -41,7 +39,7 @@ index b97513574b50..84ef281ae812 100644
  			wakeup-source;
  			status = "disabled";
  
-@@ -1398,6 +1401,7 @@ lptimer4: timer@50023000 {
+@@ -1398,6 +1401,7 @@
  			interrupts-extended = <&exti 52 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc LPTIM4_K>;
  			clock-names = "mux";
@@ -49,7 +47,7 @@ index b97513574b50..84ef281ae812 100644
  			wakeup-source;
  			status = "disabled";
  
-@@ -1414,6 +1418,7 @@ lptimer5: timer@50024000 {
+@@ -1414,6 +1418,7 @@
  			interrupts-extended = <&exti 53 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc LPTIM5_K>;
  			clock-names = "mux";
@@ -57,6 +55,3 @@ index b97513574b50..84ef281ae812 100644
  			wakeup-source;
  			status = "disabled";
  
--- 
-2.39.5
-

@@ -15,11 +15,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 4 ++++
  4 files changed, 16 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index c346878ee903..f5acf2697c8f 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -379,6 +379,8 @@ &i2c2 {
+@@ -379,6 +379,8 @@
  	pinctrl-1 = <&i2c2_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -28,7 +26,7 @@ index c346878ee903..f5acf2697c8f 100644
  	status = "okay";
  
  	wm8994: wm8994@1b {
-@@ -507,6 +509,8 @@ &i2c5 {
+@@ -507,6 +509,8 @@
  	pinctrl-1 = <&i2c5_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -37,11 +35,9 @@ index c346878ee903..f5acf2697c8f 100644
  	status = "okay";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index 89da79ea80bb..00cb9f7cd9d5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -379,6 +379,8 @@ &i2c2 {
+@@ -379,6 +379,8 @@
  	pinctrl-1 = <&i2c2_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -50,7 +46,7 @@ index 89da79ea80bb..00cb9f7cd9d5 100644
  	status = "okay";
  
  	wm8994: wm8994@1b {
-@@ -507,6 +509,8 @@ &i2c5 {
+@@ -507,6 +509,8 @@
  	pinctrl-1 = <&i2c5_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -59,11 +55,9 @@ index 89da79ea80bb..00cb9f7cd9d5 100644
  	status = "okay";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-index 18a02850d6ef..99295a42cf87 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-@@ -379,6 +379,8 @@ &i2c2 {
+@@ -379,6 +379,8 @@
  	pinctrl-1 = <&i2c2_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -72,7 +66,7 @@ index 18a02850d6ef..99295a42cf87 100644
  	status = "okay";
  
  	wm8994: wm8994@1b {
-@@ -507,6 +509,8 @@ &i2c5 {
+@@ -507,6 +509,8 @@
  	pinctrl-1 = <&i2c5_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -81,11 +75,9 @@ index 18a02850d6ef..99295a42cf87 100644
  	status = "okay";
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index 13339417ee40..b63fee4881e5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -380,6 +380,8 @@ &i2c2 {
+@@ -380,6 +380,8 @@
  	pinctrl-1 = <&i2c2_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -94,7 +86,7 @@ index 13339417ee40..b63fee4881e5 100644
  	status = "okay";
  
  	wm8994: wm8994@1b {
-@@ -509,6 +511,8 @@ &i2c5 {
+@@ -509,6 +511,8 @@
  	pinctrl-1 = <&i2c5_sleep_pins_a>;
  	i2c-scl-rising-time-ns = <185>;
  	i2c-scl-falling-time-ns = <20>;
@@ -103,6 +95,3 @@ index 13339417ee40..b63fee4881e5 100644
  	status = "okay";
  };
  
--- 
-2.39.5
-

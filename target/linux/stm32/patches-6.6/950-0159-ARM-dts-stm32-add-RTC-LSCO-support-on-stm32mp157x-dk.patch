@@ -16,11 +16,9 @@ Change-Id: I6ab004a7231b47c7590e0a6529b10f08f3cf6efe
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts    | 7 +++++++
  3 files changed, 20 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-index d0d8ba45d904..a9b36f408a88 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-@@ -1501,6 +1501,12 @@ pins {
+@@ -1501,6 +1501,12 @@
  		};
  	};
  
@@ -33,8 +31,6 @@ index d0d8ba45d904..a9b36f408a88 100644
  	sai2a_pins_a: sai2a-0 {
  		pins {
  			pinmux = <STM32_PINMUX('I', 5, AF10)>, /* SAI2_SCK_A */
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index eab3cff10fa9..254b9239e5de 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 @@ -12,6 +12,7 @@
@@ -45,7 +41,7 @@ index eab3cff10fa9..254b9239e5de 100644
  
  / {
  	model = "STMicroelectronics STM32MP157C-DK2 Discovery Board";
-@@ -85,6 +86,12 @@ ltdc_ep1_out: endpoint@1 {
+@@ -85,6 +86,12 @@
  	};
  };
  
@@ -58,8 +54,6 @@ index eab3cff10fa9..254b9239e5de 100644
  &usart2 {
  	pinctrl-names = "default", "sleep", "idle";
  	pinctrl-0 = <&usart2_pins_c>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index da3590c0028f..677505a8f580 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 @@ -12,6 +12,7 @@
@@ -70,7 +64,7 @@ index da3590c0028f..677505a8f580 100644
  
  / {
  	model = "STMicroelectronics STM32MP157F-DK2 Discovery Board";
-@@ -86,6 +87,12 @@ ltdc_ep1_out: endpoint@1 {
+@@ -86,6 +87,12 @@
  	};
  };
  
@@ -83,6 +77,3 @@ index da3590c0028f..677505a8f580 100644
  &usart2 {
  	pinctrl-names = "default", "sleep", "idle";
  	pinctrl-0 = <&usart2_pins_c>;
--- 
-2.39.5
-

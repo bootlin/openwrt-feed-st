@@ -33,11 +33,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/spi/spi-stm32.c | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 29496f3d9310..9bae930be6d8 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
-@@ -1930,9 +1930,15 @@ static int stm32_spi_probe(struct platform_device *pdev)
+@@ -1930,9 +1930,15 @@ static int stm32_spi_probe(struct platfo
  	struct resource *res;
  	struct reset_control *rst;
  	struct device_node *np = pdev->dev.of_node;
@@ -54,6 +52,3 @@ index 29496f3d9310..9bae930be6d8 100644
  
  	device_mode = of_property_read_bool(np, "spi-slave");
  	if (!cfg->has_device_mode && device_mode) {
--- 
-2.39.5
-

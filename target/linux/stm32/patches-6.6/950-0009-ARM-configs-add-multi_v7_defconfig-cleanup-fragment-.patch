@@ -15,9 +15,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  1 file changed, 262 insertions(+)
  create mode 100644 arch/arm/configs/fragment-01-multiv7_cleanup.config
 
-diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
-new file mode 100644
-index 000000000000..544f3c4ca89c
 --- /dev/null
 +++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
 @@ -0,0 +1,262 @@
@@ -283,6 +280,3 @@ index 000000000000..544f3c4ca89c
 +# CONFIG_USB_ETH_RNDIS is not set
 +# CONFIG_USB_MUSB_HDRC is not set
 +# CONFIG_VIRTIO_CONSOLE is not set
--- 
-2.39.5
-

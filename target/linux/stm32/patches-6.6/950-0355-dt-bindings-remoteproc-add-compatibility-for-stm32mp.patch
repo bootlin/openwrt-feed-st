@@ -13,8 +13,6 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml   | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 6af821b15736..c5de5b1438c4 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -19,10 +19,13 @@ properties:
@@ -34,6 +32,3 @@ index 6af821b15736..c5de5b1438c4 100644
    reg:
      description:
        Address ranges of the RETRAM and MCU SRAM memories used by the remote
--- 
-2.39.5
-

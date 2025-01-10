@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/clk/stm32/clk-stm32mp21.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp21.c b/drivers/clk/stm32/clk-stm32mp21.c
-index 642b92d39bba..d2fd5d389c79 100644
 --- a/drivers/clk/stm32/clk-stm32mp21.c
 +++ b/drivers/clk/stm32/clk-stm32mp21.c
 @@ -35,6 +35,7 @@
@@ -39,7 +37,7 @@ index 642b92d39bba..d2fd5d389c79 100644
  	GATE_DTS,
  	GATE_ETH1,
  	GATE_ETH1MAC,
-@@ -365,6 +367,7 @@ static const struct stm32_gate_cfg stm32mp21_gates[GATE_NB] = {
+@@ -365,6 +367,7 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_CSI,		RCC_CSICFGR,		1,	0),
  	GATE_CFG(GATE_DCMIPP,		RCC_DCMIPPCFGR,		1,	0),
  	GATE_CFG(GATE_DCMIPSSI,		RCC_DCMIPSSICFGR,	1,	0),
@@ -47,7 +45,7 @@ index 642b92d39bba..d2fd5d389c79 100644
  	GATE_CFG(GATE_DTS,		RCC_DTSCFGR,		1,	0),
  	GATE_CFG(GATE_ETH1,		RCC_ETH1CFGR,		5,	0),
  	GATE_CFG(GATE_ETH1MAC,		RCC_ETH1CFGR,		1,	0),
-@@ -604,6 +607,12 @@ static struct clk_stm32_gate ck_icn_p_dcmipssi = {
+@@ -604,6 +607,12 @@ static struct clk_stm32_gate ck_icn_p_dc
  	.hw.init = CLK_HW_INIT_INDEX("ck_icn_p_dcmipssi", ICN_LS_MCU, &clk_stm32_gate_ops, 0),
  };
  
@@ -60,7 +58,7 @@ index 642b92d39bba..d2fd5d389c79 100644
  /* CRC */
  static struct clk_stm32_gate ck_icn_p_crc = {
  	.gate_id = GATE_CRC,
-@@ -1519,6 +1528,7 @@ static const struct clock_config stm32mp21_clock_cfg[] = {
+@@ -1519,6 +1528,7 @@ static const struct clock_config stm32mp
  	STM32_GATE_CFG(CK_BUS_CSI, ck_icn_p_csi, SEC_RIFSC(86)),
  	STM32_GATE_CFG(CK_BUS_DCMIPP, ck_icn_p_dcmipp, SEC_RIFSC(87)),
  	STM32_GATE_CFG(CK_BUS_DCMIPSSI, ck_icn_p_dcmipssi, SEC_RIFSC(87)),
@@ -68,7 +66,7 @@ index 642b92d39bba..d2fd5d389c79 100644
  	STM32_GATE_CFG(CK_KER_TIM2, ck_ker_tim2, SEC_RIFSC(1)),
  	STM32_GATE_CFG(CK_KER_TIM3, ck_ker_tim3, SEC_RIFSC(2)),
  	STM32_GATE_CFG(CK_KER_TIM4, ck_ker_tim4, SEC_RIFSC(3)),
-@@ -2310,6 +2320,7 @@ CS_GATE(ck_icn_p_csi2, ck_icn_apb4, GATE_CSI);
+@@ -2310,6 +2320,7 @@ CS_GATE(ck_icn_p_csi2, ck_icn_apb4, GATE
  CS_GATE(ck_icn_p_dcmipp, ck_icn_apb4, GATE_DCMIPP);
  CS_GATE(ck_icn_p_ddrc, ck_icn_apb4, GATE_DDRCAPB);
  CS_GATE(ck_icn_p_ddrcfg, ck_icn_apb4, GATE_DDRCFG);
@@ -76,7 +74,7 @@ index 642b92d39bba..d2fd5d389c79 100644
  CS_GATE(ck_icn_p_stgen, ck_icn_apb4, GATE_STGEN);
  CS_GATE(ck_sys_dbg, ck_icn_apbdbg, GATE_DBG);
  CS_GATE(ck_icn_p_stm, ck_icn_apbdbg, GATE_STM);
-@@ -2616,6 +2627,7 @@ static struct clk_summary *stm32mp21_clock_summary[] = {
+@@ -2616,6 +2627,7 @@ static struct clk_summary *stm32mp21_clo
  	CS_CLOCK(ck_icn_p_dcmipp),
  	CS_CLOCK(ck_icn_p_ddrc),
  	CS_CLOCK(ck_icn_p_ddrcfg),
@@ -84,6 +82,3 @@ index 642b92d39bba..d2fd5d389c79 100644
  	CS_CLOCK(ck_icn_p_stgen),
  	CS_CLOCK(ck_sys_dbg),
  	CS_CLOCK(ck_icn_p_stm),
--- 
-2.39.5
-

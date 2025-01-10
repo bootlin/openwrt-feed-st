@@ -16,11 +16,9 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 9f04cd85927f..e0cd6e1363f6 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -495,7 +495,7 @@ &sdmmc2 {
+@@ -495,7 +495,7 @@
  	mmc-pwrseq = <&wifi_pwrseq>;
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -29,7 +27,7 @@ index 9f04cd85927f..e0cd6e1363f6 100644
  
  	brcmf: bcrmf@1 {
  		reg = <1>;
-@@ -503,7 +503,6 @@ brcmf: bcrmf@1 {
+@@ -503,7 +503,6 @@
  		interrupt-parent = <&gpiof>;
  		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
  		interrupt-names = "host-wake";
@@ -37,7 +35,7 @@ index 9f04cd85927f..e0cd6e1363f6 100644
  	};
  };
  
-@@ -628,7 +627,6 @@ bluetooth {
+@@ -628,7 +627,6 @@
  		max-speed = <3000000>;
  		vbat-supply = <&v3v3_ao>;
  		vddio-supply = <&v3v3_ao>;
@@ -45,6 +43,3 @@ index 9f04cd85927f..e0cd6e1363f6 100644
  	};
  };
  
--- 
-2.39.5
-

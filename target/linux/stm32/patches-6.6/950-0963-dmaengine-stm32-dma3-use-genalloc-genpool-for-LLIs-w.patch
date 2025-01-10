@@ -30,8 +30,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 161 ++++++++++++++++++++++++++-------
  1 file changed, 128 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 4930f9ad504a..d383728371c4 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -11,11 +11,13 @@
@@ -65,7 +63,7 @@ index 4930f9ad504a..d383728371c4 100644
  };
  
  static inline struct stm32_dma3_ddata *to_stm32_dma3_ddata(struct stm32_dma3_chan *chan)
-@@ -389,11 +392,121 @@ static void stm32_dma3_chan_dump_hwdesc(struct stm32_dma3_chan *chan,
+@@ -389,11 +392,121 @@ static void stm32_dma3_chan_dump_hwdesc(
  	}
  }
  
@@ -188,7 +186,7 @@ index 4930f9ad504a..d383728371c4 100644
  
  	/*
  	 * If the memory to be allocated for the number of hwdesc (6 u32 members but 32-bytes
-@@ -409,11 +522,12 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -409,11 +522,12 @@ static struct stm32_dma3_swdesc *stm32_d
  	if (!swdesc)
  		return NULL;
  
@@ -206,7 +204,7 @@ index 4930f9ad504a..d383728371c4 100644
  	}
  	swdesc->lli_size = count;
  	swdesc->ccr = 0;
-@@ -426,23 +540,16 @@ static struct stm32_dma3_swdesc *stm32_dma3_chan_desc_alloc(struct stm32_dma3_ch
+@@ -426,23 +540,16 @@ static struct stm32_dma3_swdesc *stm32_d
  	swdesc->ccr &= ~CCR_LAP;
  
  	return swdesc;
@@ -232,7 +230,7 @@ index 4930f9ad504a..d383728371c4 100644
  
  	kfree(swdesc);
  }
-@@ -1077,15 +1184,6 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1077,15 +1184,6 @@ static int stm32_dma3_alloc_chan_resourc
  		goto err_put_sync;
  	}
  
@@ -248,7 +246,7 @@ index 4930f9ad504a..d383728371c4 100644
  	/* Take the channel semaphore */
  	if (chan->semaphore_mode) {
  		writel_relaxed(CSEMCR_SEM_MUTEX, ddata->base + STM32_DMA3_CSEMCR(id));
-@@ -1095,17 +1193,13 @@ static int stm32_dma3_alloc_chan_resources(struct dma_chan *c)
+@@ -1095,17 +1193,13 @@ static int stm32_dma3_alloc_chan_resourc
  		if (ccid != CCIDCFGR_CID1) {
  			dev_err(chan2dev(chan), "Not under CID1 control (in-use by CID%d)\n", ccid);
  			ret = -EPERM;
@@ -267,7 +265,7 @@ index 4930f9ad504a..d383728371c4 100644
  err_put_sync:
  	pm_runtime_put_sync(ddata->dma_dev.dev);
  
-@@ -1126,9 +1220,6 @@ static void stm32_dma3_free_chan_resources(struct dma_chan *c)
+@@ -1126,9 +1220,6 @@ static void stm32_dma3_free_chan_resourc
  
  	vchan_free_chan_resources(to_virt_chan(c));
  
@@ -277,7 +275,7 @@ index 4930f9ad504a..d383728371c4 100644
  	/* Release the channel semaphore */
  	if (chan->semaphore_mode)
  		writel_relaxed(0, ddata->base + STM32_DMA3_CSEMCR(chan->id));
-@@ -1772,6 +1863,10 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1772,6 +1863,10 @@ static int stm32_dma3_probe(struct platf
  						 STM32_DMA3_MAX_BURST_LEN);
  	dev_dbg(&pdev->dev, "Burst is limited to %u beats\n", ddata->axi_max_burst_len);
  
@@ -288,6 +286,3 @@ index 4930f9ad504a..d383728371c4 100644
  	ddata->chans = devm_kcalloc(&pdev->dev, ddata->dma_channels, sizeof(*ddata->chans),
  				    GFP_KERNEL);
  	if (!ddata->chans) {
--- 
-2.39.5
-

@@ -18,8 +18,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/st/stm32mp15-scmi.dtsi | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-index caa8c15a3eb0..f113ba003673 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
 @@ -1,6 +1,6 @@
@@ -30,7 +28,7 @@ index caa8c15a3eb0..f113ba003673 100644
   * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
   */
  
-@@ -9,6 +9,8 @@ firmware {
+@@ -9,6 +9,8 @@
  		optee: optee {
  			compatible = "linaro,optee-tz";
  			method = "smc";
@@ -39,6 +37,3 @@ index caa8c15a3eb0..f113ba003673 100644
  		};
  
  		scmi: scmi {
--- 
-2.39.5
-

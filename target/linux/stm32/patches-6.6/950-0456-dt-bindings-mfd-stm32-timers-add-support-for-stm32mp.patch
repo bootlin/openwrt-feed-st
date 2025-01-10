@@ -20,8 +20,6 @@ Change-Id: Ia26f32d26e859ac5aac15b4b754a162fd7b97b12
  .../devicetree/bindings/mfd/st,stm32-timers.yaml | 16 +++++++++++++---
  1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index b0e438ff4950..6be0e3061aa3 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
 @@ -21,7 +21,9 @@ maintainers:
@@ -75,6 +73,3 @@ index b0e438ff4950..6be0e3061aa3 100644
  
        reg:
          description: Identify trigger hardware block.
--- 
-2.39.5
-

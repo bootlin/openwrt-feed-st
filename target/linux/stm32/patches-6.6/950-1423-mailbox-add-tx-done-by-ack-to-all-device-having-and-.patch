@@ -16,11 +16,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/mailbox/mailbox.c | 23 ++++++++++++++---------
  1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-index ebff3baf3045..82c360d89559 100644
 --- a/drivers/mailbox/mailbox.c
 +++ b/drivers/mailbox/mailbox.c
-@@ -336,7 +336,7 @@ static int __mbox_bind_client(struct mbox_chan *chan, struct mbox_client *cl)
+@@ -336,7 +336,7 @@ static int __mbox_bind_client(struct mbo
  	chan->cl = cl;
  	init_completion(&chan->tx_complete);
  
@@ -29,7 +27,7 @@ index ebff3baf3045..82c360d89559 100644
  		chan->txdone_method = TXDONE_BY_ACK;
  
  	spin_unlock_irqrestore(&chan->lock, flags);
-@@ -477,6 +477,16 @@ struct mbox_chan *mbox_request_channel_byname(struct mbox_client *cl,
+@@ -477,6 +477,16 @@ struct mbox_chan *mbox_request_channel_b
  }
  EXPORT_SYMBOL_GPL(mbox_request_channel_byname);
  
@@ -46,7 +44,7 @@ index ebff3baf3045..82c360d89559 100644
  /**
   * mbox_free_channel - The client relinquishes control of a mailbox
   *			channel by this call.
-@@ -496,8 +506,8 @@ void mbox_free_channel(struct mbox_chan *chan)
+@@ -496,8 +506,8 @@ void mbox_free_channel(struct mbox_chan
  	spin_lock_irqsave(&chan->lock, flags);
  	chan->cl = NULL;
  	chan->active_req = NULL;
@@ -57,7 +55,7 @@ index ebff3baf3045..82c360d89559 100644
  
  	module_put(chan->mbox->dev->driver->owner);
  	spin_unlock_irqrestore(&chan->lock, flags);
-@@ -530,12 +540,7 @@ int mbox_controller_register(struct mbox_controller *mbox)
+@@ -530,12 +540,7 @@ int mbox_controller_register(struct mbox
  	if (!mbox || !mbox->dev || !mbox->ops || !mbox->num_chans)
  		return -EINVAL;
  
@@ -71,6 +69,3 @@ index ebff3baf3045..82c360d89559 100644
  
  	if (txdone == TXDONE_BY_POLL) {
  
--- 
-2.39.5
-

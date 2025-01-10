@@ -21,8 +21,6 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-statcap.c    | 49 +++++++++----------
  1 file changed, 24 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
-index b84ee2fdcc34..eb34971ec151 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-statcap.c
 @@ -101,6 +101,8 @@ struct dcmipp_statcap_device {
@@ -34,7 +32,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  
  	/*
  	 * indicate the current state of the capture stat machine,
-@@ -590,12 +592,11 @@ static u32 dcmipp_statcap_get_src(u32 location,
+@@ -590,12 +592,11 @@ static u32 dcmipp_statcap_get_src(u32 lo
  	return (location << DCMIPP_P1STXCR_SRC_LOC_SHIFT) | (comp << DCMIPP_P1STXCR_SRC_COMP_SHIFT);
  }
  
@@ -50,7 +48,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  	int i;
  
  	for (i = 0; i < ARRAY_SIZE(vcap->local_buf.pre.average_RGB); i++) {
-@@ -604,7 +605,7 @@ static void dcmipp_statcap_read_avg_stats(struct dcmipp_statcap_device *vcap,
+@@ -604,7 +605,7 @@ static void dcmipp_statcap_read_avg_stat
  		avr_bins->average_RGB[i] <<= 8;
  
  		/* Depending on the position & component, need to adjust in case of Bayer */
@@ -59,7 +57,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  		    vcap->frame_format >= MEDIA_BUS_FMT_SBGGR8_1X8 &&
  		    vcap->frame_format <= MEDIA_BUS_FMT_SRGGB16_1X16) {
  			/* raw bayer: RGB component not present for all pixels */
-@@ -624,11 +625,9 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -624,11 +625,9 @@ static irqreturn_t dcmipp_statcap_irq_th
  	struct dcmipp_statcap_device *vcap =
  			container_of(arg, struct dcmipp_statcap_device, ved);
  	struct dcmipp_ent_device *ved = arg;
@@ -73,7 +71,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  	int i;
  
  	/* We only to do things if we are streaming */
-@@ -657,15 +656,15 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -657,15 +656,15 @@ static irqreturn_t dcmipp_statcap_irq_th
  	 */
  	switch (vcap->capture_state) {
  	case COLD_START:
@@ -92,7 +90,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  		/*
  		 * We've just started, set control registers to capture
  		 * AVERAGES (RGB) and leave
-@@ -673,7 +672,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -673,7 +672,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_AVERAGE |
@@ -101,7 +99,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  				  vcap->avg_filter << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  		break;
-@@ -683,7 +682,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -683,7 +682,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -110,7 +108,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  				  0 << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  
-@@ -699,12 +698,12 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -699,12 +698,12 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -125,7 +123,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  		break;
  
  	case PHY_BIN_1_SHA_BIN_2:
-@@ -712,7 +711,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -712,7 +711,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -134,7 +132,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  				  2 << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  
-@@ -726,7 +725,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -726,7 +725,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  		for (i = 0; i < 3; i++)
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_BINS |
@@ -143,7 +141,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  				  3 << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  
-@@ -741,7 +740,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -741,7 +740,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  			/* Usage of !location is on purpose to switch to the other location */
  			reg_write(vcap, DCMIPP_P1STXCR(i),
  				  DCMIPP_P1STXCR_MODE_AVERAGE |
@@ -152,7 +150,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  				  vcap->avg_filter << DCMIPP_P1STXCR_BINS_SHIFT |
  				  DCMIPP_P1STXCR_ENABLE);
  
-@@ -752,12 +751,12 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -752,12 +751,12 @@ static irqreturn_t dcmipp_statcap_irq_th
  
  	case PHY_AV_RGB_SHA_AV_RGB:
  		/* State used for the AVERAGE PRE capture mode */
@@ -167,7 +165,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  		dcmipp_statcap_buffer_done(vcap);
  
  	spin_unlock_irq(&vcap->irqlock);
-@@ -769,9 +768,9 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -769,9 +768,9 @@ static irqreturn_t dcmipp_statcap_irq_th
  		if (vcap->capture_state < PHY_BIN_3_SHA_AV_RGB) {
  			vcap->capture_state++;
  		} else {
@@ -180,7 +178,7 @@ index b84ee2fdcc34..eb34971ec151 100644
  			vcap->capture_state = PHY_AV_RGB_SHA_BIN_0;
  		}
  		break;
-@@ -780,7 +779,7 @@ static irqreturn_t dcmipp_statcap_irq_thread(int irq, void *arg)
+@@ -780,7 +779,7 @@ static irqreturn_t dcmipp_statcap_irq_th
  	case V4L2_STAT_PROFILE_AVERAGE_POST:
  		if (vcap->capture_state == COLD_START) {
  			vcap->capture_state = PHY_AV_RGB_SHA_AV_RGB;
@@ -189,6 +187,3 @@ index b84ee2fdcc34..eb34971ec151 100644
  		}
  		break;
  	}
--- 
-2.39.5
-

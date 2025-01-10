@@ -12,8 +12,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  Documentation/devicetree/bindings/gpu/vivante,gc.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
-index b1b10ea70ad9..092643bef199 100644
 --- a/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
 +++ b/Documentation/devicetree/bindings/gpu/vivante,gc.yaml
 @@ -49,6 +49,9 @@ properties:
@@ -26,6 +24,3 @@ index b1b10ea70ad9..092643bef199 100644
  required:
    - compatible
    - reg
--- 
-2.39.5
-

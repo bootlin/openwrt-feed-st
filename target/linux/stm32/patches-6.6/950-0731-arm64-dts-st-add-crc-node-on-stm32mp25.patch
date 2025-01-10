@@ -11,11 +11,9 @@ Change-Id: Ieb6e262f8bea01ce57eafcd1563d3d2f8d32e055
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c3121c145718..52f0b9a29638 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1441,6 +1441,14 @@ dcmi: dcmi@404a0000 {
+@@ -1441,6 +1441,14 @@
  				status = "disabled";
  			};
  
@@ -30,6 +28,3 @@ index c3121c145718..52f0b9a29638 100644
  			adc_12: adc@404e0000 {
  				compatible = "st,stm32mp25-adc-core";
  				reg = <0x404e0000 0x400>;
--- 
-2.39.5
-

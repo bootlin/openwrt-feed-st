@@ -42,11 +42,9 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp21xf.dtsi |   2 +-
  5 files changed, 89 insertions(+), 89 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 24beb57b38df..751b2184e4f6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -147,14 +147,14 @@ usb2_phy2: usb2-phy2 {
+@@ -147,14 +147,14 @@
  	soc@0 {
  		compatible = "simple-bus";
  		#address-cells = <1>;
@@ -65,7 +63,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-@@ -179,7 +179,7 @@ hpdma: dma-controller@40400000 {
+@@ -179,7 +179,7 @@
  
  		hpdma2: dma-controller@40410000 {
  			compatible = "st,stm32-dma3";
@@ -74,7 +72,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>,
-@@ -204,7 +204,7 @@ hpdma2: dma-controller@40410000 {
+@@ -204,7 +204,7 @@
  
  		hpdma3: dma-controller@40420000 {
  			compatible = "st,stm32-dma3";
@@ -83,7 +81,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
-@@ -230,7 +230,7 @@ hpdma3: dma-controller@40420000 {
+@@ -230,7 +230,7 @@
  		ipcc1: mailbox@40490000 {
  			compatible = "st,stm32mp1-ipcc";
  			#mbox-cells = <1>;
@@ -92,7 +90,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			st,proc-id = <0>;
  			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
  				     <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
-@@ -241,16 +241,16 @@ ipcc1: mailbox@40490000 {
+@@ -241,16 +241,16 @@
  
  		rifsc: bus@42080000 {
  			compatible = "st,stm32mp25-rifsc", "simple-bus";
@@ -112,7 +110,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				#sound-dai-cells = <0>;
  				interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_SPI2>, <&rcc CK_KER_SPI2>;
-@@ -266,7 +266,7 @@ i2s2: audio-controller@400b0000 {
+@@ -266,7 +266,7 @@
  
  			timers2: timer@40000000 {
  				compatible = "st,stm32mp21-timers";
@@ -121,7 +119,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM2>;
-@@ -297,7 +297,7 @@ timer@1 {
+@@ -297,7 +297,7 @@
  
  			timers3: timer@40010000 {
  				compatible = "st,stm32mp21-timers";
@@ -130,7 +128,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM3>;
-@@ -328,7 +328,7 @@ timer@2 {
+@@ -328,7 +328,7 @@
  
  			timers4: timer@40020000 {
  				compatible = "st,stm32mp21-timers";
@@ -139,7 +137,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM4>;
-@@ -360,7 +360,7 @@ timer@3 {
+@@ -360,7 +360,7 @@
  
  			timers5: timer@40030000 {
  				compatible = "st,stm32mp21-timers";
@@ -148,7 +146,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM5>;
-@@ -392,7 +392,7 @@ timer@4 {
+@@ -392,7 +392,7 @@
  
  			timers6: timer@40040000 {
  				compatible = "st,stm32mp21-timers";
@@ -157,7 +155,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM6>;
-@@ -417,7 +417,7 @@ timer@5 {
+@@ -417,7 +417,7 @@
  
  			timers7: timer@40050000 {
  				compatible = "st,stm32mp21-timers";
@@ -166,7 +164,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM7>;
-@@ -442,7 +442,7 @@ timer@6 {
+@@ -442,7 +442,7 @@
  
  			timers12: timer@40060000 {
  				compatible = "st,stm32mp21-timers";
@@ -175,7 +173,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM12>;
-@@ -473,7 +473,7 @@ timer@11 {
+@@ -473,7 +473,7 @@
  
  			timers13: timer@40070000 {
  				compatible = "st,stm32mp21-timers";
@@ -184,7 +182,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM13>;
-@@ -504,7 +504,7 @@ timer@12 {
+@@ -504,7 +504,7 @@
  
  			timers14: timer@40080000 {
  				compatible = "st,stm32mp21-timers";
@@ -193,7 +191,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM14>;
-@@ -535,7 +535,7 @@ timer@13 {
+@@ -535,7 +535,7 @@
  
  			lptimer1: timer@40090000 {
  				compatible = "st,stm32mp21-lptimer";
@@ -202,7 +200,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts-extended = <&exti1 47 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPTIM1>;
  				clock-names = "mux";
-@@ -571,7 +571,7 @@ trigger@0 {
+@@ -571,7 +571,7 @@
  
  			lptimer2: timer@400a0000 {
  				compatible = "st,stm32mp21-lptimer";
@@ -211,7 +209,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts-extended = <&exti1 48 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPTIM2>;
  				clock-names = "mux";
-@@ -609,7 +609,7 @@ spi2: spi@400b0000 {
+@@ -609,7 +609,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -220,7 +218,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI2>;
  				resets = <&rcc SPI2_R>;
-@@ -623,7 +623,7 @@ spi2: spi@400b0000 {
+@@ -623,7 +623,7 @@
  
  			i2s3: audio-controller@400c0000 {
  				compatible = "st,stm32mp25-i2s";
@@ -229,7 +227,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				#sound-dai-cells = <0>;
  				interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_SPI3>, <&rcc CK_KER_SPI3>;
-@@ -641,7 +641,7 @@ spi3: spi@400c0000 {
+@@ -641,7 +641,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -238,7 +236,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI3>;
  				resets = <&rcc SPI3_R>;
-@@ -656,7 +656,7 @@ spi3: spi@400c0000 {
+@@ -656,7 +656,7 @@
  			spdifrx: audio-controller@400d0000 {
  				compatible = "st,stm32h7-spdifrx";
  				#sound-dai-cells = <0>;
@@ -247,7 +245,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				clocks = <&rcc CK_KER_SPDIFRX>;
  				clock-names = "kclk";
  				interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>;
-@@ -669,7 +669,7 @@ spdifrx: audio-controller@400d0000 {
+@@ -669,7 +669,7 @@
  
  			usart2: serial@400e0000 {
  				compatible = "st,stm32h7-uart";
@@ -256,7 +254,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART2>;
  				dmas = <&hpdma 11 0x40 0x12>,
-@@ -682,7 +682,7 @@ usart2: serial@400e0000 {
+@@ -682,7 +682,7 @@
  
  			usart3: serial@400f0000 {
  				compatible = "st,stm32h7-uart";
@@ -265,7 +263,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART3>;
  				dmas = <&hpdma 13 0x40 0x12>,
-@@ -695,7 +695,7 @@ usart3: serial@400f0000 {
+@@ -695,7 +695,7 @@
  
  			uart4: serial@40100000 {
  				compatible = "st,stm32h7-uart";
@@ -274,7 +272,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART4>;
  				dmas = <&hpdma 15 0x40 0x12>,
-@@ -708,7 +708,7 @@ uart4: serial@40100000 {
+@@ -708,7 +708,7 @@
  
  			uart5: serial@40110000 {
  				compatible = "st,stm32h7-uart";
@@ -283,7 +281,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART5>;
  				dmas = <&hpdma 17 0x40 0x12>,
-@@ -721,7 +721,7 @@ uart5: serial@40110000 {
+@@ -721,7 +721,7 @@
  
  			i2c1: i2c@40170000 {
  				compatible = "st,stm32mp25-i2c";
@@ -292,7 +290,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupt-names = "event";
  				interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I2C1>;
-@@ -738,7 +738,7 @@ i2c1: i2c@40170000 {
+@@ -738,7 +738,7 @@
  
  			i2c2: i2c@40180000 {
  				compatible = "st,stm32mp25-i2c";
@@ -301,7 +299,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupt-names = "event";
  				interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I2C2>;
-@@ -757,7 +757,7 @@ i3c1: i3c@40190000 {
+@@ -757,7 +757,7 @@
  				#address-cells = <3>;
  				#size-cells = <0>;
  				compatible = "st,stm32-i3c";
@@ -310,7 +308,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I3C1>;
  				resets = <&rcc I3C1_R>;
-@@ -770,7 +770,7 @@ i3c2: i3c@401a0000 {
+@@ -770,7 +770,7 @@
  				#address-cells = <3>;
  				#size-cells = <0>;
  				compatible = "st,stm32-i3c";
@@ -319,7 +317,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I3C2>;
  				resets = <&rcc I3C2_R>;
-@@ -781,7 +781,7 @@ i3c2: i3c@401a0000 {
+@@ -781,7 +781,7 @@
  
  			timers10: timer@401c0000 {
  				compatible = "st,stm32mp21-timers";
@@ -328,7 +326,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM10>;
-@@ -812,7 +812,7 @@ timer@9 {
+@@ -812,7 +812,7 @@
  
  			timers11: timer@401d0000 {
  				compatible = "st,stm32mp21-timers";
@@ -337,7 +335,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM11>;
-@@ -843,7 +843,7 @@ timer@10 {
+@@ -843,7 +843,7 @@
  
  			timers1: timer@40200000 {
  				compatible = "st,stm32mp21-timers";
@@ -346,7 +344,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
  						<GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
  						<GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
-@@ -877,7 +877,7 @@ timer@0 {
+@@ -877,7 +877,7 @@
  
  			timers8: timer@40210000 {
  				compatible = "st,stm32mp21-timers";
@@ -355,7 +353,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
  						<GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
  						<GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
-@@ -911,7 +911,7 @@ timer@7 {
+@@ -911,7 +911,7 @@
  
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
@@ -364,7 +362,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART6>;
  				dmas = <&hpdma 19 0x40 0x12>,
-@@ -924,7 +924,7 @@ usart6: serial@40220000 {
+@@ -924,7 +924,7 @@
  
  			i2s1: audio-controller@40230000 {
  				compatible = "st,stm32mp25-i2s";
@@ -373,7 +371,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				#sound-dai-cells = <0>;
  				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_SPI1>, <&rcc CK_KER_SPI1>;
-@@ -942,7 +942,7 @@ spi1: spi@40230000 {
+@@ -942,7 +942,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -382,7 +380,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI1>;
  				resets = <&rcc SPI1_R>;
-@@ -958,7 +958,7 @@ spi4: spi@40240000 {
+@@ -958,7 +958,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -391,7 +389,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI4>;
  				resets = <&rcc SPI4_R>;
-@@ -972,7 +972,7 @@ spi4: spi@40240000 {
+@@ -972,7 +972,7 @@
  
  			timers15: timer@40250000 {
  				compatible = "st,stm32mp21-timers";
@@ -400,7 +398,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM15>;
-@@ -1003,7 +1003,7 @@ timer@14 {
+@@ -1003,7 +1003,7 @@
  
  			timers16: timer@40260000 {
  				compatible = "st,stm32mp21-timers";
@@ -409,7 +407,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM16>;
-@@ -1034,7 +1034,7 @@ timer@15 {
+@@ -1034,7 +1034,7 @@
  
  			timers17: timer@40270000 {
  				compatible = "st,stm32mp21-timers";
@@ -418,7 +416,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
  				interrupt-names = "global";
  				clocks = <&rcc CK_KER_TIM17>;
-@@ -1067,7 +1067,7 @@ spi5: spi@40280000 {
+@@ -1067,7 +1067,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -427,7 +425,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI5>;
  				resets = <&rcc SPI5_R>;
-@@ -1081,7 +1081,7 @@ spi5: spi@40280000 {
+@@ -1081,7 +1081,7 @@
  
  			sai1: sai@40290000 {
  				compatible = "st,stm32mp25-sai";
@@ -436,7 +434,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				ranges = <0 0x40290000 0x400>;
  				#address-cells = <1>;
  				#size-cells = <1>;
-@@ -1118,7 +1118,7 @@ sai1b: audio-controller@40290024 {
+@@ -1118,7 +1118,7 @@
  
  			sai2: sai@402a0000 {
  				compatible = "st,stm32mp25-sai";
@@ -445,7 +443,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				ranges = <0 0x402a0000 0x400>;
  				#address-cells = <1>;
  				#size-cells = <1>;
-@@ -1155,7 +1155,7 @@ sai2b: audio-controller@402a0024 {
+@@ -1155,7 +1155,7 @@
  
  			sai3: sai@402b0000 {
  				compatible = "st,stm32mp25-sai";
@@ -454,7 +452,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				ranges = <0 0x402b0000 0x400>;
  				#address-cells = <1>;
  				#size-cells = <1>;
-@@ -1192,7 +1192,7 @@ sai3b: audio-controller@502b0024 {
+@@ -1192,7 +1192,7 @@
  
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
@@ -463,7 +461,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART1>;
  				dmas = <&hpdma 9 0x40 0x12>,
-@@ -1205,7 +1205,7 @@ usart1: serial@40330000 {
+@@ -1205,7 +1205,7 @@
  
  			sai4: sai@40340000 {
  				compatible = "st,stm32mp25-sai";
@@ -472,7 +470,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				ranges = <0 0x40340000 0x400>;
  				#address-cells = <1>;
  				#size-cells = <1>;
-@@ -1243,7 +1243,7 @@ sai4b: audio-controller@40340024 {
+@@ -1243,7 +1243,7 @@
  			mdf1: mdf@404d0000 {
  				compatible = "st,stm32mp25-mdf";
  				ranges = <0 0x404d0000 0x1000>;
@@ -481,7 +479,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				#address-cells = <1>;
  				#size-cells = <1>;
  				clocks = <&rcc CK_KER_MDF1>;
-@@ -1322,7 +1322,7 @@ filter3: filter@204 {
+@@ -1322,7 +1322,7 @@
  
  			uart7: serial@40370000 {
  				compatible = "st,stm32h7-uart";
@@ -490,7 +488,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART7>;
  				dmas = <&hpdma 21 0x40 0x12>,
-@@ -1334,7 +1334,7 @@ uart7: serial@40370000 {
+@@ -1334,7 +1334,7 @@
  
  			ospi1: spi@40430000 {
  				compatible = "st,stm32mp25-omi";
@@ -499,7 +497,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
  				dmas = <&hpdma 2 0x62 0x00003121>,
  				       <&hpdma 2 0x42 0x00003112>;
-@@ -1348,7 +1348,7 @@ ospi1: spi@40430000 {
+@@ -1348,7 +1348,7 @@
  
  			dcmi: dcmi@404a0000 {
  				compatible = "st,stm32-dcmi";
@@ -508,7 +506,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc DCMIPSSI_R>;
  				clocks = <&rcc CK_BUS_DCMIPSSI>;
-@@ -1361,7 +1361,7 @@ dcmi: dcmi@404a0000 {
+@@ -1361,7 +1361,7 @@
  
  			crc: crc@404c0000 {
  				compatible = "st,stm32f7-crc";
@@ -517,7 +515,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				clocks = <&rcc CK_BUS_CRC>;
  				access-controllers = <&rifsc 109>;
  				status = "disabled";
-@@ -1369,7 +1369,7 @@ crc: crc@404c0000 {
+@@ -1369,7 +1369,7 @@
  
  			adc_1: adc@404e0000 {
  				compatible = "st,stm32mp21-adc-core";
@@ -526,7 +524,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_ADC1>;
  				clock-names = "adc";
-@@ -1401,7 +1401,7 @@ channel@14 {
+@@ -1401,7 +1401,7 @@
  
  			adc_2: adc@404f0000 {
  				compatible = "st,stm32mp21-adc-core";
@@ -535,7 +533,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_ADC2>;
  				clock-names = "adc";
-@@ -1441,7 +1441,7 @@ channel@17 {
+@@ -1441,7 +1441,7 @@
  
  			iwdg1: watchdog@44010000 {
  				compatible = "st,stm32mp1-iwdg";
@@ -544,7 +542,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_IWDG1>, <&scmi_clk CK_SCMI_LSI>;
  				clock-names = "pclk", "lsi";
-@@ -1451,7 +1451,7 @@ iwdg1: watchdog@44010000 {
+@@ -1451,7 +1451,7 @@
  
  			iwdg2: watchdog@44020000 {
  				compatible = "st,stm32mp1-iwdg";
@@ -553,7 +551,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_BUS_IWDG2>, <&scmi_clk CK_SCMI_LSI>;
  				clock-names = "pclk", "lsi";
-@@ -1463,7 +1463,7 @@ spi6: spi@46020000 {
+@@ -1463,7 +1463,7 @@
  				#address-cells = <1>;
  				#size-cells = <0>;
  				compatible = "st,stm32mp25-spi";
@@ -562,7 +560,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SPI6>;
  				resets = <&rcc SPI6_R>;
-@@ -1477,7 +1477,7 @@ spi6: spi@46020000 {
+@@ -1477,7 +1477,7 @@
  
  			i2c3: i2c@46040000 {
  				compatible = "st,stm32mp25-i2c";
@@ -571,7 +569,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupt-names = "event";
  				interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I2C3>;
-@@ -1496,7 +1496,7 @@ i3c3: i3c@46080000 {
+@@ -1496,7 +1496,7 @@
  				#address-cells = <3>;
  				#size-cells = <0>;
  				compatible = "st,stm32-i3c";
@@ -580,7 +578,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_I3C3>;
  				resets = <&rcc I3C3_R>;
-@@ -1507,7 +1507,7 @@ i3c3: i3c@46080000 {
+@@ -1507,7 +1507,7 @@
  
  			csi: csi@48020000 {
  				compatible = "st,stm32mp25-csi";
@@ -589,7 +587,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc CSI_R>;
  				clocks = <&rcc CK_KER_CSI>, <&rcc CK_KER_CSITXESC>,
-@@ -1519,7 +1519,7 @@ csi: csi@48020000 {
+@@ -1519,7 +1519,7 @@
  
  			dcmipp: dcmipp@48030000 {
  				compatible = "st,stm32mp25-dcmipp";
@@ -598,7 +596,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc DCMIPP_R>;
  				clocks = <&rcc CK_BUS_DCMIPP>, <&rcc CK_KER_CSI>;
-@@ -1530,7 +1530,7 @@ dcmipp: dcmipp@48030000 {
+@@ -1530,7 +1530,7 @@
  
  			lptimer3: timer@46050000 {
  				compatible = "st,stm32mp21-lptimer";
@@ -607,7 +605,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts-extended = <&exti2 29 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPTIM3>;
  				clock-names = "mux";
-@@ -1565,7 +1565,7 @@ trigger@2 {
+@@ -1565,7 +1565,7 @@
  
  			lptimer4: timer@46060000 {
  				compatible = "st,stm32mp21-lptimer";
@@ -616,7 +614,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts-extended = <&exti2 30 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPTIM4>;
  				clock-names = "mux";
-@@ -1600,7 +1600,7 @@ trigger@3 {
+@@ -1600,7 +1600,7 @@
  
  			lptimer5: timer@46070000 {
  				compatible = "st,stm32mp21-lptimer";
@@ -625,7 +623,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts-extended = <&exti2 31 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_LPTIM5>;
  				clock-names = "mux";
-@@ -1636,7 +1636,7 @@ trigger@4 {
+@@ -1636,7 +1636,7 @@
  			sdmmc1: mmc@48220000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
@@ -634,7 +632,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SDMMC1>;
  				clock-names = "apb_pclk";
-@@ -1652,7 +1652,7 @@ sdmmc1: mmc@48220000 {
+@@ -1652,7 +1652,7 @@
  			sdmmc2: mmc@48230000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
@@ -643,7 +641,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SDMMC2>;
  				clock-names = "apb_pclk";
-@@ -1668,7 +1668,7 @@ sdmmc2: mmc@48230000 {
+@@ -1668,7 +1668,7 @@
  			sdmmc3: mmc@48240000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
@@ -652,7 +650,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				interrupts = <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_SDMMC3>;
  				clock-names = "apb_pclk";
-@@ -1714,7 +1714,7 @@ usbh_ehci: usb@482f0000 {
+@@ -1714,7 +1714,7 @@
  
  			usbotg_hs: usb@48300000 {
  				compatible = "st,stm32mp21-hsotg", "snps,dwc2";
@@ -661,7 +659,7 @@ index 24beb57b38df..751b2184e4f6 100644
  				clocks = <&rcc CK_BUS_OTG>;
  				clock-names = "otg";
  				resets = <&rcc OTG_R>;
-@@ -1735,14 +1735,14 @@ usbotg_hs: usb@48300000 {
+@@ -1735,14 +1735,14 @@
  
  		hdp: pinctrl@44090000 {
  			compatible = "st,stm32mp-hdp";
@@ -678,7 +676,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			#address-cells = <1>;
  			#size-cells = <1>;
  
-@@ -1758,7 +1758,7 @@ package_otp@1e8 {
+@@ -1758,7 +1758,7 @@
  
  		rcc: clock-controller@44200000 {
  			compatible = "st,stm32mp21-rcc";
@@ -687,7 +685,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			#clock-cells = <1>;
  			#reset-cells = <1>;
  			clocks =
-@@ -1837,14 +1837,14 @@ rcc: clock-controller@44200000 {
+@@ -1837,14 +1837,14 @@
  
  		pwr: syscon@44210000 {
  			compatible = "st,stm32mp21-pwr", "syscon";
@@ -704,7 +702,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			interrupts-extended =
  				<&intc GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
  				<&intc GIC_SPI 269 IRQ_TYPE_LEVEL_HIGH>,
-@@ -1930,7 +1930,7 @@ exti1: interrupt-controller@44220000 {
+@@ -1930,7 +1930,7 @@
  
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
@@ -713,7 +711,7 @@ index 24beb57b38df..751b2184e4f6 100644
  		};
  
  		pinctrl: pinctrl@44240000 {
-@@ -2053,7 +2053,7 @@ exti2: interrupt-controller@442d0000 {
+@@ -2053,7 +2053,7 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -722,7 +720,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			interrupts-extended =
  				<&intc GIC_SPI 15  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
  				<&intc GIC_SPI 16  IRQ_TYPE_LEVEL_HIGH>,
-@@ -2113,7 +2113,7 @@ exti2: interrupt-controller@442d0000 {
+@@ -2113,7 +2113,7 @@
  
  		rtc: rtc@46000000 {
  			compatible = "st,stm32mp25-rtc";
@@ -731,7 +729,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			clocks = <&scmi_clk CK_SCMI_RTC>,
  				 <&scmi_clk CK_SCMI_RTCCK>;
  			clock-names = "pclk", "rtc_ck";
-@@ -2124,15 +2124,15 @@ rtc: rtc@46000000 {
+@@ -2124,15 +2124,15 @@
  		tamp: tamp@46010000 {
  			compatible = "st,stm32mp25-tamp", "syscon", "simple-mfd";
  			#address-cells = <1>;
@@ -750,7 +748,7 @@ index 24beb57b38df..751b2184e4f6 100644
  
  				boot_mode: tamp-bkp@180 {
  					reg = <0x180 0x4>;
-@@ -2181,7 +2181,7 @@ gpioz: gpio@46200000 {
+@@ -2181,7 +2181,7 @@
  
  		fmc: memory-controller@48200000 {
  			compatible = "st,stm32mp25-fmc2-ebi";
@@ -759,7 +757,7 @@ index 24beb57b38df..751b2184e4f6 100644
  			ranges = <0 0 0x70000000 0x04000000>, /* EBI CS 1 */
  				 <1 0 0x74000000 0x04000000>, /* EBI CS 2 */
  				 <2 0 0x78000000 0x04000000>, /* EBI CS 3 */
-@@ -2220,7 +2220,7 @@ nand-controller@4,0 {
+@@ -2220,7 +2220,7 @@
  
  		a35ss_syscfg: syscon@48802000  {
  			compatible = "st,stm32mp25-a35ss-syscfg", "syscon";
@@ -768,11 +766,9 @@ index 24beb57b38df..751b2184e4f6 100644
  			status = "disabled";
  		};
  	};
-diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-index 8544c1bc672c..a601265e3b6e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-@@ -62,7 +62,7 @@ mtl_tx_setup_2: tx-queues-config {
+@@ -62,7 +62,7 @@
  &rifsc {
  	m_can1: can@402d0000 {
  		compatible = "bosch,m_can";
@@ -781,7 +777,7 @@ index 8544c1bc672c..a601265e3b6e 100644
  		reg-names = "m_can", "message_ram";
  		interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>,
  			     <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-@@ -77,7 +77,7 @@ m_can1: can@402d0000 {
+@@ -77,7 +77,7 @@
  
  	m_can2: can@402e0000 {
  		compatible = "bosch,m_can";
@@ -790,8 +786,6 @@ index 8544c1bc672c..a601265e3b6e 100644
  		reg-names = "m_can", "message_ram";
  		interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>,
  			     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-index cddb67891c47..9f6aae3c2ef1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
 @@ -8,7 +8,7 @@
@@ -803,8 +797,6 @@ index cddb67891c47..9f6aae3c2ef1 100644
  		st,syscon = <&syscfg>;
  		interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
  			     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
-index 99bb8761530c..0471458af417 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21xc.dtsi
 @@ -7,7 +7,7 @@
@@ -816,8 +808,6 @@ index 99bb8761530c..0471458af417 100644
  		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP1>;
  		resets = <&rcc CRYP1_R>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
-index 99bb8761530c..0471458af417 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21xf.dtsi
 @@ -7,7 +7,7 @@
@@ -829,6 +819,3 @@ index 99bb8761530c..0471458af417 100644
  		interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CK_BUS_CRYP1>;
  		resets = <&rcc CRYP1_R>;
--- 
-2.39.5
-

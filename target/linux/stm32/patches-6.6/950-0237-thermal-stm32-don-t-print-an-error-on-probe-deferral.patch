@@ -14,11 +14,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/thermal/st/stm_thermal.c | 8 +++-----
  1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
-index 50ab45609f23..4accf323cf73 100644
 --- a/drivers/thermal/st/stm_thermal.c
 +++ b/drivers/thermal/st/stm_thermal.c
-@@ -500,11 +500,9 @@ static int stm_thermal_probe(struct platform_device *pdev)
+@@ -500,11 +500,9 @@ static int stm_thermal_probe(struct plat
  	sensor->base = base;
  
  	sensor->clk = devm_clk_get(&pdev->dev, "pclk");
@@ -33,6 +31,3 @@ index 50ab45609f23..4accf323cf73 100644
  
  	stm_disable_irq(sensor);
  
--- 
-2.39.5
-

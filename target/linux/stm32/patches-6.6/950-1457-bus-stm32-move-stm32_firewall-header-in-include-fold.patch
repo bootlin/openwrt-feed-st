@@ -25,8 +25,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  4 files changed, 3 insertions(+), 5 deletions(-)
  rename {drivers => include/linux}/bus/stm32_firewall.h (100%)
 
-diff --git a/drivers/bus/stm32_etzpc.c b/drivers/bus/stm32_etzpc.c
-index 7fc0f16960be..4918a14e507e 100644
 --- a/drivers/bus/stm32_etzpc.c
 +++ b/drivers/bus/stm32_etzpc.c
 @@ -5,6 +5,7 @@
@@ -46,8 +44,6 @@ index 7fc0f16960be..4918a14e507e 100644
  /*
   * ETZPC registers
   */
-diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
-index 2fc9761dadec..ef4988054b44 100644
 --- a/drivers/bus/stm32_firewall.c
 +++ b/drivers/bus/stm32_firewall.c
 @@ -5,6 +5,7 @@
@@ -67,8 +63,6 @@ index 2fc9761dadec..ef4988054b44 100644
  /* Corresponds to STM32_FIREWALL_MAX_EXTRA_ARGS + firewall ID */
  #define STM32_FIREWALL_MAX_ARGS		(STM32_FIREWALL_MAX_EXTRA_ARGS + 1)
  
-diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
-index 1dc6e848873b..44758a1d3773 100644
 --- a/drivers/bus/stm32_rifsc.c
 +++ b/drivers/bus/stm32_rifsc.c
 @@ -17,7 +17,7 @@
@@ -80,10 +74,175 @@ index 1dc6e848873b..44758a1d3773 100644
  
  /*
   * RIFSC offset register
-diff --git a/drivers/bus/stm32_firewall.h b/include/linux/bus/stm32_firewall.h
-similarity index 100%
-rename from drivers/bus/stm32_firewall.h
-rename to include/linux/bus/stm32_firewall.h
--- 
-2.39.5
-
+--- a/drivers/bus/stm32_firewall.h
++++ /dev/null
+@@ -1,83 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
+- */
+-
+-#ifndef _STM32_FIREWALL_H
+-#define _STM32_FIREWALL_H
+-
+-#include <linux/kernel.h>
+-#include <linux/list.h>
+-#include <linux/of.h>
+-#include <linux/platform_device.h>
+-#include <linux/types.h>
+-
+-/**
+- * STM32_PERIPHERAL_FIREWALL:		This type of firewall protects peripherals
+- * STM32_MEMORY_FIREWALL:		This type of firewall protects memories/subsets of memory
+- *					zones
+- * STM32_NOTYPE_FIREWALL:		Undefined firewall type
+- */
+-
+-#define STM32_PERIPHERAL_FIREWALL	BIT(1)
+-#define STM32_MEMORY_FIREWALL		BIT(2)
+-#define STM32_NOTYPE_FIREWALL		BIT(3)
+-
+-/**
+- * struct stm32_firewall_controller - Information on firewall controller supplying services
+- *
+- * @name:			Name of the firewall controller
+- * @dev:			Device reference of the firewall controller
+- * @mmio:			Base address of the firewall controller
+- * @entry:			List entry of the firewall controller list
+- * @type:			Type of firewall
+- * @max_entries:		Number of entries covered by the firewall
+- * @grant_access:		Callback used to grant access for a device access against a
+- *				firewall controller
+- * @release_access:		Callback used to release resources taken by a device when access was
+- *				granted
+- * @grant_memory_range_access:	Callback used to grant access for a device to a given memory region
+- */
+-struct stm32_firewall_controller {
+-	const char *name;
+-	struct device *dev;
+-	void __iomem *mmio;
+-	struct list_head entry;
+-	unsigned int type;
+-	unsigned int max_entries;
+-
+-	int (*grant_access)(struct stm32_firewall_controller *ctrl, u32 id);
+-	void (*release_access)(struct stm32_firewall_controller *ctrl, u32 id);
+-	int (*grant_memory_range_access)(struct stm32_firewall_controller *ctrl, phys_addr_t paddr,
+-					 size_t size);
+-};
+-
+-/**
+- * stm32_firewall_controller_register - Register a firewall controller to the STM32 firewall
+- *					framework
+- * @firewall_controller:	Firewall controller to register
+- *
+- * Returns 0 in case of success or -ENODEV if no controller was given.
+- */
+-int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller);
+-
+-/**
+- * stm32_firewall_controller_unregister - Unregister a firewall controller from the STM32
+- *					  firewall framework
+- * @firewall_controller:	Firewall controller to unregister
+- */
+-void stm32_firewall_controller_unregister(struct stm32_firewall_controller *firewall_controller);
+-
+-/**
+- * stm32_firewall_populate_bus - Populate device tree nodes that have a correct firewall
+- *				 configuration. This is used at boot-time only, as a sanity check
+- *				 between device tree and firewalls hardware configurations to
+- *				 prevent a kernel crash when a device driver is not granted access
+- *
+- * @firewall_controller:	Firewall controller which nodes will be populated or not
+- *
+- * Returns 0 in case of success or appropriate errno code if error occurred.
+- */
+-int stm32_firewall_populate_bus(struct stm32_firewall_controller *firewall_controller);
+-
+-#endif /* _STM32_FIREWALL_H */
+--- /dev/null
++++ b/include/linux/bus/stm32_firewall.h
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
++ */
++
++#ifndef _STM32_FIREWALL_H
++#define _STM32_FIREWALL_H
++
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/types.h>
++
++/**
++ * STM32_PERIPHERAL_FIREWALL:		This type of firewall protects peripherals
++ * STM32_MEMORY_FIREWALL:		This type of firewall protects memories/subsets of memory
++ *					zones
++ * STM32_NOTYPE_FIREWALL:		Undefined firewall type
++ */
++
++#define STM32_PERIPHERAL_FIREWALL	BIT(1)
++#define STM32_MEMORY_FIREWALL		BIT(2)
++#define STM32_NOTYPE_FIREWALL		BIT(3)
++
++/**
++ * struct stm32_firewall_controller - Information on firewall controller supplying services
++ *
++ * @name:			Name of the firewall controller
++ * @dev:			Device reference of the firewall controller
++ * @mmio:			Base address of the firewall controller
++ * @entry:			List entry of the firewall controller list
++ * @type:			Type of firewall
++ * @max_entries:		Number of entries covered by the firewall
++ * @grant_access:		Callback used to grant access for a device access against a
++ *				firewall controller
++ * @release_access:		Callback used to release resources taken by a device when access was
++ *				granted
++ * @grant_memory_range_access:	Callback used to grant access for a device to a given memory region
++ */
++struct stm32_firewall_controller {
++	const char *name;
++	struct device *dev;
++	void __iomem *mmio;
++	struct list_head entry;
++	unsigned int type;
++	unsigned int max_entries;
++
++	int (*grant_access)(struct stm32_firewall_controller *ctrl, u32 id);
++	void (*release_access)(struct stm32_firewall_controller *ctrl, u32 id);
++	int (*grant_memory_range_access)(struct stm32_firewall_controller *ctrl, phys_addr_t paddr,
++					 size_t size);
++};
++
++/**
++ * stm32_firewall_controller_register - Register a firewall controller to the STM32 firewall
++ *					framework
++ * @firewall_controller:	Firewall controller to register
++ *
++ * Returns 0 in case of success or -ENODEV if no controller was given.
++ */
++int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller);
++
++/**
++ * stm32_firewall_controller_unregister - Unregister a firewall controller from the STM32
++ *					  firewall framework
++ * @firewall_controller:	Firewall controller to unregister
++ */
++void stm32_firewall_controller_unregister(struct stm32_firewall_controller *firewall_controller);
++
++/**
++ * stm32_firewall_populate_bus - Populate device tree nodes that have a correct firewall
++ *				 configuration. This is used at boot-time only, as a sanity check
++ *				 between device tree and firewalls hardware configurations to
++ *				 prevent a kernel crash when a device driver is not granted access
++ *
++ * @firewall_controller:	Firewall controller which nodes will be populated or not
++ *
++ * Returns 0 in case of success or appropriate errno code if error occurred.
++ */
++int stm32_firewall_populate_bus(struct stm32_firewall_controller *firewall_controller);
++
++#endif /* _STM32_FIREWALL_H */

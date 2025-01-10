@@ -11,8 +11,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/lvds.c | 58 +++++++++++++++++++++++++++++---------
  1 file changed, 45 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index fbccbe586381..46ef58971218 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -20,6 +20,7 @@
@@ -33,7 +31,7 @@ index fbccbe586381..46ef58971218 100644
  };
  
  #define bridge_to_stm_lvds(b) \
-@@ -1070,6 +1074,18 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1070,6 +1074,18 @@ static int lvds_probe(struct platform_de
  		return ret;
  	}
  
@@ -52,7 +50,7 @@ index fbccbe586381..46ef58971218 100644
  	rstc = devm_reset_control_get_exclusive(dev, NULL);
  
  	if (IS_ERR(rstc)) {
-@@ -1133,8 +1149,7 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1133,8 +1149,7 @@ static int lvds_probe(struct platform_de
  		}
  		break;
  	default:
@@ -62,7 +60,7 @@ index fbccbe586381..46ef58971218 100644
  	}
  	of_node_put(port1);
  	of_node_put(port2);
-@@ -1143,7 +1158,7 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1143,7 +1158,7 @@ static int lvds_probe(struct platform_de
  	if (IS_ERR(lvds->pllref_clk)) {
  		ret = PTR_ERR(lvds->pllref_clk);
  		dev_err(dev, "Unable to get reference clock: %d\n", ret);
@@ -71,7 +69,7 @@ index fbccbe586381..46ef58971218 100644
  	}
  
  	ret = lvds_pixel_clk_register(lvds);
-@@ -1194,6 +1209,8 @@ static int __maybe_unused lvds_runtime_suspend(struct device *dev)
+@@ -1194,6 +1209,8 @@ static int __maybe_unused lvds_runtime_s
  
  	clk_disable_unprepare(lvds->pllref_clk);
  	clk_disable_unprepare(lvds->pclk);
@@ -80,7 +78,7 @@ index fbccbe586381..46ef58971218 100644
  
  	return 0;
  }
-@@ -1205,19 +1222,34 @@ static int __maybe_unused lvds_runtime_resume(struct device *dev)
+@@ -1205,19 +1222,34 @@ static int __maybe_unused lvds_runtime_r
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -125,6 +123,3 @@ index fbccbe586381..46ef58971218 100644
  
  	return ret;
  }
--- 
-2.39.5
-

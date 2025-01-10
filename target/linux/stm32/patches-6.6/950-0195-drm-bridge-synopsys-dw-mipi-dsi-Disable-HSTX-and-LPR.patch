@@ -30,11 +30,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/340928
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 81366f1788e8..849d70e9c232 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -656,7 +656,7 @@ static void dw_mipi_dsi_init(struct dw_mipi_dsi *dsi)
+@@ -656,7 +656,7 @@ static void dw_mipi_dsi_init(struct dw_m
  	 * timeout clock division should be computed with the
  	 * high speed transmission counter timeout and byte lane...
  	 */
@@ -43,7 +41,7 @@ index 81366f1788e8..849d70e9c232 100644
  		  TX_ESC_CLK_DIVISION(esc_clk_division));
  }
  
-@@ -724,7 +724,7 @@ static void dw_mipi_dsi_command_mode_config(struct dw_mipi_dsi *dsi)
+@@ -724,7 +724,7 @@ static void dw_mipi_dsi_command_mode_con
  	 * compute high speed transmission counter timeout according
  	 * to the timeout clock division (TO_CLK_DIVISION) and byte lane...
  	 */
@@ -52,6 +50,3 @@ index 81366f1788e8..849d70e9c232 100644
  	/*
  	 * TODO dw drv improvements
  	 * the Bus-Turn-Around Timeout Counter should be computed
--- 
-2.39.5
-

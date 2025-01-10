@@ -22,11 +22,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  include/linux/iio/adc/stm32-mdf-adc.h |  9 ++++++++-
  2 files changed, 36 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/stm32-mdf-adc.c b/drivers/iio/adc/stm32-mdf-adc.c
-index 36cd7f7355c0..5b6320d41b7f 100644
 --- a/drivers/iio/adc/stm32-mdf-adc.c
 +++ b/drivers/iio/adc/stm32-mdf-adc.c
-@@ -984,6 +984,31 @@ static const struct iio_buffer_setup_ops stm32_mdf_buffer_setup_ops = {
+@@ -984,6 +984,31 @@ static const struct iio_buffer_setup_ops
  	.predisable = &stm32_mdf_adc_predisable,
  };
  
@@ -58,7 +56,7 @@ index 36cd7f7355c0..5b6320d41b7f 100644
  static void stm32_mdf_dma_release(struct iio_dev *indio_dev)
  {
  	struct stm32_mdf_adc *adc = iio_priv(indio_dev);
-@@ -1044,6 +1069,9 @@ static int stm32_mdf_adc_chan_init_one(struct iio_dev *indio_dev, struct fwnode_
+@@ -1044,6 +1069,9 @@ static int stm32_mdf_adc_chan_init_one(s
  		}
  	}
  
@@ -68,8 +66,6 @@ index 36cd7f7355c0..5b6320d41b7f 100644
  	ch->type = IIO_VOLTAGE;
  	ch->indexed = 1;
  	ch->scan_index = idx;
-diff --git a/include/linux/iio/adc/stm32-mdf-adc.h b/include/linux/iio/adc/stm32-mdf-adc.h
-index b4b4d078a2a8..64adb71e80be 100644
 --- a/include/linux/iio/adc/stm32-mdf-adc.h
 +++ b/include/linux/iio/adc/stm32-mdf-adc.h
 @@ -1,6 +1,6 @@
@@ -94,6 +90,3 @@ index b4b4d078a2a8..64adb71e80be 100644
  int stm32_mdf_get_buff_cb(struct iio_dev *iio_dev,
  			  int (*cb)(const void *data, size_t size, void *private), void *private);
  int stm32_mdf_release_buff_cb(struct iio_dev *iio_dev);
--- 
-2.39.5
-

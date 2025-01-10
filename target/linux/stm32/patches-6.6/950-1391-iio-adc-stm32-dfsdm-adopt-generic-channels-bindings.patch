@@ -44,11 +44,9 @@ Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
  drivers/iio/adc/stm32-dfsdm-adc.c | 193 ++++++++++++++++++++++++------
  1 file changed, 157 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index b5cc43d12b6f..bfb9b6bdb2a2 100644
 --- a/drivers/iio/adc/stm32-dfsdm-adc.c
 +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -666,6 +666,64 @@ static int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
+@@ -666,6 +666,64 @@ static int stm32_dfsdm_channel_parse_of(
  	return 0;
  }
  
@@ -113,7 +111,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  static ssize_t dfsdm_adc_audio_get_spiclk(struct iio_dev *indio_dev,
  					  uintptr_t priv,
  					  const struct iio_chan_spec *chan,
-@@ -1231,7 +1289,8 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1231,7 +1289,8 @@ static int stm32_dfsdm_read_raw(struct i
  		ret = iio_device_claim_direct_mode(indio_dev);
  		if (ret)
  			return ret;
@@ -123,7 +121,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  		if (ret < 0) {
  			dev_err(&indio_dev->dev,
  				"%s: IIO enable failed (channel %d)\n",
-@@ -1240,7 +1299,8 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1240,7 +1299,8 @@ static int stm32_dfsdm_read_raw(struct i
  			return ret;
  		}
  		ret = stm32_dfsdm_single_conv(indio_dev, chan, val);
@@ -133,7 +131,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  		if (ret < 0) {
  			dev_err(&indio_dev->dev,
  				"%s: Conversion failed (channel %d)\n",
-@@ -1367,15 +1427,18 @@ static int stm32_dfsdm_dma_request(struct device *dev,
+@@ -1367,15 +1427,18 @@ static int stm32_dfsdm_dma_request(struc
  	return 0;
  }
  
@@ -156,7 +154,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  
  	ch->type = IIO_VOLTAGE;
  	ch->indexed = 1;
-@@ -1390,6 +1453,7 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
+@@ -1390,6 +1453,7 @@ static int stm32_dfsdm_adc_chan_init_one
  
  	if (adc->dev_data->type == DFSDM_AUDIO) {
  		ch->ext_info = dfsdm_adc_audio_ext_info;
@@ -164,7 +162,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  	} else {
  		ch->scan_type.shift = 8;
  	}
-@@ -1401,20 +1465,70 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
+@@ -1401,20 +1465,70 @@ static int stm32_dfsdm_adc_chan_init_one
  					  &adc->dfsdm->ch_list[ch->channel]);
  }
  
@@ -238,7 +236,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  	if (ret < 0) {
  		dev_err(&indio_dev->dev, "Channels init failed\n");
  		return ret;
-@@ -1425,9 +1539,6 @@ static int stm32_dfsdm_audio_init(struct device *dev, struct iio_dev *indio_dev)
+@@ -1425,9 +1539,6 @@ static int stm32_dfsdm_audio_init(struct
  	if (d_ch->src != DFSDM_CHANNEL_SPI_CLOCK_EXTERNAL)
  		adc->spi_freq = adc->dfsdm->spi_master_freq;
  
@@ -248,7 +246,7 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  	return stm32_dfsdm_dma_request(dev, indio_dev);
  }
  
-@@ -1435,43 +1546,53 @@ static int stm32_dfsdm_adc_init(struct device *dev, struct iio_dev *indio_dev)
+@@ -1435,43 +1546,53 @@ static int stm32_dfsdm_adc_init(struct d
  {
  	struct iio_chan_spec *ch;
  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
@@ -326,6 +324,3 @@ index b5cc43d12b6f..bfb9b6bdb2a2 100644
  	init_completion(&adc->completion);
  
  	/* Optionally request DMA */
--- 
-2.39.5
-

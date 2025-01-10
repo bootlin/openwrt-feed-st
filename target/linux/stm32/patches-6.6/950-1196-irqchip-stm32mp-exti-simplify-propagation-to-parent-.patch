@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 20 ++++----------------
  1 file changed, 4 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 2958fbcfbda1..069a9addabe4 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -337,8 +337,7 @@ static void stm32mp_exti_eoi(struct irq_data *d)
+@@ -337,8 +337,7 @@ static void stm32mp_exti_eoi(struct irq_
  
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -34,7 +32,7 @@ index 2958fbcfbda1..069a9addabe4 100644
  }
  
  static void stm32mp_exti_mask(struct irq_data *d)
-@@ -350,8 +349,7 @@ static void stm32mp_exti_mask(struct irq_data *d)
+@@ -350,8 +349,7 @@ static void stm32mp_exti_mask(struct irq
  	chip_data->mask_cache = stm32mp_exti_clr_bit(d, bank->imr_ofst);
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -44,7 +42,7 @@ index 2958fbcfbda1..069a9addabe4 100644
  }
  
  static void stm32mp_exti_unmask(struct irq_data *d)
-@@ -363,8 +361,7 @@ static void stm32mp_exti_unmask(struct irq_data *d)
+@@ -363,8 +361,7 @@ static void stm32mp_exti_unmask(struct i
  	chip_data->mask_cache = stm32mp_exti_set_bit(d, bank->imr_ofst);
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -54,7 +52,7 @@ index 2958fbcfbda1..069a9addabe4 100644
  }
  
  static int stm32mp_exti_set_type(struct irq_data *d, unsigned int type)
-@@ -422,15 +419,6 @@ static int stm32mp_exti_set_wake(struct irq_data *d, unsigned int on)
+@@ -422,15 +419,6 @@ static int stm32mp_exti_set_wake(struct
  	return 0;
  }
  
@@ -70,7 +68,7 @@ index 2958fbcfbda1..069a9addabe4 100644
  static int stm32mp_exti_suspend(struct device *dev)
  {
  	struct stm32mp_exti_host_data *host_data = dev_get_drvdata(dev);
-@@ -480,7 +468,7 @@ static struct irq_chip stm32mp_exti_chip = {
+@@ -480,7 +468,7 @@ static struct irq_chip stm32mp_exti_chip
  	.irq_set_type		= stm32mp_exti_set_type,
  	.irq_set_wake		= stm32mp_exti_set_wake,
  	.flags			= IRQCHIP_MASK_ON_SUSPEND,
@@ -79,6 +77,3 @@ index 2958fbcfbda1..069a9addabe4 100644
  };
  
  static struct irq_chip stm32mp_exti_chip_direct = {
--- 
-2.39.5
-

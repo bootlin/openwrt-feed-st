@@ -13,11 +13,9 @@ Change-Id: I9960fe758e506611df110f60145516aab0c2d3e2
  arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index e9d1925f92d0..f7872ee25115 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1296,6 +1296,7 @@ exti: interrupt-controller@5000d000 {
+@@ -1296,6 +1296,7 @@
  			#address-cells = <0>;
  			reg = <0x5000d000 0x400>;
  			wakeup-parent = <&pwr_irq>;
@@ -25,6 +23,3 @@ index e9d1925f92d0..f7872ee25115 100644
  
  			exti-interrupt-map {
  				#address-cells = <0>;
--- 
-2.39.5
-

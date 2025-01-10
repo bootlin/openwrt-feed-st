@@ -31,8 +31,6 @@ Reviewed-by: Loic PALLARDY <loic.pallardy@st.com>
  create mode 100644 drivers/soc/st/Makefile
  create mode 100644 drivers/soc/st/stm32_pm_domain.c
 
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index d21e75d69294..7ae806352c5a 100644
 --- a/drivers/soc/Kconfig
 +++ b/drivers/soc/Kconfig
 @@ -24,6 +24,7 @@ source "drivers/soc/renesas/Kconfig"
@@ -43,8 +41,6 @@ index d21e75d69294..7ae806352c5a 100644
  source "drivers/soc/starfive/Kconfig"
  source "drivers/soc/sunxi/Kconfig"
  source "drivers/soc/tegra/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 0706a27d13be..5136b921f05f 100644
 --- a/drivers/soc/Makefile
 +++ b/drivers/soc/Makefile
 @@ -29,6 +29,7 @@ obj-y				+= renesas/
@@ -55,9 +51,6 @@ index 0706a27d13be..5136b921f05f 100644
  obj-y				+= sunxi/
  obj-$(CONFIG_ARCH_TEGRA)	+= tegra/
  obj-y				+= ti/
-diff --git a/drivers/soc/st/Kconfig b/drivers/soc/st/Kconfig
-new file mode 100644
-index 000000000000..82ee423e3464
 --- /dev/null
 +++ b/drivers/soc/st/Kconfig
 @@ -0,0 +1,9 @@
@@ -70,16 +63,10 @@ index 000000000000..82ee423e3464
 +	default y if MACH_STM32MP157
 +
 +endif # ARCH_STM32
-diff --git a/drivers/soc/st/Makefile b/drivers/soc/st/Makefile
-new file mode 100644
-index 000000000000..8d7f2919fe18
 --- /dev/null
 +++ b/drivers/soc/st/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_STM32_PM_DOMAINS) += stm32_pm_domain.o
-diff --git a/drivers/soc/st/stm32_pm_domain.c b/drivers/soc/st/stm32_pm_domain.c
-new file mode 100644
-index 000000000000..0386624c20f2
 --- /dev/null
 +++ b/drivers/soc/st/stm32_pm_domain.c
 @@ -0,0 +1,212 @@
@@ -295,6 +282,3 @@ index 000000000000..0386624c20f2
 +	return platform_driver_register(&stm32_pm_domains_driver);
 +}
 +core_initcall(stm32_pm_domains_init);
--- 
-2.39.5
-

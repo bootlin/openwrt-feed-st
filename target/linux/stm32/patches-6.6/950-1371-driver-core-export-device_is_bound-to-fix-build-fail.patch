@@ -19,8 +19,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/398972
  drivers/base/dd.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 0c3725c3eefa..628a89dc552b 100644
 --- a/drivers/base/dd.c
 +++ b/drivers/base/dd.c
 @@ -393,6 +393,7 @@ bool device_is_bound(struct device *dev)
@@ -31,6 +29,3 @@ index 0c3725c3eefa..628a89dc552b 100644
  
  static void driver_bound(struct device *dev)
  {
--- 
-2.39.5
-

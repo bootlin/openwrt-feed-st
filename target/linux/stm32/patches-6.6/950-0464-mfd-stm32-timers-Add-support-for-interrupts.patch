@@ -25,11 +25,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/linux/mfd/stm32-timers.h | 11 ++++++++
  2 files changed, 57 insertions(+)
 
-diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
-index 0f9f7b9bf980..d8eb5eea23c6 100644
 --- a/drivers/mfd/stm32-timers.c
 +++ b/drivers/mfd/stm32-timers.c
-@@ -241,6 +241,48 @@ static void stm32_timers_dma_remove(struct device *dev,
+@@ -241,6 +241,48 @@ static void stm32_timers_dma_remove(stru
  			dma_release_channel(ddata->dma.chans[i]);
  }
  
@@ -78,7 +76,7 @@ index 0f9f7b9bf980..d8eb5eea23c6 100644
  static int stm32_timers_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
-@@ -273,6 +315,10 @@ static int stm32_timers_probe(struct platform_device *pdev)
+@@ -273,6 +315,10 @@ static int stm32_timers_probe(struct pla
  	if (ret)
  		return ret;
  
@@ -89,8 +87,6 @@ index 0f9f7b9bf980..d8eb5eea23c6 100644
  	ret = stm32_timers_dma_probe(dev, ddata);
  	if (ret) {
  		stm32_timers_dma_remove(dev, ddata);
-diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
-index f580c378545e..4032336e8d96 100644
 --- a/include/linux/mfd/stm32-timers.h
 +++ b/include/linux/mfd/stm32-timers.h
 @@ -111,6 +111,15 @@ enum stm32_timers_dmas {
@@ -118,6 +114,3 @@ index f580c378545e..4032336e8d96 100644
  };
  
  #if IS_REACHABLE(CONFIG_MFD_STM32_TIMERS)
--- 
-2.39.5
-

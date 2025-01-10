@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/spi/spi-stm32-ospi.c | 5 -----
  1 file changed, 5 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 7c4b043297a6..93154e826bbe 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -621,9 +621,6 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+@@ -621,9 +621,6 @@ static int stm32_ospi_prepare_to_send(st
  	};
  
  	if (op->cmd.dtr && !flash->dtr_calibration_done_once) {
@@ -32,7 +30,7 @@ index 7c4b043297a6..93154e826bbe 100644
  		stm32_omi_dlyb_stop(omi);
  		flash->sample_later = false;
  		flash->octal_dtr = (op->cmd.nbytes == 2);
-@@ -633,8 +630,6 @@ static int stm32_ospi_prepare_to_send(struct spi_device *spi,
+@@ -633,8 +630,6 @@ static int stm32_ospi_prepare_to_send(st
  			return ret;
  
  		flash->dtr_mode = true;
@@ -41,6 +39,3 @@ index 7c4b043297a6..93154e826bbe 100644
  	}
  
  	/*
--- 
-2.39.5
-

@@ -12,11 +12,9 @@ Change-Id: I459cf84527d092520117b71767180e756314bfac
  drivers/clk/stm32/clk-stm32mp25-syscfg.c | 36 +++++++++++++++++++++++-
  1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25-syscfg.c b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
-index ad8b8c961fed..caa7ea44b732 100644
 --- a/drivers/clk/stm32/clk-stm32mp25-syscfg.c
 +++ b/drivers/clk/stm32/clk-stm32mp25-syscfg.c
-@@ -16,13 +16,47 @@ static const char * const clk_pix_ltdc_src[] = {
+@@ -16,13 +16,47 @@ static const char * const clk_pix_ltdc_s
  	"txbyteclk", "clk_pix_lvds", "ck_ker_ltdc"
  };
  
@@ -65,6 +63,3 @@ index ad8b8c961fed..caa7ea44b732 100644
  				       CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT),
  };
  
--- 
-2.39.5
-

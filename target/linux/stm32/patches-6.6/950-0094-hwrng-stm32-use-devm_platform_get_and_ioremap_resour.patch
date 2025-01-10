@@ -13,11 +13,9 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 9 ++-------
  1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index efb6a9f9a11b..d64d25d0fee8 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
-@@ -118,18 +118,13 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -118,18 +118,13 @@ static int stm32_rng_probe(struct platfo
  	struct device *dev = &ofdev->dev;
  	struct device_node *np = ofdev->dev.of_node;
  	struct stm32_rng_private *priv;
@@ -38,6 +36,3 @@ index efb6a9f9a11b..d64d25d0fee8 100644
  	if (IS_ERR(priv->base))
  		return PTR_ERR(priv->base);
  
--- 
-2.39.5
-

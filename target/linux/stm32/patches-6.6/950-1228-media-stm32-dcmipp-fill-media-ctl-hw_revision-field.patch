@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index ea511b8e4abd..9d205ff2c574 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -65,6 +65,7 @@ struct dcmipp_pipeline_config {
@@ -29,7 +27,7 @@ index ea511b8e4abd..9d205ff2c574 100644
  };
  
  /* --------------------------------------------------------------------------
-@@ -100,11 +101,13 @@ static const struct dcmipp_ent_link stm32mp13_ent_links[] = {
+@@ -100,11 +101,13 @@ static const struct dcmipp_ent_link stm3
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
@@ -44,7 +42,7 @@ index ea511b8e4abd..9d205ff2c574 100644
  };
  
  #define	ID_MAIN_ISP 3
-@@ -186,11 +189,13 @@ static const struct dcmipp_ent_link stm32mp25_ent_links[] = {
+@@ -186,11 +189,13 @@ static const struct dcmipp_ent_link stm3
  			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE),
  };
  
@@ -59,7 +57,7 @@ index ea511b8e4abd..9d205ff2c574 100644
  };
  
  #define LINK_FLAG_TO_STR(f) ((f) == 0 ? "" :\
-@@ -588,6 +593,7 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -588,6 +593,7 @@ static int dcmipp_probe(struct platform_
  	/* Initialize media device */
  	strscpy(dcmipp->mdev.model, DCMIPP_MDEV_MODEL_NAME,
  		sizeof(dcmipp->mdev.model));
@@ -67,6 +65,3 @@ index ea511b8e4abd..9d205ff2c574 100644
  	dcmipp->mdev.dev = &pdev->dev;
  	media_device_init(&dcmipp->mdev);
  
--- 
-2.39.5
-

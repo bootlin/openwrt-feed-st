@@ -13,11 +13,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 61014626cbe0..79aea8039e8d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -62,11 +62,11 @@ &arm_wdt {
+@@ -62,11 +62,11 @@
  };
  
  &scmi_regu {
@@ -31,6 +29,3 @@ index 61014626cbe0..79aea8039e8d 100644
  		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
  		regulator-name = "vdd_sdcard";
  	};
--- 
-2.39.5
-

@@ -12,8 +12,6 @@ Change-Id: Ibbc558b62cff343e605f7361c9b1103887f84827
  drivers/thermal/st/stm_thermal.c | 22 ++++++----------------
  1 file changed, 6 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
-index 142a7e5d12f4..50ab45609f23 100644
 --- a/drivers/thermal/st/stm_thermal.c
 +++ b/drivers/thermal/st/stm_thermal.c
 @@ -79,8 +79,7 @@
@@ -35,7 +33,7 @@ index 142a7e5d12f4..50ab45609f23 100644
  };
  
  static int stm_enable_irq(struct stm_thermal_sensor *sensor)
-@@ -240,14 +239,6 @@ static int stm_thermal_calibration(struct stm_thermal_sensor *sensor)
+@@ -240,14 +239,6 @@ static int stm_thermal_calibration(struc
  /* Fill in DTS structure with factory sensor values */
  static int stm_thermal_read_factory_settings(struct stm_thermal_sensor *sensor)
  {
@@ -50,7 +48,7 @@ index 142a7e5d12f4..50ab45609f23 100644
  	/* Retrieve fmt0 and put it on Hz */
  	sensor->fmt0 = ADJUST * (readl_relaxed(sensor->base +
  				 DTS_T0VALR1_OFFSET) & TS1_FMT0_MASK);
-@@ -261,8 +252,8 @@ static int stm_thermal_read_factory_settings(struct stm_thermal_sensor *sensor)
+@@ -261,8 +252,8 @@ static int stm_thermal_read_factory_sett
  		return -EINVAL;
  	}
  
@@ -61,7 +59,7 @@ index 142a7e5d12f4..50ab45609f23 100644
  
  	return 0;
  }
-@@ -273,8 +264,7 @@ static int stm_thermal_calculate_threshold(struct stm_thermal_sensor *sensor,
+@@ -273,8 +264,7 @@ static int stm_thermal_calculate_thresho
  	int freqM;
  
  	/* Figure out the CLK_PTAT frequency for a given temperature */
@@ -71,7 +69,7 @@ index 142a7e5d12f4..50ab45609f23 100644
  
  	/* Figure out the threshold sample number */
  	*th = clk_get_rate(sensor->clk) * SAMPLING_TIME / freqM;
-@@ -369,7 +359,7 @@ static int stm_thermal_get_temp(struct thermal_zone_device *tz, int *temp)
+@@ -369,7 +359,7 @@ static int stm_thermal_get_temp(struct t
  		return -EINVAL;
  
  	/* Figure out the temperature in mili celsius */
@@ -80,6 +78,3 @@ index 142a7e5d12f4..50ab45609f23 100644
  
  	return 0;
  }
--- 
-2.39.5
-

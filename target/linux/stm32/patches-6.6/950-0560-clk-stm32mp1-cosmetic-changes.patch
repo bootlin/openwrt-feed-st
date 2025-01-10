@@ -11,11 +11,9 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 49 ++++++++++++++++----------------
  1 file changed, 24 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index d7cc66a7f878..e63e5529b585 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -1414,7 +1414,7 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1414,7 +1414,7 @@ _clk_stm32_register_composite(struct dev
  		    NULL, &mp1_gate_clk_ops)\
  
  #define _MGATE_MP1(_mgate)\
@@ -24,7 +22,7 @@ index d7cc66a7f878..e63e5529b585 100644
  
  #define GATE_MP1(_id, _name, _parent, _flags, _offset, _bit_idx, _gate_flags)\
  	STM32_GATE(_id, _name, _parent, _flags,\
-@@ -1430,7 +1430,7 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1430,7 +1430,7 @@ _clk_stm32_register_composite(struct dev
  
  #define _STM32_DIV(_div_offset, _div_shift, _div_width,\
  		   _div_flags, _div_table, _ops)\
@@ -33,7 +31,7 @@ index d7cc66a7f878..e63e5529b585 100644
  		&(struct div_cfg) {\
  			.reg_off	= _div_offset,\
  			.shift		= _div_shift,\
-@@ -1439,11 +1439,11 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1439,11 +1439,11 @@ _clk_stm32_register_composite(struct dev
  			.table		= _div_table,\
  		},\
  		.ops		= _ops,\
@@ -47,7 +45,7 @@ index d7cc66a7f878..e63e5529b585 100644
  
  #define _DIV_DUTY_CYCLE(_div_offset, _div_shift, _div_width, _div_flags,\
  			_div_table)\
-@@ -1455,7 +1455,7 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1455,7 +1455,7 @@ _clk_stm32_register_composite(struct dev
  		   _div_flags, _div_table, &rtc_div_clk_ops)
  
  #define _STM32_MUX(_offset, _shift, _width, _mux_flags, _mmux, _ops)\
@@ -56,7 +54,7 @@ index d7cc66a7f878..e63e5529b585 100644
  		&(struct mux_cfg) {\
  			.reg_off	= _offset,\
  			.shift		= _shift,\
-@@ -1465,18 +1465,18 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1465,18 +1465,18 @@ _clk_stm32_register_composite(struct dev
  		},\
  		.mmux		= _mmux,\
  		.ops		= _ops,\
@@ -82,7 +80,7 @@ index d7cc66a7f878..e63e5529b585 100644
  
  #define COMPOSITE(_id, _name, _parents, _flags, _gate, _mux, _div)\
  {\
-@@ -1486,9 +1486,9 @@ _clk_stm32_register_composite(struct device *dev,
+@@ -1486,9 +1486,9 @@ _clk_stm32_register_composite(struct dev
  	.num_parents	= ARRAY_SIZE(_parents),\
  	.flags		= _flags,\
  	.cfg		= &(struct stm32_composite_cfg) {\
@@ -95,7 +93,7 @@ index d7cc66a7f878..e63e5529b585 100644
  	},\
  	.func		= _clk_stm32_register_composite,\
  }
-@@ -1959,16 +1959,16 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1959,16 +1959,16 @@ static const struct clock_config stm32mp
  	    CLK_SET_RATE_PARENT | CLK_IS_CRITICAL, RCC_MPCKSELR, 0, 2, 0),
  
  	COMPOSITE(CK_AXI, "ck_axi", axi_src, CLK_IS_CRITICAL |
@@ -120,7 +118,7 @@ index d7cc66a7f878..e63e5529b585 100644
  
  	DIV_TABLE(PCLK1, "pclk1", "ck_mcu", CLK_IGNORE_UNUSED, RCC_APB1DIVR, 0,
  		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
-@@ -2064,8 +2064,7 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -2064,8 +2064,7 @@ static const struct clock_config stm32mp
  	PCLK(I2C4, "i2c4", "pclk5", 0, G_I2C4),
  	PCLK(I2C6, "i2c6", "pclk5", 0, G_I2C6),
  	PCLK(USART1, "usart1", "pclk5", 0, G_USART1),
@@ -130,6 +128,3 @@ index d7cc66a7f878..e63e5529b585 100644
  	PCLK(TZC1, "tzc1", "ck_axi", CLK_IGNORE_UNUSED, G_TZC1),
  	PCLK(TZC2, "tzc2", "ck_axi", CLK_IGNORE_UNUSED, G_TZC2),
  	PCLK(TZPC, "tzpc", "pclk5", CLK_IGNORE_UNUSED, G_TZPC),
--- 
-2.39.5
-

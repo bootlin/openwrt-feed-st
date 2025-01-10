@@ -32,11 +32,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/368875
  arch/arm/boot/dts/st/stm32mp15xd.dtsi | 14 --------------
  3 files changed, 19 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 5ec9697f96e0..bf1d8dfd6b62 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -31,6 +31,25 @@ cpu0: cpu@0 {
+@@ -31,6 +31,25 @@
  	cpu0_opp_table: cpu0-opp-table {
  		compatible = "operating-points-v2";
  		opp-shared;
@@ -62,8 +60,6 @@ index 5ec9697f96e0..bf1d8dfd6b62 100644
  	};
  
  	arm-pmu {
-diff --git a/arch/arm/boot/dts/st/stm32mp15xa.dtsi b/arch/arm/boot/dts/st/stm32mp15xa.dtsi
-index 85f0f4022dc7..f56c44a122ed 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xa.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xa.dtsi
 @@ -3,11 +3,3 @@
@@ -78,8 +74,6 @@ index 85f0f4022dc7..f56c44a122ed 100644
 -			opp-supported-hw = <0x1>;
 -		};
 -};
-diff --git a/arch/arm/boot/dts/st/stm32mp15xd.dtsi b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
-index ae8121e9ce31..d19f609355c6 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 @@ -4,20 +4,6 @@
@@ -103,6 +97,3 @@ index ae8121e9ce31..d19f609355c6 100644
  &cpu_thermal {
  	trips {
  		cpu-crit {
--- 
-2.39.5
-

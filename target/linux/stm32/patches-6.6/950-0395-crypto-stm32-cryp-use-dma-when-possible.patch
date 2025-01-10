@@ -64,12 +64,10 @@ Tested-by: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
  drivers/crypto/stm32/stm32-cryp.c | 673 ++++++++++++++++++++++++++++--
  1 file changed, 649 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index f095f0065428..4557162e2f8b 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -13,6 +13,8 @@
- #include <crypto/scatterwalk.h>
+@@ -14,6 +14,8 @@
+ #include <linux/bottom_half.h>
  #include <linux/clk.h>
  #include <linux/delay.h>
 +#include <linux/dma-mapping.h>
@@ -77,7 +75,7 @@ index f095f0065428..4557162e2f8b 100644
  #include <linux/err.h>
  #include <linux/iopoll.h>
  #include <linux/interrupt.h>
-@@ -40,6 +42,8 @@
+@@ -41,6 +43,8 @@
  /* Mode mask = bits [15..0] */
  #define FLG_MODE_MASK           GENMASK(15, 0)
  /* Bit [31..16] status  */
@@ -86,7 +84,7 @@ index f095f0065428..4557162e2f8b 100644
  
  /* Registers */
  #define CRYP_CR                 0x00000000
-@@ -121,8 +125,12 @@
+@@ -122,8 +126,12 @@
  #define CR_PH_MASK              0x00030000
  #define CR_NBPBL_SHIFT          20
  
@@ -101,7 +99,7 @@ index f095f0065428..4557162e2f8b 100644
  
  #define IMSCR_IN                BIT(0)
  #define IMSCR_OUT               BIT(1)
-@@ -133,7 +141,15 @@
+@@ -134,7 +142,15 @@
  /* Misc */
  #define AES_BLOCK_32            (AES_BLOCK_SIZE / sizeof(u32))
  #define GCM_CTR_INIT            2
@@ -118,7 +116,7 @@ index f095f0065428..4557162e2f8b 100644
  
  struct stm32_cryp_caps {
  	bool			aeads_support;
-@@ -146,6 +162,7 @@ struct stm32_cryp_caps {
+@@ -147,6 +163,7 @@ struct stm32_cryp_caps {
  	u32			sr;
  	u32			din;
  	u32			dout;
@@ -126,7 +124,7 @@ index f095f0065428..4557162e2f8b 100644
  	u32			imsc;
  	u32			mis;
  	u32			k1l;
-@@ -172,6 +189,7 @@ struct stm32_cryp {
+@@ -173,6 +190,7 @@ struct stm32_cryp {
  	struct list_head        list;
  	struct device           *dev;
  	void __iomem            *regs;
@@ -134,7 +132,7 @@ index f095f0065428..4557162e2f8b 100644
  	struct clk              *clk;
  	unsigned long           flags;
  	u32                     irq_status;
-@@ -190,8 +208,20 @@ struct stm32_cryp {
+@@ -191,8 +209,20 @@ struct stm32_cryp {
  	size_t                  header_in;
  	size_t                  payload_out;
  
@@ -155,7 +153,7 @@ index f095f0065428..4557162e2f8b 100644
  	struct scatter_walk     in_walk;
  	struct scatter_walk     out_walk;
  
-@@ -291,12 +321,20 @@ static inline int stm32_cryp_wait_enable(struct stm32_cryp *cryp)
+@@ -292,12 +322,20 @@ static inline int stm32_cryp_wait_enable
  			!(status & CR_CRYPEN), 10, 100000);
  }
  
@@ -178,7 +176,7 @@ index f095f0065428..4557162e2f8b 100644
  }
  
  static inline void stm32_cryp_key_read_enable(struct stm32_cryp *cryp)
-@@ -311,8 +349,13 @@ static inline void stm32_cryp_key_read_disable(struct stm32_cryp *cryp)
+@@ -312,8 +350,13 @@ static inline void stm32_cryp_key_read_d
  		       cryp->regs + cryp->caps->cr);
  }
  
@@ -192,16 +190,15 @@ index f095f0065428..4557162e2f8b 100644
  
  static struct stm32_cryp *stm32_cryp_find_dev(struct stm32_cryp_ctx *ctx)
  {
-@@ -813,11 +856,238 @@ static void stm32_cryp_finish_req(struct stm32_cryp *cryp, int err)
+@@ -814,11 +857,238 @@ static void stm32_cryp_finish_req(struct
  	if (is_gcm(cryp) || is_ccm(cryp))
  		crypto_finalize_aead_request(cryp->engine, cryp->areq, err);
  	else
 -		crypto_finalize_skcipher_request(cryp->engine, cryp->req,
 -						   err);
 +		crypto_finalize_skcipher_request(cryp->engine, cryp->req, err);
- }
- 
--static int stm32_cryp_cpu_start(struct stm32_cryp *cryp)
++}
++
 +static void stm32_cryp_header_dma_callback(void *param)
 +{
 +	struct stm32_cryp *cryp = (struct stm32_cryp *)param;
@@ -349,8 +346,9 @@ index f095f0065428..4557162e2f8b 100644
 +	stm32_cryp_write(cryp, cryp->caps->dmacr, reg | DMACR_DIEN);
 +
 +	return 0;
-+}
-+
+ }
+ 
+-static int stm32_cryp_cpu_start(struct stm32_cryp *cryp)
 +static int stm32_cryp_dma_start(struct stm32_cryp *cryp)
 +{
 +	int ret;
@@ -434,7 +432,7 @@ index f095f0065428..4557162e2f8b 100644
  {
  	/* Enable interrupt and let the IRQ handler do everything */
  	stm32_cryp_write(cryp, cryp->caps->imsc, IMSCR_IN | IMSCR_OUT);
-@@ -1149,13 +1419,254 @@ static int stm32_cryp_tdes_cbc_decrypt(struct skcipher_request *req)
+@@ -1150,13 +1420,254 @@ static int stm32_cryp_tdes_cbc_decrypt(s
  	return stm32_cryp_crypt(req, FLG_TDES | FLG_CBC);
  }
  
@@ -690,7 +688,7 @@ index f095f0065428..4557162e2f8b 100644
  	int ret;
  
  	if (!req && !areq)
-@@ -1182,6 +1693,15 @@ static int stm32_cryp_prepare_req(struct skcipher_request *req,
+@@ -1183,6 +1694,15 @@ static int stm32_cryp_prepare_req(struct
  		cryp->payload_in = req->cryptlen;
  		cryp->payload_out = req->cryptlen;
  		cryp->authsize = 0;
@@ -706,15 +704,15 @@ index f095f0065428..4557162e2f8b 100644
  	} else {
  		/*
  		 * Length of input and output data:
-@@ -1211,23 +1731,22 @@ static int stm32_cryp_prepare_req(struct skcipher_request *req,
+@@ -1212,23 +1732,22 @@ static int stm32_cryp_prepare_req(struct
  			cryp->header_in = areq->assoclen;
  			cryp->payload_out = cryp->payload_in;
  		}
 -	}
- 
+-
 -	in_sg = req ? req->src : areq->src;
 -	scatterwalk_start(&cryp->in_walk, in_sg);
--
+ 
 -	cryp->out_sg = req ? req->dst : areq->dst;
 -	scatterwalk_start(&cryp->out_walk, cryp->out_sg);
 +		in_sg = areq->src;
@@ -740,7 +738,7 @@ index f095f0065428..4557162e2f8b 100644
  	return ret;
  }
  
-@@ -1239,12 +1758,24 @@ static int stm32_cryp_cipher_one_req(struct crypto_engine *engine, void *areq)
+@@ -1240,12 +1759,24 @@ static int stm32_cryp_cipher_one_req(str
  	struct stm32_cryp_ctx *ctx = crypto_skcipher_ctx(
  			crypto_skcipher_reqtfm(req));
  	struct stm32_cryp *cryp = ctx->cryp;
@@ -767,7 +765,7 @@ index f095f0065428..4557162e2f8b 100644
  }
  
  static int stm32_cryp_aead_one_req(struct crypto_engine *engine, void *areq)
-@@ -1262,13 +1793,20 @@ static int stm32_cryp_aead_one_req(struct crypto_engine *engine, void *areq)
+@@ -1263,13 +1794,20 @@ static int stm32_cryp_aead_one_req(struc
  	if (err)
  		return err;
  
@@ -790,7 +788,7 @@ index f095f0065428..4557162e2f8b 100644
  }
  
  static int stm32_cryp_read_auth_tag(struct stm32_cryp *cryp)
-@@ -1680,6 +2218,65 @@ static irqreturn_t stm32_cryp_irq(int irq, void *arg)
+@@ -1684,6 +2222,65 @@ static irqreturn_t stm32_cryp_irq(int ir
  	return IRQ_WAKE_THREAD;
  }
  
@@ -856,7 +854,7 @@ index f095f0065428..4557162e2f8b 100644
  static struct skcipher_engine_alg crypto_algs[] = {
  {
  	.base = {
-@@ -1901,6 +2498,7 @@ static const struct stm32_cryp_caps ux500_data = {
+@@ -1905,6 +2502,7 @@ static const struct stm32_cryp_caps ux50
  	.sr = UX500_CRYP_SR,
  	.din = UX500_CRYP_DIN,
  	.dout = UX500_CRYP_DOUT,
@@ -864,7 +862,7 @@ index f095f0065428..4557162e2f8b 100644
  	.imsc = UX500_CRYP_IMSC,
  	.mis = UX500_CRYP_MIS,
  	.k1l = UX500_CRYP_K1L,
-@@ -1923,6 +2521,7 @@ static const struct stm32_cryp_caps f7_data = {
+@@ -1927,6 +2525,7 @@ static const struct stm32_cryp_caps f7_d
  	.sr = CRYP_SR,
  	.din = CRYP_DIN,
  	.dout = CRYP_DOUT,
@@ -872,7 +870,7 @@ index f095f0065428..4557162e2f8b 100644
  	.imsc = CRYP_IMSCR,
  	.mis = CRYP_MISR,
  	.k1l = CRYP_K1LR,
-@@ -1945,6 +2544,7 @@ static const struct stm32_cryp_caps mp1_data = {
+@@ -1949,6 +2548,7 @@ static const struct stm32_cryp_caps mp1_
  	.sr = CRYP_SR,
  	.din = CRYP_DIN,
  	.dout = CRYP_DOUT,
@@ -880,7 +878,7 @@ index f095f0065428..4557162e2f8b 100644
  	.imsc = CRYP_IMSCR,
  	.mis = CRYP_MISR,
  	.k1l = CRYP_K1LR,
-@@ -1985,6 +2585,8 @@ static int stm32_cryp_probe(struct platform_device *pdev)
+@@ -1989,6 +2589,8 @@ static int stm32_cryp_probe(struct platf
  	if (IS_ERR(cryp->regs))
  		return PTR_ERR(cryp->regs);
  
@@ -889,7 +887,7 @@ index f095f0065428..4557162e2f8b 100644
  	irq = platform_get_irq(pdev, 0);
  	if (irq < 0)
  		return irq;
-@@ -2030,6 +2632,17 @@ static int stm32_cryp_probe(struct platform_device *pdev)
+@@ -2034,6 +2636,17 @@ static int stm32_cryp_probe(struct platf
  
  	platform_set_drvdata(pdev, cryp);
  
@@ -907,7 +905,7 @@ index f095f0065428..4557162e2f8b 100644
  	spin_lock(&cryp_list.lock);
  	list_add(&cryp->list, &cryp_list.dev_list);
  	spin_unlock(&cryp_list.lock);
-@@ -2075,6 +2688,12 @@ static int stm32_cryp_probe(struct platform_device *pdev)
+@@ -2079,6 +2692,12 @@ err_engine1:
  	spin_lock(&cryp_list.lock);
  	list_del(&cryp->list);
  	spin_unlock(&cryp_list.lock);
@@ -920,7 +918,7 @@ index f095f0065428..4557162e2f8b 100644
  err_rst:
  	pm_runtime_disable(dev);
  	pm_runtime_put_noidle(dev);
-@@ -2106,6 +2725,12 @@ static int stm32_cryp_remove(struct platform_device *pdev)
+@@ -2110,6 +2729,12 @@ static int stm32_cryp_remove(struct plat
  	list_del(&cryp->list);
  	spin_unlock(&cryp_list.lock);
  
@@ -933,6 +931,3 @@ index f095f0065428..4557162e2f8b 100644
  	pm_runtime_disable(cryp->dev);
  	pm_runtime_put_noidle(cryp->dev);
  
--- 
-2.39.5
-

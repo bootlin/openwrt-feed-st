@@ -11,11 +11,9 @@ Change-Id: Ida5799130fc3ba85799282eb1039b5832da22465
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index 677505a8f580..03a8f98b00cb 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -69,6 +69,8 @@ touchscreen@38 {
+@@ -69,6 +69,8 @@
  		interrupt-controller;
  		touchscreen-size-x = <480>;
  		touchscreen-size-y = <800>;
@@ -24,6 +22,3 @@ index 677505a8f580..03a8f98b00cb 100644
  		status = "okay";
  	};
  };
--- 
-2.39.5
-

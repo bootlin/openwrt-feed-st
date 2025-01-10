@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 41 ++++++++++++++++++++++++++++++-
  1 file changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 5ae765044983..8109e3a38c66 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -4,8 +4,10 @@
@@ -36,7 +34,7 @@ index 5ae765044983..8109e3a38c66 100644
  #include <linux/of_address.h>
  #include <linux/platform_device.h>
  
-@@ -1822,6 +1824,11 @@ static int stm32_rcc_get_access(void __iomem *base, u32 index)
+@@ -1822,6 +1824,11 @@ static int stm32_rcc_get_access(void __i
  	return 0;
  }
  
@@ -48,7 +46,7 @@ index 5ae765044983..8109e3a38c66 100644
  static int stm32mp25_check_security(struct device_node *np, void __iomem *base,
  				    const struct clock_config *cfg)
  {
-@@ -2201,14 +2208,45 @@ MODULE_DEVICE_TABLE(of, stm32mp25_match_data);
+@@ -2201,14 +2208,45 @@ MODULE_DEVICE_TABLE(of, stm32mp25_match_
  
  static int stm32mp25_rcc_clocks_probe(struct platform_device *pdev)
  {
@@ -95,7 +93,7 @@ index 5ae765044983..8109e3a38c66 100644
  }
  
  #ifdef CONFIG_PM_SLEEP
-@@ -2238,6 +2276,7 @@ static struct platform_driver stm32mp25_rcc_clocks_driver = {
+@@ -2238,6 +2276,7 @@ static struct platform_driver stm32mp25_
  		.pm = &stm32_rcc_pm_ops,
  	},
  	.probe = stm32mp25_rcc_clocks_probe,
@@ -103,6 +101,3 @@ index 5ae765044983..8109e3a38c66 100644
  };
  
  static int __init stm32mp25_clocks_init(void)
--- 
-2.39.5
-

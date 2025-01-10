@@ -14,11 +14,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/269209
  drivers/remoteproc/stm32_rproc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 206e2f69380e..94639af535c5 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -913,7 +913,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+@@ -913,7 +913,7 @@ static int stm32_rproc_parse_dt(struct p
  
  	err = stm32_rproc_get_syscon(np, "st,syscfg-pdds", &ddata->pdds);
  	if (err)
@@ -27,6 +25,3 @@ index 206e2f69380e..94639af535c5 100644
  
  	*auto_boot = of_property_read_bool(np, "st,auto-boot");
  
--- 
-2.39.5
-

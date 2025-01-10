@@ -15,8 +15,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
  Documentation/devicetree/bindings/usb/dwc2.yaml | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-index 0a5c98ea711d..2d9dc95a4126 100644
 --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
 +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
 @@ -172,6 +172,10 @@ properties:
@@ -30,6 +28,3 @@ index 0a5c98ea711d..2d9dc95a4126 100644
  dependencies:
    port: [ usb-role-switch ]
    role-switch-default-mode: [ usb-role-switch ]
--- 
-2.39.5
-

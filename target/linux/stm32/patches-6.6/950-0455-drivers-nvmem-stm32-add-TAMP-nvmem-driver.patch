@@ -19,11 +19,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  4 files changed, 682 insertions(+)
  create mode 100644 drivers/nvmem/stm32-tamp-nvram.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 151d31f5111a..892769f282ae 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20627,6 +20627,7 @@ STM32 TAMP DRIVERS
+@@ -20629,6 +20629,7 @@ STM32 TAMP DRIVERS
  M:	Siméon Marijon <simeon.marijon@foss.st.com>
  S:	Maintained
  F:	Documentation/devicetree/bindings/nvmem/st,stm32-tamp-nvram.yaml
@@ -31,11 +29,9 @@ index 151d31f5111a..892769f282ae 100644
  
  STM32 TIMER/LPTIMER DRIVERS
  M:	Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 5bc9c4874fe3..ad6af473fb48 100644
 --- a/drivers/nvmem/Kconfig
 +++ b/drivers/nvmem/Kconfig
-@@ -337,6 +337,16 @@ config NVMEM_STM32_ROMEM
+@@ -350,6 +350,16 @@ config NVMEM_STM32_ROMEM
  	  This driver can also be built as a module. If so, the module
  	  will be called nvmem-stm32-romem.
  
@@ -52,11 +48,9 @@ index 5bc9c4874fe3..ad6af473fb48 100644
  config NVMEM_SUNPLUS_OCOTP
  	tristate "Sunplus SoC OTP support"
  	depends on SOC_SP7021 || COMPILE_TEST
-diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 423baf089515..c071a7cc519a 100644
 --- a/drivers/nvmem/Makefile
 +++ b/drivers/nvmem/Makefile
-@@ -67,6 +67,8 @@ nvmem_sprd_efuse-y			:= sprd-efuse.o
+@@ -71,6 +71,8 @@ nvmem_sprd_efuse-y			:= sprd-efuse.o
  obj-$(CONFIG_NVMEM_STM32_ROMEM)		+= nvmem_stm32_romem.o
  nvmem_stm32_romem-y 			:= stm32-romem.o
  nvmem_stm32_romem-$(CONFIG_NVMEM_STM32_BSEC_OPTEE_TA) += stm32-bsec-optee-ta.o
@@ -65,9 +59,6 @@ index 423baf089515..c071a7cc519a 100644
  obj-$(CONFIG_NVMEM_SUNPLUS_OCOTP)	+= nvmem_sunplus_ocotp.o
  nvmem_sunplus_ocotp-y			:= sunplus-ocotp.o
  obj-$(CONFIG_NVMEM_SUNXI_SID)		+= nvmem_sunxi_sid.o
-diff --git a/drivers/nvmem/stm32-tamp-nvram.c b/drivers/nvmem/stm32-tamp-nvram.c
-new file mode 100644
-index 000000000000..fcada8d1c21c
 --- /dev/null
 +++ b/drivers/nvmem/stm32-tamp-nvram.c
 @@ -0,0 +1,669 @@
@@ -740,6 +731,3 @@ index 000000000000..fcada8d1c21c
 +MODULE_DESCRIPTION("STMicroelectronics STM32 NVMEM TAMP Backup registeristers");
 +MODULE_ALIAS("platform:nvmem-stm32-tamp-nvram");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

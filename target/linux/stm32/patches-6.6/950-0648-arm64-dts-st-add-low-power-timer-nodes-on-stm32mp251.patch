@@ -14,11 +14,9 @@ Change-Id: Ie738bc7f0b196f66a91d114c9c7079b6fd95c441
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 177 +++++++++++++++++++++++++
  1 file changed, 177 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 667a3fdd47f0..8f8ccb579ee4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -311,6 +311,78 @@ rifsc: bus@42080000 {
+@@ -311,6 +311,78 @@
  			#access-controller-cells = <1>;
  			ranges;
  
@@ -97,7 +95,7 @@ index 667a3fdd47f0..8f8ccb579ee4 100644
  			spi2: spi@400b0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -667,6 +739,111 @@ i2c8: i2c@46040000 {
+@@ -667,6 +739,111 @@
  				status = "disabled";
  			};
  
@@ -209,6 +207,3 @@ index 667a3fdd47f0..8f8ccb579ee4 100644
  			combophy: phy@480c0000 {
  				compatible = "st,stm32mp25-combophy";
  				reg = <0x480c0000 0x1000>;
--- 
-2.39.5
-

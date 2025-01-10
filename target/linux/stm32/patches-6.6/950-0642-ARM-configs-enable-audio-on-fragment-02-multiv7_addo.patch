@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 353476c3b8a2..2710103972f3 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
-@@ -8,6 +8,7 @@ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+@@ -8,6 +8,7 @@ CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAUL
  CONFIG_DEBUG_PREEMPT=y
  CONFIG_DEBUG_SECTION_MISMATCH=y
  CONFIG_DYNAMIC_DEBUG=y
@@ -28,6 +26,3 @@ index 353476c3b8a2..2710103972f3 100644
  CONFIG_FW_LOADER_USER_HELPER=y
  CONFIG_GDB_SCRIPTS=y
  CONFIG_HIGHMEM=y
--- 
-2.39.5
-

@@ -16,8 +16,6 @@ Domain-Review: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  include/dt-bindings/clock/stm32mp13-clks.h | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/dt-bindings/clock/stm32mp13-clks.h b/include/dt-bindings/clock/stm32mp13-clks.h
-index 0bd7b54c65ff..151111e5d0c5 100644
 --- a/include/dt-bindings/clock/stm32mp13-clks.h
 +++ b/include/dt-bindings/clock/stm32mp13-clks.h
 @@ -193,7 +193,13 @@
@@ -35,6 +33,3 @@ index 0bd7b54c65ff..151111e5d0c5 100644
  
  /* SCMI clock identifiers */
  #define CK_SCMI_HSE		0
--- 
-2.39.5
-

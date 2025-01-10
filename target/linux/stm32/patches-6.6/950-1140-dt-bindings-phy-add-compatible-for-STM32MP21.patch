@@ -19,8 +19,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
-index 2b2222e4af3b..348fda52d711 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 @@ -17,7 +17,9 @@ maintainers:
@@ -34,6 +32,3 @@ index 2b2222e4af3b..348fda52d711 100644
  
    "#phy-cells":
      const: 0
--- 
-2.39.5
-

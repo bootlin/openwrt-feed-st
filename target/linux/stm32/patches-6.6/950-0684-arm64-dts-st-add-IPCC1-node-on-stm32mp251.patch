@@ -12,11 +12,9 @@ Change-Id: I37a83656e0783965289f3a155b91879a9448a306
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 87e990e1e44e..fa34d3c298cd 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -303,6 +303,18 @@ hpdma3: dma-controller@40420000 {
+@@ -303,6 +303,18 @@
  			st,axi-max-burst-len = <16>;
  		};
  
@@ -35,6 +33,3 @@ index 87e990e1e44e..fa34d3c298cd 100644
  		ommanager: ommanager@40500000 {
  			#address-cells = <2>;
  			#size-cells = <1>;
--- 
-2.39.5
-

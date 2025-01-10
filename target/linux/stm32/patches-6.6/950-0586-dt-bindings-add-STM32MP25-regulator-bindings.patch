@@ -12,9 +12,6 @@ Change-Id: I75856dba3f8fb8021c558f5f34c16e8b7d57cd80
  1 file changed, 48 insertions(+)
  create mode 100644 include/dt-bindings/regulator/st,stm32mp25-regulator.h
 
-diff --git a/include/dt-bindings/regulator/st,stm32mp25-regulator.h b/include/dt-bindings/regulator/st,stm32mp25-regulator.h
-new file mode 100644
-index 000000000000..10a893892055
 --- /dev/null
 +++ b/include/dt-bindings/regulator/st,stm32mp25-regulator.h
 @@ -0,0 +1,48 @@
@@ -66,6 +63,3 @@ index 000000000000..10a893892055
 +#define VOLTD_SCMI_REGU4		30
 +
 +#endif /*__DT_BINDINGS_REGULATOR_ST_STM32MP25_REGULATOR_H */
--- 
-2.39.5
-

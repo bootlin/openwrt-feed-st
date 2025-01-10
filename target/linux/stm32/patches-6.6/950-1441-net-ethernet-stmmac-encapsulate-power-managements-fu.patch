@@ -22,11 +22,9 @@ Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
  drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index a8b30b7ab22e..405399377d00 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-@@ -643,10 +643,10 @@ static int stm32_dwmac_resume(struct device *dev)
+@@ -643,10 +643,10 @@ static int stm32_dwmac_resume(struct dev
  
  	return ret;
  }
@@ -38,7 +36,7 @@ index a8b30b7ab22e..405399377d00 100644
  
  static struct stm32_ops stm32mcu_dwmac_data = {
  	.set_mode = stm32mcu_set_mode,
-@@ -718,7 +718,9 @@ static struct platform_driver stm32_dwmac_driver = {
+@@ -718,7 +718,9 @@ static struct platform_driver stm32_dwma
  	.remove_new = stm32_dwmac_remove,
  	.driver = {
  		.name           = "stm32-dwmac",
@@ -48,6 +46,3 @@ index a8b30b7ab22e..405399377d00 100644
  		.of_match_table = stm32_dwmac_match,
  	},
  };
--- 
-2.39.5
-

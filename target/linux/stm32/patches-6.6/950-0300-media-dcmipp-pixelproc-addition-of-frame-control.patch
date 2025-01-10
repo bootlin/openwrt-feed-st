@@ -13,8 +13,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 117 ++++++++++++++++++
  1 file changed, 117 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index aeabc81e748e..b0c893d52ee7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -455,6 +455,10 @@ struct dcmipp_pixelproc_device {
@@ -28,7 +26,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  };
  
  static const struct v4l2_mbus_framefmt fmt_default = {
-@@ -799,10 +803,41 @@ static int dcmipp_pixelproc_set_selection(struct v4l2_subdev *sd,
+@@ -799,10 +803,41 @@ static int dcmipp_pixelproc_set_selectio
  	return 0;
  }
  
@@ -70,7 +68,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  	.get_fmt		= v4l2_subdev_get_fmt,
  	.set_fmt		= dcmipp_pixelproc_set_fmt,
  	.get_selection		= dcmipp_pixelproc_get_selection,
-@@ -929,6 +964,76 @@ dcmipp_pixelproc_set_downscale(struct dcmipp_pixelproc_device *pixelproc,
+@@ -929,6 +964,76 @@ dcmipp_pixelproc_set_downscale(struct dc
  		  DCMIPP_PxDSCR_ENABLE);
  }
  
@@ -147,7 +145,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
  {
  	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
-@@ -963,6 +1068,9 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -963,6 +1068,9 @@ static int dcmipp_pixelproc_s_stream(str
  	compose = v4l2_subdev_state_get_compose(state, 0);
  	v4l2_subdev_unlock_state(state);
  
@@ -157,7 +155,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  	/* Configure cropping */
  	reg_write(pixelproc, DCMIPP_PxCRSTR(pixelproc->pipe_id),
  		  (crop->top << DCMIPP_PxCRSTR_VSTART_SHIFT) |
-@@ -1021,6 +1129,8 @@ static const struct v4l2_subdev_core_ops dcmipp_pixelproc_core_ops = {
+@@ -1021,6 +1129,8 @@ static const struct v4l2_subdev_core_ops
  };
  
  static const struct v4l2_subdev_video_ops dcmipp_pixelproc_video_ops = {
@@ -166,7 +164,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  	.s_stream = dcmipp_pixelproc_s_stream,
  };
  
-@@ -1065,6 +1175,10 @@ dcmipp_pixelproc_ent_init(const char *entity_name,
+@@ -1065,6 +1175,10 @@ dcmipp_pixelproc_ent_init(const char *en
  {
  	struct dcmipp_pixelproc_device *pixelproc;
  	struct device *dev = dcmipp->dev;
@@ -177,7 +175,7 @@ index aeabc81e748e..b0c893d52ee7 100644
  	int ret, i;
  
  	/* Allocate the pixelproc struct */
-@@ -1083,6 +1197,9 @@ dcmipp_pixelproc_ent_init(const char *entity_name,
+@@ -1083,6 +1197,9 @@ dcmipp_pixelproc_ent_init(const char *en
  		return ERR_PTR(-EIO);
  	}
  
@@ -187,6 +185,3 @@ index aeabc81e748e..b0c893d52ee7 100644
  	/* Initialize controls */
  	v4l2_ctrl_handler_init(&pixelproc->ctrls,
  			       ARRAY_SIZE(dcmipp_pixelproc_ctrls));
--- 
-2.39.5
-

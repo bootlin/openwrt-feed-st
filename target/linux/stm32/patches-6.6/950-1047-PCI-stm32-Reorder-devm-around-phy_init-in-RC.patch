@@ -19,11 +19,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 51 ++++++++++++-------------
  1 file changed, 25 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index 315860f0dd72..c6025d938e9d 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
-@@ -333,21 +333,29 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -333,21 +333,29 @@ static int stm32_add_pcie_port(struct st
  	if (stm32_pcie->pme_irq || stm32_pcie->aer_irq)
  		pcie_port_irqs_hook = stm32_pcie_port_irqs;
  
@@ -56,7 +54,7 @@ index 315860f0dd72..c6025d938e9d 100644
  	}
  
  	pp->ops = &stm32_pcie_host_ops;
-@@ -355,10 +363,15 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -355,10 +363,15 @@ static int stm32_add_pcie_port(struct st
  	if (ret) {
  		dev_err(dev, "failed to initialize host: %d\n", ret);
  		clk_disable_unprepare(stm32_pcie->clk);
@@ -73,7 +71,7 @@ index 315860f0dd72..c6025d938e9d 100644
  }
  
  static int stm32_pcie_probe(struct platform_device *pdev)
-@@ -415,14 +428,6 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -415,14 +428,6 @@ static int stm32_pcie_probe(struct platf
  		return dev_err_probe(dev, PTR_ERR(stm32_pcie->reset_gpio),
  				     "Failed to get reset GPIO\n");
  
@@ -88,7 +86,7 @@ index 315860f0dd72..c6025d938e9d 100644
  	platform_set_drvdata(pdev, stm32_pcie);
  
  	if (device_property_read_bool(dev, "wakeup-source")) {
-@@ -447,31 +452,25 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -447,31 +452,25 @@ static int stm32_pcie_probe(struct platf
  	ret = devm_pm_runtime_enable(dev);
  	if (ret < 0) {
  		dev_err(dev, "Failed to enable pm runtime %d\n", ret);
@@ -126,7 +124,7 @@ index 315860f0dd72..c6025d938e9d 100644
  }
  
  static int stm32_pcie_remove(struct platform_device *pdev)
-@@ -486,10 +485,10 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -486,10 +485,10 @@ static int stm32_pcie_remove(struct plat
  	clk_disable_unprepare(stm32_pcie->clk);
  	pcie_port_irqs_hook = NULL;
  
@@ -139,6 +137,3 @@ index 315860f0dd72..c6025d938e9d 100644
  	return 0;
  }
  
--- 
-2.39.5
-

@@ -18,8 +18,6 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  drivers/media/i2c/imx335.c | 45 ++++++++++++++++++++++++++++++++++++++
  1 file changed, 45 insertions(+)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 2222f54087ef..9aad22a1b2e7 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
 @@ -55,6 +55,14 @@
@@ -37,11 +35,10 @@ index 2222f54087ef..9aad22a1b2e7 100644
  /**
   * struct imx335_reg - imx335 sensor register
   * @address: Register address
-@@ -647,6 +655,41 @@ static int imx335_init_pad_cfg(struct v4l2_subdev *sd,
- 	return imx335_set_pad_format(sd, sd_state, &fmt);
+@@ -648,6 +656,41 @@ static int imx335_init_pad_cfg(struct v4
  }
  
-+/**
+ /**
 + * imx335_get_selection() - Selection API
 + * @sd: pointer to imx335 V4L2 sub-device structure
 + * @sd_state: V4L2 sub-device configuration
@@ -76,10 +73,11 @@ index 2222f54087ef..9aad22a1b2e7 100644
 +	return -EINVAL;
 +}
 +
- /**
++/**
   * imx335_start_streaming() - Start sensor stream
   * @imx335: pointer to imx335 device
-@@ -871,6 +914,8 @@ static const struct v4l2_subdev_pad_ops imx335_pad_ops = {
+  *
+@@ -871,6 +914,8 @@ static const struct v4l2_subdev_pad_ops
  	.init_cfg = imx335_init_pad_cfg,
  	.enum_mbus_code = imx335_enum_mbus_code,
  	.enum_frame_size = imx335_enum_frame_size,
@@ -88,6 +86,3 @@ index 2222f54087ef..9aad22a1b2e7 100644
  	.get_fmt = imx335_get_pad_format,
  	.set_fmt = imx335_set_pad_format,
  };
--- 
-2.39.5
-

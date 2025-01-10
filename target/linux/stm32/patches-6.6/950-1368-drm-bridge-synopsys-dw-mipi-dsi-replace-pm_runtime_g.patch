@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 1eccb46cc421..0d7394bb2c77 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -990,7 +990,12 @@ static void dw_mipi_dsi_mode_set(struct dw_mipi_dsi *dsi,
+@@ -990,7 +990,12 @@ static void dw_mipi_dsi_mode_set(struct
  	if (ret)
  		DRM_DEBUG_DRIVER("Phy get_lane_mbps() failed\n");
  
@@ -33,6 +31,3 @@ index 1eccb46cc421..0d7394bb2c77 100644
  	dw_mipi_dsi_init(dsi);
  	dw_mipi_dsi_dpi_config(dsi, adjusted_mode);
  	dw_mipi_dsi_packet_handler_config(dsi);
--- 
-2.39.5
-

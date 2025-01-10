@@ -41,8 +41,6 @@ Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
  drivers/mtd/spi-nor/macronix.c | 98 ++++++++++++++++++++++++++++++++++
  1 file changed, 98 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index edba15e25bff..7d367f0e909d 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
 @@ -8,6 +8,24 @@
@@ -70,7 +68,7 @@ index edba15e25bff..7d367f0e909d 100644
  static int
  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
  			    const struct sfdp_parameter_header *bfpt_header,
-@@ -106,6 +124,84 @@ static const struct flash_info macronix_nor_parts[] = {
+@@ -106,6 +124,84 @@ static const struct flash_info macronix_
  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
  };
  
@@ -155,7 +153,7 @@ index edba15e25bff..7d367f0e909d 100644
  static void macronix_nor_default_init(struct spi_nor *nor)
  {
  	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-@@ -118,6 +214,8 @@ static int macronix_nor_late_init(struct spi_nor *nor)
+@@ -118,6 +214,8 @@ static int macronix_nor_late_init(struct
  	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
  	nor->flags |= SNOR_F_HAS_LOCK;
  
@@ -164,6 +162,3 @@ index edba15e25bff..7d367f0e909d 100644
  	return 0;
  }
  
--- 
-2.39.5
-

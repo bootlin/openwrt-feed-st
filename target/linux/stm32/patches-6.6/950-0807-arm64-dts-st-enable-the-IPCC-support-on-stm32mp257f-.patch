@@ -11,11 +11,9 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 31de85df14b9..d15e9e5b7b73 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -327,6 +327,10 @@ &i2c8 {
+@@ -327,6 +327,10 @@
  	/delete-property/dma-names;
  };
  
@@ -26,6 +24,3 @@ index 31de85df14b9..d15e9e5b7b73 100644
  &ltdc {
  	status = "okay";
  
--- 
-2.39.5
-

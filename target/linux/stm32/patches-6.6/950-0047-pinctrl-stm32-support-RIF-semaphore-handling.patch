@@ -16,8 +16,6 @@ Change-Id: I45d92f1fd46682522bff47e501da12f170a59248
  drivers/pinctrl/stm32/pinctrl-stm32mp257.c |  4 ++
  3 files changed, 71 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index e1681c4ad5a9..0814d5835bdc 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -6,6 +6,7 @@
@@ -72,7 +70,7 @@ index e1681c4ad5a9..0814d5835bdc 100644
  };
  
  struct stm32_pinctrl {
-@@ -327,6 +341,43 @@ static int stm32_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+@@ -327,6 +341,43 @@ static int stm32_gpio_get_direction(stru
  	return ret;
  }
  
@@ -116,7 +114,7 @@ index e1681c4ad5a9..0814d5835bdc 100644
  static int stm32_gpio_init_valid_mask(struct gpio_chip *chip,
  				      unsigned long *valid_mask,
  				      unsigned int ngpios)
-@@ -351,6 +402,19 @@ static int stm32_gpio_init_valid_mask(struct gpio_chip *chip,
+@@ -351,6 +402,19 @@ static int stm32_gpio_init_valid_mask(st
  		}
  	}
  
@@ -136,7 +134,7 @@ index e1681c4ad5a9..0814d5835bdc 100644
  	return 0;
  }
  
-@@ -1559,6 +1623,7 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
+@@ -1559,6 +1623,7 @@ static int stm32_gpiolib_register_bank(s
  	bank->bank_ioport_nr = bank_ioport_nr;
  	bank->secure_control = pctl->match_data->secure_control;
  	bank->io_sync_control = pctl->match_data->io_sync_control;
@@ -144,8 +142,6 @@ index e1681c4ad5a9..0814d5835bdc 100644
  	spin_lock_init(&bank->lock);
  
  	if (pctl->domain) {
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.h b/drivers/pinctrl/stm32/pinctrl-stm32.h
-index 106c9e6cd753..c368a24fae9f 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.h
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.h
 @@ -65,6 +65,7 @@ struct stm32_pinctrl_match_data {
@@ -156,11 +152,9 @@ index 106c9e6cd753..c368a24fae9f 100644
  };
  
  struct stm32_gpio_bank;
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-index af477f849944..d9f99dc3d2cd 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
-@@ -2543,12 +2543,16 @@ static struct stm32_pinctrl_match_data stm32mp257_match_data = {
+@@ -2543,12 +2543,16 @@ static struct stm32_pinctrl_match_data s
  	.pins = stm32mp257_pins,
  	.npins = ARRAY_SIZE(stm32mp257_pins),
  	.io_sync_control = true,
@@ -177,6 +171,3 @@ index af477f849944..d9f99dc3d2cd 100644
  };
  
  static const struct of_device_id stm32mp257_pctrl_match[] = {
--- 
-2.39.5
-

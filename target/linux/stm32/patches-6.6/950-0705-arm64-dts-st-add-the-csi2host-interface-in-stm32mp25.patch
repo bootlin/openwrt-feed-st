@@ -11,11 +11,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index dbf5dbae98d1..c2c0ee5ac0a3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1842,6 +1842,18 @@ ltdc: display-controller@48010000 {
+@@ -1842,6 +1842,18 @@
  				status = "disabled";
  			};
  
@@ -34,6 +32,3 @@ index dbf5dbae98d1..c2c0ee5ac0a3 100644
  			combophy: phy@480c0000 {
  				compatible = "st,stm32mp25-combophy";
  				reg = <0x480c0000 0x1000>;
--- 
-2.39.5
-

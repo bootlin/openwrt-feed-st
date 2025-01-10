@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 9e6074d4f23b..861431eafe3b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -63,7 +63,7 @@ gpu: gpu@48280000 {
+@@ -63,7 +63,7 @@
  		reg = <0x48280000 0x800>;
  		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
  		resets = <&rcc GPU_R>;
@@ -30,6 +28,3 @@ index 9e6074d4f23b..861431eafe3b 100644
  		clocks = <&rcc CK_BUS_GPU>, <&rcc CK_KER_GPU>;
  		power-domains = <&scmi_devpd PD_SCMI_GPU>;
  		access-controllers = <&rifsc 79>;
--- 
-2.39.5
-

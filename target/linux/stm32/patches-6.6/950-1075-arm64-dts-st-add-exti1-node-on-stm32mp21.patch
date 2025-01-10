@@ -19,11 +19,9 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 70 ++++++++++++++++++++++++++
  1 file changed, 70 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index a385b628a2e2..ed28cd8cd582 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -612,6 +612,76 @@ rcc: clock-controller@44200000 {
+@@ -612,6 +612,76 @@
  			access-controllers = <&rifsc 156>;
  		};
  
@@ -100,6 +98,3 @@ index a385b628a2e2..ed28cd8cd582 100644
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
  			reg = <0x44230000 0x10000>;
--- 
-2.39.5
-

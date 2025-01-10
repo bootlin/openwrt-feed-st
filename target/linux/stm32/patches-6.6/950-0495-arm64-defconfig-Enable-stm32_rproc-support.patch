@@ -12,8 +12,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/310426
  arch/arm64/configs/fragment-02-defconfig-addons.config | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index 91703fe58736..b973951e7918 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -2,4 +2,7 @@
@@ -24,6 +22,3 @@ index 91703fe58736..b973951e7918 100644
 +CONFIG_STM32_RPROC=y
 +CONFIG_TEE_REMOTEPROC=y
  CONFIG_USB_HIDDEV=y
--- 
-2.39.5
-

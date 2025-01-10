@@ -17,8 +17,6 @@ Reviewed-by: Francois CHOLEAU <francois.choleau@st.com>
  arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi | 56 +++++++++++++++++++
  1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
-index 5650359997a8..4bf8ff78ef44 100644
 --- a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 @@ -4,3 +4,59 @@
@@ -81,6 +79,3 @@ index 5650359997a8..4bf8ff78ef44 100644
 +		};
 +	};
 +};
--- 
-2.39.5
-

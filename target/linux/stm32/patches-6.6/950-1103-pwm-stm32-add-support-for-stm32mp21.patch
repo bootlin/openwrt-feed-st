@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pwm/pwm-stm32.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-index 362e71e9a71f..5d8ee179a381 100644
 --- a/drivers/pwm/pwm-stm32.c
 +++ b/drivers/pwm/pwm-stm32.c
-@@ -709,6 +709,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_pm_ops, stm32_pwm_suspend, stm32_pwm_resume);
+@@ -709,6 +709,7 @@ static SIMPLE_DEV_PM_OPS(stm32_pwm_pm_op
  
  static const struct of_device_id stm32_pwm_of_match[] = {
  	{ .compatible = "st,stm32-pwm",	},
@@ -28,6 +26,3 @@ index 362e71e9a71f..5d8ee179a381 100644
  	{ .compatible = "st,stm32mp25-pwm", },
  	{ /* end node */ },
  };
--- 
-2.39.5
-

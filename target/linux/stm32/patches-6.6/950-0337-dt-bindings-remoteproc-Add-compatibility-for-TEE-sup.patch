@@ -20,8 +20,6 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
  .../bindings/remoteproc/st,stm32-rproc.yaml   | 52 +++++++++++++++----
  1 file changed, 43 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-index 370af61d8f28..6af821b15736 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 @@ -16,7 +16,12 @@ maintainers:
@@ -103,6 +101,3 @@ index 370af61d8f28..6af821b15736 100644
 +    };
  
  ...
--- 
-2.39.5
-

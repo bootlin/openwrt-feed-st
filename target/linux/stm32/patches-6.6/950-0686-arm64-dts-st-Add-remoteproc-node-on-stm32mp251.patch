@@ -12,11 +12,9 @@ Change-Id: If43d7d2dbce639ad45c3c8e44a0319071792e3fb
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index fa34d3c298cd..afab1a22757c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2476,4 +2476,24 @@ nand-controller@4,0 {
+@@ -2476,4 +2476,24 @@
  			};
  		};
  	};
@@ -41,6 +39,3 @@ index fa34d3c298cd..afab1a22757c 100644
 +	};
 +
  };
--- 
-2.39.5
-

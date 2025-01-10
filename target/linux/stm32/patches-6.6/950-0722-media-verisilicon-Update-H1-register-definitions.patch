@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/media/platform/verisilicon/hantro_h1_regs.h | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 1e64bf71a06d..9b818fc384bd 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -23,6 +23,15 @@
@@ -38,6 +36,3 @@ index 1e64bf71a06d..9b818fc384bd 100644
  #define H1_REG_ADDR_OUTPUT_STREAM			0x014
  #define H1_REG_ADDR_OUTPUT_CTRL				0x018
  #define H1_REG_ADDR_REF_LUMA				0x01c
--- 
-2.39.5
-

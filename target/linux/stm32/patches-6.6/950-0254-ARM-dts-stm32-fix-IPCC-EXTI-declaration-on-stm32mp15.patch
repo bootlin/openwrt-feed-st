@@ -12,11 +12,9 @@ Change-Id: Iaf8d6821da03fb63b86efdb3b1ad55b78a126cf8
  arch/arm/boot/dts/st/stm32mp151.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 22a387caa3d1..e397bf914eab 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1218,7 +1218,7 @@ ipcc: mailbox@4c001000 {
+@@ -1218,7 +1218,7 @@
  			reg = <0x4c001000 0x400>;
  			st,proc-id = <0>;
  			interrupts-extended =
@@ -25,6 +23,3 @@ index 22a387caa3d1..e397bf914eab 100644
  				<&intc GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
  			interrupt-names = "rx", "tx";
  			clocks = <&rcc IPCC>;
--- 
-2.39.5
-

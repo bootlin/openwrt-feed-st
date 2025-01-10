@@ -14,11 +14,9 @@ Change-Id: I5659a86e66fc29442b9a443a79180e01c1aa5d2f
  arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
-index 02dd01732705..d3dbbabe800c 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
-@@ -13,6 +13,14 @@ / {
+@@ -13,6 +13,14 @@
  	compatible = "st,stm32mp135f-dk-a7-examples", "st,stm32mp135f-dk", "st,stm32mp135";
  };
  
@@ -33,6 +31,3 @@ index 02dd01732705..d3dbbabe800c 100644
  &uart8 {
  	status = "okay";
  };
--- 
-2.39.5
-

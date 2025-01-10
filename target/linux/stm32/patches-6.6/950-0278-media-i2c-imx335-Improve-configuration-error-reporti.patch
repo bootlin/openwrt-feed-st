@@ -19,11 +19,9 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  drivers/media/i2c/imx335.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 5edab910a723..d5646749687a 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -804,8 +804,10 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -824,8 +824,10 @@ static int imx335_parse_hw_config(struct
  	}
  
  	ep = fwnode_graph_get_next_endpoint(fwnode, NULL);
@@ -35,7 +33,7 @@ index 5edab910a723..d5646749687a 100644
  
  	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
  	fwnode_handle_put(ep);
-@@ -830,6 +832,8 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -850,6 +852,8 @@ static int imx335_parse_hw_config(struct
  		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
  			goto done_endpoint_free;
  
@@ -44,6 +42,3 @@ index 5edab910a723..d5646749687a 100644
  	ret = -EINVAL;
  
  done_endpoint_free:
--- 
-2.39.5
-

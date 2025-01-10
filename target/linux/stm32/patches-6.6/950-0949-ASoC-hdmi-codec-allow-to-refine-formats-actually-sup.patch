@@ -20,8 +20,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  sound/soc/codecs/hdmi-codec.c | 4 ++++
  2 files changed, 5 insertions(+)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 9b162ac1e08e..498d21dfd879 100644
 --- a/include/sound/hdmi-codec.h
 +++ b/include/sound/hdmi-codec.h
 @@ -123,6 +123,7 @@ struct hdmi_codec_ops {
@@ -32,11 +30,9 @@ index 9b162ac1e08e..498d21dfd879 100644
  	uint i2s:1;
  	uint no_i2s_playback:1;
  	uint no_i2s_capture:1;
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 0938671700c6..e85161d9666a 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -1062,6 +1062,10 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+@@ -1076,6 +1076,10 @@ static int hdmi_codec_probe(struct platf
  	if (hcd->i2s) {
  		daidrv[i] = hdmi_i2s_dai;
  		daidrv[i].playback.channels_max = hcd->max_i2s_channels;
@@ -47,6 +43,3 @@ index 0938671700c6..e85161d9666a 100644
  		if (hcd->no_i2s_playback)
  			memset(&daidrv[i].playback, 0,
  			       sizeof(daidrv[i].playback));
--- 
-2.39.5
-

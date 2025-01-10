@@ -21,11 +21,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/rtc/rtc-stm32.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
-index 83978fbe8c64..2929cc9381fd 100644
 --- a/drivers/rtc/rtc-stm32.c
 +++ b/drivers/rtc/rtc-stm32.c
-@@ -1080,6 +1080,9 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+@@ -1080,6 +1080,9 @@ static int stm32_rtc_probe(struct platfo
  		goto err;
  	}
  
@@ -35,6 +33,3 @@ index 83978fbe8c64..2929cc9381fd 100644
  	/* Handle RTC alarm interrupts */
  	ret = devm_request_threaded_irq(&pdev->dev, rtc->irq_alarm, NULL,
  					stm32_rtc_alarm_irq, IRQF_ONESHOT,
--- 
-2.39.5
-

@@ -23,11 +23,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index 9eb7ffec3822..0ea199baa5dc 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -74,6 +74,13 @@ &dsi_out {
+@@ -74,6 +74,13 @@
  	remote-endpoint = <&panel_in>;
  };
  
@@ -41,6 +39,3 @@ index 9eb7ffec3822..0ea199baa5dc 100644
  &i2c1 {
  	touchscreen@38 {
  		compatible = "focaltech,ft6236";
--- 
-2.39.5
-

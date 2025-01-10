@@ -13,11 +13,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  .../gpu/drm/panel/panel-orisetech-otm8009a.c  | 20 +++++++++++++------
  1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index bec0455e0b2e..d4b4306671dd 100644
 --- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
 +++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -110,13 +110,16 @@ static inline struct otm8009a *panel_to_otm8009a(struct drm_panel *panel)
+@@ -110,13 +110,16 @@ static inline struct otm8009a *panel_to_
  	return container_of(panel, struct otm8009a, panel);
  }
  
@@ -37,7 +35,7 @@ index bec0455e0b2e..d4b4306671dd 100644
  }
  
  #define dcs_write_seq(ctx, seq...)			\
-@@ -395,10 +398,11 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -395,10 +398,11 @@ static int otm8009a_backlight_update_sta
  {
  	struct otm8009a *ctx = bl_get_data(bd);
  	u8 data[2];
@@ -50,7 +48,7 @@ index bec0455e0b2e..d4b4306671dd 100644
  	}
  
  	if (bd->props.power <= FB_BLANK_NORMAL) {
-@@ -408,7 +412,9 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -408,7 +412,9 @@ static int otm8009a_backlight_update_sta
  		 */
  		data[0] = MIPI_DCS_SET_DISPLAY_BRIGHTNESS;
  		data[1] = bd->props.brightness;
@@ -61,7 +59,7 @@ index bec0455e0b2e..d4b4306671dd 100644
  
  		/* set Brightness Control & Backlight on */
  		data[1] = 0x24;
-@@ -420,7 +426,9 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+@@ -420,7 +426,9 @@ static int otm8009a_backlight_update_sta
  
  	/* Update Brightness Control & Backlight */
  	data[0] = MIPI_DCS_WRITE_CONTROL_DISPLAY;
@@ -72,6 +70,3 @@ index bec0455e0b2e..d4b4306671dd 100644
  
  	return 0;
  }
--- 
-2.39.5
-

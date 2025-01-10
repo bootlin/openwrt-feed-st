@@ -22,8 +22,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmi.c | 69 ++++++++++++--------
  1 file changed, 43 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index 71635c83e504..4f8a9a724e2e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmi.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
 @@ -114,6 +114,7 @@ struct dcmi_buf {
@@ -34,7 +32,7 @@ index 71635c83e504..4f8a9a724e2e 100644
  	size_t			size;
  	struct list_head	list;
  };
-@@ -301,7 +302,6 @@ static void dcmi_dma_callback(void *param)
+@@ -301,7 +302,6 @@ static void dcmi_dma_callback(void *para
  static int dcmi_start_dma(struct stm32_dcmi *dcmi,
  			  struct dcmi_buf *buf)
  {
@@ -42,7 +40,7 @@ index 71635c83e504..4f8a9a724e2e 100644
  	struct dma_slave_config config;
  	int ret;
  
-@@ -320,37 +320,13 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
+@@ -320,37 +320,13 @@ static int dcmi_start_dma(struct stm32_d
  		return ret;
  	}
  
@@ -81,7 +79,7 @@ index 71635c83e504..4f8a9a724e2e 100644
  	dma_async_issue_pending(dcmi->dma_chan);
  
  	return 0;
-@@ -565,6 +541,29 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -565,6 +541,29 @@ static int dcmi_buf_prepare(struct vb2_b
  			size -= bytes;
  		}
  
@@ -111,7 +109,7 @@ index 71635c83e504..4f8a9a724e2e 100644
  		buf->prepared = true;
  
  		vb2_set_plane_payload(&buf->vb.vb2_buf, 0, buf->size);
-@@ -573,6 +572,23 @@ static int dcmi_buf_prepare(struct vb2_buffer *vb)
+@@ -573,6 +572,23 @@ static int dcmi_buf_prepare(struct vb2_b
  	return 0;
  }
  
@@ -135,7 +133,7 @@ index 71635c83e504..4f8a9a724e2e 100644
  static void dcmi_buf_queue(struct vb2_buffer *vb)
  {
  	struct stm32_dcmi *dcmi =  vb2_get_drv_priv(vb->vb2_queue);
-@@ -896,6 +912,7 @@ static const struct vb2_ops dcmi_video_qops = {
+@@ -896,6 +912,7 @@ static const struct vb2_ops dcmi_video_q
  	.queue_setup		= dcmi_queue_setup,
  	.buf_init		= dcmi_buf_init,
  	.buf_prepare		= dcmi_buf_prepare,
@@ -143,6 +141,3 @@ index 71635c83e504..4f8a9a724e2e 100644
  	.buf_queue		= dcmi_buf_queue,
  	.start_streaming	= dcmi_start_streaming,
  	.stop_streaming		= dcmi_stop_streaming,
--- 
-2.39.5
-

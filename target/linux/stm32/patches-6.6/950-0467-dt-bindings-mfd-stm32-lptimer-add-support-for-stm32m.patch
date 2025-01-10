@@ -15,8 +15,6 @@ Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
  .../bindings/mfd/st,stm32-lptimer.yaml        | 23 +++++++++++++++----
  1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-index d41308856408..4822ce5d0c76 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 @@ -21,7 +21,9 @@ maintainers:
@@ -83,6 +81,3 @@ index d41308856408..4822ce5d0c76 100644
  
        reg:
          description: Identify trigger hardware block.
--- 
-2.39.5
-

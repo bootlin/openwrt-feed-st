@@ -13,11 +13,9 @@ Change-Id: I672dcbe43eef60477729031f52f9224acca39f24
  arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index 00cb9f7cd9d5..d3f730e8d8fd 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -187,6 +187,14 @@ &dcmi {
+@@ -187,6 +187,14 @@
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&dcmi_pins_a>;
  	pinctrl-1 = <&dcmi_sleep_pins_a>;
@@ -32,7 +30,7 @@ index 00cb9f7cd9d5..d3f730e8d8fd 100644
  
  	port {
  		dcmi_0: endpoint {
-@@ -658,6 +666,13 @@ &spi1 {
+@@ -658,6 +666,13 @@
  	status = "disabled";
  };
  
@@ -46,6 +44,3 @@ index 00cb9f7cd9d5..d3f730e8d8fd 100644
  &timers2 {
  	/* spare dmas for other usage (un-delete to enable pwm capture) */
  	/delete-property/dmas;
--- 
-2.39.5
-

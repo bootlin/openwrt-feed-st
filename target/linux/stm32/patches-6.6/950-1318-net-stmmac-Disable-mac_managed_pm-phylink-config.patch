@@ -25,11 +25,9 @@ Tested-by: Christophe ROULLIER <christophe.roullier@foss.st.com>
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 41d3770b739c..e042c4eb2724 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1212,7 +1212,7 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+@@ -1212,7 +1212,7 @@ static int stmmac_phy_setup(struct stmma
  
  	priv->phylink_config.dev = &priv->dev->dev;
  	priv->phylink_config.type = PHYLINK_NETDEV;
@@ -38,6 +36,3 @@ index 41d3770b739c..e042c4eb2724 100644
  
  	mdio_bus_data = priv->plat->mdio_bus_data;
  	if (mdio_bus_data)
--- 
-2.39.5
-

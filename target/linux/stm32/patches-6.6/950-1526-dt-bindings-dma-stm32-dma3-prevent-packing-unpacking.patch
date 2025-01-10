@@ -28,8 +28,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index b3072edccb1e..dc5935d85bc0 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -135,6 +135,9 @@ properties:
@@ -42,6 +40,3 @@ index b3072edccb1e..dc5935d85bc0 100644
  
  required:
    - compatible
--- 
-2.39.5
-

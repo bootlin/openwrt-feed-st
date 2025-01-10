@@ -17,11 +17,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 11f92191eb9b..c41c573761a9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -745,8 +745,8 @@ scmi_vdd_sdcard: regulator@23 {
+@@ -745,8 +745,8 @@
  
  &sdmmc1 {
  	pinctrl-names = "default", "opendrain", "sleep";
@@ -32,6 +30,3 @@ index 11f92191eb9b..c41c573761a9 100644
  	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
  	cd-gpios = <&gpiod 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
  	disable-wp;
--- 
-2.39.5
-

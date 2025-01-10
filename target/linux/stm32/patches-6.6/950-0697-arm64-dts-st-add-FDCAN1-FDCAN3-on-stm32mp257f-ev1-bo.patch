@@ -11,11 +11,9 @@ Change-Id: I21307af641f38cd9d14bd01c87517384e2013323
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index e0c872ff508a..49ec2d095a06 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -185,6 +185,20 @@ &m33_rproc {
+@@ -185,6 +185,20 @@
  	status = "okay";
  };
  
@@ -36,6 +34,3 @@ index e0c872ff508a..49ec2d095a06 100644
  &mlahb {
  	intc_rpmsg: interrupt-controller@1 {
  		compatible = "rpmsg,intc";
--- 
-2.39.5
-

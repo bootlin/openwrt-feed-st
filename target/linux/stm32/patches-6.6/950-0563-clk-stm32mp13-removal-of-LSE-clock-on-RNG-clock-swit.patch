@@ -16,8 +16,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/clk/stm32/clk-stm32mp13.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
-index bf81d7491708..e14c16f88b57 100644
 --- a/drivers/clk/stm32/clk-stm32mp13.c
 +++ b/drivers/clk/stm32/clk-stm32mp13.c
 @@ -583,7 +583,7 @@ static const char * const qspi_src[] = {
@@ -29,6 +27,3 @@ index bf81d7491708..e14c16f88b57 100644
  };
  
  static const char * const saes_src[] = {
--- 
-2.39.5
-

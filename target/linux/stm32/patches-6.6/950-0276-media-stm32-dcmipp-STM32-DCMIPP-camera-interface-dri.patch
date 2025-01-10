@@ -35,8 +35,6 @@ edit: init_state renamed as init_cfg to be compatible with v6.6 v4l2
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
 
-diff --git a/drivers/media/platform/st/stm32/Kconfig b/drivers/media/platform/st/stm32/Kconfig
-index b22dd4753496..9df9a2a17728 100644
 --- a/drivers/media/platform/st/stm32/Kconfig
 +++ b/drivers/media/platform/st/stm32/Kconfig
 @@ -16,6 +16,22 @@ config VIDEO_STM32_DCMI
@@ -62,8 +60,6 @@ index b22dd4753496..9df9a2a17728 100644
  # Mem2mem drivers
  config VIDEO_STM32_DMA2D
  	tristate "STM32 Chrom-Art Accelerator (DMA2D)"
-diff --git a/drivers/media/platform/st/stm32/Makefile b/drivers/media/platform/st/stm32/Makefile
-index 896ef98a73ab..7ed8297b9b19 100644
 --- a/drivers/media/platform/st/stm32/Makefile
 +++ b/drivers/media/platform/st/stm32/Makefile
 @@ -1,4 +1,5 @@
@@ -72,9 +68,6 @@ index 896ef98a73ab..7ed8297b9b19 100644
 +obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp/
  stm32-dma2d-objs := dma2d/dma2d.o dma2d/dma2d-hw.o
  obj-$(CONFIG_VIDEO_STM32_DMA2D) += stm32-dma2d.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-new file mode 100644
-index 000000000000..8920d9388a21
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -0,0 +1,4 @@
@@ -82,9 +75,6 @@ index 000000000000..8920d9388a21
 +stm32-dcmipp-y := dcmipp-core.o dcmipp-common.o dcmipp-parallel.o dcmipp-byteproc.o dcmipp-bytecap.o
 +
 +obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-new file mode 100644
-index 000000000000..0cd9b088bd97
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 @@ -0,0 +1,956 @@
@@ -1044,9 +1034,6 @@ index 000000000000..0cd9b088bd97
 +
 +	return ERR_PTR(ret);
 +}
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-new file mode 100644
-index 000000000000..0bc897d2d577
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -0,0 +1,565 @@
@@ -1615,9 +1602,6 @@ index 000000000000..0bc897d2d577
 +
 +	return &byteproc->ved;
 +}
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
-new file mode 100644
-index 000000000000..562933e08d62
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
 @@ -0,0 +1,111 @@
@@ -1732,9 +1716,6 @@ index 000000000000..562933e08d62
 +	media_entity_cleanup(ved->ent);
 +	v4l2_device_unregister_subdev(sd);
 +}
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-new file mode 100644
-index 000000000000..7a7cf43baf24
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -0,0 +1,217 @@
@@ -1955,9 +1936,6 @@ index 000000000000..7a7cf43baf24
 +void dcmipp_bytecap_ent_release(struct dcmipp_ent_device *ved);
 +
 +#endif
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-new file mode 100644
-index 000000000000..32c6619be9a2
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -0,0 +1,604 @@
@@ -2565,9 +2543,6 @@ index 000000000000..32c6619be9a2
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics STM32 Digital Camera Memory Interface with Pixel Processor driver");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
-new file mode 100644
-index 000000000000..5571d2773026
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
 @@ -0,0 +1,440 @@
@@ -3011,6 +2986,3 @@ index 000000000000..5571d2773026
 +
 +	return &par->ved;
 +}
--- 
-2.39.5
-

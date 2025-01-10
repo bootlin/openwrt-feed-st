@@ -26,11 +26,9 @@ Reviewed-by: Patrice GUILEMOND <patrice.guilemond-ext@st.com>
  include/linux/scmi_protocol.h     |  6 ++
  3 files changed, 127 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index cfbf9accaee9..0dd443340ccb 100644
 --- a/drivers/clk/clk-scmi.c
 +++ b/drivers/clk/clk-scmi.c
-@@ -75,14 +75,17 @@ static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+@@ -75,14 +75,17 @@ static long scmi_clk_round_rate(struct c
  	u64 fmin, fmax, ftmp;
  	struct scmi_clk *clk = to_scmi_clk(hw);
  
@@ -56,7 +54,7 @@ index cfbf9accaee9..0dd443340ccb 100644
  
  	fmin = clk->info->range.min_rate;
  	fmax = clk->info->range.max_rate;
-@@ -91,8 +94,27 @@ static long scmi_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+@@ -91,8 +94,27 @@ static long scmi_clk_round_rate(struct c
  	else if (rate >= fmax)
  		return fmax;
  
@@ -85,11 +83,9 @@ index cfbf9accaee9..0dd443340ccb 100644
  
  	ftmp = rate - fmin;
  	ftmp += clk->info->range.step_size - 1; /* to round up */
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 26a8f3356e3f..ba562fd32750 100644
 --- a/drivers/firmware/arm_scmi/clock.c
 +++ b/drivers/firmware/arm_scmi/clock.c
-@@ -466,11 +466,10 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+@@ -466,11 +466,10 @@ static int scmi_clock_rate_set(const str
  	return ret;
  }
  
@@ -104,7 +100,7 @@ index 26a8f3356e3f..ba562fd32750 100644
  	int ret;
  	struct scmi_xfer *t;
  	struct scmi_clock_set_rate *cfg;
-@@ -506,6 +505,93 @@ scmi_clock_round_rate_get(const struct scmi_protocol_handle *ph,
+@@ -506,6 +505,93 @@ scmi_clock_round_rate_get(const struct s
  	ph->xops->xfer_put(ph, t);
  
  	return ret;
@@ -198,8 +194,6 @@ index 26a8f3356e3f..ba562fd32750 100644
  #else
  	return -EOPNOTSUPP;
  #endif
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 8d3672b02030..94d76d30b6a1 100644
 --- a/include/linux/scmi_protocol.h
 +++ b/include/linux/scmi_protocol.h
 @@ -81,6 +81,12 @@ struct scmi_protocol_handle;
@@ -215,6 +209,3 @@ index 8d3672b02030..94d76d30b6a1 100644
   */
  struct scmi_clk_proto_ops {
  	int (*count_get)(const struct scmi_protocol_handle *ph);
--- 
-2.39.5
-

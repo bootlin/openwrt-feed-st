@@ -48,8 +48,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 122 +++++++++++++++---
  1 file changed, 107 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index 4aae5b41a4a1..91e9d0caed13 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 @@ -102,9 +102,11 @@ patternProperties:
@@ -259,6 +257,3 @@ index 4aae5b41a4a1..91e9d0caed13 100644
        };
      };
  
--- 
-2.39.5
-

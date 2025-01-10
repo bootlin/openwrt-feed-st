@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32-exti.c | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 1abe06009788..c0a020aab557 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
 @@ -36,6 +36,7 @@ struct stm32_exti_bank {
@@ -40,7 +38,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  struct stm32_exti_host_data {
-@@ -74,6 +76,7 @@ static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
+@@ -74,6 +76,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x14,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -48,7 +46,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank *stm32f4xx_exti_banks[] = {
-@@ -94,6 +97,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b1 = {
+@@ -94,6 +97,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x88,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -56,7 +54,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
-@@ -105,6 +109,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
+@@ -105,6 +109,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x98,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -64,7 +62,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
-@@ -116,6 +121,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
+@@ -116,6 +121,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0xA8,
  	.fpr_ofst	= UNDEF_REG,
  	.trg_ofst	= UNDEF_REG,
@@ -72,7 +70,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank *stm32h7xx_exti_banks[] = {
-@@ -138,6 +144,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b1 = {
+@@ -138,6 +144,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x0C,
  	.fpr_ofst	= 0x10,
  	.trg_ofst	= 0x3EC,
@@ -80,7 +78,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank stm32mp1_exti_b2 = {
-@@ -149,6 +156,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
+@@ -149,6 +156,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x2C,
  	.fpr_ofst	= 0x30,
  	.trg_ofst	= 0x3E8,
@@ -88,7 +86,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank stm32mp1_exti_b3 = {
-@@ -160,6 +168,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
+@@ -160,6 +168,7 @@ static const struct stm32_exti_bank stm3
  	.rpr_ofst	= 0x4C,
  	.fpr_ofst	= 0x50,
  	.trg_ofst	= 0x3E4,
@@ -96,7 +94,7 @@ index 1abe06009788..c0a020aab557 100644
  };
  
  static const struct stm32_exti_bank *stm32mp1_exti_banks[] = {
-@@ -707,6 +716,12 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+@@ -707,6 +716,12 @@ static int stm32_exti_h_domain_alloc(str
  	bank  = hwirq / IRQS_PER_BANK;
  	chip_data = &host_data->chips_data[bank];
  
@@ -109,7 +107,7 @@ index 1abe06009788..c0a020aab557 100644
  	event_trg = readl_relaxed(host_data->base + chip_data->reg_bank->trg_ofst);
  	chip = (event_trg & BIT(hwirq % IRQS_PER_BANK)) ?
  	       &stm32_exti_h_chip : &stm32_exti_h_chip_direct;
-@@ -804,6 +819,10 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
+@@ -804,6 +819,10 @@ stm32_exti_chip_data *stm32_exti_chip_in
  	if (stm32_bank->emr_ofst != UNDEF_REG)
  		writel_relaxed(0, base + stm32_bank->emr_ofst);
  
@@ -120,6 +118,3 @@ index 1abe06009788..c0a020aab557 100644
  	pr_info("%pOF: bank%d\n", node, bank_idx);
  
  	return chip_data;
--- 
-2.39.5
-

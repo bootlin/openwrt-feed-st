@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/dt-bindings/pinctrl/stm32-pinfunc.h                   | 3 +++
  2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index a893ca500d00..5d4e3cc812dd 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 @@ -27,6 +27,8 @@ properties:
@@ -40,8 +38,6 @@ index a893ca500d00..5d4e3cc812dd 100644
  
  patternProperties:
    '^gpio@[0-9a-f]*$':
-diff --git a/include/dt-bindings/pinctrl/stm32-pinfunc.h b/include/dt-bindings/pinctrl/stm32-pinfunc.h
-index af3fd388329a..01bc8be78ef7 100644
 --- a/include/dt-bindings/pinctrl/stm32-pinfunc.h
 +++ b/include/dt-bindings/pinctrl/stm32-pinfunc.h
 @@ -41,6 +41,9 @@
@@ -54,6 +50,3 @@ index af3fd388329a..01bc8be78ef7 100644
  
  #endif /* _DT_BINDINGS_STM32_PINFUNC_H */
  
--- 
-2.39.5
-

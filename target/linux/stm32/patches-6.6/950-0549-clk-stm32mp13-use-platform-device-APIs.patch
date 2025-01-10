@@ -12,11 +12,9 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  drivers/clk/stm32/clk-stm32mp13.c  | 72 +++---------------------------
  2 files changed, 10 insertions(+), 73 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32-core.c b/drivers/clk/stm32/clk-stm32-core.c
-index 58705fcad334..1721a3ed7386 100644
 --- a/drivers/clk/stm32/clk-stm32-core.c
 +++ b/drivers/clk/stm32/clk-stm32-core.c
-@@ -25,7 +25,6 @@ static int stm32_rcc_clock_init(struct device *dev,
+@@ -25,7 +25,6 @@ static int stm32_rcc_clock_init(struct d
  {
  	const struct stm32_rcc_match_data *data = match->data;
  	struct clk_hw_onecell_data *clk_data = data->hw_clks;
@@ -24,7 +22,7 @@ index 58705fcad334..1721a3ed7386 100644
  	struct clk_hw **hws;
  	int n, max_binding;
  
-@@ -64,7 +63,7 @@ static int stm32_rcc_clock_init(struct device *dev,
+@@ -64,7 +63,7 @@ static int stm32_rcc_clock_init(struct d
  			hws[cfg_clock->id] = hw;
  	}
  
@@ -33,7 +31,7 @@ index 58705fcad334..1721a3ed7386 100644
  }
  
  int stm32_rcc_init(struct device *dev, const struct of_device_id *match_data,
-@@ -638,7 +637,7 @@ struct clk_hw *clk_stm32_mux_register(struct device *dev,
+@@ -638,7 +637,7 @@ struct clk_hw *clk_stm32_mux_register(st
  	mux->lock = lock;
  	mux->clock_data = data->clock_data;
  
@@ -42,7 +40,7 @@ index 58705fcad334..1721a3ed7386 100644
  	if (err)
  		return ERR_PTR(err);
  
-@@ -659,7 +658,7 @@ struct clk_hw *clk_stm32_gate_register(struct device *dev,
+@@ -659,7 +658,7 @@ struct clk_hw *clk_stm32_gate_register(s
  	gate->lock = lock;
  	gate->clock_data = data->clock_data;
  
@@ -51,7 +49,7 @@ index 58705fcad334..1721a3ed7386 100644
  	if (err)
  		return ERR_PTR(err);
  
-@@ -680,7 +679,7 @@ struct clk_hw *clk_stm32_div_register(struct device *dev,
+@@ -680,7 +679,7 @@ struct clk_hw *clk_stm32_div_register(st
  	div->lock = lock;
  	div->clock_data = data->clock_data;
  
@@ -60,7 +58,7 @@ index 58705fcad334..1721a3ed7386 100644
  	if (err)
  		return ERR_PTR(err);
  
-@@ -701,7 +700,7 @@ struct clk_hw *clk_stm32_composite_register(struct device *dev,
+@@ -701,7 +700,7 @@ struct clk_hw *clk_stm32_composite_regis
  	composite->lock = lock;
  	composite->clock_data = data->clock_data;
  
@@ -69,11 +67,9 @@ index 58705fcad334..1721a3ed7386 100644
  	if (err)
  		return ERR_PTR(err);
  
-diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
-index d4ecb3c34a1b..bf81d7491708 100644
 --- a/drivers/clk/stm32/clk-stm32mp13.c
 +++ b/drivers/clk/stm32/clk-stm32mp13.c
-@@ -1536,77 +1536,16 @@ static const struct of_device_id stm32mp13_match_data[] = {
+@@ -1536,77 +1536,16 @@ static const struct of_device_id stm32mp
  };
  MODULE_DEVICE_TABLE(of, stm32mp13_match_data);
  
@@ -134,11 +130,11 @@ index d4ecb3c34a1b..bf81d7491708 100644
  {
  	struct device *dev = &pdev->dev;
 -	int ret = get_clock_deps(dev);
-+	void __iomem *base;
- 
+-
 -	if (!ret)
 -		ret = stm32mp1_rcc_init(dev);
--
++	void __iomem *base;
+ 
 -	return ret;
 -}
 -
@@ -156,7 +152,7 @@ index d4ecb3c34a1b..bf81d7491708 100644
  }
  
  static struct platform_driver stm32mp13_rcc_clocks_driver = {
-@@ -1615,7 +1554,6 @@ static struct platform_driver stm32mp13_rcc_clocks_driver = {
+@@ -1615,7 +1554,6 @@ static struct platform_driver stm32mp13_
  		.of_match_table = stm32mp13_match_data,
  	},
  	.probe = stm32mp1_rcc_clocks_probe,
@@ -164,6 +160,3 @@ index d4ecb3c34a1b..bf81d7491708 100644
  };
  
  static int __init stm32mp13_clocks_init(void)
--- 
-2.39.5
-

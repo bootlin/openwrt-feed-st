@@ -34,8 +34,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 84 ++++++++++++++++++++++++++++++--
  1 file changed, 79 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index f900b0cf4855..344a8a2757c8 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -23,6 +23,7 @@
@@ -111,7 +109,7 @@ index f900b0cf4855..344a8a2757c8 100644
  static int stm32_rproc_pa_to_da(struct rproc *rproc, phys_addr_t pa, u64 *da)
  {
  	unsigned int i;
-@@ -635,6 +687,22 @@ static int stm32_rproc_start(struct rproc *rproc)
+@@ -635,6 +687,22 @@ static int stm32_rproc_start(struct rpro
  		}
  	}
  
@@ -134,7 +132,7 @@ index f900b0cf4855..344a8a2757c8 100644
  	err = stm32_rproc_set_hold_boot(rproc, false);
  	if (err)
  		return err;
-@@ -792,7 +860,7 @@ static const struct rproc_ops st_rproc_ops = {
+@@ -792,7 +860,7 @@ static const struct rproc_ops st_rproc_o
  	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
  	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
  	.sanity_check	= rproc_elf_sanity_check,
@@ -143,7 +141,7 @@ index f900b0cf4855..344a8a2757c8 100644
  };
  
  static const struct rproc_ops st_rproc_tee_ops = {
-@@ -1011,6 +1079,11 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+@@ -1011,6 +1079,11 @@ static int stm32_rproc_parse_dt(struct p
  		dev_warn(dev, "rsc tbl syscon not supported\n");
  	}
  
@@ -155,7 +153,7 @@ index f900b0cf4855..344a8a2757c8 100644
  	return 0;
  }
  
-@@ -1055,6 +1128,11 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1055,6 +1128,11 @@ static int stm32_rproc_probe(struct plat
  	ddata = rproc->priv;
  	ddata->desc = desc;
  	ddata->trproc = trproc;
@@ -167,7 +165,7 @@ index f900b0cf4855..344a8a2757c8 100644
  	if (trproc) {
  		trproc->rproc = rproc;
  		rproc->fw_format = RPROC_FW_TEE;
-@@ -1064,10 +1142,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1064,10 +1142,6 @@ static int stm32_rproc_probe(struct plat
  
  	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
  
@@ -178,6 +176,3 @@ index f900b0cf4855..344a8a2757c8 100644
  	ret = stm32_rproc_of_memory_translations(pdev, ddata);
  	if (ret)
  		goto free_rproc;
--- 
-2.39.5
-

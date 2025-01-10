@@ -12,8 +12,6 @@ Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 27 ++++++++++---------
  1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index 3af01b71c087..6d71e3986719 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -55,17 +55,17 @@
@@ -38,7 +36,7 @@ index 3af01b71c087..6d71e3986719 100644
   *|         |        |               | or st,ext-phyclk   |		     |
   * ---------------------------------------------------------------------------
   *
-@@ -182,23 +182,22 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -182,23 +182,22 @@ static int stm32mp1_set_mode(struct plat
  	dwmac->enable_eth_ck = false;
  	switch (plat_dat->mac_interface) {
  	case PHY_INTERFACE_MODE_MII:
@@ -67,7 +65,7 @@ index 3af01b71c087..6d71e3986719 100644
  		    (dwmac->eth_ref_clk_sel_reg || dwmac->ext_phyclk)) {
  			dwmac->enable_eth_ck = true;
  			val |= dwmac->ops->pmcsetr.eth1_ref_clk_sel;
-@@ -211,7 +210,9 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -211,7 +210,9 @@ static int stm32mp1_set_mode(struct plat
  	case PHY_INTERFACE_MODE_RGMII_RXID:
  	case PHY_INTERFACE_MODE_RGMII_TXID:
  		val = dwmac->ops->pmcsetr.eth1_sel_rgmii | dwmac->ops->pmcsetr.eth2_sel_rgmii;
@@ -78,7 +76,7 @@ index 3af01b71c087..6d71e3986719 100644
  		    (dwmac->eth_clk_sel_reg || dwmac->ext_phyclk)) {
  			dwmac->enable_eth_ck = true;
  			val |= dwmac->ops->pmcsetr.eth1_clk_sel;
-@@ -227,7 +228,7 @@ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -227,7 +228,7 @@ static int stm32mp1_set_mode(struct plat
  	}
  
  	/* Need to update PMCCLRR (clear register) */
@@ -87,7 +85,7 @@ index 3af01b71c087..6d71e3986719 100644
  		     dwmac->mode_mask);
  
  	/* Update PMCSETR (set register) */
-@@ -334,7 +335,7 @@ static int stm32mp1_parse_data(struct stm32_dwmac *dwmac,
+@@ -334,7 +335,7 @@ static int stm32mp1_parse_data(struct st
  	/*  Get ETH_CLK clocks */
  	dwmac->clk_eth_ck = devm_clk_get(dev, "eth-ck");
  	if (IS_ERR(dwmac->clk_eth_ck)) {
@@ -96,6 +94,3 @@ index 3af01b71c087..6d71e3986719 100644
  		dwmac->clk_eth_ck = NULL;
  	}
  
--- 
-2.39.5
-

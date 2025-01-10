@@ -16,9 +16,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  1 file changed, 73 insertions(+)
  create mode 100644 CODE_OF_CONDUCT.md
 
-diff --git a/CODE_OF_CONDUCT.md b/CODE_OF_CONDUCT.md
-new file mode 100644
-index 000000000000..bf0ca35d956d
 --- /dev/null
 +++ b/CODE_OF_CONDUCT.md
 @@ -0,0 +1,73 @@
@@ -95,6 +92,3 @@ index 000000000000..bf0ca35d956d
 +available [here](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html).
 +
 +For answers to common questions about this code of conduct, refer to the FAQ section [here](https://www.contributor-covenant.org/faq).
--- 
-2.39.5
-

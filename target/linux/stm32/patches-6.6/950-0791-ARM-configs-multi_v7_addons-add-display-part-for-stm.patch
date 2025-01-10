@@ -12,8 +12,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 2710103972f3..15c0afcf584a 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -3,10 +3,20 @@ CONFIG_AEABI=y
@@ -46,6 +44,3 @@ index 2710103972f3..15c0afcf584a 100644
  CONFIG_USB_HIDDEV=y
  CONFIG_USB_ONBOARD_HUB=y
  CONFIG_VFP=y
--- 
-2.39.5
-

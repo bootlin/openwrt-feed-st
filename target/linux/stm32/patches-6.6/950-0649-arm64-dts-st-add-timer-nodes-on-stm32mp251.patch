@@ -18,11 +18,9 @@ Change-Id: Ie85e720e1babe4436b7be6851435507b68c38d2e
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 507 +++++++++++++++++++++++++
  1 file changed, 507 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 8f8ccb579ee4..a9b51daf4ce9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -311,6 +311,264 @@ rifsc: bus@42080000 {
+@@ -311,6 +311,264 @@
  			#access-controller-cells = <1>;
  			ranges;
  
@@ -287,7 +285,7 @@ index 8f8ccb579ee4..a9b51daf4ce9 100644
  			lptimer1: timer@40090000 {
  				compatible = "st,stm32mp25-lptimer";
  				reg = <0x40090000 0x400>;
-@@ -573,6 +831,132 @@ i2c7: i2c@40180000 {
+@@ -573,6 +831,132 @@
  				status = "disabled";
  			};
  
@@ -420,7 +418,7 @@ index 8f8ccb579ee4..a9b51daf4ce9 100644
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40220000 0x400>;
-@@ -615,6 +999,96 @@ spi4: spi@40240000 {
+@@ -615,6 +999,96 @@
  				status = "disabled";
  			};
  
@@ -517,7 +515,7 @@ index 8f8ccb579ee4..a9b51daf4ce9 100644
  			spi5: spi@40280000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -642,6 +1116,39 @@ uart9: serial@402c0000 {
+@@ -642,6 +1116,39 @@
  				status = "disabled";
  			};
  
@@ -557,6 +555,3 @@ index 8f8ccb579ee4..a9b51daf4ce9 100644
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40330000 0x400>;
--- 
-2.39.5
-

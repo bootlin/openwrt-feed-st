@@ -22,8 +22,6 @@ Change-Id: I41e0ab7090b8f007978ba549c22fe53bb420bac0
  2 files changed, 34 insertions(+)
  create mode 100644 include/dt-bindings/rtc/rtc-stm32.h
 
-diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
-index 4703083d1f11..939ce15d6028 100644
 --- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 +++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 @@ -52,6 +52,13 @@ properties:
@@ -87,9 +85,6 @@ index 4703083d1f11..939ce15d6028 100644
      };
  
  ...
-diff --git a/include/dt-bindings/rtc/rtc-stm32.h b/include/dt-bindings/rtc/rtc-stm32.h
-new file mode 100644
-index 000000000000..f0e70af1ca9e
 --- /dev/null
 +++ b/include/dt-bindings/rtc/rtc-stm32.h
 @@ -0,0 +1,14 @@
@@ -107,6 +102,3 @@ index 000000000000..f0e70af1ca9e
 +#define RTC_OUT2_RMP	3
 +
 +#endif
--- 
-2.39.5
-

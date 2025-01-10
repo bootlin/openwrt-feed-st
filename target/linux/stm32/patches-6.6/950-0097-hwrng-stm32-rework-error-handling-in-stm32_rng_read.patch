@@ -16,8 +16,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 53 +++++++++++++++++++++++-------
  1 file changed, 41 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index adefe8edfd07..9dac177d5286 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -43,6 +43,8 @@
@@ -29,7 +27,7 @@ index adefe8edfd07..9dac177d5286 100644
  struct stm32_rng_data {
  	u32	cr;
  	u32	nscr;
-@@ -162,10 +164,10 @@ static int stm32_rng_conceal_seed_error(struct hwrng *rng)
+@@ -162,10 +164,10 @@ static int stm32_rng_conceal_seed_error(
  
  static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  {
@@ -43,7 +41,7 @@ index adefe8edfd07..9dac177d5286 100644
  
  	pm_runtime_get_sync((struct device *) priv->rng.priv);
  
-@@ -174,30 +176,57 @@ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+@@ -174,30 +176,57 @@ static int stm32_rng_read(struct hwrng *
  
  	while (max >= sizeof(u32)) {
  		sr = readl_relaxed(priv->base + RNG_SR);
@@ -110,6 +108,3 @@ index adefe8edfd07..9dac177d5286 100644
  		retval += sizeof(u32);
  		data += sizeof(u32);
  		max -= sizeof(u32);
--- 
-2.39.5
-

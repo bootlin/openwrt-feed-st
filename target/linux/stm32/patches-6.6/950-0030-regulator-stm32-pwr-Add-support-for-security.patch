@@ -12,8 +12,6 @@ Change-Id: Iafeac2a90d557313215ea0fdd2aaa008f522720a
  drivers/regulator/stm32-pwr.c | 84 ++++++++++++++++++++++++++++++++---
  1 file changed, 77 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/regulator/stm32-pwr.c b/drivers/regulator/stm32-pwr.c
-index 85b0102fb9b1..ef02768fb854 100644
 --- a/drivers/regulator/stm32-pwr.c
 +++ b/drivers/regulator/stm32-pwr.c
 @@ -3,11 +3,14 @@
@@ -43,7 +41,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  /* list of supported regulators */
  enum {
  	PWR_REG11,
-@@ -38,10 +46,18 @@ static u32 ready_mask_table[STM32PWR_REG_NUM_REGS] = {
+@@ -38,10 +46,18 @@ static u32 ready_mask_table[STM32PWR_REG
  };
  
  struct stm32_pwr_reg {
@@ -62,7 +60,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  static int stm32_pwr_reg_is_ready(struct regulator_dev *rdev)
  {
  	struct stm32_pwr_reg *priv = rdev_get_drvdata(rdev);
-@@ -68,9 +84,15 @@ static int stm32_pwr_reg_enable(struct regulator_dev *rdev)
+@@ -68,9 +84,15 @@ static int stm32_pwr_reg_enable(struct r
  	int ret;
  	u32 val;
  
@@ -81,7 +79,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  
  	/* use an arbitrary timeout of 20ms */
  	ret = readx_poll_timeout(stm32_pwr_reg_is_ready, rdev, val, val,
-@@ -87,9 +109,14 @@ static int stm32_pwr_reg_disable(struct regulator_dev *rdev)
+@@ -87,9 +109,14 @@ static int stm32_pwr_reg_disable(struct
  	int ret;
  	u32 val;
  
@@ -99,7 +97,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  
  	/* use an arbitrary timeout of 20ms */
  	ret = readx_poll_timeout(stm32_pwr_reg_is_enabled, rdev, val, !val,
-@@ -120,12 +147,49 @@ static const struct regulator_ops stm32_pwr_reg_ops = {
+@@ -120,12 +147,49 @@ static const struct regulator_ops stm32_
  		.supply_name = _supply, \
  	} \
  
@@ -150,7 +148,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  static int stm32_pwr_regulator_probe(struct platform_device *pdev)
  {
  	struct stm32_pwr_reg *priv;
-@@ -133,6 +197,11 @@ static int stm32_pwr_regulator_probe(struct platform_device *pdev)
+@@ -133,6 +197,11 @@ static int stm32_pwr_regulator_probe(str
  	struct regulator_dev *rdev;
  	struct regulator_config config = { };
  	int i, ret = 0;
@@ -162,7 +160,7 @@ index 85b0102fb9b1..ef02768fb854 100644
  
  	base = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(base)) {
-@@ -147,6 +216,7 @@ static int stm32_pwr_regulator_probe(struct platform_device *pdev)
+@@ -147,6 +216,7 @@ static int stm32_pwr_regulator_probe(str
  				    GFP_KERNEL);
  		if (!priv)
  			return -ENOMEM;
@@ -170,6 +168,3 @@ index 85b0102fb9b1..ef02768fb854 100644
  		priv->base = base;
  		priv->ready_mask = ready_mask_table[i];
  		config.driver_data = priv;
--- 
-2.39.5
-

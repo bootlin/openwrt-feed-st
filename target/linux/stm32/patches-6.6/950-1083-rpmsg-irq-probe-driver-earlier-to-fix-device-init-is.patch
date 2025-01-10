@@ -24,11 +24,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/irqchip/irq-rpmsg.c | 14 +++++++++++++-
  1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-rpmsg.c b/drivers/irqchip/irq-rpmsg.c
-index a7b2bbf3e75c..37db2ddfca50 100644
 --- a/drivers/irqchip/irq-rpmsg.c
 +++ b/drivers/irqchip/irq-rpmsg.c
-@@ -302,7 +302,19 @@ static struct platform_driver irq_rpmsg_plat_driver = {
+@@ -302,7 +302,19 @@ static struct platform_driver irq_rpmsg_
  		.of_match_table	= of_match_ptr(irq_rpmsg_plat_ids),
  	}
  };
@@ -49,6 +47,3 @@ index a7b2bbf3e75c..37db2ddfca50 100644
  
  MODULE_DESCRIPTION("RPMsg IRQC Driver");
  MODULE_LICENSE("GPL");
--- 
-2.39.5
-

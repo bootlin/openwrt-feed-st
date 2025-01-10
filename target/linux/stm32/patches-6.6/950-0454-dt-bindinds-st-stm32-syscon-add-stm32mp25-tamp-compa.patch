@@ -14,8 +14,6 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml        | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index 106fe7705fa3..59b06605d447 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 @@ -18,10 +18,12 @@ properties:
@@ -32,6 +30,3 @@ index 106fe7705fa3..59b06605d447 100644
                - st,stm32mp25-a35ssc-m33
            - const: syscon
        - items:
--- 
-2.39.5
-

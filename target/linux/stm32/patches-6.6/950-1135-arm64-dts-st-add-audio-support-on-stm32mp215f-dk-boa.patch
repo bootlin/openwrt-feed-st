@@ -18,11 +18,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 93 +++++++++++++++++++++++
  1 file changed, 93 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index e7f6a6ed6b92..5746f67b2d26 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -44,6 +44,32 @@ clk_ext_camera: clk-ext-camera {
+@@ -44,6 +44,32 @@
  		};
  	};
  
@@ -55,7 +53,7 @@ index e7f6a6ed6b92..5746f67b2d26 100644
  	memory@80000000 {
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
-@@ -102,6 +128,13 @@ fw@80000000 {
+@@ -102,6 +128,13 @@
  			no-map;
  		};
  	};
@@ -69,10 +67,11 @@ index e7f6a6ed6b92..5746f67b2d26 100644
  };
  
  &crc {
-@@ -199,6 +232,66 @@ ltdc_out_rgb: endpoint {
+@@ -198,6 +231,66 @@
+ 		};
  	};
  };
- 
++
 +&mdf1 {
 +	pinctrl-names = "default", "sleep";
 +	pinctrl-0 = <&mdf_cck0_pins_a>;
@@ -132,10 +131,6 @@ index e7f6a6ed6b92..5746f67b2d26 100644
 +		};
 +	};
 +};
-+
+ 
  &scmi_regu {
  	scmi_vddcore: regulator@11  {
- 		reg = <VOLTD_SCMI_STPMIC_BUCK2>;
--- 
-2.39.5
-

@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 438b41702f85..3c9e68a6c8b8 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -35,7 +35,7 @@ arm-pmu {
+@@ -35,7 +35,7 @@
  
  	arm_wdt: watchdog {
  		compatible = "arm,smc-wdt";
@@ -32,6 +30,3 @@ index 438b41702f85..3c9e68a6c8b8 100644
  		status = "disabled";
  	};
  
--- 
-2.39.5
-

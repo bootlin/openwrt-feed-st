@@ -12,11 +12,9 @@ Change-Id: Icf24894d6d187d7e8f006421920646cee1465c83
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 30 ++++++++++++++++++++++++
  2 files changed, 60 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index b5212d54438d..525dc0a79522 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-@@ -35,6 +35,11 @@ framebuffer {
+@@ -35,6 +35,11 @@
  			status = "disabled";
  		};
  	};
@@ -28,7 +26,7 @@ index b5212d54438d..525dc0a79522 100644
  };
  
  &cryp1 {
-@@ -104,6 +109,31 @@ &rtc {
+@@ -104,6 +109,31 @@
  	pinctrl-names = "default";
  };
  
@@ -60,11 +58,9 @@ index b5212d54438d..525dc0a79522 100644
  /* Bluetooth */
  &usart2 {
  	pinctrl-names = "default", "sleep", "idle";
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index d547ca0c661c..b6315528e115 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -34,6 +34,11 @@ framebuffer {
+@@ -34,6 +34,11 @@
  			status = "disabled";
  		};
  	};
@@ -76,7 +72,7 @@ index d547ca0c661c..b6315528e115 100644
  };
  
  &cryp1 {
-@@ -104,6 +109,31 @@ &rtc {
+@@ -104,6 +109,31 @@
  	pinctrl-names = "default";
  };
  
@@ -108,6 +104,3 @@ index d547ca0c661c..b6315528e115 100644
  /* Bluetooth */
  &usart2 {
  	pinctrl-names = "default", "sleep", "idle";
--- 
-2.39.5
-

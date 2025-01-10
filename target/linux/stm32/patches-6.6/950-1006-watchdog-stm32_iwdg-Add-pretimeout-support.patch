@@ -22,8 +22,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/watchdog/stm32_iwdg.c | 95 ++++++++++++++++++++++++++++++++++-
  1 file changed, 94 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index 5404e0387620..d700e0d49bb9 100644
 --- a/drivers/watchdog/stm32_iwdg.c
 +++ b/drivers/watchdog/stm32_iwdg.c
 @@ -18,6 +18,7 @@
@@ -72,7 +70,7 @@ index 5404e0387620..d700e0d49bb9 100644
  	.max_prescaler = 1024,
  };
  
-@@ -88,13 +97,18 @@ static inline void reg_write(void __iomem *base, u32 reg, u32 val)
+@@ -88,13 +97,18 @@ static inline void reg_write(void __iome
  static int stm32_iwdg_start(struct watchdog_device *wdd)
  {
  	struct stm32_iwdg *wdt = watchdog_get_drvdata(wdd);
@@ -92,7 +90,7 @@ index 5404e0387620..d700e0d49bb9 100644
  
  	presc = DIV_ROUND_UP(tout * wdt->rate, RLR_MAX + 1);
  
-@@ -102,6 +116,7 @@ static int stm32_iwdg_start(struct watchdog_device *wdd)
+@@ -102,6 +116,7 @@ static int stm32_iwdg_start(struct watch
  	presc = roundup_pow_of_two(presc);
  	iwdg_pr = presc <= 1 << PR_SHIFT ? 0 : ilog2(presc) - PR_SHIFT;
  	iwdg_rlr = ((tout * wdt->rate) / presc) - 1;
@@ -100,7 +98,7 @@ index 5404e0387620..d700e0d49bb9 100644
  
  	/* enable write access */
  	reg_write(wdt->regs, IWDG_KR, KR_KEY_EWA);
-@@ -109,6 +124,8 @@ static int stm32_iwdg_start(struct watchdog_device *wdd)
+@@ -109,6 +124,8 @@ static int stm32_iwdg_start(struct watch
  	/* set prescaler & reload registers */
  	reg_write(wdt->regs, IWDG_PR, iwdg_pr);
  	reg_write(wdt->regs, IWDG_RLR, iwdg_rlr);
@@ -109,7 +107,7 @@ index 5404e0387620..d700e0d49bb9 100644
  	reg_write(wdt->regs, IWDG_KR, KR_KEY_ENABLE);
  
  	/* wait for the registers to be updated (max 100ms) */
-@@ -151,6 +168,34 @@ static int stm32_iwdg_set_timeout(struct watchdog_device *wdd,
+@@ -151,6 +168,34 @@ static int stm32_iwdg_set_timeout(struct
  	return 0;
  }
  
@@ -144,7 +142,7 @@ index 5404e0387620..d700e0d49bb9 100644
  static void stm32_clk_disable_unprepare(void *data)
  {
  	clk_disable_unprepare(data);
-@@ -207,11 +252,20 @@ static const struct watchdog_info stm32_iwdg_info = {
+@@ -207,11 +252,20 @@ static const struct watchdog_info stm32_
  	.identity	= "STM32 Independent Watchdog",
  };
  
@@ -165,7 +163,7 @@ index 5404e0387620..d700e0d49bb9 100644
  };
  
  static const struct of_device_id stm32_iwdg_of_match[] = {
-@@ -221,6 +275,40 @@ static const struct of_device_id stm32_iwdg_of_match[] = {
+@@ -221,6 +275,40 @@ static const struct of_device_id stm32_i
  };
  MODULE_DEVICE_TABLE(of, stm32_iwdg_of_match);
  
@@ -206,7 +204,7 @@ index 5404e0387620..d700e0d49bb9 100644
  static int stm32_iwdg_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
-@@ -255,6 +343,11 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+@@ -255,6 +343,11 @@ static int stm32_iwdg_probe(struct platf
  	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
  				    1000) / wdt->rate;
  
@@ -218,6 +216,3 @@ index 5404e0387620..d700e0d49bb9 100644
  	watchdog_set_drvdata(wdd, wdt);
  	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
  	watchdog_init_timeout(wdd, 0, dev);
--- 
-2.39.5
-

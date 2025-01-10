@@ -11,11 +11,9 @@ Change-Id: Ie1d959e19bdeff6062cb5fb2a8dca9e2ef215ca6
  .../platform/verisilicon/stm32mp25_vpu_hw.c   | 22 ++++++++++++++++++-
  1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-index 833821120b20..460e8d386da5 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-@@ -92,6 +92,19 @@ static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+@@ -92,6 +92,19 @@ static const struct hantro_fmt stm32mp25
  			.step_height = MB_DIM,
  		},
  	},
@@ -35,7 +33,7 @@ index 833821120b20..460e8d386da5 100644
  };
  
  static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
-@@ -143,6 +156,13 @@ static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
+@@ -143,6 +156,13 @@ static const struct hantro_codec_ops stm
  		.reset = stm32mp25_venc_reset,
  		.done = hantro_h1_jpeg_enc_done,
  	},
@@ -49,7 +47,7 @@ index 833821120b20..460e8d386da5 100644
  };
  
  /*
-@@ -177,7 +197,7 @@ static const char * const stm32mp25_venc_clk_names[] = {
+@@ -177,7 +197,7 @@ static const char * const stm32mp25_venc
  const struct hantro_variant stm32mp25_venc_variant = {
  	.enc_fmts = stm32mp25_venc_fmts,
  	.num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
@@ -58,6 +56,3 @@ index 833821120b20..460e8d386da5 100644
  	.codec_ops = stm32mp25_venc_codec_ops,
  	.irqs = stm32mp25_venc_irqs,
  	.num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
--- 
-2.39.5
-

@@ -16,11 +16,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 1186 +++++++++++++++++++++++++++++-
  1 file changed, 1185 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index e63e5529b585..ff2ab13cd58f 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -124,7 +124,7 @@ static const char * const ref4_parents[] = {
+@@ -124,7 +124,7 @@ static const char * const ref4_parents[]
  };
  
  static const char * const cpu_src[] = {
@@ -29,7 +27,7 @@ index e63e5529b585..ff2ab13cd58f 100644
  };
  
  static const char * const axi_src[] = {
-@@ -2390,6 +2390,8 @@ static int stm32_rcc_init(struct device *dev, void __iomem *base,
+@@ -2390,6 +2390,8 @@ static int stm32_rcc_init(struct device
  	return 0;
  }
  
@@ -38,7 +36,7 @@ index e63e5529b585..ff2ab13cd58f 100644
  static int stm32mp1_rcc_init(struct device *dev)
  {
  	void __iomem *base;
-@@ -2410,6 +2412,8 @@ static int stm32mp1_rcc_init(struct device *dev)
+@@ -2410,6 +2412,8 @@ out:
  			iounmap(base);
  
  		of_node_put(dev_of_node(dev));
@@ -47,7 +45,7 @@ index e63e5529b585..ff2ab13cd58f 100644
  	}
  
  	return ret;
-@@ -2479,3 +2483,1183 @@ static int __init stm32mp1_clocks_init(void)
+@@ -2479,3 +2483,1183 @@ static int __init stm32mp1_clocks_init(v
  	return platform_driver_register(&stm32mp1_rcc_clocks_driver);
  }
  core_initcall(stm32mp1_clocks_init);
@@ -1231,6 +1229,3 @@ index e63e5529b585..ff2ab13cd58f 100644
 +}
 +
 +#endif
--- 
-2.39.5
-

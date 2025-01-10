@@ -24,11 +24,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 5865cec8e8ff..7ddcb32be843 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
-@@ -279,11 +279,11 @@ static const struct counter_ops stm32_timer_cnt_ops = {
+@@ -285,11 +285,11 @@ static const struct counter_ops stm32_ti
  static struct counter_signal stm32_signals[] = {
  	{
  		.id = 0,
@@ -42,6 +40,3 @@ index 5865cec8e8ff..7ddcb32be843 100644
  	}
  };
  
--- 
-2.39.5
-

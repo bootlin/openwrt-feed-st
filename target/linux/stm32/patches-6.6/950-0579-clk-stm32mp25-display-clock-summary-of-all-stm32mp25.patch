@@ -14,8 +14,6 @@ Change-Id: I1d0909dad62534afdb7a255c8bc98a386cc19b1c
  drivers/clk/stm32/stm32mp25_rcc.h | 4265 +++++++++++++++++++++++++++++
  2 files changed, 5553 insertions(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index b33af71d9edf..28acd08ca966 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -197,6 +197,19 @@ enum enum_mux_cfg {
@@ -38,7 +36,7 @@ index b33af71d9edf..28acd08ca966 100644
  	MUX_NB
  };
  
-@@ -219,6 +232,19 @@ static const struct stm32_mux_cfg stm32mp25_muxes[MUX_NB] = {
+@@ -219,6 +232,19 @@ static const struct stm32_mux_cfg stm32m
  	MUX_CFG(MUX_USB2PHY1,		RCC_USB2PHY1CFGR,	15,	1),
  	MUX_CFG(MUX_USB2PHY2,		RCC_USB2PHY2CFGR,	15,	1),
  	MUX_CFG(MUX_USB3PCIEPHY,	RCC_USB3PCIEPHYCFGR,	15,	1),
@@ -139,7 +137,7 @@ index b33af71d9edf..28acd08ca966 100644
  	GATE_NB
  };
  
-@@ -469,7 +569,117 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -469,7 +569,117 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_VREF,		RCC_VREFCFGR,		1,	0),
  	GATE_CFG(GATE_WWDG1,		RCC_WWDG1CFGR,		1,	0),
  	GATE_CFG(GATE_WWDG2,		RCC_WWDG2CFGR,		1,	0),
@@ -257,7 +255,7 @@ index b33af71d9edf..28acd08ca966 100644
  
  #define CLK_HW_INIT_INDEX(_name, _parent, _ops, _flags)		\
  	(&(struct clk_init_data) {					\
-@@ -1948,6 +2158,9 @@ static struct clk_stm32_clock_data stm32mp25_clock_data = {
+@@ -1948,6 +2158,9 @@ static struct clk_stm32_clock_data stm32
  	.gate_cpt	= stm32mp25_cpt_gate,
  	.gates		= stm32mp25_gates,
  	.muxes		= stm32mp25_muxes,
@@ -267,7 +265,7 @@ index b33af71d9edf..28acd08ca966 100644
  };
  
  static struct clk_stm32_reset_data stm32mp25_reset_data = {
-@@ -1956,6 +2169,8 @@ static struct clk_stm32_reset_data stm32mp25_reset_data = {
+@@ -1956,6 +2169,8 @@ static struct clk_stm32_reset_data stm32
  	.reset_us	= 2,
  };
  
@@ -276,7 +274,7 @@ index b33af71d9edf..28acd08ca966 100644
  static const struct stm32_rcc_match_data stm32mp25_data = {
  	.tab_clocks	= stm32mp25_clock_cfg,
  	.num_clocks	= ARRAY_SIZE(stm32mp25_clock_cfg),
-@@ -1963,6 +2178,9 @@ static const struct stm32_rcc_match_data stm32mp25_data = {
+@@ -1963,6 +2178,9 @@ static const struct stm32_rcc_match_data
  	.clock_data	= &stm32mp25_clock_data,
  	.reset_data	= &stm32mp25_reset_data,
  	.check_security = &stm32mp25_check_security,
@@ -286,7 +284,7 @@ index b33af71d9edf..28acd08ca966 100644
  };
  
  static const struct of_device_id stm32mp25_match_data[] = {
-@@ -2018,3 +2236,1073 @@ static int __init stm32mp25_clocks_init(void)
+@@ -2018,3 +2236,1073 @@ static int __init stm32mp25_clocks_init(
  }
  
  core_initcall(stm32mp25_clocks_init);
@@ -1360,8 +1358,6 @@ index b33af71d9edf..28acd08ca966 100644
 +};
 +
 +#endif
-diff --git a/drivers/clk/stm32/stm32mp25_rcc.h b/drivers/clk/stm32/stm32mp25_rcc.h
-index 6ba13cc2ae16..b1aca78a0b22 100644
 --- a/drivers/clk/stm32/stm32mp25_rcc.h
 +++ b/drivers/clk/stm32/stm32mp25_rcc.h
 @@ -709,4 +709,4269 @@
@@ -5634,6 +5630,3 @@ index 6ba13cc2ae16..b1aca78a0b22 100644
 +#define RCC_VERR_MAJREV_SHIFT			4
 +
  #endif /* STM32MP25_RCC_H */
--- 
-2.39.5
-

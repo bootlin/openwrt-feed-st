@@ -18,11 +18,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  include/dt-bindings/clock/stm32mp1-clks.h |  6 ++++++
  2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 07cb42515104..323b2ee79270 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -1849,19 +1849,19 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+@@ -1849,19 +1849,19 @@ static const struct clock_config stm32mp
  		   _MUX(RCC_MSSCKSELR, 0, 2, 0),
  		   _DIV(RCC_MCUDIVR, 0, 4, 0, mcu_div_table)),
  
@@ -47,8 +45,6 @@ index 07cb42515104..323b2ee79270 100644
  		  3, CLK_DIVIDER_READ_ONLY, apb_div_table),
  
  	/* Kernel Timers */
-diff --git a/include/dt-bindings/clock/stm32mp1-clks.h b/include/dt-bindings/clock/stm32mp1-clks.h
-index 0a5324bcdbda..ff3a40ac5b59 100644
 --- a/include/dt-bindings/clock/stm32mp1-clks.h
 +++ b/include/dt-bindings/clock/stm32mp1-clks.h
 @@ -179,6 +179,12 @@
@@ -64,6 +60,3 @@ index 0a5324bcdbda..ff3a40ac5b59 100644
  /* PLL */
  #define PLL1		176
  #define PLL2		177
--- 
-2.39.5
-

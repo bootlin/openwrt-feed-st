@@ -24,8 +24,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../bindings/pinctrl/st,stm32-pinctrl-hdp.yaml           | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
-index 429601891fc0..62a97b00c565 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl-hdp.yaml
 @@ -44,6 +44,15 @@ patternProperties:
@@ -44,6 +42,3 @@ index 429601891fc0..62a97b00c565 100644
  allOf:
    - $ref: "pinctrl.yaml#"
  
--- 
-2.39.5
-

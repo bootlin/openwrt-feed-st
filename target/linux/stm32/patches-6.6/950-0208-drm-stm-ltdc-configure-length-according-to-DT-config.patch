@@ -16,11 +16,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/ltdc.h |  1 +
  2 files changed, 16 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 3943ef8e5921..762b85a4637d 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1263,6 +1263,8 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1262,6 +1262,8 @@ static void ltdc_plane_atomic_update(str
  				     struct drm_atomic_state *state)
  {
  	struct ltdc_device *ldev = plane_to_ltdc(plane);
@@ -29,7 +27,7 @@ index 3943ef8e5921..762b85a4637d 100644
  	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
  									  plane);
  	struct drm_framebuffer *fb = newstate->fb;
-@@ -1468,6 +1470,10 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+@@ -1467,6 +1469,10 @@ static void ltdc_plane_atomic_update(str
  		}
  	}
  
@@ -40,7 +38,7 @@ index 3943ef8e5921..762b85a4637d 100644
  	/* Enable layer and CLUT if needed */
  	val = fb->format->format == DRM_FORMAT_C8 ? LXCR_CLUTEN : 0;
  	val |= LXCR_LEN;
-@@ -1944,6 +1950,7 @@ int ltdc_load(struct drm_device *ddev)
+@@ -1921,6 +1927,7 @@ int ltdc_load(struct drm_device *ddev)
  	struct resource *res;
  	int irq, i, nb_endpoints;
  	int ret = -ENODEV;
@@ -48,7 +46,7 @@ index 3943ef8e5921..762b85a4637d 100644
  
  	DRM_DEBUG_DRIVER("\n");
  
-@@ -1965,6 +1972,14 @@ int ltdc_load(struct drm_device *ddev)
+@@ -1942,6 +1949,14 @@ int ltdc_load(struct drm_device *ddev)
  	}
  
  	if (of_device_is_compatible(np, "st,stm32mp25-ltdc")) {
@@ -63,8 +61,6 @@ index 3943ef8e5921..762b85a4637d 100644
  		ldev->bus_clk = devm_clk_get(dev, "bus");
  		if (IS_ERR(ldev->bus_clk))
  			return dev_err_probe(dev, PTR_ERR(ldev->bus_clk),
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index ddfa8ae61a7b..cc8b00639c58 100644
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
 @@ -60,6 +60,7 @@ struct ltdc_device {
@@ -75,6 +71,3 @@ index ddfa8ae61a7b..cc8b00639c58 100644
  };
  
  int ltdc_load(struct drm_device *ddev);
--- 
-2.39.5
-

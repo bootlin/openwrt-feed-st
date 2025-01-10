@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/remoteproc/stm32_rproc.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index c786badf08fa..47ee6a4c17c2 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -921,6 +921,15 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+@@ -921,6 +921,15 @@ static void stm32_rproc_remove(struct pl
  	rproc_free(rproc);
  }
  
@@ -39,7 +37,7 @@ index c786badf08fa..47ee6a4c17c2 100644
  static int stm32_rproc_suspend(struct device *dev)
  {
  	struct rproc *rproc = dev_get_drvdata(dev);
-@@ -949,6 +958,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_rproc_pm_ops,
+@@ -949,6 +958,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(stm32_rp
  static struct platform_driver stm32_rproc_driver = {
  	.probe = stm32_rproc_probe,
  	.remove_new = stm32_rproc_remove,
@@ -47,6 +45,3 @@ index c786badf08fa..47ee6a4c17c2 100644
  	.driver = {
  		.name = "stm32-rproc",
  		.pm = pm_ptr(&stm32_rproc_pm_ops),
--- 
-2.39.5
-

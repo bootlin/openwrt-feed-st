@@ -18,8 +18,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 34 ++++++++++++++++++++++++++++--
  1 file changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 9dac177d5286..819f062f454d 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -23,11 +23,13 @@
@@ -45,7 +43,7 @@ index 9dac177d5286..819f062f454d 100644
  	u32	cr;
  	u32	nscr;
  	u32	htcr;
-@@ -238,6 +241,28 @@ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+@@ -238,6 +241,28 @@ static int stm32_rng_read(struct hwrng *
  	return retval || !wait ? retval : -EIO;
  }
  
@@ -74,7 +72,7 @@ index 9dac177d5286..819f062f454d 100644
  static int stm32_rng_init(struct hwrng *rng)
  {
  	struct stm32_rng_private *priv =
-@@ -259,8 +284,11 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -259,8 +284,11 @@ static int stm32_rng_init(struct hwrng *
  	 * 0 is an invalid value as it disables all entropy sources.
  	 */
  	if (priv->data->has_cond_reset && priv->data->cr) {
@@ -87,7 +85,7 @@ index 9dac177d5286..819f062f454d 100644
  		if (priv->ced)
  			reg &= ~RNG_CR_CED;
  		else
-@@ -360,6 +388,7 @@ static const struct dev_pm_ops stm32_rng_pm_ops = {
+@@ -360,6 +388,7 @@ static const struct dev_pm_ops stm32_rng
  
  static const struct stm32_rng_data stm32mp13_rng_data = {
  	.has_cond_reset = true,
@@ -95,7 +93,7 @@ index 9dac177d5286..819f062f454d 100644
  	.cr = 0x00F00D00,
  	.nscr = 0x2B5BB,
  	.htcr = 0x969D,
-@@ -367,6 +396,7 @@ static const struct stm32_rng_data stm32mp13_rng_data = {
+@@ -367,6 +396,7 @@ static const struct stm32_rng_data stm32
  
  static const struct stm32_rng_data stm32_rng_data = {
  	.has_cond_reset = false,
@@ -103,6 +101,3 @@ index 9dac177d5286..819f062f454d 100644
  };
  
  static const struct of_device_id stm32_rng_match[] = {
--- 
-2.39.5
-

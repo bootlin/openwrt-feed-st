@@ -16,11 +16,9 @@ Change-Id: Iff7ad9028aec980cb41f5fe8a70cda72b32af6a7
  arch/arm/boot/dts/st/stm32mp157c-dk2.dts | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index ab025098fa34..fc306b9f99b0 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-@@ -37,7 +37,7 @@ &dsi {
+@@ -37,7 +37,7 @@
  	#size-cells = <0>;
  	status = "okay";
  
@@ -29,7 +27,7 @@ index ab025098fa34..fc306b9f99b0 100644
  		compatible = "orisetech,otm8009a";
  		reg = <0>;
  		reset-gpios = <&gpioe 4 GPIO_ACTIVE_LOW>;
-@@ -70,6 +70,7 @@ touchscreen@38 {
+@@ -70,6 +70,7 @@
  		touchscreen-size-y = <800>;
  		vcc-supply = <&v3v3>;
  		iovcc-supply = <&v3v3>;
@@ -37,6 +35,3 @@ index ab025098fa34..fc306b9f99b0 100644
  		status = "okay";
  	};
  };
--- 
-2.39.5
-

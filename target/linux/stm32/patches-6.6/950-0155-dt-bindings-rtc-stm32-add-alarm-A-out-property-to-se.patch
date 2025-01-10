@@ -16,8 +16,6 @@ Change-Id: Ia2041b5e23008ecdb9700253cf10cbf801aa1b79
  .../devicetree/bindings/rtc/st,stm32-rtc.yaml | 19 ++++++++++++++++++-
  1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
-index 939ce15d6028..e1a8268726ce 100644
 --- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 +++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
 @@ -59,6 +59,13 @@ properties:
@@ -75,6 +73,3 @@ index 939ce15d6028..e1a8268726ce 100644
        pinctrl-names = "default";
      };
  
--- 
-2.39.5
-

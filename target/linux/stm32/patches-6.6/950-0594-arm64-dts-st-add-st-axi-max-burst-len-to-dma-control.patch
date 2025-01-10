@@ -15,11 +15,9 @@ Change-Id: I35e817ed49c08f79a3682cbe8349165b9761f4d4
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 9c1e49b2e1ac..820cfc753b0f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -178,6 +178,7 @@ hpdma: dma-controller@40400000 {
+@@ -178,6 +178,7 @@
  				     <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA1>;
  			#dma-cells = <3>;
@@ -27,7 +25,7 @@ index 9c1e49b2e1ac..820cfc753b0f 100644
  		};
  
  		hpdma2: dma-controller@40410000 {
-@@ -201,6 +202,7 @@ hpdma2: dma-controller@40410000 {
+@@ -201,6 +202,7 @@
  				     <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA2>;
  			#dma-cells = <3>;
@@ -35,7 +33,7 @@ index 9c1e49b2e1ac..820cfc753b0f 100644
  		};
  
  		hpdma3: dma-controller@40420000 {
-@@ -224,6 +226,7 @@ hpdma3: dma-controller@40420000 {
+@@ -224,6 +226,7 @@
  				     <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&scmi_clk CK_SCMI_HPDMA3>;
  			#dma-cells = <3>;
@@ -43,6 +41,3 @@ index 9c1e49b2e1ac..820cfc753b0f 100644
  		};
  
  		rifsc: bus@42080000 {
--- 
-2.39.5
-

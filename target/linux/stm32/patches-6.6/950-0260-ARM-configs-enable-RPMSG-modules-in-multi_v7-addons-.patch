@@ -17,8 +17,6 @@ Change-Id: Id4cc49660fb9e5fe70c9eb105df1b145ed08ae9d
  arch/arm/configs/fragment-02-multiv7_addons.config | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 571e311cd3d4..902eb69a10ba 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -31,6 +31,10 @@ CONFIG_PREEMPT=y
@@ -32,6 +30,3 @@ index 571e311cd3d4..902eb69a10ba 100644
  CONFIG_SCHED_MC=y
  CONFIG_SERIAL_NONSTANDARD=y
  CONFIG_SRAM=y
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Change-Id: I4fed96941eb85049545699e87610419a517b5674
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 104 +++++++++++++++++++++++++
  1 file changed, 104 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a9b51daf4ce9..9915df6fc435 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1215,6 +1215,110 @@ uart8: serial@40380000 {
+@@ -1215,6 +1215,110 @@
  				status = "disabled";
  			};
  
@@ -133,6 +131,3 @@ index a9b51daf4ce9..9915df6fc435 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

@@ -31,11 +31,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404472
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 15 ++++++---------
  1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 00b65b8b0446..e45648a473cf 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7842,16 +7842,8 @@ int stmmac_resume(struct device *dev)
+@@ -7882,16 +7882,8 @@ int stmmac_resume(struct device *dev)
  	}
  
  	rtnl_lock();
@@ -53,7 +51,7 @@ index 00b65b8b0446..e45648a473cf 100644
  	mutex_lock(&priv->lock);
  
  	stmmac_reset_queues_param(priv);
-@@ -7869,6 +7861,11 @@ int stmmac_resume(struct device *dev)
+@@ -7909,6 +7901,11 @@ int stmmac_resume(struct device *dev)
  	stmmac_enable_all_dma_irq(priv);
  
  	mutex_unlock(&priv->lock);
@@ -65,6 +63,3 @@ index 00b65b8b0446..e45648a473cf 100644
  	rtnl_unlock();
  
  	netif_device_attach(ndev);
--- 
-2.39.5
-

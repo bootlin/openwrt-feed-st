@@ -24,11 +24,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/bus/stm32_firewall.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
-index decb79449047..2fc9761dadec 100644
 --- a/drivers/bus/stm32_firewall.c
 +++ b/drivers/bus/stm32_firewall.c
-@@ -53,7 +53,7 @@ int stm32_firewall_get_firewall(struct device_node *np, struct stm32_firewall *f
+@@ -53,7 +53,7 @@ int stm32_firewall_get_firewall(struct d
  			return err;
  		}
  
@@ -37,6 +35,3 @@ index decb79449047..2fc9761dadec 100644
  			pr_err("Too many firewall controllers");
  			of_node_put(provider);
  			return -EINVAL;
--- 
-2.39.5
-

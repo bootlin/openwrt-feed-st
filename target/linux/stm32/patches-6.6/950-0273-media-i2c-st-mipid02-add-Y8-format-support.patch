@@ -13,11 +13,9 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  drivers/media/i2c/st-mipid02.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
-index 963209c9a7fb..a369b90b7743 100644
 --- a/drivers/media/i2c/st-mipid02.c
 +++ b/drivers/media/i2c/st-mipid02.c
-@@ -69,7 +69,7 @@ static const u32 mipid02_supported_fmt_codes[] = {
+@@ -69,7 +69,7 @@ static const u32 mipid02_supported_fmt_c
  	MEDIA_BUS_FMT_RGB565_2X8_LE, MEDIA_BUS_FMT_RGB565_2X8_BE,
  	MEDIA_BUS_FMT_YUYV8_2X8, MEDIA_BUS_FMT_YVYU8_2X8,
  	MEDIA_BUS_FMT_UYVY8_2X8, MEDIA_BUS_FMT_VYUY8_2X8,
@@ -34,7 +32,7 @@ index 963209c9a7fb..a369b90b7743 100644
  		return 8;
  	case MEDIA_BUS_FMT_SBGGR10_1X10:
  	case MEDIA_BUS_FMT_SGBRG10_1X10:
-@@ -161,6 +162,7 @@ static u8 data_type_from_code(__u32 code)
+@@ -161,6 +162,7 @@ static u8 data_type_from_code(__u32 code
  	case MEDIA_BUS_FMT_SGBRG8_1X8:
  	case MEDIA_BUS_FMT_SGRBG8_1X8:
  	case MEDIA_BUS_FMT_SRGGB8_1X8:
@@ -42,6 +40,3 @@ index 963209c9a7fb..a369b90b7743 100644
  		return MIPI_CSI2_DT_RAW8;
  	case MEDIA_BUS_FMT_SBGGR10_1X10:
  	case MEDIA_BUS_FMT_SGBRG10_1X10:
--- 
-2.39.5
-

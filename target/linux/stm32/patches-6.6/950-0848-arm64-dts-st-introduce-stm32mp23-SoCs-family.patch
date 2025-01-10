@@ -39,9 +39,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  create mode 100644 arch/arm64/boot/dts/st/stm32mp23xc.dtsi
  create mode 100644 arch/arm64/boot/dts/st/stm32mp23xf.dtsi
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-new file mode 100644
-index 000000000000..5fe5ad984cbb
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
 @@ -0,0 +1,2559 @@
@@ -2604,9 +2601,6 @@ index 000000000000..5fe5ad984cbb
 +		};
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp233.dtsi b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-new file mode 100644
-index 000000000000..98737f3268ea
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp233.dtsi
 @@ -0,0 +1,116 @@
@@ -2726,9 +2720,6 @@ index 000000000000..98737f3268ea
 +		};
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp235.dtsi b/arch/arm64/boot/dts/st/stm32mp235.dtsi
-new file mode 100644
-index 000000000000..e65774b7f260
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp235.dtsi
 @@ -0,0 +1,62 @@
@@ -2794,9 +2785,6 @@ index 000000000000..e65774b7f260
 +		status = "disabled";
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp23xc.dtsi b/arch/arm64/boot/dts/st/stm32mp23xc.dtsi
-new file mode 100644
-index 000000000000..f3d5cb3a063c
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp23xc.dtsi
 @@ -0,0 +1,21 @@
@@ -2821,9 +2809,6 @@ index 000000000000..f3d5cb3a063c
 +		status = "disabled";
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp23xf.dtsi b/arch/arm64/boot/dts/st/stm32mp23xf.dtsi
-new file mode 100644
-index 000000000000..f3d5cb3a063c
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp23xf.dtsi
 @@ -0,0 +1,21 @@
@@ -2848,6 +2833,3 @@ index 000000000000..f3d5cb3a063c
 +		status = "disabled";
 +	};
 +};
--- 
-2.39.5
-

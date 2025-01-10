@@ -13,11 +13,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 8f054d433aec..65919b99738a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -575,16 +575,17 @@ static int dcmipp_probe(struct platform_device *pdev)
+@@ -575,16 +575,17 @@ static int dcmipp_probe(struct platform_
  	dcmipp->mdev.dev = &pdev->dev;
  	media_device_init(&dcmipp->mdev);
  
@@ -37,6 +35,3 @@ index 8f054d433aec..65919b99738a 100644
  	dev_info(&pdev->dev, "Probe done");
  
  	return 0;
--- 
-2.39.5
-

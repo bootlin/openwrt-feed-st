@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/iio/backend.h        |  3 ++
  2 files changed, 44 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index 62d3323dd156..ee38fe6331c7 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
-@@ -577,19 +577,10 @@ static int __devm_iio_backend_get(struct device *dev, struct iio_backend *back)
+@@ -577,19 +577,10 @@ static int __devm_iio_backend_get(struct
  	return 0;
  }
  
@@ -50,7 +48,7 @@ index 62d3323dd156..ee38fe6331c7 100644
  	struct iio_backend *back;
  	unsigned int index;
  	int ret;
-@@ -604,7 +595,7 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+@@ -604,7 +595,7 @@ struct iio_backend *devm_iio_backend_get
  		index = 0;
  	}
  
@@ -59,7 +57,7 @@ index 62d3323dd156..ee38fe6331c7 100644
  	if (IS_ERR(fwnode)) {
  		dev_err_probe(dev, PTR_ERR(fwnode),
  			      "Cannot get Firmware reference\n");
-@@ -613,10 +604,10 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+@@ -613,10 +604,10 @@ struct iio_backend *devm_iio_backend_get
  
  	guard(mutex)(&iio_back_lock);
  	list_for_each_entry(back, &iio_back_list, entry) {
@@ -72,7 +70,7 @@ index 62d3323dd156..ee38fe6331c7 100644
  		ret = __devm_iio_backend_get(dev, back);
  		if (ret)
  			return ERR_PTR(ret);
-@@ -624,11 +615,45 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+@@ -624,12 +615,46 @@ struct iio_backend *devm_iio_backend_get
  		return back;
  	}
  
@@ -97,7 +95,7 @@ index 62d3323dd156..ee38fe6331c7 100644
 +}
  EXPORT_SYMBOL_NS_GPL(devm_iio_backend_get, IIO_BACKEND);
  
-+/**
+ /**
 + * devm_iio_backend_fwnode_get - Device managed backend firmware node get
 + * @dev: Consumer device for the backend
 + * @name: Backend name
@@ -116,14 +114,13 @@ index 62d3323dd156..ee38fe6331c7 100644
 +}
 +EXPORT_SYMBOL_NS_GPL(devm_iio_backend_fwnode_get, IIO_BACKEND);
 +
- /**
++/**
   * __devm_iio_backend_get_from_fwnode_lookup - Device managed fwnode backend device get
   * @dev: Consumer device for the backend
-diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
-index c1eff3dbe5eb..d3020446ee45 100644
+  * @fwnode: Firmware node of the backend device
 --- a/include/linux/iio/backend.h
 +++ b/include/linux/iio/backend.h
-@@ -165,6 +165,9 @@ int iio_backend_extend_chan_spec(struct iio_backend *back,
+@@ -165,6 +165,9 @@ int iio_backend_extend_chan_spec(struct
  				 struct iio_chan_spec *chan);
  void *iio_backend_get_priv(const struct iio_backend *conv);
  struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name);
@@ -133,6 +130,3 @@ index c1eff3dbe5eb..d3020446ee45 100644
  struct iio_backend *
  __devm_iio_backend_get_from_fwnode_lookup(struct device *dev,
  					  struct fwnode_handle *fwnode);
--- 
-2.39.5
-

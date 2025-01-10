@@ -19,11 +19,9 @@ Change-Id: Ib36c87c887d7ed94563bc99d19d45ba93b56e46a
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 22 +++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index c090fadb978b..3af01b71c087 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-@@ -545,9 +545,31 @@ static struct stm32_ops stm32mp1_dwmac_data = {
+@@ -545,9 +545,31 @@ static struct stm32_ops stm32mp1_dwmac_d
  	}
  };
  
@@ -55,6 +53,3 @@ index c090fadb978b..3af01b71c087 100644
  	{ }
  };
  MODULE_DEVICE_TABLE(of, stm32_dwmac_match);
--- 
-2.39.5
-

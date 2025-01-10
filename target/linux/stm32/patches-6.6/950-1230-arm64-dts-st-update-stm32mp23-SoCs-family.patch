@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp233.dtsi |   7 +-
  2 files changed, 135 insertions(+), 63 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index aba557bd3d5e..f7c9529b59f9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -36,10 +36,9 @@ CPU_PWRDN: cpu-power-down {
+@@ -36,10 +36,9 @@
  				compatible = "arm,idle-state";
  				arm,psci-suspend-param = <0x00000001>;
  				local-timer-stop;
@@ -32,7 +30,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  			};
  		};
  
-@@ -47,28 +46,25 @@ domain-idle-states {
+@@ -47,28 +46,25 @@
  			STOP1: domain-stop1 {
  				compatible = "domain-idle-state";
  				arm,psci-suspend-param = <0x00000011>;
@@ -69,7 +67,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  			};
  		};
  	};
-@@ -87,12 +83,6 @@ arm_wdt: watchdog {
+@@ -87,12 +83,6 @@
  	};
  
  	clocks {
@@ -82,7 +80,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		clk_rcbsec: clk-rcbsec {
  			#clock-cells = <0>;
  			compatible = "fixed-clock";
-@@ -116,6 +106,11 @@ scmi {
+@@ -116,6 +106,11 @@
  			#size-cells = <0>;
  			linaro,optee-channel-id = <0>;
  
@@ -94,7 +92,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  			scmi_perf: protocol@13 {
  				reg = <0x13>;
  				#clock-cells = <1>;
-@@ -158,10 +153,6 @@ scmi_vdd33ucpd: regulator@5 {
+@@ -158,10 +153,6 @@
  						reg = <VOLTD_SCMI_UCPD>;
  						regulator-name = "vdd33ucpd";
  					};
@@ -105,7 +103,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  					scmi_vdda18adc: regulator@7 {
  						reg = <VOLTD_SCMI_ADC>;
  						regulator-name = "vdda18adc";
-@@ -175,10 +166,12 @@ intc: interrupt-controller@4ac00000 {
+@@ -175,10 +166,12 @@
  		compatible = "arm,cortex-a7-gic";
  		#interrupt-cells = <3>;
  		interrupt-controller;
@@ -118,7 +116,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  
  		#address-cells = <2>;
  		#size-cells = <2>;
-@@ -269,20 +262,20 @@ timer {
+@@ -269,20 +262,20 @@
  	usb2_phy1: usb2-phy1 {
  		compatible      = "st,stm32mp25-usb2phy";
  		#phy-cells      = <0>;
@@ -141,7 +139,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		status          = "disabled";
  	};
  
-@@ -1291,7 +1284,6 @@ sai1: sai@40290000 {
+@@ -1291,7 +1284,6 @@
  				interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI1_R>;
  				access-controllers = <&rifsc 49>;
@@ -149,7 +147,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  				status = "disabled";
  
  				sai1a: audio-controller@40290004 {
-@@ -1328,7 +1320,6 @@ sai2: sai@402a0000 {
+@@ -1328,7 +1320,6 @@
  				interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI2_R>;
  				access-controllers = <&rifsc 50>;
@@ -157,7 +155,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  				status = "disabled";
  
  				sai2a: audio-controller@402a0004 {
-@@ -1365,7 +1356,6 @@ sai3: sai@402b0000 {
+@@ -1365,7 +1356,6 @@
  				interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI3_R>;
  				access-controllers = <&rifsc 51>;
@@ -165,7 +163,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  				status = "disabled";
  
  				sai3a: audio-controller@402b0004 {
-@@ -1415,7 +1405,6 @@ sai4: sai@40340000 {
+@@ -1415,7 +1405,6 @@
  				interrupts = <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI4_R>;
  				access-controllers = <&rifsc 52>;
@@ -173,7 +171,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  				status = "disabled";
  
  				sai4a: audio-controller@40340004 {
-@@ -1502,6 +1491,8 @@ adc1: adc@0 {
+@@ -1502,6 +1491,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -182,7 +180,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1519,6 +1510,8 @@ adc2: adc@100 {
+@@ -1519,6 +1510,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -191,7 +189,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1643,6 +1636,8 @@ adc3: adc@0 {
+@@ -1643,6 +1636,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -200,7 +198,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1687,6 +1682,26 @@ rng: rng@42020000 {
+@@ -1687,6 +1682,26 @@
  				status = "disabled";
  			};
  
@@ -227,7 +225,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -1974,37 +1989,81 @@ mtl_tx_setup_1: tx-queues-config {
+@@ -1974,37 +1989,81 @@
  				};
  			};
  
@@ -315,7 +313,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		};
  
  		bsec: efuse@44000000 {
-@@ -2017,13 +2076,17 @@ part_number_otp@24 {
+@@ -2017,13 +2076,17 @@
  				reg = <0x24 0x4>;
  			};
  
@@ -334,7 +332,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  			compatible = "moortec,mr75203";
  			reg = <0x44070000 0x80>,
  			      <0x44070080 0x180>,
-@@ -2032,10 +2095,16 @@ dts: dts@44070000 {
+@@ -2032,10 +2095,16 @@
  			reg-names = "common", "ts", "pd", "vm";
  			clocks = <&rcc CK_KER_DTS>;
  			resets = <&rcc DTS_R>;
@@ -352,7 +350,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		rcc: clock-controller@44200000 {
  			compatible = "st,stm32mp25-rcc";
  			reg = <0x44200000 0x10000>;
-@@ -2415,6 +2484,26 @@ reboot_mode: reboot-mode {
+@@ -2415,6 +2484,26 @@
  			};
  		};
  
@@ -379,7 +377,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		exti2: interrupt-controller@46230000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
-@@ -2494,26 +2583,6 @@ exti2: interrupt-controller@46230000 {
+@@ -2494,26 +2583,6 @@
  				<&intc GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;	/* EXTI_70 */
  		};
  
@@ -406,7 +404,7 @@ index aba557bd3d5e..f7c9529b59f9 100644
  		fmc: memory-controller@48200000 {
  			compatible = "st,stm32mp25-fmc2-ebi";
  			reg = <0x48200000 0x400>;
-@@ -2565,7 +2634,8 @@ mlahb: ahb@1 {
+@@ -2565,7 +2634,8 @@
  		compatible = "st,mlahb", "simple-bus";
  		#address-cells = <1>;
  		#size-cells = <1>;
@@ -416,17 +414,15 @@ index aba557bd3d5e..f7c9529b59f9 100644
  
  		m33_rproc: m33@0 {
  			compatible = "st,stm32mp2-m33";
-@@ -2582,4 +2652,5 @@ m33_rproc: m33@0 {
+@@ -2582,4 +2652,5 @@
  			status = "disabled";
  		};
  	};
 +
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp233.dtsi b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-index 98737f3268ea..05698b0d6e6c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp233.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-@@ -34,16 +34,17 @@ CPU_PD1: power-domain-cpu1 {
+@@ -34,16 +34,17 @@
  	};
  
  	timer {
@@ -447,6 +443,3 @@ index 98737f3268ea..05698b0d6e6c 100644
  &optee {
  	interrupts = <GIC_PPI 15 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
  };
--- 
-2.39.5
-

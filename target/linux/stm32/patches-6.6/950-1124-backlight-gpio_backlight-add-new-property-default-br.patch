@@ -18,8 +18,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/video/backlight/gpio_backlight.c                 | 7 ++++++-
  2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
-index 584030b6b0b9..d83c18549923 100644
 --- a/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
 +++ b/Documentation/devicetree/bindings/leds/backlight/gpio-backlight.yaml
 @@ -23,6 +23,15 @@ properties:
@@ -38,11 +36,9 @@ index 584030b6b0b9..d83c18549923 100644
  required:
    - compatible
    - gpios
-diff --git a/drivers/video/backlight/gpio_backlight.c b/drivers/video/backlight/gpio_backlight.c
-index d28c30b2a35d..1ab314207334 100644
 --- a/drivers/video/backlight/gpio_backlight.c
 +++ b/drivers/video/backlight/gpio_backlight.c
-@@ -53,6 +53,7 @@ static int gpio_backlight_probe(struct platform_device *pdev)
+@@ -53,6 +53,7 @@ static int gpio_backlight_probe(struct p
  	struct backlight_device *bl;
  	struct gpio_backlight *gbl;
  	int ret, init_brightness, def_value;
@@ -50,7 +46,7 @@ index d28c30b2a35d..1ab314207334 100644
  
  	gbl = devm_kzalloc(dev, sizeof(*gbl), GFP_KERNEL);
  	if (gbl == NULL)
-@@ -92,7 +93,11 @@ static int gpio_backlight_probe(struct platform_device *pdev)
+@@ -92,7 +93,11 @@ static int gpio_backlight_probe(struct p
  	else
  		bl->props.power = FB_BLANK_UNBLANK;
  
@@ -63,6 +59,3 @@ index d28c30b2a35d..1ab314207334 100644
  
  	init_brightness = backlight_get_brightness(bl);
  	ret = gpiod_direction_output(gbl->gpiod, init_brightness);
--- 
-2.39.5
-

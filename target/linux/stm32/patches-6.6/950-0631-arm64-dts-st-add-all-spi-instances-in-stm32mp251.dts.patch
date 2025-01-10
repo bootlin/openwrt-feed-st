@@ -11,11 +11,9 @@ Change-Id: I48ce6ae71fdf1d7ed245c0c8213bd41fb31fc65a
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 120 +++++++++++++++++++++++++
  1 file changed, 120 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a1950260a028..b48fbf70e7e8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -267,6 +267,36 @@ rifsc: bus@42080000 {
+@@ -267,6 +267,36 @@
  			#access-controller-cells = <1>;
  			ranges;
  
@@ -52,7 +50,7 @@ index a1950260a028..b48fbf70e7e8 100644
  			usart2: serial@400e0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x400e0000 0x400>;
-@@ -388,6 +418,96 @@ i2c7: i2c@40180000 {
+@@ -388,6 +418,96 @@
  				status = "disabled";
  			};
  
@@ -149,6 +147,3 @@ index a1950260a028..b48fbf70e7e8 100644
  			i2c8: i2c@46040000 {
  				compatible = "st,stm32mp25-i2c";
  				reg = <0x46040000 0x400>;
--- 
-2.39.5
-

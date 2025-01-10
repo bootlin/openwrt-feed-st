@@ -18,11 +18,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 446693625024..4bd5d8d4ebc1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -135,7 +135,7 @@ optee: optee {
+@@ -135,7 +135,7 @@
  			#interrupt-cells = <1>;
  		};
  
@@ -31,11 +29,9 @@ index 446693625024..4bd5d8d4ebc1 100644
  			compatible = "linaro,scmi-optee";
  			#address-cells = <1>;
  			#size-cells = <0>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 4ed74b01a0a0..4b390d16fcdc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -135,7 +135,7 @@ optee: optee {
+@@ -135,7 +135,7 @@
  			#interrupt-cells = <1>;
  		};
  
@@ -44,6 +40,3 @@ index 4ed74b01a0a0..4b390d16fcdc 100644
  			compatible = "linaro,scmi-optee";
  			#address-cells = <1>;
  			#size-cells = <0>;
--- 
-2.39.5
-

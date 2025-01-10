@@ -18,11 +18,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 94b5b92ba7de..fdb2f2872afe 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1656,6 +1656,20 @@ boot_counter: tamp-bkp@7c {
+@@ -1656,6 +1656,20 @@
  					reg = <0x7c 0x4>;
  				};
  			};
@@ -43,6 +41,3 @@ index 94b5b92ba7de..fdb2f2872afe 100644
  		};
  
  		/*
--- 
-2.39.5
-

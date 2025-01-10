@@ -28,8 +28,6 @@ Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  drivers/rtc/rtc-optee.c | 434 ++++++++++++++++++++++++++++++++++++++--
  1 file changed, 413 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/rtc/rtc-optee.c b/drivers/rtc/rtc-optee.c
-index 6b77c122fdc1..73aefd32a751 100644
 --- a/drivers/rtc/rtc-optee.c
 +++ b/drivers/rtc/rtc-optee.c
 @@ -5,19 +5,104 @@
@@ -52,8 +50,7 @@ index 6b77c122fdc1..73aefd32a751 100644
 +#define TA_RTC_FEATURE_CORRECTION		BIT(0)
 +#define TA_RTC_FEATURE_ALARM			BIT(1)
 +#define TA_RTC_FEATURE_WAKEUP_ALARM		BIT(2)
- 
--#define TA_RTC_FEATURE_CORRECTION	BIT(0)
++
 +enum rtc_optee_pta_cmd {
 +	/*  PTA_CMD_RTC_GET_INFO - Get RTC information
 +	 *
@@ -82,7 +79,8 @@ index 6b77c122fdc1..73aefd32a751 100644
 +	 * [out]    value[0].a  RTC offset (signed 32bit value)
 +	 */
 +	PTA_CMD_RTC_GET_OFFSET = 0x3,
-+
+ 
+-#define TA_RTC_FEATURE_CORRECTION	BIT(0)
 +	/*
 +	 * PTA_CMD_RTC_SET_OFFSET - Set RTC offset
 +	 *
@@ -179,7 +177,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  };
  
  static int optee_rtc_readtime(struct device *dev, struct rtc_time *tm)
-@@ -60,7 +157,7 @@ static int optee_rtc_readtime(struct device *dev, struct rtc_time *tm)
+@@ -60,7 +157,7 @@ static int optee_rtc_readtime(struct dev
  	struct tee_param param[4] = {0};
  	int ret;
  
@@ -188,7 +186,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
  
-@@ -109,7 +206,7 @@ static int optee_rtc_settime(struct device *dev, struct rtc_time *tm)
+@@ -109,7 +206,7 @@ static int optee_rtc_settime(struct devi
  	optee_tm.tm_year = tm->tm_year + 1900;
  	optee_tm.tm_wday = tm->tm_wday;
  
@@ -197,7 +195,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
  
-@@ -140,7 +237,7 @@ static int optee_rtc_readoffset(struct device *dev, long *offset)
+@@ -140,7 +237,7 @@ static int optee_rtc_readoffset(struct d
  	if (!(priv->features & TA_RTC_FEATURE_CORRECTION))
  		return -EOPNOTSUPP;
  
@@ -206,7 +204,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
  
-@@ -165,7 +262,7 @@ static int optee_rtc_setoffset(struct device *dev, long offset)
+@@ -165,7 +262,7 @@ static int optee_rtc_setoffset(struct de
  	if (!(priv->features & TA_RTC_FEATURE_CORRECTION))
  		return -EOPNOTSUPP;
  
@@ -215,7 +213,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
  
-@@ -179,13 +276,229 @@ static int optee_rtc_setoffset(struct device *dev, long offset)
+@@ -179,13 +276,229 @@ static int optee_rtc_setoffset(struct de
  	return 0;
  }
  
@@ -449,7 +447,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  static int optee_rtc_read_info(struct device *dev, struct rtc_device *rtc,
  			       u64 *features)
  {
-@@ -196,7 +509,7 @@ static int optee_rtc_read_info(struct device *dev, struct rtc_device *rtc,
+@@ -196,7 +509,7 @@ static int optee_rtc_read_info(struct de
  	struct optee_rtc_time *tm;
  	int ret;
  
@@ -458,7 +456,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	inv_arg.session = priv->session_id;
  	inv_arg.num_params = 4;
  
-@@ -241,6 +554,7 @@ static int optee_ctx_match(struct tee_ioctl_version_data *ver, const void *data)
+@@ -241,6 +554,7 @@ static int optee_ctx_match(struct tee_io
  static int optee_rtc_probe(struct device *dev)
  {
  	struct tee_client_device *rtc_device = to_tee_client_device(dev);
@@ -466,7 +464,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	struct tee_ioctl_open_session_arg sess_arg;
  	struct optee_rtc *priv;
  	struct rtc_device *rtc;
-@@ -256,13 +570,14 @@ static int optee_rtc_probe(struct device *dev)
+@@ -256,13 +570,14 @@ static int optee_rtc_probe(struct device
  	rtc = devm_rtc_allocate_device(dev);
  	if (IS_ERR(rtc))
  		return PTR_ERR(rtc);
@@ -482,7 +480,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	export_uuid(sess_arg.uuid, &rtc_device->id.uuid);
  	sess_arg.clnt_login = TEE_IOCTL_LOGIN_REE_KERNEL;
  
-@@ -274,6 +589,11 @@ static int optee_rtc_probe(struct device *dev)
+@@ -274,6 +589,11 @@ static int optee_rtc_probe(struct device
  	}
  	priv->session_id = sess_arg.session;
  
@@ -494,7 +492,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	shm = tee_shm_alloc_kernel_buf(priv->ctx, sizeof(struct optee_rtc_info));
  	if (IS_ERR(shm)) {
  		dev_err(priv->dev, "tee_shm_alloc_kernel_buf failed\n");
-@@ -293,19 +613,69 @@ static int optee_rtc_probe(struct device *dev)
+@@ -293,19 +613,69 @@ static int optee_rtc_probe(struct device
  		goto out_shm;
  	}
  
@@ -568,7 +566,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  out_shm:
  	tee_shm_free(priv->shm);
  out_sess:
-@@ -320,6 +690,13 @@ static int optee_rtc_remove(struct device *dev)
+@@ -320,6 +690,13 @@ static int optee_rtc_remove(struct devic
  {
  	struct optee_rtc *priv = dev_get_drvdata(dev);
  
@@ -582,7 +580,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  	tee_shm_free(priv->shm);
  	tee_client_close_session(priv->ctx, priv->session_id);
  	tee_client_close_context(priv->ctx);
-@@ -327,6 +704,20 @@ static int optee_rtc_remove(struct device *dev)
+@@ -327,6 +704,20 @@ static int optee_rtc_remove(struct devic
  	return 0;
  }
  
@@ -603,7 +601,7 @@ index 6b77c122fdc1..73aefd32a751 100644
  static const struct tee_client_device_id optee_rtc_id_table[] = {
  	{UUID_INIT(0xf389f8c8, 0x845f, 0x496c,
  		   0x8b, 0xbe, 0xd6, 0x4b, 0xd2, 0x4c, 0x92, 0xfd)},
-@@ -342,6 +733,7 @@ static struct tee_client_driver optee_rtc_driver = {
+@@ -342,6 +733,7 @@ static struct tee_client_driver optee_rt
  		.bus		= &tee_bus_type,
  		.probe		= optee_rtc_probe,
  		.remove		= optee_rtc_remove,
@@ -611,6 +609,3 @@ index 6b77c122fdc1..73aefd32a751 100644
  	},
  };
  
--- 
-2.39.5
-

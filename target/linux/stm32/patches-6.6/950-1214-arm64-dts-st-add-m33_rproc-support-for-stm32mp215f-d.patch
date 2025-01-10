@@ -19,11 +19,9 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index af24944c62a0..12c5cab094a5 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -340,6 +340,16 @@ scmi_v1v8: regulator@14  {
+@@ -340,6 +340,16 @@
  	};
  };
  
@@ -40,6 +38,3 @@ index af24944c62a0..12c5cab094a5 100644
  &spi1 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&spi1_pins_a>;
--- 
-2.39.5
-

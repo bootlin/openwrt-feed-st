@@ -20,11 +20,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 4e9a948b1e2d..a623cda98473 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -980,6 +980,7 @@ static const struct of_device_id stm32_rproc_match[] = {
+@@ -980,6 +980,7 @@ static const struct of_device_id stm32_r
  	{.compatible = "st,stm32mp1-m4", .data = &stm32_rproc_stm32pm15},
  	{.compatible = "st,stm32mp1-m4-tee", .data = &stm32_rproc_stm32pm15},
  	{.compatible = "st,stm32mp2-m33", .data = &stm32_rproc_stm32pm25},
@@ -32,7 +30,7 @@ index 4e9a948b1e2d..a623cda98473 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-@@ -1138,7 +1139,8 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1138,7 +1139,8 @@ static int stm32_rproc_probe(struct plat
  	if (ret)
  		return ret;
  
@@ -42,6 +40,3 @@ index 4e9a948b1e2d..a623cda98473 100644
  		trproc = tee_rproc_register(dev, desc->proc_id);
  		if (IS_ERR(trproc)) {
  			dev_err_probe(dev, PTR_ERR(trproc),
--- 
-2.39.5
-

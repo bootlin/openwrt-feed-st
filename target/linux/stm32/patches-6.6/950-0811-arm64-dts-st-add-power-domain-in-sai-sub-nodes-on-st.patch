@@ -12,11 +12,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 56612880d8ed..20cb3a557c60 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1372,6 +1372,7 @@ sai1a: audio-controller@40290004 {
+@@ -1372,6 +1372,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 73 0x43 0x21>;
  					dma-names = "tx";
@@ -24,7 +22,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  
-@@ -1383,6 +1384,7 @@ sai1b: audio-controller@40290024 {
+@@ -1383,6 +1384,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 74 0x43 0x12>;
  					dma-names = "rx";
@@ -32,7 +30,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  			};
-@@ -1408,6 +1410,7 @@ sai2a: audio-controller@402a0004 {
+@@ -1408,6 +1410,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 75 0x43 0x21>;
  					dma-names = "tx";
@@ -40,7 +38,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  
-@@ -1419,6 +1422,7 @@ sai2b: audio-controller@402a0024 {
+@@ -1419,6 +1422,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 76 0x43 0x12>;
  					dma-names = "rx";
@@ -48,7 +46,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  			};
-@@ -1444,6 +1448,7 @@ sai3a: audio-controller@402b0004 {
+@@ -1444,6 +1448,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 77 0x43 0x21>;
  					dma-names = "tx";
@@ -56,7 +54,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  
-@@ -1455,6 +1460,7 @@ sai3b: audio-controller@502b0024 {
+@@ -1455,6 +1460,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 78 0x43 0x12>;
  					dma-names = "rx";
@@ -64,7 +62,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  			};
-@@ -1540,6 +1546,7 @@ sai4a: audio-controller@40340004 {
+@@ -1540,6 +1546,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 79 0x63 0x21>;
  					dma-names = "tx";
@@ -72,7 +70,7 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  
-@@ -1551,6 +1558,7 @@ sai4b: audio-controller@40340024 {
+@@ -1551,6 +1558,7 @@
  					clock-names = "sai_ck";
  					dmas = <&hpdma 80 0x43 0x12>;
  					dma-names = "rx";
@@ -80,6 +78,3 @@ index 56612880d8ed..20cb3a557c60 100644
  					status = "disabled";
  				};
  			};
--- 
-2.39.5
-

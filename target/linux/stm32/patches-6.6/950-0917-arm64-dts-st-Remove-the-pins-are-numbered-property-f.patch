@@ -21,11 +21,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 7542444d987d..104472928902 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2651,7 +2651,6 @@ pinctrl: pinctrl@44240000 {
+@@ -2651,7 +2651,6 @@
  			compatible = "st,stm32mp257-pinctrl";
  			ranges = <0 0x44240000 0xa0400>;
  			interrupt-parent = <&exti1>;
@@ -33,7 +31,7 @@ index 7542444d987d..104472928902 100644
  			interrupts-extended =
  				<&exti1  0 0>, <&exti1  1 0>, <&exti1  2 0>, <&exti1  3 0>,
  				<&exti1  4 0>, <&exti1  5 0>, <&exti1  6 0>, <&exti1  7 0>,
-@@ -2800,7 +2799,6 @@ pinctrl_z: pinctrl@46200000 {
+@@ -2800,7 +2799,6 @@
  			compatible = "st,stm32mp257-z-pinctrl";
  			ranges = <0 0x46200000 0x400>;
  			interrupt-parent = <&exti1>;
@@ -41,6 +39,3 @@ index 7542444d987d..104472928902 100644
  
  			gpioz: gpio@46200000 {
  				gpio-controller;
--- 
-2.39.5
-

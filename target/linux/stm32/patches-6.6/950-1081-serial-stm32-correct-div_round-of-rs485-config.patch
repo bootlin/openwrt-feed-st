@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/tty/serial/stm32-usart.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index be809e8032a0..8ac74b8bd46b 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -200,7 +200,7 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+@@ -200,7 +200,7 @@ static void stm32_usart_config_reg_rs485
  	else
  		rs485_deat_dedt = delay_ADE * baud * 16;
  
@@ -33,7 +31,7 @@ index be809e8032a0..8ac74b8bd46b 100644
  	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
  			  rs485_deat_dedt_max : rs485_deat_dedt;
  	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEAT_SHIFT) &
-@@ -212,7 +212,7 @@ static void stm32_usart_config_reg_rs485(u32 *cr1, u32 *cr3, u32 delay_ADE,
+@@ -212,7 +212,7 @@ static void stm32_usart_config_reg_rs485
  	else
  		rs485_deat_dedt = delay_DDE * baud * 16;
  
@@ -42,6 +40,3 @@ index be809e8032a0..8ac74b8bd46b 100644
  	rs485_deat_dedt = rs485_deat_dedt > rs485_deat_dedt_max ?
  			  rs485_deat_dedt_max : rs485_deat_dedt;
  	rs485_deat_dedt = (rs485_deat_dedt << USART_CR1_DEDT_SHIFT) &
--- 
-2.39.5
-

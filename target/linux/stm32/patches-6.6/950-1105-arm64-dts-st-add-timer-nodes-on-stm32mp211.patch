@@ -18,11 +18,9 @@ Signed-off-by: Cheick TRAORE <cheick.traore-ext@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 492 +++++++++++++++++++++++++
  1 file changed, 492 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index a49b81ada983..806cfdd4bc25 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -234,6 +234,275 @@ i2s2: audio-controller@400b0000 {
+@@ -234,6 +234,275 @@
  				status = "disabled";
  			};
  
@@ -298,7 +296,7 @@ index a49b81ada983..806cfdd4bc25 100644
  			spi2: spi@400b0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -382,6 +651,136 @@ i2c2: i2c@40180000 {
+@@ -382,6 +651,136 @@
  				status = "disabled";
  			};
  
@@ -435,7 +433,7 @@ index a49b81ada983..806cfdd4bc25 100644
  			usart6: serial@40220000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40220000 0x400>;
-@@ -443,6 +842,99 @@ spi4: spi@40240000 {
+@@ -443,6 +842,99 @@
  				status = "disabled";
  			};
  
@@ -535,6 +533,3 @@ index a49b81ada983..806cfdd4bc25 100644
  			spi5: spi@40280000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

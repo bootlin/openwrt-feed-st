@@ -11,11 +11,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-lvds.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
-index 1b8e3156914c..2520b4dc49a6 100644
 --- a/drivers/gpu/drm/panel/panel-lvds.c
 +++ b/drivers/gpu/drm/panel/panel-lvds.c
-@@ -190,7 +190,7 @@ static int panel_lvds_probe(struct platform_device *pdev)
+@@ -190,7 +190,7 @@ static int panel_lvds_probe(struct platf
  
  	/* Get GPIOs and backlight controller. */
  	lvds->enable_gpio = devm_gpiod_get_optional(lvds->dev, "enable",
@@ -24,6 +22,3 @@ index 1b8e3156914c..2520b4dc49a6 100644
  	if (IS_ERR(lvds->enable_gpio)) {
  		ret = PTR_ERR(lvds->enable_gpio);
  		dev_err(lvds->dev, "failed to request %s GPIO: %d\n",
--- 
-2.39.5
-

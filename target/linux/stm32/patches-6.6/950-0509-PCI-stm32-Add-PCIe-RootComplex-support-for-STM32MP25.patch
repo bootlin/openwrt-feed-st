@@ -22,8 +22,6 @@ Tested-by: Christian BRUEL <christian.bruel@st.com>
  create mode 100644 drivers/pci/controller/dwc/pcie-stm32.c
  create mode 100644 drivers/pci/controller/dwc/pcie-stm32.h
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index ab96da43e0c2..96e82e949480 100644
 --- a/drivers/pci/controller/dwc/Kconfig
 +++ b/drivers/pci/controller/dwc/Kconfig
 @@ -415,4 +415,15 @@ config PCIE_VISCONTI_HOST
@@ -42,11 +40,9 @@ index ab96da43e0c2..96e82e949480 100644
 +	  This driver can also be built as a module. If so, the module
 +	  will be called pcie-stm32.
  endmenu
-diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index bf5c311875a1..c1010d82f1ae 100644
 --- a/drivers/pci/controller/dwc/Makefile
 +++ b/drivers/pci/controller/dwc/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
+@@ -26,6 +26,7 @@ obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegr
  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
  obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
@@ -54,9 +50,6 @@ index bf5c311875a1..c1010d82f1ae 100644
  
  # The following drivers are for devices that use the generic ACPI
  # pci_root.c driver but don't support standard ECAM config access.
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-new file mode 100644
-index 000000000000..f2e496807d46
 --- /dev/null
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -0,0 +1,209 @@
@@ -269,9 +262,6 @@ index 000000000000..f2e496807d46
 +MODULE_DESCRIPTION("STM32MP25 PCIe Controller driver");
 +MODULE_LICENSE("GPL");
 +MODULE_DEVICE_TABLE(of, stm32_pcie_of_match);
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.h b/drivers/pci/controller/dwc/pcie-stm32.h
-new file mode 100644
-index 000000000000..f23e931f92d1
 --- /dev/null
 +++ b/drivers/pci/controller/dwc/pcie-stm32.h
 @@ -0,0 +1,24 @@
@@ -299,6 +289,3 @@ index 000000000000..f23e931f92d1
 +
 +#define PCIE_CAP_MAX_PAYLOAD_SIZE(x)	((x) << 5)
 +#define PCIE_CAP_MAX_READ_REQ_SIZE(x)	((x) << 12)
--- 
-2.39.5
-

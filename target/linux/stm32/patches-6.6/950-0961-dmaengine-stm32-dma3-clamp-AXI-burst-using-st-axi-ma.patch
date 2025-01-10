@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 46 +++++++++++++++++++++++++---------
  1 file changed, 34 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index 68216f209a8f..4930f9ad504a 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -230,6 +230,8 @@ enum stm32_dma3_port_data_width {
@@ -38,7 +36,7 @@ index 68216f209a8f..4930f9ad504a 100644
  };
  
  static inline struct stm32_dma3_ddata *to_stm32_dma3_ddata(struct stm32_dma3_chan *chan)
-@@ -535,7 +538,8 @@ static enum dma_slave_buswidth stm32_dma3_get_max_dw(u32 chan_max_burst,
+@@ -535,7 +538,8 @@ static enum dma_slave_buswidth stm32_dma
  	return 1 << __ffs(len | addr | max_dw);
  }
  
@@ -48,7 +46,7 @@ index 68216f209a8f..4930f9ad504a 100644
  {
  	u32 max_burst = chan_max_burst ? chan_max_burst / dw : 1;
  
-@@ -546,8 +550,9 @@ static u32 stm32_dma3_get_max_burst(u32 len, enum dma_slave_buswidth dw, u32 cha
+@@ -546,8 +550,9 @@ static u32 stm32_dma3_get_max_burst(u32
  	/*
  	 * HW doesn't modify the burst if burst size <= half of the fifo size.
  	 * If len is not a multiple of burst size, last burst is shortened by HW.
@@ -59,7 +57,7 @@ index 68216f209a8f..4930f9ad504a 100644
  }
  
  static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transfer_direction dir,
-@@ -556,6 +561,7 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -556,6 +561,7 @@ static int stm32_dma3_chan_prep_hw(struc
  {
  	struct stm32_dma3_ddata *ddata = to_stm32_dma3_ddata(chan);
  	struct dma_device dma_device = ddata->dma_dev;
@@ -67,7 +65,7 @@ index 68216f209a8f..4930f9ad504a 100644
  	u32 sdw, ddw, sbl_max, dbl_max, tcem, init_dw, init_bl_max;
  	u32 _ctr1 = 0, _ctr2 = 0;
  	u32 ch_conf = chan->dt_config.ch_conf;
-@@ -596,10 +602,14 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -596,10 +602,14 @@ static int stm32_dma3_chan_prep_hw(struc
  		_ctr1 |= CTR1_SINC;
  	if (sap)
  		_ctr1 |= CTR1_SAP;
@@ -82,7 +80,7 @@ index 68216f209a8f..4930f9ad504a 100644
  
  	_ctr2 |= FIELD_PREP(CTR2_REQSEL, chan->dt_config.req_line) & ~CTR2_SWREQ;
  	if (FIELD_GET(STM32_DMA3_DT_BREQ, tr_conf))
-@@ -619,11 +629,12 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -619,11 +629,12 @@ static int stm32_dma3_chan_prep_hw(struc
  		/* Set destination (device) data width and burst */
  		ddw = min_t(u32, ddw, stm32_dma3_get_max_dw(chan->max_burst, dap_max_dw,
  							    len, dst_addr));
@@ -97,7 +95,7 @@ index 68216f209a8f..4930f9ad504a 100644
  		if (!!FIELD_GET(STM32_DMA3_DT_NOPACK, tr_conf)) {
  			sdw = ddw;
  			sbl_max = dbl_max;
-@@ -653,11 +664,12 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -653,11 +664,12 @@ static int stm32_dma3_chan_prep_hw(struc
  		/* Set source (device) data width and burst */
  		sdw = min_t(u32, sdw, stm32_dma3_get_max_dw(chan->max_burst, sap_max_dw,
  							    len, src_addr));
@@ -112,7 +110,7 @@ index 68216f209a8f..4930f9ad504a 100644
  		if (!!FIELD_GET(STM32_DMA3_DT_NOPACK, tr_conf) ||
  		    ((_ctr2 & CTR2_PFREQ) && ddw > sdw)) { /* Packing to wider ddw not supported */
  			ddw = sdw;
-@@ -689,22 +701,24 @@ static int stm32_dma3_chan_prep_hw(struct stm32_dma3_chan *chan, enum dma_transf
+@@ -689,22 +701,24 @@ static int stm32_dma3_chan_prep_hw(struc
  		init_dw = sdw;
  		init_bl_max = sbl_max;
  		sdw = stm32_dma3_get_max_dw(chan->max_burst, sap_max_dw, len, src_addr);
@@ -143,7 +141,7 @@ index 68216f209a8f..4930f9ad504a 100644
  		}
  
  		_ctr1 |= FIELD_PREP(CTR1_SDW_LOG2, ilog2(sdw));
-@@ -1750,6 +1764,14 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1750,6 +1764,14 @@ static int stm32_dma3_probe(struct platf
  	else /* Dual master ports */
  		ddata->ports_max_dw[1] = FIELD_GET(G_M1_DATA_WIDTH_ENC, hwcfgr);
  
@@ -158,6 +156,3 @@ index 68216f209a8f..4930f9ad504a 100644
  	ddata->chans = devm_kcalloc(&pdev->dev, ddata->dma_channels, sizeof(*ddata->chans),
  				    GFP_KERNEL);
  	if (!ddata->chans) {
--- 
-2.39.5
-

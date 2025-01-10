@@ -15,8 +15,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  3 files changed, 1093 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index f58831bcbe08..d621ff76e539 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -1,5 +1,5 @@
@@ -26,8 +24,6 @@ index f58831bcbe08..d621ff76e539 100644
 +stm32-dcmipp-y += dcmipp-isp.o dcmipp-pixelproc.o dcmipp-pixelcap.o
  
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 03e13021b0ab..067f77adb2c7 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -251,5 +251,9 @@ struct dcmipp_ent_device *
@@ -40,9 +36,6 @@ index 03e13021b0ab..067f77adb2c7 100644
 +void dcmipp_pixelcap_ent_release(struct dcmipp_ent_device *ved);
  
  #endif
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-new file mode 100644
-index 000000000000..8882de64013d
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -0,0 +1,1088 @@
@@ -1134,6 +1127,3 @@ index 000000000000..8882de64013d
 +
 +	return ERR_PTR(ret);
 +}
--- 
-2.39.5
-

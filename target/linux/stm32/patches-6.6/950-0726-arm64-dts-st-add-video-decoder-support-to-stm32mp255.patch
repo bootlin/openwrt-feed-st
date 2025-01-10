@@ -11,8 +11,6 @@ Change-Id: If9185bda3a060228369271bb40d1461efa41240f
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 10 +++++++++-
  1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index e6fa596211f5..02acbbde6b0a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
 @@ -5,5 +5,13 @@
@@ -30,6 +28,3 @@ index e6fa596211f5..02acbbde6b0a 100644
 +		access-controllers = <&rifsc 89>;
 +	};
  };
--- 
-2.39.5
-

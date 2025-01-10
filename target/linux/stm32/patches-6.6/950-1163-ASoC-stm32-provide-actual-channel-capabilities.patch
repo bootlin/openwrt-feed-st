@@ -16,8 +16,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  sound/soc/stm/stm32_amdf.c | 30 ++++++++++++++++++++++--------
  1 file changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_amdf.c b/sound/soc/stm/stm32_amdf.c
-index ea94014a65de..9431320b8254 100644
 --- a/sound/soc/stm/stm32_amdf.c
 +++ b/sound/soc/stm/stm32_amdf.c
 @@ -10,6 +10,7 @@
@@ -28,7 +26,7 @@ index ea94014a65de..9431320b8254 100644
  #include <linux/module.h>
  #include <linux/mutex.h>
  #include <linux/platform_device.h>
-@@ -113,7 +114,7 @@ static const struct snd_soc_dai_ops stm32_amdf_dai_ops = {
+@@ -113,7 +114,7 @@ static const struct snd_soc_dai_ops stm3
  static const struct snd_soc_dai_driver stm32_amdf_dai = {
  	.capture = {
  		    .channels_min = 1,
@@ -37,7 +35,7 @@ index ea94014a65de..9431320b8254 100644
  		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
  			       SNDRV_PCM_FMTBIT_S32_LE,
  		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
-@@ -298,6 +299,9 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+@@ -298,6 +299,9 @@ static int stm32_amdf_probe(struct platf
  {
  	struct stm32_amdf_priv *priv;
  	struct snd_soc_component *component;
@@ -47,7 +45,7 @@ index ea94014a65de..9431320b8254 100644
  	int ret;
  
  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -311,13 +315,6 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+@@ -311,13 +315,6 @@ static int stm32_amdf_probe(struct platf
  
  	dev_set_drvdata(&pdev->dev, priv);
  
@@ -61,7 +59,7 @@ index ea94014a65de..9431320b8254 100644
  	/* Associate iio channel */
  	priv->iio_ch  = devm_iio_channel_get_all(&pdev->dev);
  	if (IS_ERR(priv->iio_ch)) {
-@@ -337,6 +334,23 @@ static int stm32_amdf_probe(struct platform_device *pdev)
+@@ -337,6 +334,23 @@ static int stm32_amdf_probe(struct platf
  		return ret;
  	}
  
@@ -85,6 +83,3 @@ index ea94014a65de..9431320b8254 100644
  	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
  	if (!component)
  		return -ENOMEM;
--- 
-2.39.5
-

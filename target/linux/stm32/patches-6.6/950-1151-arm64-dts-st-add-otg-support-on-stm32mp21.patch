@@ -16,11 +16,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index d5ebe0b3745c..e4c125cfbd9e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1660,6 +1660,26 @@ usbh_ehci: usb@482f0000 {
+@@ -1660,6 +1660,26 @@
  					phy-names = "usb";
  				};
  			};
@@ -47,6 +45,3 @@ index d5ebe0b3745c..e4c125cfbd9e 100644
  		};
  
  		hdp: pinctrl@44090000 {
--- 
-2.39.5
-

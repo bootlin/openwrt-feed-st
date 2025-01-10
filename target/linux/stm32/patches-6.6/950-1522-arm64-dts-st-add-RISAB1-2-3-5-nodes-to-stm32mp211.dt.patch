@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 32 ++++++++++++++++++++++++++
  1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index f8df6101da4d..c2a16c960f99 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1832,6 +1832,38 @@ risaf4: risaf@420d0000 {
+@@ -1832,6 +1832,38 @@
  			st,mem-map = <0x0 0x80000000 0x1 0x00000000>;
  		};
  
@@ -59,6 +57,3 @@ index f8df6101da4d..c2a16c960f99 100644
  		hdp: pinctrl@44090000 {
  			compatible = "st,stm32mp-hdp";
  			reg = <0x44090000 0x0 0x400>;
--- 
-2.39.5
-

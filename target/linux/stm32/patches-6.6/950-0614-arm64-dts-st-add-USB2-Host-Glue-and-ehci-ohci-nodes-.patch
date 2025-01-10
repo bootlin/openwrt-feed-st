@@ -13,11 +13,9 @@ Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 31 ++++++++++++++++++++++++++
  1 file changed, 31 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index a02b0312c7ac..e92ba3f0e939 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -408,6 +408,37 @@ sdmmc1: mmc@48220000 {
+@@ -408,6 +408,37 @@
  				access-controllers = <&rifsc 76>;
  				status = "disabled";
  			};
@@ -55,6 +53,3 @@ index a02b0312c7ac..e92ba3f0e939 100644
  		};
  
  		rcc: clock-controller@44200000 {
--- 
-2.39.5
-

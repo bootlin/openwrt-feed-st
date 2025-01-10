@@ -21,11 +21,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts    | 14 ++++++--------
  2 files changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 60f07008b3ee..7187aaaf1c55 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -398,7 +398,7 @@ pins {
+@@ -398,7 +398,7 @@
  		};
  	};
  
@@ -34,7 +32,7 @@ index 60f07008b3ee..7187aaaf1c55 100644
  		pins {
  			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
  			bias-disable;
-@@ -407,13 +407,13 @@ pins {
+@@ -407,13 +407,13 @@
  		};
  	};
  
@@ -50,7 +48,7 @@ index 60f07008b3ee..7187aaaf1c55 100644
  		pins {
  			pinmux = <STM32_PINMUX('D', 3, AF10)>; /* OSPI_NCS0 */
  			bias-pull-up;
-@@ -422,13 +422,13 @@ pins {
+@@ -422,13 +422,13 @@
  		};
  	};
  
@@ -66,7 +64,7 @@ index 60f07008b3ee..7187aaaf1c55 100644
  		pins {
  			pinmux = <STM32_PINMUX('D', 4, AF10)>, /* OSPI_IO0 */
  				 <STM32_PINMUX('D', 5, AF10)>, /* OSPI_IO1 */
-@@ -440,7 +440,7 @@ pins {
+@@ -440,7 +440,7 @@
  		};
  	};
  
@@ -75,11 +73,9 @@ index 60f07008b3ee..7187aaaf1c55 100644
  		pins {
  			pinmux = <STM32_PINMUX('D', 4, ANALOG)>, /* OSPI_IO0 */
  				 <STM32_PINMUX('D', 5, ANALOG)>, /* OSPI_IO1 */
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index c345cb8ef339..dbbe2768456c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -546,14 +546,12 @@ &ommanager {
+@@ -546,14 +546,12 @@
  	memory-region = <&mm_ospi1>;
  	memory-region-names = "mm_ospi1";
  	pinctrl-names = "default", "sleep";
@@ -100,6 +96,3 @@ index c345cb8ef339..dbbe2768456c 100644
  	status = "okay";
  
  	spi@40430000 {
--- 
-2.39.5
-

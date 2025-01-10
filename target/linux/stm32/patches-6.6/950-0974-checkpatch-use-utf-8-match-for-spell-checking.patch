@@ -32,11 +32,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  scripts/checkpatch.pl | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7d16f863edf1..7ee0ad4ca620 100755
 --- a/scripts/checkpatch.pl
 +++ b/scripts/checkpatch.pl
-@@ -3477,9 +3477,10 @@ sub process {
+@@ -3490,9 +3490,10 @@ sub process {
  # Check for various typo / spelling mistakes
  		if (defined($misspellings) &&
  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
@@ -49,6 +47,3 @@ index 7d16f863edf1..7ee0ad4ca620 100755
  				my $ptr = substr($blank, 0, $-[1]) . "^" x length($typo);
  				my $hereptr = "$hereline$ptr\n";
  				my $typo_fix = $spelling_fix{lc($typo)};
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Reviewed-by: Christian BRUEL <christian.bruel@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32-ep.c | 20 ++++++--------------
  1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32-ep.c b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-index cbd873933cd2..4e2870b89046 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32-ep.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32-ep.c
-@@ -102,13 +102,6 @@ static int stm32_pcie_start_link(struct dw_pcie *pci)
+@@ -102,13 +102,6 @@ static int stm32_pcie_start_link(struct
  		return ret;
  	}
  
@@ -36,7 +34,7 @@ index cbd873933cd2..4e2870b89046 100644
  	dw_pcie_ep_linkup(ep);
  
  	stm32_pcie->link_status = STM32_PCIE_EP_LINK_ENABLED;
-@@ -249,25 +242,24 @@ static void stm32_pcie_perst_deassert(struct dw_pcie *pci)
+@@ -249,25 +242,24 @@ static void stm32_pcie_perst_deassert(st
  		return;
  	}
  
@@ -68,6 +66,3 @@ index cbd873933cd2..4e2870b89046 100644
  	stm32_pcie->link_status = STM32_PCIE_EP_LINK_ENABLED;
  }
  
--- 
-2.39.5
-

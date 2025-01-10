@@ -20,8 +20,6 @@ used".
  scripts/Makefile.lib | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index b51112decaa0..6341da03f446 100644
 --- a/scripts/Makefile.lib
 +++ b/scripts/Makefile.lib
 @@ -388,6 +388,10 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
@@ -35,6 +33,3 @@ index b51112decaa0..6341da03f446 100644
  quiet_cmd_dtc = DTC     $@
  cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
  	$(DTC) -o $@ -b 0 \
--- 
-2.39.5
-

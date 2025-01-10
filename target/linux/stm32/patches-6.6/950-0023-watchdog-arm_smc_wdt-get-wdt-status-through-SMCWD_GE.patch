@@ -25,11 +25,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/watchdog/arm_smc_wdt.c | 18 +++++++++++++++---
  1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/watchdog/arm_smc_wdt.c b/drivers/watchdog/arm_smc_wdt.c
-index 8f3d0c3a005f..f1268f43327e 100644
 --- a/drivers/watchdog/arm_smc_wdt.c
 +++ b/drivers/watchdog/arm_smc_wdt.c
-@@ -46,6 +46,8 @@ static int smcwd_call(struct watchdog_device *wdd, enum smcwd_call call,
+@@ -46,6 +46,8 @@ static int smcwd_call(struct watchdog_de
  		return -ENODEV;
  	if (res->a0 == PSCI_RET_INVALID_PARAMS)
  		return -EINVAL;
@@ -38,7 +36,7 @@ index 8f3d0c3a005f..f1268f43327e 100644
  	if (res->a0 != PSCI_RET_SUCCESS)
  		return -EIO;
  	return 0;
-@@ -131,10 +133,20 @@ static int smcwd_probe(struct platform_device *pdev)
+@@ -131,10 +133,20 @@ static int smcwd_probe(struct platform_d
  
  	wdd->info = &smcwd_info;
  	/* get_timeleft is optional */
@@ -62,6 +60,3 @@ index 8f3d0c3a005f..f1268f43327e 100644
  	wdd->timeout = res.a2;
  	wdd->max_timeout = res.a2;
  	wdd->min_timeout = res.a1;
--- 
-2.39.5
-

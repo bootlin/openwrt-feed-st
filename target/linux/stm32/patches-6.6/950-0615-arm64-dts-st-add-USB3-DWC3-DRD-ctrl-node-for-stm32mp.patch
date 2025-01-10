@@ -12,11 +12,9 @@ Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index e92ba3f0e939..aa1d9cd4ac52 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -439,6 +439,28 @@ usbh_ehci: usb@482f0000 {
+@@ -439,6 +439,28 @@
  					phy-names = "usb";
  				};
  			};
@@ -45,6 +43,3 @@ index e92ba3f0e939..aa1d9cd4ac52 100644
  		};
  
  		rcc: clock-controller@44200000 {
--- 
-2.39.5
-

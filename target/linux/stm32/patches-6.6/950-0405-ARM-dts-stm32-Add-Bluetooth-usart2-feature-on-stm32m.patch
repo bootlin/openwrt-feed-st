@@ -13,11 +13,9 @@ Change-Id: I41cc7d60900e05d8bd4e3281abe170ef3fbbaee8
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 13 ++++++++++++-
  2 files changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index 37d13d1563d9..b5212d54438d 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-@@ -104,10 +104,21 @@ &rtc {
+@@ -104,10 +104,21 @@
  	pinctrl-names = "default";
  };
  
@@ -40,11 +38,9 @@ index 37d13d1563d9..b5212d54438d 100644
 +		status = "disabled";
 +	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index a3d51f2ad577..d547ca0c661c 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -104,10 +104,21 @@ &rtc {
+@@ -104,10 +104,21 @@
  	pinctrl-names = "default";
  };
  
@@ -67,6 +63,3 @@ index a3d51f2ad577..d547ca0c661c 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.5
-

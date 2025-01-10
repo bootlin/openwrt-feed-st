@@ -17,11 +17,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 42 ++++++++++++++++++-
  1 file changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index 9b3fa2fd8701..8f054d433aec 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-@@ -107,6 +107,11 @@ static const struct dcmipp_pipeline_config stm32mp13_pipe_cfg = {
+@@ -107,6 +107,11 @@ static const struct dcmipp_pipeline_conf
  	.num_links	= ARRAY_SIZE(stm32mp13_ent_links)
  };
  
@@ -33,7 +31,7 @@ index 9b3fa2fd8701..8f054d433aec 100644
  static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
  	{
  		.name = "dcmipp_input",
-@@ -123,13 +128,46 @@ static const struct dcmipp_ent_config stm32mp25_ent_config[] = {
+@@ -123,13 +128,46 @@ static const struct dcmipp_ent_config st
  		.init = dcmipp_bytecap_ent_init,
  		.release = dcmipp_bytecap_ent_release,
  	},
@@ -82,6 +80,3 @@ index 9b3fa2fd8701..8f054d433aec 100644
  };
  
  static const struct dcmipp_pipeline_config stm32mp25_pipe_cfg = {
--- 
-2.39.5
-

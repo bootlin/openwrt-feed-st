@@ -21,11 +21,9 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  drivers/media/i2c/imx335.c | 42 +++++++++++++++++++-------------------
  1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 26869abd77a6..5edab910a723 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -398,7 +398,7 @@ static int imx335_update_exp_gain(struct imx335 *imx335, u32 exposure, u32 gain)
+@@ -407,7 +407,7 @@ static int imx335_update_exp_gain(struct
  	lpfr = imx335->vblank + imx335->cur_mode->height;
  	shutter = lpfr - exposure;
  
@@ -34,7 +32,7 @@ index 26869abd77a6..5edab910a723 100644
  		exposure, gain, shutter, lpfr);
  
  	ret = imx335_write_reg(imx335, IMX335_REG_HOLD, 1, 1);
-@@ -445,7 +445,7 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
+@@ -454,7 +454,7 @@ static int imx335_set_ctrl(struct v4l2_c
  	case V4L2_CID_VBLANK:
  		imx335->vblank = imx335->vblank_ctrl->val;
  
@@ -43,7 +41,7 @@ index 26869abd77a6..5edab910a723 100644
  			imx335->vblank,
  			imx335->vblank + imx335->cur_mode->height);
  
-@@ -464,7 +464,7 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
+@@ -473,7 +473,7 @@ static int imx335_set_ctrl(struct v4l2_c
  		exposure = ctrl->val;
  		analog_gain = imx335->again_ctrl->val;
  
@@ -52,7 +50,7 @@ index 26869abd77a6..5edab910a723 100644
  			exposure, analog_gain);
  
  		ret = imx335_update_exp_gain(imx335, exposure, analog_gain);
-@@ -473,7 +473,7 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
+@@ -482,7 +482,7 @@ static int imx335_set_ctrl(struct v4l2_c
  
  		break;
  	default:
@@ -61,7 +59,7 @@ index 26869abd77a6..5edab910a723 100644
  		ret = -EINVAL;
  	}
  
-@@ -654,14 +654,14 @@ static int imx335_start_streaming(struct imx335 *imx335)
+@@ -663,14 +663,14 @@ static int imx335_start_streaming(struct
  	ret = imx335_write_regs(imx335, reg_list->regs,
  				reg_list->num_of_regs);
  	if (ret) {
@@ -78,7 +76,7 @@ index 26869abd77a6..5edab910a723 100644
  		return ret;
  	}
  
-@@ -669,7 +669,7 @@ static int imx335_start_streaming(struct imx335 *imx335)
+@@ -678,7 +678,7 @@ static int imx335_start_streaming(struct
  	ret = imx335_write_reg(imx335, IMX335_REG_MODE_SELECT,
  			       1, IMX335_MODE_STREAMING);
  	if (ret) {
@@ -87,7 +85,7 @@ index 26869abd77a6..5edab910a723 100644
  		return ret;
  	}
  
-@@ -753,7 +753,7 @@ static int imx335_detect(struct imx335 *imx335)
+@@ -762,7 +762,7 @@ static int imx335_detect(struct imx335 *
  		return ret;
  
  	if (val != IMX335_ID) {
@@ -96,16 +94,16 @@ index 26869abd77a6..5edab910a723 100644
  			IMX335_ID, val);
  		return -ENXIO;
  	}
-@@ -785,7 +785,7 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -794,7 +794,7 @@ static int imx335_parse_hw_config(struct
  	imx335->reset_gpio = devm_gpiod_get_optional(imx335->dev, "reset",
- 						     GPIOD_OUT_LOW);
+ 						     GPIOD_OUT_HIGH);
  	if (IS_ERR(imx335->reset_gpio)) {
 -		dev_err(imx335->dev, "failed to get reset gpio %ld",
 +		dev_err(imx335->dev, "failed to get reset gpio %ld\n",
  			PTR_ERR(imx335->reset_gpio));
  		return PTR_ERR(imx335->reset_gpio);
  	}
-@@ -793,13 +793,13 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -813,13 +813,13 @@ static int imx335_parse_hw_config(struct
  	/* Get sensor input clock */
  	imx335->inclk = devm_clk_get(imx335->dev, NULL);
  	if (IS_ERR(imx335->inclk)) {
@@ -121,7 +119,7 @@ index 26869abd77a6..5edab910a723 100644
  		return -EINVAL;
  	}
  
-@@ -814,14 +814,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -834,14 +834,14 @@ static int imx335_parse_hw_config(struct
  
  	if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
  		dev_err(imx335->dev,
@@ -138,7 +136,7 @@ index 26869abd77a6..5edab910a723 100644
  		ret = -EINVAL;
  		goto done_endpoint_free;
  	}
-@@ -872,7 +872,7 @@ static int imx335_power_on(struct device *dev)
+@@ -902,7 +902,7 @@ static int imx335_power_on(struct device
  
  	ret = clk_prepare_enable(imx335->inclk);
  	if (ret) {
@@ -147,7 +145,7 @@ index 26869abd77a6..5edab910a723 100644
  		goto error_reset;
  	}
  
-@@ -978,7 +978,7 @@ static int imx335_init_controls(struct imx335 *imx335)
+@@ -1009,7 +1009,7 @@ static int imx335_init_controls(struct i
  		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
  
  	if (ctrl_hdlr->error) {
@@ -156,7 +154,7 @@ index 26869abd77a6..5edab910a723 100644
  			ctrl_hdlr->error);
  		v4l2_ctrl_handler_free(ctrl_hdlr);
  		return ctrl_hdlr->error;
-@@ -1011,7 +1011,7 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1042,7 +1042,7 @@ static int imx335_probe(struct i2c_clien
  
  	ret = imx335_parse_hw_config(imx335);
  	if (ret) {
@@ -165,7 +163,7 @@ index 26869abd77a6..5edab910a723 100644
  		return ret;
  	}
  
-@@ -1019,14 +1019,14 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1050,14 +1050,14 @@ static int imx335_probe(struct i2c_clien
  
  	ret = imx335_power_on(imx335->dev);
  	if (ret) {
@@ -182,7 +180,7 @@ index 26869abd77a6..5edab910a723 100644
  		goto error_power_off;
  	}
  
-@@ -1036,7 +1036,7 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1067,7 +1067,7 @@ static int imx335_probe(struct i2c_clien
  
  	ret = imx335_init_controls(imx335);
  	if (ret) {
@@ -191,7 +189,7 @@ index 26869abd77a6..5edab910a723 100644
  		goto error_power_off;
  	}
  
-@@ -1048,14 +1048,14 @@ static int imx335_probe(struct i2c_client *client)
+@@ -1079,14 +1079,14 @@ static int imx335_probe(struct i2c_clien
  	imx335->pad.flags = MEDIA_PAD_FL_SOURCE;
  	ret = media_entity_pads_init(&imx335->sd.entity, 1, &imx335->pad);
  	if (ret) {
@@ -208,6 +206,3 @@ index 26869abd77a6..5edab910a723 100644
  		goto error_media_entity;
  	}
  
--- 
-2.39.5
-

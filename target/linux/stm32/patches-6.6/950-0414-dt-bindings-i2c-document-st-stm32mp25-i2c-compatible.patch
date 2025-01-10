@@ -14,8 +14,6 @@ Signed-off-by: Wolfram Sang <wsa@kernel.org>
  .../devicetree/bindings/i2c/st,stm32-i2c.yaml | 28 +++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-index 94b75d9f66cd..1b31b87c1800 100644
 --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
 @@ -19,6 +19,7 @@ allOf:
@@ -79,6 +77,3 @@ index 94b75d9f66cd..1b31b87c1800 100644
  
    resets:
      maxItems: 1
--- 
-2.39.5
-

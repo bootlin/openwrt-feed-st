@@ -25,11 +25,9 @@ Tested-by: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
  .../platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index ecad6efa8250..70a05a91ae45 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -685,6 +685,16 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -685,6 +685,16 @@ static int dcmipp_pixelproc_set_fmt(stru
  				v4l2_subdev_state_get_format(state, 0);
  
  			fmt->format = *sink_pad_fmt;
@@ -46,6 +44,3 @@ index ecad6efa8250..70a05a91ae45 100644
  		}
  
  		compose = v4l2_subdev_state_get_compose(state, 0);
--- 
-2.39.5
-

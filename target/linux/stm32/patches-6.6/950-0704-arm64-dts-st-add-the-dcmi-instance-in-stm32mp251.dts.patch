@@ -11,11 +11,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index af9001965b22..dbf5dbae98d1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1428,6 +1428,19 @@ uart8: serial@40380000 {
+@@ -1428,6 +1428,19 @@
  				status = "disabled";
  			};
  
@@ -35,6 +33,3 @@ index af9001965b22..dbf5dbae98d1 100644
  			adc_12: adc@404e0000 {
  				compatible = "st,stm32mp25-adc-core";
  				reg = <0x404e0000 0x400>;
--- 
-2.39.5
-

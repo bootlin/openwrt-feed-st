@@ -15,8 +15,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h  | 2 ++
  2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index e59671b88b0c..09095dc33a68 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 @@ -110,7 +110,6 @@ struct dcmipp_bytecap_device {
@@ -27,7 +25,7 @@ index e59671b88b0c..09095dc33a68 100644
  	struct v4l2_subdev *s_subdev;
  
  	enum dcmipp_state state;
-@@ -407,7 +406,7 @@ static int dcmipp_bytecap_start_streaming(struct vb2_queue *vq,
+@@ -407,7 +406,7 @@ static int dcmipp_bytecap_start_streamin
  		goto err_buffer_done;
  	}
  
@@ -36,8 +34,6 @@ index e59671b88b0c..09095dc33a68 100644
  	if (ret) {
  		dev_dbg(vcap->dev, "%s: Failed to start streaming, media pipeline start error (%d)\n",
  			__func__, ret);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index be66733e671b..d46c866c4ac3 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -72,6 +72,8 @@ struct dcmipp_device {
@@ -49,6 +45,3 @@ index be66733e671b..d46c866c4ac3 100644
  	/* Internal v4l2 parent device*/
  	struct v4l2_device		v4l2_dev;
  
--- 
-2.39.5
-

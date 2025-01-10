@@ -17,11 +17,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/bus/stm32_rifsc.c | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
-index 44758a1d3773..175f0b5c996b 100644
 --- a/drivers/bus/stm32_rifsc.c
 +++ b/drivers/bus/stm32_rifsc.c
-@@ -505,9 +505,12 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+@@ -505,9 +505,12 @@ static int stm32_rifsc_probe(struct plat
  	rifsc_controller->release_access = stm32_rifsc_release_access;
  
  	/* Get number of RIFSC entries*/
@@ -37,6 +35,3 @@ index 44758a1d3773..175f0b5c996b 100644
  	rifsc_controller->max_entries = nb_risup + nb_rimu + nb_risal;
  
  	platform_set_drvdata(pdev, rifsc_controller);
--- 
-2.39.5
-

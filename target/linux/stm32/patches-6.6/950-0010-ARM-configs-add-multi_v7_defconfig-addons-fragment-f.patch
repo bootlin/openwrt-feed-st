@@ -14,9 +14,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  1 file changed, 34 insertions(+)
  create mode 100644 arch/arm/configs/fragment-02-multiv7_addons.config
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-new file mode 100644
-index 000000000000..624b6d226c3f
 --- /dev/null
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -0,0 +1,34 @@
@@ -54,6 +51,3 @@ index 000000000000..624b6d226c3f
 +CONFIG_SRAM=y
 +CONFIG_USB_HIDDEV=y
 +CONFIG_VFP=y
--- 
-2.39.5
-

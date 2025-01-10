@@ -14,11 +14,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157c-ed1.dts | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index b39351fc9b4a..25430e560432 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -279,13 +279,13 @@ bst_out: boost {
+@@ -279,13 +279,13 @@
  			vbus_otg: pwr_sw1 {
  				regulator-name = "vbus_otg";
  				interrupts = <IT_OCP_OTG 0>;
@@ -35,6 +33,3 @@ index b39351fc9b4a..25430e560432 100644
  		};
  
  		onkey {
--- 
-2.39.5
-

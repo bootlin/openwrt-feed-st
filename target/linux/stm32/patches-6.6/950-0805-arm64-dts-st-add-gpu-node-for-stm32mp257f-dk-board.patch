@@ -12,11 +12,9 @@ Change-Id: I993f42fd1959cbfe24611c1a60563a194b11994c
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index a8b467c97700..e20a5e17eebc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -215,6 +215,11 @@ phy1_eth1: ethernet-phy@1 {
+@@ -215,6 +215,11 @@
  	};
  };
  
@@ -28,6 +26,3 @@ index a8b467c97700..e20a5e17eebc 100644
  &hpdma {
  	memory-region = <&hpdma1_lli>;
  };
--- 
-2.39.5
-

@@ -20,11 +20,9 @@ Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index ba85eece0e9b..7d9e9dec4a94 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -109,6 +109,13 @@ i2c_rpmsg: i2c@2 {
+@@ -109,6 +109,13 @@
  		#address-cells = <1>;
  		#size-cells = <0>;
  		status = "okay";
@@ -38,6 +36,3 @@ index ba85eece0e9b..7d9e9dec4a94 100644
  	};
  };
  
--- 
-2.39.5
-

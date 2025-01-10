@@ -18,11 +18,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-input.c      | 12 +++---
  5 files changed, 53 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 0cd9b088bd97..e59671b88b0c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -845,12 +845,11 @@ static const struct media_entity_operations dcmipp_bytecap_entity_ops = {
+@@ -845,12 +845,11 @@ static const struct media_entity_operati
  	.link_validate = dcmipp_bytecap_link_validate,
  };
  
@@ -38,7 +36,7 @@ index 0cd9b088bd97..e59671b88b0c 100644
  	struct video_device *vdev;
  	struct vb2_queue *q;
  	const unsigned long pad_flag = MEDIA_PAD_FL_SINK;
-@@ -868,6 +867,8 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -868,6 +867,8 @@ struct dcmipp_ent_device *dcmipp_bytecap
  		goto err_free_vcap;
  	}
  
@@ -47,7 +45,7 @@ index 0cd9b088bd97..e59671b88b0c 100644
  	/* Initialize the media entity */
  	vcap->vdev.entity.name = entity_name;
  	vcap->vdev.entity.function = MEDIA_ENT_F_IO_V4L;
-@@ -918,7 +919,7 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -918,7 +919,7 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	vcap->ved.handler = dcmipp_bytecap_irq_callback;
  	vcap->ved.thread_fn = dcmipp_bytecap_irq_thread;
  	vcap->dev = dev;
@@ -56,7 +54,7 @@ index 0cd9b088bd97..e59671b88b0c 100644
  
  	/* Initialize the video_device struct */
  	vdev = &vcap->vdev;
-@@ -929,7 +930,7 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(struct device *dev,
+@@ -929,7 +930,7 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	vdev->ioctl_ops = &dcmipp_bytecap_ioctl_ops;
  	vdev->lock = &vcap->lock;
  	vdev->queue = q;
@@ -65,11 +63,9 @@ index 0cd9b088bd97..e59671b88b0c 100644
  	strscpy(vdev->name, entity_name, sizeof(vdev->name));
  	video_set_drvdata(vdev, &vcap->ved);
  
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 0bc897d2d577..7cfef1f4498c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -530,8 +530,8 @@ void dcmipp_byteproc_ent_release(struct dcmipp_ent_device *ved)
+@@ -530,8 +530,8 @@ void dcmipp_byteproc_ent_release(struct
  }
  
  struct dcmipp_ent_device *
@@ -80,7 +76,7 @@ index 0bc897d2d577..7cfef1f4498c 100644
  {
  	struct dcmipp_byteproc_device *byteproc;
  	const unsigned long pads_flag[] = {
-@@ -544,11 +544,11 @@ dcmipp_byteproc_ent_init(struct device *dev, const char *entity_name,
+@@ -544,11 +544,11 @@ dcmipp_byteproc_ent_init(struct device *
  	if (!byteproc)
  		return ERR_PTR(-ENOMEM);
  
@@ -94,7 +90,7 @@ index 0bc897d2d577..7cfef1f4498c 100644
  				     MEDIA_ENT_F_PROC_VIDEO_SCALER,
  				     ARRAY_SIZE(pads_flag), pads_flag,
  				     &dcmipp_byteproc_int_ops,
-@@ -559,7 +559,8 @@ dcmipp_byteproc_ent_init(struct device *dev, const char *entity_name,
+@@ -559,7 +559,8 @@ dcmipp_byteproc_ent_init(struct device *
  		return ERR_PTR(ret);
  	}
  
@@ -104,8 +100,6 @@ index 0bc897d2d577..7cfef1f4498c 100644
  
  	return &byteproc->ved;
  }
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index fe5f97233f5e..be66733e671b 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -58,10 +58,34 @@ do {									\
@@ -151,7 +145,7 @@ index fe5f97233f5e..be66733e671b 100644
  	struct media_pad *pads;
  
  	/* Parallel input device */
-@@ -199,19 +224,15 @@ static inline void __reg_clear(struct device *dev, void __iomem *base, u32 reg,
+@@ -199,19 +224,15 @@ static inline void __reg_clear(struct de
  }
  
  /* DCMIPP subdev init / release entry points */
@@ -177,8 +171,6 @@ index fe5f97233f5e..be66733e671b 100644
  void dcmipp_bytecap_ent_release(struct dcmipp_ent_device *ved);
  
  #endif
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-index f60d98686ac9..30ed970a3610 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
 @@ -33,30 +33,6 @@
@@ -212,7 +204,7 @@ index f60d98686ac9..30ed970a3610 100644
  static inline struct dcmipp_device *
  notifier_to_dcmipp(struct v4l2_async_notifier *n)
  {
-@@ -67,8 +43,8 @@ notifier_to_dcmipp(struct v4l2_async_notifier *n)
+@@ -67,8 +43,8 @@ notifier_to_dcmipp(struct v4l2_async_not
  struct dcmipp_ent_config {
  	const char *name;
  	struct dcmipp_ent_device *(*init)
@@ -223,7 +215,7 @@ index f60d98686ac9..30ed970a3610 100644
  	void (*release)(struct dcmipp_ent_device *ved);
  };
  
-@@ -179,9 +155,7 @@ static int dcmipp_create_subdevs(struct dcmipp_device *dcmipp)
+@@ -179,9 +155,7 @@ static int dcmipp_create_subdevs(struct
  
  		dev_dbg(dcmipp->dev, "add subdev %s\n", name);
  		dcmipp->entity[i] =
@@ -234,11 +226,9 @@ index f60d98686ac9..30ed970a3610 100644
  		if (IS_ERR(dcmipp->entity[i])) {
  			dev_err(dcmipp->dev, "failed to init subdev %s\n",
  				name);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-index 8d8db53f4776..b2bcadcac479 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-@@ -502,15 +502,14 @@ void dcmipp_inp_ent_release(struct dcmipp_ent_device *ved)
+@@ -502,15 +502,14 @@ void dcmipp_inp_ent_release(struct dcmip
  	dcmipp_ent_sd_unregister(ved, &inp->sd);
  }
  
@@ -257,7 +247,7 @@ index 8d8db53f4776..b2bcadcac479 100644
  	int ret;
  
  	/* Allocate the inp struct */
-@@ -518,10 +517,10 @@ struct dcmipp_ent_device *dcmipp_inp_ent_init(struct device *dev,
+@@ -518,10 +517,10 @@ struct dcmipp_ent_device *dcmipp_inp_ent
  	if (!inp)
  		return ERR_PTR(-ENOMEM);
  
@@ -270,7 +260,7 @@ index 8d8db53f4776..b2bcadcac479 100644
  				     entity_name, MEDIA_ENT_F_VID_IF_BRIDGE,
  				     ARRAY_SIZE(pads_flag), pads_flag,
  				     &dcmipp_inp_int_ops, &dcmipp_inp_ops,
-@@ -530,6 +529,7 @@ struct dcmipp_ent_device *dcmipp_inp_ent_init(struct device *dev,
+@@ -530,6 +529,7 @@ struct dcmipp_ent_device *dcmipp_inp_ent
  		kfree(inp);
  		return ERR_PTR(ret);
  	}
@@ -278,6 +268,3 @@ index 8d8db53f4776..b2bcadcac479 100644
  
  	inp->dev = dev;
  
--- 
-2.39.5
-

@@ -24,11 +24,9 @@ Link: https://patchwork.freedesktop.org/patch/msgid/20231018035212.1778767-1-vic
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 18 ++++++++++++------
  1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 849d70e9c232..4b8f4e226583 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -749,13 +749,19 @@ static u32 dw_mipi_dsi_get_hcomponent_lbcc(struct dw_mipi_dsi *dsi,
+@@ -749,13 +749,19 @@ static u32 dw_mipi_dsi_get_hcomponent_lb
  	u32 frac, lbcc, minimum_lbcc;
  	int bpp;
  
@@ -54,6 +52,3 @@ index 849d70e9c232..4b8f4e226583 100644
  
  	frac = lbcc % mode->clock;
  	lbcc = lbcc / mode->clock;
--- 
-2.39.5
-

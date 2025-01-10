@@ -20,11 +20,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 831ef2e787ec..07ad8fda5ab6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -160,6 +160,14 @@ uart4: serial@40100000 {
+@@ -160,6 +160,14 @@
  				status = "disabled";
  			};
  
@@ -39,6 +37,3 @@ index 831ef2e787ec..07ad8fda5ab6 100644
  			sdmmc1: mmc@48220000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
--- 
-2.39.5
-

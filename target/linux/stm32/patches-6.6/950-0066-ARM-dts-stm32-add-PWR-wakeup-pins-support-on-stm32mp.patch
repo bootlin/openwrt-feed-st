@@ -12,8 +12,6 @@ Change-Id: Id43e59449c1024cfb58555ae569bfc3704714f9f
  arch/arm/boot/dts/st/stm32mp151.dtsi | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 7eb2981ddde6..0ddde1aec082 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
 @@ -5,6 +5,7 @@
@@ -24,7 +22,7 @@ index 7eb2981ddde6..0ddde1aec082 100644
  #include <dt-bindings/reset/stm32mp1-resets.h>
  
  / {
-@@ -1221,6 +1222,21 @@ pwr_mcu: pwr_mcu@50001014 {
+@@ -1221,6 +1222,21 @@
  			reg = <0x50001014 0x4>;
  		};
  
@@ -46,6 +44,3 @@ index 7eb2981ddde6..0ddde1aec082 100644
  		exti: interrupt-controller@5000d000 {
  			compatible = "st,stm32mp1-exti", "syscon";
  			interrupt-controller;
--- 
-2.39.5
-

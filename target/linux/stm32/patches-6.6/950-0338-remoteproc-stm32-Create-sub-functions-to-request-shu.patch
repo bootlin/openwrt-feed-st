@@ -12,11 +12,9 @@ Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
  drivers/remoteproc/stm32_rproc.c | 84 +++++++++++++++++++-------------
  1 file changed, 51 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 47ee6a4c17c2..a5818c4062c4 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -209,6 +209,54 @@ static int stm32_rproc_mbox_idx(struct rproc *rproc, const unsigned char *name)
+@@ -209,6 +209,54 @@ static int stm32_rproc_mbox_idx(struct r
  	return -EINVAL;
  }
  
@@ -71,7 +69,7 @@ index 47ee6a4c17c2..a5818c4062c4 100644
  static int stm32_rproc_prepare(struct rproc *rproc)
  {
  	struct device *dev = rproc->dev.parent;
-@@ -519,17 +567,9 @@ static int stm32_rproc_detach(struct rproc *rproc)
+@@ -519,17 +567,9 @@ static int stm32_rproc_detach(struct rpr
  static int stm32_rproc_stop(struct rproc *rproc)
  {
  	struct stm32_rproc *ddata = rproc->priv;
@@ -91,7 +89,7 @@ index 47ee6a4c17c2..a5818c4062c4 100644
  
  	err = stm32_rproc_set_hold_boot(rproc, true);
  	if (err)
-@@ -541,29 +581,7 @@ static int stm32_rproc_stop(struct rproc *rproc)
+@@ -541,29 +581,7 @@ static int stm32_rproc_stop(struct rproc
  		return err;
  	}
  
@@ -122,6 +120,3 @@ index 47ee6a4c17c2..a5818c4062c4 100644
  }
  
  static void stm32_rproc_kick(struct rproc *rproc, int vqid)
--- 
-2.39.5
-

@@ -13,8 +13,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-raydium-rm68200.c | 49 ++++++++++++++++---
  1 file changed, 42 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raydium-rm68200.c b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-index 531e8e23cca7..f67f08c8cae8 100644
 --- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
 +++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
 @@ -11,6 +11,7 @@
@@ -25,7 +23,7 @@ index 531e8e23cca7..f67f08c8cae8 100644
  #include <linux/regulator/consumer.h>
  
  #include <video/mipi_display.h>
-@@ -97,6 +98,21 @@ static const struct drm_display_mode default_mode = {
+@@ -97,6 +98,21 @@ static const struct drm_display_mode def
  	.height_mm = 122,
  };
  
@@ -47,21 +45,20 @@ index 531e8e23cca7..f67f08c8cae8 100644
  static inline struct rm68200 *panel_to_rm68200(struct drm_panel *panel)
  {
  	return container_of(panel, struct rm68200, panel);
-@@ -322,13 +338,32 @@ static int rm68200_get_modes(struct drm_panel *panel,
+@@ -322,13 +338,32 @@ static int rm68200_get_modes(struct drm_
  			     struct drm_connector *connector)
  {
  	struct drm_display_mode *mode;
--
++	struct rm68200 *ctx = panel_to_rm68200(panel);
++	struct device *dev = ctx->dev;
++	int rotation, ret;
+ 
 -	mode = drm_mode_duplicate(connector->dev, &default_mode);
 -	if (!mode) {
 -		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
 -			default_mode.hdisplay, default_mode.vdisplay,
 -			drm_mode_vrefresh(&default_mode));
 -		return -ENOMEM;
-+	struct rm68200 *ctx = panel_to_rm68200(panel);
-+	struct device *dev = ctx->dev;
-+	int rotation, ret;
-+
 +	ret = of_property_read_u32(dev->of_node, "rotation", &rotation);
 +	if (ret == -EINVAL)
 +		rotation = 0;
@@ -87,6 +84,3 @@ index 531e8e23cca7..f67f08c8cae8 100644
  	}
  
  	drm_mode_set_name(mode);
--- 
-2.39.5
-

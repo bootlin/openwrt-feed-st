@@ -11,11 +11,9 @@ Change-Id: Ib268ba0a85093bca501d48c1dba4ea095c3c73bf
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 128 +++++++++++++++++++++++++
  1 file changed, 128 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index cc0c2aee6f89..b987541816aa 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -246,6 +246,134 @@ usart2: serial@400e0000 {
+@@ -246,6 +246,134 @@
  				status = "disabled";
  			};
  
@@ -150,6 +148,3 @@ index cc0c2aee6f89..b987541816aa 100644
  			sdmmc1: mmc@48220000 {
  				compatible = "st,stm32mp25-sdmmc2", "arm,pl18x", "arm,primecell";
  				arm,primecell-periphid = <0x00353180>;
--- 
-2.39.5
-

@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 888ea544dd57..24beb57b38df 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1938,6 +1938,16 @@ pinctrl: pinctrl@44240000 {
+@@ -1938,6 +1938,16 @@
  			#size-cells = <1>;
  			compatible = "st,stm32mp215-pinctrl";
  			ranges = <0 0x44240000 0x80400>;
@@ -35,6 +33,3 @@ index 888ea544dd57..24beb57b38df 100644
  
  			gpioa: gpio@44240000 {
  				gpio-controller;
--- 
-2.39.5
-

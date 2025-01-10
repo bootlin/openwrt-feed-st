@@ -26,11 +26,9 @@ Change-Id: I1a0615683e5dba5db5328aa96e38848f496851f3
  arch/arm/boot/dts/st/stm32mp131.dtsi | 49 +++++++++++++++++++++++++++-
  1 file changed, 48 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 2dfc1b5f4628..87a97794d941 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1099,10 +1099,57 @@ rcc: rcc@50000000 {
+@@ -1099,10 +1099,57 @@
  		};
  
  		exti: interrupt-controller@5000d000 {
@@ -89,6 +87,3 @@ index 2dfc1b5f4628..87a97794d941 100644
  		};
  
  		syscfg: syscon@50020000 {
--- 
-2.39.5
-

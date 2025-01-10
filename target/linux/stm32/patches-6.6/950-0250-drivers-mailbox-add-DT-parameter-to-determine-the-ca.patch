@@ -34,8 +34,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/mailbox/stm32-ipcc.c | 89 ++++++++++++++++++++++++++++++++++--
  1 file changed, 84 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index 4ad3653f3866..95250e24f60d 100644
 --- a/drivers/mailbox/stm32-ipcc.c
 +++ b/drivers/mailbox/stm32-ipcc.c
 @@ -14,6 +14,7 @@
@@ -77,7 +75,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	spinlock_t lock; /* protect access to IPCC registers */
  	int irqs[IPCC_IRQ_NUM];
  	u32 proc_id;
-@@ -79,10 +93,21 @@ static inline void stm32_ipcc_clr_bits(spinlock_t *lock, void __iomem *reg,
+@@ -79,10 +93,21 @@ static inline void stm32_ipcc_clr_bits(s
  	spin_unlock_irqrestore(lock, flags);
  }
  
@@ -99,7 +97,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	u32 status, mr, tosr, chan;
  	irqreturn_t ret = IRQ_NONE;
  	int proc_offset;
-@@ -101,7 +126,17 @@ static irqreturn_t stm32_ipcc_rx_irq(int irq, void *data)
+@@ -101,7 +126,17 @@ static irqreturn_t stm32_ipcc_rx_irq(int
  
  		dev_dbg(dev, "%s: chan:%d rx\n", __func__, chan);
  
@@ -118,7 +116,7 @@ index 4ad3653f3866..95250e24f60d 100644
  
  		stm32_ipcc_set_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XSCR,
  				    RX_BIT_CHAN(chan));
-@@ -145,7 +180,8 @@ static irqreturn_t stm32_ipcc_tx_irq(int irq, void *data)
+@@ -145,7 +180,8 @@ static irqreturn_t stm32_ipcc_tx_irq(int
  
  static int stm32_ipcc_send_data(struct mbox_chan *link, void *data)
  {
@@ -128,7 +126,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
  					       controller);
  
-@@ -164,7 +200,8 @@ static int stm32_ipcc_send_data(struct mbox_chan *link, void *data)
+@@ -164,7 +200,8 @@ static int stm32_ipcc_send_data(struct m
  
  static int stm32_ipcc_startup(struct mbox_chan *link)
  {
@@ -138,7 +136,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
  					       controller);
  	int ret;
-@@ -184,7 +221,8 @@ static int stm32_ipcc_startup(struct mbox_chan *link)
+@@ -184,7 +221,8 @@ static int stm32_ipcc_startup(struct mbo
  
  static void stm32_ipcc_shutdown(struct mbox_chan *link)
  {
@@ -148,7 +146,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	struct stm32_ipcc *ipcc = container_of(link->mbox, struct stm32_ipcc,
  					       controller);
  
-@@ -192,6 +230,9 @@ static void stm32_ipcc_shutdown(struct mbox_chan *link)
+@@ -192,6 +230,9 @@ static void stm32_ipcc_shutdown(struct m
  	stm32_ipcc_set_bits(&ipcc->lock, ipcc->reg_proc + IPCC_XMR,
  			    RX_BIT_CHAN(chan) | TX_BIT_CHAN(chan));
  
@@ -158,7 +156,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	clk_disable_unprepare(ipcc->clk);
  }
  
-@@ -201,6 +242,26 @@ static const struct mbox_chan_ops stm32_ipcc_ops = {
+@@ -201,6 +242,26 @@ static const struct mbox_chan_ops stm32_
  	.shutdown	= stm32_ipcc_shutdown,
  };
  
@@ -185,7 +183,7 @@ index 4ad3653f3866..95250e24f60d 100644
  static int stm32_ipcc_probe(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
-@@ -293,6 +354,7 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -293,6 +354,7 @@ static int stm32_ipcc_probe(struct platf
  	ipcc->controller.dev = dev;
  	ipcc->controller.txdone_irq = true;
  	ipcc->controller.ops = &stm32_ipcc_ops;
@@ -193,7 +191,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	ipcc->controller.num_chans = ipcc->n_chans;
  	ipcc->controller.chans = devm_kcalloc(dev, ipcc->controller.num_chans,
  					      sizeof(*ipcc->controller.chans),
-@@ -302,13 +364,27 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -302,13 +364,27 @@ static int stm32_ipcc_probe(struct platf
  		goto err_irq_wkp;
  	}
  
@@ -222,7 +220,7 @@ index 4ad3653f3866..95250e24f60d 100644
  	platform_set_drvdata(pdev, ipcc);
  
  	ip_ver = readl_relaxed(ipcc->reg_base + IPCC_VER);
-@@ -334,10 +410,13 @@ static int stm32_ipcc_probe(struct platform_device *pdev)
+@@ -334,10 +410,13 @@ err_clk:
  static int stm32_ipcc_remove(struct platform_device *pdev)
  {
  	struct device *dev = &pdev->dev;
@@ -236,6 +234,3 @@ index 4ad3653f3866..95250e24f60d 100644
  	device_set_wakeup_capable(dev, false);
  
  	return 0;
--- 
-2.39.5
-

@@ -16,8 +16,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp157c-ev1.dts | 1 +
  4 files changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
-index 0da3667ab1e0..7c732fc3c15e 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1.dts
 @@ -10,6 +10,7 @@
@@ -28,8 +26,6 @@ index 0da3667ab1e0..7c732fc3c15e 100644
  
  / {
  	model = "STMicroelectronics STM32MP157A-DK1 Discovery Board";
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index 7a701f7ef0c7..eab3cff10fa9 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 @@ -11,6 +11,7 @@
@@ -40,8 +36,6 @@ index 7a701f7ef0c7..eab3cff10fa9 100644
  
  / {
  	model = "STMicroelectronics STM32MP157C-DK2 Discovery Board";
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 66ed5f9921ba..b39351fc9b4a 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 @@ -9,6 +9,7 @@
@@ -52,8 +46,6 @@ index 66ed5f9921ba..b39351fc9b4a 100644
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/mfd/st,stpmic1.h>
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index cd9c3ff5378b..f8eb0f3d3494 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 @@ -6,6 +6,7 @@
@@ -64,6 +56,3 @@ index cd9c3ff5378b..f8eb0f3d3494 100644
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/input/input.h>
  #include <dt-bindings/media/video-interfaces.h>
--- 
-2.39.5
-

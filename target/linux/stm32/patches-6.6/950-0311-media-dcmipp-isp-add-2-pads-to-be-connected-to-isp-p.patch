@@ -13,11 +13,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-isp.c        | 32 +++++++++++++++++--
  1 file changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index b8b4ede37e9c..a3dc7663cd8e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -199,10 +199,11 @@ static void dcmipp_isp_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -199,10 +199,11 @@ static void dcmipp_isp_adjust_fmt(struct
  static int dcmipp_isp_init_cfg(struct v4l2_subdev *sd,
  			       struct v4l2_subdev_state *state)
  {
@@ -31,7 +29,7 @@ index b8b4ede37e9c..a3dc7663cd8e 100644
  
  		mf = v4l2_subdev_state_get_format(state, i);
  		*mf = fmt_default;
-@@ -210,6 +211,15 @@ static int dcmipp_isp_init_cfg(struct v4l2_subdev *sd,
+@@ -210,6 +211,15 @@ static int dcmipp_isp_init_cfg(struct v4
  				       ISP_MEDIA_BUS_SINK_FMT_DEFAULT;
  	}
  
@@ -47,7 +45,7 @@ index b8b4ede37e9c..a3dc7663cd8e 100644
  	return 0;
  }
  
-@@ -623,12 +633,29 @@ void dcmipp_isp_ent_release(struct dcmipp_ent_device *ved)
+@@ -623,12 +633,29 @@ void dcmipp_isp_ent_release(struct dcmip
  	dcmipp_ent_sd_unregister(ved, &isp->sd);
  }
  
@@ -77,7 +75,7 @@ index b8b4ede37e9c..a3dc7663cd8e 100644
  	};
  	int ret;
  
-@@ -652,6 +679,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent_init(const char *entity_name,
+@@ -652,6 +679,7 @@ struct dcmipp_ent_device *dcmipp_isp_ent
  		kfree(isp);
  		return ERR_PTR(ret);
  	}
@@ -85,6 +83,3 @@ index b8b4ede37e9c..a3dc7663cd8e 100644
  	isp->ved.dcmipp = dcmipp;
  
  	return &isp->ved;
--- 
-2.39.5
-

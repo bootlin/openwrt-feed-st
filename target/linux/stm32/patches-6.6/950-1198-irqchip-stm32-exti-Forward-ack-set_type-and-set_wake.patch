@@ -21,11 +21,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 9 +++++++--
  1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 0a7ecd4eb684..22f4bb0f76a0 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -399,7 +399,11 @@ static int stm32mp_exti_set_type(struct irq_data *d, unsigned int type)
+@@ -399,7 +399,11 @@ unspinlock:
  unlock:
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -38,7 +36,7 @@ index 0a7ecd4eb684..22f4bb0f76a0 100644
  }
  
  static int stm32mp_exti_set_wake(struct irq_data *d, unsigned int on)
-@@ -416,7 +420,7 @@ static int stm32mp_exti_set_wake(struct irq_data *d, unsigned int on)
+@@ -416,7 +420,7 @@ static int stm32mp_exti_set_wake(struct
  
  	raw_spin_unlock(&chip_data->rlock);
  
@@ -47,7 +45,7 @@ index 0a7ecd4eb684..22f4bb0f76a0 100644
  }
  
  static int stm32mp_exti_suspend(struct device *dev)
-@@ -462,6 +466,7 @@ static int stm32mp_exti_retrigger(struct irq_data *d)
+@@ -462,6 +466,7 @@ static int stm32mp_exti_retrigger(struct
  static struct irq_chip stm32mp_exti_chip = {
  	.name			= "stm32mp-exti",
  	.irq_eoi		= stm32mp_exti_eoi,
@@ -55,6 +53,3 @@ index 0a7ecd4eb684..22f4bb0f76a0 100644
  	.irq_mask		= stm32mp_exti_mask,
  	.irq_unmask		= stm32mp_exti_unmask,
  	.irq_request_resources	= irq_chip_request_resources_parent,
--- 
-2.39.5
-

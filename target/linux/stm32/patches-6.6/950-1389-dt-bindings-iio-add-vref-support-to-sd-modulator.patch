@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml    | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
-index d1033bfc0f1b..c3a116427dc3 100644
 --- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
 @@ -27,6 +27,9 @@ properties:
@@ -41,6 +39,3 @@ index d1033bfc0f1b..c3a116427dc3 100644
        #io-backend-cells = <0>;
      };
  
--- 
-2.39.5
-

@@ -22,11 +22,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/linux/iio/backend.h        | 3 +--
  2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index 929aff4040ed..e01b7be8e693 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
-@@ -451,7 +451,6 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_set, IIO_BACKEND);
+@@ -451,7 +451,6 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_inf
  
  /**
   * iio_backend_extend_chan_spec - Extend an IIO channel
@@ -34,7 +32,7 @@ index 929aff4040ed..e01b7be8e693 100644
   * @back: Backend device
   * @chan: IIO channel
   *
-@@ -461,8 +460,7 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_info_set, IIO_BACKEND);
+@@ -461,8 +460,7 @@ EXPORT_SYMBOL_NS_GPL(iio_backend_ext_inf
   * RETURNS:
   * 0 on success, negative error number on failure.
   */
@@ -44,11 +42,9 @@ index 929aff4040ed..e01b7be8e693 100644
  				 struct iio_chan_spec *chan)
  {
  	const struct iio_chan_spec_ext_info *frontend_ext_info = chan->ext_info;
-diff --git a/include/linux/iio/backend.h b/include/linux/iio/backend.h
-index 8099759d7242..4e81931703ab 100644
 --- a/include/linux/iio/backend.h
 +++ b/include/linux/iio/backend.h
-@@ -142,8 +142,7 @@ ssize_t iio_backend_ext_info_set(struct iio_dev *indio_dev, uintptr_t private,
+@@ -142,8 +142,7 @@ ssize_t iio_backend_ext_info_set(struct
  ssize_t iio_backend_ext_info_get(struct iio_dev *indio_dev, uintptr_t private,
  				 const struct iio_chan_spec *chan, char *buf);
  
@@ -58,6 +54,3 @@ index 8099759d7242..4e81931703ab 100644
  				 struct iio_chan_spec *chan);
  void *iio_backend_get_priv(const struct iio_backend *conv);
  struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name);
--- 
-2.39.5
-

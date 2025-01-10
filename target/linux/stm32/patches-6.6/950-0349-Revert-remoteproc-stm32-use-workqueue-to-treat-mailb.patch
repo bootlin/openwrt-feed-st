@@ -23,8 +23,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/remoteproc/stm32_rproc.c | 45 ++++----------------------------
  1 file changed, 5 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index bb7c2c46aa81..d06455f0a527 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -21,7 +21,6 @@
@@ -61,7 +59,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  	bool hold_boot_smc;
  	bool fw_loaded;
  	struct tee_rproc *trproc;
-@@ -433,30 +428,13 @@ static irqreturn_t stm32_rproc_wdg(int irq, void *data)
+@@ -433,30 +428,13 @@ static irqreturn_t stm32_rproc_wdg(int i
  	return IRQ_HANDLED;
  }
  
@@ -94,7 +92,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  }
  
  static void stm32_rproc_free_mbox(struct rproc *rproc)
-@@ -474,7 +452,7 @@ static void stm32_rproc_free_mbox(struct rproc *rproc)
+@@ -474,7 +452,7 @@ static void stm32_rproc_free_mbox(struct
  static const struct stm32_mbox stm32_rproc_mbox[MBOX_NB_MBX] = {
  	{
  		.name = STM32_MBX_VQ0,
@@ -103,7 +101,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  		.client = {
  			.rx_callback = stm32_rproc_mb_callback,
  			.tx_block = false,
-@@ -482,7 +460,7 @@ static const struct stm32_mbox stm32_rproc_mbox[MBOX_NB_MBX] = {
+@@ -482,7 +460,7 @@ static const struct stm32_mbox stm32_rpr
  	},
  	{
  		.name = STM32_MBX_VQ1,
@@ -112,7 +110,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  		.client = {
  			.rx_callback = stm32_rproc_mb_callback,
  			.tx_block = false,
-@@ -538,10 +516,6 @@ static int stm32_rproc_request_mbox(struct rproc *rproc)
+@@ -538,10 +516,6 @@ static int stm32_rproc_request_mbox(stru
  			dev_warn(dev, "cannot get %s mbox\n", name);
  			ddata->mb[i].chan = NULL;
  		}
@@ -123,7 +121,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  	}
  
  	return 0;
-@@ -1022,18 +996,12 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1022,18 +996,12 @@ static int stm32_rproc_probe(struct plat
  		rproc->state = RPROC_DETACHED;
  
  	rproc->has_iommu = false;
@@ -143,7 +141,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  
  	ret = rproc_add(rproc);
  	if (ret)
-@@ -1043,8 +1011,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -1043,8 +1011,6 @@ static int stm32_rproc_probe(struct plat
  
  free_mb:
  	stm32_rproc_free_mbox(rproc);
@@ -152,7 +150,7 @@ index bb7c2c46aa81..d06455f0a527 100644
  free_resources:
  	rproc_resource_cleanup(rproc);
  free_rproc:
-@@ -1071,7 +1037,6 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+@@ -1071,7 +1037,6 @@ static void stm32_rproc_remove(struct pl
  
  	rproc_del(rproc);
  	stm32_rproc_free_mbox(rproc);
@@ -160,6 +158,3 @@ index bb7c2c46aa81..d06455f0a527 100644
  
  	if (device_may_wakeup(dev)) {
  		dev_pm_clear_wake_irq(dev);
--- 
-2.39.5
-

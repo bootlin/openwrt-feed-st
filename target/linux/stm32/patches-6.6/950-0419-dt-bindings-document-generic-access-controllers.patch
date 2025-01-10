@@ -28,9 +28,6 @@ Reviewed-by: Rob Herring <robh@kernel.org>
  1 file changed, 84 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
 
-diff --git a/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
-new file mode 100644
-index 000000000000..99e2865f0e46
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
 @@ -0,0 +1,84 @@
@@ -118,6 +115,3 @@ index 000000000000..99e2865f0e46
 +            access-controller-names = "clock", "bus";
 +        };
 +    };
--- 
-2.39.5
-

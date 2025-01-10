@@ -14,11 +14,9 @@ Change-Id: Ib66d4ec38df7a571df4e831a75216a06be0dd5b1
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 7a65e9db139e..ba85eece0e9b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -102,7 +102,14 @@ intc_rpmsg: interrupt-controller@1 {
+@@ -102,7 +102,14 @@
  		interrupt-controller;
  	};
  
@@ -34,6 +32,3 @@ index 7a65e9db139e..ba85eece0e9b 100644
  };
  
  &rtc {
--- 
-2.39.5
-

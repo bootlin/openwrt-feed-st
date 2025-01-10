@@ -13,11 +13,9 @@ Change-Id: I78abc23f1f7e5373d9a87c0c317ef817b4967ed6
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 41 +++++++++++++++++++
  1 file changed, 41 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 5049a06edb77..78e67cabce6a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -400,6 +400,47 @@ pins {
+@@ -400,6 +400,47 @@
  		};
  	};
  
@@ -65,6 +63,3 @@ index 5049a06edb77..78e67cabce6a 100644
  	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
--- 
-2.39.5
-

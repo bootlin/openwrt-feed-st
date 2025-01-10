@@ -12,11 +12,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/mach-stm32/board-dt.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-stm32/board-dt.c b/arch/arm/mach-stm32/board-dt.c
-index 5dcc4ddd1a56..9ff06f2fcbf4 100644
 --- a/arch/arm/mach-stm32/board-dt.c
 +++ b/arch/arm/mach-stm32/board-dt.c
-@@ -22,6 +22,7 @@ static const char *const stm32_compat[] __initconst = {
+@@ -22,6 +22,7 @@ static const char *const stm32_compat[]
  	"st,stm32mp133",
  	"st,stm32mp135",
  	"st,stm32mp151",
@@ -24,6 +22,3 @@ index 5dcc4ddd1a56..9ff06f2fcbf4 100644
  	"st,stm32mp157",
  	NULL
  };
--- 
-2.39.5
-

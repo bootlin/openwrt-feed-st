@@ -22,8 +22,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 54 +++++++++++++++++++++-----
  1 file changed, 45 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index a7db7b675514..264556939a00 100644
 --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 @@ -16,6 +16,7 @@
@@ -43,7 +41,7 @@ index a7db7b675514..264556939a00 100644
  
  /* Max ECC buffer length */
  #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)
-@@ -243,6 +244,13 @@ static inline struct stm32_fmc2_nand *to_fmc2_nand(struct nand_chip *chip)
+@@ -243,6 +244,13 @@ static inline struct stm32_fmc2_nand *to
  	return container_of(chip, struct stm32_fmc2_nand, chip);
  }
  
@@ -65,7 +63,7 @@ index a7db7b675514..264556939a00 100644
  
  	struct dma_chan *dma_tx_ch;
  	struct dma_chan *dma_rx_ch;
-@@ -1809,7 +1818,7 @@ static int stm32_fmc2_nfc_parse_child(struct stm32_fmc2_nfc *nfc,
+@@ -1809,7 +1818,7 @@ static int stm32_fmc2_nfc_parse_child(st
  			return ret;
  		}
  
@@ -74,7 +72,7 @@ index a7db7b675514..264556939a00 100644
  			dev_err(nfc->dev, "invalid reg value: %d\n", cs);
  			return -EINVAL;
  		}
-@@ -1915,9 +1924,17 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+@@ -1915,9 +1924,17 @@ static int stm32_fmc2_nfc_probe(struct p
  	nand_controller_init(&nfc->base);
  	nfc->base.ops = &stm32_fmc2_nfc_controller_ops;
  
@@ -95,7 +93,7 @@ index a7db7b675514..264556939a00 100644
  
  	ret = stm32_fmc2_nfc_parse_dt(nfc);
  	if (ret)
-@@ -1936,7 +1953,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+@@ -1936,7 +1953,7 @@ static int stm32_fmc2_nfc_probe(struct p
  	if (nfc->dev == nfc->cdev)
  		start_region = 1;
  
@@ -104,7 +102,7 @@ index a7db7b675514..264556939a00 100644
  	     chip_cs++, mem_region += 3) {
  		if (!(nfc->cs_assigned & BIT(chip_cs)))
  			continue;
-@@ -2092,7 +2109,7 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
+@@ -2092,7 +2109,7 @@ static int __maybe_unused stm32_fmc2_nfc
  
  	stm32_fmc2_nfc_wp_disable(nand);
  
@@ -113,7 +111,7 @@ index a7db7b675514..264556939a00 100644
  		if (!(nfc->cs_assigned & BIT(chip_cs)))
  			continue;
  
-@@ -2105,9 +2122,28 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
+@@ -2105,9 +2122,28 @@ static int __maybe_unused stm32_fmc2_nfc
  static SIMPLE_DEV_PM_OPS(stm32_fmc2_nfc_pm_ops, stm32_fmc2_nfc_suspend,
  			 stm32_fmc2_nfc_resume);
  
@@ -144,6 +142,3 @@ index a7db7b675514..264556939a00 100644
  	{}
  };
  MODULE_DEVICE_TABLE(of, stm32_fmc2_nfc_match);
--- 
-2.39.5
-

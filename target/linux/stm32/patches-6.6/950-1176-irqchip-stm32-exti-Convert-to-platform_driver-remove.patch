@@ -35,11 +35,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/irqchip/irq-stm32-exti.c | 9 ++++-----
  1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index 971240e2e31b..26a5193d0ae4 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -898,10 +898,9 @@ static void stm32_exti_remove_irq(void *data)
+@@ -898,10 +898,9 @@ static void stm32_exti_remove_irq(void *
  	irq_domain_remove(domain);
  }
  
@@ -65,6 +63,3 @@ index 971240e2e31b..26a5193d0ae4 100644
  	},
  };
  
--- 
-2.39.5
-

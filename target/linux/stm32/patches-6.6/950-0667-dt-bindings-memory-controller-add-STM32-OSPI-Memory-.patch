@@ -16,9 +16,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  1 file changed, 241 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
-new file mode 100644
-index 000000000000..4e07bb7f5b2b
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-omi.yaml
 @@ -0,0 +1,241 @@
@@ -263,6 +260,3 @@ index 000000000000..4e07bb7f5b2b
 +        spi-max-frequency = <50000000>;
 +      };
 +    };
--- 
-2.39.5
-

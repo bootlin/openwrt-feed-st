@@ -13,8 +13,6 @@ Change-Id: I63960755b8626349128f4f6ce349fc4618a069a6
  .../devicetree/bindings/phy/st,stm32-combophy.yaml         | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
-index 4628dacaf28d..5c46225f4e7e 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-combophy.yaml
 @@ -69,6 +69,13 @@ properties:
@@ -31,6 +29,3 @@ index 4628dacaf28d..5c46225f4e7e 100644
    st,output-micro-ohms:
      minimum: 3999000
      maximum: 6090000
--- 
-2.39.5
-

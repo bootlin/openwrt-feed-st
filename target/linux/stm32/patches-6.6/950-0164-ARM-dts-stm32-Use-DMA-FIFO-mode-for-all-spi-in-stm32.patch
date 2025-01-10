@@ -12,11 +12,9 @@ Change-Id: I1e1a73c7dfb1d73521ec2f09dc3a1366769d4921
  arch/arm/boot/dts/st/stm32mp151.dtsi | 20 ++++++++++----------
  1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index ca93ef5c06fe..b97513574b50 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -445,8 +445,8 @@ spi2: spi@4000b000 {
+@@ -445,8 +445,8 @@
  			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc SPI2_K>;
  			resets = <&rcc SPI2_R>;
@@ -27,7 +25,7 @@ index ca93ef5c06fe..b97513574b50 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
-@@ -470,8 +470,8 @@ spi3: spi@4000c000 {
+@@ -470,8 +470,8 @@
  			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc SPI3_K>;
  			resets = <&rcc SPI3_R>;
@@ -38,7 +36,7 @@ index ca93ef5c06fe..b97513574b50 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
-@@ -778,8 +778,8 @@ spi1: spi@44004000 {
+@@ -778,8 +778,8 @@
  			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc SPI1_K>;
  			resets = <&rcc SPI1_R>;
@@ -49,7 +47,7 @@ index ca93ef5c06fe..b97513574b50 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
-@@ -792,8 +792,8 @@ spi4: spi@44005000 {
+@@ -792,8 +792,8 @@
  			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc SPI4_K>;
  			resets = <&rcc SPI4_R>;
@@ -60,7 +58,7 @@ index ca93ef5c06fe..b97513574b50 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
-@@ -888,8 +888,8 @@ spi5: spi@44009000 {
+@@ -888,8 +888,8 @@
  			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
  			clocks = <&rcc SPI5_K>;
  			resets = <&rcc SPI5_R>;
@@ -71,6 +69,3 @@ index ca93ef5c06fe..b97513574b50 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
--- 
-2.39.5
-

@@ -21,8 +21,6 @@ Reviewed-by: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/watchdog/stm32_iwdg.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index d700e0d49bb9..f8ecb33490e5 100644
 --- a/drivers/watchdog/stm32_iwdg.c
 +++ b/drivers/watchdog/stm32_iwdg.c
 @@ -30,6 +30,7 @@
@@ -51,7 +49,7 @@ index d700e0d49bb9..f8ecb33490e5 100644
  };
  
  static inline u32 reg_read(void __iomem *base, u32 reg)
-@@ -348,6 +353,8 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+@@ -348,6 +353,8 @@ static int stm32_iwdg_probe(struct platf
  	if (ret)
  		return ret;
  
@@ -60,6 +58,3 @@ index d700e0d49bb9..f8ecb33490e5 100644
  	watchdog_set_drvdata(wdd, wdt);
  	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
  	watchdog_init_timeout(wdd, 0, dev);
--- 
-2.39.5
-

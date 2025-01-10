@@ -18,11 +18,9 @@ Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
  drivers/usb/dwc2/hcd.c | 26 +++++++++++++-------------
  1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 6a368cb3640d..e5d9a292b677 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -4422,21 +4422,21 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
+@@ -4422,21 +4422,21 @@ static int _dwc2_hcd_resume(struct usb_h
  	if (hsotg->lx_state != DWC2_L2)
  		goto unlock;
  
@@ -57,6 +55,3 @@ index 6a368cb3640d..e5d9a292b677 100644
  		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
  		if (ret)
  			dev_err(hsotg->dev,
--- 
-2.39.5
-

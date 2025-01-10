@@ -16,11 +16,9 @@ Change-Id: I079c4bdafd94333641adfffc3d3623e3d24cf319
  arch/arm/boot/dts/st/stm32mp157f-ed1.dts | 10 ++++++++++
  4 files changed, 40 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index acf4cbbf131d..248785aa0bfd 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -72,6 +72,16 @@ retram: retram@38000000 {
+@@ -72,6 +72,16 @@
  		};
  	};
  
@@ -37,11 +35,9 @@ index acf4cbbf131d..248785aa0bfd 100644
  	sd_switch: regulator-sd-switch {
  		compatible = "regulator-gpio";
  		regulator-name = "sd_switch";
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 8f81982ce934..37f024cba2f3 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -72,6 +72,16 @@ retram: retram@38000000 {
+@@ -72,6 +72,16 @@
  		};
  	};
  
@@ -58,11 +54,9 @@ index 8f81982ce934..37f024cba2f3 100644
  	sd_switch: regulator-sd-switch {
  		compatible = "regulator-gpio";
  		regulator-name = "sd_switch";
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 37e11402dae7..8cc48ba0ac3e 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -72,6 +72,16 @@ retram: retram@38000000 {
+@@ -72,6 +72,16 @@
  		};
  	};
  
@@ -79,11 +73,9 @@ index 37e11402dae7..8cc48ba0ac3e 100644
  	sd_switch: regulator-sd-switch {
  		compatible = "regulator-gpio";
  		regulator-name = "sd_switch";
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 7ed017210586..1b63722b8f1f 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -72,6 +72,16 @@ retram: retram@38000000 {
+@@ -72,6 +72,16 @@
  		};
  	};
  
@@ -100,6 +92,3 @@ index 7ed017210586..1b63722b8f1f 100644
  	sd_switch: regulator-sd-switch {
  		compatible = "regulator-gpio";
  		regulator-name = "sd_switch";
--- 
-2.39.5
-

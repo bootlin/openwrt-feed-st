@@ -48,8 +48,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/i2c/busses/i2c-rpmsg.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rpmsg.c b/drivers/i2c/busses/i2c-rpmsg.c
-index aea8ce069597..fa0514da97bd 100644
 --- a/drivers/i2c/busses/i2c-rpmsg.c
 +++ b/drivers/i2c/busses/i2c-rpmsg.c
 @@ -65,7 +65,7 @@ struct rpmsg_i2c_dev {
@@ -61,7 +59,7 @@ index aea8ce069597..fa0514da97bd 100644
  	struct device *dev;
  
  	struct rpmsg_device *rpdev;
-@@ -258,7 +258,7 @@ static int rpmsg_i2c_probe(struct rpmsg_device *rpdev)
+@@ -258,7 +258,7 @@ static int rpmsg_i2c_probe(struct rpmsg_
  	mutex_lock(&rpmsg_i2c_lock);
  
  	list_for_each_entry(ri2c_dev, &rpmsg_i2c_list, list) {
@@ -70,7 +68,7 @@ index aea8ce069597..fa0514da97bd 100644
  			if (ri2c_dev->rpdev) {
  				ret = -EBUSY;
  				goto out;
-@@ -356,10 +356,10 @@ static int rpmsg_i2c_platform_probe(struct platform_device *pdev)
+@@ -356,10 +356,10 @@ static int rpmsg_i2c_platform_probe(stru
  		dev_err(dev, "Error, proc-id property is missing: %d\n", ret);
  		return ret;
  	}
@@ -83,6 +81,3 @@ index aea8ce069597..fa0514da97bd 100644
  	ri2c_dev->rpdrv.probe = rpmsg_i2c_probe;
  	ri2c_dev->rpdrv.callback = rpmsg_i2c_cb;
  	ri2c_dev->rpdrv.remove = rpmsg_i2c_remove;
--- 
-2.39.5
-

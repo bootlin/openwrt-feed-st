@@ -12,11 +12,9 @@ Change-Id: Ib3fa3c8f2eaa74053d80544119934c486e625504
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 1b1bd238bc90..cdb780cdb18d 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -565,6 +565,20 @@ &sdmmc3 {
+@@ -565,6 +565,20 @@
  	status = "disabled";
  };
  
@@ -37,6 +35,3 @@ index 1b1bd238bc90..cdb780cdb18d 100644
  &timers1 {
  	/* spare dmas for other usage */
  	/delete-property/dmas;
--- 
-2.39.5
-

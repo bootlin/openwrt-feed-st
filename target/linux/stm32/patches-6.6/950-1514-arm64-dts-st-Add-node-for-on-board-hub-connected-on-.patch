@@ -15,11 +15,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index c3cfb5ad0198..7ceef18c72c9 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -859,6 +859,17 @@ &usb2_phy2 {
+@@ -859,6 +859,17 @@
  &usbh {
  	status = "okay";
  
@@ -37,6 +35,3 @@ index c3cfb5ad0198..7ceef18c72c9 100644
  	usbh_ohci: usb@482e0000 {
  		status = "disabled";
  	};
--- 
-2.39.5
-

@@ -11,11 +11,9 @@ Change-Id: I06f983fe3ece96936a41ce1217450ec492808c76
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 02acbbde6b0a..b554f095e797 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -14,4 +14,13 @@ vdec: vdec@480d0000 {
+@@ -14,4 +14,13 @@
  		clocks = <&rcc CK_BUS_VDEC>;
  		access-controllers = <&rifsc 89>;
  	};
@@ -29,6 +27,3 @@ index 02acbbde6b0a..b554f095e797 100644
 +		access-controllers = <&rifsc 90>;
 +	};
  };
--- 
-2.39.5
-

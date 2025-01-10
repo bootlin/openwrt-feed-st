@@ -11,8 +11,6 @@ Signed-off-by: Christian Bruel <christian.bruel@foss.st.com>
  drivers/pci/pcie/aer.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index c9afe4362835..241a27613974 100644
 --- a/drivers/pci/pcie/aer.c
 +++ b/drivers/pci/pcie/aer.c
 @@ -119,6 +119,7 @@ bool pci_aer_available(void)
@@ -23,6 +21,3 @@ index c9afe4362835..241a27613974 100644
  
  #ifdef CONFIG_PCIE_ECRC
  
--- 
-2.39.5
-

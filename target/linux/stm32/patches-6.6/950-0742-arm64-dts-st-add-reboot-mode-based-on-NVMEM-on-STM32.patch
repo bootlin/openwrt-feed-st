@@ -18,11 +18,9 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c380f63406fa..d60590a364a1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2437,6 +2437,20 @@ boot_mode: tamp-bkp@180 {
+@@ -2437,6 +2437,20 @@
  					reg = <0x180 0x4>;
  				};
  			};
@@ -43,6 +41,3 @@ index c380f63406fa..d60590a364a1 100644
  		};
  
  		exti2: interrupt-controller@46230000 {
--- 
-2.39.5
-

@@ -29,11 +29,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp15xd.dtsi | 6 +++---
  2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index d70480b0c4d7..518043b9efdf 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -149,7 +149,7 @@ cpu_thermal: cpu-thermal {
+@@ -149,7 +149,7 @@
  			trips {
  				cpu-crit {
  					temperature = <120000>;
@@ -42,8 +40,6 @@ index d70480b0c4d7..518043b9efdf 100644
  					type = "critical";
  				};
  			};
-diff --git a/arch/arm/boot/dts/st/stm32mp15xd.dtsi b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
-index d19f609355c6..a5feeec2e4cd 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 @@ -7,13 +7,13 @@
@@ -63,6 +59,3 @@ index d19f609355c6..a5feeec2e4cd 100644
  			hysteresis = <10000>;
  			type = "passive";
  		};
--- 
-2.39.5
-

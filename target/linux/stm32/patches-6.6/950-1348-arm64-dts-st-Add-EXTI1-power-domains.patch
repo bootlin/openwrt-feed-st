@@ -22,11 +22,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 9a48681980eb..446693625024 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -2271,6 +2271,7 @@ exti1: interrupt-controller@44220000 {
+@@ -2271,6 +2271,7 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -34,11 +32,9 @@ index 9a48681980eb..446693625024 100644
  			reg = <0x44220000 0x400>;
  			interrupts-extended =
  				<&intc GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 010a281d808e..1eafc59ac426 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2598,6 +2598,7 @@ exti1: interrupt-controller@44220000 {
+@@ -2598,6 +2598,7 @@
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -46,6 +42,3 @@ index 010a281d808e..1eafc59ac426 100644
  			reg = <0x44220000 0x400>;
  			interrupts-extended =
  				<&intc GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
--- 
-2.39.5
-

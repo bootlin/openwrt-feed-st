@@ -17,11 +17,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index a0f389102105..0ed2a0a07722 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -227,6 +227,18 @@ hpdma3: dma-controller@40420000 {
+@@ -227,6 +227,18 @@
  			st,syscfg-arcr = <&syscfg 0x2050 0x4>;
  		};
  
@@ -40,6 +38,3 @@ index a0f389102105..0ed2a0a07722 100644
  		rifsc: bus@42080000 {
  			compatible = "st,stm32mp25-rifsc", "simple-bus";
  			reg = <0x42080000 0x1000>;
--- 
-2.39.5
-

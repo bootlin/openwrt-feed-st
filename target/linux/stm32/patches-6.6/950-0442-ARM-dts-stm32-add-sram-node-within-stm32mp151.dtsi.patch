@@ -12,11 +12,9 @@ Change-Id: Iad2c37b1b40b107ac7655d0b8a561a3b6c329a2c
  arch/arm/boot/dts/st/stm32mp151.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index d0b33c5ddc2d..3739324a9a50 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -153,6 +153,14 @@ soc {
+@@ -153,6 +153,14 @@
  		interrupt-parent = <&intc>;
  		ranges;
  
@@ -31,6 +29,3 @@ index d0b33c5ddc2d..3739324a9a50 100644
  		hsem: hwspinlock@4c000000 {
  			compatible = "st,stm32-hwspinlock";
  			#hwlock-cells = <2>;
--- 
-2.39.5
-

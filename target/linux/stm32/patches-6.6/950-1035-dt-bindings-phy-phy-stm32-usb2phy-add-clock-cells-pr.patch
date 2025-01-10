@@ -22,8 +22,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
-index baf351793234..2b2222e4af3b 100644
 --- a/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 +++ b/Documentation/devicetree/bindings/phy/st,stm32-usb2phy.yaml
 @@ -144,6 +144,10 @@ properties:
@@ -53,6 +51,3 @@ index baf351793234..2b2222e4af3b 100644
          st,syscfg       = <&syscfg 0x2800>;
          clocks          = <&rcc CK_KER_USB2PHY2>;
          resets          = <&rcc USB2PHY2_R>;
--- 
-2.39.5
-

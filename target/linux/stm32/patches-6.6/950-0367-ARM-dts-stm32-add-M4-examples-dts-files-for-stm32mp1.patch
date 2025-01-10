@@ -31,8 +31,6 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  create mode 100644 arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
  create mode 100644 arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
 
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index cbd2cea277ae..1c201b5b5533 100644
 --- a/arch/arm/boot/dts/st/Makefile
 +++ b/arch/arm/boot/dts/st/Makefile
 @@ -40,9 +40,11 @@ dtb-$(CONFIG_ARCH_STM32) += \
@@ -80,9 +78,6 @@ index cbd2cea277ae..1c201b5b5533 100644
  dtb-$(CONFIG_ARCH_U8500) += \
  	ste-snowball.dtb \
  	ste-hrefprev60-stuib.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts
-new file mode 100644
-index 000000000000..4bd40eba12f6
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-m4-examples.dts
 @@ -0,0 +1,128 @@
@@ -214,9 +209,6 @@ index 000000000000..4bd40eba12f6
 +&timers1 {
 +	status = "disabled";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts
-new file mode 100644
-index 000000000000..760ca55c279a
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-m4-examples.dts
 @@ -0,0 +1,14 @@
@@ -234,9 +226,6 @@ index 000000000000..760ca55c279a
 +	model = "STMicroelectronics STM32MP157A-EV1 configured to run M4 examples";
 +	compatible = "st,stm32mp157a-ev1-m4-examples", "st,stm32mp157a-ev1", "st,stm32mp157a-ed1", "st,stm32mp157";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts
-new file mode 100644
-index 000000000000..1fbd2b8c44ad
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-m4-examples.dts
 @@ -0,0 +1,128 @@
@@ -368,9 +357,6 @@ index 000000000000..1fbd2b8c44ad
 +&timers1 {
 +	status = "disabled";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts
-new file mode 100644
-index 000000000000..2266a3ce559e
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-m4-examples.dts
 @@ -0,0 +1,150 @@
@@ -524,9 +510,6 @@ index 000000000000..2266a3ce559e
 +&timers2 {
 +	status = "disabled";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts
-new file mode 100644
-index 000000000000..8e37e7640e86
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157d-dk1-m4-examples.dts
 @@ -0,0 +1,128 @@
@@ -658,9 +641,6 @@ index 000000000000..8e37e7640e86
 +&timers1 {
 +	status = "disabled";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts
-new file mode 100644
-index 000000000000..4a4cb1532915
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1-m4-examples.dts
 @@ -0,0 +1,14 @@
@@ -678,9 +658,6 @@ index 000000000000..4a4cb1532915
 +	model = "STMicroelectronics STM32MP157D-EV1 configured to run M4 examples";
 +	compatible = "st,stm32mp157d-ev1-m4-examples", "st,stm32mp157d-ev1", "st,stm32mp157d-ed1", "st,stm32mp157";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
-new file mode 100644
-index 000000000000..ccec51342a24
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-m4-examples.dts
 @@ -0,0 +1,128 @@
@@ -812,9 +789,6 @@ index 000000000000..ccec51342a24
 +&timers1 {
 +	status = "disabled";
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
-new file mode 100644
-index 000000000000..6964892a1cdf
 --- /dev/null
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1-m4-examples.dts
 @@ -0,0 +1,151 @@
@@ -969,6 +943,3 @@ index 000000000000..6964892a1cdf
 +&timers2 {
 +	status = "disabled";
 +};
--- 
-2.39.5
-

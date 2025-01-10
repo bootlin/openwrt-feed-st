@@ -22,11 +22,9 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  drivers/pwm/pwm-stm32.c | 9 +++------
  1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-index b91a14c895be..4bfedc2989e7 100644
 --- a/drivers/pwm/pwm-stm32.c
 +++ b/drivers/pwm/pwm-stm32.c
-@@ -583,10 +583,9 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
+@@ -583,10 +583,9 @@ static void stm32_pwm_detect_complementa
  	priv->have_complementary_output = (ccer != 0);
  }
  
@@ -39,7 +37,7 @@ index b91a14c895be..4bfedc2989e7 100644
  
  	/*
  	 * If channels enable bits don't exist writing 1 will have no
-@@ -595,9 +594,7 @@ static unsigned int stm32_pwm_detect_channels(struct stm32_pwm *priv,
+@@ -595,9 +594,7 @@ static unsigned int stm32_pwm_detect_cha
  	regmap_read(priv->regmap, TIM_CCER, &ccer_backup);
  	regmap_set_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
  	regmap_read(priv->regmap, TIM_CCER, &ccer);
@@ -50,6 +48,3 @@ index b91a14c895be..4bfedc2989e7 100644
  
  	return hweight32(ccer & TIM_CCER_CCXE);
  }
--- 
-2.39.5
-

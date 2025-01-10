@@ -13,11 +13,9 @@ Signed-off-by: Eric Fourmont <eric.fourmont-ext@st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 54 ++++++++++++++--------------
  1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 618147ae336e..ca93ef5c06fe 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -426,6 +426,17 @@ counter {
+@@ -426,6 +426,17 @@
  			};
  		};
  
@@ -35,7 +33,7 @@ index 618147ae336e..ca93ef5c06fe 100644
  		spi2: spi@4000b000 {
  			#address-cells = <1>;
  			#size-cells = <0>;
-@@ -440,13 +451,13 @@ spi2: spi@4000b000 {
+@@ -440,13 +451,13 @@
  			status = "disabled";
  		};
  
@@ -54,7 +52,7 @@ index 618147ae336e..ca93ef5c06fe 100644
  			dma-names = "rx", "tx";
  			status = "disabled";
  		};
-@@ -465,17 +476,6 @@ spi3: spi@4000c000 {
+@@ -465,17 +476,6 @@
  			status = "disabled";
  		};
  
@@ -72,7 +70,7 @@ index 618147ae336e..ca93ef5c06fe 100644
  		spdifrx: audio-controller@4000d000 {
  			compatible = "st,stm32h7-spdifrx";
  			#sound-dai-cells = <0>;
-@@ -759,6 +759,17 @@ usart6: serial@44003000 {
+@@ -759,6 +759,17 @@
  			status = "disabled";
  		};
  
@@ -90,10 +88,11 @@ index 618147ae336e..ca93ef5c06fe 100644
  		spi1: spi@44004000 {
  			#address-cells = <1>;
  			#size-cells = <0>;
-@@ -773,17 +784,6 @@ spi1: spi@44004000 {
+@@ -772,17 +783,6 @@
+ 			dma-names = "rx", "tx";
  			status = "disabled";
  		};
- 
+-
 -		i2s1: audio-controller@44004000 {
 -			compatible = "st,stm32h7-i2s";
 -			#sound-dai-cells = <0>;
@@ -104,10 +103,6 @@ index 618147ae336e..ca93ef5c06fe 100644
 -			dma-names = "rx", "tx";
 -			status = "disabled";
 -		};
--
+ 
  		spi4: spi@44005000 {
  			#address-cells = <1>;
- 			#size-cells = <0>;
--- 
-2.39.5
-

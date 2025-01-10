@@ -25,11 +25,9 @@ Reviewed-by: Yannick FERTRE <yannick.fertre@foss.st.com>
  drivers/input/touchscreen/goodix.c | 50 ++++++++++++++++--------------
  1 file changed, 27 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index f0879730cb6a..947b20d4fb65 100644
 --- a/drivers/input/touchscreen/goodix.c
 +++ b/drivers/input/touchscreen/goodix.c
-@@ -184,13 +184,7 @@ int goodix_i2c_read(struct i2c_client *client, u16 reg, u8 *buf, int len)
+@@ -184,13 +184,7 @@ int goodix_i2c_read(struct i2c_client *c
  	msgs[1].buf   = buf;
  
  	ret = i2c_transfer(client->adapter, msgs, 2);
@@ -44,7 +42,7 @@ index f0879730cb6a..947b20d4fb65 100644
  }
  
  /**
-@@ -221,15 +215,8 @@ int goodix_i2c_write(struct i2c_client *client, u16 reg, const u8 *buf, int len)
+@@ -221,15 +215,8 @@ int goodix_i2c_write(struct i2c_client *
  	msg.len = len + 2;
  
  	ret = i2c_transfer(client->adapter, &msg, 1);
@@ -61,7 +59,7 @@ index f0879730cb6a..947b20d4fb65 100644
  }
  
  int goodix_i2c_write_u8(struct i2c_client *client, u16 reg, u8 value)
-@@ -271,8 +258,10 @@ static int goodix_ts_read_input_report(struct goodix_ts_data *ts, u8 *data)
+@@ -271,8 +258,10 @@ static int goodix_ts_read_input_report(s
  	do {
  		error = goodix_i2c_read(ts->client, addr, data,
  					header_contact_keycode_size);
@@ -73,7 +71,7 @@ index f0879730cb6a..947b20d4fb65 100644
  
  		if (data[0] & GOODIX_BUFFER_STATUS_READY) {
  			touch_num = data[0] & 0x0f;
-@@ -509,7 +498,9 @@ static irqreturn_t goodix_ts_irq_handler(int irq, void *dev_id)
+@@ -509,7 +498,9 @@ static irqreturn_t goodix_ts_irq_handler
  	struct goodix_ts_data *ts = dev_id;
  
  	goodix_process_events(ts);
@@ -84,7 +82,7 @@ index f0879730cb6a..947b20d4fb65 100644
  
  	return IRQ_HANDLED;
  }
-@@ -634,9 +625,11 @@ int goodix_send_cfg(struct goodix_ts_data *ts, const u8 *cfg, int len)
+@@ -634,9 +625,11 @@ int goodix_send_cfg(struct goodix_ts_dat
  		return error;
  
  	error = goodix_i2c_write(ts->client, ts->chip->config_addr, cfg, len);
@@ -98,7 +96,7 @@ index f0879730cb6a..947b20d4fb65 100644
  	dev_dbg(&ts->client->dev, "Config sent successfully.");
  
  	/* Let the firmware reconfigure itself, so sleep for 10ms */
-@@ -1081,8 +1074,10 @@ static int goodix_read_version(struct goodix_ts_data *ts)
+@@ -1081,8 +1074,10 @@ static int goodix_read_version(struct go
  	char id_str[GOODIX_ID_MAX_LEN + 1];
  
  	error = goodix_i2c_read(ts->client, GOODIX_REG_ID, buf, sizeof(buf));
@@ -110,7 +108,7 @@ index f0879730cb6a..947b20d4fb65 100644
  
  	memcpy(id_str, buf, GOODIX_ID_MAX_LEN);
  	id_str[GOODIX_ID_MAX_LEN] = 0;
-@@ -1108,10 +1103,13 @@ static int goodix_i2c_test(struct i2c_client *client)
+@@ -1108,10 +1103,13 @@ static int goodix_i2c_test(struct i2c_cl
  	u8 test;
  
  	while (retry++ < 2) {
@@ -125,7 +123,7 @@ index f0879730cb6a..947b20d4fb65 100644
  		msleep(20);
  	}
  
-@@ -1392,8 +1390,10 @@ static int goodix_ts_probe(struct i2c_client *client)
+@@ -1392,8 +1390,10 @@ reset:
  		return error;
  
  	error = goodix_read_version(ts);
@@ -137,7 +135,7 @@ index f0879730cb6a..947b20d4fb65 100644
  
  	ts->chip = goodix_get_chip_data(ts->id);
  
-@@ -1470,6 +1470,7 @@ static int goodix_suspend(struct device *dev)
+@@ -1470,6 +1470,7 @@ static int goodix_suspend(struct device
  	error = goodix_i2c_write_u8(ts->client, GOODIX_REG_COMMAND,
  				    GOODIX_CMD_SCREEN_OFF);
  	if (error) {
@@ -145,7 +143,7 @@ index f0879730cb6a..947b20d4fb65 100644
  		goodix_irq_direction_input(ts);
  		goodix_request_irq(ts);
  		return -EAGAIN;
-@@ -1512,7 +1513,10 @@ static int goodix_resume(struct device *dev)
+@@ -1512,7 +1513,10 @@ static int goodix_resume(struct device *
  
  	error = goodix_i2c_read(ts->client, ts->chip->config_addr,
  				&config_ver, 1);
@@ -157,6 +155,3 @@ index f0879730cb6a..947b20d4fb65 100644
  		dev_info(dev, "Config version mismatch %d != %d, resetting controller\n",
  			 config_ver, ts->config[0]);
  
--- 
-2.39.5
-

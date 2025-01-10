@@ -19,8 +19,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/clk/stm32/clk-stm32mp13.c  | 1001 ++++++++++++++++++++++++++++
  3 files changed, 1196 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32-core.c b/drivers/clk/stm32/clk-stm32-core.c
-index c50c97293bfb..4d3c2d2f40c7 100644
 --- a/drivers/clk/stm32/clk-stm32-core.c
 +++ b/drivers/clk/stm32/clk-stm32-core.c
 @@ -19,6 +19,9 @@
@@ -33,7 +31,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  static int stm32_rcc_clock_init(struct device *dev,
  				const struct of_device_id *match,
  				void __iomem *base)
-@@ -27,6 +30,7 @@ static int stm32_rcc_clock_init(struct device *dev,
+@@ -27,6 +30,7 @@ static int stm32_rcc_clock_init(struct d
  	struct clk_hw_onecell_data *clk_data = data->hw_clks;
  	struct clk_hw **hws;
  	int n, max_binding;
@@ -41,7 +39,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  
  	max_binding =  data->maxbinding;
  
-@@ -34,6 +38,8 @@ static int stm32_rcc_clock_init(struct device *dev,
+@@ -34,6 +38,8 @@ static int stm32_rcc_clock_init(struct d
  	if (!clk_data)
  		return -ENOMEM;
  
@@ -50,7 +48,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  	clk_data->num = max_binding;
  
  	hws = clk_data->hws;
-@@ -63,7 +69,14 @@ static int stm32_rcc_clock_init(struct device *dev,
+@@ -63,7 +69,14 @@ static int stm32_rcc_clock_init(struct d
  			hws[cfg_clock->id] = hw;
  	}
  
@@ -66,7 +64,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  }
  
  int stm32_rcc_init(struct device *dev, const struct of_device_id *match_data,
-@@ -98,9 +111,9 @@ int stm32_rcc_init(struct device *dev, const struct of_device_id *match_data,
+@@ -98,9 +111,9 @@ int stm32_rcc_init(struct device *dev, c
  	return 0;
  }
  
@@ -79,7 +77,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  {
  	const struct stm32_mux_cfg *mux = &data->muxes[mux_id];
  	u32 mask = BIT(mux->width) - 1;
-@@ -195,9 +208,9 @@ static void stm32_gate_disable_unused(void __iomem *base,
+@@ -195,9 +208,9 @@ static void stm32_gate_disable_unused(vo
  		writel(readl(addr) & ~BIT(gate->bit_idx), addr);
  }
  
@@ -92,7 +90,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  {
  	const struct stm32_gate_cfg *gate = &data->gates[gate_id];
  
-@@ -227,10 +240,10 @@ static unsigned int _get_div(const struct clk_div_table *table,
+@@ -227,10 +240,10 @@ static unsigned int _get_div(const struc
  	return val + 1;
  }
  
@@ -107,7 +105,7 @@ index c50c97293bfb..4d3c2d2f40c7 100644
  {
  	const struct stm32_div_cfg *divider = &data->dividers[div_id];
  	unsigned int val;
-@@ -764,3 +777,137 @@ struct clk_hw *clk_stm32_composite_register(struct device *dev,
+@@ -764,3 +777,137 @@ struct clk_hw *clk_stm32_composite_regis
  
  	return hw;
  }
@@ -245,8 +243,6 @@ index c50c97293bfb..4d3c2d2f40c7 100644
 +{
 +}
 +#endif
-diff --git a/drivers/clk/stm32/clk-stm32-core.h b/drivers/clk/stm32/clk-stm32-core.h
-index 4be103710e12..ce34705e4678 100644
 --- a/drivers/clk/stm32/clk-stm32-core.h
 +++ b/drivers/clk/stm32/clk-stm32-core.h
 @@ -57,6 +57,7 @@ struct clock_config {
@@ -312,8 +308,6 @@ index 4be103710e12..ce34705e4678 100644
  /* MUX define */
  #define MUX_NO_RDY		0xFF
  #define MUX_SAFE		BIT(7)
-diff --git a/drivers/clk/stm32/clk-stm32mp13.c b/drivers/clk/stm32/clk-stm32mp13.c
-index e5bc5e66bce6..93dca87bea9a 100644
 --- a/drivers/clk/stm32/clk-stm32mp13.c
 +++ b/drivers/clk/stm32/clk-stm32mp13.c
 @@ -18,6 +18,55 @@
@@ -428,7 +422,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  	CFG_GATE(GATE_MCO1,		RCC_MCO1CFGR,		12),
  	CFG_GATE(GATE_MCO2,		RCC_MCO2CFGR,		12),
  	CFG_GATE(GATE_DBGCK,		RCC_DBGCFGR,		8),
-@@ -271,6 +369,27 @@ static struct stm32_gate_cfg stm32mp13_gates[] = {
+@@ -271,6 +369,27 @@ static struct stm32_gate_cfg stm32mp13_g
  
  /* STM32 Divivers definition */
  enum enum_div_cfg {
@@ -485,7 +479,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  static const struct clk_div_table ck_trace_div_table[] = {
  	{ 0, 1 }, { 1, 2 }, { 2, 4 }, { 3, 8 },
  	{ 4, 16 }, { 5, 16 }, { 6, 16 }, { 7, 16 },
-@@ -298,6 +439,29 @@ static const struct clk_div_table ck_trace_div_table[] = {
+@@ -298,6 +439,29 @@ static const struct clk_div_table ck_tra
  	}
  
  static const struct stm32_div_cfg stm32mp13_dividers[DIV_NB] = {
@@ -515,7 +509,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  	CFG_DIV(DIV_RTC, RCC_RTCDIVR, 0, 6, 0, NULL, DIV_NO_RDY),
  	CFG_DIV(DIV_MCO1, RCC_MCO1CFGR, 4, 4, 0, NULL, DIV_NO_RDY),
  	CFG_DIV(DIV_MCO2, RCC_MCO2CFGR, 4, 4, 0, NULL, DIV_NO_RDY),
-@@ -308,6 +472,16 @@ static const struct stm32_div_cfg stm32mp13_dividers[DIV_NB] = {
+@@ -308,6 +472,16 @@ static const struct stm32_div_cfg stm32m
  
  /* STM32 Muxes definition */
  enum enum_mux_cfg {
@@ -549,7 +543,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  	CFG_MUX(MUX_I2C12,	RCC_I2C12CKSELR,	0, 3),
  	CFG_MUX(MUX_LPTIM45,	RCC_LPTIM45CKSELR,	0, 3),
  	CFG_MUX(MUX_SPI23,	RCC_SPI2S23CKSELR,	0, 3),
-@@ -1535,6 +1719,10 @@ static struct clk_hw *stm32mp13_is_multi_mux(struct clk_hw *hw)
+@@ -1535,6 +1719,10 @@ static struct clk_hw *stm32mp13_is_multi
  
  static u16 stm32mp13_cpt_gate[GATE_NB];
  
@@ -560,7 +554,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  static struct clk_stm32_clock_data stm32mp13_clock_data = {
  	.gate_cpt	= stm32mp13_cpt_gate,
  	.gates		= stm32mp13_gates,
-@@ -1556,6 +1744,9 @@ static const struct stm32_rcc_match_data stm32mp13_data = {
+@@ -1556,6 +1744,9 @@ static const struct stm32_rcc_match_data
  	.check_security = &stm32mp13_clock_is_provided_by_secure,
  	.maxbinding	= STM32MP1_LAST_CLK,
  	.reset_data	= &stm32mp13_reset_data,
@@ -570,7 +564,7 @@ index e5bc5e66bce6..93dca87bea9a 100644
  };
  
  static const struct of_device_id stm32mp13_match_data[] = {
-@@ -1592,3 +1783,813 @@ static int __init stm32mp13_clocks_init(void)
+@@ -1592,3 +1783,813 @@ static int __init stm32mp13_clocks_init(
  	return platform_driver_register(&stm32mp13_rcc_clocks_driver);
  }
  core_initcall(stm32mp13_clocks_init);
@@ -1384,6 +1378,3 @@ index e5bc5e66bce6..93dca87bea9a 100644
 +};
 +
 +#endif
--- 
-2.39.5
-

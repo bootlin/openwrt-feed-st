@@ -19,11 +19,9 @@ Reviewed-by: Gatien CHEVALLIER <gatien.chevallier@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index ba2aa514fc42..9c411cfcfeb4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -87,10 +87,11 @@ soc@0 {
+@@ -87,10 +87,11 @@
  		ranges = <0x0 0x0 0x0 0x80000000>;
  
  		rifsc: bus@42080000 {
@@ -36,7 +34,7 @@ index ba2aa514fc42..9c411cfcfeb4 100644
  			ranges;
  
  			usart2: serial@400e0000 {
-@@ -98,6 +99,7 @@ usart2: serial@400e0000 {
+@@ -98,6 +99,7 @@
  				reg = <0x400e0000 0x400>;
  				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART2>;
@@ -44,7 +42,7 @@ index ba2aa514fc42..9c411cfcfeb4 100644
  				status = "disabled";
  			};
  
-@@ -106,6 +108,7 @@ uart4: serial@40100000 {
+@@ -106,6 +108,7 @@
  				reg = <0x40100000 0x400>;
  				interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_UART4>;
@@ -52,7 +50,7 @@ index ba2aa514fc42..9c411cfcfeb4 100644
  				status = "disabled";
  			};
  
-@@ -120,6 +123,7 @@ sdmmc1: mmc@48220000 {
+@@ -120,6 +123,7 @@
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <120000000>;
@@ -60,7 +58,7 @@ index ba2aa514fc42..9c411cfcfeb4 100644
  				status = "disabled";
  			};
  		};
-@@ -200,6 +204,7 @@ rcc: clock-controller@44200000 {
+@@ -200,6 +204,7 @@
  				<&scmi_clk CK_SCMI_ICN_APBDBG>,
  				<&scmi_clk CK_SCMI_TIMG1>,
  				<&scmi_clk CK_SCMI_TIMG2>;
@@ -68,6 +66,3 @@ index ba2aa514fc42..9c411cfcfeb4 100644
  		};
  
  		syscfg: syscon@44230000 {
--- 
-2.39.5
-

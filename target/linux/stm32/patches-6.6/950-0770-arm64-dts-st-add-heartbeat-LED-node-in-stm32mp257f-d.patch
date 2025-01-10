@@ -13,8 +13,6 @@ Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index b590f1bbd717..61014626cbe0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 @@ -8,6 +8,7 @@
@@ -25,7 +23,7 @@ index b590f1bbd717..61014626cbe0 100644
  #include "stm32mp257.dtsi"
  #include "stm32mp25xf.dtsi"
  #include "stm32mp25-pinctrl.dtsi"
-@@ -36,6 +37,19 @@ button-user-2 {
+@@ -36,6 +37,19 @@
  			status = "okay";
  		};
  	};
@@ -45,6 +43,3 @@ index b590f1bbd717..61014626cbe0 100644
  	memory@80000000 {
  		device_type = "memory";
  		reg = <0x0 0x80000000 0x1 0x0>;
--- 
-2.39.5
-

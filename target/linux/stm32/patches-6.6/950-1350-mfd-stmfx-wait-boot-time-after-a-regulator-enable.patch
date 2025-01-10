@@ -24,11 +24,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mfd/stmfx.c | 25 +++++++++++++++++++++++++
  1 file changed, 25 insertions(+)
 
-diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
-index 7257f706ffb4..bfb382972bb4 100644
 --- a/drivers/mfd/stmfx.c
 +++ b/drivers/mfd/stmfx.c
-@@ -304,6 +304,21 @@ static int stmfx_irq_init(struct i2c_client *client)
+@@ -304,6 +304,21 @@ irq_exit:
  	return ret;
  }
  
@@ -50,7 +48,7 @@ index 7257f706ffb4..bfb382972bb4 100644
  static int stmfx_chip_reset(struct stmfx *stmfx)
  {
  	int ret;
-@@ -340,6 +355,11 @@ static int stmfx_chip_init(struct i2c_client *client)
+@@ -340,6 +355,11 @@ static int stmfx_chip_init(struct i2c_cl
  			return ret;
  		}
  	}
@@ -62,7 +60,7 @@ index 7257f706ffb4..bfb382972bb4 100644
  
  	ret = regmap_read(stmfx->map, STMFX_REG_CHIP_ID, &id);
  	if (ret) {
-@@ -507,6 +527,11 @@ static int stmfx_resume(struct device *dev)
+@@ -507,6 +527,11 @@ static int stmfx_resume(struct device *d
  			return ret;
  		}
  	}
@@ -74,6 +72,3 @@ index 7257f706ffb4..bfb382972bb4 100644
  
  	/* Reset STMFX - supply has been stopped during suspend */
  	ret = stmfx_chip_reset(stmfx);
--- 
-2.39.5
-

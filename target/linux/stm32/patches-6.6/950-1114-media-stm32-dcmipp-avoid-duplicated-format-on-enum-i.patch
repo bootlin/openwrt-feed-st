@@ -22,11 +22,9 @@ Reviewed-by: Hugues FRUCHET <hugues.fruchet@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 42 +++++++++----------
  1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 1fa3ab39a64b..99ffc3843d93 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -260,34 +260,34 @@ static int dcmipp_bytecap_enum_fmt_vid_cap(struct file *file, void *priv,
+@@ -260,34 +260,34 @@ static int dcmipp_bytecap_enum_fmt_vid_c
  {
  	const struct dcmipp_bytecap_pix_map *vpix;
  	unsigned int index = f->index;
@@ -42,6 +40,19 @@ index 1fa3ab39a64b..99ffc3843d93 100644
 -			vpix = &dcmipp_bytecap_pix_map_list[i];
 -			if (vpix->code != f->mbus_code)
 -				continue;
+-
+-			if (index == 0)
+-				break;
+-
+-			index--;
+-		}
+-
+-		if (i == ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
+-			return -EINVAL;
+-	} else {
+-		/* Otherwise, enumerate all formats. */
+-		if (f->index >= ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
+-			return -EINVAL;
 +	/*
 +	 * List up all formats (or only ones matching f->mbus_code), taking
 +	 * care of removing duplicated entries (due to support of both
@@ -52,27 +63,17 @@ index 1fa3ab39a64b..99ffc3843d93 100644
 +		/* Skip formats not matching requested mbus code */
 +		if (f->mbus_code && vpix->code != f->mbus_code)
 +			continue;
- 
--			if (index == 0)
--				break;
++
 +		/* Skip duplicated pixelformat */
 +		if (vpix->pixelformat == prev_pixelformat)
 +			continue;
  
--			index--;
--		}
+-		vpix = &dcmipp_bytecap_pix_map_list[f->index];
 +		prev_pixelformat = vpix->pixelformat;
- 
--		if (i == ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
--			return -EINVAL;
--	} else {
--		/* Otherwise, enumerate all formats. */
--		if (f->index >= ARRAY_SIZE(dcmipp_bytecap_pix_map_list))
--			return -EINVAL;
++
 +		if (index == 0)
 +			break;
- 
--		vpix = &dcmipp_bytecap_pix_map_list[f->index];
++
 +		index--;
  	}
  
@@ -82,6 +83,3 @@ index 1fa3ab39a64b..99ffc3843d93 100644
  	f->pixelformat = vpix->pixelformat;
  
  	return 0;
--- 
-2.39.5
-

@@ -12,11 +12,9 @@ Change-Id: I89103a5384c17dda40b3cf973795776f6c3927eb
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 82 ++++++++++++++++++++++++++
  1 file changed, 82 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 541c1daf7ba9..71e0ee898587 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -229,6 +229,88 @@ rcc: clock-controller@44200000 {
+@@ -229,6 +229,88 @@
  			access-controllers = <&rifsc 156>;
  		};
  
@@ -105,6 +103,3 @@ index 541c1daf7ba9..71e0ee898587 100644
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
  			reg = <0x44230000 0x10000>;
--- 
-2.39.5
-

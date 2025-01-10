@@ -22,11 +22,9 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/386346
  arch/arm64/boot/dts/st/stm32mp25xf.dtsi | 14 ++++++++++++++
  2 files changed, 28 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-index fd2192971a0c..2f6bbb9d4dc1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xc.dtsi
-@@ -18,4 +18,18 @@ cryp1: crypto@42030000 {
+@@ -18,4 +18,18 @@
  		power-domains = <&CLUSTER_PD>;
  		status = "disabled";
  	};
@@ -45,11 +43,9 @@ index fd2192971a0c..2f6bbb9d4dc1 100644
 +		status = "disabled";
 +	};
  };
-diff --git a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-index fd2192971a0c..2f6bbb9d4dc1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25xf.dtsi
-@@ -18,4 +18,18 @@ cryp1: crypto@42030000 {
+@@ -18,4 +18,18 @@
  		power-domains = <&CLUSTER_PD>;
  		status = "disabled";
  	};
@@ -68,6 +64,3 @@ index fd2192971a0c..2f6bbb9d4dc1 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.5
-

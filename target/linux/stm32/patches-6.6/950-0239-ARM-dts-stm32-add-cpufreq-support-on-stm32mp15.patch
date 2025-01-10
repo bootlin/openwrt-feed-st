@@ -23,11 +23,9 @@ Signed-off-by: Pascal Paillet <p.paillet@st.com>
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi |  8 +++++
  9 files changed, 97 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 2207e1a9f6fd..f3fde5858894 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -18,12 +18,21 @@ cpus {
+@@ -18,12 +18,21 @@
  
  		cpu0: cpu@0 {
  			compatible = "arm,cortex-a7";
@@ -50,11 +48,9 @@ index 2207e1a9f6fd..f3fde5858894 100644
  	arm-pmu {
  		compatible = "arm,cortex-a7-pmu";
  		interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/st/stm32mp153.dtsi b/arch/arm/boot/dts/st/stm32mp153.dtsi
-index 486084e0b80b..4bdca9e6af49 100644
 --- a/arch/arm/boot/dts/st/stm32mp153.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp153.dtsi
-@@ -10,9 +10,10 @@ / {
+@@ -10,9 +10,10 @@
  	cpus {
  		cpu1: cpu@1 {
  			compatible = "arm,cortex-a7";
@@ -66,11 +62,9 @@ index 486084e0b80b..4bdca9e6af49 100644
  		};
  	};
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 248785aa0bfd..9d4c85be8d83 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -136,6 +136,14 @@ &arm_wdt {
+@@ -136,6 +136,14 @@
  	status = "okay";
  };
  
@@ -85,11 +79,9 @@ index 248785aa0bfd..9d4c85be8d83 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 37f024cba2f3..ba0944de649c 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -136,6 +136,14 @@ &arm_wdt {
+@@ -136,6 +136,14 @@
  	status = "okay";
  };
  
@@ -104,11 +96,9 @@ index 37f024cba2f3..ba0944de649c 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 8cc48ba0ac3e..1527f2ae5d37 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -136,6 +136,14 @@ &arm_wdt {
+@@ -136,6 +136,14 @@
  	status = "okay";
  };
  
@@ -123,11 +113,9 @@ index 8cc48ba0ac3e..1527f2ae5d37 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 1b63722b8f1f..10cac0bde991 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -136,6 +136,14 @@ &arm_wdt {
+@@ -136,6 +136,14 @@
  	status = "okay";
  };
  
@@ -142,8 +130,6 @@ index 1b63722b8f1f..10cac0bde991 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15xa.dtsi b/arch/arm/boot/dts/st/stm32mp15xa.dtsi
-index f56c44a122ed..85f0f4022dc7 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xa.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xa.dtsi
 @@ -3,3 +3,11 @@
@@ -158,8 +144,6 @@ index f56c44a122ed..85f0f4022dc7 100644
 +			opp-supported-hw = <0x1>;
 +		};
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp15xd.dtsi b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
-index f56c44a122ed..ae8121e9ce31 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xd.dtsi
 @@ -3,3 +3,40 @@
@@ -203,11 +187,9 @@ index f56c44a122ed..ae8121e9ce31 100644
 +		};
 +	};
 +};
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index cdb780cdb18d..4a3cd2e777a7 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -141,6 +141,14 @@ &cec {
+@@ -141,6 +141,14 @@
  	status = "okay";
  };
  
@@ -222,6 +204,3 @@ index cdb780cdb18d..4a3cd2e777a7 100644
  &crc1 {
  	status = "okay";
  };
--- 
-2.39.5
-

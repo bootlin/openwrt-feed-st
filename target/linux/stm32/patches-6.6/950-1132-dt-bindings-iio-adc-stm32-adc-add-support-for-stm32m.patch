@@ -19,8 +19,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/iio/adc/st,stm32-adc.yaml        | 60 ++++++++++++++++++-
  1 file changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-index 122ca3cf9e33..4002ed54dae7 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 @@ -28,6 +28,7 @@ properties:
@@ -31,14 +29,10 @@ index 122ca3cf9e33..4002ed54dae7 100644
        - st,stm32mp25-adc-core
  
    reg:
-@@ -217,6 +218,31 @@ allOf:
-           maximum: 75000000
-           default: 75000000
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
+@@ -221,6 +222,31 @@ allOf:
+       properties:
+         compatible:
+           contains:
 +            const: st,stm32mp21-adc-core
 +
 +    then:
@@ -60,9 +54,13 @@ index 122ca3cf9e33..4002ed54dae7 100644
 +          maximum: 70000000
 +          default: 70000000
 +
-   - if:
-       properties:
-         compatible:
++  - if:
++      properties:
++        compatible:
++          contains:
+             const: st,stm32mp25-adc-core
+ 
+     then:
 @@ -271,6 +297,7 @@ patternProperties:
            - st,stm32h7-adc
            - st,stm32mp1-adc
@@ -80,12 +78,10 @@ index 122ca3cf9e33..4002ed54dae7 100644
          $ref: /schemas/types.yaml#/definitions/uint32-array
          deprecated: true
  
-@@ -516,6 +543,37 @@ patternProperties:
-               items:
-                 minimum: 40
+@@ -518,6 +545,37 @@ patternProperties:
  
-+      - if:
-+          properties:
+       - if:
+           properties:
 +            compatible:
 +              contains:
 +                const: st,stm32mp21-adc
@@ -115,9 +111,8 @@ index 122ca3cf9e33..4002ed54dae7 100644
 +                items:
 +                  minimum: 40
 +
-       - if:
-           properties:
++      - if:
++          properties:
              compatible:
--- 
-2.39.5
-
+               contains:
+                 const: st,stm32mp25-adc

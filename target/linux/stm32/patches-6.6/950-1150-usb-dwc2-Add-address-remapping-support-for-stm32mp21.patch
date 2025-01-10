@@ -19,8 +19,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/usb/dwc2/platform.c | 27 +++++++++++++++++++++++++++
  4 files changed, 32 insertions(+)
 
-diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
-index 9ffa08647e27..9da9d436314b 100644
 --- a/drivers/usb/dwc2/core.h
 +++ b/drivers/usb/dwc2/core.h
 @@ -473,10 +473,13 @@ struct dwc2_core_params {
@@ -37,8 +35,6 @@ index 9ffa08647e27..9da9d436314b 100644
  
  	/* GREFCLK parameters */
  	u32 ref_clk_per;
-diff --git a/drivers/usb/dwc2/hw.h b/drivers/usb/dwc2/hw.h
-index f52fe22aa8e5..8be7c84cf617 100644
 --- a/drivers/usb/dwc2/hw.h
 +++ b/drivers/usb/dwc2/hw.h
 @@ -209,6 +209,7 @@
@@ -49,11 +45,9 @@ index f52fe22aa8e5..8be7c84cf617 100644
  
  #define GUID				HSOTG_REG(0x003c)
  #define GSNPSID				HSOTG_REG(0x0040)
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index f104c0cece09..be22d4202966 100644
 --- a/drivers/usb/dwc2/params.c
 +++ b/drivers/usb/dwc2/params.c
-@@ -283,6 +283,7 @@ static void dwc2_set_stm32mp21_hsotg_params(struct dwc2_hsotg *hsotg)
+@@ -283,6 +283,7 @@ static void dwc2_set_stm32mp21_hsotg_par
  	p->besl = false;
  	p->hird_threshold_en = false;
  	p->activate_stm32_bvaloval_en = true;
@@ -61,8 +55,6 @@ index f104c0cece09..be22d4202966 100644
  }
  
  const struct of_device_id dwc2_of_match_table[] = {
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 5c888f00d080..6ff383d941d0 100644
 --- a/drivers/usb/dwc2/platform.c
 +++ b/drivers/usb/dwc2/platform.c
 @@ -12,10 +12,12 @@
@@ -78,7 +70,7 @@ index 5c888f00d080..6ff383d941d0 100644
  #include <linux/reset.h>
  
  #include <linux/usb/of.h>
-@@ -443,6 +445,7 @@ int dwc2_check_core_version(struct dwc2_hsotg *hsotg)
+@@ -443,6 +445,7 @@ int dwc2_check_core_version(struct dwc2_
   */
  static int dwc2_driver_probe(struct platform_device *dev)
  {
@@ -86,7 +78,7 @@ index 5c888f00d080..6ff383d941d0 100644
  	struct dwc2_hsotg *hsotg;
  	struct resource *res;
  	int retval;
-@@ -543,6 +546,30 @@ static int dwc2_driver_probe(struct platform_device *dev)
+@@ -545,6 +548,30 @@ static int dwc2_driver_probe(struct plat
  	if (retval)
  		goto error;
  
@@ -117,6 +109,3 @@ index 5c888f00d080..6ff383d941d0 100644
  	if (hsotg->params.activate_stm_id_vb_detection) {
  		u32 ggpio;
  
--- 
-2.39.5
-

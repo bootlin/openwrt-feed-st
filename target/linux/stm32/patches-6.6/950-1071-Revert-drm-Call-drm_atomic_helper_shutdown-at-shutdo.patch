@@ -23,11 +23,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/vboxvideo/vbox_drv.c    | 10 ----------
  7 files changed, 1 insertion(+), 56 deletions(-)
 
-diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-index 78122b35a0cb..d207b03f8357 100644
 --- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
 +++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-@@ -358,18 +358,11 @@ static void aspeed_gfx_remove(struct platform_device *pdev)
+@@ -358,18 +358,11 @@ static void aspeed_gfx_remove(struct pla
  	sysfs_remove_group(&pdev->dev.kobj, &aspeed_sysfs_attr_group);
  	drm_dev_unregister(drm);
  	aspeed_gfx_unload(drm);
@@ -46,8 +44,6 @@ index 78122b35a0cb..d207b03f8357 100644
  	.driver = {
  		.name = "aspeed_gfx",
  		.of_match_table = aspeed_gfx_match,
-diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
-index 2fb18b782b05..abddf37f0ea1 100644
 --- a/drivers/gpu/drm/mgag200/mgag200_drv.c
 +++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
 @@ -10,7 +10,6 @@
@@ -58,7 +54,7 @@ index 2fb18b782b05..abddf37f0ea1 100644
  #include <drm/drm_drv.h>
  #include <drm/drm_fbdev_generic.h>
  #include <drm/drm_file.h>
-@@ -279,12 +278,6 @@ static void mgag200_pci_remove(struct pci_dev *pdev)
+@@ -279,12 +278,6 @@ static void mgag200_pci_remove(struct pc
  	struct drm_device *dev = pci_get_drvdata(pdev);
  
  	drm_dev_unregister(dev);
@@ -71,7 +67,7 @@ index 2fb18b782b05..abddf37f0ea1 100644
  }
  
  static struct pci_driver mgag200_pci_driver = {
-@@ -292,7 +285,6 @@ static struct pci_driver mgag200_pci_driver = {
+@@ -292,7 +285,6 @@ static struct pci_driver mgag200_pci_dri
  	.id_table = mgag200_pciidlist,
  	.probe = mgag200_pci_probe,
  	.remove = mgag200_pci_remove,
@@ -79,11 +75,9 @@ index 2fb18b782b05..abddf37f0ea1 100644
  };
  
  drm_module_pci_driver_if_modeset(mgag200_pci_driver, mgag200_modeset);
-diff --git a/drivers/gpu/drm/pl111/pl111_drv.c b/drivers/gpu/drm/pl111/pl111_drv.c
-index 02e6b74d5016..ba3b5b5f0cdf 100644
 --- a/drivers/gpu/drm/pl111/pl111_drv.c
 +++ b/drivers/gpu/drm/pl111/pl111_drv.c
-@@ -323,18 +323,12 @@ static void pl111_amba_remove(struct amba_device *amba_dev)
+@@ -323,18 +323,12 @@ static void pl111_amba_remove(struct amb
  	struct pl111_drm_dev_private *priv = drm->dev_private;
  
  	drm_dev_unregister(drm);
@@ -102,7 +96,7 @@ index 02e6b74d5016..ba3b5b5f0cdf 100644
  /*
   * This early variant lacks the 565 and 444 pixel formats.
   */
-@@ -437,7 +431,6 @@ static struct amba_driver pl111_amba_driver __maybe_unused = {
+@@ -437,7 +431,6 @@ static struct amba_driver pl111_amba_dri
  	},
  	.probe = pl111_amba_probe,
  	.remove = pl111_amba_remove,
@@ -110,11 +104,9 @@ index 02e6b74d5016..ba3b5b5f0cdf 100644
  	.id_table = pl111_id_table,
  };
  
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index df56c81e0065..6ae9fadc3d13 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -108,7 +108,6 @@ static void drv_unload(struct drm_device *ddev)
+@@ -116,7 +116,6 @@ static void drv_unload(struct drm_device
  	DRM_DEBUG("%s\n", __func__);
  
  	drm_kms_helper_poll_fini(ddev);
@@ -122,7 +114,7 @@ index df56c81e0065..6ae9fadc3d13 100644
  	ltdc_unload(ddev);
  }
  
-@@ -278,11 +277,6 @@ static void stm_drm_platform_remove(struct platform_device *pdev)
+@@ -262,11 +261,6 @@ static void stm_drm_platform_remove(stru
  	drm_dev_put(ddev);
  }
  
@@ -134,7 +126,7 @@ index df56c81e0065..6ae9fadc3d13 100644
  static struct ltdc_plat_data stm_drm_plat_data = {
  	.pad_max_freq_hz = 90000000,
  };
-@@ -301,7 +295,6 @@ MODULE_DEVICE_TABLE(of, drv_dt_ids);
+@@ -285,7 +279,6 @@ MODULE_DEVICE_TABLE(of, drv_dt_ids);
  static struct platform_driver stm_drm_platform_driver = {
  	.probe = stm_drm_platform_probe,
  	.remove_new = stm_drm_platform_remove,
@@ -142,11 +134,9 @@ index df56c81e0065..6ae9fadc3d13 100644
  	.driver = {
  		.name = "stm32-display",
  		.of_match_table = drv_dt_ids,
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-index 2f6eaac7f659..83233bdc0526 100644
 --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
 +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-@@ -175,7 +175,6 @@ static void tilcdc_fini(struct drm_device *dev)
+@@ -175,7 +175,6 @@ static void tilcdc_fini(struct drm_devic
  		drm_dev_unregister(dev);
  
  	drm_kms_helper_poll_fini(dev);
@@ -154,7 +144,7 @@ index 2f6eaac7f659..83233bdc0526 100644
  	tilcdc_irq_uninstall(dev);
  	drm_mode_config_cleanup(dev);
  
-@@ -390,7 +389,6 @@ static int tilcdc_init(const struct drm_driver *ddrv, struct device *dev)
+@@ -390,7 +389,6 @@ static int tilcdc_init(const struct drm_
  
  init_failed:
  	tilcdc_fini(ddev);
@@ -162,7 +152,7 @@ index 2f6eaac7f659..83233bdc0526 100644
  
  	return ret;
  }
-@@ -539,8 +537,7 @@ static void tilcdc_unbind(struct device *dev)
+@@ -539,8 +537,7 @@ static void tilcdc_unbind(struct device
  	if (!ddev->dev_private)
  		return;
  
@@ -172,7 +162,7 @@ index 2f6eaac7f659..83233bdc0526 100644
  }
  
  static const struct component_master_ops tilcdc_comp_ops = {
-@@ -585,11 +582,6 @@ static int tilcdc_pdev_remove(struct platform_device *pdev)
+@@ -585,11 +582,6 @@ static int tilcdc_pdev_remove(struct pla
  	return 0;
  }
  
@@ -184,7 +174,7 @@ index 2f6eaac7f659..83233bdc0526 100644
  static const struct of_device_id tilcdc_of_match[] = {
  		{ .compatible = "ti,am33xx-tilcdc", },
  		{ .compatible = "ti,da850-tilcdc", },
-@@ -600,7 +592,6 @@ MODULE_DEVICE_TABLE(of, tilcdc_of_match);
+@@ -600,7 +592,6 @@ MODULE_DEVICE_TABLE(of, tilcdc_of_match)
  static struct platform_driver tilcdc_platform_driver = {
  	.probe      = tilcdc_pdev_probe,
  	.remove     = tilcdc_pdev_remove,
@@ -192,11 +182,9 @@ index 2f6eaac7f659..83233bdc0526 100644
  	.driver     = {
  		.name   = "tilcdc",
  		.pm     = pm_sleep_ptr(&tilcdc_pm_ops),
-diff --git a/drivers/gpu/drm/tve200/tve200_drv.c b/drivers/gpu/drm/tve200/tve200_drv.c
-index acce210e2554..0bb56d063536 100644
 --- a/drivers/gpu/drm/tve200/tve200_drv.c
 +++ b/drivers/gpu/drm/tve200/tve200_drv.c
-@@ -242,7 +242,6 @@ static void tve200_remove(struct platform_device *pdev)
+@@ -242,7 +242,6 @@ static void tve200_remove(struct platfor
  	struct tve200_drm_dev_private *priv = drm->dev_private;
  
  	drm_dev_unregister(drm);
@@ -204,7 +192,7 @@ index acce210e2554..0bb56d063536 100644
  	if (priv->panel)
  		drm_panel_bridge_remove(priv->bridge);
  	drm_mode_config_cleanup(drm);
-@@ -250,11 +249,6 @@ static void tve200_remove(struct platform_device *pdev)
+@@ -250,11 +249,6 @@ static void tve200_remove(struct platfor
  	drm_dev_put(drm);
  }
  
@@ -216,7 +204,7 @@ index acce210e2554..0bb56d063536 100644
  static const struct of_device_id tve200_of_match[] = {
  	{
  		.compatible = "faraday,tve200",
-@@ -269,7 +263,6 @@ static struct platform_driver tve200_driver = {
+@@ -269,7 +263,6 @@ static struct platform_driver tve200_dri
  	},
  	.probe = tve200_probe,
  	.remove_new = tve200_remove,
@@ -224,8 +212,6 @@ index acce210e2554..0bb56d063536 100644
  };
  drm_module_platform_driver(tve200_driver);
  
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-index cd9e66a06596..8ecd0863fad7 100644
 --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
 +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
 @@ -12,7 +12,6 @@
@@ -236,7 +222,7 @@ index cd9e66a06596..8ecd0863fad7 100644
  #include <drm/drm_drv.h>
  #include <drm/drm_fbdev_generic.h>
  #include <drm/drm_file.h>
-@@ -98,19 +97,11 @@ static void vbox_pci_remove(struct pci_dev *pdev)
+@@ -98,19 +97,11 @@ static void vbox_pci_remove(struct pci_d
  	struct vbox_private *vbox = pci_get_drvdata(pdev);
  
  	drm_dev_unregister(&vbox->ddev);
@@ -256,7 +242,7 @@ index cd9e66a06596..8ecd0863fad7 100644
  static int vbox_pm_suspend(struct device *dev)
  {
  	struct vbox_private *vbox = dev_get_drvdata(dev);
-@@ -174,7 +165,6 @@ static struct pci_driver vbox_pci_driver = {
+@@ -174,7 +165,6 @@ static struct pci_driver vbox_pci_driver
  	.id_table = pciidlist,
  	.probe = vbox_pci_probe,
  	.remove = vbox_pci_remove,
@@ -264,6 +250,3 @@ index cd9e66a06596..8ecd0863fad7 100644
  	.driver.pm = pm_sleep_ptr(&vbox_pm_ops),
  };
  
--- 
-2.39.5
-

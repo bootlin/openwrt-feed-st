@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/lvds.c | 14 +++++++++-----
  1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-index 573bcfdaed18..d4106c1bdd5d 100644
 --- a/drivers/gpu/drm/stm/lvds.c
 +++ b/drivers/gpu/drm/stm/lvds.c
-@@ -557,9 +557,9 @@ static int lvds_pixel_clk_enable(struct clk_hw *hw)
+@@ -557,9 +557,9 @@ static int lvds_pixel_clk_enable(struct
  	struct lvds_phy_info *phy;
  	int ret;
  
@@ -32,7 +30,7 @@ index 573bcfdaed18..d4106c1bdd5d 100644
  		return ret;
  	}
  
-@@ -991,9 +991,9 @@ static void lvds_atomic_enable(struct drm_bridge *bridge,
+@@ -991,9 +991,9 @@ static void lvds_atomic_enable(struct dr
  	struct drm_connector *connector;
  	int ret;
  
@@ -44,7 +42,7 @@ index 573bcfdaed18..d4106c1bdd5d 100644
  		return;
  	}
  
-@@ -1202,7 +1202,11 @@ static int lvds_probe(struct platform_device *pdev)
+@@ -1202,7 +1202,11 @@ static int lvds_probe(struct platform_de
  	 *  the clocks must remain activated
  	 */
  	if (device_property_read_bool(dev, "default-on")) {
@@ -57,6 +55,3 @@ index 573bcfdaed18..d4106c1bdd5d 100644
  
  		if (lvds->primary) {
  			if (lvds_is_dual_link(lvds->link_type))
--- 
-2.39.5
-

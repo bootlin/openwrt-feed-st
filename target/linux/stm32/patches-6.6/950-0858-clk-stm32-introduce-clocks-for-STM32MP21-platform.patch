@@ -21,8 +21,6 @@ Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  create mode 100644 drivers/clk/stm32/clk-stm32mp21.c
  create mode 100644 drivers/clk/stm32/stm32mp21_rcc.h
 
-diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
-index e2e7212ef91d..a9aaf83a16cf 100644
 --- a/drivers/clk/stm32/Kconfig
 +++ b/drivers/clk/stm32/Kconfig
 @@ -25,6 +25,14 @@ config COMMON_CLK_STM32MP157
@@ -40,8 +38,6 @@ index e2e7212ef91d..a9aaf83a16cf 100644
  config COMMON_CLK_STM32MP257
  	bool "Clock driver for stm32mp25x clocks"
  	depends on ARM64 || COMPILE_TEST
-diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
-index f563d2f683e7..950e9a2ef58d 100644
 --- a/drivers/clk/stm32/Makefile
 +++ b/drivers/clk/stm32/Makefile
 @@ -1,4 +1,5 @@
@@ -50,9 +46,6 @@ index f563d2f683e7..950e9a2ef58d 100644
 +obj-$(CONFIG_COMMON_CLK_STM32MP215)	+= clk-stm32mp21.o clk-stm32-core.o reset-stm32.o
  obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25.o clk-stm32-core.o reset-stm32.o
  obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25-syscfg.o
-diff --git a/drivers/clk/stm32/clk-stm32mp21.c b/drivers/clk/stm32/clk-stm32mp21.c
-new file mode 100644
-index 000000000000..642b92d39bba
 --- /dev/null
 +++ b/drivers/clk/stm32/clk-stm32mp21.c
 @@ -0,0 +1,2708 @@
@@ -2764,9 +2757,6 @@ index 000000000000..642b92d39bba
 +};
 +
 +#endif
-diff --git a/drivers/clk/stm32/stm32mp21_rcc.h b/drivers/clk/stm32/stm32mp21_rcc.h
-new file mode 100644
-index 000000000000..2cc50e39c1d6
 --- /dev/null
 +++ b/drivers/clk/stm32/stm32mp21_rcc.h
 @@ -0,0 +1,1753 @@
@@ -4523,6 +4513,3 @@ index 000000000000..2cc50e39c1d6
 +#define RCC_SIDR_SID_MASK			GENMASK(31, 0)
 +
 +#endif /* STM32MP21_RCC_H */
--- 
-2.39.5
-

@@ -12,9 +12,6 @@ Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
  1 file changed, 58 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
-new file mode 100644
-index 000000000000..479566171568
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
 @@ -0,0 +1,58 @@
@@ -76,6 +73,3 @@ index 000000000000..479566171568
 +        interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
 +        clocks = <&ck_icn_p_venc>;
 +    };
--- 
-2.39.5
-

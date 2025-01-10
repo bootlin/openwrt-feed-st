@@ -16,8 +16,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/mfd/stm32-lptimer.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mfd/stm32-lptimer.c b/drivers/mfd/stm32-lptimer.c
-index 744e39f22c11..9fc94122ffb2 100644
 --- a/drivers/mfd/stm32-lptimer.c
 +++ b/drivers/mfd/stm32-lptimer.c
 @@ -11,6 +11,7 @@
@@ -28,7 +26,7 @@ index 744e39f22c11..9fc94122ffb2 100644
  
  #define STM32_LPTIM_MAX_REGISTER	0x3fc
  
-@@ -114,6 +115,10 @@ static int stm32_lptimer_probe(struct platform_device *pdev)
+@@ -114,6 +115,10 @@ static int stm32_lptimer_probe(struct pl
  
  	platform_set_drvdata(pdev, ddata);
  
@@ -39,6 +37,3 @@ index 744e39f22c11..9fc94122ffb2 100644
  	return devm_of_platform_populate(&pdev->dev);
  }
  
--- 
-2.39.5
-

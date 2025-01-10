@@ -13,9 +13,6 @@ Reviewed-by: Rob Herring <robh@kernel.org>
  1 file changed, 105 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
-new file mode 100644
-index 000000000000..20acd1a6b173
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 @@ -0,0 +1,105 @@
@@ -124,6 +121,3 @@ index 000000000000..20acd1a6b173
 +              access-controllers = <&rifsc 32>;
 +        };
 +    };
--- 
-2.39.5
-

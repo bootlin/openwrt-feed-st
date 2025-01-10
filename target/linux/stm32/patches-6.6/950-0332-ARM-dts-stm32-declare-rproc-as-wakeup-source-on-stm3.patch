@@ -12,11 +12,9 @@ Change-Id: I96bc8c0f57434df68dbab31d1cecb31bec3d737f
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 4a3cd2e777a7..72fb77bd9d6c 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -489,6 +489,7 @@ &m4_rproc {
+@@ -489,6 +489,7 @@
  	mbox-names = "vq0", "vq1", "shutdown", "detach";
  	interrupt-parent = <&exti>;
  	interrupts = <68 1>;
@@ -24,6 +22,3 @@ index 4a3cd2e777a7..72fb77bd9d6c 100644
  	status = "okay";
  };
  
--- 
-2.39.5
-

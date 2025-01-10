@@ -62,8 +62,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  scripts/clang-tools/gen_compile_commands.py | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index b60cc4745cdc..e4fb686dfaa9 100755
 --- a/scripts/clang-tools/gen_compile_commands.py
 +++ b/scripts/clang-tools/gen_compile_commands.py
 @@ -64,7 +64,7 @@ def parse_arguments():
@@ -75,7 +73,7 @@ index b60cc4745cdc..e4fb686dfaa9 100755
              args.output,
              args.ar,
              args.paths if len(args.paths) > 0 else [args.directory])
-@@ -172,8 +172,8 @@ def process_line(root_directory, command_prefix, file_path):
+@@ -172,8 +172,8 @@ def process_line(root_directory, command
      # by Make, so this code replaces the escaped version with '#'.
      prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
  
@@ -86,6 +84,3 @@ index b60cc4745cdc..e4fb686dfaa9 100755
      if not os.path.exists(abs_path):
          raise ValueError('File %s not found' % abs_path)
      return {
--- 
-2.39.5
-

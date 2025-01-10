@@ -24,11 +24,9 @@ Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-common.h     | 12 +++++++
  2 files changed, 45 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
-index 13b6c63bdb26..bf6203c9116e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
-@@ -110,3 +110,36 @@ dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved, struct v4l2_subdev *sd)
+@@ -110,3 +110,36 @@ dcmipp_ent_sd_unregister(struct dcmipp_e
  	v4l2_device_unregister_subdev(sd);
  	dcmipp_pads_cleanup(ved->pads);
  }
@@ -65,11 +63,9 @@ index 13b6c63bdb26..bf6203c9116e 100644
 +
 +	return 0;
 +}
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index 4d0539289eb8..00feca94d5cc 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-@@ -198,6 +198,18 @@ int dcmipp_ent_sd_register(struct dcmipp_ent_device *ved,
+@@ -198,6 +198,18 @@ int dcmipp_ent_sd_register(struct dcmipp
  void dcmipp_ent_sd_unregister(struct dcmipp_ent_device *ved,
  			      struct v4l2_subdev *sd);
  
@@ -88,6 +84,3 @@ index 4d0539289eb8..00feca94d5cc 100644
  #define reg_write(device, reg, val) \
  	(__reg_write((device)->dev, (device)->regs, (reg), (val)))
  #define reg_read(device, reg) \
--- 
-2.39.5
-

@@ -21,8 +21,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../bindings/dma/stm32/st,stm32-dma3.yaml          | 14 +++++++++++---
  1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index 71147e6af4d8..e7fd006fea40 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -48,6 +48,17 @@ properties:
@@ -53,6 +51,3 @@ index 71147e6af4d8..e7fd006fea40 100644
    st,axi-max-burst-len:
      description: |
        Restrict AXI burst length in unit of beat by value specified in this property.
--- 
-2.39.5
-

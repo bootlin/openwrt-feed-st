@@ -23,8 +23,6 @@ Domain-Review: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  2 files changed, 87 insertions(+)
  create mode 100644 Documentation/admin-guide/perf/stm32-ddr-pmu.rst
 
-diff --git a/Documentation/admin-guide/perf/index.rst b/Documentation/admin-guide/perf/index.rst
-index f60be04e4e33..59d8bf23067d 100644
 --- a/Documentation/admin-guide/perf/index.rst
 +++ b/Documentation/admin-guide/perf/index.rst
 @@ -22,3 +22,4 @@ Performance monitor support
@@ -32,9 +30,6 @@ index f60be04e4e33..59d8bf23067d 100644
     meson-ddr-pmu
     cxl
 +   stm32-ddr-pmu
-diff --git a/Documentation/admin-guide/perf/stm32-ddr-pmu.rst b/Documentation/admin-guide/perf/stm32-ddr-pmu.rst
-new file mode 100644
-index 000000000000..423219acbd1d
 --- /dev/null
 +++ b/Documentation/admin-guide/perf/stm32-ddr-pmu.rst
 @@ -0,0 +1,86 @@
@@ -124,6 +119,3 @@ index 000000000000..423219acbd1d
 +                 752347686      stm32_ddr_pmu/time_cnt/
 +
 +               5.014910750 seconds time elapsed
--- 
-2.39.5
-

@@ -18,11 +18,9 @@ Reviewed-by: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/crypto/stm32/stm32-cryp.c | 14 +++++++-------
  1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 4557162e2f8b..7e28f6d478e4 100644
 --- a/drivers/crypto/stm32/stm32-cryp.c
 +++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -2282,7 +2282,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2286,7 +2286,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "ecb(aes)",
  		.base.cra_driver_name	= "stm32-ecb-aes",
@@ -31,7 +29,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= AES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2304,7 +2304,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2308,7 +2308,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "cbc(aes)",
  		.base.cra_driver_name	= "stm32-cbc-aes",
@@ -40,7 +38,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= AES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2327,7 +2327,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2331,7 +2331,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "ctr(aes)",
  		.base.cra_driver_name	= "stm32-ctr-aes",
@@ -49,7 +47,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= 1,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2350,7 +2350,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2354,7 +2354,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "ecb(des)",
  		.base.cra_driver_name	= "stm32-ecb-des",
@@ -58,7 +56,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= DES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2372,7 +2372,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2376,7 +2376,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "cbc(des)",
  		.base.cra_driver_name	= "stm32-cbc-des",
@@ -67,7 +65,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= DES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2395,7 +2395,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2399,7 +2399,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "ecb(des3_ede)",
  		.base.cra_driver_name	= "stm32-ecb-des3",
@@ -76,7 +74,7 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= DES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
-@@ -2417,7 +2417,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
+@@ -2421,7 +2421,7 @@ static struct skcipher_engine_alg crypto
  	.base = {
  		.base.cra_name		= "cbc(des3_ede)",
  		.base.cra_driver_name	= "stm32-cbc-des3",
@@ -85,6 +83,3 @@ index 4557162e2f8b..7e28f6d478e4 100644
  		.base.cra_flags		= CRYPTO_ALG_ASYNC,
  		.base.cra_blocksize	= DES_BLOCK_SIZE,
  		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
--- 
-2.39.5
-

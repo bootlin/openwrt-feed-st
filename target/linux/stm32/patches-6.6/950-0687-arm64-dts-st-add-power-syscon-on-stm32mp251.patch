@@ -12,11 +12,9 @@ Change-Id: I7430051f1ad071737ec52a8c0a100dd0ebacada7
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index afab1a22757c..d703783149a8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2116,6 +2116,11 @@ rcc: clock-controller@44200000 {
+@@ -2116,6 +2116,11 @@
  			access-controllers = <&rifsc 156>;
  		};
  
@@ -28,7 +26,7 @@ index afab1a22757c..d703783149a8 100644
  		exti1: interrupt-controller@44220000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
-@@ -2489,6 +2494,7 @@ m33_rproc: m33@0 {
+@@ -2489,6 +2494,7 @@
  			resets = <&scmi_reset RST_SCMI_C2_R>,
  				 <&scmi_reset RST_SCMI_C2_HOLDBOOT_R>;
  			reset-names = "mcu_rst", "hold_boot";
@@ -36,6 +34,3 @@ index afab1a22757c..d703783149a8 100644
  			interrupt-parent = <&intc>;
  			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
  
--- 
-2.39.5
-

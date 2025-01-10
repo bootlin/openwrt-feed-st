@@ -18,11 +18,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/spi/spi-stm32-ospi.c | 9 +++++++--
  1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index aa603410845b..084b420d2e11 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -200,8 +200,13 @@ static int stm32_ospi_wait_poll_status(struct stm32_ospi *ospi,
+@@ -200,8 +200,13 @@ static int stm32_ospi_wait_poll_status(s
  	writel_relaxed(cr | CR_SMIE, regs_base + OSPI_CR);
  
  	if (!wait_for_completion_timeout(&omi->match_completion,
@@ -38,6 +36,3 @@ index aa603410845b..084b420d2e11 100644
  
  	writel_relaxed(FCR_CSMF, regs_base + OSPI_FCR);
  
--- 
-2.39.5
-

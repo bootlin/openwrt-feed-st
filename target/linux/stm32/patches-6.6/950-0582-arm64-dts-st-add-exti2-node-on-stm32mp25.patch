@@ -12,11 +12,9 @@ Change-Id: Ibdfc0df0f912eddce811d7e88b146a6560a92e3e
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 64 ++++++++++++++++++++++++++
  1 file changed, 64 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 71e0ee898587..6b3956f42ee1 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -316,6 +316,70 @@ syscfg: syscon@44230000 {
+@@ -316,6 +316,70 @@
  			reg = <0x44230000 0x10000>;
  		};
  
@@ -87,6 +85,3 @@ index 71e0ee898587..6b3956f42ee1 100644
  		pinctrl: pinctrl@44240000 {
  			#address-cells = <1>;
  			#size-cells = <1>;
--- 
-2.39.5
-

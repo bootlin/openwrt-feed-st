@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/bridge/adv7511/adv7533.c     | 25 ++++++++++++++++++++
  3 files changed, 41 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511.h b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-index 17445800248d..2d0d2ca51043 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7511.h
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-@@ -404,6 +404,9 @@ void adv7533_dsi_power_on(struct adv7511 *adv);
+@@ -404,6 +404,9 @@ void adv7533_dsi_power_on(struct adv7511
  void adv7533_dsi_power_off(struct adv7511 *adv);
  enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
  					const struct drm_display_mode *mode);
@@ -30,11 +28,9 @@ index 17445800248d..2d0d2ca51043 100644
  int adv7533_patch_registers(struct adv7511 *adv);
  int adv7533_patch_cec_registers(struct adv7511 *adv);
  int adv7533_attach_dsi(struct adv7511 *adv);
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 2611afd2c1c1..64292d33b859 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -927,6 +927,18 @@ static enum drm_mode_status adv7511_bridge_mode_valid(struct drm_bridge *bridge,
+@@ -927,6 +927,18 @@ static enum drm_mode_status adv7511_brid
  		return adv7511_mode_valid(adv, mode);
  }
  
@@ -53,7 +49,7 @@ index 2611afd2c1c1..64292d33b859 100644
  static int adv7511_bridge_attach(struct drm_bridge *bridge,
  				 enum drm_bridge_attach_flags flags)
  {
-@@ -975,6 +987,7 @@ static const struct drm_bridge_funcs adv7511_bridge_funcs = {
+@@ -975,6 +987,7 @@ static const struct drm_bridge_funcs adv
  	.disable = adv7511_bridge_disable,
  	.mode_set = adv7511_bridge_mode_set,
  	.mode_valid = adv7511_bridge_mode_valid,
@@ -61,11 +57,9 @@ index 2611afd2c1c1..64292d33b859 100644
  	.attach = adv7511_bridge_attach,
  	.detect = adv7511_bridge_detect,
  	.get_edid = adv7511_bridge_get_edid,
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-index 7e3e56441aed..46a76b35be44 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-@@ -120,6 +120,31 @@ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
+@@ -120,6 +120,31 @@ enum drm_mode_status adv7533_mode_valid(
  	return MODE_OK;
  }
  
@@ -97,6 +91,3 @@ index 7e3e56441aed..46a76b35be44 100644
  int adv7533_patch_registers(struct adv7511 *adv)
  {
  	return regmap_register_patch(adv->regmap,
--- 
-2.39.5
-

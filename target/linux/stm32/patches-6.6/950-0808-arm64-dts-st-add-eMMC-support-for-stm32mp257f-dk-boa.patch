@@ -12,11 +12,9 @@ Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index d15e9e5b7b73..c61d41bee526 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -465,6 +465,23 @@ &sdmmc1 {
+@@ -465,6 +465,23 @@
  	status = "okay";
  };
  
@@ -40,6 +38,3 @@ index d15e9e5b7b73..c61d41bee526 100644
  /* Wifi */
  &sdmmc3 {
  	pinctrl-names = "default", "opendrain", "sleep";
--- 
-2.39.5
-

@@ -34,11 +34,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/irqchip/irq-stm32mp-exti.c | 100 +++++++++++++++++++++++++++--
  1 file changed, 95 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/irqchip/irq-stm32mp-exti.c b/drivers/irqchip/irq-stm32mp-exti.c
-index 3e431c39103d..b75d8620570a 100644
 --- a/drivers/irqchip/irq-stm32mp-exti.c
 +++ b/drivers/irqchip/irq-stm32mp-exti.c
-@@ -495,6 +495,53 @@ static struct irq_chip stm32mp_exti_chip_direct = {
+@@ -495,6 +495,53 @@ static struct irq_chip stm32mp_exti_chip
  	.irq_set_affinity	= IS_ENABLED(CONFIG_SMP) ? irq_chip_set_affinity_parent : NULL,
  };
  
@@ -92,7 +90,7 @@ index 3e431c39103d..b75d8620570a 100644
  static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
  				     unsigned int virq,
  				     unsigned int nr_irqs, void *data)
-@@ -535,9 +582,6 @@ static int stm32mp_exti_domain_alloc(struct irq_domain *dm,
+@@ -535,9 +582,6 @@ static int stm32mp_exti_domain_alloc(str
  		ret = of_irq_parse_one(host_data->dev->of_node, hwirq, &out_irq);
  		if (ret)
  			return ret;
@@ -102,7 +100,7 @@ index 3e431c39103d..b75d8620570a 100644
  
  		of_phandle_args_to_fwspec(out_irq.np, out_irq.args,
  					  out_irq.args_count, &p_fwspec);
-@@ -593,6 +637,8 @@ stm32mp_exti_chip_data *stm32mp_exti_chip_init(struct stm32mp_exti_host_data *h_
+@@ -593,6 +637,8 @@ stm32mp_exti_chip_data *stm32mp_exti_chi
  }
  
  static const struct irq_domain_ops stm32mp_exti_domain_ops = {
@@ -111,7 +109,7 @@ index 3e431c39103d..b75d8620570a 100644
  	.alloc	= stm32mp_exti_domain_alloc,
  	.free	= irq_domain_free_irqs_common,
  	.xlate = irq_domain_xlate_twocell,
-@@ -622,18 +668,24 @@ static void stm32mp_exti_check_rif(struct stm32mp_exti_host_data *host_data)
+@@ -622,18 +668,24 @@ static void stm32mp_exti_check_rif(struc
  static void stm32mp_exti_remove_irq(void *data)
  {
  	struct irq_domain *domain = data;
@@ -138,7 +136,7 @@ index 3e431c39103d..b75d8620570a 100644
  
  	host_data = devm_kzalloc(dev, sizeof(*host_data), GFP_KERNEL);
  	if (!host_data)
-@@ -706,6 +758,44 @@ static int stm32mp_exti_probe(struct platform_device *pdev)
+@@ -706,6 +758,44 @@ static int stm32mp_exti_probe(struct pla
  	if (of_property_read_bool(np, "interrupts-extended"))
  		host_data->dt_has_irqs_desc = true;
  
@@ -183,6 +181,3 @@ index 3e431c39103d..b75d8620570a 100644
  	return 0;
  }
  
--- 
-2.39.5
-

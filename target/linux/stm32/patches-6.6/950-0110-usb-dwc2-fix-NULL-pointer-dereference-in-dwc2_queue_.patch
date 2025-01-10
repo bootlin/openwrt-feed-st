@@ -43,11 +43,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
  drivers/usb/dwc2/hcd.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index dd5b1c5691e1..5622083c1aca 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -1701,7 +1701,8 @@ static void dwc2_hcd_cleanup_channels(struct dwc2_hsotg *hsotg)
+@@ -1701,7 +1701,8 @@ static void dwc2_hcd_cleanup_channels(st
  		 * release_channel_ddma(), which is called from ep_disable when
  		 * device disconnects
  		 */
@@ -57,6 +55,3 @@ index dd5b1c5691e1..5622083c1aca 100644
  	}
  	/* All channels have been freed, mark them available */
  	if (hsotg->params.uframe_sched) {
--- 
-2.39.5
-

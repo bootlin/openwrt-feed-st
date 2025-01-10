@@ -12,9 +12,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  1 file changed, 115 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-csi.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-csi.yaml b/Documentation/devicetree/bindings/media/st,stm32-csi.yaml
-new file mode 100644
-index 000000000000..6b7f01b99a1d
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/st,stm32-csi.yaml
 @@ -0,0 +1,115 @@
@@ -133,6 +130,3 @@ index 000000000000..6b7f01b99a1d
 +    };
 +
 +...
--- 
-2.39.5
-

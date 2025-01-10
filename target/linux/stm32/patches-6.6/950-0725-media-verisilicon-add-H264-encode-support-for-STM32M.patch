@@ -11,11 +11,9 @@ Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
  .../platform/verisilicon/stm32mp25_vpu_hw.c   | 22 ++++++++++++++++++-
  1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-index c6d8cdfcc3f4..62ce75348ed4 100644
 --- a/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
 +++ b/drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-@@ -140,6 +140,19 @@ static const struct hantro_fmt stm32mp25_venc_fmts[] = {
+@@ -140,6 +140,19 @@ static const struct hantro_fmt stm32mp25
  			.step_height = MB_DIM,
  		},
  	},
@@ -35,7 +33,7 @@ index c6d8cdfcc3f4..62ce75348ed4 100644
  };
  
  static irqreturn_t stm32mp25_venc_irq(int irq, void *dev_id)
-@@ -198,6 +211,13 @@ static const struct hantro_codec_ops stm32mp25_venc_codec_ops[] = {
+@@ -198,6 +211,13 @@ static const struct hantro_codec_ops stm
  		.done = hantro_h1_vp8_enc_done,
  		.exit = hantro_vp8_enc_exit,
  	},
@@ -49,7 +47,7 @@ index c6d8cdfcc3f4..62ce75348ed4 100644
  };
  
  /*
-@@ -232,7 +252,7 @@ static const char * const stm32mp25_venc_clk_names[] = {
+@@ -232,7 +252,7 @@ static const char * const stm32mp25_venc
  const struct hantro_variant stm32mp25_venc_variant = {
  	.enc_fmts = stm32mp25_venc_fmts,
  	.num_enc_fmts = ARRAY_SIZE(stm32mp25_venc_fmts),
@@ -58,6 +56,3 @@ index c6d8cdfcc3f4..62ce75348ed4 100644
  	.codec_ops = stm32mp25_venc_codec_ops,
  	.irqs = stm32mp25_venc_irqs,
  	.num_irqs = ARRAY_SIZE(stm32mp25_venc_irqs),
--- 
-2.39.5
-

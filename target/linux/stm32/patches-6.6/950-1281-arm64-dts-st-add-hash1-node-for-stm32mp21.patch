@@ -18,11 +18,9 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 79a02c591728..29878db1e79b 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1469,6 +1469,19 @@ channel@17 {
+@@ -1469,6 +1469,19 @@
  				};
  			};
  
@@ -42,6 +40,3 @@ index 79a02c591728..29878db1e79b 100644
  			iwdg1: watchdog@44010000 {
  				compatible = "st,stm32mp1-iwdg";
  				reg = <0x44010000 0x0 0x400>;
--- 
-2.39.5
-

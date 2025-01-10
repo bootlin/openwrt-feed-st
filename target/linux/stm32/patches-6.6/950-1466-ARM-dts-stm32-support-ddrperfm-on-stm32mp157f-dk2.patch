@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index 146453a0084a..523d7ef309f2 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -45,6 +45,10 @@ &cryp1 {
+@@ -45,6 +45,10 @@
  	status = "okay";
  };
  
@@ -34,6 +32,3 @@ index 146453a0084a..523d7ef309f2 100644
  &dsi {
  	#address-cells = <1>;
  	#size-cells = <0>;
--- 
-2.39.5
-

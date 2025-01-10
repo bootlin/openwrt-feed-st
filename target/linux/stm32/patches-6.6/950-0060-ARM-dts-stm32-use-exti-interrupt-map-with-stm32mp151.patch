@@ -15,11 +15,9 @@ Change-Id: I6167d35e1807d58da484fd115685c144bdbd7a6c
  arch/arm/boot/dts/st/stm32mp151.dtsi | 50 ++++++++++++++++++++++++++++
  1 file changed, 50 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 8d8f3a0b02dd..f4c218e3674f 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1225,7 +1225,57 @@ exti: interrupt-controller@5000d000 {
+@@ -1225,7 +1225,57 @@
  			compatible = "st,stm32mp1-exti", "syscon";
  			interrupt-controller;
  			#interrupt-cells = <2>;
@@ -77,6 +75,3 @@ index 8d8f3a0b02dd..f4c218e3674f 100644
  		};
  
  		syscfg: syscon@50020000 {
--- 
-2.39.5
-

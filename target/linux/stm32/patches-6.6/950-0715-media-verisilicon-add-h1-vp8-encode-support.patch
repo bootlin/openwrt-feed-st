@@ -16,8 +16,6 @@ Change-Id: I7369849403effb4056f78a367875c34ab1118000
  5 files changed, 1656 insertions(+), 5 deletions(-)
  create mode 100644 drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index 7cb76ebee227..b1b9e7786c8c 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -8,6 +8,7 @@ hantro-vpu-y += \
@@ -28,8 +26,6 @@ index 7cb76ebee227..b1b9e7786c8c 100644
  		hantro_g1.o \
  		hantro_g1_h264_dec.o \
  		hantro_g1_mpeg2_dec.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 787bae1b7ad1..a248734013db 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -114,6 +114,7 @@ struct hantro_variant {
@@ -48,8 +44,6 @@ index 787bae1b7ad1..a248734013db 100644
  };
  
  /*
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-index 30e7e7b920b5..5062ee1c87a2 100644
 --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
 +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
 @@ -34,9 +34,12 @@
@@ -169,9 +163,6 @@ index 30e7e7b920b5..5062ee1c87a2 100644
 +#define     H1_REG_VP8_LF_MODE_DELTA_BPRED(x)		(((x) & 0x7f) << 0)
  
  #endif /* HANTRO_H1_REGS_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
-new file mode 100644
-index 000000000000..a9030b3ff748
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_h1_vp8_enc.c
 @@ -0,0 +1,1584 @@
@@ -1759,11 +1750,9 @@ index 000000000000..a9030b3ff748
 +	else
 +		dst_buf->flags |= V4L2_BUF_FLAG_PFRAME;
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 8bfda4ff43e0..bfc6de6ddd0f 100644
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
-@@ -632,4 +632,7 @@ int hantro_vp8_enc_init(struct hantro_ctx *ctx);
+@@ -632,4 +632,7 @@ int hantro_vp8_enc_init(struct hantro_ct
  void rockchip_vpu2_vp8_enc_done(struct hantro_ctx *ctx);
  void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
  
@@ -1771,6 +1760,3 @@ index 8bfda4ff43e0..bfc6de6ddd0f 100644
 +void hantro_h1_vp8_enc_done(struct hantro_ctx *ctx);
 +
  #endif /* HANTRO_HW_H_ */
--- 
-2.39.5
-

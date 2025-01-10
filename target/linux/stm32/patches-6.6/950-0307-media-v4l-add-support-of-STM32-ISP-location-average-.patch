@@ -21,8 +21,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  include/uapi/linux/v4l2-controls.h        | 22 ++++++++++++++++++++++
  2 files changed, 25 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index bf927997844a..e1d8ebdd6e87 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 @@ -1164,6 +1164,9 @@ const char *v4l2_ctrl_get_name(u32 id)
@@ -35,8 +33,6 @@ index bf927997844a..e1d8ebdd6e87 100644
  
  	/* DV controls */
  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 2f57bdbc01a9..496691b588b1 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -1230,6 +1230,28 @@ struct v4l2_ctrl_isp_stat_region {
@@ -68,6 +64,3 @@ index 2f57bdbc01a9..496691b588b1 100644
  /*  DV-class control IDs defined by V4L2 */
  #define V4L2_CID_DV_CLASS_BASE			(V4L2_CTRL_CLASS_DV | 0x900)
  #define V4L2_CID_DV_CLASS			(V4L2_CTRL_CLASS_DV | 1)
--- 
-2.39.5
-

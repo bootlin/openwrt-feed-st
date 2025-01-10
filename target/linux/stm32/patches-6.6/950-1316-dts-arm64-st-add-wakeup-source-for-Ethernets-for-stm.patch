@@ -25,11 +25,9 @@ Domain-Review: Christophe ROULLIER <christophe.roullier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 7 +++++--
  2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 9752afac5e76..010a281d808e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2282,8 +2282,10 @@ eth1: eth1@482c0000 {
+@@ -2282,8 +2282,10 @@
  				compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  				reg = <0x482c0000 0x4000>;
  				reg-names = "stmmaceth";
@@ -42,7 +40,7 @@ index 9752afac5e76..010a281d808e 100644
  				clock-names = "stmmaceth",
  					      "mac-clk-tx",
  					      "mac-clk-rx",
-@@ -2303,6 +2305,7 @@ eth1: eth1@482c0000 {
+@@ -2303,6 +2305,7 @@
  				snps,tso;
  				access-controllers = <&rifsc 60>;
  				power-domains = <&CLUSTER_PD>;
@@ -50,11 +48,9 @@ index 9752afac5e76..010a281d808e 100644
  				status = "disabled";
  				snps,mtl-rx-config = <&mtl_rx_setup_1>;
  				snps,mtl-tx-config = <&mtl_tx_setup_1>;
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index bc643f6402e3..83b530ac1ccd 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -134,8 +134,10 @@ eth2: eth2@482d0000 {
+@@ -134,8 +134,10 @@
  		compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  		reg = <0x482d0000 0x4000>;
  		reg-names = "stmmaceth";
@@ -67,7 +63,7 @@ index bc643f6402e3..83b530ac1ccd 100644
  		clock-names = "stmmaceth",
  			      "mac-clk-tx",
  			      "mac-clk-rx",
-@@ -155,6 +157,7 @@ eth2: eth2@482d0000 {
+@@ -155,6 +157,7 @@
  		snps,tso;
  		access-controllers = <&rifsc 61>;
  		power-domains = <&CLUSTER_PD>;
@@ -75,6 +71,3 @@ index bc643f6402e3..83b530ac1ccd 100644
  		status = "disabled";
  		snps,mtl-rx-config = <&mtl_rx_setup_2>;
  		snps,mtl-tx-config = <&mtl_tx_setup_2>;
--- 
-2.39.5
-

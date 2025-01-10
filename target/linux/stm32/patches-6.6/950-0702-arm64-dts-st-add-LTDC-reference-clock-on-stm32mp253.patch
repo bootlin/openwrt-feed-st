@@ -11,11 +11,9 @@ Change-Id: I52a36a459062d7e48af49d40bc1207c5d565c88d
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 14 ++++++++++++--
  1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 32314619275d..9282a31575a8 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -61,8 +61,8 @@ lvds: lvds@48060000 {
+@@ -61,8 +61,8 @@
  		#clock-cells = <0>;
  		compatible = "st,stm32-lvds";
  		reg = <0x48060000 0x2000>;
@@ -26,7 +24,7 @@ index 32314619275d..9282a31575a8 100644
  		resets = <&rcc LVDS_R>;
  		access-controllers = <&rifsc 84>;
  		status = "disabled";
-@@ -117,3 +117,13 @@ mtl_tx_setup_2: tx-queues-config {
+@@ -117,3 +117,13 @@
  		};
  	};
  };
@@ -40,6 +38,3 @@ index 32314619275d..9282a31575a8 100644
 +	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
 +	clock-names = "bus", "ref", "lcd";
 +};
--- 
-2.39.5
-

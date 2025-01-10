@@ -11,11 +11,9 @@ Change-Id: Id3de5190081f5086a36775b7b99b194c7f07da3b
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 125 +++++++++++++++++++++++++
  1 file changed, 125 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index c53eeec8a453..51cfbea27796 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1290,6 +1290,131 @@ channel@18 {
+@@ -1290,6 +1290,131 @@
  				};
  			};
  
@@ -147,6 +145,3 @@ index c53eeec8a453..51cfbea27796 100644
  			adc_3: adc@404f0000 {
  				compatible = "st,stm32mp25-adc-core";
  				reg = <0x404f0000 0x400>;
--- 
-2.39.5
-

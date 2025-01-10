@@ -11,8 +11,6 @@ Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 51 ++++++++++++++++++-
  1 file changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
-index 3f569fdf3f45..3d80168daa6e 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
 @@ -14,6 +14,7 @@
@@ -31,7 +29,7 @@ index 3f569fdf3f45..3d80168daa6e 100644
  	u32 speed;
  	const struct stm32_ops *ops;
  	struct device *dev;
-@@ -311,6 +313,16 @@ static int stm32_dwmac_parse_data(struct stm32_dwmac *dwmac,
+@@ -311,6 +313,16 @@ static int stm32_dwmac_parse_data(struct
  	if (err)
  		pr_debug("Warning sysconfig register mask not set\n");
  
@@ -48,7 +46,7 @@ index 3f569fdf3f45..3d80168daa6e 100644
  	return 0;
  }
  
-@@ -369,6 +381,27 @@ static int stm32_dwmac_wake_init(struct device *dev,
+@@ -369,6 +381,27 @@ static int stm32_dwmac_wake_init(struct
  	return 0;
  }
  
@@ -76,7 +74,7 @@ index 3f569fdf3f45..3d80168daa6e 100644
  static int stm32_dwmac_probe(struct platform_device *pdev)
  {
  	struct plat_stmmacenet_data *plat_dat;
-@@ -419,12 +452,18 @@ static int stm32_dwmac_probe(struct platform_device *pdev)
+@@ -419,12 +452,18 @@ static int stm32_dwmac_probe(struct plat
  	if (ret)
  		goto err_wake_init_disable;
  
@@ -96,7 +94,7 @@ index 3f569fdf3f45..3d80168daa6e 100644
  err_clk_disable:
  	stm32_dwmac_clk_disable(dwmac);
  err_wake_init_disable:
-@@ -448,6 +487,8 @@ static void stm32_dwmac_remove(struct platform_device *pdev)
+@@ -448,6 +487,8 @@ static void stm32_dwmac_remove(struct pl
  
  	dev_pm_clear_wake_irq(&pdev->dev);
  	device_init_wakeup(&pdev->dev, false);
@@ -105,7 +103,7 @@ index 3f569fdf3f45..3d80168daa6e 100644
  }
  
  static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
-@@ -463,12 +504,20 @@ static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
+@@ -463,12 +504,20 @@ static int stm32mp1_suspend(struct stm32
  	if (dwmac->enable_eth_ck)
  		clk_disable_unprepare(dwmac->clk_eth_ck);
  
@@ -126,6 +124,3 @@ index 3f569fdf3f45..3d80168daa6e 100644
  }
  
  static int stm32mcu_suspend(struct stm32_dwmac *dwmac)
--- 
-2.39.5
-

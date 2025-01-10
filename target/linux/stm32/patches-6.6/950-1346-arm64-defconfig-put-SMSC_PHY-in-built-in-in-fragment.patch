@@ -15,8 +15,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/configs/fragment-02-defconfig-addons.config | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/configs/fragment-02-defconfig-addons.config b/arch/arm64/configs/fragment-02-defconfig-addons.config
-index 9136492958d5..d0a0ce6a9dc7 100644
 --- a/arch/arm64/configs/fragment-02-defconfig-addons.config
 +++ b/arch/arm64/configs/fragment-02-defconfig-addons.config
 @@ -62,9 +62,9 @@ CONFIG_NVMEM_REBOOT_MODE=y
@@ -42,6 +40,3 @@ index 9136492958d5..d0a0ce6a9dc7 100644
  CONFIG_SND_SOC_STM32_I2S=m
  CONFIG_SND_SOC_STM32_MDF=m
  CONFIG_SND_SOC_STM32_SAI=m
--- 
-2.39.5
-

@@ -19,8 +19,6 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/spi/spi-stm32-ospi.c | 60 +++++++++++++++++++++++++++---------
  1 file changed, 45 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 5a6c1833d2e9..36e1d37d86ca 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
 @@ -23,6 +23,7 @@ struct stm32_ospi_flash {
@@ -31,7 +29,7 @@ index 5a6c1833d2e9..36e1d37d86ca 100644
  };
  
  struct stm32_ospi {
-@@ -858,6 +859,7 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -858,6 +859,7 @@ static int stm32_ospi_setup(struct spi_d
  	struct stm32_omi *omi = ospi->omi;
  	struct stm32_ospi_flash *flash;
  	void __iomem *regs_base = omi->regs_base;
@@ -39,7 +37,7 @@ index 5a6c1833d2e9..36e1d37d86ca 100644
  	int ret;
  
  	if (ctrl->busy)
-@@ -889,31 +891,53 @@ static int stm32_ospi_setup(struct spi_device *spi)
+@@ -889,31 +891,53 @@ static int stm32_ospi_setup(struct spi_d
  	stm32_ospi_set_prescaler(ospi, flash->presc);
  
  	ospi->last_cs = spi->chip_select;
@@ -108,7 +106,7 @@ index 5a6c1833d2e9..36e1d37d86ca 100644
  }
  
  static bool stm32_ospi_supports_mem_op(struct spi_mem *mem,
-@@ -1060,6 +1084,12 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -1060,6 +1084,12 @@ static int stm32_ospi_probe(struct platf
  
  			flash->is_spi_nor = true;
  		}
@@ -121,6 +119,3 @@ index 5a6c1833d2e9..36e1d37d86ca 100644
  	}
  
  	ret = spi_register_master(ctrl);
--- 
-2.39.5
-

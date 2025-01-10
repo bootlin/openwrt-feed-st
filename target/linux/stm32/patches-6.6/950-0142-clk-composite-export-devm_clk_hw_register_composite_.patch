@@ -13,15 +13,10 @@ Change-Id: I98bfe1648d80d8461706b3f804fee0b0f4a24d28
  drivers/clk/clk-composite.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
-index 66759fe28fad..1c703e1a49c2 100644
 --- a/drivers/clk/clk-composite.c
 +++ b/drivers/clk/clk-composite.c
-@@ -490,3 +490,4 @@ struct clk_hw *devm_clk_hw_register_composite_pdata(struct device *dev,
+@@ -490,3 +490,4 @@ struct clk_hw *devm_clk_hw_register_comp
  						rate_hw, rate_ops, gate_hw,
  						gate_ops, flags);
  }
 +EXPORT_SYMBOL_GPL(devm_clk_hw_register_composite_pdata);
--- 
-2.39.5
-

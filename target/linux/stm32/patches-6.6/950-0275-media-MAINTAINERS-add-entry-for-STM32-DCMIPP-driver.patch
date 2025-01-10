@@ -17,8 +17,6 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  MAINTAINERS | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2f680e4e82a0..fc0b47a14290 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -13289,13 +13289,16 @@ W:	https://linuxtv.org
@@ -39,6 +37,3 @@ index 2f680e4e82a0..fc0b47a14290 100644
  
  MEDIA INPUT INFRASTRUCTURE (V4L/DVB)
  M:	Mauro Carvalho Chehab <mchehab@kernel.org>
--- 
-2.39.5
-

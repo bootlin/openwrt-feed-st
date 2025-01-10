@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index bab80efcd8a1..da733c2b912f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1687,6 +1687,7 @@ adc1: adc@0 {
+@@ -1687,6 +1687,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -30,7 +28,7 @@ index bab80efcd8a1..da733c2b912f 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1706,6 +1707,7 @@ adc2: adc@100 {
+@@ -1706,6 +1707,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -38,7 +36,7 @@ index bab80efcd8a1..da733c2b912f 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1896,6 +1898,7 @@ adc3: adc@0 {
+@@ -1896,6 +1898,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -46,6 +44,3 @@ index bab80efcd8a1..da733c2b912f 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
--- 
-2.39.5
-

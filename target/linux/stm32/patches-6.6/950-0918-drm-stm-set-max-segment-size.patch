@@ -15,13 +15,11 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/gpu/drm/stm/drv.c | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index a380ee291f0e..df56c81e0065 100644
 --- a/drivers/gpu/drm/stm/drv.c
 +++ b/drivers/gpu/drm/stm/drv.c
-@@ -226,7 +226,18 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
+@@ -214,7 +214,18 @@ static int stm_drm_platform_probe(struct
  	if (ret)
- 		goto err_suspend;
+ 		return ret;
  
 -	dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
 +	/* Configure the DMA segment size to make sure we get contiguous & coherent memory */
@@ -38,7 +36,4 @@ index a380ee291f0e..df56c81e0065 100644
 +	}
  
  	ddev = drm_dev_alloc(&drv_driver, dev);
- 	if (IS_ERR(ddev)) {
--- 
-2.39.5
-
+ 	if (IS_ERR(ddev))

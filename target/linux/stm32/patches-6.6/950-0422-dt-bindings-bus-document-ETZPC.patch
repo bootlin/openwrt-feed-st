@@ -13,9 +13,6 @@ Reviewed-by: Rob Herring <robh@kernel.org>
  1 file changed, 96 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
-new file mode 100644
-index 000000000000..d12b62a3a5a8
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
 @@ -0,0 +1,96 @@
@@ -115,6 +112,3 @@ index 000000000000..d12b62a3a5a8
 +            access-controllers = <&etzpc 17>;
 +        };
 +    };
--- 
-2.39.5
-

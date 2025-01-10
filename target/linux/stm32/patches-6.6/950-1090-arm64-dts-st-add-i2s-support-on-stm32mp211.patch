@@ -16,11 +16,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 48 ++++++++++++++++++++++++++
  1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 3edd5e2f48cc..0c41f30a21e7 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -218,6 +218,22 @@ rifsc: bus@42080000 {
+@@ -218,6 +218,22 @@
  			ranges;
  			dma-ranges;
  
@@ -43,7 +41,7 @@ index 3edd5e2f48cc..0c41f30a21e7 100644
  			spi2: spi@400b0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -234,6 +250,22 @@ spi2: spi@400b0000 {
+@@ -234,6 +250,22 @@
  				status = "disabled";
  			};
  
@@ -66,7 +64,7 @@ index 3edd5e2f48cc..0c41f30a21e7 100644
  			spi3: spi@400c0000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -363,6 +395,22 @@ usart6: serial@40220000 {
+@@ -363,6 +395,22 @@
  				status = "disabled";
  			};
  
@@ -89,6 +87,3 @@ index 3edd5e2f48cc..0c41f30a21e7 100644
  			spi1: spi@40230000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

@@ -16,11 +16,9 @@ Change-Id: Ia13659f3af1a93cf4add89d5f131d5858166fe47
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 4 ----
  5 files changed, 20 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 747b9e7f4e53..892b7708d0cd 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -350,10 +350,6 @@ &pwr_regulators {
+@@ -350,10 +350,6 @@
  	vdd_3v3_usbfs-supply = <&vdd_usb>;
  };
  
@@ -31,11 +29,9 @@ index 747b9e7f4e53..892b7708d0cd 100644
  &rtc {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index bf65ed58e0af..0fbf3550d17a 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -354,10 +354,6 @@ &pwr_regulators {
+@@ -354,10 +354,6 @@
  	vdd_3v3_usbfs-supply = <&vdd_usb>;
  };
  
@@ -46,11 +42,9 @@ index bf65ed58e0af..0fbf3550d17a 100644
  &rtc {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 2a032189bd37..3dbf201358bb 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -350,10 +350,6 @@ &pwr_regulators {
+@@ -350,10 +350,6 @@
  	vdd_3v3_usbfs-supply = <&vdd_usb>;
  };
  
@@ -61,11 +55,9 @@ index 2a032189bd37..3dbf201358bb 100644
  &rtc {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index ea897a29f09a..6d92e676acd9 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -354,10 +354,6 @@ &pwr_regulators {
+@@ -354,10 +354,6 @@
  	vdd_3v3_usbfs-supply = <&vdd_usb>;
  };
  
@@ -76,11 +68,9 @@ index ea897a29f09a..6d92e676acd9 100644
  &rtc {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 1c7bf56e0c1f..8508799264f6 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -509,10 +509,6 @@ &pwr_regulators {
+@@ -509,10 +509,6 @@
  	vdd_3v3_usbfs-supply = <&vdd_usb>;
  };
  
@@ -91,6 +81,3 @@ index 1c7bf56e0c1f..8508799264f6 100644
  &rtc {
  	status = "okay";
  };
--- 
-2.39.5
-

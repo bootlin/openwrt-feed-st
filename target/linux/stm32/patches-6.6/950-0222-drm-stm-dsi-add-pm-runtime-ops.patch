@@ -12,8 +12,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 28 +++++++++++++++++++--------
  1 file changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index d5f8c923d7bc..a0ca4d7f3b8a 100644
 --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
 @@ -11,6 +11,7 @@
@@ -32,7 +30,7 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  	struct dw_mipi_dsi *dsi;
  	u32 hw_version;
  	int lane_min_kbps;
-@@ -443,7 +445,6 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -443,7 +445,6 @@ static int dw_mipi_dsi_stm_probe(struct
  {
  	struct device *dev = &pdev->dev;
  	struct dw_mipi_dsi_stm *dsi;
@@ -40,7 +38,7 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  	int ret;
  
  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-@@ -483,21 +484,21 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+@@ -483,21 +484,21 @@ static int dw_mipi_dsi_stm_probe(struct
  		goto err_clk_get;
  	}
  
@@ -67,7 +65,7 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  
  	if (dsi->hw_version != HWVER_130 && dsi->hw_version != HWVER_131) {
  		ret = -ENODEV;
-@@ -551,6 +552,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+@@ -551,6 +552,7 @@ static int __maybe_unused dw_mipi_dsi_st
  	DRM_DEBUG_DRIVER("\n");
  
  	clk_disable_unprepare(dsi->pllref_clk);
@@ -75,7 +73,7 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  	regulator_disable(dsi->vdd_supply);
  
  	return 0;
-@@ -569,8 +571,16 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -569,8 +571,16 @@ static int __maybe_unused dw_mipi_dsi_st
  		return ret;
  	}
  
@@ -92,7 +90,7 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  		regulator_disable(dsi->vdd_supply);
  		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
  		return ret;
-@@ -580,8 +590,10 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+@@ -580,8 +590,10 @@ static int __maybe_unused dw_mipi_dsi_st
  }
  
  static const struct dev_pm_ops dw_mipi_dsi_stm_pm_ops = {
@@ -105,6 +103,3 @@ index d5f8c923d7bc..a0ca4d7f3b8a 100644
  };
  
  static struct platform_driver dw_mipi_dsi_stm_driver = {
--- 
-2.39.5
-

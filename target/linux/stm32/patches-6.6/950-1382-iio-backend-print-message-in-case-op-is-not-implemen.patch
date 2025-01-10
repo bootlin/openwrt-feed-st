@@ -23,8 +23,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/iio/industrialio-backend.c | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
-index e01b7be8e693..3afdce7da1b5 100644
 --- a/drivers/iio/industrialio-backend.c
 +++ b/drivers/iio/industrialio-backend.c
 @@ -40,6 +40,7 @@
@@ -45,6 +43,3 @@ index e01b7be8e693..3afdce7da1b5 100644
  }
  
  /**
--- 
-2.39.5
-

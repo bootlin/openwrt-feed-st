@@ -11,11 +11,9 @@ Change-Id: Ib901afe556d318f40cd2e7c8064fc1bbcf7206a7
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index b554f095e797..24ad936f9a1a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -23,4 +23,16 @@ venc: venc@480e0000 {
+@@ -23,4 +23,16 @@
  		clocks = <&rcc CK_BUS_VENC>;
  		access-controllers = <&rifsc 90>;
  	};
@@ -32,6 +30,3 @@ index b554f095e797..24ad936f9a1a 100644
 +		status = "disabled";
 +	};
  };
--- 
-2.39.5
-

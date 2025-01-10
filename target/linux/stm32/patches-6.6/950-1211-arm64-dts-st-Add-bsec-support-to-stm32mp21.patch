@@ -14,11 +14,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 58eff8a6e47d..888ea544dd57 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -1740,6 +1740,22 @@ hdp: pinctrl@44090000 {
+@@ -1740,6 +1740,22 @@
  			status = "disabled";
  		};
  
@@ -41,6 +39,3 @@ index 58eff8a6e47d..888ea544dd57 100644
  		rcc: clock-controller@44200000 {
  			compatible = "st,stm32mp21-rcc";
  			reg = <0x44200000 0x10000>;
--- 
-2.39.5
-

@@ -14,11 +14,9 @@ Change-Id: I9a50805e7ab04651cc448845ce8a711a8f438a24
  .../dts/st/stm32mp157f-ev1-a7-examples.dts    | 20 +++++++++++++++++++
  2 files changed, 40 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
-index 0ebc68db6797..7d05d6e91f07 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-a7-examples.dts
-@@ -30,6 +30,26 @@ button-1 {
+@@ -30,6 +30,26 @@
  	};
  };
  
@@ -45,11 +43,9 @@ index 0ebc68db6797..7d05d6e91f07 100644
  &usart3 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
-index cc3805ca55cb..1d6691b41e44 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1-a7-examples.dts
-@@ -30,6 +30,26 @@ button-1 {
+@@ -30,6 +30,26 @@
  	};
  };
  
@@ -76,6 +72,3 @@ index cc3805ca55cb..1d6691b41e44 100644
  &usart3 {
  	status = "okay";
  };
--- 
-2.39.5
-

@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 4b8f4e226583..4a80ca98053f 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -664,6 +664,21 @@ static void dw_mipi_dsi_dpi_config(struct dw_mipi_dsi *dsi,
+@@ -664,6 +664,21 @@ static void dw_mipi_dsi_dpi_config(struc
  				   const struct drm_display_mode *mode)
  {
  	u32 val = 0, color = 0;
@@ -38,7 +36,7 @@ index 4b8f4e226583..4a80ca98053f 100644
  
  	switch (dsi->format) {
  	case MIPI_DSI_FMT_RGB888:
-@@ -684,6 +699,8 @@ static void dw_mipi_dsi_dpi_config(struct dw_mipi_dsi *dsi,
+@@ -684,6 +699,8 @@ static void dw_mipi_dsi_dpi_config(struc
  		val |= VSYNC_ACTIVE_LOW;
  	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
  		val |= HSYNC_ACTIVE_LOW;
@@ -47,6 +45,3 @@ index 4b8f4e226583..4a80ca98053f 100644
  
  	dsi_write(dsi, DSI_DPI_VCID, DPI_VCID(dsi->channel));
  	dsi_write(dsi, DSI_DPI_COLOR_CODING, color);
--- 
-2.39.5
-

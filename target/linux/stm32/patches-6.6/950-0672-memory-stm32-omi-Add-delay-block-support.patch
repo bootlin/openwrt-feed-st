@@ -22,11 +22,9 @@ Change-Id: I2690070d21ca6818f9dc915ec16a92c2b930a508
  include/memory/stm32-omi.h |  34 +++++
  2 files changed, 304 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 212e457edc4f..8c04e5dce106 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -30,7 +30,7 @@ int stm32_omi_abort(struct stm32_omi *omi)
+@@ -30,7 +30,7 @@ int stm32_omi_abort(struct stm32_omi *om
  						    cr, !(cr & CR_ABORT), 1,
  						    STM32_ABT_TIMEOUT_US);
  
@@ -35,7 +33,7 @@ index 212e457edc4f..8c04e5dce106 100644
  		dev_err(omi->dev, "%s abort timeout:%d\n", __func__, timeout);
  
  	return timeout;
-@@ -54,8 +54,10 @@ int stm32_omi_tx_poll(struct stm32_omi *omi, u8 *buf, u32 len, bool read)
+@@ -54,8 +54,10 @@ int stm32_omi_tx_poll(struct stm32_omi *
  							sr, sr & SR_FTF, 1,
  							STM32_FIFO_TIMEOUT_US);
  		if (ret) {
@@ -48,7 +46,7 @@ index 212e457edc4f..8c04e5dce106 100644
  			return ret;
  		}
  		tx_fifo(buf++, regs_base + OSPI_DR);
-@@ -169,6 +171,256 @@ void stm32_omi_dma_setup(struct stm32_omi *omi,
+@@ -169,6 +171,256 @@ void stm32_omi_dma_setup(struct stm32_om
  }
  EXPORT_SYMBOL(stm32_omi_dma_setup);
  
@@ -305,7 +303,7 @@ index 212e457edc4f..8c04e5dce106 100644
  static int stm32_omi_probe(struct platform_device *pdev)
  {
  	struct platform_device *vdev;
-@@ -262,6 +514,21 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -262,6 +514,21 @@ static int stm32_omi_probe(struct platfo
  	if (IS_ERR(omi->rstc))
  		return dev_err_probe(dev, PTR_ERR(omi->rstc),
  				     "Can't get reset\n");
@@ -327,8 +325,6 @@ index 212e457edc4f..8c04e5dce106 100644
  	omi->dma_chrx = dma_request_chan(dev, "rx");
  	if (IS_ERR(omi->dma_chrx)) {
  		ret = PTR_ERR(omi->dma_chrx);
-diff --git a/include/memory/stm32-omi.h b/include/memory/stm32-omi.h
-index e9f0b6a5a2b4..3af11732efc5 100644
 --- a/include/memory/stm32-omi.h
 +++ b/include/memory/stm32-omi.h
 @@ -125,6 +125,21 @@
@@ -390,6 +386,3 @@ index e9f0b6a5a2b4..3af11732efc5 100644
  void stm32_omi_dma_callback(void *arg);
  void stm32_omi_dma_setup(struct stm32_omi *omi,
  			 struct dma_slave_config *dma_cfg);
--- 
-2.39.5
-

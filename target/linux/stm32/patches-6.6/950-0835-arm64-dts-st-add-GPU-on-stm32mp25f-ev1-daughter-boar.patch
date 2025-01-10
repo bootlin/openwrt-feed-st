@@ -11,11 +11,9 @@ Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 28a469590f8d..25ca3c396948 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -264,7 +264,7 @@ phy1_eth2: ethernet-phy@1 {
+@@ -264,7 +264,7 @@
  
  &gpu {
  	contiguous-area = <&gpu_reserved>;
@@ -24,6 +22,3 @@ index 28a469590f8d..25ca3c396948 100644
  };
  
  &hpdma {
--- 
-2.39.5
-

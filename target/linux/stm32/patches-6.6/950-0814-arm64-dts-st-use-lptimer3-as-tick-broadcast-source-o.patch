@@ -14,11 +14,9 @@ Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 50fc8b5edb2f..d6e993f7b1bc 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -331,6 +331,14 @@ &ipcc1 {
+@@ -331,6 +331,14 @@
  	status = "okay";
  };
  
@@ -33,6 +31,3 @@ index 50fc8b5edb2f..d6e993f7b1bc 100644
  &ltdc {
  	status = "okay";
  
--- 
-2.39.5
-

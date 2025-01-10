@@ -21,8 +21,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml          | 11 ++++++-----
  1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index 2722edab1d9a..4aae5b41a4a1 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
 @@ -142,11 +142,12 @@ patternProperties:
@@ -43,6 +41,3 @@ index 2722edab1d9a..4aae5b41a4a1 100644
  
        st,filter0-sync:
          description:
--- 
-2.39.5
-

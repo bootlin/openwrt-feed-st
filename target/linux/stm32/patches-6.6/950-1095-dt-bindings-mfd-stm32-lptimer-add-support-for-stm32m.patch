@@ -16,8 +16,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-index 4822ce5d0c76..097f5994580b 100644
 --- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 +++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
 @@ -23,6 +23,7 @@ properties:
@@ -60,6 +58,3 @@ index 4822ce5d0c76..097f5994580b 100644
            - st,stm32mp25-lptimer-trigger
  
        reg:
--- 
-2.39.5
-

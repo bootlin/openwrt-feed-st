@@ -16,11 +16,9 @@ Reviewed-by: Gwenael TREUVEUR <gwenael.treuveur@st.com>
  arch/arm/boot/dts/st/stm32mp157f-dk2.dts | 4 +---
  2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-index 17db8ef2bf58..832a73307333 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2.dts
-@@ -124,7 +124,7 @@ &sdmmc2 {
+@@ -124,7 +124,7 @@
  	mmc-pwrseq = <&wifi_pwrseq>;
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -29,7 +27,7 @@ index 17db8ef2bf58..832a73307333 100644
  
  	brcmf: bcrmf@1 {
  		reg = <1>;
-@@ -132,7 +132,6 @@ brcmf: bcrmf@1 {
+@@ -132,7 +132,6 @@
  		interrupt-parent = <&gpiod>;
  		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
  		interrupt-names = "host-wake";
@@ -37,18 +35,16 @@ index 17db8ef2bf58..832a73307333 100644
  	};
  };
  
-@@ -151,6 +150,5 @@ bluetooth {
+@@ -151,6 +150,5 @@
  		max-speed = <3000000>;
  		vbat-supply = <&v3v3>;
  		vddio-supply = <&v3v3>;
 -		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-index 89ff32a4d7c3..9eb7ffec3822 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2.dts
-@@ -124,7 +124,7 @@ &sdmmc2 {
+@@ -124,7 +124,7 @@
  	mmc-pwrseq = <&wifi_pwrseq>;
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -57,7 +53,7 @@ index 89ff32a4d7c3..9eb7ffec3822 100644
  
  	brcmf: bcrmf@1 {
  		reg = <1>;
-@@ -132,7 +132,6 @@ brcmf: bcrmf@1 {
+@@ -132,7 +132,6 @@
  		interrupt-parent = <&gpiod>;
  		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>; /* WL_HOST_WAKE */
  		interrupt-names = "host-wake";
@@ -65,13 +61,10 @@ index 89ff32a4d7c3..9eb7ffec3822 100644
  	};
  };
  
-@@ -151,6 +150,5 @@ bluetooth {
+@@ -151,6 +150,5 @@
  		max-speed = <3000000>;
  		vbat-supply = <&v3v3>;
  		vddio-supply = <&v3v3>;
 -		status = "disabled";
  	};
  };
--- 
-2.39.5
-

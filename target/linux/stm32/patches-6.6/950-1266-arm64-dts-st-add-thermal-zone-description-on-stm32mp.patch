@@ -23,11 +23,9 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 30 ++++++++++++++++++++++++++
  1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 9ae7919df695..64a62564d1f2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -23,6 +23,7 @@ cpu0: cpu@0 {
+@@ -23,6 +23,7 @@
  			enable-method = "psci";
  			power-domains = <&CPU_PD0>;
  			power-domain-names = "psci";
@@ -35,7 +33,7 @@ index 9ae7919df695..64a62564d1f2 100644
  		};
  	};
  
-@@ -116,6 +117,35 @@ RET_PD: power-domain-retention {
+@@ -116,6 +117,35 @@
  		};
  	};
  
@@ -71,6 +69,3 @@ index 9ae7919df695..64a62564d1f2 100644
  	timer {
  		compatible = "arm,armv8-timer";
  		interrupt-parent = <&intc>;
--- 
-2.39.5
-

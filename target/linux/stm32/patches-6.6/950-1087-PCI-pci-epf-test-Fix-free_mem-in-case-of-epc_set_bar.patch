@@ -80,11 +80,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/pci/endpoint/functions/pci-epf-test.c | 20 ++++++++++++++++---
  1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index fea7c3d8eabd..39678135f80c 100644
 --- a/drivers/pci/endpoint/functions/pci-epf-test.c
 +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -735,8 +735,6 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+@@ -735,8 +735,6 @@ static int pci_epf_test_set_bar(struct p
  		ret = pci_epc_set_bar(epc, epf->func_no, epf->vfunc_no,
  				      epf_bar);
  		if (ret) {
@@ -93,7 +91,7 @@ index fea7c3d8eabd..39678135f80c 100644
  			dev_err(dev, "Failed to set BAR%d\n", bar);
  			if (bar == test_reg_bar)
  				return ret;
-@@ -877,6 +875,20 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
+@@ -877,6 +875,20 @@ static int pci_epf_test_alloc_space(stru
  	return 0;
  }
  
@@ -114,7 +112,7 @@ index fea7c3d8eabd..39678135f80c 100644
  static void pci_epf_configure_bar(struct pci_epf *epf,
  				  const struct pci_epc_features *epc_features)
  {
-@@ -931,8 +943,10 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+@@ -931,8 +943,10 @@ static int pci_epf_test_bind(struct pci_
  
  	if (!core_init_notifier || force_core_init) {
  		ret = pci_epf_test_core_init(epf);
@@ -126,6 +124,3 @@ index fea7c3d8eabd..39678135f80c 100644
  	}
  
  	epf_test->dma_supported = true;
--- 
-2.39.5
-

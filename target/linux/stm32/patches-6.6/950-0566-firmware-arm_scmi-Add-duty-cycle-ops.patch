@@ -16,8 +16,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  include/linux/scmi_protocol.h     |  2 ++
  2 files changed, 37 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 96060bf90a24..473e8d31ccf7 100644
 --- a/drivers/firmware/arm_scmi/clock.c
 +++ b/drivers/firmware/arm_scmi/clock.c
 @@ -21,6 +21,7 @@ enum scmi_clock_protocol_cmd {
@@ -28,7 +26,7 @@ index 96060bf90a24..473e8d31ccf7 100644
  };
  
  struct scmi_msg_resp_clock_protocol_attributes {
-@@ -65,6 +66,11 @@ struct scmi_msg_resp_clock_describe_rates {
+@@ -65,6 +66,11 @@ struct scmi_msg_resp_clock_describe_rate
  })
  };
  
@@ -40,11 +38,10 @@ index 96060bf90a24..473e8d31ccf7 100644
  struct scmi_clock_set_rate {
  	__le32 flags;
  #define CLOCK_SET_ASYNC		BIT(0)
-@@ -324,6 +330,34 @@ scmi_clock_describe_rates_get(const struct scmi_protocol_handle *ph, u32 clk_id,
- 	return ret;
+@@ -325,6 +331,34 @@ scmi_clock_describe_rates_get(const stru
  }
  
-+static int
+ static int
 +scmi_clock_get_duty_cycle(const struct scmi_protocol_handle *ph,
 +			  u32 clk_id, int *num, int *den)
 +{
@@ -72,10 +69,11 @@ index 96060bf90a24..473e8d31ccf7 100644
 +	return ret;
 +}
 +
- static int
++static int
  scmi_clock_rate_get(const struct scmi_protocol_handle *ph,
  		    u32 clk_id, u64 *value)
-@@ -472,6 +506,7 @@ static const struct scmi_clk_proto_ops clk_proto_ops = {
+ {
+@@ -472,6 +506,7 @@ static const struct scmi_clk_proto_ops c
  	.disable = scmi_clock_disable,
  	.enable_atomic = scmi_clock_enable_atomic,
  	.disable_atomic = scmi_clock_disable_atomic,
@@ -83,8 +81,6 @@ index 96060bf90a24..473e8d31ccf7 100644
  };
  
  static int scmi_clk_rate_notify(const struct scmi_protocol_handle *ph,
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 71923ae63b01..b5c0bf5754ad 100644
 --- a/include/linux/scmi_protocol.h
 +++ b/include/linux/scmi_protocol.h
 @@ -95,6 +95,8 @@ struct scmi_clk_proto_ops {
@@ -96,6 +92,3 @@ index 71923ae63b01..b5c0bf5754ad 100644
  };
  
  struct scmi_perf_domain_info {
--- 
-2.39.5
-

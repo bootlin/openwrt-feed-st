@@ -32,8 +32,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/memory/stm32-fmc2-ebi.c | 362 ++++++++++++++++++++++++++++++--
  1 file changed, 350 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
-index 871f3de69102..23d435e87809 100644
 --- a/drivers/memory/stm32-fmc2-ebi.c
 +++ b/drivers/memory/stm32-fmc2-ebi.c
 @@ -20,6 +20,7 @@
@@ -132,7 +130,7 @@ index 871f3de69102..23d435e87809 100644
  };
  
  /*
-@@ -353,6 +388,30 @@ static u32 stm32_fmc2_ebi_ns_to_clk_period(struct stm32_fmc2_ebi *ebi,
+@@ -353,6 +388,30 @@ static u32 stm32_fmc2_ebi_ns_to_clk_peri
  	return DIV_ROUND_UP(nb_clk_cycles, clk_period);
  }
  
@@ -163,7 +161,7 @@ index 871f3de69102..23d435e87809 100644
  static int stm32_fmc2_ebi_get_reg(int reg_type, int cs, u32 *reg)
  {
  	switch (reg_type) {
-@@ -368,6 +427,9 @@ static int stm32_fmc2_ebi_get_reg(int reg_type, int cs, u32 *reg)
+@@ -368,6 +427,9 @@ static int stm32_fmc2_ebi_get_reg(int re
  	case FMC2_REG_PCSCNTR:
  		*reg = FMC2_PCSCNTR;
  		break;
@@ -173,7 +171,7 @@ index 871f3de69102..23d435e87809 100644
  	default:
  		return -EINVAL;
  	}
-@@ -714,6 +776,30 @@ static int stm32_fmc2_ebi_set_clk_period(struct stm32_fmc2_ebi *ebi,
+@@ -714,6 +776,30 @@ static int stm32_fmc2_ebi_set_clk_period
  	return 0;
  }
  
@@ -204,7 +202,7 @@ index 871f3de69102..23d435e87809 100644
  static int stm32_fmc2_ebi_set_data_latency(struct stm32_fmc2_ebi *ebi,
  					   const struct stm32_fmc2_prop *prop,
  					   int cs, u32 setup)
-@@ -759,6 +845,27 @@ static int stm32_fmc2_ebi_set_max_low_pulse(struct stm32_fmc2_ebi *ebi,
+@@ -759,6 +845,27 @@ static int stm32_fmc2_ebi_set_max_low_pu
  	return 0;
  }
  
@@ -232,7 +230,7 @@ index 871f3de69102..23d435e87809 100644
  static const struct stm32_fmc2_prop stm32_fmc2_child_props[] = {
  	/* st,fmc2-ebi-cs-trans-type must be the first property */
  	{
-@@ -924,6 +1031,171 @@ static const struct stm32_fmc2_prop stm32_fmc2_child_props[] = {
+@@ -924,6 +1031,171 @@ static const struct stm32_fmc2_prop stm3
  	},
  };
  
@@ -404,7 +402,7 @@ index 871f3de69102..23d435e87809 100644
  static int stm32_fmc2_ebi_parse_prop(struct stm32_fmc2_ebi *ebi,
  				     struct device_node *dev_node,
  				     const struct stm32_fmc2_prop *prop,
-@@ -999,9 +1271,31 @@ static int stm32_fmc2_ebi_save_setup(struct stm32_fmc2_ebi *ebi)
+@@ -999,9 +1271,31 @@ static int stm32_fmc2_ebi_save_setup(str
  			return ret;
  	}
  
@@ -436,7 +434,7 @@ index 871f3de69102..23d435e87809 100644
  static void stm32_fmc2_ebi_set_setup(struct stm32_fmc2_ebi *ebi)
  {
  	unsigned int cs;
-@@ -1011,10 +1305,20 @@ static void stm32_fmc2_ebi_set_setup(struct stm32_fmc2_ebi *ebi)
+@@ -1011,10 +1305,20 @@ static void stm32_fmc2_ebi_set_setup(str
  		regmap_write(ebi->regmap, FMC2_BTR(cs), ebi->btr[cs]);
  		regmap_write(ebi->regmap, FMC2_BWTR(cs), ebi->bwtr[cs]);
  	}
@@ -457,7 +455,7 @@ index 871f3de69102..23d435e87809 100644
  static void stm32_fmc2_ebi_disable_banks(struct stm32_fmc2_ebi *ebi)
  {
  	unsigned int cs;
-@@ -1055,13 +1359,15 @@ static int stm32_fmc2_ebi_nwait_used_by_ctrls(struct stm32_fmc2_ebi *ebi)
+@@ -1055,13 +1359,15 @@ static int stm32_fmc2_ebi_nwait_used_by_
  
  static void stm32_fmc2_ebi_enable(struct stm32_fmc2_ebi *ebi)
  {
@@ -476,7 +474,7 @@ index 871f3de69102..23d435e87809 100644
  }
  
  static int stm32_fmc2_ebi_setup_cs(struct stm32_fmc2_ebi *ebi,
-@@ -1073,8 +1379,8 @@ static int stm32_fmc2_ebi_setup_cs(struct stm32_fmc2_ebi *ebi,
+@@ -1073,8 +1379,8 @@ static int stm32_fmc2_ebi_setup_cs(struc
  
  	stm32_fmc2_ebi_disable_bank(ebi, cs);
  
@@ -487,7 +485,7 @@ index 871f3de69102..23d435e87809 100644
  
  		ret = stm32_fmc2_ebi_parse_prop(ebi, dev_node, p, cs);
  		if (ret) {
-@@ -1137,9 +1443,11 @@ static int stm32_fmc2_ebi_parse_dt(struct stm32_fmc2_ebi *ebi)
+@@ -1137,9 +1443,11 @@ static int stm32_fmc2_ebi_parse_dt(struc
  		return -ENODEV;
  	}
  
@@ -502,7 +500,7 @@ index 871f3de69102..23d435e87809 100644
  
  	stm32_fmc2_ebi_enable(ebi);
  
-@@ -1159,6 +1467,10 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1159,6 +1467,10 @@ static int stm32_fmc2_ebi_probe(struct p
  
  	ebi->dev = dev;
  
@@ -513,7 +511,7 @@ index 871f3de69102..23d435e87809 100644
  	ebi->regmap = device_node_to_regmap(dev->of_node);
  	if (IS_ERR(ebi->regmap))
  		return PTR_ERR(ebi->regmap);
-@@ -1184,7 +1496,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1184,7 +1496,7 @@ static int stm32_fmc2_ebi_probe(struct p
  	if (ret)
  		goto err_release;
  
@@ -522,7 +520,7 @@ index 871f3de69102..23d435e87809 100644
  	if (ret)
  		goto err_release;
  
-@@ -1234,7 +1546,7 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+@@ -1234,7 +1546,7 @@ static int __maybe_unused stm32_fmc2_ebi
  	if (ret)
  		return ret;
  
@@ -531,7 +529,7 @@ index 871f3de69102..23d435e87809 100644
  	stm32_fmc2_ebi_enable(ebi);
  
  	return 0;
-@@ -1243,8 +1555,34 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+@@ -1243,8 +1555,34 @@ static int __maybe_unused stm32_fmc2_ebi
  static SIMPLE_DEV_PM_OPS(stm32_fmc2_ebi_pm_ops, stm32_fmc2_ebi_suspend,
  			 stm32_fmc2_ebi_resume);
  
@@ -567,6 +565,3 @@ index 871f3de69102..23d435e87809 100644
  	{}
  };
  MODULE_DEVICE_TABLE(of, stm32_fmc2_ebi_match);
--- 
-2.39.5
-

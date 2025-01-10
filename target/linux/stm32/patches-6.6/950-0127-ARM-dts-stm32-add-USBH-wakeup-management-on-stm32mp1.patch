@@ -13,11 +13,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 2d007199ab9e..bfe2f3fb087c 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1390,6 +1390,8 @@ usbh_ohci: usb@5800c000 {
+@@ -1390,6 +1390,8 @@
  			clocks = <&usbphyc>, <&rcc USBH>;
  			resets = <&rcc USBH_R>;
  			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
@@ -26,7 +24,7 @@ index 2d007199ab9e..bfe2f3fb087c 100644
  			status = "disabled";
  		};
  
-@@ -1400,6 +1402,8 @@ usbh_ehci: usb@5800d000 {
+@@ -1400,6 +1402,8 @@
  			resets = <&rcc USBH_R>;
  			interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
  			companion = <&usbh_ohci>;
@@ -35,6 +33,3 @@ index 2d007199ab9e..bfe2f3fb087c 100644
  			status = "disabled";
  		};
  
--- 
-2.39.5
-

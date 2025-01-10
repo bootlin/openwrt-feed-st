@@ -13,9 +13,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  1 file changed, 189 insertions(+)
  create mode 100644 include/uapi/linux/stm32-dcmipp-config.h
 
-diff --git a/include/uapi/linux/stm32-dcmipp-config.h b/include/uapi/linux/stm32-dcmipp-config.h
-new file mode 100644
-index 000000000000..8cff27f51d71
 --- /dev/null
 +++ b/include/uapi/linux/stm32-dcmipp-config.h
 @@ -0,0 +1,189 @@
@@ -208,6 +205,3 @@ index 000000000000..8cff27f51d71
 +};
 +
 +#endif
--- 
-2.39.5
-

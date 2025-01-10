@@ -13,8 +13,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/283851
  arch/arm/configs/fragment-02-multiv7_addons.config | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index 71fe9f46e581..6d90c793480f 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -31,6 +31,7 @@ CONFIG_PREEMPT=y
@@ -34,6 +32,3 @@ index 71fe9f46e581..6d90c793480f 100644
  CONFIG_USB_HIDDEV=y
  CONFIG_USB_ONBOARD_HUB=y
  CONFIG_VFP=y
--- 
-2.39.5
-

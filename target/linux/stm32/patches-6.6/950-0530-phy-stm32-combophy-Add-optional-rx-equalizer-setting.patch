@@ -12,8 +12,6 @@ Change-Id: Ifcb001b29cb9683882bba2133c0f80fa179d329b
  drivers/phy/st/phy-stm32-combophy.c | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/drivers/phy/st/phy-stm32-combophy.c b/drivers/phy/st/phy-stm32-combophy.c
-index ffb673c81ab2..952163f96f94 100644
 --- a/drivers/phy/st/phy-stm32-combophy.c
 +++ b/drivers/phy/st/phy-stm32-combophy.c
 @@ -22,6 +22,7 @@
@@ -34,7 +32,7 @@ index ffb673c81ab2..952163f96f94 100644
  #define MPLLMULT_19_2 (0x02u << 1)
  #define MPLLMULT_20   (0x7Du << 1)
  #define MPLLMULT_24   (0x68u << 1)
-@@ -194,6 +198,17 @@ static int stm32_combophy_pll_init(struct stm32_combophy *combophy)
+@@ -194,6 +198,17 @@ static int stm32_combophy_pll_init(struc
  				   SYSCFG_COMBOPHY_CR1_SSCEN, SYSCFG_COMBOPHY_CR1_SSCEN);
  	}
  
@@ -52,6 +50,3 @@ index ffb673c81ab2..952163f96f94 100644
  	if (combophy->type == PHY_TYPE_PCIE) {
  		ret = stm32_impedance_tune(combophy);
  		if (ret) {
--- 
-2.39.5
-

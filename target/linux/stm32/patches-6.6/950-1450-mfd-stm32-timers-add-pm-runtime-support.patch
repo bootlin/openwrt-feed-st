@@ -16,8 +16,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mfd/stm32-timers.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
-index 481c4b6f4231..35a01ee40826 100644
 --- a/drivers/mfd/stm32-timers.c
 +++ b/drivers/mfd/stm32-timers.c
 @@ -9,6 +9,7 @@
@@ -28,7 +26,7 @@ index 481c4b6f4231..35a01ee40826 100644
  #include <linux/reset.h>
  
  #define STM32_TIMERS_MAX_REGISTERS	0x3fc
-@@ -319,6 +320,10 @@ static int stm32_timers_probe(struct platform_device *pdev)
+@@ -319,6 +320,10 @@ static int stm32_timers_probe(struct pla
  	if (ret)
  		return ret;
  
@@ -39,6 +37,3 @@ index 481c4b6f4231..35a01ee40826 100644
  	ret = stm32_timers_dma_probe(dev, ddata);
  	if (ret) {
  		stm32_timers_dma_remove(dev, ddata);
--- 
-2.39.5
-

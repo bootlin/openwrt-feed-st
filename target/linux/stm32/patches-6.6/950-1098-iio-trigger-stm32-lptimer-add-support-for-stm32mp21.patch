@@ -16,11 +16,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/trigger/stm32-lptimer-trigger.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
-index 77c74a0311c7..1549436c7c35 100644
 --- a/drivers/iio/trigger/stm32-lptimer-trigger.c
 +++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
-@@ -162,6 +162,7 @@ static int stm32_lptim_trigger_remove(struct platform_device *pdev)
+@@ -162,6 +162,7 @@ static int stm32_lptim_trigger_remove(st
  
  static const struct of_device_id stm32_lptim_trig_of_match[] = {
  	{ .compatible = "st,stm32-lptimer-trigger", .data = (void *)&stm32mp15_lptim_cfg },
@@ -28,6 +26,3 @@ index 77c74a0311c7..1549436c7c35 100644
  	{ .compatible = "st,stm32mp25-lptimer-trigger", .data = (void *)&stm32mp25_lptim_cfg},
  	{},
  };
--- 
-2.39.5
-

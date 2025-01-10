@@ -20,8 +20,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/clk/stm32/clk-stm32mp25.c | 13 +++++++++++--
  1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index 5886b0cf54b0..5ae765044983 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
 @@ -34,6 +34,7 @@
@@ -48,7 +46,7 @@ index 5886b0cf54b0..5ae765044983 100644
  	GATE_DBG,
  	GATE_DDRCAPB,
  	GATE_DDRCFG,
-@@ -454,6 +455,7 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -454,6 +455,7 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_ADC12,		RCC_ADC12CFGR,		1,	0),
  	GATE_CFG(GATE_ADC3,		RCC_ADC3CFGR,		1,	0),
  	GATE_CFG(GATE_ADF1,		RCC_ADF1CFGR,		1,	0),
@@ -56,7 +54,7 @@ index 5886b0cf54b0..5ae765044983 100644
  	GATE_CFG(GATE_CCI,		RCC_CCICFGR,		1,	0),
  	GATE_CFG(GATE_CRC,		RCC_CRCCFGR,		1,	0),
  	GATE_CFG(GATE_CRYP1,		RCC_CRYP1CFGR,		1,	0),
-@@ -573,7 +575,6 @@ static const struct stm32_gate_cfg stm32mp25_gates[GATE_NB] = {
+@@ -573,7 +575,6 @@ static const struct stm32_gate_cfg stm32
  	GATE_CFG(GATE_ADF1C3,		RCC_C3CFGR,		23,	0),
  	GATE_CFG(GATE_BKPSRAM,		RCC_BKPSRAMCFGR,	1,	0),
  	GATE_CFG(GATE_BSEC,		RCC_BSECCFGR,		1,	0),
@@ -64,7 +62,7 @@ index 5886b0cf54b0..5ae765044983 100644
  	GATE_CFG(GATE_DBG,		RCC_DBGCFGR,		8,	0),
  	GATE_CFG(GATE_DDRCAPB,		RCC_DDRCAPBCFGR,	1,	0),
  	GATE_CFG(GATE_DDRCFG,		RCC_DDRCFGR,		1,	0),
-@@ -728,6 +729,12 @@ static struct clk_stm32_gate ck_ker_adf1 = {
+@@ -728,6 +729,12 @@ static struct clk_stm32_gate ck_ker_adf1
  	.hw.init = CLK_HW_INIT_INDEX("ck_ker_adf1", FLEXGEN_42, &clk_stm32_gate_ops, 0),
  };
  
@@ -77,7 +75,7 @@ index 5886b0cf54b0..5ae765044983 100644
  /* DCMI */
  static struct clk_stm32_gate ck_icn_p_cci = {
  	.gate_id = GATE_CCI,
-@@ -2003,6 +2010,7 @@ static const struct clock_config stm32mp25_clock_cfg[] = {
+@@ -2003,6 +2010,7 @@ static const struct clock_config stm32mp
  	STM32_GATE_CFG(CK_KER_LPTIM4, ck_ker_lptim4, SEC_RIFSC(20)),
  	STM32_GATE_CFG(CK_KER_LPTIM5, ck_ker_lptim5, SEC_RIFSC(21)),
  	STM32_GATE_CFG(CK_KER_ADF1, ck_ker_adf1, SEC_RIFSC(55)),
@@ -85,7 +83,7 @@ index 5886b0cf54b0..5ae765044983 100644
  	STM32_GATE_CFG(CK_KER_SDMMC1, ck_ker_sdmmc1, SEC_RIFSC(76)),
  	STM32_GATE_CFG(CK_KER_SDMMC2, ck_ker_sdmmc2, SEC_RIFSC(77)),
  	STM32_GATE_CFG(CK_KER_SDMMC3, ck_ker_sdmmc3, SEC_RIFSC(78)),
-@@ -2151,6 +2159,7 @@ static const struct stm32_reset_cfg *stm32mp25_reset_cfg[STM32MP25_LAST_RESET] =
+@@ -2151,6 +2159,7 @@ static const struct stm32_reset_cfg *stm
  	RESET_MP25(CRYP1_R,		RCC_CRYP1CFGR,		0,	0),
  	RESET_MP25(CRYP2_R,		RCC_CRYP2CFGR,		0,	0),
  	RESET_MP25(PCIE_R,		RCC_PCIECFGR,		0,	0),
@@ -93,6 +91,3 @@ index 5886b0cf54b0..5ae765044983 100644
  };
  
  static u16 stm32mp25_cpt_gate[GATE_NB];
--- 
-2.39.5
-

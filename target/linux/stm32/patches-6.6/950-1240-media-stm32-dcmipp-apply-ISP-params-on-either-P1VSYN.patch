@@ -22,8 +22,6 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c  | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
-index 6c9ff7bbc7d3..48ef5aa6c147 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 @@ -20,6 +20,7 @@
@@ -34,7 +32,7 @@ index 6c9ff7bbc7d3..48ef5aa6c147 100644
  
  struct dcmipp_buf {
  	struct vb2_v4l2_buffer	vb;
-@@ -511,7 +512,8 @@ static irqreturn_t dcmipp_isp_params_irq_thread(int irq, void *arg)
+@@ -511,7 +512,8 @@ static irqreturn_t dcmipp_isp_params_irq
  	struct dcmipp_buf *cur_buf = NULL;
  
  	/* We are only interested in VSYNC interrupts */
@@ -44,6 +42,3 @@ index 6c9ff7bbc7d3..48ef5aa6c147 100644
  		return IRQ_HANDLED;
  
  	spin_lock_irq(&vout->irqlock);
--- 
-2.39.5
-

@@ -26,8 +26,6 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  4 files changed, 1465 insertions(+)
  create mode 100644 drivers/media/i2c/gc2145.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f4dd38e79c5e..2f680e4e82a0 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -8618,6 +8618,14 @@ F:	kernel/futex/*
@@ -45,8 +43,6 @@ index f4dd38e79c5e..2f680e4e82a0 100644
  GATEWORKS SYSTEM CONTROLLER (GSC) DRIVER
  M:	Tim Harvey <tharvey@gateworks.com>
  S:	Maintained
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 53b443be5a59..03dd3e0ab166 100644
 --- a/drivers/media/i2c/Kconfig
 +++ b/drivers/media/i2c/Kconfig
 @@ -50,6 +50,16 @@ config VIDEO_AR0521
@@ -66,8 +62,6 @@ index 53b443be5a59..03dd3e0ab166 100644
  config VIDEO_HI556
  	tristate "Hynix Hi-556 sensor support"
  	help
-diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-index 80b00d39b48f..e74eded89428 100644
 --- a/drivers/media/i2c/Makefile
 +++ b/drivers/media/i2c/Makefile
 @@ -36,6 +36,7 @@ obj-$(CONFIG_VIDEO_DW9719) += dw9719.o
@@ -78,9 +72,6 @@ index 80b00d39b48f..e74eded89428 100644
  obj-$(CONFIG_VIDEO_HI556) += hi556.o
  obj-$(CONFIG_VIDEO_HI846) += hi846.o
  obj-$(CONFIG_VIDEO_HI847) += hi847.o
-diff --git a/drivers/media/i2c/gc2145.c b/drivers/media/i2c/gc2145.c
-new file mode 100644
-index 000000000000..12d3780b5548
 --- /dev/null
 +++ b/drivers/media/i2c/gc2145.c
 @@ -0,0 +1,1446 @@
@@ -1530,6 +1521,3 @@ index 000000000000..12d3780b5548
 +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com>");
 +MODULE_DESCRIPTION("GalaxyCore GC2145 sensor driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

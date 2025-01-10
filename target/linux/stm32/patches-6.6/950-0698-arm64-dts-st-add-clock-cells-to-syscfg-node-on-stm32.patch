@@ -12,11 +12,9 @@ Change-Id: I550c1188c8063595b05ab645a799696533e84727
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index d703783149a8..e5d546c7888c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2206,6 +2206,7 @@ exti-interrupt-map {
+@@ -2206,6 +2206,7 @@
  		syscfg: syscon@44230000 {
  			compatible = "st,stm32mp25-syscfg", "syscon";
  			reg = <0x44230000 0x10000>;
@@ -24,6 +22,3 @@ index d703783149a8..e5d546c7888c 100644
  		};
  
  		exti2: interrupt-controller@46230000 {
--- 
-2.39.5
-

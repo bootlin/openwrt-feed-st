@@ -14,11 +14,9 @@ Change-Id: I72956c7f681567ef6ec48db77dff951838521d53
  arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi | 5 +++++
  2 files changed, 10 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
-index 62a0117f050b..283f63f85d15 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1-scmi.dtsi
-@@ -84,6 +84,11 @@ &rtc {
+@@ -84,6 +84,11 @@
  	clocks = <&scmi_clk CK_SCMI_RTCAPB>, <&scmi_clk CK_SCMI_RTC>;
  };
  
@@ -30,11 +28,9 @@ index 62a0117f050b..283f63f85d15 100644
  &usart1 {
  	clocks = <&scmi_clk CK_SCMI_USART1>;
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
-index 0ae22edb2537..a26929e6966b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dtsi
-@@ -89,6 +89,11 @@ &rtc {
+@@ -89,6 +89,11 @@
  	clocks = <&scmi_clk CK_SCMI_RTCAPB>, <&scmi_clk CK_SCMI_RTC>;
  };
  
@@ -46,6 +42,3 @@ index 0ae22edb2537..a26929e6966b 100644
  &usart1 {
  	clocks = <&scmi_clk CK_SCMI_USART1>;
  };
--- 
-2.39.5
-

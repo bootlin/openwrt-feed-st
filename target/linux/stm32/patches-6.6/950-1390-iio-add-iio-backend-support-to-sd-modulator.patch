@@ -28,8 +28,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/iio/adc/sd_adc_modulator.c | 97 +++++++++++++++++++++++++++++-
  2 files changed, 97 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 1a919167d5d0..ef94ea5d6755 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
 @@ -1047,6 +1047,7 @@ config SD_ADC_MODULATOR
@@ -40,8 +38,6 @@ index 1a919167d5d0..ef94ea5d6755 100644
  	help
  	  Select this option to enables sigma delta modulator. This driver can
  	  support generic sigma delta modulators.
-diff --git a/drivers/iio/adc/sd_adc_modulator.c b/drivers/iio/adc/sd_adc_modulator.c
-index 327cc2097f6c..654b6a38b650 100644
 --- a/drivers/iio/adc/sd_adc_modulator.c
 +++ b/drivers/iio/adc/sd_adc_modulator.c
 @@ -6,11 +6,14 @@
@@ -59,7 +55,7 @@ index 327cc2097f6c..654b6a38b650 100644
  
  static const struct iio_info iio_sd_mod_iio_info;
  
-@@ -24,7 +27,59 @@ static const struct iio_chan_spec iio_sd_mod_ch = {
+@@ -24,7 +27,59 @@ static const struct iio_chan_spec iio_sd
  	},
  };
  
@@ -120,7 +116,7 @@ index 327cc2097f6c..654b6a38b650 100644
  {
  	struct device *dev = &pdev->dev;
  	struct iio_dev *iio;
-@@ -45,6 +100,45 @@ static int iio_sd_mod_probe(struct platform_device *pdev)
+@@ -45,6 +100,45 @@ static int iio_sd_mod_probe(struct platf
  	return devm_iio_device_register(&pdev->dev, iio);
  }
  
@@ -171,6 +167,3 @@ index 327cc2097f6c..654b6a38b650 100644
  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
  MODULE_LICENSE("GPL v2");
 +MODULE_IMPORT_NS(IIO_BACKEND);
--- 
-2.39.5
-

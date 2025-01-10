@@ -12,11 +12,9 @@ Change-Id: I37bc4c7494a3fc2cdfc5a2b7257b34f38aa5ffa1
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index d58b0153cae6..e3e6a2b8d1e4 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -28,6 +28,15 @@ aliases {
+@@ -28,6 +28,15 @@
  
  	chosen {
  		stdout-path = "serial0:115200n8";
@@ -32,6 +30,3 @@ index d58b0153cae6..e3e6a2b8d1e4 100644
  	};
  
  	memory@c0000000 {
--- 
-2.39.5
-

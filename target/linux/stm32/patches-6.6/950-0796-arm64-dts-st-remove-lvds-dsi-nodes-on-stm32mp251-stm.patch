@@ -13,11 +13,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 22 ----------------------
  2 files changed, 1 insertion(+), 44 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 3cebbec05ccd..f1bbce1e4afd 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -83,12 +83,6 @@ arm_wdt: watchdog {
+@@ -83,12 +83,6 @@
  	};
  
  	clocks {
@@ -30,7 +28,7 @@ index 3cebbec05ccd..f1bbce1e4afd 100644
  		clk_rcbsec: clk-rcbsec {
  			#clock-cells = <0>;
  			compatible = "fixed-clock";
-@@ -2066,20 +2060,6 @@ i3c4: i3c@46080000 {
+@@ -2066,20 +2060,6 @@
  				status = "disabled";
  			};
  
@@ -51,7 +49,7 @@ index 3cebbec05ccd..f1bbce1e4afd 100644
  			ltdc: display-controller@48010000 {
  				compatible = "st,stm32-ltdc";
  				reg = <0x48010000 0x400>;
-@@ -2452,8 +2432,7 @@ rcc: clock-controller@44200000 {
+@@ -2452,8 +2432,7 @@
  				<&scmi_clk CK_SCMI_ICN_APBDBG>,
  				<&scmi_clk CK_SCMI_TIMG1>,
  				<&scmi_clk CK_SCMI_TIMG2>,
@@ -61,11 +59,9 @@ index 3cebbec05ccd..f1bbce1e4afd 100644
  			access-controllers = <&rifsc 156>;
  		};
  
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index 5e1725e11a65..d98a270da0ea 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -69,18 +69,6 @@ m_can3: can@402f0000 {
+@@ -69,18 +69,6 @@
  		status = "disabled";
  	};
  
@@ -84,7 +80,7 @@ index 5e1725e11a65..d98a270da0ea 100644
  	eth2: eth2@482d0000 {
  		compatible = "st,stm32mp25-dwmac", "snps,dwmac-5.10a";
  		reg = <0x482d0000 0x4000>;
-@@ -131,13 +119,3 @@ mtl_tx_setup_2: tx-queues-config {
+@@ -131,13 +119,3 @@
  		};
  	};
  };
@@ -98,6 +94,3 @@ index 5e1725e11a65..d98a270da0ea 100644
 -	clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>, <&syscfg 0>;
 -	clock-names = "bus", "ref", "lcd";
 -};
--- 
-2.39.5
-

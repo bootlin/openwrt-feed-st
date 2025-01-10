@@ -17,11 +17,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  arch/arm64/boot/dts/st/stm32mp215f-dk.dts | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-index 375ee23d4f47..61d8eea4f9d4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp215f-dk.dts
-@@ -362,6 +362,20 @@ &m33_rproc {
+@@ -362,6 +362,20 @@
  	status = "okay";
  };
  
@@ -42,6 +40,3 @@ index 375ee23d4f47..61d8eea4f9d4 100644
  &spi1 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&spi1_pins_a>;
--- 
-2.39.5
-

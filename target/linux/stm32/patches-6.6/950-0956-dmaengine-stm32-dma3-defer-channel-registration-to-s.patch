@@ -21,11 +21,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/dma/stm32/stm32-dma3.c | 19 ++++++++++++++-----
  1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-index b27d844630d6..2c77b803e636 100644
 --- a/drivers/dma/stm32/stm32-dma3.c
 +++ b/drivers/dma/stm32/stm32-dma3.c
-@@ -1732,9 +1732,6 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1732,9 +1732,6 @@ static int stm32_dma3_probe(struct platf
  		chan->fifo_size = get_chan_hwcfg(i, G_FIFO_SIZE(i), hwcfgr);
  		/* If chan->fifo_size > 0 then half of the fifo size, else no burst when no FIFO */
  		chan->max_burst = (chan->fifo_size) ? (1 << (chan->fifo_size + 1)) / 2 : 0;
@@ -35,7 +33,7 @@ index b27d844630d6..2c77b803e636 100644
  	}
  
  	ret = dmaenginem_async_device_register(dma_dev);
-@@ -1742,14 +1739,26 @@ static int stm32_dma3_probe(struct platform_device *pdev)
+@@ -1742,14 +1739,26 @@ static int stm32_dma3_probe(struct platf
  		goto err_clk_disable;
  
  	for (i = 0; i < ddata->dma_channels; i++) {
@@ -64,6 +62,3 @@ index b27d844630d6..2c77b803e636 100644
  		chan->irq = ret;
  
  		ret = devm_request_irq(&pdev->dev, chan->irq, stm32_dma3_chan_irq, 0,
--- 
-2.39.5
-

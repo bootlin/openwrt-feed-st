@@ -18,11 +18,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 45c439840520..59f937aeb300 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -3307,7 +3307,6 @@ m0_rproc: m0@0 {
+@@ -3307,7 +3307,6 @@
  			compatible = "st,stm32mp2-m0";
  			reg = <0 0>;
  			clocks = <&rcc CK_CPU3>;
@@ -30,6 +28,3 @@ index 45c439840520..59f937aeb300 100644
  			resets = <&rcc C3_R>;
  			reset-names = "mcu_rst";
  			interrupt-parent = <&intc>;
--- 
-2.39.5
-

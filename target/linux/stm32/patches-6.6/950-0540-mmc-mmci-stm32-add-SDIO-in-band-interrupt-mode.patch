@@ -26,11 +26,9 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mmc/host/mmci.h |  2 ++
  2 files changed, 69 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index dda756a56379..7fbc0529ecaf 100644
 --- a/drivers/mmc/host/mmci.c
 +++ b/drivers/mmc/host/mmci.c
-@@ -272,6 +272,7 @@ static struct variant_data variant_stm32_sdmmc = {
+@@ -272,6 +272,7 @@ static struct variant_data variant_stm32
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(12, 5),
  	.stm32_idmabsize_align	= BIT(5),
@@ -38,7 +36,7 @@ index dda756a56379..7fbc0529ecaf 100644
  	.busy_timeout		= true,
  	.busy_detect		= true,
  	.busy_detect_flag	= MCI_STM32_BUSYD0,
-@@ -299,6 +300,7 @@ static struct variant_data variant_stm32_sdmmcv2 = {
+@@ -299,6 +300,7 @@ static struct variant_data variant_stm32
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(16, 5),
  	.stm32_idmabsize_align	= BIT(5),
@@ -46,7 +44,7 @@ index dda756a56379..7fbc0529ecaf 100644
  	.dma_lli		= true,
  	.busy_timeout		= true,
  	.busy_detect		= true,
-@@ -327,6 +329,7 @@ static struct variant_data variant_stm32_sdmmcv3 = {
+@@ -327,6 +329,7 @@ static struct variant_data variant_stm32
  	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
  	.stm32_idmabsize_mask	= GENMASK(16, 6),
  	.stm32_idmabsize_align	= BIT(6),
@@ -54,7 +52,7 @@ index dda756a56379..7fbc0529ecaf 100644
  	.dma_lli		= true,
  	.busy_timeout		= true,
  	.busy_detect		= true,
-@@ -420,8 +423,9 @@ void mmci_write_pwrreg(struct mmci_host *host, u32 pwr)
+@@ -420,8 +423,9 @@ void mmci_write_pwrreg(struct mmci_host
   */
  static void mmci_write_datactrlreg(struct mmci_host *host, u32 datactrl)
  {
@@ -66,7 +64,7 @@ index dda756a56379..7fbc0529ecaf 100644
  
  	if (host->datactrl_reg != datactrl) {
  		host->datactrl_reg = datactrl;
-@@ -1761,6 +1765,25 @@ static irqreturn_t mmci_pio_irq(int irq, void *dev_id)
+@@ -1761,6 +1765,25 @@ static irqreturn_t mmci_pio_irq(int irq,
  	return IRQ_HANDLED;
  }
  
@@ -92,7 +90,7 @@ index dda756a56379..7fbc0529ecaf 100644
  /*
   * Handle completion of command and data transfers.
   */
-@@ -1805,6 +1828,9 @@ static irqreturn_t mmci_irq(int irq, void *dev_id)
+@@ -1805,6 +1828,9 @@ static irqreturn_t mmci_irq(int irq, voi
  			mmci_data_irq(host, host->data, status);
  		}
  
@@ -102,7 +100,7 @@ index dda756a56379..7fbc0529ecaf 100644
  		/*
  		 * Busy detection has been handled by mmci_cmd_irq() above.
  		 * Clear the status bit to prevent polling in IRQ context.
-@@ -2041,6 +2067,35 @@ static int mmci_sig_volt_switch(struct mmc_host *mmc, struct mmc_ios *ios)
+@@ -2041,6 +2067,35 @@ static int mmci_sig_volt_switch(struct m
  	return ret;
  }
  
@@ -138,7 +136,7 @@ index dda756a56379..7fbc0529ecaf 100644
  static struct mmc_host_ops mmci_ops = {
  	.request	= mmci_request,
  	.pre_req	= mmci_pre_request,
-@@ -2316,6 +2371,16 @@ static int mmci_probe(struct amba_device *dev,
+@@ -2316,6 +2371,16 @@ static int mmci_probe(struct amba_device
  		mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
  	}
  
@@ -155,8 +153,6 @@ index dda756a56379..7fbc0529ecaf 100644
  	/* Variants with mandatory busy timeout in HW needs R1B responses. */
  	if (variant->busy_timeout)
  		mmc->caps |= MMC_CAP_NEED_RSP_BUSY;
-diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
-index 253197f132fc..daf24a950662 100644
 --- a/drivers/mmc/host/mmci.h
 +++ b/drivers/mmc/host/mmci.h
 @@ -331,6 +331,7 @@ enum mmci_busy_state {
@@ -175,6 +171,3 @@ index 253197f132fc..daf24a950662 100644
  	u32			stm32_idmabsize_mask;
  	u32			stm32_idmabsize_align;
  	void (*init)(struct mmci_host *host);
--- 
-2.39.5
-

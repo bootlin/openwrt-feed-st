@@ -24,8 +24,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/i2c/ov5640.c | 21 ---------------------
  1 file changed, 21 deletions(-)
 
-diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-index 191351506579..af3cc7e61da9 100644
 --- a/drivers/media/i2c/ov5640.c
 +++ b/drivers/media/i2c/ov5640.c
 @@ -103,8 +103,6 @@
@@ -37,7 +35,7 @@ index 191351506579..af3cc7e61da9 100644
  #define OV5640_REG_CCIR656_CTRL00	0x4730
  #define OV5640_REG_POLARITY_CTRL00	0x4740
  #define OV5640_REG_MIPI_CTRL00		0x4800
-@@ -1652,19 +1650,6 @@ static int ov5640_set_dvp_pclk(struct ov5640_dev *sensor)
+@@ -1652,19 +1650,6 @@ static int ov5640_set_dvp_pclk(struct ov
  			      (ilog2(pclk_div) << 4));
  }
  
@@ -57,7 +55,7 @@ index 191351506579..af3cc7e61da9 100644
  /* download ov5640 settings to sensor through i2c */
  static int ov5640_set_timings(struct ov5640_dev *sensor,
  			      const struct ov5640_mode_info *mode)
-@@ -1674,12 +1659,6 @@ static int ov5640_set_timings(struct ov5640_dev *sensor,
+@@ -1674,12 +1659,6 @@ static int ov5640_set_timings(struct ov5
  	const struct v4l2_rect *crop;
  	int ret;
  
@@ -70,6 +68,3 @@ index 191351506579..af3cc7e61da9 100644
  	timings = ov5640_timings(sensor, mode);
  	analog_crop = &timings->analog_crop;
  	crop = &timings->crop;
--- 
-2.39.5
-

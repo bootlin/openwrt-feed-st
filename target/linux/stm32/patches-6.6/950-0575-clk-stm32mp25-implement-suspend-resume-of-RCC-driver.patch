@@ -17,11 +17,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/clk/stm32/clk-stm32mp25.c  | 21 +++++++++++
  2 files changed, 79 insertions(+)
 
-diff --git a/drivers/clk/stm32/clk-stm32-core.c b/drivers/clk/stm32/clk-stm32-core.c
-index 1721a3ed7386..84acf94b9057 100644
 --- a/drivers/clk/stm32/clk-stm32-core.c
 +++ b/drivers/clk/stm32/clk-stm32-core.c
-@@ -130,6 +130,29 @@ static int stm32_mux_set_parent(void __iomem *base,
+@@ -130,6 +130,29 @@ static int stm32_mux_set_parent(void __i
  	return 0;
  }
  
@@ -51,7 +49,7 @@ index 1721a3ed7386..84acf94b9057 100644
  static void stm32_gate_endisable(void __iomem *base,
  				 struct clk_stm32_clock_data *data,
  				 u16 gate_id, int enable)
-@@ -325,11 +348,28 @@ static void clk_stm32_gate_disable_unused(struct clk_hw *hw)
+@@ -325,11 +348,28 @@ static void clk_stm32_gate_disable_unuse
  	spin_unlock_irqrestore(gate->lock, flags);
  }
  
@@ -80,7 +78,7 @@ index 1721a3ed7386..84acf94b9057 100644
  };
  
  static int clk_stm32_divider_set_rate(struct clk_hw *hw, unsigned long rate,
-@@ -611,6 +651,21 @@ static void clk_stm32_composite_disable_unused(struct clk_hw *hw)
+@@ -611,6 +651,21 @@ static void clk_stm32_composite_disable_
  	spin_unlock_irqrestore(composite->lock, flags);
  }
  
@@ -102,7 +100,7 @@ index 1721a3ed7386..84acf94b9057 100644
  const struct clk_ops clk_stm32_composite_ops = {
  	.set_rate	= clk_stm32_composite_set_rate,
  	.recalc_rate	= clk_stm32_composite_recalc_rate,
-@@ -621,6 +676,9 @@ const struct clk_ops clk_stm32_composite_ops = {
+@@ -621,6 +676,9 @@ const struct clk_ops clk_stm32_composite
  	.disable	= clk_stm32_composite_gate_disable,
  	.is_enabled	= clk_stm32_composite_is_enabled,
  	.disable_unused	= clk_stm32_composite_disable_unused,
@@ -112,11 +110,9 @@ index 1721a3ed7386..84acf94b9057 100644
  };
  
  struct clk_hw *clk_stm32_mux_register(struct device *dev,
-diff --git a/drivers/clk/stm32/clk-stm32mp25.c b/drivers/clk/stm32/clk-stm32mp25.c
-index e77af87b4e99..f769afe67d6f 100644
 --- a/drivers/clk/stm32/clk-stm32mp25.c
 +++ b/drivers/clk/stm32/clk-stm32mp25.c
-@@ -1860,10 +1860,31 @@ static int stm32mp25_rcc_clocks_probe(struct platform_device *pdev)
+@@ -1860,10 +1860,31 @@ static int stm32mp25_rcc_clocks_probe(st
  	return stm32_rcc_init(dev, stm32mp25_match_data, base);
  }
  
@@ -148,6 +144,3 @@ index e77af87b4e99..f769afe67d6f 100644
  	},
  	.probe = stm32mp25_rcc_clocks_probe,
  };
--- 
-2.39.5
-

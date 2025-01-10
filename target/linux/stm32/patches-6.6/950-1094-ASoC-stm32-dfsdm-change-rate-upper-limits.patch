@@ -16,11 +16,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  sound/soc/stm/stm32_adfsdm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index a8fff7378641..33e90fec0e43 100644
 --- a/sound/soc/stm/stm32_adfsdm.c
 +++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -142,7 +142,7 @@ static const struct snd_soc_dai_driver stm32_adfsdm_dai = {
+@@ -142,7 +142,7 @@ static const struct snd_soc_dai_driver s
  			       SNDRV_PCM_FMTBIT_S32_LE,
  		    .rates = SNDRV_PCM_RATE_CONTINUOUS,
  		    .rate_min = 8000,
@@ -29,6 +27,3 @@ index a8fff7378641..33e90fec0e43 100644
  		    },
  	.ops = &stm32_adfsdm_dai_ops,
  };
--- 
-2.39.5
-

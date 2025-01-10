@@ -18,8 +18,6 @@ Change-Id: I5089e919f42dce57e8ade02c40e9f1a54db3ca7f
  sound/soc/stm/stm32_i2s.c | 215 ++++++++++++++++++++++++++++++++++----
  1 file changed, 192 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 06a42130f5e4..808f8a1c38bb 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
 @@ -200,10 +200,13 @@ enum i2s_datlen {
@@ -85,7 +83,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  static int stm32_i2s_calc_clk_div(struct stm32_i2s_data *i2s,
  				  unsigned long input_rate,
  				  unsigned long output_rate)
-@@ -312,6 +334,33 @@ static int stm32_i2s_set_clk_div(struct stm32_i2s_data *i2s)
+@@ -312,6 +334,33 @@ static int stm32_i2s_set_clk_div(struct
  				  cgfr_mask, cgfr);
  }
  
@@ -119,7 +117,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  static int stm32_i2s_set_parent_clock(struct stm32_i2s_data *i2s,
  				      unsigned int rate)
  {
-@@ -326,12 +375,92 @@ static int stm32_i2s_set_parent_clock(struct stm32_i2s_data *i2s,
+@@ -326,12 +375,92 @@ static int stm32_i2s_set_parent_clock(st
  
  	ret = clk_set_parent(i2s->i2sclk, parent_clk);
  	if (ret)
@@ -214,7 +212,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  static long stm32_i2smclk_round_rate(struct clk_hw *hw, unsigned long rate,
  				     unsigned long *prate)
  {
-@@ -635,14 +764,20 @@ static int stm32_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+@@ -635,14 +764,20 @@ static int stm32_i2s_set_sysclk(struct s
  				clk_rate_exclusive_put(i2s->i2smclk);
  				i2s->mclk_rate = 0;
  			}
@@ -236,7 +234,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  		ret = clk_set_rate_exclusive(i2s->i2smclk, freq);
  		if (ret) {
  			dev_err(cpu_dai->dev, "Could not set mclk rate\n");
-@@ -667,10 +802,11 @@ static int stm32_i2s_configure_clock(struct snd_soc_dai *cpu_dai,
+@@ -667,10 +802,11 @@ static int stm32_i2s_configure_clock(str
  	u32 cgfr;
  	int ret;
  
@@ -252,7 +250,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  	i2s_clock_rate = clk_get_rate(i2s->i2sclk);
  
  	/*
-@@ -915,6 +1051,14 @@ static void stm32_i2s_shutdown(struct snd_pcm_substream *substream,
+@@ -915,6 +1051,14 @@ static void stm32_i2s_shutdown(struct sn
  
  	clk_disable_unprepare(i2s->i2sclk);
  
@@ -267,7 +265,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  	spin_lock_irqsave(&i2s->irq_lock, flags);
  	i2s->substream = NULL;
  	spin_unlock_irqrestore(&i2s->irq_lock, flags);
-@@ -1012,14 +1156,36 @@ static int stm32_i2s_dais_init(struct platform_device *pdev,
+@@ -1012,14 +1156,36 @@ static int stm32_i2s_dais_init(struct pl
  	return 0;
  }
  
@@ -308,7 +306,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  static int stm32_i2s_parse_dt(struct platform_device *pdev,
  			      struct stm32_i2s_data *i2s)
  {
-@@ -1034,7 +1200,7 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+@@ -1034,7 +1200,7 @@ static int stm32_i2s_parse_dt(struct pla
  
  	of_id = of_match_device(stm32_i2s_ids, &pdev->dev);
  	if (of_id)
@@ -317,7 +315,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  	else
  		return -EINVAL;
  
-@@ -1055,15 +1221,18 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+@@ -1055,15 +1221,18 @@ static int stm32_i2s_parse_dt(struct pla
  		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->i2sclk),
  				     "Could not get i2sclk\n");
  
@@ -344,7 +342,7 @@ index 06a42130f5e4..808f8a1c38bb 100644
  
  	/* Register mclk provider if requested */
  	if (of_property_present(np, "#clock-cells")) {
-@@ -1129,7 +1298,7 @@ static int stm32_i2s_probe(struct platform_device *pdev)
+@@ -1129,7 +1298,7 @@ static int stm32_i2s_probe(struct platfo
  		return ret;
  
  	i2s->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "pclk",
@@ -353,6 +351,3 @@ index 06a42130f5e4..808f8a1c38bb 100644
  	if (IS_ERR(i2s->regmap))
  		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->regmap),
  				     "Regmap init error\n");
--- 
-2.39.5
-

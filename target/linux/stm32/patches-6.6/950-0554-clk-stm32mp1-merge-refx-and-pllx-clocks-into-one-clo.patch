@@ -16,11 +16,9 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 253 ++++++++++++++-----------------
  1 file changed, 113 insertions(+), 140 deletions(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 323b2ee79270..3868c3f3223d 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -743,155 +743,116 @@ static const struct clk_ops clk_mmux_ops = {
+@@ -743,155 +743,116 @@ static const struct clk_ops clk_mmux_ops
  };
  
  /* STM32 PLL */
@@ -47,9 +45,7 @@ index 323b2ee79270..3868c3f3223d 100644
  };
  
 -#define to_pll(_hw) container_of(_hw, struct stm32_pll_obj, hw)
-+#define to_pll_fractional_divider(_hw)\
-+	container_of(_hw, struct clk_pll_fractional_divider, hw)
- 
+-
 -#define PLL_ON		BIT(0)
 -#define PLL_RDY		BIT(1)
 -#define DIVN_MASK	0x1FF
@@ -62,7 +58,9 @@ index 323b2ee79270..3868c3f3223d 100644
 -#define FRACLE		BIT(16)
 -#define PLL_MUX_SHIFT	0
 -#define PLL_MUX_MASK	3
--
++#define to_pll_fractional_divider(_hw)\
++	container_of(_hw, struct clk_pll_fractional_divider, hw)
+ 
 -static int __pll_is_enabled(struct clk_hw *hw)
 +static unsigned long clk_pll_frac_div_recalc_rate(struct clk_hw *hw,
 +						  unsigned long parent_rate)
@@ -88,11 +86,11 @@ index 323b2ee79270..3868c3f3223d 100644
 +
 +	if (!n || !m)
 +		return parent_rate;
- 
--	return readl_relaxed(clk_elem->reg) & PLL_ON;
++
 +	rate = (u64)parent_rate * n;
 +	do_div(rate, m);
-+
+ 
+-	return readl_relaxed(clk_elem->reg) & PLL_ON;
 +	val = readl(fd->freg);
 +	f = (val & fmask) >> fd->fshift;
 +	if (f) {
@@ -132,17 +130,17 @@ index 323b2ee79270..3868c3f3223d 100644
  	int bit_status = 0;
  
 -	spin_lock_irqsave(clk_elem->lock, flags);
--
--	if (__pll_is_enabled(hw))
--		goto unlock;
 +	if (clk_gate_ops.is_enabled(hw))
 +		return 0;
+ 
+-	if (__pll_is_enabled(hw))
+-		goto unlock;
++	clk_gate_ops.enable(hw);
  
 -	reg = readl_relaxed(clk_elem->reg);
 -	reg |= PLL_ON;
 -	writel_relaxed(reg, clk_elem->reg);
-+	clk_gate_ops.enable(hw);
- 
+-
 -	/* We can't use readl_poll_timeout() because we can be blocked if
 -	 * someone enables this clock before clocksource changes.
 -	 * Only jiffies counter is available. Jiffies are incremented by
@@ -168,7 +166,9 @@ index 323b2ee79270..3868c3f3223d 100644
 -	struct stm32_pll_obj *clk_elem = to_pll(hw);
 -	u32 reg;
 -	unsigned long flags = 0;
--
++	if (!clk_gate_ops.is_enabled(hw))
++		return;
+ 
 -	spin_lock_irqsave(clk_elem->lock, flags);
 -
 -	reg = readl_relaxed(clk_elem->reg);
@@ -188,8 +188,9 @@ index 323b2ee79270..3868c3f3223d 100644
 -		frac = (reg >> FRAC_SHIFT) & FRAC_MASK;
 -
 -	return frac;
--}
--
++	clk_gate_ops.disable(hw);
+ }
+ 
 -static unsigned long pll_recalc_rate(struct clk_hw *hw,
 -				     unsigned long parent_rate)
 -{
@@ -234,13 +235,10 @@ index 323b2ee79270..3868c3f3223d 100644
 -	struct clk_hw *mux_hw = &clk_elem->mux.hw;
 -
 -	__clk_hw_set_clk(mux_hw, hw);
-+	if (!clk_gate_ops.is_enabled(hw))
-+		return;
- 
+-
 -	return clk_mux_ops.get_parent(mux_hw);
-+	clk_gate_ops.disable(hw);
- }
- 
+-}
+-
 -static const struct clk_ops pll_ops = {
 +const struct clk_ops pll_gate_ops = {
  	.enable		= pll_enable,
@@ -252,7 +250,7 @@ index 323b2ee79270..3868c3f3223d 100644
  };
  
  static struct clk_hw *clk_register_pll(struct device *dev, const char *name,
-@@ -902,39 +863,50 @@ static struct clk_hw *clk_register_pll(struct device *dev, const char *name,
+@@ -902,39 +863,50 @@ static struct clk_hw *clk_register_pll(s
  				       unsigned long flags,
  				       spinlock_t *lock)
  {
@@ -288,26 +286,28 @@ index 323b2ee79270..3868c3f3223d 100644
 -	element->mux.mask =  PLL_MUX_MASK;
 -	element->mux.flags =  CLK_MUX_READ_ONLY;
 -	element->mux.reg =  mux_reg;
+-
+-	element->hw.init = &init;
+-	element->reg = reg;
+-	element->lock = lock;
 +	gate = devm_kzalloc(dev, sizeof(*gate), GFP_KERNEL);
 +	if (!gate)
 +		return ERR_PTR(-ENOMEM);
  
--	element->hw.init = &init;
--	element->reg = reg;
--	element->lock = lock;
+-	hw = &element->hw;
+-	err = clk_hw_register(dev, hw);
 +	gate->reg = reg;
 +	gate->bit_idx = PLL_BIT_ON;
 +	gate->flags = 0;
 +	gate->lock = lock;
  
--	hw = &element->hw;
--	err = clk_hw_register(dev, hw);
+-	if (err)
+-		return ERR_PTR(err);
 +	frac_div = devm_kzalloc(dev, sizeof(*frac_div), GFP_KERNEL);
 +	if (!frac_div)
 +		return ERR_PTR(-ENOMEM);
  
--	if (err)
--		return ERR_PTR(err);
+-	return hw;
 +	frac_div->mreg = reg + PLL_DIVMN_OFFSET;
 +	frac_div->mshift = PLL_DIVM_SHIFT;
 +	frac_div->mwidth = PLL_DIVM_WIDTH;
@@ -319,8 +319,7 @@ index 323b2ee79270..3868c3f3223d 100644
 +	frac_div->freg = reg + PLL_FRAC_OFFSET;
 +	frac_div->fshift = PLL_FRAC_SHIFT;
 +	frac_div->fwidth = PLL_FRAC_WIDTH;
- 
--	return hw;
++
 +	return clk_hw_register_composite(dev, name, parent_names, num_parents,
 +					 &mux->hw, &clk_mux_ops,
 +					 &frac_div->hw, &clk_pll_frac_div_ops,
@@ -328,7 +327,7 @@ index 323b2ee79270..3868c3f3223d 100644
  }
  
  /* Kernel Timer */
-@@ -1107,6 +1079,7 @@ static const struct clk_ops rtc_div_clk_ops = {
+@@ -1107,6 +1079,7 @@ static const struct clk_ops rtc_div_clk_
  struct stm32_pll_cfg {
  	u32 offset;
  	u32 muxoff;
@@ -336,6 +335,3 @@ index 323b2ee79270..3868c3f3223d 100644
  };
  
  static struct clk_hw *_clk_register_pll(struct device *dev,
--- 
-2.39.5
-

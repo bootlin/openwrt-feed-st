@@ -20,8 +20,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_m0_rproc.c | 55 +++++++++++------------------
  1 file changed, 21 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_m0_rproc.c b/drivers/remoteproc/stm32_m0_rproc.c
-index fd72590d216b..0bcf4b69f988 100644
 --- a/drivers/remoteproc/stm32_m0_rproc.c
 +++ b/drivers/remoteproc/stm32_m0_rproc.c
 @@ -45,8 +45,8 @@ struct stm32_mbox {
@@ -35,7 +33,7 @@ index fd72590d216b..0bcf4b69f988 100644
  	int wdg_irq;
  	u32 nb_rmems;
  	struct stm32_m0_rproc_mem *rmems;
-@@ -357,37 +357,33 @@ static int stm32_m0_rproc_start(struct rproc *rproc)
+@@ -357,37 +357,33 @@ static int stm32_m0_rproc_start(struct r
  	struct stm32_rproc *ddata = rproc->priv;
  	int err;
  
@@ -84,7 +82,7 @@ index fd72590d216b..0bcf4b69f988 100644
  }
  
  static int stm32_m0_rproc_stop(struct rproc *rproc)
-@@ -404,12 +400,8 @@ static int stm32_m0_rproc_stop(struct rproc *rproc)
+@@ -404,12 +400,8 @@ static int stm32_m0_rproc_stop(struct rp
  		return err;
  	}
  
@@ -99,7 +97,7 @@ index fd72590d216b..0bcf4b69f988 100644
  
  	return 0;
  }
-@@ -479,17 +471,12 @@ static int stm32_m0_rproc_parse_dt(struct platform_device *pdev,
+@@ -479,17 +471,12 @@ static int stm32_m0_rproc_parse_dt(struc
  		return dev_err_probe(dev, PTR_ERR(ddata->rst),
  				     "failed to get mcu_reset\n");
  
@@ -123,6 +121,3 @@ index fd72590d216b..0bcf4b69f988 100644
  
  	*auto_boot = of_property_read_bool(np, "st,auto-boot");
  
--- 
-2.39.5
-

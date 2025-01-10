@@ -12,9 +12,6 @@ Change-Id: I36954e44997179113fac7de88525539f9364374d
  1 file changed, 103 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
 
-diff --git a/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml b/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
-new file mode 100644
-index 000000000000..e08390426b1a
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/usb/stm32,dwc3.yaml
 @@ -0,0 +1,103 @@
@@ -121,6 +118,3 @@ index 000000000000..e08390426b1a
 +            wakeup-source;
 +        };
 +    };
--- 
-2.39.5
-

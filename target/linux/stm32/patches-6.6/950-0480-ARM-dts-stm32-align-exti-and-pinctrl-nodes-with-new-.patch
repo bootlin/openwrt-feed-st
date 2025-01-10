@@ -13,11 +13,9 @@ Change-Id: I3671d6e7b11116d44fc57506da3b41e6dcd9f1a7
  arch/arm/boot/dts/st/stm32mp131.dtsi | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index fdb2f2872afe..479b748072fa 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -831,7 +831,7 @@ rcc: rcc@50000000 {
+@@ -831,7 +831,7 @@
  		};
  
  		exti: interrupt-controller@5000d000 {
@@ -26,7 +24,7 @@ index fdb2f2872afe..479b748072fa 100644
  			interrupt-controller;
  			#interrupt-cells = <2>;
  			#address-cells = <0>;
-@@ -1682,7 +1682,6 @@ pinctrl: pinctrl@50002000 {
+@@ -1682,7 +1682,6 @@
  			compatible = "st,stm32mp135-pinctrl";
  			ranges = <0 0x50002000 0x8400>;
  			interrupt-parent = <&exti>;
@@ -34,6 +32,3 @@ index fdb2f2872afe..479b748072fa 100644
  
  			gpioa: gpio@50002000 {
  				gpio-controller;
--- 
-2.39.5
-

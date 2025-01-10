@@ -15,11 +15,9 @@ Tested-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 39 ++++++++++++++++++++++++++
  1 file changed, 39 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 9125dd859d7a..a385b628a2e2 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -741,5 +741,44 @@ gpioz: gpio@46200000 {
+@@ -741,5 +741,44 @@
  				status = "disabled";
  			};
  		};
@@ -64,6 +62,3 @@ index 9125dd859d7a..a385b628a2e2 100644
 +		};
  	};
  };
--- 
-2.39.5
-

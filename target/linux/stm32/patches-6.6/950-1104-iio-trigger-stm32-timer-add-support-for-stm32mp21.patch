@@ -16,8 +16,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/iio/trigger/stm32-timer-trigger.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
-index cd78a7f6be3e..733915b607e2 100644
 --- a/drivers/iio/trigger/stm32-timer-trigger.c
 +++ b/drivers/iio/trigger/stm32-timer-trigger.c
 @@ -19,6 +19,8 @@
@@ -29,7 +27,7 @@ index cd78a7f6be3e..733915b607e2 100644
  /* List the triggers created by each timer */
  static const void *triggers_table[][MAX_TRIGGERS] = {
  	{ TIM1_TRGO, TIM1_TRGO2, TIM1_CH1, TIM1_CH2, TIM1_CH3, TIM1_CH4,},
-@@ -894,6 +896,11 @@ static const struct stm32_timer_trigger_cfg stm32h7_timer_trg_cfg = {
+@@ -894,6 +896,11 @@ static const struct stm32_timer_trigger_
  	.num_valids_table = ARRAY_SIZE(stm32h7_valids_table),
  };
  
@@ -41,16 +39,13 @@ index cd78a7f6be3e..733915b607e2 100644
  static const struct stm32_timer_trigger_cfg stm32mp25_timer_trg_cfg = {
  	/*
  	 * valids_table not used: counter framework is now superseding the deprecated IIO
-@@ -912,6 +919,9 @@ static const struct of_device_id stm32_trig_of_match[] = {
- 	}, {
+@@ -913,6 +920,9 @@ static const struct of_device_id stm32_t
  		.compatible = "st,stm32h7-timer-trigger",
  		.data = (void *)&stm32h7_timer_trg_cfg,
-+	}, {
+ 	}, {
 +		.compatible = "st,stm32mp21-timer-trigger",
 +		.data = (void *)&stm32mp21_timer_trg_cfg,
- 	}, {
++	}, {
  		.compatible = "st,stm32mp25-timer-trigger",
  		.data = (void *)&stm32mp25_timer_trg_cfg,
--- 
-2.39.5
-
+ 	},

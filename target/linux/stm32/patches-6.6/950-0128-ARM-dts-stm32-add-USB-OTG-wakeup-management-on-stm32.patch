@@ -13,11 +13,9 @@ Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
  arch/arm/boot/dts/st/stm32mp131.dtsi | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index bfe2f3fb087c..b54c8349ae05 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -828,13 +828,15 @@ usbotg_hs: usb@49000000 {
+@@ -828,13 +828,15 @@
  			clock-names = "otg";
  			resets = <&rcc USBO_R>;
  			reset-names = "dwc2";
@@ -34,6 +32,3 @@ index bfe2f3fb087c..b54c8349ae05 100644
  			status = "disabled";
  		};
  
--- 
-2.39.5
-

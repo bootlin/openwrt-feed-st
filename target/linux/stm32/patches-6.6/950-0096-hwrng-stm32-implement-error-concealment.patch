@@ -12,8 +12,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 114 ++++++++++++++++++++++++++++-
  1 file changed, 110 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 54bd5807bbac..adefe8edfd07 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -29,10 +29,12 @@
@@ -141,7 +139,7 @@ index 54bd5807bbac..adefe8edfd07 100644
  static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
  {
  	struct stm32_rng_private *priv =
-@@ -66,6 +169,9 @@ static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+@@ -66,6 +169,9 @@ static int stm32_rng_read(struct hwrng *
  
  	pm_runtime_get_sync((struct device *) priv->rng.priv);
  
@@ -151,6 +149,3 @@ index 54bd5807bbac..adefe8edfd07 100644
  	while (max >= sizeof(u32)) {
  		sr = readl_relaxed(priv->base + RNG_SR);
  		/* Manage timeout which is based on timer and take */
--- 
-2.39.5
-

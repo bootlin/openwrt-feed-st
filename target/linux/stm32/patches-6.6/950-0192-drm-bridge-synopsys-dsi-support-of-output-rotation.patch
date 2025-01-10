@@ -11,8 +11,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 50 ++++++++++++++-----
  1 file changed, 38 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index f3ec5dfcf3e6..4890e4e65a51 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
 @@ -13,6 +13,7 @@
@@ -31,7 +29,7 @@ index f3ec5dfcf3e6..4890e4e65a51 100644
  
  #ifdef CONFIG_DEBUG_FS
  	struct dentry *debugfs;
-@@ -360,6 +362,12 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+@@ -360,6 +362,12 @@ static int dw_mipi_dsi_host_attach(struc
  			return ret;
  	}
  
@@ -44,7 +42,7 @@ index f3ec5dfcf3e6..4890e4e65a51 100644
  	return 0;
  }
  
-@@ -695,11 +703,16 @@ static void dw_mipi_dsi_video_packet_config(struct dw_mipi_dsi *dsi,
+@@ -695,11 +703,16 @@ static void dw_mipi_dsi_video_packet_con
  	 * DSI_VNPCR.NPSIZE... especially because this driver supports
  	 * non-burst video modes, see dw_mipi_dsi_video_mode_config()...
  	 */
@@ -66,7 +64,7 @@ index f3ec5dfcf3e6..4890e4e65a51 100644
  }
  
  static void dw_mipi_dsi_command_mode_config(struct dw_mipi_dsi *dsi)
-@@ -741,9 +754,15 @@ static void dw_mipi_dsi_line_timer_config(struct dw_mipi_dsi *dsi,
+@@ -741,9 +754,15 @@ static void dw_mipi_dsi_line_timer_confi
  {
  	u32 htotal, hsa, hbp, lbcc;
  
@@ -85,7 +83,7 @@ index f3ec5dfcf3e6..4890e4e65a51 100644
  
  	/*
  	 * TODO dw drv improvements
-@@ -764,10 +783,17 @@ static void dw_mipi_dsi_vertical_timing_config(struct dw_mipi_dsi *dsi,
+@@ -764,10 +783,17 @@ static void dw_mipi_dsi_vertical_timing_
  {
  	u32 vactive, vsa, vfp, vbp;
  
@@ -107,6 +105,3 @@ index f3ec5dfcf3e6..4890e4e65a51 100644
  
  	dsi_write(dsi, DSI_VID_VACTIVE_LINES, vactive);
  	dsi_write(dsi, DSI_VID_VSA_LINES, vsa);
--- 
-2.39.5
-

@@ -13,11 +13,9 @@ Change-Id: Id5f84f0359acd9d35816a21cf19890079cfee65c
  arch/arm/boot/dts/st/stm32mp151.dtsi | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 1281be41d7c9..14ba8c8dd624 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -240,7 +240,7 @@ pwr_irq: pwr@50001020 {
+@@ -240,7 +240,7 @@
  		};
  
  		exti: interrupt-controller@5000d000 {
@@ -26,7 +24,7 @@ index 1281be41d7c9..14ba8c8dd624 100644
  			interrupt-controller;
  			#interrupt-cells = <2>;
  			#address-cells = <0>;
-@@ -2047,7 +2047,6 @@ pinctrl: pinctrl@50002000 {
+@@ -2047,7 +2047,6 @@
  			compatible = "st,stm32mp157-pinctrl";
  			ranges = <0 0x50002000 0xa400>;
  			interrupt-parent = <&exti>;
@@ -34,7 +32,7 @@ index 1281be41d7c9..14ba8c8dd624 100644
  			hwlocks = <&hsem 0 1>;
  
  			gpioa: gpio@50002000 {
-@@ -2178,7 +2177,6 @@ pinctrl_z: pinctrl@54004000 {
+@@ -2178,7 +2177,6 @@
  			compatible = "st,stm32mp157-z-pinctrl";
  			ranges = <0 0x54004000 0x400>;
  			interrupt-parent = <&exti>;
@@ -42,6 +40,3 @@ index 1281be41d7c9..14ba8c8dd624 100644
  			hwlocks = <&hsem 0 1>;
  
  			gpioz: gpio@54004000 {
--- 
-2.39.5
-

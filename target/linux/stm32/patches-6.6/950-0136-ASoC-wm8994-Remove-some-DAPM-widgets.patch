@@ -17,11 +17,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
  sound/soc/codecs/wm8994.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index a48e904a9740..4ea76bda1a66 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -2071,10 +2071,10 @@ static const struct snd_soc_dapm_route wm8994_lateclk_intercon[] = {
+@@ -2071,10 +2071,10 @@ static const struct snd_soc_dapm_route w
  };
  
  static const struct snd_soc_dapm_route wm8994_revd_intercon[] = {
@@ -36,6 +34,3 @@ index a48e904a9740..4ea76bda1a66 100644
  	{ "MICBIAS1", NULL, "CLK_SYS" },
  	{ "MICBIAS1", NULL, "MICBIAS Supply" },
  	{ "MICBIAS2", NULL, "CLK_SYS" },
--- 
-2.39.5
-

@@ -32,9 +32,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361911
  create mode 100644 arch/arm64/boot/dts/st/stm32mp21xxan-pinctrl.dtsi
  create mode 100644 arch/arm64/boot/dts/st/stm32mp21xxao-pinctrl.dtsi
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
-new file mode 100644
-index 000000000000..5650359997a8
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp21-pinctrl.dtsi
 @@ -0,0 +1,6 @@
@@ -44,9 +41,6 @@ index 000000000000..5650359997a8
 + * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
 + */
 +#include <dt-bindings/pinctrl/stm32-pinfunc.h>
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xxal-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21xxal-pinctrl.dtsi
-new file mode 100644
-index 000000000000..6a2bf584e793
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp21xxal-pinctrl.dtsi
 @@ -0,0 +1,71 @@
@@ -121,9 +115,6 @@ index 000000000000..6a2bf584e793
 +		gpio-ranges = <&pinctrl_z 0 400 2>, <&pinctrl_z 3 403 1>;
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xxam-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21xxam-pinctrl.dtsi
-new file mode 100644
-index 000000000000..e97c971b1e34
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp21xxam-pinctrl.dtsi
 @@ -0,0 +1,71 @@
@@ -198,9 +189,6 @@ index 000000000000..e97c971b1e34
 +		gpio-ranges = <&pinctrl_z 0 400 2>, <&pinctrl_z 3 403 1>;
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xxan-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21xxan-pinctrl.dtsi
-new file mode 100644
-index 000000000000..d1f421073cb6
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp21xxan-pinctrl.dtsi
 @@ -0,0 +1,71 @@
@@ -275,9 +263,6 @@ index 000000000000..d1f421073cb6
 +		gpio-ranges = <&pinctrl_z 0 400 2>, <&pinctrl_z 3 403 1>;
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/st/stm32mp21xxao-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp21xxao-pinctrl.dtsi
-new file mode 100644
-index 000000000000..ec76fdb1f99b
 --- /dev/null
 +++ b/arch/arm64/boot/dts/st/stm32mp21xxao-pinctrl.dtsi
 @@ -0,0 +1,63 @@
@@ -344,6 +329,3 @@ index 000000000000..ec76fdb1f99b
 +		gpio-ranges = <&pinctrl 0 128 2>, <&pinctrl 4 132 1>;
 +	};
 +};
--- 
-2.39.5
-

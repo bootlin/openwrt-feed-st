@@ -16,11 +16,9 @@ Change-Id: I3c0f9730fdf9278d5345391668a5c945ee2e4114
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 21 ++++++++++++++++++++-
  4 files changed, 80 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index df74bd3a7287..45d691078ec2 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -302,7 +302,7 @@ &dsi {
+@@ -302,7 +302,7 @@
  	#size-cells = <0>;
  	status = "okay";
  
@@ -29,7 +27,7 @@ index df74bd3a7287..45d691078ec2 100644
  		compatible = "raydium,rm68200";
  		reg = <0>;
  		reset-gpios = <&gpiof 15 GPIO_ACTIVE_LOW>;
-@@ -454,12 +454,31 @@ stmfx_pinctrl: pinctrl {
+@@ -454,12 +454,31 @@
  			#interrupt-cells = <2>;
  			gpio-ranges = <&stmfx_pinctrl 0 0 24>;
  
@@ -61,11 +59,9 @@ index df74bd3a7287..45d691078ec2 100644
  };
  
  &i2c4 {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index dffd79caa23b..87475702f9f3 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -302,7 +302,7 @@ &dsi {
+@@ -302,7 +302,7 @@
  	#size-cells = <0>;
  	status = "okay";
  
@@ -74,7 +70,7 @@ index dffd79caa23b..87475702f9f3 100644
  		compatible = "raydium,rm68200";
  		reg = <0>;
  		reset-gpios = <&gpiof 15 GPIO_ACTIVE_LOW>;
-@@ -454,12 +454,31 @@ stmfx_pinctrl: pinctrl {
+@@ -454,12 +454,31 @@
  			#interrupt-cells = <2>;
  			gpio-ranges = <&stmfx_pinctrl 0 0 24>;
  
@@ -106,11 +102,9 @@ index dffd79caa23b..87475702f9f3 100644
  };
  
  &i2c4 {
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-index 980f2eaf5f79..eab2b256fdc8 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-@@ -302,7 +302,7 @@ &dsi {
+@@ -302,7 +302,7 @@
  	#size-cells = <0>;
  	status = "okay";
  
@@ -119,7 +113,7 @@ index 980f2eaf5f79..eab2b256fdc8 100644
  		compatible = "raydium,rm68200";
  		reg = <0>;
  		reset-gpios = <&gpiof 15 GPIO_ACTIVE_LOW>;
-@@ -454,12 +454,31 @@ stmfx_pinctrl: pinctrl {
+@@ -454,12 +454,31 @@
  			#interrupt-cells = <2>;
  			gpio-ranges = <&stmfx_pinctrl 0 0 24>;
  
@@ -151,11 +145,9 @@ index 980f2eaf5f79..eab2b256fdc8 100644
  };
  
  &i2c4 {
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index 184b4914fa63..e79ee2657218 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -302,7 +302,7 @@ &dsi {
+@@ -302,7 +302,7 @@
  	#size-cells = <0>;
  	status = "okay";
  
@@ -164,7 +156,7 @@ index 184b4914fa63..e79ee2657218 100644
  		compatible = "raydium,rm68200";
  		reg = <0>;
  		reset-gpios = <&gpiof 15 GPIO_ACTIVE_LOW>;
-@@ -454,12 +454,31 @@ stmfx_pinctrl: pinctrl {
+@@ -454,12 +454,31 @@
  			#interrupt-cells = <2>;
  			gpio-ranges = <&stmfx_pinctrl 0 0 24>;
  
@@ -196,6 +188,3 @@ index 184b4914fa63..e79ee2657218 100644
  };
  
  &i2c4 {
--- 
-2.39.5
-

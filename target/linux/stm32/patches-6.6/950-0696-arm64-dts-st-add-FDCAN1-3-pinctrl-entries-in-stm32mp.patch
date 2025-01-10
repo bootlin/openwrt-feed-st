@@ -12,11 +12,9 @@ Change-Id: Ifdfdb9a6d6c1faebc9ec44e130687ee01496712c
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 40 +++++++++++++++++++
  1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 6dfa01d065ec..4f402bc8f44c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -153,6 +153,46 @@ pins {
+@@ -153,6 +153,46 @@
  		};
  	};
  
@@ -63,6 +61,3 @@ index 6dfa01d065ec..4f402bc8f44c 100644
  	ospi1_clk_pins_a: ospi1-clk-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 0, AF10)>; /* OSPI1_CLK */
--- 
-2.39.5
-

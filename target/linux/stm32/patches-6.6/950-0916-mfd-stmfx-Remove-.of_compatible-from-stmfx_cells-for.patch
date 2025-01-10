@@ -26,8 +26,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mfd/stmfx.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
-index c02cbd9c2f5d..7257f706ffb4 100644
 --- a/drivers/mfd/stmfx.c
 +++ b/drivers/mfd/stmfx.c
 @@ -81,13 +81,11 @@ static struct mfd_cell stmfx_cells[] = {
@@ -44,6 +42,3 @@ index c02cbd9c2f5d..7257f706ffb4 100644
  		.name = "stmfx-ts",
  		.resources = stmfx_ts_resources,
  		.num_resources = ARRAY_SIZE(stmfx_ts_resources),
--- 
-2.39.5
-

@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/boot/dts/st/stm32mp151.dtsi | 306 +++++++++++++--------------
  1 file changed, 151 insertions(+), 155 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index a03f335f3867..d70480b0c4d7 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -258,6 +258,136 @@ pwr_irq: pwr@50001020 {
+@@ -258,6 +258,136 @@
  					 <&gpioc 1 GPIO_ACTIVE_HIGH>;
  		};
  
@@ -160,7 +158,7 @@ index a03f335f3867..d70480b0c4d7 100644
  		exti: interrupt-controller@5000d000 {
  			compatible = "st,stm32mp1-exti";
  			interrupt-controller;
-@@ -364,6 +494,27 @@ hdp: pinctrl@5002a000 {
+@@ -364,6 +494,27 @@
  			status = "disabled";
  		};
  
@@ -188,7 +186,7 @@ index a03f335f3867..d70480b0c4d7 100644
  		mdma1: dma-controller@58000000 {
  			compatible = "st,stm32h7-mdma";
  			reg = <0x58000000 0x1000>;
-@@ -2119,161 +2270,6 @@ reboot_mode: reboot-mode {
+@@ -2119,161 +2270,6 @@
  				mode-romcode_serial = <0xff>;
  			};
  		};
@@ -350,6 +348,3 @@ index a03f335f3867..d70480b0c4d7 100644
  	};
  
  	mlahb: ahb {
--- 
-2.39.5
-

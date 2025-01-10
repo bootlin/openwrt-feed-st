@@ -13,11 +13,9 @@ Change-Id: I33c2237363e34b309b0d4c1aa4d528909672b6d0
  arch/arm/boot/dts/st/stm32mp151.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 21bc8a13aca2..83b69cdc85b8 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1265,6 +1265,7 @@ exti-interrupt-map {
+@@ -1265,6 +1265,7 @@
  					<32 0 &intc GIC_SPI 82  IRQ_TYPE_LEVEL_HIGH>,
  					<33 0 &intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
  					<43 0 &intc GIC_SPI 75  IRQ_TYPE_LEVEL_HIGH>,
@@ -25,6 +23,3 @@ index 21bc8a13aca2..83b69cdc85b8 100644
  					<47 0 &intc GIC_SPI 93  IRQ_TYPE_LEVEL_HIGH>,
  					<48 0 &intc GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
  					<50 0 &intc GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>,
--- 
-2.39.5
-

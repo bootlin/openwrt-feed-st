@@ -18,8 +18,6 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  include/linux/bus/stm32_firewall.h |   2 +
  2 files changed, 134 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/stm32_rifsc.c b/drivers/bus/stm32_rifsc.c
-index 175f0b5c996b..21ea5f88072a 100644
 --- a/drivers/bus/stm32_rifsc.c
 +++ b/drivers/bus/stm32_rifsc.c
 @@ -26,6 +26,8 @@
@@ -72,7 +70,7 @@ index 175f0b5c996b..21ea5f88072a 100644
  static void stm32_rifsc_fill_master_dbg_entry(struct stm32_firewall_controller *rifsc,
  					      struct rifsc_master_debug_data *dbg_entry, int i)
  {
-@@ -286,10 +308,33 @@ static void stm32_rifsc_fill_dev_dbg_entry(struct stm32_firewall_controller *rif
+@@ -286,10 +308,33 @@ static void stm32_rifsc_fill_dev_dbg_ent
  	dbg_entry->dev_priv = priv_cfgr & BIT(reg_offset) ?  true : false;
  }
  
@@ -107,7 +105,7 @@ index 175f0b5c996b..21ea5f88072a 100644
  
  	seq_puts(s, "\n=============================================\n");
  	seq_puts(s, "                 RIFSC dump\n");
-@@ -347,6 +392,51 @@ static int stm32_rifsc_conf_dump_show(struct seq_file *s, void *data)
+@@ -347,6 +392,51 @@ static int stm32_rifsc_conf_dump_show(st
  		seq_printf(s, "| %-12s |\n", m_dbg_entry.m_priv ? "PRIV" : "NPRIV");
  	}
  
@@ -159,7 +157,7 @@ index 175f0b5c996b..21ea5f88072a 100644
  	return 0;
  }
  DEFINE_SHOW_ATTRIBUTE(stm32_rifsc_conf_dump);
-@@ -487,7 +577,7 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+@@ -487,7 +577,7 @@ static int stm32_rifsc_probe(struct plat
  	u32 nb_risup, nb_rimu, nb_risal;
  	struct resource *res;
  	void __iomem *mmio;
@@ -168,7 +166,7 @@ index 175f0b5c996b..21ea5f88072a 100644
  
  	rifsc_controller = devm_kzalloc(&pdev->dev, sizeof(*rifsc_controller), GFP_KERNEL);
  	if (!rifsc_controller)
-@@ -512,6 +602,46 @@ static int stm32_rifsc_probe(struct platform_device *pdev)
+@@ -512,6 +602,46 @@ static int stm32_rifsc_probe(struct plat
  	nb_risal = FIELD_GET(HWCFGR2_CONF3_MASK,
  			     readl(rifsc_controller->mmio + RIFSC_RISC_HWCFGR2));
  	rifsc_controller->max_entries = nb_risup + nb_rimu + nb_risal;
@@ -215,8 +213,6 @@ index 175f0b5c996b..21ea5f88072a 100644
  
  	platform_set_drvdata(pdev, rifsc_controller);
  
-diff --git a/include/linux/bus/stm32_firewall.h b/include/linux/bus/stm32_firewall.h
-index e5fac85fe346..401497fab35e 100644
 --- a/include/linux/bus/stm32_firewall.h
 +++ b/include/linux/bus/stm32_firewall.h
 @@ -45,6 +45,8 @@ struct stm32_firewall_controller {
@@ -228,6 +224,3 @@ index e5fac85fe346..401497fab35e 100644
  
  	int (*grant_access)(struct stm32_firewall_controller *ctrl, u32 id);
  	void (*release_access)(struct stm32_firewall_controller *ctrl, u32 id);
--- 
-2.39.5
-

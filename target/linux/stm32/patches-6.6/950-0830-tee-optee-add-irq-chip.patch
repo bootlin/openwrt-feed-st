@@ -28,8 +28,6 @@ Domain-Review: Yann GAUTIER <yann.gautier@foss.st.com>
  drivers/tee/optee/smc_abi.c       | 149 ++++++++++++++++++++++++++++++
  3 files changed, 172 insertions(+)
 
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 3ef3d7792380..96cdbbf97dc4 100644
 --- a/drivers/tee/optee/optee_private.h
 +++ b/drivers/tee/optee/optee_private.h
 @@ -35,6 +35,9 @@
@@ -74,11 +72,9 @@ index 3ef3d7792380..96cdbbf97dc4 100644
  };
  
  /**
-diff --git a/drivers/tee/optee/optee_smc.h b/drivers/tee/optee/optee_smc.h
-index d97141a4bd0c..b0972f630efb 100644
 --- a/drivers/tee/optee/optee_smc.h
 +++ b/drivers/tee/optee/optee_smc.h
-@@ -444,6 +444,22 @@ struct optee_smc_disable_shm_cache_result {
+@@ -444,6 +444,22 @@ struct optee_smc_disable_shm_cache_resul
  #define OPTEE_SMC_GET_ASYNC_NOTIF_VALUE \
  	OPTEE_SMC_FAST_CALL_VAL(OPTEE_SMC_FUNCID_GET_ASYNC_NOTIF_VALUE)
  
@@ -101,11 +97,9 @@ index d97141a4bd0c..b0972f630efb 100644
  /* See OPTEE_SMC_CALL_WITH_RPC_ARG above */
  #define OPTEE_SMC_FUNCID_CALL_WITH_RPC_ARG	18
  
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index 7d413d0ed14e..8034c17d955d 100644
 --- a/drivers/tee/optee/smc_abi.c
 +++ b/drivers/tee/optee/smc_abi.c
-@@ -1038,6 +1038,128 @@ static int optee_smc_stop_async_notif(struct tee_context *ctx)
+@@ -1038,6 +1038,128 @@ static int optee_smc_stop_async_notif(st
   * 5. Asynchronous notification
   */
  
@@ -234,7 +228,7 @@ index 7d413d0ed14e..8034c17d955d 100644
  static u32 get_async_notif_value(optee_invoke_fn *invoke_fn, bool *value_valid,
  				 bool *value_pending)
  {
-@@ -1069,6 +1191,8 @@ static irqreturn_t irq_handler(struct optee *optee)
+@@ -1069,6 +1191,8 @@ static irqreturn_t irq_handler(struct op
  
  		if (value == OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF)
  			do_bottom_half = true;
@@ -243,7 +237,7 @@ index 7d413d0ed14e..8034c17d955d 100644
  		else
  			optee_notif_send(optee, value);
  	} while (value_pending);
-@@ -1514,6 +1638,8 @@ static int optee_smc_remove(struct platform_device *pdev)
+@@ -1514,6 +1638,8 @@ static int optee_smc_remove(struct platf
  
  	optee_smc_notif_uninit_irq(optee);
  
@@ -252,7 +246,7 @@ index 7d413d0ed14e..8034c17d955d 100644
  	optee_remove_common(optee);
  
  	if (optee->smc.memremaped_shm)
-@@ -1753,6 +1879,15 @@ static int optee_probe(struct platform_device *pdev)
+@@ -1753,6 +1879,15 @@ static int optee_probe(struct platform_d
  	optee->smc.sec_caps = sec_caps;
  	optee->rpc_param_count = rpc_param_count;
  
@@ -268,7 +262,7 @@ index 7d413d0ed14e..8034c17d955d 100644
  	teedev = tee_device_alloc(&optee_clnt_desc, NULL, pool, optee);
  	if (IS_ERR(teedev)) {
  		rc = PTR_ERR(teedev);
-@@ -1808,6 +1943,20 @@ static int optee_probe(struct platform_device *pdev)
+@@ -1808,6 +1943,20 @@ static int optee_probe(struct platform_d
  			irq_dispose_mapping(irq);
  			goto err_notif_uninit;
  		}
@@ -289,6 +283,3 @@ index 7d413d0ed14e..8034c17d955d 100644
  		enable_async_notif(optee->smc.invoke_fn);
  		pr_info("Asynchronous notifications enabled\n");
  	}
--- 
-2.39.5
-

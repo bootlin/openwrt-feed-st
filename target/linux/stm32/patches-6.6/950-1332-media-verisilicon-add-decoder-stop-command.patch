@@ -17,11 +17,9 @@ Domain-Review: Hugues FRUCHET <hugues.fruchet@st.com>
  .../media/platform/verisilicon/hantro_v4l2.c  | 42 ++++++++++++++++++-
  1 file changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index 12f22b2057cc..fa1910ce5230 100644
 --- a/drivers/media/platform/verisilicon/hantro_v4l2.c
 +++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -756,6 +756,44 @@ static int vidioc_encoder_cmd(struct file *file, void *priv,
+@@ -756,6 +756,44 @@ static int vidioc_encoder_cmd(struct fil
  	return 0;
  }
  
@@ -66,7 +64,7 @@ index 12f22b2057cc..fa1910ce5230 100644
  const struct v4l2_ioctl_ops hantro_ioctl_ops = {
  	.vidioc_querycap = vidioc_querycap,
  	.vidioc_enum_framesizes = vidioc_enum_framesizes,
-@@ -786,8 +824,8 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
+@@ -786,8 +824,8 @@ const struct v4l2_ioctl_ops hantro_ioctl
  	.vidioc_g_selection = vidioc_g_selection,
  	.vidioc_s_selection = vidioc_s_selection,
  
@@ -77,6 +75,3 @@ index 12f22b2057cc..fa1910ce5230 100644
  
  	.vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
  	.vidioc_encoder_cmd = vidioc_encoder_cmd,
--- 
-2.39.5
-

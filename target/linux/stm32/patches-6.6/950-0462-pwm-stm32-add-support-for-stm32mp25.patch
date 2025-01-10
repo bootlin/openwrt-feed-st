@@ -15,11 +15,9 @@ Change-Id: I7c5e5d39689dfed82a2aec7b62ede3eda41a19ce
  drivers/pwm/pwm-stm32.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-index f3fb7e240455..362e71e9a71f 100644
 --- a/drivers/pwm/pwm-stm32.c
 +++ b/drivers/pwm/pwm-stm32.c
-@@ -606,6 +606,9 @@ static int stm32_pwm_detect_channels(struct stm32_pwm *priv, struct stm32_timers
+@@ -606,6 +606,9 @@ static int stm32_pwm_detect_channels(str
  		 */
  		npwm = FIELD_GET(TIM_HWCFGR1_NB_OF_CC, val);
  
@@ -29,6 +27,3 @@ index f3fb7e240455..362e71e9a71f 100644
  		return npwm < MAX_PWM_OUTPUT ? npwm : MAX_PWM_OUTPUT;
  	}
  
--- 
-2.39.5
-

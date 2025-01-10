@@ -21,9 +21,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  1 file changed, 103 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/perf/stm32-ddrperfm-pmu.yaml
 
-diff --git a/Documentation/devicetree/bindings/perf/stm32-ddrperfm-pmu.yaml b/Documentation/devicetree/bindings/perf/stm32-ddrperfm-pmu.yaml
-new file mode 100644
-index 000000000000..318cf5aac4f4
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/perf/stm32-ddrperfm-pmu.yaml
 @@ -0,0 +1,103 @@
@@ -130,6 +127,3 @@ index 000000000000..318cf5aac4f4
 +      status = "disabled";
 +    };
 +...
--- 
-2.39.5
-

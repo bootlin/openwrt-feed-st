@@ -17,11 +17,9 @@ Change-Id: Iea2b010955f68a5f1cce146e06c0ccf4b14b247c
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 5 +++++
  6 files changed, 30 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 5e2dd4eb65c2..cc83798f1266 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -93,6 +93,11 @@ channel@12 {
+@@ -93,6 +93,11 @@
  	};
  };
  
@@ -33,11 +31,9 @@ index 5e2dd4eb65c2..cc83798f1266 100644
  &i2c1 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c1_pins_a>;
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-index 6f9fa51c179e..579a6a4691e3 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ed1.dts
-@@ -121,6 +121,11 @@ channel@6 {
+@@ -121,6 +121,11 @@
  	};
  };
  
@@ -49,11 +45,9 @@ index 6f9fa51c179e..579a6a4691e3 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-index 15343c45aac3..96852bd0e699 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1.dts
-@@ -121,6 +121,11 @@ channel@6 {
+@@ -121,6 +121,11 @@
  	};
  };
  
@@ -65,11 +59,9 @@ index 15343c45aac3..96852bd0e699 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-index 9f9fb7e4e829..6169e4e78bed 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ed1.dts
-@@ -121,6 +121,11 @@ channel@6 {
+@@ -121,6 +121,11 @@
  	};
  };
  
@@ -81,11 +73,9 @@ index 9f9fb7e4e829..6169e4e78bed 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-index 4f4b7cb1af6e..4272d9f81ec3 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ed1.dts
-@@ -121,6 +121,11 @@ channel@6 {
+@@ -121,6 +121,11 @@
  	};
  };
  
@@ -97,11 +87,9 @@ index 4f4b7cb1af6e..4272d9f81ec3 100644
  &crc1 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 1cfd6e521075..eb65f06ead40 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -129,6 +129,11 @@ channel@19 {
+@@ -129,6 +129,11 @@
  	};
  };
  
@@ -113,6 +101,3 @@ index 1cfd6e521075..eb65f06ead40 100644
  &cec {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&cec_pins_b>;
--- 
-2.39.5
-

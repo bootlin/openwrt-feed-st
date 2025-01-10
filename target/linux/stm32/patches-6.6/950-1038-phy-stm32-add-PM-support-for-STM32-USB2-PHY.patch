@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/phy/st/phy-stm32-usb2phy.c | 53 +++++++++++++++++++++++++++++-
  1 file changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/st/phy-stm32-usb2phy.c b/drivers/phy/st/phy-stm32-usb2phy.c
-index d77b7dc6d0d8..3847d40a4331 100644
 --- a/drivers/phy/st/phy-stm32-usb2phy.c
 +++ b/drivers/phy/st/phy-stm32-usb2phy.c
 @@ -81,6 +81,7 @@ struct stm32_usb2phy {
@@ -31,7 +29,7 @@ index d77b7dc6d0d8..3847d40a4331 100644
  	struct clk_hw clk48_hw;
  	atomic_t en_refcnt;
  	const struct stm32mp2_usb2phy_hw_data *hw_data;
-@@ -293,6 +294,48 @@ static int stm32_usb2phy_disable(struct stm32_usb2phy *phy_dev)
+@@ -293,6 +294,48 @@ static int stm32_usb2phy_disable(struct
  	return 0;
  }
  
@@ -80,7 +78,7 @@ index d77b7dc6d0d8..3847d40a4331 100644
  static int stm32_usb2phy_set_mode(struct phy *phy, enum phy_mode mode, int submode)
  {
  	int ret;
-@@ -386,6 +429,8 @@ static int stm32_usb2phy_init(struct phy *phy)
+@@ -386,6 +429,8 @@ static int stm32_usb2phy_init(struct phy
  		}
  	}
  
@@ -89,7 +87,7 @@ index d77b7dc6d0d8..3847d40a4331 100644
  	return 0;
  
  error_disable:
-@@ -405,6 +450,8 @@ static int stm32_usb2phy_exit(struct phy *phy)
+@@ -405,6 +450,8 @@ static int stm32_usb2phy_exit(struct phy
  		return ret;
  	}
  
@@ -98,7 +96,7 @@ index d77b7dc6d0d8..3847d40a4331 100644
  	return 0;
  }
  
-@@ -713,6 +760,9 @@ static int stm32_usb2phy_probe(struct platform_device *pdev)
+@@ -713,6 +760,9 @@ static int stm32_usb2phy_probe(struct pl
  	return 0;
  }
  
@@ -108,7 +106,7 @@ index d77b7dc6d0d8..3847d40a4331 100644
  static const struct of_device_id stm32_usb2phy_of_match[] = {
  	{ .compatible = "st,stm32mp25-usb2phy" },
  	{ /* sentinel */ },
-@@ -723,7 +773,8 @@ static struct platform_driver stm32_usb2phy_driver = {
+@@ -723,7 +773,8 @@ static struct platform_driver stm32_usb2
  	.probe = stm32_usb2phy_probe,
  	.driver = {
  		.name = "stm32-usb2phy",
@@ -118,6 +116,3 @@ index d77b7dc6d0d8..3847d40a4331 100644
  	}
  };
  
--- 
-2.39.5
-

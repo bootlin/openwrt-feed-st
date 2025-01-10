@@ -12,11 +12,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  drivers/iio/adc/stm32-adc.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index d39fbaab2e43..7181d3234cc2 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -3032,7 +3032,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
+@@ -3032,7 +3032,7 @@ static const struct stm32_adc_cfg stm32f
  	.irq_clear = stm32f4_adc_irq_clear,
  };
  
@@ -25,7 +23,7 @@ index d39fbaab2e43..7181d3234cc2 100644
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_h7) == STM32_ADC_INT_CH_NB);
  
  static const struct stm32_adc_cfg stm32h7_adc_cfg = {
-@@ -3054,7 +3054,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -3054,7 +3054,7 @@ static const struct stm32_adc_cfg stm32h
  	.set_ovs = stm32h7_adc_set_ovs,
  };
  
@@ -34,7 +32,7 @@ index d39fbaab2e43..7181d3234cc2 100644
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp1) == STM32_ADC_INT_CH_NB);
  
  static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
-@@ -3077,7 +3077,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -3077,7 +3077,7 @@ static const struct stm32_adc_cfg stm32m
  	.set_ovs = stm32h7_adc_set_ovs,
  };
  
@@ -43,6 +41,3 @@ index d39fbaab2e43..7181d3234cc2 100644
  static_assert(ARRAY_SIZE(stm32_adc_min_ts_mp13) == STM32_ADC_INT_CH_NB);
  
  static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
--- 
-2.39.5
-

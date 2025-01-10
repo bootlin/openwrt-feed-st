@@ -15,11 +15,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 148 +++++++++++++++++++++++++
  1 file changed, 148 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 38ec6b6541b5..24309f073244 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -397,6 +397,117 @@ spi5: spi@40280000 {
+@@ -397,6 +397,117 @@
  				status = "disabled";
  			};
  
@@ -137,7 +135,7 @@ index 38ec6b6541b5..24309f073244 100644
  			usart1: serial@40330000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40330000 0x400>;
-@@ -410,6 +521,43 @@ usart1: serial@40330000 {
+@@ -410,6 +521,43 @@
  				status = "disabled";
  			};
  
@@ -181,6 +179,3 @@ index 38ec6b6541b5..24309f073244 100644
  			uart7: serial@40370000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x40370000 0x400>;
--- 
-2.39.5
-

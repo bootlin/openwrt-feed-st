@@ -15,11 +15,9 @@ Change-Id: If45c04e8588b853a067a51f12b3417d1c306a001
  drivers/i2c/busses/i2c-stm32f7.c | 12 +++++-------
  1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index dde70e7ec722..15100fed0a3f 100644
 --- a/drivers/i2c/busses/i2c-stm32f7.c
 +++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1602,6 +1602,7 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+@@ -1602,6 +1602,7 @@ static irqreturn_t stm32f7_i2c_isr_error
  {
  	struct stm32f7_i2c_dev *i2c_dev = data;
  	struct stm32f7_i2c_msg *f7_msg = &i2c_dev->f7_msg;
@@ -27,7 +25,7 @@ index dde70e7ec722..15100fed0a3f 100644
  	void __iomem *base = i2c_dev->base;
  	struct device *dev = i2c_dev->dev;
  	struct stm32_i2c_dma *dma = i2c_dev->dma;
-@@ -1611,8 +1612,7 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+@@ -1611,8 +1612,7 @@ static irqreturn_t stm32f7_i2c_isr_error
  
  	/* Bus error */
  	if (status & STM32F7_I2C_ISR_BERR) {
@@ -37,7 +35,7 @@ index dde70e7ec722..15100fed0a3f 100644
  		writel_relaxed(STM32F7_I2C_ICR_BERRCF, base + STM32F7_I2C_ICR);
  		stm32f7_i2c_release_bus(&i2c_dev->adap);
  		f7_msg->result = -EIO;
-@@ -1620,21 +1620,19 @@ static irqreturn_t stm32f7_i2c_isr_error_thread(int irq, void *data)
+@@ -1620,21 +1620,19 @@ static irqreturn_t stm32f7_i2c_isr_error
  
  	/* Arbitration loss */
  	if (status & STM32F7_I2C_ISR_ARLO) {
@@ -62,6 +60,3 @@ index dde70e7ec722..15100fed0a3f 100644
  		writel_relaxed(STM32F7_I2C_ICR_ALERTCF, base + STM32F7_I2C_ICR);
  		i2c_handle_smbus_alert(i2c_dev->alert->ara);
  		return IRQ_HANDLED;
--- 
-2.39.5
-

@@ -11,11 +11,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 67501d33b417..5fae7937c740 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-@@ -84,6 +84,19 @@ linux,cma {
+@@ -84,6 +84,19 @@
  		};
  	};
  
@@ -35,7 +33,7 @@ index 67501d33b417..5fae7937c740 100644
  	led {
  		compatible = "gpio-leds";
  		led-blue {
-@@ -241,6 +254,13 @@ sii9022_in: endpoint {
+@@ -241,6 +254,13 @@
  				};
  			};
  
@@ -49,6 +47,3 @@ index 67501d33b417..5fae7937c740 100644
  			port@3 {
  				reg = <3>;
  				sii9022_tx_endpoint: endpoint {
--- 
-2.39.5
-

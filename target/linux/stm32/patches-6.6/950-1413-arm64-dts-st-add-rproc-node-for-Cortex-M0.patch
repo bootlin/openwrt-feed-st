@@ -19,11 +19,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 21 +++++++++++++++++++++
  1 file changed, 21 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 24e9fbfa661c..4ed74b01a0a0 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -3288,4 +3288,25 @@ m33_rproc: m33@0 {
+@@ -3288,4 +3288,25 @@
  		};
  	};
  
@@ -49,6 +47,3 @@ index 24e9fbfa661c..4ed74b01a0a0 100644
 +	};
 +
  };
--- 
-2.39.5
-

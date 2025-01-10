@@ -30,8 +30,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 82 +++----------------
  2 files changed, 64 insertions(+), 88 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
-index 68908abc2be3..289e063ed136 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelcap.c
 @@ -53,6 +53,27 @@
@@ -117,7 +115,7 @@ index 68908abc2be3..289e063ed136 100644
  };
  
  static const struct dcmipp_pixelcap_pix_map *
-@@ -493,7 +516,9 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -493,7 +516,9 @@ static int dcmipp_pixelcap_start_streami
  {
  	struct dcmipp_pixelcap_device *vcap = vb2_get_drv_priv(vq);
  	struct media_entity *entity = &vcap->vdev.entity;
@@ -127,7 +125,7 @@ index 68908abc2be3..289e063ed136 100644
  	int ret;
  
  	vcap->sequence = 0;
-@@ -518,6 +543,17 @@ static int dcmipp_pixelcap_start_streaming(struct vb2_queue *vq,
+@@ -518,6 +543,17 @@ static int dcmipp_pixelcap_start_streami
  	if (ret)
  		goto err_media_pipeline_stop;
  
@@ -145,8 +143,6 @@ index 68908abc2be3..289e063ed136 100644
  	/* Enable interruptions */
  	vcap->cmier |= DCMIPP_CMIER_PxALL(vcap->pipe_id);
  	spin_lock(&vcap->vdev.v4l2_dev->lock);
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 21fa26d76f37..df66df36cc36 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -94,71 +94,29 @@
@@ -237,7 +233,7 @@ index 21fa26d76f37..df66df36cc36 100644
  	.field = V4L2_FIELD_NONE,
  	.colorspace = V4L2_COLORSPACE_REC709,
  	.ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT,
-@@ -554,8 +512,7 @@ static void dcmipp_pixelproc_adjust_fmt(struct v4l2_mbus_framefmt *fmt, u32 pad)
+@@ -554,8 +512,7 @@ static void dcmipp_pixelproc_adjust_fmt(
  	/* Only accept code in the pix map table */
  	vpix = dcmipp_pixelproc_pix_map_by_code(fmt->code, pad);
  	if (!vpix)
@@ -247,7 +243,7 @@ index 21fa26d76f37..df66df36cc36 100644
  
  	fmt->width = clamp_t(u32, fmt->width, DCMIPP_FRAME_MIN_WIDTH,
  			     DCMIPP_FRAME_MAX_WIDTH);
-@@ -584,8 +541,6 @@ static int dcmipp_pixelproc_init_cfg(struct v4l2_subdev *sd,
+@@ -584,8 +541,6 @@ static int dcmipp_pixelproc_init_cfg(str
  
  		mf = v4l2_subdev_state_get_format(state, i);
  		*mf = fmt_default;
@@ -256,7 +252,7 @@ index 21fa26d76f37..df66df36cc36 100644
  
  		if (IS_SINK(i)) {
  			*v4l2_subdev_state_get_crop(state, i) = r;
-@@ -666,9 +621,9 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -666,9 +621,9 @@ static int dcmipp_pixelproc_set_fmt(stru
  
  		if (fmt->format.code >= MEDIA_BUS_FMT_Y8_1X8 &&
  		    fmt->format.code < MEDIA_BUS_FMT_SBGGR8_1X8)
@@ -268,7 +264,7 @@ index 21fa26d76f37..df66df36cc36 100644
  
  		crop->top = 0;
  		crop->left = 0;
-@@ -1039,13 +994,11 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -1039,13 +994,11 @@ static int dcmipp_pixelproc_s_stream(str
  {
  	struct dcmipp_pixelproc_device *pixelproc = v4l2_get_subdevdata(sd);
  	struct v4l2_mbus_framefmt *sink_fmt, *src_fmt;
@@ -282,7 +278,7 @@ index 21fa26d76f37..df66df36cc36 100644
  
  	/* Get source subdev */
  	pad = media_pad_remote_pad_first(&sd->entity.pads[0]);
-@@ -1092,19 +1045,6 @@ static int dcmipp_pixelproc_s_stream(struct v4l2_subdev *sd, int enable)
+@@ -1092,19 +1045,6 @@ static int dcmipp_pixelproc_s_stream(str
  			goto out;
  	}
  
@@ -302,6 +298,3 @@ index 21fa26d76f37..df66df36cc36 100644
  	/* Apply customized values from user when stream starts. */
  	ret =  v4l2_ctrl_handler_setup(pixelproc->sd.ctrl_handler);
  	if (ret < 0) {
--- 
-2.39.5
-

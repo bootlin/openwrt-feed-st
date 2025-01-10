@@ -22,8 +22,6 @@ Tested-by: Alain VOLMAT <alain.volmat@st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c   | 1 +
  4 files changed, 10 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index b40eb956d52c..b85787c5168e 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -49,6 +49,8 @@ struct dcmipp_byteproc_pix_map {
@@ -35,8 +33,6 @@ index b40eb956d52c..b85787c5168e 100644
  	PIXMAP_MBUS_BPP(YUYV8_2X8, 2),
  	PIXMAP_MBUS_BPP(YUYV8_1X16, 2),
  	PIXMAP_MBUS_BPP(YVYU8_2X8, 2),
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-index 389030fb826f..aedfb28c7677 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 @@ -19,6 +19,7 @@
@@ -47,7 +43,7 @@ index 389030fb826f..aedfb28c7677 100644
  #define DCMIPP_PRCR_FORMAT_RAW8		0x2a
  #define DCMIPP_PRCR_FORMAT_RAW10	0x2b
  #define DCMIPP_PRCR_FORMAT_RAW12	0x2c
-@@ -78,6 +79,9 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+@@ -78,6 +79,9 @@ static const struct dcmipp_inp_pix_map d
  	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_LE, RGB565_2X8_LE, RGB565, 1, MIPI_CSI2_DT_RGB565),
  	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_2X8_BE, RGB565_2X8_LE, RGB565, 0, MIPI_CSI2_DT_RGB565),
  	PIXMAP_SINK_SRC_PRCR_SWAP(RGB565_1X16, RGB565_1X16, RGB565, 0, MIPI_CSI2_DT_RGB565),
@@ -57,11 +53,9 @@ index 389030fb826f..aedfb28c7677 100644
  	/* YUV422 */
  	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_2X8, YUYV8_2X8, YUV422, 1, MIPI_CSI2_DT_YUV422_8B),
  	PIXMAP_SINK_SRC_PRCR_SWAP(YUYV8_1X16, YUYV8_1X16, YUV422, 0, MIPI_CSI2_DT_YUV422_8B),
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 2edd44340e08..65c627b44cc6 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -78,6 +78,9 @@ static const unsigned int dcmipp_isp_sink_pix_map_list[] = {
+@@ -78,6 +78,9 @@ static const unsigned int dcmipp_isp_sin
  	/* RGB565 */
  	MEDIA_BUS_FMT_RGB565_2X8_LE,
  	MEDIA_BUS_FMT_RGB565_1X16,
@@ -71,11 +65,9 @@ index 2edd44340e08..65c627b44cc6 100644
  	/* YUV422 */
  	MEDIA_BUS_FMT_YUYV8_2X8,
  	MEDIA_BUS_FMT_YUYV8_1X16,
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index 6d5940cf42a1..f9752a9946a8 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -118,6 +118,7 @@ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_sink_pix_map_list[
+@@ -118,6 +118,7 @@ static const struct dcmipp_pixelproc_pix
  	PIXMAP_MBUS(RGB565_2X8_LE, DCMIPP_AUX_PIPE),
  	PIXMAP_MBUS(RGB565_2X8_BE, DCMIPP_AUX_PIPE),
  	PIXMAP_MBUS(RGB565_1X16, DCMIPP_AUX_PIPE),
@@ -83,6 +75,3 @@ index 6d5940cf42a1..f9752a9946a8 100644
  	/* YUV formats */
  	PIXMAP_MBUS(YUYV8_2X8, DCMIPP_AUX_PIPE),
  	PIXMAP_MBUS(YUYV8_1X16, DCMIPP_AUX_PIPE),
--- 
-2.39.5
-

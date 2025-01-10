@@ -16,9 +16,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  1 file changed, 11 insertions(+)
  create mode 100644 include/dt-bindings/power/st,stm32mp25-power.h
 
-diff --git a/include/dt-bindings/power/st,stm32mp25-power.h b/include/dt-bindings/power/st,stm32mp25-power.h
-new file mode 100644
-index 000000000000..fe5d9f40cae4
 --- /dev/null
 +++ b/include/dt-bindings/power/st,stm32mp25-power.h
 @@ -0,0 +1,11 @@
@@ -33,6 +30,3 @@ index 000000000000..fe5d9f40cae4
 +#define PD_SCMI_GPU             0
 +
 +#endif /* _DT_BINDINGS_POWER_STM32MP25_POWER_DOMAINS_H_ */
--- 
-2.39.5
-

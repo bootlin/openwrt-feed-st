@@ -15,11 +15,9 @@ Change-Id: If3804e5a513b8ff38107471bf798829637b9c3da
  arch/arm/boot/dts/st/stm32mp15xf.dtsi | 3 +++
  4 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13xc.dtsi b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
-index b49b9b9c37f5..5ed8fdd40cd3 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xc.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
-@@ -11,8 +11,8 @@ cryp: crypto@54002000 {
+@@ -11,8 +11,8 @@
  		interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -30,11 +28,9 @@ index b49b9b9c37f5..5ed8fdd40cd3 100644
  		dma-names = "in", "out";
  		access-controllers = <&etzpc 42>;
  		status = "disabled";
-diff --git a/arch/arm/boot/dts/st/stm32mp13xf.dtsi b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-index b49b9b9c37f5..5ed8fdd40cd3 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-@@ -11,8 +11,8 @@ cryp: crypto@54002000 {
+@@ -11,8 +11,8 @@
  		interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -45,11 +41,9 @@ index b49b9b9c37f5..5ed8fdd40cd3 100644
  		dma-names = "in", "out";
  		access-controllers = <&etzpc 42>;
  		status = "disabled";
-diff --git a/arch/arm/boot/dts/st/stm32mp15xc.dtsi b/arch/arm/boot/dts/st/stm32mp15xc.dtsi
-index f20046722753..55ca2814f89e 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xc.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xc.dtsi
-@@ -13,6 +13,9 @@ cryp1: cryp@54001000 {
+@@ -13,6 +13,9 @@
  		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -59,11 +53,9 @@ index f20046722753..55ca2814f89e 100644
  		access-controllers = <&etzpc 9>;
  		status = "disabled";
  	};
-diff --git a/arch/arm/boot/dts/st/stm32mp15xf.dtsi b/arch/arm/boot/dts/st/stm32mp15xf.dtsi
-index 62a5fd77b1fc..8134f7ec6282 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xf.dtsi
-@@ -14,6 +14,9 @@ cryp1: cryp@54001000 {
+@@ -14,6 +14,9 @@
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
  		access-controllers = <&etzpc 9>;
@@ -73,6 +65,3 @@ index 62a5fd77b1fc..8134f7ec6282 100644
  		status = "disabled";
  	};
  };
--- 
-2.39.5
-

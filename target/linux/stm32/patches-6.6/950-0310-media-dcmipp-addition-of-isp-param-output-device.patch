@@ -14,8 +14,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  3 files changed, 543 insertions(+), 1 deletion(-)
  create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
-index 672d784d081c..a9370fc87d5c 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
 @@ -1,5 +1,5 @@
@@ -25,8 +23,6 @@ index 672d784d081c..a9370fc87d5c 100644
 +stm32-dcmipp-y += dcmipp-isp.o dcmipp-pixelproc.o dcmipp-pixelcap.o dcmipp-statcap.o dcmipp-isp-params.o
  
  obj-$(CONFIG_VIDEO_STM32_DCMIPP) += stm32-dcmipp.o
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
-index f9e37436c723..84bc5d70a3b1 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
 @@ -259,5 +259,9 @@ struct dcmipp_ent_device *
@@ -39,9 +35,6 @@ index f9e37436c723..84bc5d70a3b1 100644
 +void dcmipp_isp_params_ent_release(struct dcmipp_ent_device *ved);
  
  #endif
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
-new file mode 100644
-index 000000000000..9f0089efc019
 --- /dev/null
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp-params.c
 @@ -0,0 +1,538 @@
@@ -583,6 +576,3 @@ index 000000000000..9f0089efc019
 +
 +	return ERR_PTR(ret);
 +}
--- 
-2.39.5
-

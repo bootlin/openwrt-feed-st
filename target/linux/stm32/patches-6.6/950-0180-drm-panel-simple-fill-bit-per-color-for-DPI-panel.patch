@@ -12,11 +12,9 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  drivers/gpu/drm/panel/panel-simple.c | 25 +++++++++++++++++++++++++
  1 file changed, 25 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 62c45209f357..c4219f3726c6 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -465,6 +465,7 @@ static int panel_dpi_probe(struct device *dev,
+@@ -465,6 +465,7 @@ static int panel_dpi_probe(struct device
  	struct panel_desc *desc;
  	unsigned int bus_flags;
  	struct videomode vm;
@@ -24,7 +22,7 @@ index 62c45209f357..c4219f3726c6 100644
  	int ret;
  
  	np = dev->of_node;
-@@ -489,6 +490,30 @@ static int panel_dpi_probe(struct device *dev,
+@@ -489,6 +490,30 @@ static int panel_dpi_probe(struct device
  	of_property_read_u32(np, "width-mm", &desc->size.width);
  	of_property_read_u32(np, "height-mm", &desc->size.height);
  
@@ -55,6 +53,3 @@ index 62c45209f357..c4219f3726c6 100644
  	/* Extract bus_flags from display_timing */
  	bus_flags = 0;
  	vm.flags = timing->flags;
--- 
-2.39.5
-

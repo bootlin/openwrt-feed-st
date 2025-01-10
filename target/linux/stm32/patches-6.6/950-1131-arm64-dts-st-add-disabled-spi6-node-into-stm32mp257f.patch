@@ -16,11 +16,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 4beed8d41ee3..a92908a1a819 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -714,6 +714,13 @@ brcmf: bcrmf@1 {
+@@ -714,6 +714,13 @@
  	};
  };
  
@@ -34,6 +32,3 @@ index 4beed8d41ee3..a92908a1a819 100644
  /* Bluetooth */
  &usart1 {
  	pinctrl-names = "default", "sleep", "idle";
--- 
-2.39.5
-

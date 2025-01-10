@@ -14,11 +14,9 @@ Change-Id: I6168616492f4dab8a200c295a81e55271c7cc0c3
  .../dts/st/stm32mp157f-dk2-a7-examples.dts    | 24 +++++++++++++++++++
  2 files changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
-index 4ab23646b124..bc70d75f3742 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-a7-examples.dts
-@@ -13,6 +13,30 @@ / {
+@@ -13,6 +13,30 @@
  	compatible = "st,stm32mp157c-dk2-a7-examples", "st,stm32mp157c-dk2", "st,stm32mp157";
  };
  
@@ -49,11 +47,9 @@ index 4ab23646b124..bc70d75f3742 100644
  &uart7 {
  	status = "okay";
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
-index c6493732c006..ae1cbefab958 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-dk2-a7-examples.dts
-@@ -13,6 +13,30 @@ / {
+@@ -13,6 +13,30 @@
  	compatible = "st,stm32mp157f-dk2-a7-examples", "st,stm32mp157f-dk2", "st,stm32mp157";
  };
  
@@ -84,6 +80,3 @@ index c6493732c006..ae1cbefab958 100644
  &uart7 {
  	status = "okay";
  };
--- 
-2.39.5
-

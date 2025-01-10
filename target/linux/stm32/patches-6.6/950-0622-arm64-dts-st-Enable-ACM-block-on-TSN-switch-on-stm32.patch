@@ -12,11 +12,9 @@ Change-Id: Id8ef708981f085de792cdebd3ef6781bcc34a342
  arch/arm64/boot/dts/st/stm32mp257.dtsi | 29 ++++++++++++++++++++++----
  1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257.dtsi b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-index 798e5ede7c5c..b9823fd079cf 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257.dtsi
-@@ -10,12 +10,15 @@ switch0: ttt-sw@4c000000 {
+@@ -10,12 +10,15 @@
  		#address-cells  = <1>;
  		#size-cells     = <1>;
  		compatible = "st,stm32-deip";
@@ -36,7 +34,7 @@ index 798e5ede7c5c..b9823fd079cf 100644
  		access-controllers = <&rifsc 70>;
  		power-domains = <&CLUSTER_PD>;
  		status = "disabled";
-@@ -25,5 +28,23 @@ deip_sw0: deip-sw@4c000000 {
+@@ -25,5 +28,23 @@
  			reg = <0x4c000000 0x2000000>;
  			interrupts = <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>;
  		};
@@ -60,6 +58,3 @@ index 798e5ede7c5c..b9823fd079cf 100644
 +		};
  	};
  };
--- 
-2.39.5
-

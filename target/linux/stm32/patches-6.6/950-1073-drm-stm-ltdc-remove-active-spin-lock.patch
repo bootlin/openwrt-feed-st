@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/stm/ltdc.h | 1 -
  2 files changed, 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 82fefac115d7..0521d57e6e65 100644
 --- a/drivers/gpu/drm/stm/ltdc.c
 +++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1270,9 +1270,7 @@ static int ltdc_crtc_enable_vblank(struct drm_crtc *crtc)
+@@ -1129,9 +1129,7 @@ static int ltdc_crtc_enable_vblank(struc
  	DRM_DEBUG_DRIVER("\n");
  
  	if (state->enable) {
@@ -31,7 +29,7 @@ index 82fefac115d7..0521d57e6e65 100644
  		regmap_set_bits(ldev->regmap, LTDC_IER, IER_LIE);
  	} else {
  		return -EPERM;
-@@ -1287,9 +1285,7 @@ static void ltdc_crtc_disable_vblank(struct drm_crtc *crtc)
+@@ -1146,9 +1144,7 @@ static void ltdc_crtc_disable_vblank(str
  
  	DRM_DEBUG_DRIVER("\n");
  
@@ -41,7 +39,7 @@ index 82fefac115d7..0521d57e6e65 100644
  
  	if (!ldev->vblank_active && !ldev->crc_active)
  		regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
-@@ -1308,15 +1304,11 @@ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
+@@ -1167,15 +1163,11 @@ static int ltdc_crtc_set_crc_source(stru
  	ldev = crtc_to_ltdc(crtc);
  
  	if (source && strcmp(source, "auto") == 0) {
@@ -57,26 +55,21 @@ index 82fefac115d7..0521d57e6e65 100644
  		if (!ldev->vblank_active && !ldev->crc_active)
  			regmap_clear_bits(ldev->regmap, LTDC_IER, IER_LIE);
  		ret = regmap_clear_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
-@@ -2419,7 +2411,6 @@ int ltdc_load(struct drm_device *ddev)
+@@ -2030,7 +2022,6 @@ int ltdc_load(struct drm_device *ddev)
  	rstc = devm_reset_control_get_exclusive(dev, NULL);
  
  	mutex_init(&ldev->err_lock);
 -	mutex_init(&ldev->act_lock);
  
- 	def_value = device_property_read_bool(dev, "default-on");
- 
-diff --git a/drivers/gpu/drm/stm/ltdc.h b/drivers/gpu/drm/stm/ltdc.h
-index 5913eb2e2fb3..b8883ff995f5 100644
+ 	if (!IS_ERR(rstc)) {
+ 		reset_control_assert(rstc);
 --- a/drivers/gpu/drm/stm/ltdc.h
 +++ b/drivers/gpu/drm/stm/ltdc.h
-@@ -54,7 +54,6 @@ struct ltdc_device {
- 	struct clk *ltdc_clk;	/* kernel clock */
- 	struct clk *lvds_clk;	/* lvds clock */
+@@ -50,7 +50,6 @@ struct ltdc_device {
+ 	struct clk *pixel_clk;	/* lcd pixel clock */
+ 	struct clk *bus_clk;	/* bus clock */
  	struct mutex err_lock;	/* protecting error_status */
 -	struct mutex act_lock;	/* protecting active status */
  	struct ltdc_caps caps;
  	u32 irq_status;
  	u32 fifo_err;		/* fifo underrun error counter */
--- 
-2.39.5
-

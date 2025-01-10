@@ -11,11 +11,9 @@ Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 144 +++++++++++++++++++++++++
  1 file changed, 144 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 51cfbea27796..dd64c22eab67 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1118,6 +1118,114 @@ spi5: spi@40280000 {
+@@ -1118,6 +1118,114 @@
  				status = "disabled";
  			};
  
@@ -130,7 +128,7 @@ index 51cfbea27796..dd64c22eab67 100644
  			uart9: serial@402c0000 {
  				compatible = "st,stm32h7-uart";
  				reg = <0x402c0000 0x400>;
-@@ -1175,6 +1283,42 @@ usart1: serial@40330000 {
+@@ -1175,6 +1283,42 @@
  				status = "disabled";
  			};
  
@@ -173,6 +171,3 @@ index 51cfbea27796..dd64c22eab67 100644
  			spi6: spi@40350000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/counter/stm32-timer-cnt.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index fe34510fc60b..d80521196353 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
-@@ -663,12 +663,14 @@ static void stm32_timer_cnt_detect_channels(struct device *dev,
+@@ -669,12 +669,14 @@ static void stm32_timer_cnt_detect_chann
  	dev_dbg(dev, "has %d cc channels\n", priv->nchannels);
  }
  
@@ -40,6 +38,3 @@ index fe34510fc60b..d80521196353 100644
  };
  
  static int stm32_timer_cnt_probe_encoder(struct device *dev,
--- 
-2.39.5
-

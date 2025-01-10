@@ -21,11 +21,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/net/phy/realtek.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-index 2604d9663a5b..902a1cc9a9e7 100644
 --- a/drivers/net/phy/realtek.c
 +++ b/drivers/net/phy/realtek.c
-@@ -413,6 +413,16 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+@@ -445,6 +445,16 @@ static int rtl8211f_config_init(struct p
  			val_rxdly ? "enabled" : "disabled");
  	}
  
@@ -42,6 +40,3 @@ index 2604d9663a5b..902a1cc9a9e7 100644
  	if (priv->has_phycr2) {
  		ret = phy_modify_paged(phydev, 0xa43, RTL8211F_PHYCR2,
  				       RTL8211F_CLKOUT_EN, priv->phycr2);
--- 
-2.39.5
-

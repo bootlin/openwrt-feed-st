@@ -28,11 +28,9 @@ Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
  include/linux/mfd/stm32-timers.h  |  13 +++
  2 files changed, 144 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 3ea1c5d3930e..fe34510fc60b 100644
 --- a/drivers/counter/stm32-timer-cnt.c
 +++ b/drivers/counter/stm32-timer-cnt.c
-@@ -262,6 +262,40 @@ static int stm32_count_prescaler_write(struct counter_device *counter,
+@@ -268,6 +268,40 @@ static int stm32_count_prescaler_write(s
  	return regmap_write(priv->regmap, TIM_PSC, psc);
  }
  
@@ -73,7 +71,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  static int stm32_count_nb_ovf_read(struct counter_device *counter,
  				   struct counter_count *count, u64 *val)
  {
-@@ -288,6 +322,8 @@ static int stm32_count_nb_ovf_write(struct counter_device *counter,
+@@ -294,6 +328,8 @@ static int stm32_count_nb_ovf_write(stru
  	return 0;
  }
  
@@ -82,7 +80,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  static struct counter_comp stm32_count_ext[] = {
  	COUNTER_COMP_DIRECTION(stm32_count_direction_read),
  	COUNTER_COMP_ENABLE(stm32_count_enable_read, stm32_count_enable_write),
-@@ -295,6 +331,7 @@ static struct counter_comp stm32_count_ext[] = {
+@@ -301,6 +337,7 @@ static struct counter_comp stm32_count_e
  			     stm32_count_ceiling_write),
  	COUNTER_COMP_COUNT_U64("prescaler", stm32_count_prescaler_read,
  			       stm32_count_prescaler_write),
@@ -90,7 +88,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  	COUNTER_COMP_COUNT_U64("num_overflows", stm32_count_nb_ovf_read, stm32_count_nb_ovf_write),
  };
  
-@@ -353,11 +390,68 @@ static int stm32_action_read(struct counter_device *counter,
+@@ -359,11 +396,68 @@ static int stm32_action_read(struct coun
  	}
  }
  
@@ -159,7 +157,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  
  	list_for_each_entry(event_node, &counter->events_list, l) {
  		switch (event_node->event) {
-@@ -367,6 +461,12 @@ static int stm32_count_events_configure(struct counter_device *counter)
+@@ -373,6 +467,12 @@ static int stm32_count_events_configure(
  				regmap_write(priv->regmap, TIM_SR, (u32)~TIM_SR_UIF);
  			dier |= TIM_DIER_UIE;
  			break;
@@ -172,7 +170,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  		default:
  			/* should never reach this path */
  			return -EINVAL;
-@@ -376,6 +476,15 @@ static int stm32_count_events_configure(struct counter_device *counter)
+@@ -382,6 +482,15 @@ static int stm32_count_events_configure(
  	/* Enable / disable all events at once, from events_list, so write all DIER bits */
  	regmap_write(priv->regmap, TIM_DIER, dier);
  
@@ -188,7 +186,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  	return 0;
  }
  
-@@ -389,6 +498,12 @@ static int stm32_count_watch_validate(struct counter_device *counter,
+@@ -395,6 +504,12 @@ static int stm32_count_watch_validate(st
  		return -EOPNOTSUPP;
  
  	switch (watch->event) {
@@ -201,7 +199,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  	case COUNTER_EVENT_OVERFLOW_UNDERFLOW:
  		return 0;
  	default:
-@@ -499,6 +614,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
+@@ -505,6 +620,7 @@ static irqreturn_t stm32_timer_cnt_isr(i
  	struct stm32_timer_cnt *const priv = counter_priv(counter);
  	u32 clr = GENMASK(31, 0); /* SR flags can be cleared by writing 0 (wr 1 has no effect) */
  	u32 sr, dier;
@@ -209,7 +207,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  
  	regmap_read(priv->regmap, TIM_SR, &sr);
  	regmap_read(priv->regmap, TIM_DIER, &dier);
-@@ -506,7 +622,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
+@@ -512,7 +628,7 @@ static irqreturn_t stm32_timer_cnt_isr(i
  	 * Some status bits in SR don't match with the enable bits in DIER. Only take care of
  	 * the possibly enabled bits in DIER (that matches in between SR and DIER).
  	 */
@@ -218,7 +216,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  	sr &= dier;
  
  	if (sr & TIM_SR_UIF) {
-@@ -519,6 +635,15 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
+@@ -525,6 +641,15 @@ static irqreturn_t stm32_timer_cnt_isr(i
  		clr &= ~TIM_SR_UIF;
  	}
  
@@ -234,7 +232,7 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  	regmap_write(priv->regmap, TIM_SR, clr);
  
  	return IRQ_HANDLED;
-@@ -633,8 +758,11 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+@@ -639,8 +764,11 @@ static int stm32_timer_cnt_probe(struct
  		}
  	} else {
  		for (i = 0; i < priv->nr_irqs; i++) {
@@ -248,8 +246,6 @@ index 3ea1c5d3930e..fe34510fc60b 100644
  				continue;
  
  			ret = devm_request_irq(&pdev->dev, ddata->irq[i], stm32_timer_cnt_isr,
-diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
-index 9ee3bda18e5c..26e63175284e 100644
 --- a/include/linux/mfd/stm32-timers.h
 +++ b/include/linux/mfd/stm32-timers.h
 @@ -45,6 +45,11 @@
@@ -296,6 +292,3 @@ index 9ee3bda18e5c..26e63175284e 100644
  #define TIM_CCER_CCXE	(BIT(0) | BIT(4) | BIT(8) | BIT(12))
  #define TIM_BDTR_BKE(x)	BIT(12 + (x) * 12) /* Break input enable */
  #define TIM_BDTR_BKP(x)	BIT(13 + (x) * 12) /* Break input polarity */
--- 
-2.39.5
-

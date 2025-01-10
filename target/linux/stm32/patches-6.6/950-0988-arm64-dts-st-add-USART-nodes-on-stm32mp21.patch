@@ -23,11 +23,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 66 ++++++++++++++++++++++++++
  1 file changed, 66 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 1385f0c538e9..17575a23052c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-@@ -222,19 +222,85 @@ usart2: serial@400e0000 {
+@@ -222,19 +222,85 @@
  				reg = <0x400e0000 0x400>;
  				interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CK_KER_USART2>;
@@ -113,6 +111,3 @@ index 1385f0c538e9..17575a23052c 100644
  			crc: crc@404c0000 {
  				compatible = "st,stm32f7-crc";
  				reg = <0x404c0000 0x400>;
--- 
-2.39.5
-

@@ -14,11 +14,9 @@ Change-Id: I8cdf073e0c58f79c1b0e51e50b23128ed1d16ef7
  arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi | 3 +++
  2 files changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index 530fe182ad93..02b6cb41f62d 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1811,6 +1811,9 @@ ts_cal1: calib@5c {
+@@ -1811,6 +1811,9 @@
  			ts_cal2: calib@5e {
  				reg = <0x5e 0x2>;
  			};
@@ -28,8 +26,6 @@ index 530fe182ad93..02b6cb41f62d 100644
  		};
  
  		i2c6: i2c@5c009000 {
-diff --git a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
-index 6c098e94d123..1c7bf56e0c1f 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xx-dkx.dtsi
 @@ -11,6 +11,7 @@
@@ -40,7 +36,7 @@ index 6c098e94d123..1c7bf56e0c1f 100644
  		serial0 = &uart4;
  		serial1 = &usart3;
  		serial2 = &uart7;
-@@ -173,6 +174,8 @@ &ethernet0 {
+@@ -173,6 +174,8 @@
  	phy-mode = "rgmii-id";
  	max-speed = <1000>;
  	phy-handle = <&phy0>;
@@ -49,6 +45,3 @@ index 6c098e94d123..1c7bf56e0c1f 100644
  
  	mdio {
  		#address-cells = <1>;
--- 
-2.39.5
-

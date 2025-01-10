@@ -17,11 +17,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mmc/host/mmci_stm32_sdmmc.c | 12 +++++++++++-
  1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 235901c62ad7..70ca2837b909 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -580,10 +580,20 @@ static int sdmmc_dlyb_mp15_prepare(struct mmci_host *host)
+@@ -580,10 +580,20 @@ static int sdmmc_dlyb_mp15_prepare(struc
  static int sdmmc_dlyb_mp25_enable(struct sdmmc_dlyb *dlyb)
  {
  	u32 cr, sr;
@@ -43,6 +41,3 @@ index 235901c62ad7..70ca2837b909 100644
  	writel_relaxed(cr, dlyb->base + SYSCFG_DLYBSD_CR);
  
  	return readl_relaxed_poll_timeout(dlyb->base + SYSCFG_DLYBSD_SR,
--- 
-2.39.5
-

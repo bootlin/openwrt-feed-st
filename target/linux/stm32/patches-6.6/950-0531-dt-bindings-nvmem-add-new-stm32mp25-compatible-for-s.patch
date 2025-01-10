@@ -17,8 +17,6 @@ Change-Id: I89d2846974c23aae951332201ac0b9404f652637
  Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
-index a69de3e92282..92bfe25f0571 100644
 --- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
 +++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
 @@ -24,6 +24,7 @@ properties:
@@ -29,6 +27,3 @@ index a69de3e92282..92bfe25f0571 100644
  
    reg:
      maxItems: 1
--- 
-2.39.5
-

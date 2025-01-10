@@ -19,11 +19,9 @@ Change-Id: Iad45ed76e5e74c076ab75de965bf8e38f4cffc9e
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 48 +++++++++++++++++++++++++
  1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 013b77c3ecaf..16368c82a4bc 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -20,6 +20,8 @@ / {
+@@ -20,6 +20,8 @@
  	compatible = "st,stm32mp135f-dk", "st,stm32mp135";
  
  	aliases {
@@ -32,7 +30,7 @@ index 013b77c3ecaf..16368c82a4bc 100644
  		serial0 = &uart4;
  		serial1 = &usart1;
  		serial2 = &uart8;
-@@ -191,6 +193,52 @@ &dts {
+@@ -191,6 +193,52 @@
  	status = "okay";
  };
  
@@ -85,6 +83,3 @@ index 013b77c3ecaf..16368c82a4bc 100644
  &i2c1 {
  	pinctrl-names = "default", "sleep";
  	pinctrl-0 = <&i2c1_pins_a>;
--- 
-2.39.5
-

@@ -16,8 +16,6 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
  include/media/v4l2-subdev.h | 33 +++++++++++++++------------------
  1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index 78bc2e593c15..7a291e18f6c2 100644
 --- a/include/media/v4l2-subdev.h
 +++ b/include/media/v4l2-subdev.h
 @@ -688,21 +688,18 @@ struct v4l2_subdev_ir_ops {
@@ -59,7 +57,7 @@ index 78bc2e593c15..7a291e18f6c2 100644
   *
   * @sd: pointer to &struct v4l2_subdev
   * @state: pointer to &struct v4l2_subdev_state
-@@ -1164,12 +1161,12 @@ v4l2_subdev_get_pad_format(struct v4l2_subdev *sd,
+@@ -1164,12 +1161,12 @@ v4l2_subdev_get_pad_format(struct v4l2_s
  		return NULL;
  	if (WARN_ON(pad >= sd->entity.num_pads))
  		pad = 0;
@@ -75,7 +73,7 @@ index 78bc2e593c15..7a291e18f6c2 100644
   *
   * @sd: pointer to &struct v4l2_subdev
   * @state: pointer to &struct v4l2_subdev_state.
-@@ -1184,12 +1181,12 @@ v4l2_subdev_get_pad_crop(struct v4l2_subdev *sd,
+@@ -1184,12 +1181,12 @@ v4l2_subdev_get_pad_crop(struct v4l2_sub
  		return NULL;
  	if (WARN_ON(pad >= sd->entity.num_pads))
  		pad = 0;
@@ -91,7 +89,7 @@ index 78bc2e593c15..7a291e18f6c2 100644
   *
   * @sd: pointer to &struct v4l2_subdev
   * @state: pointer to &struct v4l2_subdev_state.
-@@ -1204,7 +1201,7 @@ v4l2_subdev_get_pad_compose(struct v4l2_subdev *sd,
+@@ -1204,7 +1201,7 @@ v4l2_subdev_get_pad_compose(struct v4l2_
  		return NULL;
  	if (WARN_ON(pad >= sd->entity.num_pads))
  		pad = 0;
@@ -100,6 +98,3 @@ index 78bc2e593c15..7a291e18f6c2 100644
  }
  
  /*
--- 
-2.39.5
-

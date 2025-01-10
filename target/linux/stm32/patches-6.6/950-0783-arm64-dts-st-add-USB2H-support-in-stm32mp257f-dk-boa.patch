@@ -12,11 +12,9 @@ Change-Id: Ic679fd409a7f73a6743058771ba02144704b3a68
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 50058002c1c6..b6e1fa26b94a 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -214,6 +214,14 @@ &usb2_phy2 {
+@@ -214,6 +214,14 @@
  	status = "okay";
  };
  
@@ -31,6 +29,3 @@ index 50058002c1c6..b6e1fa26b94a 100644
  &usb3dr {
  	status = "okay";
  
--- 
-2.39.5
-

@@ -34,8 +34,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  3 files changed, 1238 insertions(+)
  create mode 100644 drivers/gpu/drm/stm/lvds.c
 
-diff --git a/drivers/gpu/drm/stm/Kconfig b/drivers/gpu/drm/stm/Kconfig
-index fa49cde43bb2..9627814d027c 100644
 --- a/drivers/gpu/drm/stm/Kconfig
 +++ b/drivers/gpu/drm/stm/Kconfig
 @@ -20,3 +20,14 @@ config DRM_STM_DSI
@@ -53,8 +51,6 @@ index fa49cde43bb2..9627814d027c 100644
 +
 +	  To compile this driver as a module, choose M here: the module will be
 +	  called lvds.
-diff --git a/drivers/gpu/drm/stm/Makefile b/drivers/gpu/drm/stm/Makefile
-index 4df5caf01f35..ad740d6175a6 100644
 --- a/drivers/gpu/drm/stm/Makefile
 +++ b/drivers/gpu/drm/stm/Makefile
 @@ -5,4 +5,6 @@ stm-drm-y := \
@@ -64,9 +60,6 @@ index 4df5caf01f35..ad740d6175a6 100644
 +obj-$(CONFIG_DRM_STM_LVDS) += lvds.o
 +
  obj-$(CONFIG_DRM_STM) += stm-drm.o
-diff --git a/drivers/gpu/drm/stm/lvds.c b/drivers/gpu/drm/stm/lvds.c
-new file mode 100644
-index 000000000000..5808db1a5cdf
 --- /dev/null
 +++ b/drivers/gpu/drm/stm/lvds.c
 @@ -0,0 +1,1225 @@
@@ -1295,6 +1288,3 @@ index 000000000000..5808db1a5cdf
 +MODULE_AUTHOR("Yannick Fertre <yannick.fertre@foss.st.com>");
 +MODULE_DESCRIPTION("STMicroelectronics LVDS Display Interface Transmitter DRM driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

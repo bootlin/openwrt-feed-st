@@ -11,11 +11,9 @@ Change-Id: I8e38d6a84fb19c93e6ff8ac1ab34f81ba893e6c6
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 43 ++++++++++++++++++++++++++
  1 file changed, 43 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 8e18748aa116..bcfb9172b7d4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -303,6 +303,49 @@ hpdma3: dma-controller@40420000 {
+@@ -303,6 +303,49 @@
  			st,axi-max-burst-len = <16>;
  		};
  
@@ -65,6 +63,3 @@ index 8e18748aa116..bcfb9172b7d4 100644
  		rifsc: bus@42080000 {
  			compatible = "st,stm32mp25-rifsc", "simple-bus";
  			reg = <0x42080000 0x1000>;
--- 
-2.39.5
-

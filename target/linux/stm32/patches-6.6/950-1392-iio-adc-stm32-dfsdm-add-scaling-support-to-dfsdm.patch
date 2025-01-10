@@ -31,8 +31,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/iio/adc/stm32-dfsdm-adc.c | 105 +++++++++++++++++++++++++++++-
  2 files changed, 105 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index ef94ea5d6755..46c8650bac23 100644
 --- a/drivers/iio/adc/Kconfig
 +++ b/drivers/iio/adc/Kconfig
 @@ -1102,6 +1102,7 @@ config STM32_DFSDM_ADC
@@ -43,8 +41,6 @@ index ef94ea5d6755..46c8650bac23 100644
  	help
  	  Select this option to support ADCSigma delta modulator for
  	  STMicroelectronics STM32 digital filter for sigma delta converter.
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index bfb9b6bdb2a2..31f9f1f2a51b 100644
 --- a/drivers/iio/adc/stm32-dfsdm-adc.c
 +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
 @@ -9,6 +9,7 @@
@@ -63,7 +59,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	struct completion completion;
  	u32 *buffer;
  
-@@ -672,6 +674,8 @@ static int stm32_dfsdm_generic_channel_parse_of(struct stm32_dfsdm *dfsdm,
+@@ -672,6 +674,8 @@ static int stm32_dfsdm_generic_channel_p
  						struct fwnode_handle *node)
  {
  	struct stm32_dfsdm_channel *df_ch;
@@ -72,7 +68,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	const char *of_str;
  	int ret, val;
  
-@@ -721,6 +725,14 @@ static int stm32_dfsdm_generic_channel_parse_of(struct stm32_dfsdm *dfsdm,
+@@ -721,6 +725,14 @@ static int stm32_dfsdm_generic_channel_p
  	if (ret != -EINVAL)
  		df_ch->alt_si = 0;
  
@@ -87,7 +83,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	return 0;
  }
  
-@@ -1060,6 +1072,7 @@ static int stm32_dfsdm_update_scan_mode(struct iio_dev *indio_dev,
+@@ -1060,6 +1072,7 @@ static int stm32_dfsdm_update_scan_mode(
  static int stm32_dfsdm_postenable(struct iio_dev *indio_dev)
  {
  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
@@ -95,7 +91,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	int ret;
  
  	/* Reset adc buffer index */
-@@ -1071,6 +1084,15 @@ static int stm32_dfsdm_postenable(struct iio_dev *indio_dev)
+@@ -1071,6 +1084,15 @@ static int stm32_dfsdm_postenable(struct
  			return ret;
  	}
  
@@ -111,7 +107,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	ret = stm32_dfsdm_start_dfsdm(adc->dfsdm);
  	if (ret < 0)
  		goto err_stop_hwc;
-@@ -1103,6 +1125,7 @@ static int stm32_dfsdm_postenable(struct iio_dev *indio_dev)
+@@ -1103,6 +1125,7 @@ err_stop_hwc:
  static int stm32_dfsdm_predisable(struct iio_dev *indio_dev)
  {
  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
@@ -119,7 +115,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  
  	stm32_dfsdm_stop_conv(indio_dev);
  
-@@ -1110,6 +1133,13 @@ static int stm32_dfsdm_predisable(struct iio_dev *indio_dev)
+@@ -1110,6 +1133,13 @@ static int stm32_dfsdm_predisable(struct
  
  	stm32_dfsdm_stop_dfsdm(adc->dfsdm);
  
@@ -133,7 +129,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	if (adc->hwc)
  		iio_hw_consumer_disable(adc->hwc);
  
-@@ -1282,8 +1312,16 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1282,8 +1312,16 @@ static int stm32_dfsdm_read_raw(struct i
  				int *val2, long mask)
  {
  	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
@@ -150,7 +146,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	switch (mask) {
  	case IIO_CHAN_INFO_RAW:
  		ret = iio_device_claim_direct_mode(indio_dev);
-@@ -1291,6 +1329,8 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1291,6 +1329,8 @@ static int stm32_dfsdm_read_raw(struct i
  			return ret;
  		if (adc->hwc)
  			ret = iio_hw_consumer_enable(adc->hwc);
@@ -159,7 +155,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  		if (ret < 0) {
  			dev_err(&indio_dev->dev,
  				"%s: IIO enable failed (channel %d)\n",
-@@ -1301,6 +1341,8 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1301,6 +1341,8 @@ static int stm32_dfsdm_read_raw(struct i
  		ret = stm32_dfsdm_single_conv(indio_dev, chan, val);
  		if (adc->hwc)
  			iio_hw_consumer_disable(adc->hwc);
@@ -168,7 +164,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  		if (ret < 0) {
  			dev_err(&indio_dev->dev,
  				"%s: Conversion failed (channel %d)\n",
-@@ -1320,6 +1362,50 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+@@ -1320,6 +1362,50 @@ static int stm32_dfsdm_read_raw(struct i
  		*val = adc->sample_freq;
  
  		return IIO_VAL_INT;
@@ -219,7 +215,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	}
  
  	return -EINVAL;
-@@ -1447,7 +1533,15 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev, struct iio_c
+@@ -1447,7 +1533,15 @@ static int stm32_dfsdm_adc_chan_init_one
  	 * IIO_CHAN_INFO_RAW: used to compute regular conversion
  	 * IIO_CHAN_INFO_OVERSAMPLING_RATIO: used to set oversampling
  	 */
@@ -236,7 +232,7 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	ch->info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO) |
  					BIT(IIO_CHAN_INFO_SAMP_FREQ);
  
-@@ -1579,6 +1673,14 @@ static int stm32_dfsdm_adc_init(struct device *dev, struct iio_dev *indio_dev)
+@@ -1579,6 +1673,14 @@ static int stm32_dfsdm_adc_init(struct d
  		if (IS_ERR(adc->hwc))
  			return dev_err_probe(&indio_dev->dev, -EPROBE_DEFER,
  					     "waiting for SD modulator\n");
@@ -251,11 +247,8 @@ index bfb9b6bdb2a2..31f9f1f2a51b 100644
  	}
  
  	ch = devm_kcalloc(&indio_dev->dev, num_ch, sizeof(*ch), GFP_KERNEL);
-@@ -1805,3 +1907,4 @@ module_platform_driver(stm32_dfsdm_adc_driver);
+@@ -1805,3 +1907,4 @@ module_platform_driver(stm32_dfsdm_adc_d
  MODULE_DESCRIPTION("STM32 sigma delta ADC");
  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
  MODULE_LICENSE("GPL v2");
 +MODULE_IMPORT_NS(IIO_BACKEND);
--- 
-2.39.5
-

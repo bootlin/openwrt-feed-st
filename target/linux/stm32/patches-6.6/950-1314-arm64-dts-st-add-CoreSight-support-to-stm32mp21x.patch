@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp211.dtsi | 257 +++++++++++++++++++++++++
  1 file changed, 257 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp211.dtsi b/arch/arm64/boot/dts/st/stm32mp211.dtsi
-index 265e90d92415..7d5a31630662 100644
 --- a/arch/arm64/boot/dts/st/stm32mp211.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp211.dtsi
 @@ -3,6 +3,7 @@
@@ -29,7 +27,7 @@ index 265e90d92415..7d5a31630662 100644
  #include <dt-bindings/clock/st,stm32mp21-rcc.h>
  #include <dt-bindings/interrupt-controller/arm-gic.h>
  #include <dt-bindings/reset/st,stm32mp21-rcc.h>
-@@ -34,6 +35,40 @@ arm-pmu {
+@@ -34,6 +35,40 @@
  		interrupt-parent = <&intc>;
  	};
  
@@ -70,7 +68,7 @@ index 265e90d92415..7d5a31630662 100644
  	firmware {
  		optee {
  			compatible = "linaro,optee-tz";
-@@ -2285,6 +2320,212 @@ a35ss_syscfg: syscon@48802000  {
+@@ -2285,6 +2320,212 @@
  			reg = <0x48802000 0x0 0xac>;
  			status = "disabled";
  		};
@@ -283,7 +281,7 @@ index 265e90d92415..7d5a31630662 100644
  	};
  
  	soc1: soc@1 {
-@@ -2352,6 +2593,22 @@ mtl_tx_setup_1: tx-queues-config {
+@@ -2352,6 +2593,22 @@
  				queue3 {};
  			};
  		};
@@ -306,6 +304,3 @@ index 265e90d92415..7d5a31630662 100644
  	};
  
  	mlahb: ahb@2 {
--- 
-2.39.5
-

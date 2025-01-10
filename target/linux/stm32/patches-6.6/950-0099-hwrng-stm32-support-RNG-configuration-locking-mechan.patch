@@ -13,8 +13,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 819f062f454d..4a602d666dad 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -62,6 +62,7 @@ struct stm32_rng_private {
@@ -25,7 +23,7 @@ index 819f062f454d..4a602d666dad 100644
  };
  
  /*
-@@ -301,6 +302,9 @@ static int stm32_rng_init(struct hwrng *rng)
+@@ -301,6 +302,9 @@ static int stm32_rng_init(struct hwrng *
  
  		reg &= ~RNG_CR_CONDRST;
  		reg |= RNG_CR_RNGEN;
@@ -35,7 +33,7 @@ index 819f062f454d..4a602d666dad 100644
  		writel_relaxed(reg, priv->base + RNG_CR);
  
  		err = readl_relaxed_poll_timeout_atomic(priv->base + RNG_CR, reg,
-@@ -439,6 +443,7 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -439,6 +443,7 @@ static int stm32_rng_probe(struct platfo
  	}
  
  	priv->ced = of_property_read_bool(np, "clock-error-detect");
@@ -43,6 +41,3 @@ index 819f062f454d..4a602d666dad 100644
  
  	priv->data = of_device_get_match_data(dev);
  	if (!priv->data)
--- 
-2.39.5
-

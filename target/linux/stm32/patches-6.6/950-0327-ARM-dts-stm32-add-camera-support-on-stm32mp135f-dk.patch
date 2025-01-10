@@ -14,11 +14,9 @@ Change-Id: Ie7b6110730351a45c58b22af5d431f1ccc8e0d13
  arch/arm/boot/dts/st/stm32mp135f-dk.dts | 86 +++++++++++++++++++++++++
  1 file changed, 86 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-index 8b2f5d786b7d..bee31f257c43 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-@@ -39,6 +39,20 @@ framebuffer {
+@@ -39,6 +39,20 @@
  		};
  	};
  
@@ -39,7 +37,7 @@ index 8b2f5d786b7d..bee31f257c43 100644
  	memory@c0000000 {
  		device_type = "memory";
  		reg = <0xc0000000 0x20000000>;
-@@ -150,6 +164,23 @@ &arm_wdt {
+@@ -150,6 +164,23 @@
  	status = "okay";
  };
  
@@ -63,7 +61,7 @@ index 8b2f5d786b7d..bee31f257c43 100644
  &dts {
  	status = "okay";
  };
-@@ -215,6 +246,61 @@ &i2c5 {
+@@ -215,6 +246,61 @@
  	/delete-property/dmas;
  	/delete-property/dma-names;
  
@@ -125,6 +123,3 @@ index 8b2f5d786b7d..bee31f257c43 100644
  	goodix: goodix-ts@5d {
  		compatible = "goodix,gt911";
  		reg = <0x5d>;
--- 
-2.39.5
-

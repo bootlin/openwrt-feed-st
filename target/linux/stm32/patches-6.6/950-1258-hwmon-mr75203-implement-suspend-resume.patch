@@ -19,11 +19,9 @@ Tested-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/hwmon/mr75203.c | 38 ++++++++++++++++++++++++++++++++++++++
  1 file changed, 38 insertions(+)
 
-diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
-index 50a8b9c3f94d..7f6e220b77fa 100644
 --- a/drivers/hwmon/mr75203.c
 +++ b/drivers/hwmon/mr75203.c
-@@ -764,6 +764,41 @@ static int pvt_set_temp_coeff(struct device *dev, struct pvt_device *pvt)
+@@ -764,6 +764,41 @@ static int pvt_set_temp_coeff(struct dev
  	return 0;
  }
  
@@ -65,7 +63,7 @@ index 50a8b9c3f94d..7f6e220b77fa 100644
  static int mr75203_probe(struct platform_device *pdev)
  {
  	u32 ts_num, vm_num, pd_num, ch_num, val, index, i;
-@@ -907,6 +942,8 @@ static int mr75203_probe(struct platform_device *pdev)
+@@ -907,6 +942,8 @@ static int mr75203_probe(struct platform
  							 &pvt_chip_info,
  							 NULL);
  
@@ -74,7 +72,7 @@ index 50a8b9c3f94d..7f6e220b77fa 100644
  	return PTR_ERR_OR_ZERO(hwmon_dev);
  }
  
-@@ -920,6 +957,7 @@ static struct platform_driver moortec_pvt_driver = {
+@@ -920,6 +957,7 @@ static struct platform_driver moortec_pv
  	.driver = {
  		.name = "moortec-pvt",
  		.of_match_table = moortec_pvt_of_match,
@@ -82,6 +80,3 @@ index 50a8b9c3f94d..7f6e220b77fa 100644
  	},
  	.probe = mr75203_probe,
  };
--- 
-2.39.5
-

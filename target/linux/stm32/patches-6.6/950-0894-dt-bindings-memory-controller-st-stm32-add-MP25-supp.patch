@@ -32,8 +32,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml     | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
-index deef455bfd21..706e45eb4d27 100644
 --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
 +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
 @@ -23,7 +23,9 @@ maintainers:
@@ -57,6 +55,3 @@ index deef455bfd21..706e45eb4d27 100644
    "#address-cells":
      const: 2
  
--- 
-2.39.5
-

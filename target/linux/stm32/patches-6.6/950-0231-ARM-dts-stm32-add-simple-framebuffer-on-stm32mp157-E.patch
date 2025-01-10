@@ -16,11 +16,9 @@ Change-Id: I97a661692c036791d7289ef50a9c0acc31f8bece
  arch/arm/boot/dts/st/stm32mp157f-ev1.dts | 9 +++++++++
  4 files changed, 36 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-index 45d691078ec2..e9ca1744a14b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1.dts
-@@ -21,7 +21,16 @@ aliases {
+@@ -21,7 +21,16 @@
  	};
  
  	chosen {
@@ -37,11 +35,9 @@ index 45d691078ec2..e9ca1744a14b 100644
  	};
  
  	clocks {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-index 87475702f9f3..08a8191439c5 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1.dts
-@@ -21,7 +21,16 @@ aliases {
+@@ -21,7 +21,16 @@
  	};
  
  	chosen {
@@ -58,11 +54,9 @@ index 87475702f9f3..08a8191439c5 100644
  	};
  
  	clocks {
-diff --git a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-index eab2b256fdc8..206ef27840bd 100644
 --- a/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157d-ev1.dts
-@@ -21,7 +21,16 @@ aliases {
+@@ -21,7 +21,16 @@
  	};
  
  	chosen {
@@ -79,11 +73,9 @@ index eab2b256fdc8..206ef27840bd 100644
  	};
  
  	clocks {
-diff --git a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-index e79ee2657218..0290daebb2a1 100644
 --- a/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
 +++ b/arch/arm/boot/dts/st/stm32mp157f-ev1.dts
-@@ -21,7 +21,16 @@ aliases {
+@@ -21,7 +21,16 @@
  	};
  
  	chosen {
@@ -100,6 +92,3 @@ index e79ee2657218..0290daebb2a1 100644
  	};
  
  	clocks {
--- 
-2.39.5
-

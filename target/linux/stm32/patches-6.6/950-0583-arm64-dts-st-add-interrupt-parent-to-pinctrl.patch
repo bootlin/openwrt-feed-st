@@ -12,11 +12,9 @@ Change-Id: Ia728317b948da7dcb3c140d3e6faa2ae6b96c1b4
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 6b3956f42ee1..a0242b804672 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -385,6 +385,8 @@ pinctrl: pinctrl@44240000 {
+@@ -385,6 +385,8 @@
  			#size-cells = <1>;
  			compatible = "st,stm32mp257-pinctrl";
  			ranges = <0 0x44240000 0xa0400>;
@@ -25,7 +23,7 @@ index 6b3956f42ee1..a0242b804672 100644
  			pins-are-numbered;
  
  			gpioa: gpio@44240000 {
-@@ -514,6 +516,8 @@ pinctrl_z: pinctrl@46200000 {
+@@ -514,6 +516,8 @@
  			#size-cells = <1>;
  			compatible = "st,stm32mp257-z-pinctrl";
  			ranges = <0 0x46200000 0x400>;
@@ -34,6 +32,3 @@ index 6b3956f42ee1..a0242b804672 100644
  			pins-are-numbered;
  
  			gpioz: gpio@46200000 {
--- 
-2.39.5
-

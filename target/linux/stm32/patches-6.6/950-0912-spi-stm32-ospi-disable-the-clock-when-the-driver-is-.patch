@@ -19,11 +19,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/spi/spi-stm32-ospi.c | 25 +++++++++++++++----------
  1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-ospi.c b/drivers/spi/spi-stm32-ospi.c
-index 93154e826bbe..7c6a43d227e7 100644
 --- a/drivers/spi/spi-stm32-ospi.c
 +++ b/drivers/spi/spi-stm32-ospi.c
-@@ -1073,7 +1073,7 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -1073,7 +1073,7 @@ static int stm32_ospi_probe(struct platf
  
  	ret = pm_runtime_resume_and_get(omi->dev);
  	if (ret < 0)
@@ -32,7 +30,7 @@ index 93154e826bbe..7c6a43d227e7 100644
  
  	if (omi->rstc) {
  		reset_control_assert(omi->rstc);
-@@ -1090,13 +1090,14 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -1090,13 +1090,14 @@ static int stm32_ospi_probe(struct platf
  			dev_err(ospi->dev, "could not retrieve reg property: %d\n",
  				ret);
  			of_node_put(child);
@@ -49,7 +47,7 @@ index 93154e826bbe..7c6a43d227e7 100644
  		}
  
  		if (of_device_is_compatible(child, "jedec,spi-nor")) {
-@@ -1113,20 +1114,24 @@ static int stm32_ospi_probe(struct platform_device *pdev)
+@@ -1113,20 +1114,24 @@ static int stm32_ospi_probe(struct platf
  	}
  
  	ret = spi_register_master(ctrl);
@@ -80,7 +78,7 @@ index 93154e826bbe..7c6a43d227e7 100644
  	return ret;
  }
  
-@@ -1146,7 +1151,7 @@ static int stm32_ospi_remove(struct platform_device *pdev)
+@@ -1146,7 +1151,7 @@ static int stm32_ospi_remove(struct plat
  	stm32_omi_dlyb_stop(omi);
  	mutex_destroy(&ospi->lock);
  	pm_runtime_put_sync_suspend(omi->dev);
@@ -89,6 +87,3 @@ index 93154e826bbe..7c6a43d227e7 100644
  
  	return 0;
  }
--- 
-2.39.5
-

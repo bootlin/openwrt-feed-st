@@ -16,8 +16,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm/configs/fragment-02-multiv7_addons.config | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/fragment-02-multiv7_addons.config b/arch/arm/configs/fragment-02-multiv7_addons.config
-index ee1740b8b927..353476c3b8a2 100644
 --- a/arch/arm/configs/fragment-02-multiv7_addons.config
 +++ b/arch/arm/configs/fragment-02-multiv7_addons.config
 @@ -24,6 +24,7 @@ CONFIG_MTD_SPI_NAND=y
@@ -28,6 +26,3 @@ index ee1740b8b927..353476c3b8a2 100644
  CONFIG_NVMEM_STM32_TAMP=y
  CONFIG_OF_OVERLAY=y
  CONFIG_OVERLAY_FS=y
--- 
-2.39.5
-

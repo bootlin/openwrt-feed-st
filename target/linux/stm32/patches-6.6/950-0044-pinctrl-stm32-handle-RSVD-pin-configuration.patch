@@ -16,11 +16,9 @@ Change-Id: Ia1704a711d8ad60ef18fe548ddc500142be8b185
  drivers/pinctrl/stm32/pinctrl-stm32.h | 3 ++-
  2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 346a31f31bba..d1d79884f55a 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -76,6 +76,7 @@ static const char * const stm32_gpio_functions[] = {
+@@ -76,6 +76,7 @@ static const char * const stm32_gpio_fun
  	"af8", "af9", "af10",
  	"af11", "af12", "af13",
  	"af14", "af15", "analog",
@@ -28,7 +26,7 @@ index 346a31f31bba..d1d79884f55a 100644
  };
  
  struct stm32_pinctrl_group {
-@@ -548,6 +549,9 @@ static bool stm32_pctrl_is_function_valid(struct stm32_pinctrl *pctl,
+@@ -548,6 +549,9 @@ static bool stm32_pctrl_is_function_vali
  		if (pin->pin.number != pin_num)
  			continue;
  
@@ -38,7 +36,7 @@ index 346a31f31bba..d1d79884f55a 100644
  		for (k = 0; k < STM32_CONFIG_NUM; k++) {
  			if (func->num == fnum)
  				return true;
-@@ -850,6 +854,11 @@ static int stm32_pmx_set_mux(struct pinctrl_dev *pctldev,
+@@ -850,6 +854,11 @@ static int stm32_pmx_set_mux(struct pinc
  		return -EINVAL;
  	}
  
@@ -50,8 +48,6 @@ index 346a31f31bba..d1d79884f55a 100644
  	bank = gpiochip_get_data(range->gc);
  	pin = stm32_gpio_pin(g->pin);
  
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.h b/drivers/pinctrl/stm32/pinctrl-stm32.h
-index 5e5de92ddd58..8a1c9570b078 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.h
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.h
 @@ -17,7 +17,8 @@
@@ -64,6 +60,3 @@ index 5e5de92ddd58..8a1c9570b078 100644
  
  /*  package information */
  #define STM32MP_PKG_AA		BIT(0)
--- 
-2.39.5
-

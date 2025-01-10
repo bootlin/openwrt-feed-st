@@ -22,20 +22,12 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 43 +++++++++++++++++++
  1 file changed, 43 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index a172cc1bd6e7..a6ed7566aa4c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -517,6 +517,25 @@ pins {
- 	};
- 
- 	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
-+		pins1 {
-+			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
-+				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
-+				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
-+				 <STM32_PINMUX('E', 1, AF10)>, /* SDMMC1_D3 */
-+				 <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
+@@ -523,6 +523,25 @@
+ 				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
+ 				 <STM32_PINMUX('E', 1, AF10)>, /* SDMMC1_D3 */
+ 				 <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
 +			slew-rate = <2>;
 +			drive-push-pull;
 +			bias-disable;
@@ -49,16 +41,19 @@ index a172cc1bd6e7..a6ed7566aa4c 100644
 +	};
 +
 +	sdmmc1_b4_pins_b: sdmmc1-b4-1 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
- 				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
-@@ -536,6 +555,30 @@ pins2 {
- 	};
- 
- 	sdmmc1_b4_od_pins_a: sdmmc1-b4-od-0 {
 +		pins1 {
 +			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
 +				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
++				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
++				 <STM32_PINMUX('E', 1, AF10)>, /* SDMMC1_D3 */
++				 <STM32_PINMUX('E', 2, AF10)>; /* SDMMC1_CMD */
+ 			slew-rate = <1>;
+ 			drive-push-pull;
+ 			bias-disable;
+@@ -539,6 +558,30 @@
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
+ 				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
 +				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
 +				 <STM32_PINMUX('E', 1, AF10)>; /* SDMMC1_D3 */
 +			slew-rate = <2>;
@@ -80,9 +75,9 @@ index a172cc1bd6e7..a6ed7566aa4c 100644
 +	};
 +
 +	sdmmc1_b4_od_pins_b: sdmmc1-b4-od-1 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
- 				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
--- 
-2.39.5
-
++		pins1 {
++			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
++				 <STM32_PINMUX('E', 5, AF10)>, /* SDMMC1_D1 */
+ 				 <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
+ 				 <STM32_PINMUX('E', 1, AF10)>; /* SDMMC1_D3 */
+ 			slew-rate = <1>;

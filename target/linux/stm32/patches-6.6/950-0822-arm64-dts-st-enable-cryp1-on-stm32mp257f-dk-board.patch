@@ -16,11 +16,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 639381ab5bd3..9566f8b452bd 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -142,6 +142,10 @@ &crc {
+@@ -142,6 +142,10 @@
  	status = "okay";
  };
  
@@ -31,6 +29,3 @@ index 639381ab5bd3..9566f8b452bd 100644
  &csi2host {
  	status = "disabled";
  	ports {
--- 
-2.39.5
-

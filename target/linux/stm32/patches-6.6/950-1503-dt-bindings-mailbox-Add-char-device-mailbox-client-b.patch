@@ -21,9 +21,6 @@ Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  1 file changed, 55 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mailbox/mbox-cdev.yaml
 
-diff --git a/Documentation/devicetree/bindings/mailbox/mbox-cdev.yaml b/Documentation/devicetree/bindings/mailbox/mbox-cdev.yaml
-new file mode 100644
-index 000000000000..a7986bcdf9e3
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/mailbox/mbox-cdev.yaml
 @@ -0,0 +1,55 @@
@@ -82,6 +79,3 @@ index 000000000000..a7986bcdf9e3
 +      memory-region = <&memory_region>;
 +      mboxes = <&mailbox0>;
 +    };
--- 
-2.39.5
-

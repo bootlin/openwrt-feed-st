@@ -18,11 +18,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp15xf.dtsi |  1 +
  4 files changed, 69 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index faa8c61a1686..e37144599d1a 100644
 --- a/arch/arm/boot/dts/st/stm32mp151.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -459,10 +459,11 @@ ethernet_mac_address: mac@e4 {
+@@ -459,10 +459,11 @@
  		};
  
  		etzpc: bus@5c007000 {
@@ -35,7 +33,7 @@ index faa8c61a1686..e37144599d1a 100644
  			ranges;
  
  			timers2: timer@40000000 {
-@@ -480,6 +481,7 @@ timers2: timer@40000000 {
+@@ -480,6 +481,7 @@
  				       <&dmamux1 21 0x400 0x1>,
  				       <&dmamux1 22 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4", "up";
@@ -43,7 +41,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -516,6 +518,7 @@ timers3: timer@40001000 {
+@@ -516,6 +518,7 @@
  				       <&dmamux1 27 0x400 0x1>,
  				       <&dmamux1 28 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4", "up", "trig";
@@ -51,7 +49,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -550,6 +553,7 @@ timers4: timer@40002000 {
+@@ -550,6 +553,7 @@
  				       <&dmamux1 31 0x400 0x1>,
  				       <&dmamux1 32 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4";
@@ -59,7 +57,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -586,6 +590,7 @@ timers5: timer@40003000 {
+@@ -586,6 +590,7 @@
  				       <&dmamux1 59 0x400 0x1>,
  				       <&dmamux1 60 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4", "up", "trig";
@@ -67,7 +65,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -617,6 +622,7 @@ timers6: timer@40004000 {
+@@ -617,6 +622,7 @@
  				clock-names = "int";
  				dmas = <&dmamux1 69 0x400 0x1>;
  				dma-names = "up";
@@ -75,7 +73,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				timer@5 {
-@@ -637,6 +643,7 @@ timers7: timer@40005000 {
+@@ -637,6 +643,7 @@
  				clock-names = "int";
  				dmas = <&dmamux1 70 0x400 0x1>;
  				dma-names = "up";
@@ -83,7 +81,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				timer@6 {
-@@ -655,6 +662,7 @@ timers12: timer@40006000 {
+@@ -655,6 +662,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM12_K>;
  				clock-names = "int";
@@ -91,7 +89,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -679,6 +687,7 @@ timers13: timer@40007000 {
+@@ -679,6 +687,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM13_K>;
  				clock-names = "int";
@@ -99,7 +97,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -703,6 +712,7 @@ timers14: timer@40008000 {
+@@ -703,6 +712,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM14_K>;
  				clock-names = "int";
@@ -107,7 +105,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -728,6 +738,7 @@ lptimer1: timer@40009000 {
+@@ -728,6 +738,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -115,7 +113,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -761,6 +772,7 @@ i2s2: audio-controller@4000b000 {
+@@ -761,6 +772,7 @@
  				dmas = <&dmamux1 39 0x400 0x01>,
  				       <&dmamux1 40 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -123,7 +121,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -775,6 +787,7 @@ spi2: spi@4000b000 {
+@@ -775,6 +787,7 @@
  				dmas = <&dmamux1 39 0x400 0x01>,
  				       <&dmamux1 40 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -131,7 +129,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -786,6 +799,7 @@ i2s3: audio-controller@4000c000 {
+@@ -786,6 +799,7 @@
  				dmas = <&dmamux1 61 0x400 0x01>,
  				       <&dmamux1 62 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -139,7 +137,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -800,6 +814,7 @@ spi3: spi@4000c000 {
+@@ -800,6 +814,7 @@
  				dmas = <&dmamux1 61 0x400 0x01>,
  				       <&dmamux1 62 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -147,7 +145,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -813,6 +828,7 @@ spdifrx: audio-controller@4000d000 {
+@@ -813,6 +828,7 @@
  				dmas = <&dmamux1 93 0x400 0x01>,
  				       <&dmamux1 94 0x400 0x01>;
  				dma-names = "rx", "rx-ctrl";
@@ -155,7 +153,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -826,6 +842,7 @@ usart2: serial@4000e000 {
+@@ -826,6 +842,7 @@
  				dmas = <&dmamux1 43 0x400 0x15>,
  				       <&dmamux1 44 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -163,7 +161,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -839,6 +856,7 @@ usart3: serial@4000f000 {
+@@ -839,6 +856,7 @@
  				dmas = <&dmamux1 45 0x400 0x15>,
  				       <&dmamux1 46 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -171,7 +169,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -852,6 +870,7 @@ uart4: serial@40010000 {
+@@ -852,6 +870,7 @@
  				       <&dmamux1 64 0x400 0x11>;
  				dma-names = "rx", "tx";
  				power-domains = <&pd_core>;
@@ -179,7 +177,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -865,6 +884,7 @@ uart5: serial@40011000 {
+@@ -865,6 +884,7 @@
  				dmas = <&dmamux1 65 0x400 0x15>,
  				       <&dmamux1 66 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -187,7 +185,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -885,6 +905,7 @@ i2c1: i2c@40012000 {
+@@ -885,6 +905,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x1>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -195,7 +193,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -905,6 +926,7 @@ i2c2: i2c@40013000 {
+@@ -905,6 +926,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x2>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -203,7 +201,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -925,6 +947,7 @@ i2c3: i2c@40014000 {
+@@ -925,6 +947,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x4>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -211,7 +209,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -945,6 +968,7 @@ i2c5: i2c@40015000 {
+@@ -945,6 +968,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x10>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -219,7 +217,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -954,6 +978,7 @@ cec: cec@40016000 {
+@@ -954,6 +978,7 @@
  				interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
  				clocks = <&rcc CEC_K>, <&rcc CEC>;
  				clock-names = "cec", "hdmi-cec";
@@ -227,7 +225,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -964,6 +989,7 @@ dac: dac@40017000 {
+@@ -964,6 +989,7 @@
  				clock-names = "pclk";
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -235,7 +233,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				dac1: dac@1 {
-@@ -991,6 +1017,7 @@ uart7: serial@40018000 {
+@@ -991,6 +1017,7 @@
  				dmas = <&dmamux1 79 0x400 0x15>,
  				       <&dmamux1 80 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -243,7 +241,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1004,6 +1031,7 @@ uart8: serial@40019000 {
+@@ -1004,6 +1031,7 @@
  				dmas = <&dmamux1 81 0x400 0x15>,
  				       <&dmamux1 82 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -251,7 +249,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1028,6 +1056,7 @@ timers1: timer@44000000 {
+@@ -1028,6 +1056,7 @@
  				       <&dmamux1 17 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4",
  					    "up", "trig", "com";
@@ -259,7 +257,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1069,6 +1098,7 @@ timers8: timer@44001000 {
+@@ -1069,6 +1098,7 @@
  				       <&dmamux1 53 0x400 0x1>;
  				dma-names = "ch1", "ch2", "ch3", "ch4",
  					    "up", "trig", "com";
@@ -267,7 +265,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1099,6 +1129,7 @@ usart6: serial@44003000 {
+@@ -1099,6 +1129,7 @@
  				dmas = <&dmamux1 71 0x400 0x15>,
  				       <&dmamux1 72 0x400 0x11>;
  				dma-names = "rx", "tx";
@@ -275,7 +273,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1110,6 +1141,7 @@ i2s1: audio-controller@44004000 {
+@@ -1110,6 +1141,7 @@
  				dmas = <&dmamux1 37 0x400 0x01>,
  				       <&dmamux1 38 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -283,7 +281,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1124,6 +1156,7 @@ spi1: spi@44004000 {
+@@ -1124,6 +1156,7 @@
  				dmas = <&dmamux1 37 0x400 0x01>,
  				       <&dmamux1 38 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -291,7 +289,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1138,6 +1171,7 @@ spi4: spi@44005000 {
+@@ -1138,6 +1171,7 @@
  				dmas = <&dmamux1 83 0x400 0x01>,
  				       <&dmamux1 84 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -299,7 +297,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1155,6 +1189,7 @@ timers15: timer@44006000 {
+@@ -1155,6 +1189,7 @@
  				       <&dmamux1 107 0x400 0x1>,
  				       <&dmamux1 108 0x400 0x1>;
  				dma-names = "ch1", "up", "trig", "com";
@@ -307,7 +305,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1182,6 +1217,7 @@ timers16: timer@44007000 {
+@@ -1182,6 +1217,7 @@
  				dmas = <&dmamux1 109 0x400 0x1>,
  				       <&dmamux1 110 0x400 0x1>;
  				dma-names = "ch1", "up";
@@ -315,7 +313,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1208,6 +1244,7 @@ timers17: timer@44008000 {
+@@ -1208,6 +1244,7 @@
  				dmas = <&dmamux1 111 0x400 0x1>,
  				       <&dmamux1 112 0x400 0x1>;
  				dma-names = "ch1", "up";
@@ -323,7 +321,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1234,6 +1271,7 @@ spi5: spi@44009000 {
+@@ -1234,6 +1271,7 @@
  				dmas = <&dmamux1 85 0x400 0x01>,
  				       <&dmamux1 86 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -331,7 +329,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1245,6 +1283,7 @@ sai1: sai@4400a000 {
+@@ -1245,6 +1283,7 @@
  				reg = <0x4400a000 0x4>, <0x4400a3f0 0x10>;
  				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI1_R>;
@@ -339,7 +337,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				sai1a: audio-controller@4400a004 {
-@@ -1277,6 +1316,7 @@ sai2: sai@4400b000 {
+@@ -1277,6 +1316,7 @@
  				reg = <0x4400b000 0x4>, <0x4400b3f0 0x10>;
  				interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI2_R>;
@@ -347,7 +345,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				sai2a: audio-controller@4400b004 {
-@@ -1308,6 +1348,7 @@ sai3: sai@4400c000 {
+@@ -1308,6 +1348,7 @@
  				reg = <0x4400c000 0x4>, <0x4400c3f0 0x10>;
  				interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI3_R>;
@@ -355,7 +353,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				sai3a: audio-controller@4400c004 {
-@@ -1338,6 +1379,7 @@ dfsdm: dfsdm@4400d000 {
+@@ -1338,6 +1379,7 @@
  				clock-names = "dfsdm";
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -363,7 +361,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				dfsdm0: filter@0 {
-@@ -1417,6 +1459,7 @@ dma1: dma-controller@48000000 {
+@@ -1417,6 +1459,7 @@
  				#dma-cells = <4>;
  				st,mem2mem;
  				dma-requests = <8>;
@@ -371,7 +369,7 @@ index faa8c61a1686..e37144599d1a 100644
  			};
  
  			dma2: dma-controller@48001000 {
-@@ -1435,6 +1478,7 @@ dma2: dma-controller@48001000 {
+@@ -1435,6 +1478,7 @@
  				#dma-cells = <4>;
  				st,mem2mem;
  				dma-requests = <8>;
@@ -379,7 +377,7 @@ index faa8c61a1686..e37144599d1a 100644
  			};
  
  			dmamux1: dma-router@48002000 {
-@@ -1446,6 +1490,7 @@ dmamux1: dma-router@48002000 {
+@@ -1446,6 +1490,7 @@
  				dma-channels = <16>;
  				clocks = <&rcc DMAMUX>;
  				resets = <&rcc DMAMUX_R>;
@@ -387,7 +385,7 @@ index faa8c61a1686..e37144599d1a 100644
  			};
  
  			adc: adc@48003000 {
-@@ -1460,6 +1505,7 @@ adc: adc@48003000 {
+@@ -1460,6 +1505,7 @@
  				#interrupt-cells = <1>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -395,7 +393,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				adc1: adc@0 {
-@@ -1510,6 +1556,7 @@ sdmmc3: mmc@48004000 {
+@@ -1510,6 +1556,7 @@
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <120000000>;
@@ -403,7 +401,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1529,6 +1576,7 @@ usbotg_hs: usb-otg@49000000 {
+@@ -1529,6 +1576,7 @@
  				usb33d-supply = <&usb33>;
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -411,7 +409,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1541,6 +1589,7 @@ dcmi: dcmi@4c006000 {
+@@ -1541,6 +1589,7 @@
  				clock-names = "mclk";
  				dmas = <&dmamux1 75 0x400 0x01>;
  				dma-names = "tx";
@@ -419,7 +417,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1554,6 +1603,7 @@ lptimer2: timer@50021000 {
+@@ -1554,6 +1603,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -427,7 +425,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1589,6 +1639,7 @@ lptimer3: timer@50022000 {
+@@ -1589,6 +1639,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -435,7 +433,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1617,6 +1668,7 @@ lptimer4: timer@50023000 {
+@@ -1617,6 +1668,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -443,7 +441,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1639,6 +1691,7 @@ lptimer5: timer@50024000 {
+@@ -1639,6 +1691,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -451,7 +449,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				pwm {
-@@ -1659,6 +1712,7 @@ vrefbuf: vrefbuf@50025000 {
+@@ -1659,6 +1712,7 @@
  				regulator-min-microvolt = <1500000>;
  				regulator-max-microvolt = <2500000>;
  				clocks = <&rcc VREF>;
@@ -459,7 +457,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1670,6 +1724,7 @@ sai4: sai@50027000 {
+@@ -1670,6 +1724,7 @@
  				reg = <0x50027000 0x4>, <0x500273f0 0x10>;
  				interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
  				resets = <&rcc SAI4_R>;
@@ -467,7 +465,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				sai4a: audio-controller@50027004 {
-@@ -1702,6 +1757,7 @@ hash1: hash@54002000 {
+@@ -1702,6 +1757,7 @@
  				dmas = <&mdma1 31 0x2 0x1000a02 0x0 0x0>;
  				dma-names = "in";
  				dma-maxburst = <2>;
@@ -475,7 +473,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1710,6 +1766,7 @@ rng1: rng@54003000 {
+@@ -1710,6 +1766,7 @@
  				reg = <0x54003000 0x400>;
  				clocks = <&rcc RNG1_K>;
  				resets = <&rcc RNG1_R>;
@@ -483,7 +481,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1720,6 +1777,7 @@ fmc: memory-controller@58002000 {
+@@ -1720,6 +1777,7 @@
  				reg = <0x58002000 0x1000>;
  				clocks = <&rcc FMC_K>;
  				resets = <&rcc FMC_R>;
@@ -491,7 +489,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				ranges = <0 0 0x60000000 0x04000000>, /* EBI CS 1 */
-@@ -1759,6 +1817,7 @@ qspi: spi@58003000 {
+@@ -1759,6 +1817,7 @@
  				resets = <&rcc QSPI_R>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -499,7 +497,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1789,6 +1848,7 @@ ethernet0: ethernet@5800a000 {
+@@ -1789,6 +1848,7 @@
  				snps,axi-config = <&stmmac_axi_config_0>;
  				snps,tso;
  				power-domains = <&pd_core>;
@@ -507,7 +505,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  
  				stmmac_axi_config_0: stmmac-axi-config {
-@@ -1805,6 +1865,7 @@ usart1: serial@5c000000 {
+@@ -1805,6 +1865,7 @@
  				clocks = <&rcc USART1_K>;
  				wakeup-source;
  				power-domains = <&pd_core>;
@@ -515,7 +513,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1819,6 +1880,7 @@ spi6: spi@5c001000 {
+@@ -1819,6 +1880,7 @@
  				dmas = <&mdma1 34 0x0 0x40008 0x0 0x0>,
  				       <&mdma1 35 0x0 0x40002 0x0 0x0>;
  				dma-names = "rx", "tx";
@@ -523,7 +521,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1839,6 +1901,7 @@ i2c4: i2c@5c002000 {
+@@ -1839,6 +1901,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x8>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -531,7 +529,7 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  
-@@ -1859,6 +1922,7 @@ i2c6: i2c@5c009000 {
+@@ -1859,6 +1922,7 @@
  				st,syscfg-fmp = <&syscfg 0x4 0x20>;
  				wakeup-source;
  				i2c-analog-filter;
@@ -539,11 +537,9 @@ index faa8c61a1686..e37144599d1a 100644
  				status = "disabled";
  			};
  		};
-diff --git a/arch/arm/boot/dts/st/stm32mp153.dtsi b/arch/arm/boot/dts/st/stm32mp153.dtsi
-index 11e1a6942161..e9ddf67cd3d8 100644
 --- a/arch/arm/boot/dts/st/stm32mp153.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp153.dtsi
-@@ -42,6 +42,7 @@ m_can1: can@4400e000 {
+@@ -42,6 +42,7 @@
  		clocks = <&rcc CK_HSE>, <&rcc FDCAN_K>;
  		clock-names = "hclk", "cclk";
  		bosch,mram-cfg = <0x0 0 0 32 0 0 2 2>;
@@ -551,7 +547,7 @@ index 11e1a6942161..e9ddf67cd3d8 100644
  		status = "disabled";
  	};
  
-@@ -55,6 +56,7 @@ m_can2: can@4400f000 {
+@@ -55,6 +56,7 @@
  		clocks = <&rcc CK_HSE>, <&rcc FDCAN_K>;
  		clock-names = "hclk", "cclk";
  		bosch,mram-cfg = <0x1400 0 0 32 0 0 2 2>;
@@ -559,11 +555,9 @@ index 11e1a6942161..e9ddf67cd3d8 100644
  		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15xc.dtsi b/arch/arm/boot/dts/st/stm32mp15xc.dtsi
-index 8fb63a638bbb..f20046722753 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xc.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xc.dtsi
-@@ -13,6 +13,7 @@ cryp1: cryp@54001000 {
+@@ -13,6 +13,7 @@
  		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -571,11 +565,9 @@ index 8fb63a638bbb..f20046722753 100644
  		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp15xf.dtsi b/arch/arm/boot/dts/st/stm32mp15xf.dtsi
-index dd6d6114a643..62a5fd77b1fc 100644
 --- a/arch/arm/boot/dts/st/stm32mp15xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15xf.dtsi
-@@ -13,6 +13,7 @@ cryp1: cryp@54001000 {
+@@ -13,6 +13,7 @@
  		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
  		clocks = <&rcc CRYP1>;
  		resets = <&rcc CRYP1_R>;
@@ -583,6 +575,3 @@ index dd6d6114a643..62a5fd77b1fc 100644
  		status = "disabled";
  	};
  };
--- 
-2.39.5
-

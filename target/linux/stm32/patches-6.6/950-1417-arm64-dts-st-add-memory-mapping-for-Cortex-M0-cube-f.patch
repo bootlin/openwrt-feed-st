@@ -19,11 +19,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../st/stm32mp257f-dk-ca35tdcid-resmem.dtsi    | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
-index 7e2df35693f5..243df32b685d 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk-ca35tdcid-resmem.dtsi
-@@ -62,6 +62,24 @@ ddr_param: ddr-param@a09f000 {
+@@ -62,6 +62,24 @@
  			no-map;
  		};
  
@@ -48,6 +46,3 @@ index 7e2df35693f5..243df32b685d 100644
  		/* Backup RAM reserved memory declaration */
  		bl31_lowpower: bl31-lowpower@42000000 {
  			reg = <0x0 0x42000000 0x0 0x1000>;
--- 
-2.39.5
-

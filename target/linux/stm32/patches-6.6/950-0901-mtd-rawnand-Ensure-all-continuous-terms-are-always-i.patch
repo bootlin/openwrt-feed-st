@@ -25,11 +25,9 @@ Tested-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/nand/raw/nand_base.c | 23 ++++++++++++++---------
  1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e61895010953..2c37452f36da 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1233,6 +1233,15 @@ static void rawnand_cap_cont_reads(struct nand_chip *chip)
+@@ -1233,6 +1233,15 @@ static void rawnand_cap_cont_reads(struc
  		chip->cont_read.pause_page = rawnand_last_page_of_lun(ppl, first_lun);
  	else
  		chip->cont_read.pause_page = chip->cont_read.last_page;
@@ -45,7 +43,7 @@ index e61895010953..2c37452f36da 100644
  }
  
  static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int page,
-@@ -1299,12 +1308,11 @@ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int p
+@@ -1299,12 +1308,11 @@ static int nand_lp_exec_cont_read_page_o
  	if (!chip->cont_read.ongoing)
  		return 0;
  
@@ -62,7 +60,7 @@ index e61895010953..2c37452f36da 100644
  	}
  
  	return 0;
-@@ -3512,10 +3520,7 @@ static void rawnand_cont_read_skip_first_page(struct nand_chip *chip, unsigned i
+@@ -3512,10 +3520,7 @@ static void rawnand_cont_read_skip_first
  		return;
  
  	chip->cont_read.first_page++;
@@ -74,6 +72,3 @@ index e61895010953..2c37452f36da 100644
  }
  
  /**
--- 
-2.39.5
-

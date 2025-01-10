@@ -24,8 +24,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../interrupt-controller/st,stm32-exti.yaml     | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
-index 00c10a8258f1..9967e57b449b 100644
 --- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 @@ -89,8 +89,23 @@ examples:
@@ -53,6 +51,3 @@ index 00c10a8258f1..9967e57b449b 100644
          compatible = "st,stm32-exti";
          interrupt-controller;
          #interrupt-cells = <2>;
--- 
-2.39.5
-

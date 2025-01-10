@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp253.dtsi | 7 +++++++
  2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 2e2259954f9f..cb82e106ffe6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -249,10 +249,10 @@ soc-crit {
+@@ -249,10 +249,10 @@
  	timer {
  		compatible = "arm,armv8-timer";
  		interrupt-parent = <&intc>;
@@ -39,11 +37,9 @@ index 2e2259954f9f..cb82e106ffe6 100644
  		arm,no-tick-in-suspend;
  	};
  
-diff --git a/arch/arm64/boot/dts/st/stm32mp253.dtsi b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-index d98a270da0ea..6a5d7e46f291 100644
 --- a/arch/arm64/boot/dts/st/stm32mp253.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp253.dtsi
-@@ -32,6 +32,13 @@ CPU_PD1: power-domain-cpu1 {
+@@ -32,6 +32,13 @@
  			power-domains = <&CLUSTER_PD>;
  		};
  	};
@@ -57,6 +53,3 @@ index d98a270da0ea..6a5d7e46f291 100644
  };
  
  &optee {
--- 
-2.39.5
-

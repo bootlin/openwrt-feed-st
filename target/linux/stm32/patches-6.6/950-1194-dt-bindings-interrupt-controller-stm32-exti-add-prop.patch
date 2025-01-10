@@ -20,8 +20,6 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  .../bindings/interrupt-controller/st,stm32-exti.yaml          | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
-index 9967e57b449b..0a516e51fcb5 100644
 --- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
 @@ -42,6 +42,8 @@ properties:
@@ -45,6 +43,3 @@ index 9967e57b449b..0a516e51fcb5 100644
              <&intc GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
      };
  
--- 
-2.39.5
-

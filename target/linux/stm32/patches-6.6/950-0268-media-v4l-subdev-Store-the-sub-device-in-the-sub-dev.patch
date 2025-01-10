@@ -18,11 +18,9 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
  include/media/v4l2-subdev.h           | 2 ++
  2 files changed, 4 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index 07bb1480af5e..3da08932d9b1 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -1414,6 +1414,8 @@ __v4l2_subdev_state_alloc(struct v4l2_subdev *sd, const char *lock_name,
+@@ -1414,6 +1414,8 @@ __v4l2_subdev_state_alloc(struct v4l2_su
  	else
  		state->lock = &state->_lock;
  
@@ -31,8 +29,6 @@ index 07bb1480af5e..3da08932d9b1 100644
  	/* Drivers that support streams do not need the legacy pad config */
  	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS) && sd->entity.num_pads) {
  		state->pads = kvcalloc(sd->entity.num_pads,
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index 05b97adc968e..13200ac48429 100644
 --- a/include/media/v4l2-subdev.h
 +++ b/include/media/v4l2-subdev.h
 @@ -756,6 +756,7 @@ struct v4l2_subdev_krouting {
@@ -51,6 +47,3 @@ index 05b97adc968e..13200ac48429 100644
  	struct v4l2_subdev_pad_config *pads;
  	struct v4l2_subdev_krouting routing;
  	struct v4l2_subdev_stream_configs stream_configs;
--- 
-2.39.5
-

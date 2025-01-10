@@ -12,8 +12,6 @@ Change-Id: I46fb14e58b062c6fe085a6195ad7d70d19fec082
  arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 54 +++++++++++++++++++
  1 file changed, 54 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index d34a1d5e79c0..66791a974f8f 100644
 --- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
 @@ -6,6 +6,60 @@
@@ -77,6 +75,3 @@ index d34a1d5e79c0..66791a974f8f 100644
  	usart2_pins_a: usart2-0 {
  		pins1 {
  			pinmux = <STM32_PINMUX('A', 4, AF6)>; /* USART2_TX */
--- 
-2.39.5
-

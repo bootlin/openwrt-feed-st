@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 104472928902..bf0ff87a2955 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1673,6 +1673,8 @@ adc1: adc@0 {
+@@ -1673,6 +1673,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -30,7 +28,7 @@ index 104472928902..bf0ff87a2955 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1690,6 +1692,8 @@ adc2: adc@100 {
+@@ -1690,6 +1692,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -39,7 +37,7 @@ index 104472928902..bf0ff87a2955 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1878,6 +1882,8 @@ adc3: adc@0 {
+@@ -1878,6 +1882,8 @@
  					#io-channel-cells = <1>;
  					#address-cells = <1>;
  					#size-cells = <0>;
@@ -48,7 +46,7 @@ index 104472928902..bf0ff87a2955 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -2343,6 +2349,10 @@ part_number_otp@24 {
+@@ -2343,6 +2349,10 @@
  				reg = <0x24 0x4>;
  			};
  
@@ -59,6 +57,3 @@ index 104472928902..bf0ff87a2955 100644
  			package_otp@1e8 {
  				reg = <0x1e8 0x1>;
  				bits = <0 3>;
--- 
-2.39.5
-

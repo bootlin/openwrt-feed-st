@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/iio/adc/stm32-dfsdm-adc.c | 13 ++++++++-----
  1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index 31f9f1f2a51b..b18e1df55821 100644
 --- a/drivers/iio/adc/stm32-dfsdm-adc.c
 +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -691,11 +691,14 @@ static int stm32_dfsdm_generic_channel_parse_of(struct stm32_dfsdm *dfsdm,
+@@ -691,11 +691,14 @@ static int stm32_dfsdm_generic_channel_p
  		return -EINVAL;
  	}
  
@@ -42,6 +40,3 @@ index 31f9f1f2a51b..b18e1df55821 100644
  	}
  
  	df_ch =  &dfsdm->ch_list[ch->channel];
--- 
-2.39.5
-

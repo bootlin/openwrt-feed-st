@@ -16,11 +16,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 2c01ba65520a..427d34a48996 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -106,6 +106,11 @@ scmi {
+@@ -106,6 +106,11 @@
  			#size-cells = <0>;
  			linaro,optee-channel-id = <0>;
  
@@ -32,6 +30,3 @@ index 2c01ba65520a..427d34a48996 100644
  			scmi_perf: protocol@13 {
  				reg = <0x13>;
  				#clock-cells = <1>;
--- 
-2.39.5
-

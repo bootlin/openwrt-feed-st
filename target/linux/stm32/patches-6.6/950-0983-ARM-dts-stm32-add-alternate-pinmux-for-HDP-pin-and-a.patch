@@ -21,8 +21,6 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi | 23 +++++++++++++++++++++
  1 file changed, 23 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
-index 8bf43e33f478..534a03da21cf 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi
 @@ -4,6 +4,14 @@
@@ -40,7 +38,7 @@ index 8bf43e33f478..534a03da21cf 100644
  
  &pinctrl {
  	adc1_ain_pins_a: adc1-ain-0 {
-@@ -684,6 +692,21 @@ pins {
+@@ -684,6 +692,21 @@
  		};
  	};
  
@@ -62,6 +60,3 @@ index 8bf43e33f478..534a03da21cf 100644
  	i2c1_pins_a: i2c1-0 {
  		pins {
  			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
--- 
-2.39.5
-

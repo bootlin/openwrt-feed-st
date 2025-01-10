@@ -17,8 +17,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm/configs/fragment-01-multiv7_cleanup.config | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/configs/fragment-01-multiv7_cleanup.config b/arch/arm/configs/fragment-01-multiv7_cleanup.config
-index 544f3c4ca89c..3b4be907cbdc 100644
 --- a/arch/arm/configs/fragment-01-multiv7_cleanup.config
 +++ b/arch/arm/configs/fragment-01-multiv7_cleanup.config
 @@ -46,7 +46,6 @@
@@ -29,6 +27,3 @@ index 544f3c4ca89c..3b4be907cbdc 100644
  # CONFIG_CPU_IDLE is not set
  # CONFIG_CXD2880_SPI_DRV is not set
  # CONFIG_DETECT_HUNG_TASK is not set
--- 
-2.39.5
-

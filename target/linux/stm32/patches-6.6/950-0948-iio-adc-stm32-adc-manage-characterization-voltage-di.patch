@@ -20,8 +20,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/iio/adc/stm32-adc.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 7181d3234cc2..093eae22f5b5 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
 @@ -49,7 +49,6 @@
@@ -48,7 +46,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  /**
-@@ -1895,7 +1896,7 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
+@@ -1895,7 +1896,7 @@ static int stm32_adc_read_raw(struct iio
  			ret = -EINVAL;
  
  		if (mask == IIO_CHAN_INFO_PROCESSED)
@@ -57,7 +55,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  
  		iio_device_release_direct_mode(indio_dev);
  		return ret;
-@@ -3030,6 +3031,7 @@ static const struct stm32_adc_cfg stm32f4_adc_cfg = {
+@@ -3030,6 +3031,7 @@ static const struct stm32_adc_cfg stm32f
  	.stop_conv = stm32f4_adc_stop_conv,
  	.smp_cycles = stm32f4_adc_smp_cycles,
  	.irq_clear = stm32f4_adc_irq_clear,
@@ -65,7 +63,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  static const unsigned int stm32_adc_min_ts_h7[] = { 0, 0, 0, 4300, 9000, 0 };
-@@ -3052,6 +3054,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+@@ -3052,6 +3054,7 @@ static const struct stm32_adc_cfg stm32h
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_h7,
  	.set_ovs = stm32h7_adc_set_ovs,
@@ -73,7 +71,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  static const unsigned int stm32_adc_min_ts_mp1[] = { 100, 100, 100, 4300, 9800, 0 };
-@@ -3075,6 +3078,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+@@ -3075,6 +3078,7 @@ static const struct stm32_adc_cfg stm32m
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_mp1,
  	.set_ovs = stm32h7_adc_set_ovs,
@@ -81,7 +79,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  static const unsigned int stm32_adc_min_ts_mp13[] = { 100, 0, 0, 4300, 9800, 0 };
-@@ -3094,6 +3098,7 @@ static const struct stm32_adc_cfg stm32mp13_adc_cfg = {
+@@ -3094,6 +3098,7 @@ static const struct stm32_adc_cfg stm32m
  	.irq_clear = stm32h7_adc_irq_clear,
  	.ts_int_ch = stm32_adc_min_ts_mp13,
  	.set_ovs = stm32mp13_adc_set_ovs,
@@ -89,7 +87,7 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  static const unsigned int stm32_adc_min_ts_mp25[] = { 34, 34, 0, 34, 34, 34 };
-@@ -3113,6 +3118,7 @@ static const struct stm32_adc_cfg stm32mp25_adc_cfg = {
+@@ -3113,6 +3118,7 @@ static const struct stm32_adc_cfg stm32m
  	.irq_clear = stm32h7_adc_irq_clear,
  	.set_ovs = stm32h7_adc_set_ovs,
  	.ts_int_ch = stm32_adc_min_ts_mp25,
@@ -97,6 +95,3 @@ index 7181d3234cc2..093eae22f5b5 100644
  };
  
  static const struct of_device_id stm32_adc_of_match[] = {
--- 
-2.39.5
-

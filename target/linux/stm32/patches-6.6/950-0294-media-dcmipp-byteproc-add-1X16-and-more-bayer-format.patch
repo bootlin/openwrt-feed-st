@@ -14,8 +14,6 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c     | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index 7cfef1f4498c..b9799f8c1607 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 @@ -48,15 +48,32 @@ struct dcmipp_byteproc_pix_map {
@@ -51,6 +49,3 @@ index 7cfef1f4498c..b9799f8c1607 100644
  	PIXMAP_MBUS_BPP(JPEG_1X8, 1),
  };
  
--- 
-2.39.5
-

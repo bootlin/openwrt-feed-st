@@ -15,9 +15,6 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
  1 file changed, 113 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-new file mode 100644
-index 000000000000..1726ecca4c77
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
 @@ -0,0 +1,113 @@
@@ -134,6 +131,3 @@ index 000000000000..1726ecca4c77
 +    };
 +
 +...
--- 
-2.39.5
-

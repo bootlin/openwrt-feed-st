@@ -18,11 +18,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp215.dtsi | 16 +++++++++++++++-
  1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp215.dtsi b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-index 9f6aae3c2ef1..7aa6f2f25ca7 100644
 --- a/arch/arm64/boot/dts/st/stm32mp215.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp215.dtsi
-@@ -15,8 +15,22 @@ ltdc: display-controller@48010000 {
+@@ -15,8 +15,22 @@
  		clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
  		clock-names = "bus", "lcd";
  		resets = <&rcc LTDC_R>;
@@ -46,6 +44,3 @@ index 9f6aae3c2ef1..7aa6f2f25ca7 100644
 +		};
  	};
  };
--- 
-2.39.5
-

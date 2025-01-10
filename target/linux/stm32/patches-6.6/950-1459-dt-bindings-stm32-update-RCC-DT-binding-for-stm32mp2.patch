@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../devicetree/bindings/clock/st,stm32mp25-rcc.yaml          | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-index 1b6469ecc1a8..cdbddcf80172 100644
 --- a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 @@ -31,6 +31,11 @@ properties:
@@ -35,6 +33,3 @@ index 1b6469ecc1a8..cdbddcf80172 100644
    clocks:
      items:
        - description: CK_SCMI_HSE High Speed External oscillator (8 to 48 MHz)
--- 
-2.39.5
-

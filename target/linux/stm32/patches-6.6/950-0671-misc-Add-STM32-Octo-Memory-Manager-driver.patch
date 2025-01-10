@@ -26,8 +26,6 @@ Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
  3 files changed, 464 insertions(+)
  create mode 100644 drivers/misc/stm32_omm.c
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index cadd4a820c03..b1bd4e35e934 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
 @@ -458,6 +458,23 @@ config DW_XDATA_PCIE
@@ -54,18 +52,13 @@ index cadd4a820c03..b1bd4e35e934 100644
  config PCI_ENDPOINT_TEST
  	depends on PCI
  	select CRC32
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index f2a4d1ff65d4..854df112cbab 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
-@@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
+@@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx
  obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
  obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
  obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
 +obj-$(CONFIG_STM32_OMM)		+= stm32_omm.o
-diff --git a/drivers/misc/stm32_omm.c b/drivers/misc/stm32_omm.c
-new file mode 100644
-index 000000000000..0f1d6addf4b7
 --- /dev/null
 +++ b/drivers/misc/stm32_omm.c
 @@ -0,0 +1,446 @@
@@ -515,6 +508,3 @@ index 000000000000..0f1d6addf4b7
 +
 +MODULE_DESCRIPTION("STMicroelectronics Octo Memory Manager driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

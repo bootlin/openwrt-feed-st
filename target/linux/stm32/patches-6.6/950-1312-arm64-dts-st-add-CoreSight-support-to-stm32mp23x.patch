@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  arch/arm64/boot/dts/st/stm32mp233.dtsi |  50 +++++
  2 files changed, 309 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index 3b7c6db3a3ec..1c58ceee9cd3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
 @@ -3,6 +3,7 @@
@@ -30,7 +28,7 @@ index 3b7c6db3a3ec..1c58ceee9cd3 100644
  #include <dt-bindings/clock/st,stm32mp25-rcc.h>
  #include <dt-bindings/interrupt-controller/arm-gic.h>
  #include <dt-bindings/phy/phy.h>
-@@ -90,6 +91,40 @@ clk_rcbsec: clk-rcbsec {
+@@ -90,6 +91,40 @@
  		};
  	};
  
@@ -71,7 +69,7 @@ index 3b7c6db3a3ec..1c58ceee9cd3 100644
  	firmware {
  		optee: optee {
  			compatible = "linaro,optee-tz";
-@@ -2644,6 +2679,230 @@ a35ss_syscfg: syscon@48802000  {
+@@ -2644,6 +2679,230 @@
  			reg = <0x48802000 0xac>;
  			status = "disabled";
  		};
@@ -302,11 +300,9 @@ index 3b7c6db3a3ec..1c58ceee9cd3 100644
  	};
  
  	mlahb: ahb@1 {
-diff --git a/arch/arm64/boot/dts/st/stm32mp233.dtsi b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-index 05698b0d6e6c..130024fe1e0e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp233.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp233.dtsi
-@@ -39,6 +39,56 @@ timer {
+@@ -39,6 +39,56 @@
  			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
  			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
  	};
@@ -363,6 +359,3 @@ index 05698b0d6e6c..130024fe1e0e 100644
  };
  
  &intc {
--- 
-2.39.5
-

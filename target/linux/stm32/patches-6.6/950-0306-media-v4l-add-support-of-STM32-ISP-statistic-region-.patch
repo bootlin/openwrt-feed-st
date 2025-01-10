@@ -19,11 +19,9 @@ Domain-Review: Eric FOURMONT <eric.fourmont-ext@st.com>
  include/uapi/linux/videodev2.h            |  2 ++
  4 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index a662fb60f73f..865ae1b52147 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -367,7 +367,9 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+@@ -367,7 +367,9 @@ void v4l2_ctrl_type_op_log(const struct
  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
  		pr_cont("AV1_FILM_GRAIN");
  		break;
@@ -34,7 +32,7 @@ index a662fb60f73f..865ae1b52147 100644
  	default:
  		pr_cont("unknown type %d", ctrl->type);
  		break;
-@@ -1168,7 +1170,8 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+@@ -1168,7 +1170,8 @@ static int std_validate_compound(const s
  		if (!area->width || !area->height)
  			return -EINVAL;
  		break;
@@ -44,7 +42,7 @@ index a662fb60f73f..865ae1b52147 100644
  	default:
  		return -EINVAL;
  	}
-@@ -1865,6 +1868,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+@@ -1865,6 +1868,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(s
  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
  		elem_size = sizeof(struct v4l2_ctrl_av1_film_grain);
  		break;
@@ -54,8 +52,6 @@ index a662fb60f73f..865ae1b52147 100644
  	case V4L2_CTRL_TYPE_AREA:
  		elem_size = sizeof(struct v4l2_area);
  		break;
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 8696eb1cdd61..bf927997844a 100644
 --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
 @@ -1163,6 +1163,7 @@ const char *v4l2_ctrl_get_name(u32 id)
@@ -66,7 +62,7 @@ index 8696eb1cdd61..bf927997844a 100644
  
  	/* DV controls */
  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
-@@ -1602,6 +1603,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+@@ -1602,6 +1603,9 @@ void v4l2_ctrl_fill(u32 id, const char *
  	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
  		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
  		break;
@@ -76,8 +72,6 @@ index 8696eb1cdd61..bf927997844a 100644
  	default:
  		*type = V4L2_CTRL_TYPE_INTEGER;
  		break;
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index c3604a0a3e30..2f57bdbc01a9 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -1212,6 +1212,24 @@ enum v4l2_jpeg_chroma_subsampling {
@@ -105,8 +99,6 @@ index c3604a0a3e30..2f57bdbc01a9 100644
  /*  DV-class control IDs defined by V4L2 */
  #define V4L2_CID_DV_CLASS_BASE			(V4L2_CTRL_CLASS_DV | 0x900)
  #define V4L2_CID_DV_CLASS			(V4L2_CTRL_CLASS_DV | 1)
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index ea63184afe48..bf96b8f492ce 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
 @@ -1918,6 +1918,8 @@ enum v4l2_ctrl_type {
@@ -118,6 +110,3 @@ index ea63184afe48..bf96b8f492ce 100644
  };
  
  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
--- 
-2.39.5
-

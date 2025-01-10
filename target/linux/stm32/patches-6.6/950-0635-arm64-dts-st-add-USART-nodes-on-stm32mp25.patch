@@ -16,11 +16,9 @@ Change-Id: Ia83a3f00c4bbbef31d0b3336f935b8d6cbaca1be
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 96 ++++++++++++++++++++++++++
  1 file changed, 96 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index b48fbf70e7e8..9617049339c4 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -306,6 +306,42 @@ usart2: serial@400e0000 {
+@@ -306,6 +306,42 @@
  				status = "disabled";
  			};
  
@@ -63,7 +61,7 @@ index b48fbf70e7e8..9617049339c4 100644
  			i2c1: i2c@40120000 {
  				compatible = "st,stm32mp25-i2c";
  				reg = <0x40120000 0x400>;
-@@ -418,6 +454,18 @@ i2c7: i2c@40180000 {
+@@ -418,6 +454,18 @@
  				status = "disabled";
  			};
  
@@ -82,7 +80,7 @@ index b48fbf70e7e8..9617049339c4 100644
  			spi1: spi@40230000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -463,6 +511,30 @@ spi5: spi@40280000 {
+@@ -463,6 +511,30 @@
  				status = "disabled";
  			};
  
@@ -113,7 +111,7 @@ index b48fbf70e7e8..9617049339c4 100644
  			spi6: spi@40350000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
-@@ -493,6 +565,30 @@ spi7: spi@40360000 {
+@@ -493,6 +565,30 @@
  				status = "disabled";
  			};
  
@@ -144,6 +142,3 @@ index b48fbf70e7e8..9617049339c4 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

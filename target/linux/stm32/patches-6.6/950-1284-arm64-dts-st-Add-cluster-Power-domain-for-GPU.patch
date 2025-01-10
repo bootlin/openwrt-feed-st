@@ -19,11 +19,9 @@ Reviewed-by: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp255.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-index 861431eafe3b..23a38b96bc6e 100644
 --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
-@@ -65,7 +65,7 @@ gpu: gpu@48280000 {
+@@ -65,7 +65,7 @@
  		resets = <&rcc GPU_R>;
  		clock-names = "bus", "core";
  		clocks = <&rcc CK_BUS_GPU>, <&rcc CK_KER_GPU>;
@@ -32,6 +30,3 @@ index 861431eafe3b..23a38b96bc6e 100644
  		access-controllers = <&rifsc 79>;
  		status = "disabled";
  	};
--- 
-2.39.5
-

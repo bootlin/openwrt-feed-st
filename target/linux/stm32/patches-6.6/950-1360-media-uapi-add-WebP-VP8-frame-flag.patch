@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/uapi/linux/v4l2-controls.h                             | 1 +
  2 files changed, 4 insertions(+)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-index 786127b1e206..458ab6d8e62d 100644
 --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
 +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
 @@ -1062,6 +1062,9 @@ FWHT Flags
@@ -33,8 +31,6 @@ index 786127b1e206..458ab6d8e62d 100644
  
  .. c:type:: v4l2_vp8_entropy_coder_state
  
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 0351f7162188..71c8be2363fc 100644
 --- a/include/uapi/linux/v4l2-controls.h
 +++ b/include/uapi/linux/v4l2-controls.h
 @@ -2009,6 +2009,7 @@ struct v4l2_vp8_entropy_coder_state {
@@ -45,6 +41,3 @@ index 0351f7162188..71c8be2363fc 100644
  
  #define V4L2_VP8_FRAME_IS_KEY_FRAME(hdr) \
  	(!!((hdr)->flags & V4L2_VP8_FRAME_FLAG_KEY_FRAME))
--- 
-2.39.5
-

@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    |  1 -
  3 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index b8c93b881a65..cd7a9768de5f 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -255,7 +255,6 @@ struct stmmac_priv {
+@@ -257,7 +257,6 @@ struct stmmac_priv {
  	u32 msg_enable;
  	int wolopts;
  	int wol_irq;
@@ -29,11 +27,9 @@ index b8c93b881a65..cd7a9768de5f 100644
  	int clk_csr;
  	struct timer_list eee_ctrl_timer;
  	int lpi_irq;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index 521b1b5ffebb..240651bf6e26 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -867,16 +867,10 @@ static int stmmac_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+@@ -867,16 +867,10 @@ static int stmmac_set_wol(struct net_dev
  	if (wol->wolopts) {
  		pr_info("stmmac: wakeup enable\n");
  		device_set_wakeup_enable(priv->device, 1);
@@ -52,11 +48,9 @@ index 521b1b5ffebb..240651bf6e26 100644
  	}
  
  	mutex_lock(&priv->lock);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 0521caecb0ac..00b65b8b0446 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3536,7 +3536,6 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+@@ -3552,7 +3552,6 @@ static int stmmac_request_irq_multi_msi(
  	/* Request the Wake IRQ in case of another line
  	 * is used for WoL
  	 */
@@ -64,6 +58,3 @@ index 0521caecb0ac..00b65b8b0446 100644
  	if (priv->wol_irq > 0 && priv->wol_irq != dev->irq) {
  		int_name = priv->int_name_wol;
  		sprintf(int_name, "%s:%s", dev->name, "wol");
--- 
-2.39.5
-

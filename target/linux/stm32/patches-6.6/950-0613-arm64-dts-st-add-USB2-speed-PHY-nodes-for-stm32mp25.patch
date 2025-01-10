@@ -12,11 +12,9 @@ Signed-off-by: Pankaj Dev <pankaj.dev@st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index b987541816aa..a02b0312c7ac 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -150,6 +150,26 @@ timer {
+@@ -150,6 +150,26 @@
  		always-on;
  	};
  
@@ -43,6 +41,3 @@ index b987541816aa..a02b0312c7ac 100644
  	soc@0 {
  		compatible = "simple-bus";
  		#address-cells = <1>;
--- 
-2.39.5
-

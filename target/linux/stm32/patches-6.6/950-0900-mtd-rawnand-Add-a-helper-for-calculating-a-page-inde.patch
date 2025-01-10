@@ -22,11 +22,9 @@ Domain-Review: Christophe KERELLO <christophe.kerello@st.com>
  drivers/mtd/nand/raw/nand_base.c | 16 +++++++++++-----
  1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 7c3e3d70be8b..e61895010953 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1212,19 +1212,25 @@ static int nand_lp_exec_read_page_op(struct nand_chip *chip, unsigned int page,
+@@ -1212,19 +1212,25 @@ static int nand_lp_exec_read_page_op(str
  	return nand_exec_op(chip, &op);
  }
  
@@ -57,6 +55,3 @@ index 7c3e3d70be8b..e61895010953 100644
  	else
  		chip->cont_read.pause_page = chip->cont_read.last_page;
  }
--- 
-2.39.5
-

@@ -21,8 +21,6 @@ Reviewed-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
  drivers/clk/stm32/reset-stm32.h |  1 +
  2 files changed, 43 insertions(+)
 
-diff --git a/drivers/clk/stm32/reset-stm32.c b/drivers/clk/stm32/reset-stm32.c
-index 5a8f525842ce..24b9d54b8388 100644
 --- a/drivers/clk/stm32/reset-stm32.c
 +++ b/drivers/clk/stm32/reset-stm32.c
 @@ -19,6 +19,7 @@ struct stm32_reset_data {
@@ -33,7 +31,7 @@ index 5a8f525842ce..24b9d54b8388 100644
  	const struct stm32_reset_cfg	**reset_lines;
  };
  
-@@ -119,9 +120,49 @@ static int stm32_reset_status(struct reset_controller_dev *rcdev,
+@@ -119,9 +120,49 @@ static int stm32_reset_status(struct res
  	return !!(reg & BIT(ptr_line->bit_idx));
  }
  
@@ -83,7 +81,7 @@ index 5a8f525842ce..24b9d54b8388 100644
  	.status		= stm32_reset_status,
  };
  
-@@ -143,6 +184,7 @@ int stm32_rcc_reset_init(struct device *dev, struct clk_stm32_reset_data *data,
+@@ -143,6 +184,7 @@ int stm32_rcc_reset_init(struct device *
  	reset_data->rcdev.nr_resets = data->nr_lines;
  	reset_data->reset_lines = data->reset_lines;
  	reset_data->clear_offset = data->clear_offset;
@@ -91,8 +89,6 @@ index 5a8f525842ce..24b9d54b8388 100644
  
  	return reset_controller_register(&reset_data->rcdev);
  }
-diff --git a/drivers/clk/stm32/reset-stm32.h b/drivers/clk/stm32/reset-stm32.h
-index f79cad21dfd6..10f9f468d115 100644
 --- a/drivers/clk/stm32/reset-stm32.h
 +++ b/drivers/clk/stm32/reset-stm32.h
 @@ -15,6 +15,7 @@ struct clk_stm32_reset_data {
@@ -103,6 +99,3 @@ index f79cad21dfd6..10f9f468d115 100644
  };
  
  int stm32_rcc_reset_init(struct device *dev, struct clk_stm32_reset_data *data,
--- 
-2.39.5
-

@@ -16,11 +16,9 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index d6e993f7b1bc..639381ab5bd3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -138,6 +138,10 @@ &arm_wdt {
+@@ -138,6 +138,10 @@
  	status = "okay";
  };
  
@@ -31,6 +29,3 @@ index d6e993f7b1bc..639381ab5bd3 100644
  &csi2host {
  	status = "disabled";
  	ports {
--- 
-2.39.5
-

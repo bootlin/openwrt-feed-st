@@ -13,11 +13,9 @@ Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp257f-dk.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-index 460a75f33075..1da9438826b3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
-@@ -31,6 +31,11 @@ memory@80000000 {
+@@ -31,6 +31,11 @@
  	};
  };
  
@@ -29,6 +27,3 @@ index 460a75f33075..1da9438826b3 100644
  &scmi_regu {
  	scmi_vddio1: voltd-vddio1 {
  		regulator-min-microvolt = <1800000>;
--- 
-2.39.5
-

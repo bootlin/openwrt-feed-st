@@ -17,8 +17,6 @@ Change-Id: If56e47042e49c43ae4046cf76942956f62e01d70
  .../dts/st/stm32mp135f-dk-a7-examples.dts     | 97 +++++++++++++++++++
  1 file changed, 97 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
-index d3dbbabe800c..85c9e577ed19 100644
 --- a/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
 +++ b/arch/arm/boot/dts/st/stm32mp135f-dk-a7-examples.dts
 @@ -11,6 +11,103 @@
@@ -125,6 +123,3 @@ index d3dbbabe800c..85c9e577ed19 100644
  };
  
  &timers4 {
--- 
-2.39.5
-

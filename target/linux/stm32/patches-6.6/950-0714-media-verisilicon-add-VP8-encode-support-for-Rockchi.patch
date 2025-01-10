@@ -25,8 +25,6 @@ Change-Id: I765dd66bd51ce79e7c7f776d41af5d343cea3027
  create mode 100644 drivers/media/platform/verisilicon/hantro_boolenc.h
  create mode 100644 drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
 
-diff --git a/drivers/media/platform/verisilicon/Makefile b/drivers/media/platform/verisilicon/Makefile
-index eb38a1833b02..7cb76ebee227 100644
 --- a/drivers/media/platform/verisilicon/Makefile
 +++ b/drivers/media/platform/verisilicon/Makefile
 @@ -6,6 +6,7 @@ hantro-vpu-y += \
@@ -45,8 +43,6 @@ index eb38a1833b02..7cb76ebee227 100644
  		rockchip_vpu981_hw_av1_dec.o \
  		rockchip_av1_filmgrain.o \
  		rockchip_av1_entropymode.o \
-diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-index 77aee9489516..787bae1b7ad1 100644
 --- a/drivers/media/platform/verisilicon/hantro.h
 +++ b/drivers/media/platform/verisilicon/hantro.h
 @@ -32,6 +32,7 @@ struct hantro_codec_ops;
@@ -78,9 +74,6 @@ index 77aee9489516..787bae1b7ad1 100644
  /* Structure access helpers. */
  static __always_inline struct hantro_ctx *fh_to_ctx(struct v4l2_fh *fh)
  {
-diff --git a/drivers/media/platform/verisilicon/hantro_boolenc.c b/drivers/media/platform/verisilicon/hantro_boolenc.c
-new file mode 100644
-index 000000000000..88a1c1c166fe
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_boolenc.c
 @@ -0,0 +1,69 @@
@@ -153,9 +146,6 @@ index 000000000000..88a1c1c166fe
 +		}
 +	}
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_boolenc.h b/drivers/media/platform/verisilicon/hantro_boolenc.h
-new file mode 100644
-index 000000000000..80ec686d504d
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/hantro_boolenc.h
 @@ -0,0 +1,21 @@
@@ -180,11 +170,9 @@ index 000000000000..80ec686d504d
 +	while (n--)
 +		hantro_boolenc_write_bool(e, 128, (val >> n) & 0x1);
 +}
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index b6ea6ad2568f..f129fde2c25c 100644
 --- a/drivers/media/platform/verisilicon/hantro_drv.c
 +++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -161,7 +161,6 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
+@@ -161,7 +161,6 @@ void hantro_end_prepare_run(struct hantr
  	src_buf = hantro_get_src_buf(ctx);
  	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
  				   &ctx->ctrl_handler);
@@ -192,11 +180,10 @@ index b6ea6ad2568f..f129fde2c25c 100644
  	/* Kick the watchdog. */
  	schedule_delayed_work(&ctx->dev->watchdog_work,
  			      msecs_to_jiffies(2000));
-@@ -445,6 +444,20 @@ static const struct hantro_ctrl controls[] = {
- 		.cfg = {
+@@ -446,6 +445,20 @@ static const struct hantro_ctrl controls
  			.id = V4L2_CID_STATELESS_MPEG2_SEQUENCE,
  		},
-+	}, {
+ 	}, {
 +		.codec = HANTRO_VP8_ENCODER,
 +		.cfg = {
 +			.id = V4L2_CID_STATELESS_VP8_ENCODE_PARAMS,
@@ -210,11 +197,10 @@ index b6ea6ad2568f..f129fde2c25c 100644
 +			.step = 1,
 +			.def = 0,
 +		},
- 	}, {
++	}, {
  		.codec = HANTRO_MPEG2_DECODER,
  		.cfg = {
-diff --git a/drivers/media/platform/verisilicon/hantro_hw.h b/drivers/media/platform/verisilicon/hantro_hw.h
-index 70c72e9d11d5..8bfda4ff43e0 100644
+ 			.id = V4L2_CID_STATELESS_MPEG2_PICTURE,
 --- a/drivers/media/platform/verisilicon/hantro_hw.h
 +++ b/drivers/media/platform/verisilicon/hantro_hw.h
 @@ -17,6 +17,8 @@
@@ -294,7 +280,7 @@ index 70c72e9d11d5..8bfda4ff43e0 100644
  /**
   * struct hantro_codec_ops - codec mode specific operations
   *
-@@ -521,6 +584,28 @@ hantro_av1_mv_size(unsigned int width, unsigned int height)
+@@ -521,6 +584,28 @@ hantro_av1_mv_size(unsigned int width, u
  	return ALIGN(num_sbs * 384, 16) * 2 + 512;
  }
  
@@ -323,7 +309,7 @@ index 70c72e9d11d5..8bfda4ff43e0 100644
  int hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
  int rockchip_vpu2_mpeg2_dec_run(struct hantro_ctx *ctx);
  void hantro_mpeg2_dec_copy_qtable(u8 *qtable,
-@@ -542,4 +627,9 @@ void hantro_vp9_dec_exit(struct hantro_ctx *ctx);
+@@ -542,4 +627,9 @@ void hantro_vp9_dec_exit(struct hantro_c
  void hantro_g2_check_idle(struct hantro_dev *vpu);
  irqreturn_t hantro_g2_irq(int irq, void *dev_id);
  
@@ -333,11 +319,9 @@ index 70c72e9d11d5..8bfda4ff43e0 100644
 +void hantro_vp8_enc_exit(struct hantro_ctx *ctx);
 +
  #endif /* HANTRO_HW_H_ */
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index db145519fc5d..12f22b2057cc 100644
 --- a/drivers/media/platform/verisilicon/hantro_v4l2.c
 +++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -332,8 +332,9 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
+@@ -332,8 +332,9 @@ static int hantro_try_fmt(const struct h
  
  	pix_mp->field = V4L2_FIELD_NONE;
  
@@ -349,11 +333,9 @@ index db145519fc5d..12f22b2057cc 100644
  
  	if (!coded) {
  		/* Fill remaining fields */
-diff --git a/drivers/media/platform/verisilicon/hantro_vp8.c b/drivers/media/platform/verisilicon/hantro_vp8.c
-index 381bc1d3bfda..63e026055615 100644
 --- a/drivers/media/platform/verisilicon/hantro_vp8.c
 +++ b/drivers/media/platform/verisilicon/hantro_vp8.c
-@@ -199,3 +199,121 @@ void hantro_vp8_dec_exit(struct hantro_ctx *ctx)
+@@ -199,3 +199,121 @@ void hantro_vp8_dec_exit(struct hantro_c
  	dma_free_coherent(vpu->dev, vp8_dec->prob_tbl.size,
  			  vp8_dec->prob_tbl.cpu, vp8_dec->prob_tbl.dma);
  }
@@ -475,9 +457,6 @@ index 381bc1d3bfda..63e026055615 100644
 +				  ctx->vp8_enc.ref_frames[i].dma);
 +
 +}
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
-new file mode 100644
-index 000000000000..69fdd876061e
 --- /dev/null
 +++ b/drivers/media/platform/verisilicon/rockchip_vpu2_hw_vp8_enc.c
 @@ -0,0 +1,1575 @@
@@ -2056,8 +2035,6 @@ index 000000000000..69fdd876061e
 +	ctx->vp8_enc.last_intra = is_intra(ctx);
 +	++ctx->vp8_enc.frame_counter;
 +}
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h b/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
-index 49e40889545b..b68882965770 100644
 --- a/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
 +++ b/drivers/media/platform/verisilicon/rockchip_vpu2_regs.h
 @@ -258,6 +258,7 @@
@@ -2068,11 +2045,9 @@ index 49e40889545b..b68882965770 100644
  #define     VEPU_REG_ENCODE_FORMAT_JPEG			(0x2 << 4)
  #define     VEPU_REG_ENCODE_FORMAT_H264			(0x3 << 4)
  #define     VEPU_REG_ENCODE_ENABLE			BIT(0)
-diff --git a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c b/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
-index f97527670783..4dc01859a161 100644
 --- a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
 +++ b/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
-@@ -60,6 +60,19 @@ static const struct hantro_fmt rockchip_vpu_enc_fmts[] = {
+@@ -60,6 +60,19 @@ static const struct hantro_fmt rockchip_
  			.step_height = MB_DIM,
  		},
  	},
@@ -2092,7 +2067,7 @@ index f97527670783..4dc01859a161 100644
  };
  
  static const struct hantro_fmt rockchip_vpu1_postproc_fmts[] = {
-@@ -452,6 +465,7 @@ static int rockchip_vpu_hw_init(struct hantro_dev *vpu)
+@@ -452,6 +465,7 @@ static int rockchip_vpu_hw_init(struct h
  {
  	/* Bump ACLK to max. possible freq. to improve performance. */
  	clk_set_rate(vpu->clocks[0].clk, RK3288_ACLK_MAX_FREQ);
@@ -2100,7 +2075,7 @@ index f97527670783..4dc01859a161 100644
  	return 0;
  }
  
-@@ -590,6 +604,13 @@ static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
+@@ -590,6 +604,13 @@ static const struct hantro_codec_ops rk3
  		.init = hantro_vp8_dec_init,
  		.exit = hantro_vp8_dec_exit,
  	},
@@ -2114,7 +2089,7 @@ index f97527670783..4dc01859a161 100644
  };
  
  static const struct hantro_codec_ops rk3568_vepu_codec_ops[] = {
-@@ -744,7 +765,7 @@ const struct hantro_variant rk3399_vpu_variant = {
+@@ -744,7 +765,7 @@ const struct hantro_variant rk3399_vpu_v
  	.dec_fmts = rk3399_vpu_dec_fmts,
  	.num_dec_fmts = ARRAY_SIZE(rk3399_vpu_dec_fmts),
  	.codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
@@ -2123,6 +2098,3 @@ index f97527670783..4dc01859a161 100644
  	.codec_ops = rk3399_vpu_codec_ops,
  	.irqs = rockchip_vpu2_irqs,
  	.num_irqs = ARRAY_SIZE(rockchip_vpu2_irqs),
--- 
-2.39.5
-

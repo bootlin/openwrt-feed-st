@@ -14,9 +14,6 @@ Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
  2 files changed, 120 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
 
-diff --git a/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
-new file mode 100644
-index 000000000000..a6383858cd2c
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/display/st,stm32-lvds.yaml
 @@ -0,0 +1,119 @@
@@ -139,8 +136,6 @@ index 000000000000..a6383858cd2c
 +    };
 +
 +...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f09415b2b3c5..f4dd38e79c5e 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -7069,6 +7069,7 @@ L:	dri-devel@lists.freedesktop.org
@@ -151,6 +146,3 @@ index f09415b2b3c5..f4dd38e79c5e 100644
  F:	drivers/gpu/drm/stm
  
  DRM DRIVERS FOR TI KEYSTONE
--- 
-2.39.5
-

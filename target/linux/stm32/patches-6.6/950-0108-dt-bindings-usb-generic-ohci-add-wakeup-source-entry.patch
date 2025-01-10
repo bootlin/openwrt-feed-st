@@ -14,8 +14,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  Documentation/devicetree/bindings/usb/generic-ohci.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/generic-ohci.yaml b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-index b9576015736b..9f553049ab6d 100644
 --- a/Documentation/devicetree/bindings/usb/generic-ohci.yaml
 +++ b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
 @@ -133,6 +133,11 @@ properties:
@@ -30,6 +28,3 @@ index b9576015736b..9f553049ab6d 100644
  required:
    - compatible
    - reg
--- 
-2.39.5
-

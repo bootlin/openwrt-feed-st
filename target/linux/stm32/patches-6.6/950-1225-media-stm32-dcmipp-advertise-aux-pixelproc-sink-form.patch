@@ -20,8 +20,6 @@ Reviewed-by: Philippe CORNU <philippe.cornu@foss.st.com>
  .../st/stm32/stm32-dcmipp/dcmipp-pixelproc.c  | 63 ++++++++++++++-----
  1 file changed, 49 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index df66df36cc36..81ffb4ee920a 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 @@ -100,23 +100,44 @@
@@ -74,7 +72,7 @@ index df66df36cc36..81ffb4ee920a 100644
  };
  
  /* Macro for negative coefficient, 11 bits coded */
-@@ -382,7 +403,7 @@ to_cconv_range(struct v4l2_mbus_framefmt *fmt)
+@@ -382,7 +403,7 @@ to_cconv_range(struct v4l2_mbus_framefmt
  #define RANGE_STR(range) ((range) == RANGE_FULL ? "full" : "limited")
  
  static const struct dcmipp_pixelproc_pix_map *
@@ -83,7 +81,7 @@ index df66df36cc36..81ffb4ee920a 100644
  {
  	const struct dcmipp_pixelproc_pix_map *l;
  	unsigned int size;
-@@ -397,7 +418,7 @@ dcmipp_pixelproc_pix_map_by_code(u32 code, unsigned int pad)
+@@ -397,7 +418,7 @@ dcmipp_pixelproc_pix_map_by_code(u32 cod
  	}
  
  	for (i = 0; i < size; i++) {
@@ -92,7 +90,7 @@ index df66df36cc36..81ffb4ee920a 100644
  			return &l[i];
  	}
  
-@@ -505,12 +526,13 @@ static void dcmipp_pixelproc_adjust_crop(struct v4l2_rect *r,
+@@ -505,12 +526,13 @@ static void dcmipp_pixelproc_adjust_crop
  	v4l2_rect_map_inside(r, &src_rect);
  }
  
@@ -108,7 +106,7 @@ index df66df36cc36..81ffb4ee920a 100644
  	if (!vpix)
  		fmt->code = PIXELPROC_MEDIA_BUS_FMT_DEFAULT;
  
-@@ -556,8 +578,10 @@ dcmipp_pixelproc_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -556,8 +578,10 @@ dcmipp_pixelproc_enum_mbus_code(struct v
  				struct v4l2_subdev_state *state,
  				struct v4l2_subdev_mbus_code_enum *code)
  {
@@ -120,7 +118,7 @@ index df66df36cc36..81ffb4ee920a 100644
  
  	if (IS_SRC(code->pad)) {
  		vpix = dcmipp_pixelproc_src_pix_map_list;
-@@ -567,10 +591,20 @@ dcmipp_pixelproc_enum_mbus_code(struct v4l2_subdev *sd,
+@@ -567,10 +591,20 @@ dcmipp_pixelproc_enum_mbus_code(struct v
  		size = ARRAY_SIZE(dcmipp_pixelproc_sink_pix_map_list);
  	}
  
@@ -143,7 +141,7 @@ index df66df36cc36..81ffb4ee920a 100644
  
  	return 0;
  }
-@@ -579,13 +613,14 @@ static int dcmipp_pixelproc_enum_frame_size(struct v4l2_subdev *sd,
+@@ -579,13 +613,14 @@ static int dcmipp_pixelproc_enum_frame_s
  					    struct v4l2_subdev_state *state,
  					    struct v4l2_subdev_frame_size_enum *fse)
  {
@@ -159,7 +157,7 @@ index df66df36cc36..81ffb4ee920a 100644
  	if (!vpix)
  		return -EINVAL;
  
-@@ -607,7 +642,7 @@ static int dcmipp_pixelproc_set_fmt(struct v4l2_subdev *sd,
+@@ -607,7 +642,7 @@ static int dcmipp_pixelproc_set_fmt(stru
  	if (pixelproc->streaming)
  		return -EBUSY;
  
@@ -168,6 +166,3 @@ index df66df36cc36..81ffb4ee920a 100644
  
  	if (IS_SINK(fmt->pad)) {
  		struct v4l2_mbus_framefmt *src_pad_fmt;
--- 
-2.39.5
-

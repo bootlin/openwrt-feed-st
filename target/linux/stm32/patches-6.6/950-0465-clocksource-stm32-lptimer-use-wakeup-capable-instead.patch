@@ -16,11 +16,9 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@st.com>
  drivers/clocksource/timer-stm32-lp.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/timer-stm32-lp.c b/drivers/clocksource/timer-stm32-lp.c
-index a4c95161cb22..193e4f643358 100644
 --- a/drivers/clocksource/timer-stm32-lp.c
 +++ b/drivers/clocksource/timer-stm32-lp.c
-@@ -168,9 +168,7 @@ static int stm32_clkevent_lp_probe(struct platform_device *pdev)
+@@ -168,9 +168,7 @@ static int stm32_clkevent_lp_probe(struc
  	}
  
  	if (of_property_read_bool(pdev->dev.parent->of_node, "wakeup-source")) {
@@ -31,6 +29,3 @@ index a4c95161cb22..193e4f643358 100644
  
  		ret = dev_pm_set_wake_irq(&pdev->dev, irq);
  		if (ret)
--- 
-2.39.5
-

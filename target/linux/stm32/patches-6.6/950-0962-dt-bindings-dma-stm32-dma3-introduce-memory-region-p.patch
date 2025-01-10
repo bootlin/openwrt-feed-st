@@ -18,8 +18,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  .../devicetree/bindings/dma/stm32/st,stm32-dma3.yaml     | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
-index 8d10f0962260..71147e6af4d8 100644
 --- a/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 +++ b/Documentation/devicetree/bindings/dma/stm32/st,stm32-dma3.yaml
 @@ -48,6 +48,15 @@ properties:
@@ -38,6 +36,3 @@ index 8d10f0962260..71147e6af4d8 100644
    power-domains:
      maxItems: 1
  
--- 
-2.39.5
-

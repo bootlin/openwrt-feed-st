@@ -14,8 +14,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
-index 5d4e3cc812dd..b3222e6b6f00 100644
 --- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 +++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
 @@ -29,6 +29,8 @@ properties:
@@ -27,6 +25,3 @@ index 5d4e3cc812dd..b3222e6b6f00 100644
        - st,stm32mp257-pinctrl
        - st,stm32mp257-z-pinctrl
  
--- 
-2.39.5
-

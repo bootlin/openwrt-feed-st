@@ -13,11 +13,9 @@ Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 09095dc33a68..b3e7a241e01d 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -893,7 +893,8 @@ struct dcmipp_ent_device *dcmipp_bytecap_ent_init(const char *entity_name,
+@@ -893,7 +893,8 @@ struct dcmipp_ent_device *dcmipp_bytecap
  	q->dev = dev;
  
  	/* DCMIPP requires 16 bytes aligned buffers */
@@ -27,6 +25,3 @@ index 09095dc33a68..b3e7a241e01d 100644
  	if (ret) {
  		dev_err(dev, "Failed to set DMA mask\n");
  		goto err_mutex_destroy;
--- 
-2.39.5
-

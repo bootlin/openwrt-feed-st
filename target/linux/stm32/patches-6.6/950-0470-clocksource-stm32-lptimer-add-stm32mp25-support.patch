@@ -18,11 +18,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/clocksource/timer-stm32-lp.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/timer-stm32-lp.c b/drivers/clocksource/timer-stm32-lp.c
-index 193e4f643358..8f6496f24988 100644
 --- a/drivers/clocksource/timer-stm32-lp.c
 +++ b/drivers/clocksource/timer-stm32-lp.c
-@@ -195,6 +195,7 @@ static int stm32_clkevent_lp_probe(struct platform_device *pdev)
+@@ -195,6 +195,7 @@ out_clk_disable:
  
  static const struct of_device_id stm32_clkevent_lp_of_match[] = {
  	{ .compatible = "st,stm32-lptimer-timer", },
@@ -30,6 +28,3 @@ index 193e4f643358..8f6496f24988 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_clkevent_lp_of_match);
--- 
-2.39.5
-

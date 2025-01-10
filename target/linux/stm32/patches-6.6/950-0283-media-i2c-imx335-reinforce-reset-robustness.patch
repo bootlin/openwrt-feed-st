@@ -20,11 +20,9 @@ Domain-Review: Philippe CORNU <philippe.cornu@foss.st.com>
  drivers/media/i2c/imx335.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index c30ac9410471..bf5f1325712d 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -1018,6 +1018,7 @@ static int imx335_power_on(struct device *dev)
+@@ -1018,6 +1018,7 @@ static int imx335_power_on(struct device
  		return ret;
  	}
  
@@ -32,7 +30,7 @@ index c30ac9410471..bf5f1325712d 100644
  	gpiod_set_value_cansleep(imx335->powerdown_gpio, 1);
  
  	usleep_range(500, 550); /* Tlow */
-@@ -1033,6 +1034,10 @@ static int imx335_power_on(struct device *dev)
+@@ -1032,6 +1033,10 @@ static int imx335_power_on(struct device
  
  	usleep_range(20, 22); /* T4 */
  
@@ -43,6 +41,3 @@ index c30ac9410471..bf5f1325712d 100644
  	return 0;
  
  error_reset:
--- 
-2.39.5
-

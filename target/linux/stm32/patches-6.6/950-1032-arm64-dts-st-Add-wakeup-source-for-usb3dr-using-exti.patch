@@ -20,11 +20,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 15c2835ff496..f8303a3e1438 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -2296,6 +2296,8 @@ usb3dr: usb@48300000 {
+@@ -2296,6 +2296,8 @@
  				ranges = <0x48300000 0x48300000 0x100000>;
  				access-controllers = <&rifsc 66>;
  				power-domains = <&CLUSTER_PD>;
@@ -33,7 +31,7 @@ index 15c2835ff496..f8303a3e1438 100644
  				status = "disabled";
  
  				dwc3: usb@48300000 {
-@@ -2308,6 +2310,7 @@ dwc3: usb@48300000 {
+@@ -2308,6 +2310,7 @@
  					resets = <&rcc USB3DR_R>;
  					phys = <&usb2_phy2>;
  					phy-names = "usb2-phy";
@@ -41,6 +39,3 @@ index 15c2835ff496..f8303a3e1438 100644
  				};
  			};
  
--- 
-2.39.5
-

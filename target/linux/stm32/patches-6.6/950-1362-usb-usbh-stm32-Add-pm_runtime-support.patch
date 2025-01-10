@@ -18,11 +18,9 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/usb/host/usbh-stm32.c | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/drivers/usb/host/usbh-stm32.c b/drivers/usb/host/usbh-stm32.c
-index 0451b728e00d..d4b1776f0c20 100644
 --- a/drivers/usb/host/usbh-stm32.c
 +++ b/drivers/usb/host/usbh-stm32.c
-@@ -139,6 +139,14 @@ static int stm32_usbh_probe(struct platform_device *pdev)
+@@ -139,6 +139,14 @@ static int stm32_usbh_probe(struct platf
  	if (ret)
  		return dev_err_probe(&pdev->dev, ret, "failed to add ehci/ohci devices\n");
  
@@ -37,6 +35,3 @@ index 0451b728e00d..d4b1776f0c20 100644
  	platform_set_drvdata(pdev, usbh_data);
  
  	return 0;
--- 
-2.39.5
-

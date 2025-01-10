@@ -16,8 +16,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/361910
  4 files changed, 1817 insertions(+)
  create mode 100644 drivers/pinctrl/stm32/pinctrl-stm32mp215.c
 
-diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
-index 64af7b1521fb..f9d3ccee377e 100644
 --- a/drivers/pinctrl/stm32/Kconfig
 +++ b/drivers/pinctrl/stm32/Kconfig
 @@ -52,6 +52,12 @@ config PINCTRL_STM32MP157
@@ -33,18 +31,14 @@ index 64af7b1521fb..f9d3ccee377e 100644
  config PINCTRL_STM32MP257
  	tristate "STMicroelectronics STM32MP257 pin control"
  	depends on OF && HAS_IOMEM
-diff --git a/drivers/pinctrl/stm32/Makefile b/drivers/pinctrl/stm32/Makefile
-index 7b17464d8de1..20c66053c82c 100644
 --- a/drivers/pinctrl/stm32/Makefile
 +++ b/drivers/pinctrl/stm32/Makefile
-@@ -10,4 +10,5 @@ obj-$(CONFIG_PINCTRL_STM32F769)	+= pinctrl-stm32f769.o
+@@ -10,4 +10,5 @@ obj-$(CONFIG_PINCTRL_STM32F769)	+= pinct
  obj-$(CONFIG_PINCTRL_STM32H743)	+= pinctrl-stm32h743.o
  obj-$(CONFIG_PINCTRL_STM32MP135) += pinctrl-stm32mp135.o
  obj-$(CONFIG_PINCTRL_STM32MP157) += pinctrl-stm32mp157.o
 +obj-$(CONFIG_PINCTRL_STM32MP215) += pinctrl-stm32mp215.o
  obj-$(CONFIG_PINCTRL_STM32MP257) += pinctrl-stm32mp257.o
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.h b/drivers/pinctrl/stm32/pinctrl-stm32.h
-index 26aba7c827d5..c9e41ea7ca38 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.h
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.h
 @@ -28,6 +28,9 @@
@@ -57,9 +51,6 @@ index 26aba7c827d5..c9e41ea7ca38 100644
  
  struct stm32_desc_function {
  	const char *name;
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp215.c b/drivers/pinctrl/stm32/pinctrl-stm32mp215.c
-new file mode 100644
-index 000000000000..b702aaa67b01
 --- /dev/null
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32mp215.c
 @@ -0,0 +1,1807 @@
@@ -1870,6 +1861,3 @@ index 000000000000..b702aaa67b01
 +MODULE_AUTHOR("Alexandre Torgue <alexandre.torgue@foss.st.com>");
 +MODULE_DESCRIPTION("STM32MP215 pinctrl driver");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

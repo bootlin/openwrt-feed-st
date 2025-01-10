@@ -14,8 +14,6 @@ Signed-off-by: Simeon Marijon <simeon.marijon@foss.st.com>
  .../bindings/arm/stm32/st,stm32-syscon.yaml   | 52 ++++++++++++++-----
  1 file changed, 39 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index d083d8ad48b7..456b8417b32a 100644
 --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
 @@ -1,10 +1,10 @@
@@ -96,6 +94,3 @@ index d083d8ad48b7..456b8417b32a 100644
  
  additionalProperties: false
  
--- 
-2.39.5
-

@@ -32,8 +32,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  3 files changed, 878 insertions(+)
  create mode 100644 drivers/perf/stm32_ddr_pmu.c
 
-diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-index 273d67ecf6d2..fc3e46f133e0 100644
 --- a/drivers/perf/Kconfig
 +++ b/drivers/perf/Kconfig
 @@ -155,6 +155,14 @@ config QCOM_L3_PMU
@@ -51,11 +49,9 @@ index 273d67ecf6d2..fc3e46f133e0 100644
  config THUNDERX2_PMU
  	tristate "Cavium ThunderX2 SoC PMU UNCORE"
  	depends on ARCH_THUNDER2 || COMPILE_TEST
-diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-index 16b3ec4db916..fa03ea56f7b3 100644
 --- a/drivers/perf/Makefile
 +++ b/drivers/perf/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_QCOM_L3_PMU) += qcom_l3_pmu.o
+@@ -15,6 +15,7 @@ obj-$(CONFIG_QCOM_L3_PMU) += qcom_l3_pmu
  obj-$(CONFIG_RISCV_PMU) += riscv_pmu.o
  obj-$(CONFIG_RISCV_PMU_LEGACY) += riscv_pmu_legacy.o
  obj-$(CONFIG_RISCV_PMU_SBI) += riscv_pmu_sbi.o
@@ -63,9 +59,6 @@ index 16b3ec4db916..fa03ea56f7b3 100644
  obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
  obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
  obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
-diff --git a/drivers/perf/stm32_ddr_pmu.c b/drivers/perf/stm32_ddr_pmu.c
-new file mode 100644
-index 000000000000..1b7666c0edd2
 --- /dev/null
 +++ b/drivers/perf/stm32_ddr_pmu.c
 @@ -0,0 +1,869 @@
@@ -938,6 +931,3 @@ index 000000000000..1b7666c0edd2
 +MODULE_DESCRIPTION("Perf driver for STM32 DDR performance monitor");
 +MODULE_AUTHOR("Clément Le Goffic <clement.legoffic@foss.st.com>");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

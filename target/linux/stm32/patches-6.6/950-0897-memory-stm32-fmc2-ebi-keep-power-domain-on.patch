@@ -20,8 +20,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/memory/stm32-fmc2-ebi.c | 41 +++++++++++++++++++++++++--------
  1 file changed, 32 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/memory/stm32-fmc2-ebi.c b/drivers/memory/stm32-fmc2-ebi.c
-index 68847b453318..495feaef7b25 100644
 --- a/drivers/memory/stm32-fmc2-ebi.c
 +++ b/drivers/memory/stm32-fmc2-ebi.c
 @@ -11,6 +11,7 @@
@@ -32,7 +30,7 @@ index 68847b453318..495feaef7b25 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  
-@@ -1649,6 +1650,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1649,6 +1650,7 @@ static int stm32_fmc2_ebi_probe(struct p
  		return -ENOMEM;
  
  	ebi->dev = dev;
@@ -40,7 +38,7 @@ index 68847b453318..495feaef7b25 100644
  
  	ebi->data = of_device_get_match_data(dev);
  	if (!ebi->data)
-@@ -1666,10 +1668,14 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1666,10 +1668,14 @@ static int stm32_fmc2_ebi_probe(struct p
  	if (PTR_ERR(rstc) == -EPROBE_DEFER)
  		return -EPROBE_DEFER;
  
@@ -56,7 +54,7 @@ index 68847b453318..495feaef7b25 100644
  	if (!IS_ERR(rstc)) {
  		reset_control_assert(rstc);
  		reset_control_deassert(rstc);
-@@ -1705,8 +1711,6 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1705,8 +1711,6 @@ static int stm32_fmc2_ebi_probe(struct p
  	if (ret)
  		goto err_release;
  
@@ -65,7 +63,7 @@ index 68847b453318..495feaef7b25 100644
  	return 0;
  
  err_release:
-@@ -1714,7 +1718,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
+@@ -1714,7 +1718,7 @@ err_release:
  	stm32_fmc2_ebi_disable(ebi);
  	if (ebi->data->put_sems)
  		ebi->data->put_sems(ebi);
@@ -74,7 +72,7 @@ index 68847b453318..495feaef7b25 100644
  
  	return ret;
  }
-@@ -1728,11 +1732,27 @@ static int stm32_fmc2_ebi_remove(struct platform_device *pdev)
+@@ -1728,11 +1732,27 @@ static int stm32_fmc2_ebi_remove(struct
  	stm32_fmc2_ebi_disable(ebi);
  	if (ebi->data->put_sems)
  		ebi->data->put_sems(ebi);
@@ -102,7 +100,7 @@ index 68847b453318..495feaef7b25 100644
  static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
  {
  	struct stm32_fmc2_ebi *ebi = dev_get_drvdata(dev);
-@@ -1740,7 +1760,7 @@ static int __maybe_unused stm32_fmc2_ebi_suspend(struct device *dev)
+@@ -1740,7 +1760,7 @@ static int __maybe_unused stm32_fmc2_ebi
  	stm32_fmc2_ebi_disable(ebi);
  	if (ebi->data->put_sems)
  		ebi->data->put_sems(ebi);
@@ -111,7 +109,7 @@ index 68847b453318..495feaef7b25 100644
  	pinctrl_pm_select_sleep_state(dev);
  
  	return 0;
-@@ -1753,8 +1773,8 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+@@ -1753,8 +1773,8 @@ static int __maybe_unused stm32_fmc2_ebi
  
  	pinctrl_pm_select_default_state(dev);
  
@@ -122,7 +120,7 @@ index 68847b453318..495feaef7b25 100644
  		return ret;
  
  	if (ebi->data->get_sems)
-@@ -1765,8 +1785,11 @@ static int __maybe_unused stm32_fmc2_ebi_resume(struct device *dev)
+@@ -1765,8 +1785,11 @@ static int __maybe_unused stm32_fmc2_ebi
  	return 0;
  }
  
@@ -136,6 +134,3 @@ index 68847b453318..495feaef7b25 100644
  
  static const struct stm32_fmc2_ebi_data stm32_fmc2_ebi_mp1_data = {
  	.child_props = stm32_fmc2_child_props,
--- 
-2.39.5
-

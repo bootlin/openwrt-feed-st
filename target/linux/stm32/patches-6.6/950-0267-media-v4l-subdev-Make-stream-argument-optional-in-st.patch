@@ -20,11 +20,9 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
  include/media/v4l2-subdev.h           | 49 ++++++++++++++++++++++-----
  2 files changed, 49 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index 1707cd32fc13..07bb1480af5e 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -1649,8 +1649,8 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1649,8 +1649,8 @@ int v4l2_subdev_set_routing_with_fmt(str
  EXPORT_SYMBOL_GPL(v4l2_subdev_set_routing_with_fmt);
  
  struct v4l2_mbus_framefmt *
@@ -35,7 +33,7 @@ index 1707cd32fc13..07bb1480af5e 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1667,11 +1667,11 @@ v4l2_subdev_state_get_format(struct v4l2_subdev_state *state, unsigned int pad,
+@@ -1667,11 +1667,11 @@ v4l2_subdev_state_get_format(struct v4l2
  
  	return NULL;
  }
@@ -50,7 +48,7 @@ index 1707cd32fc13..07bb1480af5e 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1688,11 +1688,11 @@ v4l2_subdev_state_get_crop(struct v4l2_subdev_state *state, unsigned int pad,
+@@ -1688,11 +1688,11 @@ v4l2_subdev_state_get_crop(struct v4l2_s
  
  	return NULL;
  }
@@ -65,7 +63,7 @@ index 1707cd32fc13..07bb1480af5e 100644
  {
  	struct v4l2_subdev_stream_configs *stream_configs;
  	unsigned int i;
-@@ -1709,7 +1709,7 @@ v4l2_subdev_state_get_compose(struct v4l2_subdev_state *state, unsigned int pad,
+@@ -1709,7 +1709,7 @@ v4l2_subdev_state_get_compose(struct v4l
  
  	return NULL;
  }
@@ -74,11 +72,9 @@ index 1707cd32fc13..07bb1480af5e 100644
  
  int v4l2_subdev_routing_find_opposite_end(const struct v4l2_subdev_krouting *routing,
  					  u32 pad, u32 stream, u32 *other_pad,
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index 445bfe460963..05b97adc968e 100644
 --- a/include/media/v4l2-subdev.h
 +++ b/include/media/v4l2-subdev.h
-@@ -1540,50 +1540,81 @@ int v4l2_subdev_set_routing_with_fmt(struct v4l2_subdev *sd,
+@@ -1540,50 +1540,81 @@ int v4l2_subdev_set_routing_with_fmt(str
  				     const struct v4l2_subdev_krouting *routing,
  				     const struct v4l2_mbus_framefmt *fmt);
  
@@ -169,6 +165,3 @@ index 445bfe460963..05b97adc968e 100644
  
  /**
   * v4l2_subdev_routing_find_opposite_end() - Find the opposite stream
--- 
-2.39.5
-

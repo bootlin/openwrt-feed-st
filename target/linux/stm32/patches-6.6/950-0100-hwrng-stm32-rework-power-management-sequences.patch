@@ -16,8 +16,6 @@ Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
  drivers/char/hw_random/stm32-rng.c | 108 ++++++++++++++++++++++++++---
  1 file changed, 97 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 4a602d666dad..41e1dbea5d2e 100644
 --- a/drivers/char/hw_random/stm32-rng.c
 +++ b/drivers/char/hw_random/stm32-rng.c
 @@ -55,11 +55,25 @@ struct stm32_rng_data {
@@ -46,7 +44,7 @@ index 4a602d666dad..41e1dbea5d2e 100644
  	const struct stm32_rng_data *data;
  	bool ced;
  	bool lock_conf;
-@@ -355,11 +369,10 @@ static int stm32_rng_remove(struct platform_device *ofdev)
+@@ -355,11 +369,10 @@ static int stm32_rng_remove(struct platf
  	return 0;
  }
  
@@ -60,7 +58,7 @@ index 4a602d666dad..41e1dbea5d2e 100644
  
  	reg = readl_relaxed(priv->base + RNG_CR);
  	reg &= ~RNG_CR_RNGEN;
-@@ -369,25 +382,98 @@ static int stm32_rng_runtime_suspend(struct device *dev)
+@@ -369,25 +382,98 @@ static int stm32_rng_runtime_suspend(str
  	return 0;
  }
  
@@ -166,7 +164,7 @@ index 4a602d666dad..41e1dbea5d2e 100644
  };
  
  static const struct stm32_rng_data stm32mp13_rng_data = {
-@@ -467,7 +553,7 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+@@ -467,7 +553,7 @@ static int stm32_rng_probe(struct platfo
  static struct platform_driver stm32_rng_driver = {
  	.driver = {
  		.name = "stm32-rng",
@@ -175,6 +173,3 @@ index 4a602d666dad..41e1dbea5d2e 100644
  		.of_match_table = stm32_rng_match,
  	},
  	.probe = stm32_rng_probe,
--- 
-2.39.5
-

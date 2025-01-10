@@ -79,11 +79,9 @@ Domain-Review: Amelie DELAUNAY <amelie.delaunay@foss.st.com>
  drivers/pinctrl/devicetree.c | 10 ++++++++--
  1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
-index 5ee746cb81f5..6520b88db110 100644
 --- a/drivers/pinctrl/devicetree.c
 +++ b/drivers/pinctrl/devicetree.c
-@@ -143,10 +143,14 @@ static int dt_to_map_one_config(struct pinctrl *p,
+@@ -143,10 +143,14 @@ static int dt_to_map_one_config(struct p
  		pctldev = get_pinctrl_dev_from_of_node(np_pctldev);
  		if (pctldev)
  			break;
@@ -100,7 +98,7 @@ index 5ee746cb81f5..6520b88db110 100644
  		}
  	}
  	of_node_put(np_pctldev);
-@@ -265,6 +269,8 @@ int pinctrl_dt_to_map(struct pinctrl *p, struct pinctrl_dev *pctldev)
+@@ -265,6 +269,8 @@ int pinctrl_dt_to_map(struct pinctrl *p,
  			ret = dt_to_map_one_config(p, pctldev, statename,
  						   np_config);
  			of_node_put(np_config);
@@ -109,6 +107,3 @@ index 5ee746cb81f5..6520b88db110 100644
  			if (ret < 0)
  				goto err;
  		}
--- 
-2.39.5
-

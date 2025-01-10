@@ -12,11 +12,9 @@ Change-Id: Ic418ff54c4a58d46084ffcbd9ad16ea9dfa9d972
  arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-index 10300f60025b..0d03388d30e6 100644
 --- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
 +++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
-@@ -30,6 +30,11 @@ memory@80000000 {
+@@ -30,6 +30,11 @@
  	};
  };
  
@@ -28,6 +26,3 @@ index 10300f60025b..0d03388d30e6 100644
  &usart2 {
  	pinctrl-names = "default", "idle", "sleep";
  	pinctrl-0 = <&usart2_pins_a>;
--- 
-2.39.5
-

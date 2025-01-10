@@ -12,11 +12,9 @@ Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
  drivers/clk/stm32/clk-stm32mp1.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/stm32/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-index 6ee987ce2b1d..d7cc66a7f878 100644
 --- a/drivers/clk/stm32/clk-stm32mp1.c
 +++ b/drivers/clk/stm32/clk-stm32mp1.c
-@@ -732,7 +732,7 @@ static int clk_mmux_set_parent(struct clk_hw *hw, u8 index)
+@@ -732,7 +732,7 @@ static int clk_mmux_set_parent(struct cl
  
  	for (n = 0; n < clk_mmux->mmux->nbr_clk; n++)
  		if (clk_mmux->mmux->hws[n] != hw)
@@ -25,6 +23,3 @@ index 6ee987ce2b1d..d7cc66a7f878 100644
  
  	return 0;
  }
--- 
-2.39.5
-

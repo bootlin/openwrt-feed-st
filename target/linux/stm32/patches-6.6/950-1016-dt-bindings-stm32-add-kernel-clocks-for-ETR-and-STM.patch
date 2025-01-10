@@ -19,8 +19,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  include/dt-bindings/clock/st,stm32mp25-rcc.h | 12 ++++++++----
  1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
-index b6cf05ad4be6..66b3f95329af 100644
 --- a/include/dt-bindings/clock/st,stm32mp25-rcc.h
 +++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
 @@ -109,7 +109,7 @@
@@ -63,6 +61,3 @@ index b6cf05ad4be6..66b3f95329af 100644
 +#define CK_SCMI_KER_ETR		124
  
  #endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
--- 
-2.39.5
-

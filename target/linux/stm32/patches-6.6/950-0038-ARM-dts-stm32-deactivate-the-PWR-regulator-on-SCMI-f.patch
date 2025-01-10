@@ -17,11 +17,9 @@ Change-Id: I52350b5d4a4c7ee37c7895647a0cc0c1300b57b9
  .../arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi |  1 -
  4 files changed, 53 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-index dc3b09f2f2af..42c52f91c441 100644
 --- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-@@ -26,60 +26,10 @@ scmi_reset: protocol@16 {
+@@ -26,60 +26,10 @@
  				reg = <0x16>;
  				#reset-cells = <1>;
  			};
@@ -82,11 +80,9 @@ index dc3b09f2f2af..42c52f91c441 100644
  
  /delete-node/ &clk_hse;
  /delete-node/ &clk_hsi;
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
-index 8bd2540f63ee..7c95ff580692 100644
 --- a/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157a-ev1-scmi.dtsi
-@@ -22,7 +22,6 @@ &cpu1 {
+@@ -22,7 +22,6 @@
  };
  
  &dsi {
@@ -94,11 +90,9 @@ index 8bd2540f63ee..7c95ff580692 100644
  	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
-index 6069c5067114..d7c9193f8cbd 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dtsi
-@@ -29,7 +29,6 @@ &cryp1 {
+@@ -29,7 +29,6 @@
  };
  
  &dsi {
@@ -106,11 +100,9 @@ index 6069c5067114..d7c9193f8cbd 100644
  	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
  };
  
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
-index 6cd714b9f4fc..3aafb366728a 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dtsi
-@@ -27,7 +27,6 @@ &cryp1 {
+@@ -27,7 +27,6 @@
  };
  
  &dsi {
@@ -118,6 +110,3 @@ index 6cd714b9f4fc..3aafb366728a 100644
  	clocks = <&rcc DSI_K>, <&scmi_clk CK_SCMI_HSE>, <&rcc DSI_PX>;
  };
  
--- 
-2.39.5
-

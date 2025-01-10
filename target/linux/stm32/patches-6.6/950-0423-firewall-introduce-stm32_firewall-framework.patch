@@ -31,11 +31,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  create mode 100644 drivers/bus/stm32_firewall.h
  create mode 100644 include/linux/bus/stm32_firewall_device.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dc44ba17acd2..9ee2ef502711 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20324,6 +20324,11 @@ T:	git git://linuxtv.org/media_tree.git
+@@ -20326,6 +20326,11 @@ T:	git git://linuxtv.org/media_tree.git
  F:	Documentation/devicetree/bindings/media/i2c/st,st-mipid02.yaml
  F:	drivers/media/i2c/st-mipid02.c
  
@@ -47,8 +45,6 @@ index dc44ba17acd2..9ee2ef502711 100644
  ST STM32 I2C/SMBUS DRIVER
  M:	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
  M:	Alain Volmat <alain.volmat@foss.st.com>
-diff --git a/arch/arm/mach-stm32/Kconfig b/arch/arm/mach-stm32/Kconfig
-index 98145031586f..ae21a9f78f9c 100644
 --- a/arch/arm/mach-stm32/Kconfig
 +++ b/arch/arm/mach-stm32/Kconfig
 @@ -12,6 +12,7 @@ menuconfig ARCH_STM32
@@ -59,8 +55,6 @@ index 98145031586f..ae21a9f78f9c 100644
  	help
  	  Support for STMicroelectronics STM32 processors.
  
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 89a78e62fcf0..0590a5f34c94 100644
 --- a/arch/arm64/Kconfig.platforms
 +++ b/arch/arm64/Kconfig.platforms
 @@ -293,6 +293,7 @@ config ARCH_STM32
@@ -71,8 +65,6 @@ index 89a78e62fcf0..0590a5f34c94 100644
  	help
  	  This enables support for ARMv8 based STMicroelectronics
  	  STM32 family, including:
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index fab27506d945..2fc2eafe82f4 100644
 --- a/drivers/bus/Kconfig
 +++ b/drivers/bus/Kconfig
 @@ -163,6 +163,16 @@ config QCOM_SSC_BLOCK_BUS
@@ -92,11 +84,9 @@ index fab27506d945..2fc2eafe82f4 100644
  config SUN50I_DE2_BUS
  	bool "Allwinner A64 DE2 Bus Driver"
  	  default ARM64
-diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-index d90eed189a65..fc0511450ec2 100644
 --- a/drivers/bus/Makefile
 +++ b/drivers/bus/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_l3_smx.o omap_l3_noc.o
+@@ -26,6 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_
  obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
  obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
  obj-$(CONFIG_QCOM_SSC_BLOCK_BUS)	+= qcom-ssc-block-bus.o
@@ -104,9 +94,6 @@ index d90eed189a65..fc0511450ec2 100644
  obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
  obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
  obj-$(CONFIG_OF)		+= simple-pm-bus.o
-diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
-new file mode 100644
-index 000000000000..decb79449047
 --- /dev/null
 +++ b/drivers/bus/stm32_firewall.c
 @@ -0,0 +1,294 @@
@@ -404,9 +391,6 @@ index 000000000000..decb79449047
 +	return 0;
 +}
 +EXPORT_SYMBOL_GPL(stm32_firewall_populate_bus);
-diff --git a/drivers/bus/stm32_firewall.h b/drivers/bus/stm32_firewall.h
-new file mode 100644
-index 000000000000..e5fac85fe346
 --- /dev/null
 +++ b/drivers/bus/stm32_firewall.h
 @@ -0,0 +1,83 @@
@@ -493,9 +477,6 @@ index 000000000000..e5fac85fe346
 +int stm32_firewall_populate_bus(struct stm32_firewall_controller *firewall_controller);
 +
 +#endif /* _STM32_FIREWALL_H */
-diff --git a/include/linux/bus/stm32_firewall_device.h b/include/linux/bus/stm32_firewall_device.h
-new file mode 100644
-index 000000000000..bbbee0b24ea8
 --- /dev/null
 +++ b/include/linux/bus/stm32_firewall_device.h
 @@ -0,0 +1,141 @@
@@ -640,6 +621,3 @@ index 000000000000..bbbee0b24ea8
 +
 +#endif /* CONFIG_STM32_FIREWALL */
 +#endif /* STM32_FIREWALL_DEVICE_H */
--- 
-2.39.5
-

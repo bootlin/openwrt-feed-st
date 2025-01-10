@@ -22,8 +22,6 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/370766
  3 files changed, 1849 insertions(+)
  create mode 100644 drivers/dma/stm32/stm32-dma3.c
 
-diff --git a/drivers/dma/stm32/Kconfig b/drivers/dma/stm32/Kconfig
-index b72ae1a4502f..4d8d8063133b 100644
 --- a/drivers/dma/stm32/Kconfig
 +++ b/drivers/dma/stm32/Kconfig
 @@ -34,4 +34,14 @@ config STM32_MDMA
@@ -41,8 +39,6 @@ index b72ae1a4502f..4d8d8063133b 100644
 +	  and want to use DMA3, say Y here.
 +
  endif
-diff --git a/drivers/dma/stm32/Makefile b/drivers/dma/stm32/Makefile
-index 663a3896a881..5082db4b4c1c 100644
 --- a/drivers/dma/stm32/Makefile
 +++ b/drivers/dma/stm32/Makefile
 @@ -2,3 +2,4 @@
@@ -50,9 +46,6 @@ index 663a3896a881..5082db4b4c1c 100644
  obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
  obj-$(CONFIG_STM32_MDMA) += stm32-mdma.o
 +obj-$(CONFIG_STM32_DMA3) += stm32-dma3.o
-diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
-new file mode 100644
-index 000000000000..b27d844630d6
 --- /dev/null
 +++ b/drivers/dma/stm32/stm32-dma3.c
 @@ -0,0 +1,1838 @@
@@ -1894,6 +1887,3 @@ index 000000000000..b27d844630d6
 +MODULE_DESCRIPTION("STM32 DMA3 controller driver");
 +MODULE_AUTHOR("Amelie Delaunay <amelie.delaunay@foss.st.com>");
 +MODULE_LICENSE("GPL");
--- 
-2.39.5
-

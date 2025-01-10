@@ -17,11 +17,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 64292d33b859..2514dc738d97 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -678,8 +678,6 @@ adv7511_detect(struct adv7511 *adv7511, struct drm_connector *connector)
+@@ -678,8 +678,6 @@ adv7511_detect(struct adv7511 *adv7511,
  		adv7511_power_on(adv7511);
  		if (connector)
  			adv7511_get_modes(adv7511, connector);
@@ -30,6 +28,3 @@ index 64292d33b859..2514dc738d97 100644
  	} else {
  		/* Renable HPD sensing */
  		if (adv7511->type == ADV7535)
--- 
-2.39.5
-

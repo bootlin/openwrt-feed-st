@@ -19,8 +19,6 @@ Change-Id: Ied4f40eaf6534b23c0c3cd85392d6ae704308c3d
  include/linux/tty_port.h   |   2 -
  6 files changed, 27 insertions(+), 172 deletions(-)
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index f6a32e19337d..c566c59cae9d 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
 @@ -117,9 +117,6 @@ struct n_tty_data {
@@ -33,7 +31,7 @@ index f6a32e19337d..c566c59cae9d 100644
  	/* protected by output lock */
  	unsigned int column;
  	unsigned int canon_column;
-@@ -329,8 +326,6 @@ static void reset_buffer_flags(struct n_tty_data *ldata)
+@@ -329,8 +326,6 @@ static void reset_buffer_flags(struct n_
  	ldata->erasing = 0;
  	bitmap_zero(ldata->read_flags, N_TTY_BUF_SIZE);
  	ldata->push = 0;
@@ -42,7 +40,7 @@ index f6a32e19337d..c566c59cae9d 100644
  }
  
  static void n_tty_packet_mode_flush(struct tty_struct *tty)
-@@ -1225,30 +1220,12 @@ static bool n_tty_is_char_flow_ctrl(struct tty_struct *tty, u8 c)
+@@ -1225,30 +1220,12 @@ static bool n_tty_is_char_flow_ctrl(stru
  	return c == START_CHAR(tty) || c == STOP_CHAR(tty);
  }
  
@@ -75,7 +73,7 @@ index f6a32e19337d..c566c59cae9d 100644
  	if (c == START_CHAR(tty)) {
  		start_tty(tty);
  		process_echoes(tty);
-@@ -1356,12 +1333,11 @@ static bool n_tty_receive_char_canon(struct tty_struct *tty, u8 c)
+@@ -1356,12 +1333,11 @@ static bool n_tty_receive_char_canon(str
  	return false;
  }
  
@@ -90,7 +88,7 @@ index f6a32e19337d..c566c59cae9d 100644
  		return;
  
  	if (L_ISIG(tty)) {
-@@ -1447,8 +1423,7 @@ static void n_tty_receive_char(struct tty_struct *tty, u8 c)
+@@ -1447,8 +1423,7 @@ static void n_tty_receive_char(struct tt
  	put_tty_queue(c, ldata);
  }
  
@@ -100,7 +98,7 @@ index f6a32e19337d..c566c59cae9d 100644
  {
  	if (I_ISTRIP(tty))
  		c &= 0x7f;
-@@ -1456,12 +1431,9 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, u8 c,
+@@ -1456,12 +1431,9 @@ static void n_tty_receive_char_closing(s
  		c = tolower(c);
  
  	if (I_IXON(tty)) {
@@ -116,7 +114,7 @@ index f6a32e19337d..c566c59cae9d 100644
  			 (tty->flow.stopped && !tty->flow.tco_stopped && I_IXANY(tty) &&
  			  c != INTR_CHAR(tty) && c != QUIT_CHAR(tty) &&
  			  c != SUSP_CHAR(tty))) {
-@@ -1507,27 +1479,6 @@ n_tty_receive_char_lnext(struct tty_struct *tty, u8 c, u8 flag)
+@@ -1507,27 +1479,6 @@ n_tty_receive_char_lnext(struct tty_stru
  		n_tty_receive_char_flagged(tty, c, flag);
  }
  
@@ -144,7 +142,7 @@ index f6a32e19337d..c566c59cae9d 100644
  static void
  n_tty_receive_buf_real_raw(const struct tty_struct *tty, const u8 *cp,
  			   size_t count)
-@@ -1566,7 +1517,7 @@ n_tty_receive_buf_raw(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+@@ -1566,7 +1517,7 @@ n_tty_receive_buf_raw(struct tty_struct
  
  static void
  n_tty_receive_buf_closing(struct tty_struct *tty, const u8 *cp, const u8 *fp,
@@ -153,7 +151,7 @@ index f6a32e19337d..c566c59cae9d 100644
  {
  	u8 flag = TTY_NORMAL;
  
-@@ -1574,13 +1525,12 @@ n_tty_receive_buf_closing(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+@@ -1574,13 +1525,12 @@ n_tty_receive_buf_closing(struct tty_str
  		if (fp)
  			flag = *fp++;
  		if (likely(flag == TTY_NORMAL))
@@ -169,7 +167,7 @@ index f6a32e19337d..c566c59cae9d 100644
  {
  	struct n_tty_data *ldata = tty->disc_data;
  	u8 flag = TTY_NORMAL;
-@@ -1611,7 +1561,7 @@ static void n_tty_receive_buf_standard(struct tty_struct *tty, const u8 *cp,
+@@ -1611,7 +1561,7 @@ static void n_tty_receive_buf_standard(s
  		}
  
  		if (test_bit(c, ldata->char_map))
@@ -178,7 +176,7 @@ index f6a32e19337d..c566c59cae9d 100644
  		else
  			n_tty_receive_char(tty, c);
  	}
-@@ -1622,40 +1572,21 @@ static void __receive_buf(struct tty_struct *tty, const u8 *cp, const u8 *fp,
+@@ -1622,40 +1572,21 @@ static void __receive_buf(struct tty_str
  {
  	struct n_tty_data *ldata = tty->disc_data;
  	bool preops = I_ISTRIP(tty) || (I_IUCLC(tty) && L_IEXTEN(tty));
@@ -223,7 +221,7 @@ index f6a32e19337d..c566c59cae9d 100644
  	if (ldata->icanon && !L_EXTPROC(tty))
  		return;
  
-@@ -2547,7 +2478,6 @@ static struct tty_ldisc_ops n_tty_ops = {
+@@ -2547,7 +2478,6 @@ static struct tty_ldisc_ops n_tty_ops =
  	.receive_buf     = n_tty_receive_buf,
  	.write_wakeup    = n_tty_write_wakeup,
  	.receive_buf2	 = n_tty_receive_buf2,
@@ -231,11 +229,9 @@ index f6a32e19337d..c566c59cae9d 100644
  };
  
  /**
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 3b99774d16de..7460e0364563 100644
 --- a/drivers/tty/tty_buffer.c
 +++ b/drivers/tty/tty_buffer.c
-@@ -105,7 +105,6 @@ static void tty_buffer_reset(struct tty_buffer *p, size_t size)
+@@ -105,7 +105,6 @@ static void tty_buffer_reset(struct tty_
  	p->size = size;
  	p->next = NULL;
  	p->commit = 0;
@@ -243,7 +239,7 @@ index 3b99774d16de..7460e0364563 100644
  	p->read = 0;
  	p->flags = true;
  }
-@@ -235,7 +234,6 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
+@@ -235,7 +234,6 @@ void tty_buffer_flush(struct tty_struct
  		buf->head = next;
  	}
  	buf->head->read = buf->head->commit;
@@ -251,7 +247,7 @@ index 3b99774d16de..7460e0364563 100644
  
  	if (ld && ld->ops->flush_buffer)
  		ld->ops->flush_buffer(tty);
-@@ -276,15 +274,17 @@ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
+@@ -276,15 +274,17 @@ static int __tty_buffer_request_room(str
  
  	n->flags = flags;
  	buf->tail = n;
@@ -274,7 +270,7 @@ index 3b99774d16de..7460e0364563 100644
  	 */
  	smp_store_release(&b->next, n);
  
-@@ -394,39 +394,6 @@ size_t tty_ldisc_receive_buf(struct tty_ldisc *ld, const u8 *p, const u8 *f,
+@@ -394,39 +394,6 @@ size_t tty_ldisc_receive_buf(struct tty_
  }
  EXPORT_SYMBOL_GPL(tty_ldisc_receive_buf);
  
@@ -314,7 +310,7 @@ index 3b99774d16de..7460e0364563 100644
  
  static size_t
  receive_buf(struct tty_port *port, struct tty_buffer *head, size_t count)
-@@ -465,7 +432,7 @@ static void flush_to_ldisc(struct work_struct *work)
+@@ -465,7 +432,7 @@ static void flush_to_ldisc(struct work_s
  	while (1) {
  		struct tty_buffer *head = buf->head;
  		struct tty_buffer *next;
@@ -323,7 +319,7 @@ index 3b99774d16de..7460e0364563 100644
  
  		/* Ldisc or user is trying to gain exclusive access */
  		if (atomic_read(&buf->priority))
-@@ -488,12 +455,10 @@ static void flush_to_ldisc(struct work_struct *work)
+@@ -488,12 +455,10 @@ static void flush_to_ldisc(struct work_s
  			continue;
  		}
  
@@ -339,11 +335,9 @@ index 3b99774d16de..7460e0364563 100644
  
  		if (need_resched())
  			cond_resched();
-diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
-index 624d104bd145..d8645d25ceb7 100644
 --- a/drivers/tty/tty_port.c
 +++ b/drivers/tty/tty_port.c
-@@ -41,26 +41,6 @@ static size_t tty_port_default_receive_buf(struct tty_port *port, const u8 *p,
+@@ -41,26 +41,6 @@ static size_t tty_port_default_receive_b
  	return count;
  }
  
@@ -370,7 +364,7 @@ index 624d104bd145..d8645d25ceb7 100644
  static void tty_port_default_wakeup(struct tty_port *port)
  {
  	struct tty_struct *tty = tty_port_tty_get(port);
-@@ -73,7 +53,6 @@ static void tty_port_default_wakeup(struct tty_port *port)
+@@ -73,7 +53,6 @@ static void tty_port_default_wakeup(stru
  
  const struct tty_port_client_operations tty_port_default_client_ops = {
  	.receive_buf = tty_port_default_receive_buf,
@@ -378,8 +372,6 @@ index 624d104bd145..d8645d25ceb7 100644
  	.write_wakeup = tty_port_default_wakeup,
  };
  EXPORT_SYMBOL_GPL(tty_port_default_client_ops);
-diff --git a/include/linux/tty_buffer.h b/include/linux/tty_buffer.h
-index 31125e3be3c5..a3ea94a21b4a 100644
 --- a/include/linux/tty_buffer.h
 +++ b/include/linux/tty_buffer.h
 @@ -15,7 +15,6 @@ struct tty_buffer {
@@ -390,11 +382,9 @@ index 31125e3be3c5..a3ea94a21b4a 100644
  	unsigned int read;
  	bool flags;
  	/* Data points here */
-diff --git a/include/linux/tty_ldisc.h b/include/linux/tty_ldisc.h
-index af01e89074b2..12b9b8f6189c 100644
 --- a/include/linux/tty_ldisc.h
 +++ b/include/linux/tty_ldisc.h
-@@ -204,20 +204,6 @@ int ldsem_down_write_nested(struct ld_semaphore *sem, int subclass,
+@@ -204,20 +204,6 @@ int ldsem_down_write_nested(struct ld_se
   *
   *	Optional.
   *
@@ -424,8 +414,6 @@ index af01e89074b2..12b9b8f6189c 100644
  
  	struct  module *owner;
  };
-diff --git a/include/linux/tty_port.h b/include/linux/tty_port.h
-index 6b367eb17979..e30d572be118 100644
 --- a/include/linux/tty_port.h
 +++ b/include/linux/tty_port.h
 @@ -41,8 +41,6 @@ struct tty_port_operations {
@@ -437,6 +425,3 @@ index 6b367eb17979..e30d572be118 100644
  	void (*write_wakeup)(struct tty_port *port);
  };
  
--- 
-2.39.5
-

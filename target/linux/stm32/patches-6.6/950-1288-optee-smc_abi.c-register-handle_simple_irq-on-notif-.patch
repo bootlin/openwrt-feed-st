@@ -26,11 +26,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  drivers/tee/optee/smc_abi.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index 8034c17d955d..9ae7e0d69dee 100644
 --- a/drivers/tee/optee/smc_abi.c
 +++ b/drivers/tee/optee/smc_abi.c
-@@ -1130,7 +1130,8 @@ static int optee_it_alloc(struct irq_domain *d, unsigned int virq,
+@@ -1130,7 +1130,8 @@ static int optee_it_alloc(struct irq_dom
  
  	hwirq = fwspec->param[0];
  
@@ -40,6 +38,3 @@ index 8034c17d955d..9ae7e0d69dee 100644
  
  	return 0;
  }
--- 
-2.39.5
-

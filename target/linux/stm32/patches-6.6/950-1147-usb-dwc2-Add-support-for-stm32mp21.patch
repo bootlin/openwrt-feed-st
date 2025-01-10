@@ -17,11 +17,9 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/usb/dwc2/params.c | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 93f52e371cdd..84341419e31d 100644
 --- a/drivers/usb/dwc2/params.c
 +++ b/drivers/usb/dwc2/params.c
-@@ -266,6 +266,24 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
+@@ -266,6 +266,24 @@ static void dwc2_set_stm32mp15_hsotg_par
  	p->hird_threshold_en = false;
  }
  
@@ -46,7 +44,7 @@ index 93f52e371cdd..84341419e31d 100644
  const struct of_device_id dwc2_of_match_table[] = {
  	{ .compatible = "brcm,bcm2835-usb", .data = dwc2_set_bcm_params },
  	{ .compatible = "hisilicon,hi6220-usb", .data = dwc2_set_his_params },
-@@ -303,6 +321,8 @@ const struct of_device_id dwc2_of_match_table[] = {
+@@ -303,6 +321,8 @@ const struct of_device_id dwc2_of_match_
  	  .data = dwc2_set_stm32mp15_fsotg_params },
  	{ .compatible = "st,stm32mp15-hsotg",
  	  .data = dwc2_set_stm32mp15_hsotg_params },
@@ -55,6 +53,3 @@ index 93f52e371cdd..84341419e31d 100644
  	{ .compatible = "intel,socfpga-agilex-hsotg",
  	  .data = dwc2_set_socfpga_agilex_params },
  	{},
--- 
-2.39.5
-

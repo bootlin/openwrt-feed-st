@@ -22,11 +22,9 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  arch/arm64/boot/dts/st/stm32mp213.dtsi | 32 ++++++++++++++++++++++++++
  1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp213.dtsi b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-index 2c25134e8803..8544c1bc672c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp213.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp213.dtsi
-@@ -58,3 +58,35 @@ mtl_tx_setup_2: tx-queues-config {
+@@ -58,3 +58,35 @@
  		};
  	};
  };
@@ -62,6 +60,3 @@ index 2c25134e8803..8544c1bc672c 100644
 +		status = "disabled";
 +	};
 +};
--- 
-2.39.5
-

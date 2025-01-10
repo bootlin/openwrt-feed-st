@@ -17,8 +17,6 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 68 +++++++++++++++++++++++++
  1 file changed, 68 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index 91da681bed67..f75372d81b60 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -9,6 +9,7 @@
@@ -38,7 +36,7 @@ index 91da681bed67..f75372d81b60 100644
  	u32 max_payload;
  	bool limit_downstream_mrrs;
  };
-@@ -110,6 +113,30 @@ static const struct dw_pcie_ops dw_pcie_ops = {
+@@ -110,6 +113,30 @@ static const struct dw_pcie_ops dw_pcie_
  	.stop_link = stm32_pcie_stop_link
  };
  
@@ -69,7 +67,7 @@ index 91da681bed67..f75372d81b60 100644
  static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
  			       struct platform_device *pdev)
  {
-@@ -118,6 +145,47 @@ static int stm32_add_pcie_port(struct stm32_pcie *stm32_pcie,
+@@ -118,6 +145,47 @@ static int stm32_add_pcie_port(struct st
  	struct dw_pcie_rp *pp = &pci->pp;
  	int ret;
  
@@ -117,6 +115,3 @@ index 91da681bed67..f75372d81b60 100644
  	ret = regmap_update_bits(stm32_pcie->regmap, SYSCFG_PCIECR,
  				 STM32MP25_PCIECR_TYPE_MASK, STM32MP25_PCIECR_RC);
  	if (ret)
--- 
-2.39.5
-

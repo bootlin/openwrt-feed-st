@@ -14,9 +14,6 @@ Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
  1 file changed, 56 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/display/panel/rocktech,hx8394.yaml
 
-diff --git a/Documentation/devicetree/bindings/display/panel/rocktech,hx8394.yaml b/Documentation/devicetree/bindings/display/panel/rocktech,hx8394.yaml
-new file mode 100644
-index 000000000000..02f9ed7ca7d5
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/display/panel/rocktech,hx8394.yaml
 @@ -0,0 +1,56 @@
@@ -76,6 +73,3 @@ index 000000000000..02f9ed7ca7d5
 +      };
 +    };
 +...
--- 
-2.39.5
-

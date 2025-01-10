@@ -22,8 +22,6 @@ Reviewed-by: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  .../devicetree/bindings/iio/adc/st,stm32-adc.yaml    | 12 +++++++++---
  1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-index 4002ed54dae7..27a4414b63ea 100644
 --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 @@ -29,6 +29,7 @@ properties:
@@ -73,6 +71,3 @@ index 4002ed54dae7..27a4414b63ea 100644
  
          then:
            properties:
--- 
-2.39.5
-

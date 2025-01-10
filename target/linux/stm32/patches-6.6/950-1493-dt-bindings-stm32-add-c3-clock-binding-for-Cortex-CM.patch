@@ -20,8 +20,6 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  include/dt-bindings/clock/st,stm32mp25-rcc.h  | 39 ++++++++++++++++++-
  2 files changed, 44 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-index cdbddcf80172..4c8be6c39443 100644
 --- a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
 @@ -118,6 +118,9 @@ properties:
@@ -45,8 +43,6 @@ index cdbddcf80172..4c8be6c39443 100644
 +                  <&scmi_clk CK_SCMI_MSI_KER_CK>;
      };
  ...
-diff --git a/include/dt-bindings/clock/st,stm32mp25-rcc.h b/include/dt-bindings/clock/st,stm32mp25-rcc.h
-index 29e202c9c920..04b7fd605a41 100644
 --- a/include/dt-bindings/clock/st,stm32mp25-rcc.h
 +++ b/include/dt-bindings/clock/st,stm32mp25-rcc.h
 @@ -365,9 +365,37 @@
@@ -102,6 +98,3 @@ index 29e202c9c920..04b7fd605a41 100644
 +#define CK_SCMI_RTC_AM		131
  
  #endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
--- 
-2.39.5
-

@@ -12,11 +12,9 @@ Change-Id: Ic448c6e25274e7b607659f74619d7e23df8c026c
  arch/arm/boot/dts/st/stm32mp131.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index cd56d389cf7f..d2645f5a1869 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1517,6 +1517,9 @@ part_number_otp: part_number_otp@4 {
+@@ -1517,6 +1517,9 @@
  				reg = <0x4 0x2>;
  				bits = <0 12>;
  			};
@@ -26,6 +24,3 @@ index cd56d389cf7f..d2645f5a1869 100644
  			ts_cal1: calib@5c {
  				reg = <0x5c 0x2>;
  			};
--- 
-2.39.5
-

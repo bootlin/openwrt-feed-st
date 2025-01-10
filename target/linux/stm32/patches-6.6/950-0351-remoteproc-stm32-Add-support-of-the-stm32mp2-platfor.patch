@@ -17,8 +17,6 @@ Tested-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 29 ++++++++++++++++++++++++++---
  1 file changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index c526ded399f5..d95ecccebba5 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -49,6 +49,9 @@
@@ -51,7 +49,7 @@ index c526ded399f5..d95ecccebba5 100644
  	void __iomem *rsc_va;
  };
  
-@@ -790,9 +799,19 @@ static const struct rproc_ops st_rproc_tee_ops = {
+@@ -790,9 +799,19 @@ static const struct rproc_ops st_rproc_t
  	.load		= stm32_rproc_tee_elf_load,
  };
  
@@ -73,7 +71,7 @@ index c526ded399f5..d95ecccebba5 100644
  	{},
  };
  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-@@ -951,17 +970,20 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -951,17 +970,20 @@ static int stm32_rproc_probe(struct plat
  	struct device *dev = &pdev->dev;
  	struct stm32_rproc *ddata;
  	struct device_node *np = dev->of_node;
@@ -95,7 +93,7 @@ index c526ded399f5..d95ecccebba5 100644
  		if (IS_ERR(trproc)) {
  			dev_err_probe(dev, PTR_ERR(trproc),
  				      "signed firmware not supported by TEE\n");
-@@ -982,6 +1004,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -982,6 +1004,7 @@ static int stm32_rproc_probe(struct plat
  	}
  
  	ddata = rproc->priv;
@@ -103,6 +101,3 @@ index c526ded399f5..d95ecccebba5 100644
  	ddata->trproc = trproc;
  	if (trproc) {
  		trproc->rproc = rproc;
--- 
-2.39.5
-

@@ -20,11 +20,9 @@ Reviewed-by: Christophe KERELLO <christophe.kerello@st.com>
  drivers/memory/stm32-omi.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/memory/stm32-omi.c b/drivers/memory/stm32-omi.c
-index 4a430c7eb7f6..44bdb0664f9a 100644
 --- a/drivers/memory/stm32-omi.c
 +++ b/drivers/memory/stm32-omi.c
-@@ -591,6 +591,13 @@ static int stm32_omi_probe(struct platform_device *pdev)
+@@ -591,6 +591,13 @@ static int stm32_omi_probe(struct platfo
  	omi->vdev = vdev;
  	platform_set_drvdata(pdev, omi);
  
@@ -38,6 +36,3 @@ index 4a430c7eb7f6..44bdb0664f9a 100644
  	ret = platform_device_add(vdev);
  	if (ret) {
  		platform_device_put(vdev);
--- 
-2.39.5
-

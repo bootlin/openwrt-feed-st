@@ -15,8 +15,6 @@ Change-Id: I8a6248ede128ea70b8d9204d8ae383888e419c8b
  3 files changed, 434 insertions(+)
  create mode 100644 drivers/mfd/stm32-pwr.c
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 68d71b4b55bd..d91d07bc35b7 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
 @@ -2129,6 +2129,16 @@ config MFD_STPMIC1
@@ -36,11 +34,9 @@ index 68d71b4b55bd..d91d07bc35b7 100644
  config MFD_STMFX
  	tristate "Support for STMicroelectronics Multi-Function eXpander (STMFX)"
  	depends on I2C
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index db1ba39de3b5..52d7b594fedd 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
-@@ -258,6 +258,7 @@ obj-$(CONFIG_MFD_SUN4I_GPADC)	+= sun4i-gpadc.o
+@@ -258,6 +258,7 @@ obj-$(CONFIG_MFD_SUN4I_GPADC)	+= sun4i-g
  
  obj-$(CONFIG_MFD_STM32_LPTIMER)	+= stm32-lptimer.o
  obj-$(CONFIG_MFD_STM32_TIMERS) 	+= stm32-timers.o
@@ -48,9 +44,6 @@ index db1ba39de3b5..52d7b594fedd 100644
  obj-$(CONFIG_MFD_MXS_LRADC)     += mxs-lradc.o
  obj-$(CONFIG_MFD_SC27XX_PMIC)	+= sprd-sc27xx-spi.o
  obj-$(CONFIG_RAVE_SP_CORE)	+= rave-sp.o
-diff --git a/drivers/mfd/stm32-pwr.c b/drivers/mfd/stm32-pwr.c
-new file mode 100644
-index 000000000000..c06e2fb6c0eb
 --- /dev/null
 +++ b/drivers/mfd/stm32-pwr.c
 @@ -0,0 +1,423 @@
@@ -477,6 +470,3 @@ index 000000000000..c06e2fb6c0eb
 +
 +arch_initcall(stm32_pwr_init);
 +module_exit(stm32_pwr_exit);
--- 
-2.39.5
-

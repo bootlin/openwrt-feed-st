@@ -17,8 +17,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/pci/controller/dwc/pcie-stm32.c | 20 +++++++++++++++++++-
  1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-stm32.c b/drivers/pci/controller/dwc/pcie-stm32.c
-index f1ac5de1c504..faf21b761063 100644
 --- a/drivers/pci/controller/dwc/pcie-stm32.c
 +++ b/drivers/pci/controller/dwc/pcie-stm32.c
 @@ -16,6 +16,7 @@
@@ -29,7 +27,7 @@ index f1ac5de1c504..faf21b761063 100644
  #include <linux/regmap.h>
  #include <linux/reset.h>
  #include "pcie-designware.h"
-@@ -383,12 +384,27 @@ static int stm32_pcie_probe(struct platform_device *pdev)
+@@ -383,12 +384,27 @@ static int stm32_pcie_probe(struct platf
  
  	platform_set_drvdata(pdev, stm32_pcie);
  
@@ -58,7 +56,7 @@ index f1ac5de1c504..faf21b761063 100644
  phy_disable:
  	phy_exit(stm32_pcie->phy);
  
-@@ -404,6 +420,8 @@ static int stm32_pcie_remove(struct platform_device *pdev)
+@@ -404,6 +420,8 @@ static int stm32_pcie_remove(struct plat
  	clk_disable_unprepare(stm32_pcie->clk);
  	pcie_port_irqs_hook = NULL;
  
@@ -67,6 +65,3 @@ index f1ac5de1c504..faf21b761063 100644
  	phy_exit(stm32_pcie->phy);
  
  	return 0;
--- 
-2.39.5
-

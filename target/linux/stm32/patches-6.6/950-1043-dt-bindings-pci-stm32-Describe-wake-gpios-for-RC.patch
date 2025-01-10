@@ -17,8 +17,6 @@ ACI: CIBUILD <MDG-smet-aci-builds@list.st.com>
  .../bindings/pci/st,stm32-pcie-host.yaml         | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
-index 106bbd89c1eb..13e82fb87e02 100644
 --- a/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/st,stm32-pcie-host.yaml
 @@ -89,6 +89,19 @@ properties:
@@ -57,6 +55,3 @@ index 106bbd89c1eb..13e82fb87e02 100644
 +             wake-gpios = <&gpioh 5 GPIO_ACTIVE_LOW | GPIO_PULL_UP>;
               msi-parent = <&v2m0>;
      };
--- 
-2.39.5
-

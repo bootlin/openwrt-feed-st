@@ -21,8 +21,6 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/stm32_rproc.c | 44 ++++++++++++++++++++------------
  1 file changed, 28 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index d06455f0a527..c526ded399f5 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
 @@ -64,12 +64,6 @@ struct stm32_rproc_mem {
@@ -38,7 +36,7 @@ index d06455f0a527..c526ded399f5 100644
  struct stm32_mbox {
  	const unsigned char name[10];
  	struct mbox_chan *chan;
-@@ -143,20 +137,40 @@ static int stm32_rproc_mem_release(struct rproc *rproc,
+@@ -143,20 +137,40 @@ static int stm32_rproc_mem_release(struc
  	return 0;
  }
  
@@ -83,7 +81,7 @@ index d06455f0a527..c526ded399f5 100644
  	if (cnt <= 0) {
  		dev_err(dev, "%s: dma-ranges property not defined\n", __func__);
  		return -EINVAL;
-@@ -165,11 +179,11 @@ static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
+@@ -165,11 +179,11 @@ static int stm32_rproc_of_memory_transla
  	p_mems = devm_kcalloc(dev, cnt, sizeof(*p_mems), GFP_KERNEL);
  	if (!p_mems)
  		return -ENOMEM;
@@ -97,7 +95,7 @@ index d06455f0a527..c526ded399f5 100644
  
  	ret = of_property_read_u32_array(np, "dma-ranges",
  					 (u32 *)mem_range, array_size);
-@@ -178,10 +192,8 @@ static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
+@@ -178,10 +192,8 @@ static int stm32_rproc_of_memory_transla
  		goto free_mem;
  	}
  
@@ -110,6 +108,3 @@ index d06455f0a527..c526ded399f5 100644
  
  		dev_dbg(dev, "memory range[%i]: da %#x, pa %pa, size %#zx:\n",
  			i, p_mems[i].dev_addr, &p_mems[i].bus_addr,
--- 
-2.39.5
-

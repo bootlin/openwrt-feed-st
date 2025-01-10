@@ -24,11 +24,9 @@ Reviewed-by: Alain VOLMAT <alain.volmat@st.com>
  .../media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c | 3 +++
  5 files changed, 18 insertions(+)
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-index 4a38d7bb477e..4d50ae09c5ad 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
-@@ -67,6 +67,9 @@ static const struct dcmipp_bytecap_pix_map dcmipp_bytecap_pix_map_list[] = {
+@@ -67,6 +67,9 @@ static const struct dcmipp_bytecap_pix_m
  	PIXMAP_MBUS_PFMT(VYUY8_2X8, VYUY),
  	PIXMAP_MBUS_PFMT(VYUY8_1X16, VYUY),
  	PIXMAP_MBUS_PFMT(Y8_1X8, GREY),
@@ -38,11 +36,9 @@ index 4a38d7bb477e..4d50ae09c5ad 100644
  	PIXMAP_MBUS_PFMT(SBGGR8_1X8, SBGGR8),
  	PIXMAP_MBUS_PFMT(SGBRG8_1X8, SGBRG8),
  	PIXMAP_MBUS_PFMT(SGRBG8_1X8, SGRBG8),
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-index b85787c5168e..73829b3ee881 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
-@@ -60,6 +60,9 @@ static const struct dcmipp_byteproc_pix_map dcmipp_byteproc_pix_map_list[] = {
+@@ -60,6 +60,9 @@ static const struct dcmipp_byteproc_pix_
  	PIXMAP_MBUS_BPP(VYUY8_2X8, 2),
  	PIXMAP_MBUS_BPP(VYUY8_1X16, 2),
  	PIXMAP_MBUS_BPP(Y8_1X8, 1),
@@ -52,8 +48,6 @@ index b85787c5168e..73829b3ee881 100644
  	PIXMAP_MBUS_BPP(SBGGR8_1X8, 1),
  	PIXMAP_MBUS_BPP(SGBRG8_1X8, 1),
  	PIXMAP_MBUS_BPP(SGRBG8_1X8, 1),
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
-index aedfb28c7677..3a1157f30db1 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-input.c
 @@ -25,6 +25,9 @@
@@ -66,7 +60,7 @@ index aedfb28c7677..3a1157f30db1 100644
  #define DCMIPP_PRCR_FORMAT_BYTE_STREAM	0x5a
  #define DCMIPP_PRCR_ESS			BIT(4)
  #define DCMIPP_PRCR_PCKPOL		BIT(5)
-@@ -95,6 +98,9 @@ static const struct dcmipp_inp_pix_map dcmipp_inp_pix_map_list[] = {
+@@ -95,6 +98,9 @@ static const struct dcmipp_inp_pix_map d
  	PIXMAP_SINK_SRC_PRCR_SWAP(VYUY8_1X16, VYUY8_1X16, YUV422, 0, MIPI_CSI2_DT_YUV422_8B),
  	/* GREY */
  	PIXMAP_SINK_SRC_PRCR_SWAP(Y8_1X8, Y8_1X8, G8, 0, MIPI_CSI2_DT_RAW8),
@@ -76,11 +70,9 @@ index aedfb28c7677..3a1157f30db1 100644
  	/* Raw Bayer */
  	PIXMAP_SINK_SRC_PRCR_SWAP(SBGGR8_1X8, SBGGR8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
  	PIXMAP_SINK_SRC_PRCR_SWAP(SGBRG8_1X8, SGBRG8_1X8, RAW8, 0, MIPI_CSI2_DT_RAW8),
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-index 65c627b44cc6..68b3577544d0 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-isp.c
-@@ -92,6 +92,9 @@ static const unsigned int dcmipp_isp_sink_pix_map_list[] = {
+@@ -92,6 +92,9 @@ static const unsigned int dcmipp_isp_sin
  	MEDIA_BUS_FMT_VYUY8_1X16,
  	/* GREY */
  	MEDIA_BUS_FMT_Y8_1X8,
@@ -90,11 +82,9 @@ index 65c627b44cc6..68b3577544d0 100644
  	/* Raw Bayer */
  	/* Raw 8 */
  	MEDIA_BUS_FMT_SBGGR8_1X8,
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-index f9752a9946a8..ecad6efa8250 100644
 --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
 +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-pixelproc.c
-@@ -131,6 +131,9 @@ static const struct dcmipp_pixelproc_pix_map dcmipp_pixelproc_sink_pix_map_list[
+@@ -131,6 +131,9 @@ static const struct dcmipp_pixelproc_pix
  	PIXMAP_MBUS(VYUY8_2X8, DCMIPP_AUX_PIPE),
  	PIXMAP_MBUS(VYUY8_1X16, DCMIPP_AUX_PIPE),
  	PIXMAP_MBUS(Y8_1X8, DCMIPP_AUX_PIPE),
@@ -104,6 +94,3 @@ index f9752a9946a8..ecad6efa8250 100644
  	/* ISP output formats */
  	PIXMAP_MBUS(RGB888_1X24, DCMIPP_ALL_PIXEL_PIPES),
  	PIXMAP_MBUS(YUV8_1X24, DCMIPP_ALL_PIXEL_PIPES),
--- 
-2.39.5
-

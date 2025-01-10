@@ -11,8 +11,6 @@ Change-Id: Ia98c5dea428654f3685c53a9c307992485a3b2d1
  .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml     | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
-index cab0d425eaa4..5e0dc7619396 100644
 --- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
 +++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
 @@ -21,6 +21,9 @@ properties:
@@ -25,6 +23,3 @@ index cab0d425eaa4..5e0dc7619396 100644
  required:
    - compatible
    - '#io-channel-cells'
--- 
-2.39.5
-

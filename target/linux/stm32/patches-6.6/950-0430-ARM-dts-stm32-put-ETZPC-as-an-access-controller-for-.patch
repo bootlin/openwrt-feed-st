@@ -18,11 +18,9 @@ Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
  arch/arm/boot/dts/st/stm32mp13xf.dtsi |  1 +
  5 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
-index 23f94b8cc6af..693a1d5f22da 100644
 --- a/arch/arm/boot/dts/st/stm32mp131.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
-@@ -1040,10 +1040,11 @@ ethernet_mac2_address: mac2@ea {
+@@ -1040,10 +1040,11 @@
  		};
  
  		etzpc: bus@5c007000 {
@@ -35,7 +33,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  			ranges;
  
  			adc_2: adc@48004000 {
-@@ -1056,6 +1057,7 @@ adc_2: adc@48004000 {
+@@ -1056,6 +1057,7 @@
  				#interrupt-cells = <1>;
  				#address-cells = <1>;
  				#size-cells = <0>;
@@ -43,7 +41,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				adc2: adc@0 {
-@@ -1107,6 +1109,7 @@ usbotg_hs: usb@49000000 {
+@@ -1107,6 +1109,7 @@
  				usb33d-supply = <&scmi_usb33>;
  				power-domains = <&pd_core>;
  				wakeup-source;
@@ -51,7 +49,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1121,6 +1124,7 @@ usart1: serial@4c000000 {
+@@ -1121,6 +1124,7 @@
  				dmas = <&dmamux1 41 0x400 0x5>,
  				       <&dmamux1 42 0x400 0x1>;
  				dma-names = "rx", "tx";
@@ -59,7 +57,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1135,6 +1139,7 @@ usart2: serial@4c001000 {
+@@ -1135,6 +1139,7 @@
  				dmas = <&dmamux1 43 0x400 0x5>,
  				       <&dmamux1 44 0x400 0x1>;
  				dma-names = "rx", "tx";
@@ -67,7 +65,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1146,6 +1151,7 @@ i2s4: audio-controller@4c002000 {
+@@ -1146,6 +1151,7 @@
  				dmas = <&dmamux1 83 0x400 0x01>,
  				       <&dmamux1 84 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -75,7 +73,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1160,6 +1166,7 @@ spi4: spi@4c002000 {
+@@ -1160,6 +1166,7 @@
  				dmas = <&dmamux1 83 0x400 0x01>,
  				       <&dmamux1 84 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -83,7 +81,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1174,6 +1181,7 @@ spi5: spi@4c003000 {
+@@ -1174,6 +1181,7 @@
  				dmas = <&dmamux1 85 0x400 0x01>,
  				       <&dmamux1 86 0x400 0x01>;
  				dma-names = "rx", "tx";
@@ -91,7 +89,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1192,6 +1200,7 @@ i2c3: i2c@4c004000 {
+@@ -1192,6 +1200,7 @@
  				dma-names = "rx", "tx";
  				st,syscfg-fmp = <&syscfg 0x4 0x4>;
  				i2c-analog-filter;
@@ -99,7 +97,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1210,6 +1219,7 @@ i2c4: i2c@4c005000 {
+@@ -1210,6 +1219,7 @@
  				dma-names = "rx", "tx";
  				st,syscfg-fmp = <&syscfg 0x4 0x8>;
  				i2c-analog-filter;
@@ -107,7 +105,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1228,6 +1238,7 @@ i2c5: i2c@4c006000 {
+@@ -1228,6 +1238,7 @@
  				dma-names = "rx", "tx";
  				st,syscfg-fmp = <&syscfg 0x4 0x10>;
  				i2c-analog-filter;
@@ -115,7 +113,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1240,6 +1251,7 @@ timers12: timer@4c007000 {
+@@ -1240,6 +1251,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM12_K>;
  				clock-names = "int";
@@ -123,7 +121,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1264,6 +1276,7 @@ timers13: timer@4c008000 {
+@@ -1264,6 +1276,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM13_K>;
  				clock-names = "int";
@@ -131,7 +129,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1288,6 +1301,7 @@ timers14: timer@4c009000 {
+@@ -1288,6 +1301,7 @@
  				interrupt-names = "global";
  				clocks = <&rcc TIM14_K>;
  				clock-names = "int";
@@ -139,7 +137,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1317,6 +1331,7 @@ timers15: timer@4c00a000 {
+@@ -1317,6 +1331,7 @@
  				       <&dmamux1 107 0x400 0x1>,
  				       <&dmamux1 108 0x400 0x1>;
  				dma-names = "ch1", "up", "trig", "com";
@@ -147,7 +145,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1344,6 +1359,7 @@ timers16: timer@4c00b000 {
+@@ -1344,6 +1359,7 @@
  				dmas = <&dmamux1 109 0x400 0x1>,
  				       <&dmamux1 110 0x400 0x1>;
  				dma-names = "ch1", "up";
@@ -155,7 +153,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1371,6 +1387,7 @@ timers17: timer@4c00c000 {
+@@ -1371,6 +1387,7 @@
  				dmas = <&dmamux1 111 0x400 0x1>,
  				       <&dmamux1 112 0x400 0x1>;
  				dma-names = "ch1", "up";
@@ -163,7 +161,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1396,6 +1413,7 @@ lptimer2: timer@50021000 {
+@@ -1396,6 +1413,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core_ret>;
  				wakeup-source;
@@ -171,7 +169,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1431,6 +1449,7 @@ lptimer3: timer@50022000 {
+@@ -1431,6 +1449,7 @@
  				clock-names = "mux";
  				power-domains = <&pd_core_ret>;
  				wakeup-source;
@@ -179,7 +177,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				pwm {
-@@ -1459,6 +1478,7 @@ hash: hash@54003000 {
+@@ -1459,6 +1478,7 @@
  				resets = <&rcc HASH1_R>;
  				dmas = <&mdma 30 0x2 0x1000a02 0x0 0x0 0x0>;
  				dma-names = "in";
@@ -187,7 +185,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1467,6 +1487,7 @@ rng: rng@54004000 {
+@@ -1467,6 +1487,7 @@
  				reg = <0x54004000 0x400>;
  				clocks = <&rcc RNG1_K>;
  				resets = <&rcc RNG1_R>;
@@ -195,7 +193,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1482,6 +1503,7 @@ fmc: memory-controller@58002000 {
+@@ -1482,6 +1503,7 @@
  				#size-cells = <1>;
  				clocks = <&rcc FMC_K>;
  				resets = <&rcc FMC_R>;
@@ -203,7 +201,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				nand-controller@4,0 {
-@@ -1515,6 +1537,7 @@ qspi: spi@58003000 {
+@@ -1515,6 +1537,7 @@
  				dma-names = "tx", "rx";
  				clocks = <&rcc QSPI_K>;
  				resets = <&rcc QSPI_R>;
@@ -211,7 +209,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1529,6 +1552,7 @@ sdmmc1: mmc@58005000 {
+@@ -1529,6 +1552,7 @@
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <130000000>;
@@ -219,7 +217,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1543,6 +1567,7 @@ sdmmc2: mmc@58007000 {
+@@ -1543,6 +1567,7 @@
  				cap-sd-highspeed;
  				cap-mmc-highspeed;
  				max-frequency = <130000000>;
@@ -227,7 +225,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  			};
  
-@@ -1568,6 +1593,7 @@ ethernet1: ethernet@5800a000 {
+@@ -1568,6 +1593,7 @@
  				snps,pbl = <2>;
  				snps,axi-config = <&stmmac_axi_config_1>;
  				snps,tso;
@@ -235,7 +233,7 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				stmmac_axi_config_1: stmmac-axi-config {
-@@ -1587,6 +1613,7 @@ usbphyc: usbphyc@5a006000 {
+@@ -1587,6 +1613,7 @@
  				resets = <&rcc USBPHY_R>;
  				vdda1v1-supply = <&scmi_reg11>;
  				vdda1v8-supply = <&scmi_reg18>;
@@ -243,11 +241,9 @@ index 23f94b8cc6af..693a1d5f22da 100644
  				status = "disabled";
  
  				usbphyc_port0: usb-phy@0 {
-diff --git a/arch/arm/boot/dts/st/stm32mp133.dtsi b/arch/arm/boot/dts/st/stm32mp133.dtsi
-index 402bd64e3491..4b6e7ae12937 100644
 --- a/arch/arm/boot/dts/st/stm32mp133.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp133.dtsi
-@@ -47,6 +47,7 @@ adc_1: adc@48003000 {
+@@ -47,6 +47,7 @@
  		#interrupt-cells = <1>;
  		#address-cells = <1>;
  		#size-cells = <0>;
@@ -255,7 +251,7 @@ index 402bd64e3491..4b6e7ae12937 100644
  		status = "disabled";
  
  		adc1: adc@0 {
-@@ -91,6 +92,7 @@ ethernet2: ethernet@5800e000 {
+@@ -91,6 +92,7 @@
  		snps,pbl = <2>;
  		snps,axi-config = <&stmmac_axi_config_2>;
  		snps,tso;
@@ -263,11 +259,9 @@ index 402bd64e3491..4b6e7ae12937 100644
  		status = "disabled";
  
  		stmmac_axi_config_2: stmmac-axi-config {
-diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-index c8d77f7a89b6..d95b3d6d947f 100644
 --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
-@@ -14,6 +14,7 @@ dcmipp: dcmipp@5a000000 {
+@@ -14,6 +14,7 @@
  		resets = <&rcc DCMIPP_R>;
  		clocks = <&rcc DCMIPP_K>;
  		clock-names = "kclk";
@@ -275,7 +269,7 @@ index c8d77f7a89b6..d95b3d6d947f 100644
  		status = "disabled";
  	};
  
-@@ -25,6 +26,7 @@ ltdc: display-controller@5a001000 {
+@@ -25,6 +26,7 @@
  		clocks = <&rcc LTDC_PX>;
  		clock-names = "lcd";
  		resets = <&scmi_reset RST_SCMI_LTDC>;
@@ -283,11 +277,9 @@ index c8d77f7a89b6..d95b3d6d947f 100644
  		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp13xc.dtsi b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
-index 969386d52b20..b49b9b9c37f5 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xc.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xc.dtsi
-@@ -14,6 +14,7 @@ cryp: crypto@54002000 {
+@@ -14,6 +14,7 @@
  		dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
  		       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
  		dma-names = "in", "out";
@@ -295,11 +287,9 @@ index 969386d52b20..b49b9b9c37f5 100644
  		status = "disabled";
  	};
  };
-diff --git a/arch/arm/boot/dts/st/stm32mp13xf.dtsi b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-index 969386d52b20..b49b9b9c37f5 100644
 --- a/arch/arm/boot/dts/st/stm32mp13xf.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp13xf.dtsi
-@@ -14,6 +14,7 @@ cryp: crypto@54002000 {
+@@ -14,6 +14,7 @@
  		dmas = <&mdma 28 0x0 0x400202 0x0 0x0 0x0>,
  		       <&mdma 29 0x3 0x400808 0x0 0x0 0x0>;
  		dma-names = "in", "out";
@@ -307,6 +297,3 @@ index 969386d52b20..b49b9b9c37f5 100644
  		status = "disabled";
  	};
  };
--- 
-2.39.5
-

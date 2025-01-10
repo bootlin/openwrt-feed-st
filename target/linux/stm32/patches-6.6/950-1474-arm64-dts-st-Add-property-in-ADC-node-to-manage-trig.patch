@@ -20,11 +20,9 @@ Tested-by: Cheick TRAORE <cheick.traore-ext@st.com>
  arch/arm64/boot/dts/st/stm32mp231.dtsi | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp231.dtsi b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-index b9322a66e8b0..09f81d5dcc4c 100644
 --- a/arch/arm64/boot/dts/st/stm32mp231.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp231.dtsi
-@@ -1535,6 +1535,7 @@ adc1: adc@0 {
+@@ -1535,6 +1535,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -32,7 +30,7 @@ index b9322a66e8b0..09f81d5dcc4c 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1554,6 +1555,7 @@ adc2: adc@100 {
+@@ -1554,6 +1555,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -40,7 +38,7 @@ index b9322a66e8b0..09f81d5dcc4c 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
-@@ -1680,6 +1682,7 @@ adc3: adc@0 {
+@@ -1680,6 +1682,7 @@
  					#size-cells = <0>;
  					nvmem-cells = <&vrefint>;
  					nvmem-cell-names = "vrefint";
@@ -48,6 +46,3 @@ index b9322a66e8b0..09f81d5dcc4c 100644
  					status = "disabled";
  					channel@14 {
  						reg = <14>;
--- 
-2.39.5
-

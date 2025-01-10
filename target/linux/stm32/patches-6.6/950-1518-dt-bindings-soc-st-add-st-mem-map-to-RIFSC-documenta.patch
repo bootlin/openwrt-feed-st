@@ -17,8 +17,6 @@ Reviewed-by: Yann GAUTIER <yann.gautier@foss.st.com>
  .../devicetree/bindings/bus/st,stm32mp25-rifsc.yaml          | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
-index da15218ddd26..b179fd5f580c 100644
 --- a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 +++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 @@ -61,6 +61,11 @@ properties:
@@ -33,6 +31,3 @@ index da15218ddd26..b179fd5f580c 100644
  patternProperties:
    "^.*@[0-9a-f]+$":
      description: Peripherals
--- 
-2.39.5
-

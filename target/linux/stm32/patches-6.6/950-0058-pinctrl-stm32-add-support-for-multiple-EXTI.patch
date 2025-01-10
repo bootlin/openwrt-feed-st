@@ -11,8 +11,6 @@ Change-Id: Ia3acaadd400cb064d896e4aefff16947266ba52d
  drivers/pinctrl/stm32/pinctrl-stm32.c | 82 ++++++++++++++++++++++++++-
  1 file changed, 79 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index b02258bd58a2..ee84c40757a3 100644
 --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
 +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
 @@ -169,6 +169,7 @@ struct stm32_pinctrl {
@@ -23,7 +21,7 @@ index b02258bd58a2..ee84c40757a3 100644
  	spinlock_t irqmux_lock;
  };
  
-@@ -617,15 +618,30 @@ static int stm32_gpio_domain_select(struct irq_domain *dm,
+@@ -617,15 +618,30 @@ static int stm32_gpio_domain_select(stru
  {
  	struct fwnode_handle *fwnode = fwspec->fwnode;
  	struct stm32_pinctrl *pctl = dm->host_data;
@@ -56,7 +54,7 @@ index b02258bd58a2..ee84c40757a3 100644
  }
  
  static int stm32_gpio_domain_match(struct irq_domain *dm,
-@@ -1802,8 +1818,12 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
+@@ -1807,8 +1823,12 @@ err_clk:
  static void stm32_pctrl_remove_irq(void *data)
  {
  	struct irq_domain *domain = data;
@@ -69,7 +67,7 @@ index b02258bd58a2..ee84c40757a3 100644
  }
  
  static struct irq_domain *stm32_pctrl_get_irq_domain(struct stm32_pinctrl *pctl)
-@@ -1811,7 +1831,63 @@ static struct irq_domain *stm32_pctrl_get_irq_domain(struct stm32_pinctrl *pctl)
+@@ -1816,7 +1836,63 @@ static struct irq_domain *stm32_pctrl_ge
  	struct device_node *np = pctl->dev->of_node;
  	struct device_node *parent;
  	struct irq_domain *parent_domain, *domain;
@@ -134,6 +132,3 @@ index b02258bd58a2..ee84c40757a3 100644
  
  	if (!of_property_present(np, "interrupt-parent"))
  		return NULL;
--- 
-2.39.5
-

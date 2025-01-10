@@ -18,11 +18,9 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/remoteproc/tee_remoteproc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/tee_remoteproc.c b/drivers/remoteproc/tee_remoteproc.c
-index 49e1e0caf889..fbdbd9a7bf97 100644
 --- a/drivers/remoteproc/tee_remoteproc.c
 +++ b/drivers/remoteproc/tee_remoteproc.c
-@@ -332,8 +332,8 @@ static int tee_rproc_probe(struct device *dev)
+@@ -332,8 +332,8 @@ static int tee_rproc_probe(struct device
  	if (IS_ERR(tee_ctx))
  		return PTR_ERR(tee_ctx);
  
@@ -33,6 +31,3 @@ index 49e1e0caf889..fbdbd9a7bf97 100644
  		ret = -ENOMEM;
  		goto err;
  	}
--- 
-2.39.5
-

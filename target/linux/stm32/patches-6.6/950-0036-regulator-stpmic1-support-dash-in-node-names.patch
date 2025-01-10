@@ -18,11 +18,9 @@ Domain-Review: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
  drivers/regulator/stpmic1_regulator.c | 56 +++++++++++++++------------
  1 file changed, 32 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/regulator/stpmic1_regulator.c b/drivers/regulator/stpmic1_regulator.c
-index 14c32f37fa28..93aede02cc26 100644
 --- a/drivers/regulator/stpmic1_regulator.c
 +++ b/drivers/regulator/stpmic1_regulator.c
-@@ -621,26 +621,29 @@ static irqreturn_t stpmic1_boost_irq_handler(int irq, void *data)
+@@ -621,26 +621,29 @@ static irqreturn_t stpmic1_boost_irq_han
  }
  
  #define MATCH(_name, _id) \
@@ -68,7 +66,7 @@ index 14c32f37fa28..93aede02cc26 100644
  };
  
  static struct regulator_dev *
-@@ -757,22 +760,27 @@ static int stpmic1_regulator_probe(struct platform_device *pdev)
+@@ -757,22 +760,27 @@ static int stpmic1_regulator_probe(struc
  	if (!usb_data)
  		return -ENOMEM;
  
@@ -104,6 +102,3 @@ index 14c32f37fa28..93aede02cc26 100644
  				usb_data->sw_out_rdev = rdev;
  		}
  		if (IS_ERR(rdev))
--- 
-2.39.5
-

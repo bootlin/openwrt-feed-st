@@ -17,11 +17,9 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  drivers/mailbox/stm32-ipcc.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-index 8213f5892953..3f28be8637b2 100644
 --- a/drivers/mailbox/stm32-ipcc.c
 +++ b/drivers/mailbox/stm32-ipcc.c
-@@ -522,7 +522,12 @@ static struct platform_driver stm32_ipcc_driver = {
+@@ -522,7 +522,12 @@ static struct platform_driver stm32_ipcc
  	.remove		= stm32_ipcc_remove,
  };
  
@@ -35,6 +33,3 @@ index 8213f5892953..3f28be8637b2 100644
  
  MODULE_AUTHOR("Ludovic Barre <ludovic.barre@st.com>");
  MODULE_AUTHOR("Fabien Dessenne <fabien.dessenne@st.com>");
--- 
-2.39.5
-

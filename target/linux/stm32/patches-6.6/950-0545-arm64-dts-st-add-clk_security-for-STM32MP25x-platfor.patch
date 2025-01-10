@@ -12,11 +12,9 @@ Change-Id: Iaf9d31a46f3694601cbc600bd353433e23fff6b4
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index dc98181f0f13..e33bc5c68a24 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -52,6 +52,12 @@ ck_icn_ls_mcu: ck-icn-ls-mcu {
+@@ -52,6 +52,12 @@
  			compatible = "fixed-clock";
  			clock-frequency = <200000000>;
  		};
@@ -29,6 +27,3 @@ index dc98181f0f13..e33bc5c68a24 100644
  	};
  
  	firmware {
--- 
-2.39.5
-

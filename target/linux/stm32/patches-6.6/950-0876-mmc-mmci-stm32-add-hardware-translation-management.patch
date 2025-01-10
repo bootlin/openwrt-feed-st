@@ -19,8 +19,6 @@ ACI: CITOOLS <MDG-smet-aci-reviews@list.st.com>
  drivers/mmc/host/mmci_stm32_sdmmc.c | 44 +++++++++++++++++++++++++++++
  1 file changed, 44 insertions(+)
 
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index f5da7f9baa52..235901c62ad7 100644
 --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
 +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
 @@ -7,9 +7,11 @@
@@ -45,7 +43,7 @@ index f5da7f9baa52..235901c62ad7 100644
  };
  
  struct sdmmc_dlyb;
-@@ -189,6 +194,8 @@ static int sdmmc_idma_setup(struct mmci_host *host)
+@@ -189,6 +194,8 @@ static int sdmmc_idma_setup(struct mmci_
  {
  	struct sdmmc_idma *idma;
  	struct device *dev = mmc_dev(host->mmc);
@@ -54,7 +52,7 @@ index f5da7f9baa52..235901c62ad7 100644
  
  	idma = devm_kzalloc(dev, sizeof(*idma), GFP_KERNEL);
  	if (!idma)
-@@ -213,6 +220,22 @@ static int sdmmc_idma_setup(struct mmci_host *host)
+@@ -213,6 +220,22 @@ static int sdmmc_idma_setup(struct mmci_
  		host->mmc->max_seg_size = host->mmc->max_req_size;
  	}
  
@@ -77,7 +75,7 @@ index f5da7f9baa52..235901c62ad7 100644
  	return dma_set_max_seg_size(dev, host->mmc->max_seg_size);
  }
  
-@@ -223,10 +246,19 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
+@@ -223,10 +246,19 @@ static int sdmmc_idma_start(struct mmci_
  	struct sdmmc_lli_desc *desc = (struct sdmmc_lli_desc *)idma->sg_cpu;
  	struct mmc_data *data = host->data;
  	struct scatterlist *sg;
@@ -97,7 +95,7 @@ index f5da7f9baa52..235901c62ad7 100644
  	if (!host->variant->dma_lli || data->sg_len == 1 ||
  	    idma->use_bounce_buffer) {
  		u32 dma_addr;
-@@ -269,6 +301,7 @@ static void sdmmc_idma_error(struct mmci_host *host)
+@@ -269,6 +301,7 @@ static void sdmmc_idma_error(struct mmci
  {
  	struct mmc_data *data = host->data;
  	struct sdmmc_idma *idma = host->dma_priv;
@@ -105,7 +103,7 @@ index f5da7f9baa52..235901c62ad7 100644
  
  	if (!dma_inprogress(host))
  		return;
-@@ -277,6 +310,10 @@ static void sdmmc_idma_error(struct mmci_host *host)
+@@ -277,6 +310,10 @@ static void sdmmc_idma_error(struct mmci
  	host->dma_in_progress = false;
  	data->host_cookie = 0;
  
@@ -116,7 +114,7 @@ index f5da7f9baa52..235901c62ad7 100644
  	if (!idma->use_bounce_buffer)
  		dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
  			     mmc_get_dma_dir(data));
-@@ -284,12 +321,19 @@ static void sdmmc_idma_error(struct mmci_host *host)
+@@ -284,12 +321,19 @@ static void sdmmc_idma_error(struct mmci
  
  static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
  {
@@ -136,6 +134,3 @@ index f5da7f9baa52..235901c62ad7 100644
  	if (!data->host_cookie)
  		sdmmc_idma_unprep_data(host, data, 0);
  }
--- 
-2.39.5
-

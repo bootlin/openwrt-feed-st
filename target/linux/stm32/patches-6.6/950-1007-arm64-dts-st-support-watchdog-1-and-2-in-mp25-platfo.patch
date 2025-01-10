@@ -21,11 +21,9 @@ Reviewed-by: Antonio Maria BORNEO <antonio.borneo@foss.st.com>
  arch/arm64/boot/dts/st/stm32mp251.dtsi | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index ae6f4b0d2805..cc65940fb4e3 100644
 --- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
 +++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -1928,6 +1928,26 @@ rng: rng@42020000 {
+@@ -1928,6 +1928,26 @@
  				status = "disabled";
  			};
  
@@ -52,6 +50,3 @@ index ae6f4b0d2805..cc65940fb4e3 100644
  			spi8: spi@46020000 {
  				#address-cells = <1>;
  				#size-cells = <0>;
--- 
-2.39.5
-

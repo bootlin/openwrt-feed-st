@@ -18,8 +18,6 @@ Reviewed-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
  .../devicetree/bindings/remoteproc/st,stm32-m0.yaml         | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
-index 36fd06e47b62..a3ff0f412e0f 100644
 --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
 +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-m0.yaml
 @@ -25,10 +25,6 @@ properties:
@@ -49,6 +47,3 @@ index 36fd06e47b62..a3ff0f412e0f 100644
        resets = <&rcc C3_R>;
        reset-names = "mcu_rst";
      };
--- 
-2.39.5
-
