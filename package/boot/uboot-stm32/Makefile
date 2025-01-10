@@ -22,23 +22,21 @@ include $(INCLUDE_DIR)/u-boot.mk
 include $(INCLUDE_DIR)/package.mk
 
 define U-Boot/Default
-  BUILD_TARGET=stm32
+  BUILD_TARGET:=stm32
+  UBOOT_IMAGE:=u-boot.bin u-boot.dtb
 endef
 
 define U-Boot/stm32mp15
-  UBOOT_IMAGE:=u-boot-nodtb.bin
   BUILD_SUBTARGET:=stm32mp1
   UBOOT_CONFIG:=stm32mp15
 endef
 
 define U-Boot/stm32mp13
-  UBOOT_IMAGE:=u-boot-nodtb.bin
   BUILD_SUBTARGET:=stm32mp1
   UBOOT_CONFIG:=stm32mp13
 endef
 
 define U-Boot/stm32mp25
-  UBOOT_IMAGE:=u-boot.bin
   BUILD_SUBTARGET:=stm32mp2
   UBOOT_CONFIG:=stm32mp25
 endef
@@ -70,14 +68,12 @@ UBOOT_MAKE_FLAGS += DEVICE_TREE=$(DEVICE_TREE)
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/$(UBOOT_IMAGE) \
-		$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.bin
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/u-boot.dtb \
-		$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.dtb
+	$(foreach img,$(UBOOT_IMAGE), \
+		$(CP) $(PKG_BUILD_DIR)/$(img) $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-$(img); \
+	)
 endef
 
 define Package/u-boot/install/default
 endef
-
 
 $(eval $(call BuildPackage/U-Boot))
