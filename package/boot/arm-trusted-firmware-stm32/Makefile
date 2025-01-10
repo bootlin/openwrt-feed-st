@@ -17,6 +17,7 @@ PKG_MIRROR_HASH:=7af0d84c464f7a51e4ef727962b50c1a8d42e70518ae3330b1b5d6b3399b0c3
 
 PKG_MAINTAINER:=Thomas Richard <thomas.richard@bootlin.com>
 
+include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/trusted-firmware-a.mk
 include $(INCLUDE_DIR)/package.mk
 
@@ -24,7 +25,6 @@ define Trusted-Firmware-A/Default
   BUILD_TARGET:=stm32
   BUILD_DEVICES:=$(1) $(1)-demo
   DEPENDS:=+u-boot-$(1) +optee-os-$(1)
-  TFA_IMAGE:=*.stm32 *.bin
 endef
 
 define Trusted-Firmware-A/stm32mp1
@@ -68,6 +68,7 @@ TFA_TARGETS := \
 	       stm32mp257f-ev1
 
 TFA_MAKE_FLAGS += \
+		$(if $(CONFIG_BINUTILS_VERSION_2_37)$(CONFIG_BINUTILS_VERSION_2_38),,LDFLAGS="-no-warn-rwx-segments") \
 		$(if $(CONFIG_aarch64), ARCH=aarch64 SPD=opteed, ARCH=aarch32 AARCH32_SP=optee) \
 		BL32=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-header_v2.bin \
 		BL32_EXTRA1=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pager_v2.bin \
@@ -79,15 +80,12 @@ TFA_MAKE_FLAGS += \
 		$(MAKE_ARGS) \
 		all fip
 
-define Build/InstallDev
+define Package/trusted-firmware-a/install
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
 	$(CP) $(PKG_BUILD_DIR)/build/$(PLAT)/release/tf-a-$(BUILD_VARIANT).stm32 \
 		$(STAGING_DIR_IMAGE)/tf-a-$(BUILD_VARIANT).stm32
 	$(CP) $(PKG_BUILD_DIR)/build/$(PLAT)/release/fip.bin \
 		$(STAGING_DIR_IMAGE)/fip-$(BUILD_VARIANT).bin
-endef
-
-define Package/trusted-firmare-a/install/default
 endef
 
 $(eval $(call BuildPackage/Trusted-Firmware-A))
