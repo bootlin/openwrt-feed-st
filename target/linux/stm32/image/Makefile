@@ -60,7 +60,7 @@ endef
 define Device/stm32mp2
   KERNEL_NAME := Image.gz
   KERNEL_IMG := Image.gz
-  BOOTARGS += console=ttySTM0,115200n8
+  BOOTARGS += console=ttySTM0,115200n8 fw_devlink.sync_state=timeout
   DEVICE_PACKAGES += kmod-usb-stm32-usbh
 endef
 
