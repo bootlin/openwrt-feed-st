@@ -1,0 +1,20 @@
+From c29a55d0d8a9950a87199caadf6a4244669833fe Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Fri, 20 Dec 2024 09:52:42 +0100
+Subject: [PATCH] phy: stm32: fix compile issue
+
+Add missing header file bitfield.h.
+---
+ drivers/phy/st/phy-stm32-usb2phy.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/phy/st/phy-stm32-usb2phy.c
++++ b/drivers/phy/st/phy-stm32-usb2phy.c
+@@ -6,6 +6,7 @@
+  * Copyright (C) 2022 STMicroelectronics
+  * Author(s): Pankaj Dev <pankaj.dev@st.com>.
+  */
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>

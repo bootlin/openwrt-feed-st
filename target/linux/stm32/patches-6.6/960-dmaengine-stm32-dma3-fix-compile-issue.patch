@@ -1,0 +1,39 @@
+From 68a63456952fea8af88781520b0975ea69cf938b Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Fri, 20 Dec 2024 09:51:46 +0100
+Subject: [PATCH] dmaengine: stm32-dma3: fix compile issue
+
+Fix compile issue in dev_info() and dev_notice() due to wrong format.
+
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+ drivers/dma/stm32/stm32-dma3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/dma/stm32/stm32-dma3.c b/drivers/dma/stm32/stm32-dma3.c
+index f783fd9839c1..c1358d602339 100644
+--- a/drivers/dma/stm32/stm32-dma3.c
++++ b/drivers/dma/stm32/stm32-dma3.c
+@@ -513,8 +513,8 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 			/* Keep original base */
+ 		}
+ 
+-		dev_notice(&pdev->dev, "LLI gen_pool truncated (%ldKiB instead of %lldKiB)\n",
+-			   size / SZ_1K, rmem->size / SZ_1K);
++		dev_notice(&pdev->dev, "LLI gen_pool truncated (%zuKiB instead of %lluKiB)\n",
++			   size / SZ_1K, (long long unsigned int) rmem->size / SZ_1K);
+ 	}
+ 
+ 	ddata->gen_pool = devm_gen_pool_create(&pdev->dev, ilog2(sizeof(struct stm32_dma3_hwdesc)),
+@@ -531,7 +531,7 @@ static int stm32_dma3_lli_pool_create(struct platform_device *pdev, struct stm32
+ 		goto no_specific_pool;
+ 	}
+ 
+-	dev_info(&pdev->dev, "created LLI gen_pool at %pap, size %ldKiB\n",
++	dev_info(&pdev->dev, "created LLI gen_pool at %pap, size %zuKiB\n",
+ 		 &base, gen_pool_size(ddata->gen_pool) / SZ_1K);
+ 
+ no_specific_pool:
+-- 
+2.39.5
+
