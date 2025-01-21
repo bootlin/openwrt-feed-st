@@ -40,8 +40,7 @@ define Trusted-Firmware-A/stm32mp2
   BUILD_SUBTARGET:=stm32mp2
   PLAT:=stm32mp2
   METADATA:=1
-  MAKE_ARGS = STM32MP_DDR4_TYPE=1 \
-	      ARM_ARCH_MAJOR=8
+  MAKE_ARGS:=ARM_ARCH_MAJOR=8
 endef
 
 define Trusted-Firmware-A/stm32mp157f-dk2
@@ -60,12 +59,21 @@ define Trusted-Firmware-A/stm32mp257f-ev1
   $(call Trusted-Firmware-A/stm32mp2)
   NAME:=STM32MP257F-EV1
   DTB_FILE_NAME:=stm32mp257f-ev1.dtb
+  MAKE_ARGS += STM32MP_DDR4_TYPE=1
+endef
+
+define Trusted-Firmware-A/stm32mp257f-dk
+  $(call Trusted-Firmware-A/stm32mp2)
+  NAME:=STM32MP257F-DK
+  DTB_FILE_NAME:=stm32mp257f-dk.dtb
+  MAKE_ARGS += STM32MP_LPDDR4_TYPE=1
 endef
 
 TFA_TARGETS := \
 	       stm32mp157f-dk2 \
 	       stm32mp135f-dk \
-	       stm32mp257f-ev1
+	       stm32mp257f-ev1 \
+	       stm32mp257f-dk
 
 TFA_MAKE_FLAGS += \
 		$(if $(CONFIG_BINUTILS_VERSION_2_37)$(CONFIG_BINUTILS_VERSION_2_38),,LDFLAGS="-no-warn-rwx-segments") \
@@ -74,7 +82,7 @@ TFA_MAKE_FLAGS += \
 		BL32_EXTRA1=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-tee-pager_v2.bin \
 		BL33=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.bin \
 		BL33_CFG=$(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.dtb \
-		DTB$(if $(findstring stm32mp2, $(CONFIG_TARGET_SUBTARGET)),_FIDTB)_FILE_NAME=$(DTB_FILE_NAME) \
+		DTB_FILE_NAME=$(DTB_FILE_NAME) \
 		STM32MP_SDMMC=1 \
 		TARGET_BOARD="" \
 		$(MAKE_ARGS) \
