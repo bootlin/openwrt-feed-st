@@ -15,41 +15,95 @@ platforms.
 
 3. `STM32MP257F-EV1`: minimal support for the STM32MP257F-EV1
 
-4. `STM32MP157F-DK2-DEMO`: based on the `STM32MP157F-DK2` device including
+3. `STM32MP257F-DK`: minimal support for the STM32MP257F-DK
+
+5. `STM32MP157F-DK2-DEMO`: based on the `STM32MP157F-DK2` device including
    additional packages like a web interface to configure the device.
 
-5. `STM32MP135F-DK-DEMO`: based on the `STM32MP135F-DK` device including
+6. `STM32MP135F-DK-DEMO`: based on the `STM32MP135F-DK` device including
    additional packages like a web interface to configure the device.
 
-6. `STM32MP257F-EV1-DEMO`: based on the `STM32MP257F-EV1` device including
+7. `STM32MP257F-EV1-DEMO`: based on the `STM32MP257F-EV1` device including
    additional packages like a web interface to configure the device.
 
-|Supported features|STM32MP157F-DK2|STM32MP135F-DK|STM32MP257F-EV1|
-|------------------|---------------|--------------|---------------|
-|Sysupgrade|yes|yes|
-|Ethernet|yes|yes|yes|
-|Watchdog|yes|yes|yes|
-|RTC|yes|yes|yes|
-|RNG (Optee)|yes|yes|x|
-|LED|yes|yes|yes|
-|Button|no|yes (USER2)|yes (USER1/USER2)|
-|Wifi|yes|yes|x
-|USB Type-A|yes|yes|yes|
+7. `STM32MP257F-DK-DEMO`: based on the `STM32MP257F-DK` device including
+   additional packages like a web interface to configure the device.
+
+
+|Supported features|STM32MP157F-DK2|STM32MP135F-DK|STM32MP257F-EV1|STM32MP257F-DK|
+|------------------|---------------|--------------|---------------|--------------|
+|Sysupgrade|yes|yes|yes|yes|
+|Ethernet|yes|yes|yes|yes|
+|Watchdog|yes|yes|yes|yes|
+|RTC|yes|yes|yes|yes|
+|RNG (Optee)|yes|yes|yes|yes|
+|LED|yes|yes|yes|yes|
+|Button|no|yes (USER2)|yes (USER1/USER2)|yes (USER1/USER2)|
+|Wifi|yes|yes|x|yes|
+|USB Type-A|yes|yes|yes|yes|
 
 ## BSP
 
-This feed is based on the `STPM32MP1/STM32MP2 BSP v5.1`.
+This feed is based on the `STPM32MP1/STM32MP2 BSP v6.0`.
 
 |Components|Version|
 |----------|-------|
-|TF-A|2.8-stm32mp-r2|
-|U-Boot|v2022.10-stm32mp-r2|
-|OPTEE|3.19.0-stm32mp-r2|
-|Linux|OpenWRT kernel + v6.1-stm32mp-r2|
+|TF-A|2.10-stm32mp-r1|
+|U-Boot|2023.10-stm32mp-r1|
+|OPTEE|4.0.0-stm32mp-r1|
+|Linux|OpenWRT kernel + v6.6-stm32mp-r1|
 
-For the kernel, the patches from the v6.1-stm32mp branch until the tag
-v6.1-stm32mp-r2 were added.
+For the kernel, the patches from the v6.6-stm32mp branch until the tag
+v6.6-stm32mp-r1 were added.
 They are available in `target/linux/stm32/patches-6.1/`.  
+
+Some patches were removed as they were applied in Linux, or they are already
+applied by OpenWrt.
+```
+2c9b2c9cac5e ("usb: dwc2: keep the usb stack informed of SetPortFeature failure while Host")
+6287f3f5f2e4 ("ASoC: stm32: spdifrx: fix dma channel release in stm32_spdifrx_remove")
+8a5e18189df4 ("media: i2c: imx335: Enable regulator supplies")
+c5540f6a4d9a ("nvmem: stm32: add support for STM32MP25 BSEC to control OTP data")
+eb99d7c27da7 ("crypto: stm32/cryp - call finalize with bh disabled")
+31286612453a ("perf list: fix arguments order issue for events printing")
+fd68ca2e9089 ("i2c: stm32f7: Do not prepare/unprepare clock during runtime suspend/resume")
+```
+
+Some patches had to be modified to fix some conflicts.
+```
+950158c37fbf ("usb: dwc2: hcd: fix power down exiting by system resume")
+19458fd268c4 ("media: i2c: imx335: add control of an optional powerdown gpio")
+393cf701259c ("mtd: spi-nor: add Octal DTR support for Macronix flash")
+1e5eedcdaf1c ("firmware: arm_scmi: optee leverage Ocall2 thread provisioning")
+9d36363eee52 ("counter: stm32-timer-cnt: add pm runtime support")
+```
+Following patches were not applied due to conflicts. They corresponds to the
+empty patches in `target/linux/stm32/patches-6.1/`. They could be applied in the
+future if needed.
+```
+426e1c78e4c1 ("drm/stm: ltdc: set transparency after plane disable")
+8d235ec212fa ("drm/stm: ltdc: support of rotation on crtc output")
+89f5b97c79ac ("drm/stm: ltdc: add support of plane upscaling")
+326eea71a0e4 ("drm/stm: ltdc: refactor interrupt management")
+c4ffda2683bb ("drm/stm: ltdc: set color look-up table for each plane")
+4909e4745e9c ("drm/stm: ltdc: refactor crtc start sequence")
+a3f784f44512 ("drm/stm: ltdc: remove encoder helper functions")
+c273a5bad2aa ("drm/stm: ltdc: add lvds clock")
+6a508bd6b305 ("drm/stm: refactor probe sequence")
+b90306b377d3 ("drm/stm: ltdc:  add property default-on")
+66d934a13b5c ("drm/stm: ltdc: move mode valid & fixup to encoder helper functions")
+e40cd2b4b75b ("drm/stm: ltdc: Check rotation buffer length")
+3d63eeb9313b ("drm/stm: ltdc: Check panel width")
+1102333ad31b ("drm/stm: ltdc: set default parent of pixel clock")
+1bc5bac55257 ("drm/stm: support of new hardware version for soc MP21")
+dc9d876018c6 ("drm/stm: ltdc: Check the security of layer 2.")
+73c7bd933066 ("drm/stm: ltdc: remove mode_set_nofb callback")
+759efa7b4959 ("drm/stm: ltdc: add plane_atomic_enable callback")
+73cc2db18231 ("drm/stm: ltdc: replace pm_runtime_get_sync by pm_runtime_resume_and_get")
+662800081ef7 ("drm/stm: ltdc: flush remaining vblank event")
+6e8b50d319c9 ("drm/stm: ltdc: Check the security of layer 3.")
+3682d604ecbd ("drm/stm: ltdc: reset ltdc on crtc enable")
+```
 
 ## Getting started
 
@@ -63,12 +117,12 @@ And you need to install a set of packages as described in the
 ### Getting the code
 
 The feed is designed to work with the `master` branch of OpenWRT (last tested
-commit is [93881ec190](https://github.com/openwrt/openwrt/commit/93881ec190)).
+commit is [0b54029a6e](https://github.com/openwrt/openwrt/commit/0b54029a6e)).
 
 ```bash
 $ git clone -b master https://git.openwrt.org/openwrt/openwrt.git
 $ cd openwrt
-$ git checkout 93881ec190
+$ git checkout 0b54029a6e
 ```
 
 Next step is to add the [STMicroelectronics](https://www.st.com) feed in the
@@ -107,14 +161,6 @@ Install all other packages
 $ ./scripts/feeds install -a -f
 ```
 (Some overriding warnings can occur, if you used `-f` please ignore them).
-
-### Clean tmp/ directory
-
-It's a workaround to fix a package scan issue. More details available in commit [ab360e2](https://github.com/bootlin/openwrt-feed-st/commit/ab360e2).
-
-```bash
-$ rm -rf tmp/
-```
 
 ### Configure and build
 
@@ -208,6 +254,7 @@ The configuration of Ethernet interfaces is the default OpenWRT configuration:
 - `STM32MP157F-DK2`: `lan` interface
 - `STM32MP135F-DK`: `lan` interface (`ETH1`) and `wan` interface (`ETH2`)
 - `STM32MP257-EV1`: `lan` interface (`ETH1`) and `wan` interface (`ETH2`)
+- `STM32MP257F-DK`: `lan` interface
 
 The `lan` interface is configured with a static ip address 192.168.1.1 and a
 dhcp server is running.  

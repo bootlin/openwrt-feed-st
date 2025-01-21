@@ -470,6 +470,114 @@ stress-ng: info:  [2718] metrics untrustworthy: 0
 stress-ng: info:  [2718] successful run completed in 24 mins, 2.38 secs
 ```
 
+#### STM32MP257F-DK
+
+[Results (yaml format)](stress-ng-stm32mp257f-dk.yml)
+
+```
+stress-ng: info:  [2930] setting to a 1 min run per stressor
+stress-ng: info:  [2930] dispatching hogs: 2 cpu, 2 matrix, 2 fp, 2 crypt, 2 goto, 2 cache, 2 bigheap, 2 malloc, 2 memcpy, 2 bsearch, 2 hsearch, 2 msg, 2 getrandom, 2 hrtimers, 2 daemon, 2 fop
+stress-ng: info:  [2941] cache: cache flags used: prefetch fence
+stress-ng: info:  [2941] cache: unavailable unused cache flags: flush sfence clflushopt cldemote clwb
+[ 4195.042468] hrtimer: interrupt took 10400 ns
+stress-ng: metrc: [2930] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [2930]                           (secs)    (secs)    (secs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [2930] cpu                7032     60.29    120.49      0.00       116.64          58.36        99.93          5464
+stress-ng: metrc: [2930] matrix            36968     60.01    119.94      0.00       616.01         308.23        99.93          3496
+stress-ng: metrc: [2930] fp                 1980     60.14    120.25      0.00        32.92          16.47        99.98          3368
+stress-ng: metrc: [2930] crypt             18234     60.02    120.00      0.00       303.80         151.95        99.97          5420
+stress-ng: metrc: [2930] goto           17437645     60.00    119.95      0.01    290627.07      145356.71        99.97          3368
+stress-ng: metrc: [2930] cache           2295280     60.00     75.31      0.14     38253.65       30422.68        62.87          7640
+stress-ng: metrc: [2930] bigheap         1096106     60.09      6.10    113.92     18240.00        9132.50        99.86       1522392
+stress-ng: metrc: [2930] malloc         30309325     60.14     63.12     56.91    503990.30      252511.42        99.80        245396
+stress-ng: metrc: [2930] memcpy             2636     60.01    119.97      0.00        43.93          21.97        99.96          3240
+stress-ng: metrc: [2930] bsearch            6148     60.02    119.91      0.00       102.43          51.27        99.90          3624
+stress-ng: metrc: [2930] hsearch           87367     60.00    119.91      0.00      1456.08         728.61        99.92          3752
+stress-ng: metrc: [2930] msg            33618690     60.00     15.02    101.50    560270.42      288520.07        97.09          3368
+stress-ng: metrc: [2930] getrandom        999560     60.00      0.56    119.40     16659.31        8332.34        99.97          3368
+stress-ng: metrc: [2930] hrtimers        7837239     60.01      8.31    111.65    130607.97       65335.78        99.95          3240
+stress-ng: metrc: [2930] daemon           129801     60.00      0.34      2.38      2163.34       47873.96         2.26          3240
+stress-ng: metrc: [2930] fork             113069     60.00     58.67     60.66      1884.46         947.49        99.45          3368
+stress-ng: metrc: [2930] netdev          4460041     60.00     24.55     95.41     74333.93       37178.88        99.97          3240
+stress-ng: metrc: [2930] rawpkt          4284830     60.07      7.35    112.63     71328.94       35712.49        99.87          3496
+stress-ng: metrc: [2930] rawsock         5389123     61.50      4.81    114.62     87627.35       45122.93        97.10          3368
+stress-ng: metrc: [2930] rawudp          1360024     60.00      4.57    107.06     22665.46       12183.05        93.02          3624
+stress-ng: metrc: [2930] sock              16856     60.01      5.09    114.74       280.89         140.66        99.84          5400
+stress-ng: metrc: [2930] sockfd          3887709     60.00      9.61    108.13     64792.43       33017.95        98.12          3368
+stress-ng: metrc: [2930] sockmany         341639     60.20      2.16    113.50      5675.51        2954.06        96.06          3752
+stress-ng: metrc: [2930] udp             2788801     60.00      4.26    113.12     46478.39       23759.45        97.81          3368
+stress-ng: metrc: [2930] miscellaneous metrics:
+stress-ng: metrc: [2930] matrix             23660.89 add matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             61771.37 copy matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             12805.97 div matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             18338.96 frobenius matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             25769.10 hadamard matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             22288.74 identity matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             18904.21 mean matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             34783.81 mult matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             34851.91 negate matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix                44.35 prod matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix             25021.82 sub matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix                44.89 square matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix              5399.78 trans matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] matrix            120701.58 zero matrix ops per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    16.10 Mfp-ops per sec, float128 add         (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1330.25 Mfp-ops per sec, float64 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1332.12 Mfp-ops per sec, float32 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    12.87 Mfp-ops per sec, bf16 add             (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                   479.47 Mfp-ops per sec, float16 add          (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1330.85 Mfp-ops per sec, float add            (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1332.27 Mfp-ops per sec, double add           (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    16.12 Mfp-ops per sec, long double add      (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                     6.90 Mfp-ops per sec, float128 multiply    (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1331.78 Mfp-ops per sec, float64 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1331.96 Mfp-ops per sec, float32 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    17.10 Mfp-ops per sec, bf16 multiply        (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                   479.55 Mfp-ops per sec, float16 multiply     (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1331.34 Mfp-ops per sec, float multiply       (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                  1331.57 Mfp-ops per sec, double multiply      (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                     6.90 Mfp-ops per sec, long double multiply (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                     5.30 Mfp-ops per sec, float128 divide      (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    79.59 Mfp-ops per sec, float64 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                   151.24 Mfp-ops per sec, float32 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    16.54 Mfp-ops per sec, bf16 divide          (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                   139.87 Mfp-ops per sec, float16 divide       (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                   151.22 Mfp-ops per sec, float divide         (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                    79.60 Mfp-ops per sec, double divide        (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] fp                     5.32 Mfp-ops per sec, long double divide   (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt              25365.21 MD5 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt                466.76 NT encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt              25255.68 SHA-1 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt              25335.91 SHA-256 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt                 34.54 SHA-512 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt                 46.79 scrypt encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt              24837.08 SunMD5 encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] crypt              25320.26 yescrypt encrypts per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] goto                 148.80 million gotos per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] cache           19877996.51 cache ops per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] cache           45494229.02 shared cache reads per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] cache           37160494.29 shared cache writes per second (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] bigheap            71507.12 realloc calls per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] bsearch         51120616.77 bsearch comparisons per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] bsearch               15.00 bsearch comparisons per item (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] getrandom      545978272.90 getrandom bits per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] hrtimers           65317.43 hrtimer signals per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] rawpkt                 1.43 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] rawpkt           4284830.00 packets sent (total of 2 instances)
+stress-ng: metrc: [2930] rawpkt          10642199.00 packets received (total of 2 instances)
+stress-ng: metrc: [2930] rawsock                1.20 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] rawudp                 0.35 MB recv'd per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] rawudp             11334.14 packets (32 bytes) received per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] sock               71775.10 messages sent per sec (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] sock              323426.96 byte average out queue length (harmonic mean of 2 instances)
+stress-ng: metrc: [2930] sock             1535166.41 byte average in queue length (geometric mean of 2 instances)
+stress-ng: info:  [2930] skipped: 0
+stress-ng: info:  [2930] passed: 48: cpu (2) matrix (2) fp (2) crypt (2) goto (2) cache (2) bigheap (2) malloc (2) memcpy (2) bsearch (2) hsearch (2) msg (2) getrandom (2) hrtimers (2) daemon)
+stress-ng: info:  [2930] failed: 0
+stress-ng: info:  [2930] metrics untrustworthy: 0
+stress-ng: info:  [2930] successful run completed in 24 mins, 2.77 secs
+```
+
 ### Iperf3
 
 #### STM32MP157F-DK2
@@ -499,3 +607,12 @@ stress-ng: info:  [2718] successful run completed in 24 mins, 2.38 secs
 |loopback|UDP|4.40 Gbits/sec, 4.40 Gbits/sec, 4.09 Gbits/sec + 4.04 Gbits/sec|
 |eth0|TCP|942 Mbits/sec, 942 Mbits/sec, 927 Mbits/sec + 939 Mbits/sec|
 |eth1|TCP|942 Mbits/sec, 491 Mbits/sec, 927 Mbits/sec + 939 Mbits/sec|
+
+#### STM32MP257F-DK
+
+|Interface|Protocol|Bandwidth: RX, TX, Bidir (RX + TX)|
+|---------|--------|----------------------------------|
+|loopback|TCP|7.17 Gbits/sec, 7.17 Gbits/sec, 6.04 Gbits/sec + 5.96 Gbits/sec
+|loopback|UDP|8.09 Gbits/sec, 7.58 Gbits/sec, 4.52 Gbits/sec + 5.46 Gbits/sec
+|eth0|TCP|941 Mbits/sec, 941 Mbits/sec, 939 Mbits/sec + 925 Mbits/sec
+|wifi|TCP|48.0 Mbits/sec, 45.4 Mbits/sec 34.9 Mbits/sec, 16.7 Mbits/sec
