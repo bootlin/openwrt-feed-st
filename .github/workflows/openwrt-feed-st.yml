@@ -3,7 +3,7 @@ jobs:
   build-all:
     runs-on: ubuntu-22.04
     env:
-      openwrt_version: 93881ec190c2d0f9d974d19c0f328637c0cc170a
+      openwrt_version: 0b54029a6e96bb2ce484f316be3870cc2617de30
     strategy:
       matrix:
         include:
@@ -19,6 +19,11 @@ jobs:
             profile: stm32mp257f-ev1
           - subtarget: stm32mp2
             profile: stm32mp257f-ev1-demo
+          - subtarget: stm32mp2
+            profile: stm32mp257f-dk
+          - subtarget: stm32mp2
+            profile: stm32mp257f-dk-demo
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,12 +43,11 @@ jobs:
       - name: Update feeds
         run: cd openwrt; ./scripts/feeds update -a
       - name: Install stm32 target
-        run: cd openwrt; ./scripts/feeds install stm32
+        run: cd openwrt; ./scripts/feeds install -f stm32
       - name: Install all other feeds
         run: cd openwrt; ./scripts/feeds install -a -f
       - name: Configure
         run: |
-          rm -rf openwrt/tmp/info/.packageinfo-kernel_linux
           printf "CONFIG_TARGET_stm32=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}=y\\nCONFIG_TARGET_stm32_${{ matrix.subtarget }}_DEVICE_${{ matrix.profile }}=y\\n" > openwrt/.config
           make -C openwrt defconfig
       - name: Build
