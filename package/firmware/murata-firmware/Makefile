@@ -8,10 +8,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=murata-firmware
-PKG_VERSION:=2020.09.14
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
+PKG_SOURCE_DATE:=2020-09-14
 PKG_SOURCE_URL:=https://github.com/murata-wireless/cyw-fmac-fw.git
 PKG_MIRROR_HASH:=c2fc14802860f923d7bea36a709efeeffce4637a57084d78133e080b3dd8a87c
 PKG_SOURCE_VERSION:=52174a18134c7ef4a674ecd9fb68fc6e2bced969
@@ -33,7 +33,7 @@ endef
 define Package/murata-firmware-43430-sdio
   $(Package/murata-firmware-default)
   TITLE:=BCM43430 FullMac SDIO firmware
-  CONFLICTS:=brcmfmac-firmware-43430-sdio
+  CONFLICTS:=cypress-firmware-43430-sdio
 endef
 
 define Package/murata-firmware-43430-sdio/install
