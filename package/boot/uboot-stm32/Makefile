@@ -59,10 +59,17 @@ define U-Boot/stm32mp257f-ev1
   DEVICE_TREE:=stm32mp257f-ev1
 endef
 
+define U-Boot/stm32mp257f-dk
+  $(call U-Boot/stm32mp25)
+  NAME:=STM32MP257F-DK
+  DEVICE_TREE:=stm32mp257f-dk
+endef
+
 UBOOT_TARGETS := \
 	stm32mp157f-dk2 \
 	stm32mp135f-dk \
-	stm32mp257f-ev1
+	stm32mp257f-ev1 \
+	stm32mp257f-dk
 
 UBOOT_MAKE_FLAGS += DEVICE_TREE=$(DEVICE_TREE)
 
