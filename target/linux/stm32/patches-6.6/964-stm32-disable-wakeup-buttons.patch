@@ -1,0 +1,47 @@
+From 3087bdc922889e2ba6888f44f38fe2bca5e46a78 Mon Sep 17 00:00:00 2001
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Tue, 21 Jan 2025 15:29:09 +0100
+Subject: [PATCH] stm32: disable wakeup buttons
+
+The gpio-button-hotplug kernel module does not support wakeup buttons
+(KEY_WAKEUP key), so disable them for supported boards.
+
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts    | 1 +
+ arch/arm64/boot/dts/st/stm32mp257f-dk.dts  | 2 +-
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -83,6 +83,7 @@
+ 			label = "wake-up";
+ 			linux,code = <KEY_WAKEUP>;
+ 			interrupts-extended = <&optee 0>;
++			status = "disabled";
+ 		};
+ 	};
+ 
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -102,7 +102,7 @@
+ 			label = "wake-up";
+ 			linux,code = <KEY_WAKEUP>;
+ 			interrupts-extended = <&optee 0>;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 	};
+ 
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -84,7 +84,7 @@
+ 			linux,code = <KEY_WAKEUP>;
+ 			interrupts-extended = <&optee 0>;
+ 			wakeup-source;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 	};
+ 
