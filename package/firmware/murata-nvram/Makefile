@@ -36,6 +36,12 @@ define Package/murata-nvram-43430-sdio
   CONFLICTS:=brcmfmac-nvram-43430-sdio
 endef
 
+define Package/murata-nvram-43439-sdio
+  $(Package/murata-nvram-default)
+  TITLE:=BCM43439 SDIO NVRAM
+  CONFLICTS:=brcmfmac-nvram-43439-sdio
+endef
+
 define Package/murata-nvram-43430-sdio/install
 	$(INSTALL_DIR) $(1)/lib/firmware/brcm
 	$(INSTALL_DATA)	./files/cyfmac43430-sdio.1DX.stm32.txt \
@@ -49,4 +55,14 @@ define Package/murata-nvram-43430-sdio/install
 
 endef
 
+define Package/murata-nvram-43439-sdio/install
+	$(INSTALL_DIR) $(1)/lib/firmware/brcm
+	$(INSTALL_DATA)	./files/cyfmac43439-sdio.1YN.stm32.txt \
+		$(1)/lib/firmware/brcm/
+	$(LN) \
+		cyfmac43439-sdio.1YN.stm32.txt \
+		$(1)/lib/firmware/brcm/brcmfmac43439-sdio.st,stm32mp257f-dk.txt
+endef
+
 $(eval $(call BuildPackage,murata-nvram-43430-sdio))
+$(eval $(call BuildPackage,murata-nvram-43439-sdio))
