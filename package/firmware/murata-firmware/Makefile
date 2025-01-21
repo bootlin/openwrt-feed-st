@@ -36,6 +36,12 @@ define Package/murata-firmware-43430-sdio
   CONFLICTS:=cypress-firmware-43430-sdio
 endef
 
+define Package/murata-firmware-43439-sdio
+  $(Package/murata-firmware-default)
+  TITLE:=BCM43439 FullMac SDIO firmware
+  CONFLICTS:=cypress-firmware-43439-sdio
+endef
+
 define Package/murata-firmware-43430-sdio/install
 	$(INSTALL_DIR) $(1)/lib/firmware/murata
 	$(INSTALL_DATA) \
@@ -53,5 +59,22 @@ define Package/murata-firmware-43430-sdio/install
 		$(1)/lib/firmware/brcm/brcmfmac43430-sdio.clm_blob
 endef
 
+define Package/murata-firmware-43439-sdio/install
+	$(INSTALL_DIR) $(1)/lib/firmware/murata
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/cyfmac43439-sdio.bin \
+		$(1)/lib/firmware/murata/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/cyfmac43439-sdio.1YN.clm_blob \
+		$(1)/lib/firmware/murata/
+	$(INSTALL_DIR) $(1)/lib/firmware/brcm
+	$(LN) \
+		../murata/cyfmac43439-sdio.bin \
+		$(1)/lib/firmware/brcm/brcmfmac43439-sdio.bin
+	$(LN) \
+		../murata/cyfmac43439-sdio.1YN.clm_blob \
+		$(1)/lib/firmware/brcm/brcmfmac43439-sdio.clm_blob
+endef
 $(eval $(call BuildPackage,murata-firmware-43430-sdio))
+$(eval $(call BuildPackage,murata-firmware-43439-sdio))
 
