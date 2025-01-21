@@ -31,6 +31,11 @@ define Device/stm32mp257f-ev1-demo
   DEVICE_NAME := stm32mp257f-ev1
 endef
 
+define Device/stm32mp257f-dk-demo
+  $(call Device/stm32mp257f-dk)
+  $(call Device/Demo)
+  DEVICE_NAME := stm32mp257f-dk
+endef
 
 ifeq ($(SUBTARGET),stm32mp1)
   TARGET_DEVICES += \
@@ -39,5 +44,7 @@ ifeq ($(SUBTARGET),stm32mp1)
 endif
 
 ifeq ($(SUBTARGET),stm32mp2)
-  TARGET_DEVICES += stm32mp257f-ev1-demo
+  TARGET_DEVICES += \
+		    stm32mp257f-ev1-demo \
+		    stm32mp257f-dk-demo
 endif

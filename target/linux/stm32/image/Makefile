@@ -85,6 +85,17 @@ define Device/stm32mp257f-ev1
   SUPPORTED_DEVICES := st,stm32mp257f-ev1
 endef
 
+define Device/stm32mp257f-dk
+  $(call Device/stm32mp2)
+  DEVICE_MODEL := STM32MP257F-DK
+  DEVICE_DTS := stm32mp257f-dk
+  SUPPORTED_DEVICES := st,stm32mp257f-dk
+  DEVICE_PACKAGES += kmod-brcmfmac \
+		     murata-firmware-43439-sdio \
+		     murata-nvram-43439-sdio \
+		     wpad-basic-mbedtls
+endef
+
 ifeq ($(SUBTARGET),stm32mp1)
   TARGET_DEVICES += \
 		    stm32mp157f-dk2 \
@@ -92,7 +103,9 @@ ifeq ($(SUBTARGET),stm32mp1)
 endif
 
 ifeq ($(SUBTARGET),stm32mp2)
-  TARGET_DEVICES += stm32mp257f-ev1
+  TARGET_DEVICES += \
+		    stm32mp257f-ev1 \
+		    stm32mp257f-dk
 endif
 
 include demo.mk
