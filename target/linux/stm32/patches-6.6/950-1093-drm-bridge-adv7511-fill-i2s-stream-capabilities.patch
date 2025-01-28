@@ -19,7 +19,7 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
 
 --- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -237,6 +237,7 @@ static const struct hdmi_codec_pdata cod
+@@ -247,6 +247,7 @@ static const struct hdmi_codec_pdata cod
  			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE),
  	.max_i2s_channels = 2,
  	.i2s = 1,

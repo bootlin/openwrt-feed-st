@@ -21,9 +21,9 @@ Reviewed-by: Eric FOURMONT <eric.fourmont-ext@st.com>
  drivers/net/phy/realtek.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -445,6 +445,16 @@ static int rtl8211f_config_init(struct p
+--- a/drivers/net/phy/realtek/realtek_main.c
++++ b/drivers/net/phy/realtek/realtek_main.c
+@@ -448,6 +448,16 @@ static int rtl8211f_config_init(struct p
  			val_rxdly ? "enabled" : "disabled");
  	}
  

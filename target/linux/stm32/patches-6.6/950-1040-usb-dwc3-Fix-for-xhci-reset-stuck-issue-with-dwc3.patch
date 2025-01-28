@@ -38,7 +38,7 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
  		dwc3_host_exit(dwc);
 --- a/drivers/usb/dwc3/core.h
 +++ b/drivers/usb/dwc3/core.h
-@@ -985,6 +985,7 @@ struct dwc3_scratchpad_array {
+@@ -990,6 +990,7 @@ struct dwc3_scratchpad_array {
   * @bounce_addr: dma address of @bounce
   * @ep0_usb_req: dummy req used while handling STD USB requests
   * @ep0_in_setup: one control transfer is completed and enter setup phase
@@ -46,7 +46,7 @@ Domain-Review: Fabrice GASNIER <fabrice.gasnier@foss.st.com>
   * @lock: for synchronizing
   * @mutex: for mode switching
   * @dev: pointer to our struct device
-@@ -1149,6 +1150,8 @@ struct dwc3 {
+@@ -1154,6 +1155,8 @@ struct dwc3 {
  	struct dwc3_request	ep0_usb_req;
  	struct completion	ep0_in_setup;
  

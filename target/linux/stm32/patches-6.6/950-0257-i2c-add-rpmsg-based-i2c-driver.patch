@@ -91,7 +91,7 @@ Domain-Review: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
 +	  value and result is set to ACK
 --- a/drivers/i2c/busses/Kconfig
 +++ b/drivers/i2c/busses/Kconfig
-@@ -1479,4 +1479,13 @@ config I2C_VIRTIO
+@@ -1481,4 +1481,13 @@ config I2C_VIRTIO
            This driver can also be built as a module. If so, the module
            will be called i2c-virtio.
  

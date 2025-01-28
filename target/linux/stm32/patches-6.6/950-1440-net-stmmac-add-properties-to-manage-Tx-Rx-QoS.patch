@@ -72,7 +72,7 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/404476
  #define DMA_RBSZ_SHIFT			1
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -562,6 +562,8 @@ stmmac_probe_config_dt(struct platform_d
+@@ -581,6 +581,8 @@ stmmac_probe_config_dt(struct platform_d
  	of_property_read_u32(np, "snps,txpbl", &dma_cfg->txpbl);
  	of_property_read_u32(np, "snps,rxpbl", &dma_cfg->rxpbl);
  	dma_cfg->pblx8 = !of_property_read_bool(np, "snps,no-pbl-x8");

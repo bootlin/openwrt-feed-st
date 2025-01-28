@@ -45,7 +45,7 @@ Reviewed-on: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/365955
  
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -436,6 +436,10 @@ stmmac_probe_config_dt(struct platform_d
+@@ -454,6 +454,10 @@ stmmac_probe_config_dt(struct platform_d
  	of_property_read_u32(np, "max-speed", &plat->max_speed);
  
  	plat->bus_id = of_alias_get_id(np, "ethernet");

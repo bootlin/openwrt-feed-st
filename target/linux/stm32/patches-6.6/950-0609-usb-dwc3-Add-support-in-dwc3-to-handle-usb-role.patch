@@ -88,7 +88,7 @@ Change-Id: I45c1c8d00af3b64d760a5b381dd6c91b29337b35
  	queue_work(system_freezable_wq, &dwc->drd_work);
 --- a/drivers/usb/dwc3/core.h
 +++ b/drivers/usb/dwc3/core.h
-@@ -1190,6 +1190,7 @@ struct dwc3 {
+@@ -1195,6 +1195,7 @@ struct dwc3 {
  	enum usb_dr_mode	dr_mode;
  	u32			current_dr_role;
  	u32			desired_dr_role;
@@ -96,7 +96,7 @@ Change-Id: I45c1c8d00af3b64d760a5b381dd6c91b29337b35
  	struct extcon_dev	*edev;
  	struct notifier_block	edev_nb;
  	enum usb_phy_interface	hsphy_mode;
-@@ -1527,7 +1528,9 @@ struct dwc3_gadget_ep_cmd_params {
+@@ -1532,7 +1533,9 @@ struct dwc3_gadget_ep_cmd_params {
  
  /* prototypes */
  void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode);
