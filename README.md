@@ -13,6 +13,12 @@ But this feed integrates the [STMicroelectronics](https://www.st.com) BSP,
 whereas OpenWrt uses upstream components.
 And more boards are supported in the feed.
 
+You are using the `openwrt-24.10` branch of the feed, which is based on the
+OpenWrt branch `openwrt-24.10`.
+Actually the feed is based on OpenWrt
+[v24.10.0](https://github.com/openwrt/openwrt/tree/v24.10.0)
+([Release Note](https://openwrt.org/releases/24.10/notes-24.10.0)).
+
 ## Supported devices
 
 1. `STM32MP157F-DK2`: minimal support for the STM32MP157F-DK2
@@ -122,13 +128,13 @@ And you need to install a set of packages as described in the
 
 ### Getting the code
 
-The feed is designed to work with the `master` branch of OpenWRT (last tested
-commit is [0b54029a6e](https://github.com/openwrt/openwrt/commit/0b54029a6e)).
+The feed is designed to work with the `openwrt-24.10` branch of OpenWRT (last
+tested commit is [v24.10.0](https://github.com/openwrt/openwrt/commit/v24.10.0)).
 
 ```bash
-$ git clone -b master https://git.openwrt.org/openwrt/openwrt.git
+$ git clone https://git.openwrt.org/openwrt/openwrt.git
 $ cd openwrt
-$ git checkout 0b54029a6e
+$ git checkout v24.10.0
 ```
 
 Next step is to add the [STMicroelectronics](https://www.st.com) feed in the
