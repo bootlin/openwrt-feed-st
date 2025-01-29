@@ -3,7 +3,7 @@ jobs:
   build-all:
     runs-on: ubuntu-22.04
     env:
-      openwrt_version: 0b54029a6e96bb2ce484f316be3870cc2617de30
+      openwrt_version: v24.10.0
     strategy:
       matrix:
         include:
