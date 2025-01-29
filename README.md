@@ -152,7 +152,7 @@ $ ./scripts/feeds update -a
 Install stm32 target
 
 ```bash
-$ ./scripts/feeds install stm32
+$ ./scripts/feeds install -f stm32
 ```
 
 Install all other packages
