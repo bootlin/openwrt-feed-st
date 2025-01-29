@@ -7,6 +7,12 @@ and
 [STM32MP2](https://www.st.com/en/microcontrollers-microprocessors/stm32mp2-series.html)
 platforms.
 
+Using this project is not strictly necessary as OpenWrt itself has support for
+stm32 target.
+But this feed integrates the [STMicroelectronics](https://www.st.com) BSP,
+whereas OpenWrt uses upstream components.
+And more boards are supported in the feed.
+
 ## Supported devices
 
 1. `STM32MP157F-DK2`: minimal support for the STM32MP157F-DK2
