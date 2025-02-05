@@ -42,7 +42,7 @@ And more boards are supported in the feed.
 |Ethernet|yes|yes|yes|yes|
 |Watchdog|yes|yes|yes|yes|
 |RTC|yes|yes|yes|yes|
-|RNG (Optee)|yes|yes|yes|yes|
+|Hardware RNG (Optee)|yes|yes|yes|yes|
 |LED|yes|yes|yes|yes|
 |Button|no|yes (USER2)|yes (USER1/USER2)|yes (USER1/USER2)|
 |Wifi|yes|yes|x|yes|
@@ -316,6 +316,20 @@ Useful link: [LED Configuration](https://openwrt.org/docs/guide-user/base-system
 ### USB
 
 Only mass storage are supported on the USB Type-A by default.
+
+### Hardware RNG
+
+By default OpenWrt uses urngd, a micro non-physical true random number generator based on timing jitter.
+To use Hardware RNG as entropy source,
+[rng-tools](https://github.com/openwrt/packages/tree/master/utils/rng-tools) package shall be used.
+
+```
+uci set system.@rngd[0].enabled="1"
+uci set system.@rngd[0].device="/dev/hwrng"
+uci commit system
+service urngd disable && service urngd stop
+service rngd restart
+```
 
 ## Going further
 
