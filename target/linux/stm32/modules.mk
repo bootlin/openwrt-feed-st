@@ -13,6 +13,57 @@ endef
 $(eval $(call KernelPackage,bxcan))
 
 
+define KernelPackage/drm-dw-mipi-dsi
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Synopsis Designware MIPI DSI
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm +kmod-drm-kms-helper
+  KCONFIG:=CONFIG_DRM_DW_MIPI_DSI
+  FILES:=$(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.ko
+  AUTOLOAD:=$(call AutoProbe,dw-mipi-dsi)
+endef
+
+$(eval $(call KernelPackage,drm-dw-mipi-dsi))
+
+
+define KernelPackage/drm-panel-rocktech-hx8394
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Rocktech HX8394 720x1280 DSI video mode panel
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm +kmod-backlight kmod-drm-stm
+  KCONFIG:=CONFIG_DRM_PANEL_ROCKTECH_HX8394
+  FILES=$(LINUX_DIR)/drivers/gpu/drm/panel/panel-rocktech-hx8394.ko
+  AUTOLOAD:=$(call AutoProbe,panel-rocktech-hx8394)
+endef
+
+$(eval $(call KernelPackage,drm-panel-rocktech-hx8394))
+
+
+define KernelPackage/drm-stm
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=DRM Support for STMicroelectronics SoC Series
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm +kmod-drm-kms-helper +kmod-drm-dma-helper +kmod-drm-dw-mipi-dsi
+  KCONFIG:=CONFIG_DRM_STM \
+	   CONFIG_DRM_STM_DSI \
+	   CONFIG_DRM_STM_LVDS
+  FILES=$(LINUX_DIR)/drivers/gpu/drm/stm/stm-drm.ko \
+	$(LINUX_DIR)/drivers/gpu/drm/stm/dw_mipi_dsi-stm.ko \
+	$(LINUX_DIR)/drivers/gpu/drm/stm/lvds.ko
+  AUTOLOAD:=$(call AutoProbe,stm-drm dw_mipi_dsi-stm lvds)
+endef
+
+$(eval $(call KernelPackage,drm-stm))
+
+
+define KernelPackage/industrialio-backend
+  TITLE:=IIO Backend support
+  KCONFIG=CONFIG_IIO_BACKEND
+  FILES:=$(LINUX_DIR)/drivers/iio/industrialio-backend.ko
+  AUTOLOAD:=$(call AutoProbe,industrialio-backend)
+  $(call AddDepends/iio)
+endef
+
+$(eval $(call KernelPackage,industrialio-backend))
+
+
 define KernelPackage/nvmem-stm32-romem
   SUBMENU:=$(OTHER_MENU)
   TITLE:=STM32 factory-programmed memory support
@@ -23,6 +74,18 @@ define KernelPackage/nvmem-stm32-romem
 endef
 
 $(eval $(call KernelPackage,nvmem-stm32-romem))
+
+
+define KernelPackage/nvmem-stm32-tamp
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=STMicroelectronics STM32 TAMP backup registers support
+  DEPENDS:=@TARGET_stm32
+  KCONFIG:=CONFIG_NVMEM_STM32_TAMP
+  FILES:=$(LINUX_DIR)/drivers/nvmem/nvmem_stm32_tamp_nvram.ko
+  AUTOLOAD:=$(call AutoProbe,nvmem_stm32_tamp_nvram)
+endef
+
+$(eval $(call KernelPackage,nvmem-stm32-tamp))
 
 
 define KernelPackage/phy-stm32-usbphyc
@@ -85,6 +148,17 @@ endef
 $(eval $(call KernelPackage,sound-soc-stm32-i2s))
 
 
+define KernelPackage/sound-soc-stm32-mdf
+  TITLE:=SoC Audio support for STM32 MDF
+  KCONFIG:=CONFIG_SND_SOC_STM32_MDF
+  FILES:=$(LINUX_DIR)/sound/soc/stm/stm32_amdf.ko
+  $(call AddDepends/sound,@TARGET_stm32_stm32mp2 +kmod-stm32-mdf-adc +kmod-sound-soc-dmic \
+	  +kmod-industrialio-buffer-cb)
+endef
+
+$(eval $(call KernelPackage,sound-soc-stm32-mdf))
+
+
 define KernelPackage/sound-soc-stm32-sai
   TITLE:=STM32 SAI interface (Serial Audio Interface) support
   KCONFIG:=CONFIG_SND_SOC_STM32_SAI
@@ -106,6 +180,29 @@ define KernelPackage/sound-soc-stm32-spdifrx
 endef
 
 $(eval $(call KernelPackage,sound-soc-stm32-spdifrx))
+
+
+define KernelPackage/sound-soc-wm8994
+  TITLE:=Wolfson Microelectronics WM8994 codec
+  KCONFIG:=CONFIG_SND_SOC_WM8994
+  FILES:=$(LINUX_DIR)/sound/soc/codecs/snd-soc-wm8994.ko
+  AUTOLOAD:=$(call AutoProbe,snd-soc-wm8994)
+  $(call AddDepends/sound,+kmod-sound-soc-core +kmod-sound-soc-wm-hubs +kmod-i2c-core \
+	  +kmod-regmap-i2c)
+endef
+
+$(eval $(call KernelPackage,sound-soc-wm8994))
+
+
+define KernelPackage/sound-soc-wm-hubs
+  TITLE:=Wolfson Microelectronics HUBS support
+  KCONFIG:=CONFIG_SND_SOC_WM_HUBS
+  FILES:=$(LINUX_DIR)/sound/soc/codecs/snd-soc-wm-hubs.ko
+  AUTOLOAD:=$(call AutoProbe,snd-soc-wm-hubs)
+  $(call AddDepends/sound,+kmod-sound-soc-core)
+endef
+
+$(eval $(call KernelPackage,sound-soc-wm-hubs))
 
 
 define KernelPackage/spi-stm32
@@ -179,6 +276,17 @@ endef
 $(eval $(call KernelPackage,stm32-dac))
 
 
+define KernelPackage/stm32-csi
+  TITLE:=STM32 Camera Serial Interface (CSI) support
+  KCONFIG:=CONFIG_VIDEO_STM32_CSI
+  FILES:=$(LINUX_DIR)/drivers/media/platform/st/stm32/stm32-csi.ko
+  AUTOLOAD:=$(call AutoProbe,stm32-csi)
+  $(call AddDepends/video,@TARGET_stm32_stm32mp2 +kmod-video-fwnode)
+endef
+
+$(eval $(call KernelPackage,stm32-csi))
+
+
 define KernelPackage/stm32-dcmi
   TITLE:=STM32 Digital Camera Memory Interface support
   KCONFIG:=CONFIG_VIDEO_STM32_DCMI
@@ -190,6 +298,17 @@ endef
 $(eval $(call KernelPackage,stm32-dcmi))
 
 
+define KernelPackage/stm32-dcmipp
+  TITLE:=STM32 Digital Camera Memory Interface Pixel Processor (DCMIPP) support
+  KCONFIG:=CONFIG_VIDEO_STM32_DCMIPP
+  FILES:=$(LINUX_DIR)/drivers/media/platform/st/stm32/stm32-dcmipp/stm32-dcmipp.ko
+  AUTOLOAD:=$(call AutoProbe,stm32-dcmipp)
+  $(call AddDepends/video,@TARGET_stm32 +kmod-video-videobuf2 +kmod-video-dma-contig +kmod-video-fwnode)
+endef
+
+$(eval $(call KernelPackage,stm32-dcmipp))
+
+
 define KernelPackage/stm32-dfsdm-adc
   TITLE:=STM32 DFSDM ADC
   KCONFIG:=CONFIG_STM32_DFSDM_CORE \
@@ -197,7 +316,8 @@ define KernelPackage/stm32-dfsdm-adc
   FILES:=$(LINUX_DIR)/drivers/iio/adc/stm32-dfsdm-core.ko \
 	 $(LINUX_DIR)/drivers/iio/adc/stm32-dfsdm-adc.ko
   AUTOLOAD:=$(call AutoProbe,stm32-dfsdm-core stm32-dfsdm-adc)
-  $(call AddDepends/iio,@TARGET_stm32 +kmod-stm32-timer-trigger +kmod-industrialio-triggered-buffer +kmod-industrialio-hw-consumer)
+  $(call AddDepends/iio,@TARGET_stm32 +kmod-stm32-timer-trigger +kmod-industrialio-triggered-buffer \
+	  +kmod-industrialio-hw-consumer +kmod-industrialio-backend)
 endef
 
 $(eval $(call KernelPackage,stm32-dfsdm-adc))
@@ -219,6 +339,29 @@ define KernelPackage/stm32-hash
 endef
 
 $(eval $(call KernelPackage,stm32-hash))
+
+
+define KernelPackage/stm32-mdf-adc
+  TITLE:=STMicroelectronics STM32 MDF adc
+  KCONFIG:=CONFIG_STM32_MDF_ADC
+  FILES:=$(LINUX_DIR)/drivers/iio/adc/stm32-mdf-adc.ko
+  $(call AddDepends/iio,@TARGET_stm32_stm32mp2 +kmod-stm32-mdf-core +kmod-industrialio-backend \
+	  +kmod-industrialio-triggered-buffer +kmod-stm32-timer-trigger)
+endef
+
+$(eval $(call KernelPackage,stm32-mdf-adc))
+
+
+define KernelPackage/stm32-mdf-core
+  TITLE:=STMicroelectronics STM32 MDF core
+  KCONFIG:=CONFIG_STM32_MDF_CORE
+  FILES:=$(LINUX_DIR)/drivers/iio/adc/stm32-mdf-core.ko \
+	 $(LINUX_DIR)/drivers/iio/adc/stm32-mdf-serial.ko
+  AUTOLOAD:=$(call AutoProbe,stm32-mdf-core stm32-mdf-serial)
+  $(call AddDepends/iio,@TARGET_stm32_stm32mp2)
+endef
+
+$(eval $(call KernelPackage,stm32-mdf-core))
 
 
 define KernelPackage/stm32-timers
@@ -244,6 +387,18 @@ endef
 $(eval $(call KernelPackage,stm32-timer-trigger))
 
 
+define KernelPackage/stm32-thermal
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Thermal framework support on STMicroelectronics STM32 series of SoCs
+  KCONFIG:=CONFIG_STM32_THERMAL
+  DEPENDS:=@TARGET_stm32_stm32mp1 +kmod-thermal
+  FILES:=$(LINUX_DIR)/drivers/thermal/st/stm_thermal.ko
+  AUTOLOAD:=$(call AutoProbe,stm_thermal)
+endef
+
+$(eval $(call KernelPackage,stm32-thermal))
+
+
 define KernelPackage/st-thermal
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Thermal sensors on STMicroelectronics STi series of SoCs
@@ -256,6 +411,17 @@ define KernelPackage/st-thermal
 endef
 
 $(eval $(call KernelPackage,st-thermal))
+
+
+define KernelPackage/usb-dwc3-stm32
+  TITLE:=STM32 DWC3 support
+  KCONFIG:=CONFIG_USB_DWC3_STM32
+  FILES:=$(LINUX_DIR)/drivers/usb/dwc3/dwc3-stm32.ko
+  AUTOLOAD:=$(call AutoProbe,dwc3-stm32)
+  $(call AddDepends/usb,@TARGET_stm32 +kmod-usb-dwc3)
+endef
+
+$(eval $(call KernelPackage,usb-dwc3-stm32))
 
 
 define KernelPackage/usb-stm32-usbh
