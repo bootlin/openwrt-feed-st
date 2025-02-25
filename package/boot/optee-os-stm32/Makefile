@@ -19,7 +19,7 @@ PKG_MAINTAINER:=Thomas Richard <thomas.richard@bootlin.com>
 OPTEE_USE_INTREE_DTC:=1
 
 include $(INCLUDE_DIR)/kernel.mk
-include $(INCLUDE_DIR)/optee-os.mk
+include optee-os.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Optee-os/Default
